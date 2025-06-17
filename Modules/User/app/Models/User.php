@@ -12,10 +12,13 @@ use Spatie\Permission\Traits\HasRoles;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\User\Database\Factories\UserFactory;
 
 class User extends Authenticatable
 {
     use HasApiTokens, Notifiable, HasRoles, LogsActivity, SoftDeletes, HasFactory;
+
+    protected $guard_name = 'api';
 
     protected $fillable = [
         'name',
@@ -24,7 +27,7 @@ class User extends Authenticatable
         'status',
     ];
 
-        protected $hidden = [
+    protected $hidden = [
         'password',
         'remember_token',
     ];
@@ -43,4 +46,8 @@ class User extends Authenticatable
             ->dontSubmitEmptyLogs();
     }
 
+    public static function newFactory(): UserFactory
+    {
+        return UserFactory::new();
+    }
 }
