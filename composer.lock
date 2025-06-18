@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bfd4098dd0ad1ba81b8e4c701e40945e",
+    "content-hash": "5616fffc9db2a61bb4ac75e71d7080d2",
     "packages": [
         {
             "name": "brick/math",
@@ -6861,6 +6861,64 @@
             "time": "2025-04-16T06:32:06+00:00"
         },
         {
+            "name": "cloudcreativity/json-api-testing",
+            "version": "v6.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cloudcreativity/json-api-testing.git",
+                "reference": "bb2ff0a87013d40781ca7f959023491d6f1b4ed2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cloudcreativity/json-api-testing/zipball/bb2ff0a87013d40781ca7f959023491d6f1b4ed2",
+                "reference": "bb2ff0a87013d40781ca7f959023491d6f1b4ed2",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "illuminate/contracts": "^10.0|^11.0|^12.0",
+                "illuminate/support": "^10.0|^11.0|^12.0",
+                "php": "^8.2",
+                "phpunit/phpunit": "^10.5|^11.0|^12.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-develop": "6.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "CloudCreativity\\JsonApi\\Testing\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Cloud Creativity Ltd",
+                    "email": "info@cloudcreativity.co.uk"
+                }
+            ],
+            "description": "PHPUnit test helpers to check JSON API documents.",
+            "homepage": "https://github.com/cloudcreativity/json-api",
+            "keywords": [
+                "JSON-API",
+                "api",
+                "cloudcreativity",
+                "json",
+                "jsonapi",
+                "jsonapi.org"
+            ],
+            "support": {
+                "issues": "https://github.com/cloudcreativity/json-api/issues",
+                "source": "https://github.com/cloudcreativity/json-api-testing/tree/v6.2.0"
+            },
+            "time": "2025-04-09T19:15:46+00:00"
+        },
+        {
             "name": "fakerphp/faker",
             "version": "v1.24.1",
             "source": {
@@ -7044,6 +7102,71 @@
                 "source": "https://github.com/hamcrest/hamcrest-php/tree/v2.1.1"
             },
             "time": "2025-04-30T06:54:44+00:00"
+        },
+        {
+            "name": "laravel-json-api/testing",
+            "version": "v3.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel-json-api/testing.git",
+                "reference": "bbf3b31b977955eff93c47ff101c4a134a3ffa8f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel-json-api/testing/zipball/bbf3b31b977955eff93c47ff101c4a134a3ffa8f",
+                "reference": "bbf3b31b977955eff93c47ff101c4a134a3ffa8f",
+                "shasum": ""
+            },
+            "require": {
+                "cloudcreativity/json-api-testing": "^6.1",
+                "ext-json": "*",
+                "illuminate/http": "^11.0|^12.0",
+                "illuminate/support": "^11.0|^12.0",
+                "illuminate/testing": "^11.0|^12.0",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "laravel/framework": "^11.0|^12.0",
+                "phpunit/phpunit": "^10.5|^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-develop": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "LaravelJsonApi\\Testing\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Cloud Creativity Ltd",
+                    "email": "info@cloudcreativity.co.uk"
+                },
+                {
+                    "name": "Christopher Gammie",
+                    "email": "contact@gammie.co.uk"
+                }
+            ],
+            "description": "Test helpers for JSON:API compliant APIs.",
+            "homepage": "https://github.com/laravel-json-api/testing",
+            "keywords": [
+                "JSON-API",
+                "jsonapi",
+                "jsonapi.org",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel-json-api/testing/issues",
+                "source": "https://github.com/laravel-json-api/testing/tree/v3.1.0"
+            },
+            "time": "2025-02-24T20:39:08+00:00"
         },
         {
             "name": "laravel/pail",

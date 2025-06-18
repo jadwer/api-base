@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\User\Providers;
+namespace Modules\Auth\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    protected string $name = 'User';
+    protected string $name = 'Auth';
 
     /**
      * Called before routes are registered.
@@ -35,7 +35,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapWebRoutes(): void
     {
-        // Route::middleware('web')->group(module_path($this->name, '/routes/web.php'));
+      //  Route::middleware('web')->group(module_path($this->name, '/routes/web.php'));
     }
 
     /**
