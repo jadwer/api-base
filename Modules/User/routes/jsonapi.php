@@ -2,7 +2,7 @@
 
 use LaravelJsonApi\Laravel\Facades\JsonApiRoute;
 use LaravelJsonApi\Laravel\Routing\ResourceRegistrar;
-use Modules\User\Http\Controllers\Api\UserController;
+use Modules\User\Http\Controllers\Api\V1\UserController;
 
 JsonApiRoute::server('v1')
     ->prefix('v1')

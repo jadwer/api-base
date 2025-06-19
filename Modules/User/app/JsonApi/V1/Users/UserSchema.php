@@ -16,11 +16,13 @@ class UserSchema extends Schema
     {
         return [
             ID::make(),
-            Str::make('name'),
-            Str::make('email'),
+            Str::make('name')->sortable(),
+            Str::make('email')->sortable(),
             Str::make('status'),
+            Str::make('password')->hidden(),
+            Str::make('password_confirmation')->hidden(),
             DateTime::make('email_verified_at')->readOnly(),
-            DateTime::make('created_at')->readOnly(),
+            DateTime::make('created_at')->readOnly()->sortable(),
             DateTime::make('updated_at')->readOnly(),
             DateTime::make('deleted_at')->readOnly(),
         ];
@@ -29,11 +31,6 @@ class UserSchema extends Schema
     public function filters(): array
     {
         return [];
-    }
-
-    public function sortables(): array
-    {
-        return ['name', 'email', 'created_at'];
     }
 
     public function includePaths(): array

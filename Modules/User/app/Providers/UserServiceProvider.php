@@ -8,6 +8,9 @@ use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
+use LaravelJsonApi\Contracts\Routing\Route;
+
+
 class UserServiceProvider extends ServiceProvider
 {
     use PathNamespace;
@@ -36,6 +39,7 @@ class UserServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+        $this->app->register(\Modules\User\Providers\AuthServiceProvider::class);
     }
 
     /**

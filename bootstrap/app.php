@@ -21,4 +21,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(
             \LaravelJsonApi\Exceptions\ExceptionParser::renderer(),
         );
-    })->create();
+    })
+    ->withProviders([
+        Modules\User\Providers\UserServiceProvider::class,
+    ])
+    ->create();

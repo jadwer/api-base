@@ -13,11 +13,31 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
+           // Users
+            'users.view',
             'users.index',
-            'users.show',
+            'users.create',
             'users.store',
             'users.update',
-            'users.destroy',
+            'users.delete',
+
+            // Roles
+            'roles.view',
+            'roles.index',
+            'roles.create',
+            'roles.store',
+            'roles.update',
+            'roles.delete',
+
+            // Permissions
+            'permissions.view',
+            'permissions.index',
+            'permissions.assign',
+            'permissions.revoke',
+
+            // Own Profile
+            'profile.view',
+            'profile.update',
         ];
 
         foreach ($permissions as $permission) {

@@ -5,6 +5,9 @@ namespace Modules\User\Providers;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
+use LaravelJsonApi\Laravel\Facades\JsonApiRoute;
+use LaravelJsonApi\Laravel\Routing\ResourceRegistrar;
+
 class RouteServiceProvider extends ServiceProvider
 {
     protected string $name = 'User';
@@ -26,6 +29,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->mapApiRoutes();
         $this->mapWebRoutes();
+        $this->mapJsonApiRoutes();
     }
 
     /**
@@ -46,5 +50,14 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapApiRoutes(): void
     {
         Route::middleware('api')->prefix('api')->name('api.')->group(module_path($this->name, '/routes/api.php'));
+    }
+
+    protected function mapJsonApiRoutes(): void
+    {
+        JsonApiRoute::server('v1')
+            ->prefix('api/v1')
+            ->resources(function (ResourceRegistrar $server) {
+                $server->resource('users', \Modules\User\Http\Controllers\Api\V1\UserController::class);
+            });
     }
 }

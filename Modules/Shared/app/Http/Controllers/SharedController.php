@@ -1,18 +1,18 @@
 <?php
 
-namespace Modules\User\Http\Controllers;
+namespace Modules\Shared\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class SharedController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('user::index');
+        return view('shared::index');
     }
 
     /**
@@ -20,7 +20,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('user::create');
+        return view('shared::create');
     }
 
     /**
@@ -33,7 +33,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        return view('user::show');
+        return view('shared::show');
     }
 
     /**
@@ -41,7 +41,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        return view('user::edit');
+        return view('shared::edit');
     }
 
     /**

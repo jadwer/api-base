@@ -17,6 +17,8 @@ class UserDatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             PermissionSeeder::class,
+            AssignPermissionsSeeder::class,
+
         ]);
 
         // Usuario God fijo
