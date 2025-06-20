@@ -5,6 +5,8 @@ namespace Modules\User\JsonApi\V1\Users;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use LaravelJsonApi\Contracts\Auth\Authorizer;
+use Illuminate\Support\Facades\Gate;
+
 
 class UserAuthorizer implements Authorizer
 {
@@ -15,7 +17,15 @@ class UserAuthorizer implements Authorizer
 
     public function store(Request $request, string $modelClass): bool|Response
     {
-        return $request->user()?->can('users.create') ?? false;
+        $user = $request->user();
+
+        if (!$user) return false;
+
+        if (! $user->can('users.create')) {
+            return Response::deny('No tienes permiso para crear usuarios.');
+        }
+
+        return Response::allow();
     }
 
     public function show(Request $request, object $model): bool|Response
@@ -30,7 +40,31 @@ class UserAuthorizer implements Authorizer
 
     public function destroy(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('users.delete') ?? false;
+        $user = $request->user();
+
+        if (is_null($user)) {
+            return false;
+        }
+
+        $permission = Gate::forUser($user)->inspect('users.delete');
+
+        if (!$permission->allowed()) {
+            return $permission;
+        }
+
+        // Reglas de jerarquía de roles
+        if ($model->hasRole('god')) {
+            // Solo otro god puede eliminar a un god
+            return $user->hasRole('god')
+                ? Response::allow()
+                : Response::deny('No puedes eliminar a un usuario god.');
+        }
+
+        if ($model->hasRole('admin') && $user->hasRole('tech')) {
+            return Response::deny('Un técnico no puede eliminar a un administrador.');
+        }
+
+        return Response::allow();
     }
 
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response

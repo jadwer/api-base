@@ -7,14 +7,12 @@ use Spatie\Permission\Models\Role;
 
 class RoleSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $roles = [
             ['name' => 'god', 'description' => 'Superadmin del sistema'],
             ['name' => 'admin', 'description' => 'Administrador general'],
+            ['name' => 'tech', 'description' => 'Usuario técnico de soporte'],
             ['name' => 'customer', 'description' => 'Cliente registrado'],
             ['name' => 'guest', 'description' => 'Invitado sin login'],
         ];

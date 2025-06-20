@@ -16,62 +16,155 @@ class UserStoreTest extends TestCase
         $this->artisan('module:seed', ['module' => 'User']);
     }
 
-    public function test_authenticated_user_can_create_user(): void
+    public function test_admin_can_create_user(): void
     {
-        $authUser = User::where('email', 'god@example.com')->firstOrFail();
-        $this->actingAs($authUser, 'sanctum');
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $this->actingAs($admin, 'sanctum');
 
-        $payload = [
-            'data' => [
-                'type' => 'users',
-                'attributes' => [
-                    'name' => 'Nuevo Usuario',
-                    'email' => 'nuevo@example.com',
-                    'status' => 'active',
-                    'password' => 'secret123',
-                    'password_confirmation' => 'secret123'
-                ]
-            ]
+        $data = [
+            'type' => 'users',
+            'attributes' => [
+                'name' => 'Nuevo Usuario',
+                'email' => 'nuevo@example.com',
+                'password' => 'password',
+                'status' => 'active',
+            ],
         ];
 
-
-        $response = $this->postJson('/api/v1/users', $payload, [
-            'Accept' => 'application/vnd.api+json',
-            'Content-Type' => 'application/vnd.api+json',
-        ]);
-
+        $response = $this->jsonApi()
+            ->withData($data)
+            ->post('/api/v1/users');
 
         $response->assertCreated();
-
-        $response->assertJsonStructure([
-            'data' => [
-                'id', 'type', 'attributes' => [
-                    'name', 'email', 'status', 'createdAt', 'updatedAt'
-                ]
-            ]
+        $this->assertDatabaseHas('users', [
+            'email' => 'nuevo@example.com',
         ]);
+    }
+
+    public function test_god_can_create_user(): void
+    {
+        $god = User::where('email', 'god@example.com')->firstOrFail();
+        $this->actingAs($god, 'sanctum');
+
+        $data = [
+            'type' => 'users',
+            'attributes' => [
+                'name' => 'Usuario God',
+                'email' => 'goduser@example.com',
+                'password' => 'password',
+                'status' => 'active',
+            ],
+        ];
+
+        $response = $this->jsonApi()
+            ->withData($data)
+            ->post('/api/v1/users');
+
+        $response->assertCreated();
+        $this->assertDatabaseHas('users', [
+            'email' => 'goduser@example.com',
+        ]);
+    }
+
+    public function test_tech_cannot_create_user(): void
+    {
+        $tech = User::where('email', 'tech@example.com')->firstOrFail();
+        $this->actingAs($tech, 'sanctum');
+
+        $response = $this->jsonApi()
+            ->withData([
+                'type' => 'users',
+                'attributes' => [
+                    'name' => 'Usuario Tech',
+                    'email' => 'techuser@example.com',
+                    'password' => 'password',
+                    'status' => 'active',
+                ],
+            ])
+            ->post('/api/v1/users');
+
+        $response->assertForbidden();
+        $response->assertSeeText('No tienes permiso para crear usuarios.');
     }
 
     public function test_unauthenticated_user_cannot_create_user(): void
     {
-        $payload = [
-            'data' => [
+        $response = $this->jsonApi()
+            ->withData([
                 'type' => 'users',
                 'attributes' => [
-                    'name' => 'Nuevo Usuario',
-                    'email' => 'nuevo@example.com',
+                    'name' => 'Usuario Sin Auth',
+                    'email' => 'sin-auth@example.com',
+                    'password' => 'password',
                     'status' => 'active',
-                    'password' => 'secret123',
-                    'password_confirmation' => 'secret123'
-                ]
-            ]
-        ];
+                ],
+            ])
+            ->post('/api/v1/users');
 
-        $response = $this->postJson('/api/v1/users', $payload, [
-            'Accept' => 'application/vnd.api+json',
-            'Content-Type' => 'application/vnd.api+json',
-        ]);
+        $response->assertStatus(401);
+    }
 
-        $response->assertUnauthorized();
+    public function test_user_creation_fails_with_missing_fields(): void
+    {
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $this->actingAs($admin, 'sanctum');
+
+        $response = $this->jsonApi()
+            ->withData([
+                'type' => 'users',
+                'attributes' => new \stdClass(), // evita el error de tipo 400
+            ])
+            ->post('/api/v1/users');
+
+        $this->assertJsonApiValidationErrors([
+            '/data/attributes/name',
+            '/data/attributes/email',
+            '/data/attributes/password',
+            '/data/attributes/status',
+        ], $response);
+    }
+
+    public function test_user_creation_fails_with_duplicate_email(): void
+    {
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $this->actingAs($admin, 'sanctum');
+
+        $existing = User::factory()->create(['email' => 'duplicado@example.com']);
+
+        $response = $this->jsonApi()
+            ->withData([
+                'type' => 'users',
+                'attributes' => [
+                    'name' => 'Duplicado',
+                    'email' => 'duplicado@example.com',
+                    'password' => 'password',
+                    'status' => 'active',
+                ],
+            ])
+            ->post('/api/v1/users');
+
+        $this->assertJsonApiValidationErrors([
+            '/data/attributes/email',
+        ], $response);
+    }
+
+    public function test_user_creation_fails_with_invalid_type(): void
+    {
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $this->actingAs($admin, 'sanctum');
+
+        $response = $this->jsonApi()
+            ->withData([
+                'type' => 'invalid-type',
+                'attributes' => [
+                    'name' => 'Usuario X',
+                    'email' => 'x@example.com',
+                    'password' => 'password',
+                    'status' => 'active',
+                ],
+            ])
+            ->post('/api/v1/users');
+
+        $response->assertStatus(409); // JSON:API Conflict por tipo incorrecto
     }
 }

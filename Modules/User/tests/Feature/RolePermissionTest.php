@@ -2,10 +2,10 @@
 
 namespace Modules\User\Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use Modules\User\Database\Seeders\RoleSeeder;
 use Modules\User\Database\Seeders\PermissionSeeder;
@@ -15,17 +15,16 @@ class RolePermissionTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
-        // Ejecutar seeders relacionados con roles y permisos
         $this->artisan('db:seed', ['--class' => RoleSeeder::class]);
         $this->artisan('db:seed', ['--class' => PermissionSeeder::class]);
         $this->artisan('db:seed', ['--class' => AssignPermissionsSeeder::class]);
     }
 
-    public function test_roles_are_created()
+    public function test_roles_are_created(): void
     {
         $roles = ['god', 'admin', 'customer', 'guest'];
 
@@ -37,10 +36,14 @@ class RolePermissionTest extends TestCase
         }
     }
 
-    public function test_permissions_are_created()
+    public function test_permissions_are_created(): void
     {
         $permissions = [
-            'users.index', 'users.view', 'users.store', 'users.update', 'users.delete',
+            'users.index',
+            'users.view',
+            'users.store',
+            'users.update',
+            'users.delete',
         ];
 
         foreach ($permissions as $permission) {
@@ -51,13 +54,40 @@ class RolePermissionTest extends TestCase
         }
     }
 
-    public function test_permissions_are_assigned_to_roles()
+    public function test_permissions_are_assigned_to_god_role(): void
     {
         $role = Role::findByName('god', 'api');
-        $permissions = ['users.index', 'users.view', 'users.store', 'users.update', 'users.delete'];
+        $expectedPermissions = [
+            'users.index',
+            'users.view',
+            'users.store',
+            'users.update',
+            'users.delete',
+        ];
 
-        foreach ($permissions as $permission) {
-            $this->assertTrue($role->hasPermissionTo($permission), "Role 'god' is missing permission: $permission");
+        foreach ($expectedPermissions as $permission) {
+            $this->assertTrue(
+                $role->hasPermissionTo($permission),
+                "El rol 'god' no tiene el permiso '$permission'."
+            );
+        }
+
+        // Verificamos que los permisos esperados estén incluidos, no la cuenta exacta
+        $this->assertGreaterThanOrEqual(
+            count($expectedPermissions),
+            $role->permissions()->count()
+        );
+    }
+
+    public function test_all_roles_that_should_have_permissions_have_them(): void
+    {
+        $rolesWithExpectedPermissions = Role::whereNotIn('name', ['guest'])->get();
+
+        foreach ($rolesWithExpectedPermissions as $role) {
+            $this->assertTrue(
+                $role->permissions()->count() > 0,
+                "El rol '{$role->name}' no tiene permisos asignados."
+            );
         }
     }
 }

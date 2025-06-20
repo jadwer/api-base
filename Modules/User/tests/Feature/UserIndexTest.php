@@ -13,23 +13,15 @@ class UserIndexTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        // Seed del módulo de usuarios
         $this->artisan('module:seed', ['module' => 'User']);
     }
 
-    public function test_authenticated_user_can_see_users_list(): void
+    public function test_admin_can_list_users(): void
     {
-        $authUser = User::where('email', 'god@example.com')->firstOrFail();
-        $this->actingAs($authUser, 'sanctum');
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $this->actingAs($admin, 'sanctum');
 
-        User::factory()->create(['name' => 'Zoe']);
-        User::factory()->create(['name' => 'Ana']);
-        User::factory()->create(['name' => 'Luis']);
-
-        $response = $this->getJson('/api/v1/users', [
-            'Accept' => 'application/vnd.api+json',
-        ]);
+        $response = $this->jsonApi()->get('/api/v1/users');
 
         $response->assertOk();
         $response->assertJsonStructure([
@@ -43,64 +35,59 @@ class UserIndexTest extends TestCase
                         'status',
                         'createdAt',
                         'updatedAt',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
+            'jsonapi',
         ]);
     }
 
-    public function test_unauthenticated_user_cannot_access_users_list(): void
+    public function test_admin_can_sort_users_by_name(): void
     {
-        $response = $this->getJson('/api/v1/users', [
-            'Accept' => 'application/vnd.api+json',
-        ]);
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $this->actingAs($admin, 'sanctum');
 
-        $response->assertUnauthorized();
-    }
-
-    public function test_users_list_can_be_sorted_by_name(): void
-    {
-        $authUser = User::where('email', 'god@example.com')->firstOrFail();
-        $this->actingAs($authUser, 'sanctum');
-
-        // Crea usuarios en orden no alfabético
-        User::factory()->create(['name' => 'Zoe']);
-        User::factory()->create(['name' => 'Ana']);
-        User::factory()->create(['name' => 'Luis']);
-
-        $response = $this->getJson('/api/v1/users?sort=name', [
-            'Accept' => 'application/vnd.api+json',
-        ]);
+        $response = $this->jsonApi()->get('/api/v1/users?sort=name');
 
         $response->assertOk();
+        $this->assertIsArray($response->json('data'));
 
-        $names = collect($response->json('data'))->pluck('attributes.name')->all();
-
-        // Verificamos que estén ordenados alfabéticamente
-        $expected = collect($names)->sort()->values()->all();
-        $this->assertSame($expected, $names);
-    }
-
-    public function test_users_list_can_be_sorted_by_name_descending(): void
-    {
-        $authUser = User::where('email', 'god@example.com')->firstOrFail();
-        $this->actingAs($authUser, 'sanctum');
-
-        User::factory()->create(['name' => 'Carlos']);
-        User::factory()->create(['name' => 'Ana']);
-        User::factory()->create(['name' => 'Beto']);
-
-        $response = $this->getJson('/api/v1/users?sort=-name', [
-            'Accept' => 'application/vnd.api+json',
-        ]);
-
-        $response->assertOk();
-
-        $names = collect($response->json('data'))->pluck('attributes.name')->toArray();
-
+        $names = array_column($response->json('data'), 'attributes.name');
         $sorted = $names;
-        rsort($sorted); // Orden descendente
+        sort($sorted, SORT_NATURAL | SORT_FLAG_CASE);
 
         $this->assertEquals($sorted, $names);
+    }
+
+    public function test_unauthenticated_user_cannot_list_users(): void
+    {
+        $response = $this->jsonApi()->get('/api/v1/users');
+
+        $response->assertStatus(401);
+    }
+
+    public function test_tech_can_list_users_but_not_sensitive_fields(): void
+    {
+        $tech = User::where('email', 'tech@example.com')->firstOrFail();
+        $this->actingAs($tech, 'sanctum');
+
+        $response = $this->jsonApi()->get('/api/v1/users');
+
+        $response->assertOk();
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'type',
+                    'attributes' => [
+                        'name',
+                        'email',
+                        'status',
+                        'createdAt',
+                        'updatedAt',
+                    ],
+                ],
+            ],
+        ]);
     }
 }

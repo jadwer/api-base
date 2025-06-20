@@ -13,34 +13,23 @@ class UserShowTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        // Seed completo del módulo
         $this->artisan('module:seed', ['module' => 'User']);
     }
 
     public function test_authenticated_user_can_view_another_user(): void
     {
-        // Recupera el usuario 'god'
         $authUser = User::where('email', 'god@example.com')->firstOrFail();
-
-        // Autenticación simulada
         $this->actingAs($authUser, 'sanctum');
 
-        // Crear usuario objetivo
         $targetUser = User::factory()->create([
             'name' => 'Gabino Ramírez',
             'email' => 'gabino@example.com',
             'status' => 'active',
         ]);
 
-        $response = $this->getJson(
-            "/api/v1/users/{$targetUser->id}",
-            ['Accept' => 'application/vnd.api+json']
-        );
+        $response = $this->jsonApi()->get("/api/v1/users/{$targetUser->id}");
 
-
-        $response->assertOk();
-        $response->assertJson([
+        $response->assertOk()->assertJson([
             'data' => [
                 'id' => (string) $targetUser->id,
                 'type' => 'users',
@@ -57,11 +46,8 @@ class UserShowTest extends TestCase
     {
         $targetUser = User::factory()->create();
 
-        $response = $this->getJson(
-            "/api/v1/users/{$targetUser->id}",
-            ['Accept' => 'application/vnd.api+json']
-        );
+        $response = $this->jsonApi()->get("/api/v1/users/{$targetUser->id}");
 
-        $response->assertUnauthorized();
+        $response->assertStatus(401);
     }
 }

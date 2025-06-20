@@ -22,6 +22,7 @@ class AssignPermissionsSeeder extends Seeder
                 'users.index',
                 'users.create',
                 'users.update',
+                'users.delete',
 
                 'roles.view',
                 'roles.index',
@@ -29,6 +30,15 @@ class AssignPermissionsSeeder extends Seeder
                 'permissions.view',
                 'permissions.index',
                 'permissions.assign',
+
+                'profile.view',
+                'profile.update',
+            ],
+
+            'tech' => [
+                'users.view',
+                'users.index',
+                'users.delete',
 
                 'profile.view',
                 'profile.update',

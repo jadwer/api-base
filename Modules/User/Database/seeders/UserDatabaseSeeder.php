@@ -5,23 +5,18 @@ namespace Modules\User\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Modules\User\Models\User;
 
-
 class UserDatabaseSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // Ejecutar roles y permisos
+        // Ejecutar seeders relacionados
         $this->call([
             RoleSeeder::class,
             PermissionSeeder::class,
             AssignPermissionsSeeder::class,
-
         ]);
 
-        // Usuario God fijo
+        // ✅ Usuario God (tiene todos los permisos)
         $god = User::factory()->create([
             'name' => 'God Admin',
             'email' => 'god@example.com',
@@ -30,9 +25,35 @@ class UserDatabaseSeeder extends Seeder
         ]);
         $god->assignRole('god');
 
-        // 2 usuarios aleatorios con rol 'customer'
-        User::factory(2)->create()->each(function ($user) {
-            $user->assignRole('customer');
-        });
+        // ✅ Usuario Admin (con permisos limitados)
+        $admin = User::factory()->create([
+            'name' => 'Administrador General',
+            'email' => 'admin@example.com',
+            'password' => bcrypt('secureadmin'),
+            'status' => 'active',
+        ]);
+        $admin->assignRole('admin');
+
+        // ✅ Usuario Tech (sin permisos elevados)
+        $tech = User::factory()->create([
+            'name' => 'Técnico',
+            'email' => 'tech@example.com',
+            'password' => bcrypt('securetech'),
+            'status' => 'active',
+        ]);
+        $tech->assignRole('tech'); 
+        
+        // ✅ Usuarios comunes para pruebas de index/show/delete
+        User::factory()->create([
+            'name' => 'Cliente Uno',
+            'email' => 'cliente1@example.com',
+            'status' => 'active',
+        ])->assignRole('customer');
+
+        User::factory()->create([
+            'name' => 'Cliente Dos',
+            'email' => 'cliente2@example.com',
+            'status' => 'active',
+        ])->assignRole('customer');
     }
 }
