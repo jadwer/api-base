@@ -20,7 +20,7 @@ class UserDatabaseSeeder extends Seeder
         $god = User::factory()->create([
             'name' => 'God Admin',
             'email' => 'god@example.com',
-            'password' => bcrypt('supersecure'),
+            'password' => 'supersecure',
             'status' => 'active',
         ]);
         $god->assignRole('god');
@@ -29,7 +29,7 @@ class UserDatabaseSeeder extends Seeder
         $admin = User::factory()->create([
             'name' => 'Administrador General',
             'email' => 'admin@example.com',
-            'password' => bcrypt('secureadmin'),
+            'password' => 'secureadmin',
             'status' => 'active',
         ]);
         $admin->assignRole('admin');
@@ -38,7 +38,7 @@ class UserDatabaseSeeder extends Seeder
         $tech = User::factory()->create([
             'name' => 'Técnico',
             'email' => 'tech@example.com',
-            'password' => bcrypt('securetech'),
+            'password' => 'securetech',
             'status' => 'active',
         ]);
         $tech->assignRole('tech'); 

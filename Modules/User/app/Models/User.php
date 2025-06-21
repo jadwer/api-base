@@ -14,6 +14,7 @@ use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\User\Database\Factories\UserFactory;
 
+
 class User extends Authenticatable
 {
     use HasApiTokens, Notifiable, HasRoles, LogsActivity, SoftDeletes, HasFactory;

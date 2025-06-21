@@ -4,10 +4,19 @@ namespace Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use LaravelJsonApi\Testing\MakesJsonApiRequests;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 abstract class TestCase extends BaseTestCase
 {
-    use MakesJsonApiRequests;
+    use MakesJsonApiRequests, RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->artisan('module:seed', ['module' => 'User']);
+    }
+
 
     /**
      * Asserta que el response contenga errores JSON:API para los punteros dados.

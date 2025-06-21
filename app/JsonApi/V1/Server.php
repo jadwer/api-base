@@ -2,6 +2,7 @@
 
 namespace App\JsonApi\V1;
 
+use Illuminate\Support\Facades\Auth;
 use LaravelJsonApi\Core\Server\Server as BaseServer;
 
 use Modules\User\JsonApi\V1\Users\UserSchema;
@@ -24,6 +25,7 @@ class Server extends BaseServer
     public function serving(): void
     {
         // no-op
+    Auth::shouldUse('sanctum');
     }
 
     /**

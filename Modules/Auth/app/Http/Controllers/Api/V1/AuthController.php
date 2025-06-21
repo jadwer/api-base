@@ -16,15 +16,41 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request): JsonResponse
     {
+        // Lista de campos válidos esperados
+        $validFields = ['email', 'password'];
+
+        // Obtener los campos que llegaron en la solicitud
+        $inputFields = array_keys($request->all());
+
+        // Verificar si hay campos adicionales no esperados
+        $unexpectedFields = array_diff($inputFields, $validFields);
+
+        // Si hay campos no esperados, devolver un error
+        if (!empty($unexpectedFields)) {
+            return response()->json([
+                'message' => 'Campos no permitidos: ' . implode(', ', $unexpectedFields),
+            ], 422);  // Si prefieres un error de bad request, puedes cambiar a 400
+        }
+
+        // Continuamos con el flujo normal si no hay campos inesperados
         $credentials = $request->validated();
         $user = User::where('email', $credentials['email'])->first();
 
+        // Verificar si el usuario existe y si la contraseña es correcta
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
             return response()->json([
                 'message' => 'Credenciales inválidas.',
             ], 401);
         }
 
+        // Verificar si el usuario está activo y no está soft-deleted
+        if ($user->deleted_at !== null || $user->status !== 'active') {
+            return response()->json([
+                'message' => 'Credenciales inválidas.',
+            ], 401);
+        }
+
+        // Generar un token de acceso
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
