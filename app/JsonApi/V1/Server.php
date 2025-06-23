@@ -4,7 +4,8 @@ namespace App\JsonApi\V1;
 
 use Illuminate\Support\Facades\Auth;
 use LaravelJsonApi\Core\Server\Server as BaseServer;
-
+use Modules\Audit\JsonApi\V1\Audits\AuditAuthorizer;
+use Modules\Audit\JsonApi\V1\Audits\AuditSchema;
 use Modules\User\JsonApi\V1\Users\UserSchema;
 
 class Server extends BaseServer
@@ -36,10 +37,18 @@ class Server extends BaseServer
     protected function allSchemas(): array
     {
         return [
-            UserSchema::class
+            UserSchema::class,
+            AuditSchema::class,
             // Aquí puedes ir agregando más schemas por módulo:
             // \Modules\Auth\JsonApi\V1\SomethingSchema::class,
             // \Modules\Product\JsonApi\V1\ProductSchema::class,
         ];
     }
+
+    protected function authorizers(): array
+{
+    return [
+        'audits' => AuditAuthorizer::class,
+    ];
+}
 }

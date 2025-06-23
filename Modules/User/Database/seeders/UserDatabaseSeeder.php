@@ -1,59 +1,65 @@
-<?php
+use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 
-namespace Modules\User\Database\Seeders;
-
-use Illuminate\Database\Seeder;
-use Modules\User\Models\User;
-
-class UserDatabaseSeeder extends Seeder
+public function run(): void
 {
-    public function run(): void
-    {
-        // Ejecutar seeders relacionados
-        $this->call([
-            RoleSeeder::class,
-            PermissionSeeder::class,
-            AssignPermissionsSeeder::class,
-        ]);
+    // Crear usuario System si no existe
+    $system = User::firstOrCreate(
+        ['id' => 1],
+        [
+            'name' => 'System',
+            'email' => 'system@audit.local',
+            'password' => bcrypt('system'),
+            'status' => 'active',
+        ]
+    );
 
-        // ✅ Usuario God (tiene todos los permisos)
-        $god = User::factory()->create([
-            'name' => 'God Admin',
-            'email' => 'god@example.com',
-            'password' => 'supersecure',
-            'status' => 'active',
-        ]);
-        $god->assignRole('god');
+    activity()->causedBy($system)->log('Se ejecutó UserDatabaseSeeder');
 
-        // ✅ Usuario Admin (con permisos limitados)
-        $admin = User::factory()->create([
-            'name' => 'Administrador General',
-            'email' => 'admin@example.com',
-            'password' => 'secureadmin',
-            'status' => 'active',
-        ]);
-        $admin->assignRole('admin');
+    $this->call([
+        RoleSeeder::class,
+        PermissionSeeder::class,
+        AssignPermissionsSeeder::class,
+    ]);
 
-        // ✅ Usuario Tech (sin permisos elevados)
-        $tech = User::factory()->create([
-            'name' => 'Técnico',
-            'email' => 'tech@example.com',
-            'password' => 'securetech',
-            'status' => 'active',
-        ]);
-        $tech->assignRole('tech'); 
-        
-        // ✅ Usuarios comunes para pruebas de index/show/delete
-        User::factory()->create([
-            'name' => 'Cliente Uno',
-            'email' => 'cliente1@example.com',
-            'status' => 'active',
-        ])->assignRole('customer');
+    $god = User::factory()->create([
+        'name' => 'God Admin',
+        'email' => 'god@example.com',
+        'password' => 'supersecure',
+        'status' => 'active',
+    ]);
+    $god->assignRole('god');
+    activity()->causedBy($system)->performedOn($god)->log('Creado usuario God');
 
-        User::factory()->create([
-            'name' => 'Cliente Dos',
-            'email' => 'cliente2@example.com',
-            'status' => 'active',
-        ])->assignRole('customer');
-    }
+    $admin = User::factory()->create([
+        'name' => 'Administrador General',
+        'email' => 'admin@example.com',
+        'password' => 'secureadmin',
+        'status' => 'active',
+    ]);
+    $admin->assignRole('admin');
+    activity()->causedBy($system)->performedOn($admin)->log('Creado usuario Admin');
+
+    $tech = User::factory()->create([
+        'name' => 'Técnico',
+        'email' => 'tech@example.com',
+        'password' => 'securetech',
+        'status' => 'active',
+    ]);
+    $tech->assignRole('tech');
+    activity()->causedBy($system)->performedOn($tech)->log('Creado usuario Tech');
+
+    $cliente1 = User::factory()->create([
+        'name' => 'Cliente Uno',
+        'email' => 'cliente1@example.com',
+        'status' => 'active',
+    ]);
+    $cliente1->assignRole('customer');
+
+    $cliente2 = User::factory()->create([
+        'name' => 'Cliente Dos',
+        'email' => 'cliente2@example.com',
+        'status' => 'active',
+    ]);
+    $cliente2->assignRole('customer');
 }

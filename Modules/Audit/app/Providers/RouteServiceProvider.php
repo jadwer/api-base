@@ -1,13 +1,16 @@
 <?php
 
-namespace Modules\Shared\Providers;
+namespace Modules\Audit\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
+use LaravelJsonApi\Laravel\Facades\JsonApiRoute;
+use LaravelJsonApi\Laravel\Routing\ResourceRegistrar;
+
 class RouteServiceProvider extends ServiceProvider
 {
-    protected string $name = 'Shared';
+    protected string $name = 'Audit';
 
     /**
      * Called before routes are registered.
@@ -26,6 +29,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->mapApiRoutes();
         $this->mapWebRoutes();
+        $this->mapJsonApiRoutes();
     }
 
     /**
@@ -46,5 +50,14 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapApiRoutes(): void
     {
         Route::middleware('api')->prefix('api')->name('api.')->group(module_path($this->name, '/routes/api.php'));
+    }
+
+    protected function mapJsonApiRoutes(): void
+    {
+        JsonApiRoute::server('v1')
+            ->prefix('api/v1')
+            ->resources(function (ResourceRegistrar $server) {
+                $server->resource('audits', \Modules\Audit\Http\Controllers\Api\V1\AuditController::class);
+            });
     }
 }

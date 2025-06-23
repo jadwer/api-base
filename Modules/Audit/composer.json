@@ -1,5 +1,5 @@
 {
-    "name": "nwidart/shared",
+    "name": "nwidart/audit",
     "description": "",
     "authors": [
         {
@@ -17,14 +17,14 @@
     },
     "autoload": {
         "psr-4": {
-            "Modules\\Shared\\": "app/",
-            "Modules\\Shared\\Database\\Factories\\": "database/factories/",
-            "Modules\\Shared\\Database\\Seeders\\": "database/seeders/"
+            "Modules\\Audit\\": "app/",
+            "Modules\\Audit\\Database\\Factories\\": "database/factories/",
+            "Modules\\Audit\\Database\\Seeders\\": "database/seeders/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Modules\\Shared\\Tests\\": "tests/"
+            "Modules\\Audit\\Tests\\": "tests/"
         }
     }
 }

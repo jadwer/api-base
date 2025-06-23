@@ -1,18 +1,18 @@
 <?php
 
-namespace Modules\Shared\Http\Controllers;
+namespace Modules\Audit\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class SharedController extends Controller
+class AuditController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('shared::index');
+        return view('audit::index');
     }
 
     /**
@@ -20,7 +20,7 @@ class SharedController extends Controller
      */
     public function create()
     {
-        return view('shared::create');
+        return view('audit::create');
     }
 
     /**
@@ -33,7 +33,7 @@ class SharedController extends Controller
      */
     public function show($id)
     {
-        return view('shared::show');
+        return view('audit::show');
     }
 
     /**
@@ -41,7 +41,7 @@ class SharedController extends Controller
      */
     public function edit($id)
     {
-        return view('shared::edit');
+        return view('audit::edit');
     }
 
     /**

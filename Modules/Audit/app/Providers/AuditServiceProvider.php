@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Shared\Providers;
+namespace Modules\Audit\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -8,13 +8,13 @@ use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
-class SharedServiceProvider extends ServiceProvider
+class AuditServiceProvider extends ServiceProvider
 {
     use PathNamespace;
 
-    protected string $name = 'Shared';
+    protected string $name = 'Audit';
 
-    protected string $nameLower = 'shared';
+    protected string $nameLower = 'audit';
 
     /**
      * Boot the application events.

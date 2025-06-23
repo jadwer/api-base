@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Shared\Database\Seeders;
+namespace Modules\Audit\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-class SharedDatabaseSeeder extends Seeder
+class AuditDatabaseSeeder extends Seeder
 {
     /**
      * Run the database seeds.
