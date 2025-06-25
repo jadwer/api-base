@@ -17,7 +17,6 @@ class AuditRequest extends ResourceRequest
     public function rules(): array
     {
         return [
-            // @TODO
         ];
     }
 

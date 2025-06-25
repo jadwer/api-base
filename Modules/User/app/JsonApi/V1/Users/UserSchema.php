@@ -37,4 +37,10 @@ class UserSchema extends Schema
     {
         return [];
     }
+
+    public static function type(): string
+{
+    return 'users';
+}
+
 }

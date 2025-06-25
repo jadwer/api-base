@@ -3,55 +3,30 @@
 namespace Modules\User\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Modules\User\Models\User;
 
 class AssignPermissionsSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $roles = [
-            'god' => Permission::all(), // todos los permisos
-
+            'god' => Permission::all()->pluck('name')->toArray(),
             'admin' => [
-                'users.view',
-                'users.index',
-                'users.create',
-                'users.update',
-                'users.delete',
-
-                'roles.view',
-                'roles.index',
-
-                'permissions.view',
-                'permissions.index',
-                'permissions.assign',
-
-                'profile.view',
-                'profile.update',
+                'users.view', 'users.index', 'users.create', 'users.update', 'users.delete',
+                'roles.view', 'roles.index',
+                'permissions.view', 'permissions.index', 'permissions.assign',
+                'profile.view', 'profile.update',
             ],
-
             'tech' => [
-                'users.view',
-                'users.index',
-                'users.delete',
-
-                'profile.view',
-                'profile.update',
+                'users.view', 'users.index', 'users.delete',
+                'profile.view', 'profile.update',
             ],
-
             'customer' => [
-                'profile.view',
-                'profile.update',
+                'profile.view', 'profile.update',
             ],
-
-            'guest' => [
-                // No permissions (solo acceso público, como ver productos si se agregan)
-            ],
+            'guest' => [],
         ];
 
         foreach ($roles as $roleName => $perms) {
@@ -65,6 +40,16 @@ class AssignPermissionsSeeder extends Seeder
             }
 
             $role->syncPermissions($perms);
+
+            activity()
+                ->causedBy(User::find(1))
+                ->event('permission-assignment')
+                ->withProperties([
+                    'attributes' => ['permissions' => $perms],
+                    'ip_address' => '127.0.0.1',
+                    'user_agent' => 'SeederScript'
+                ])
+                ->log("Permisos asignados al rol {$role->name}");
         }
     }
 }

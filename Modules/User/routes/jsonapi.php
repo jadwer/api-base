@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 
 
-
+/*
 Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
         JsonApiRoute::server('v1')
             ->prefix('v1')
@@ -20,3 +20,4 @@ Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
             });
 });
 
+*/

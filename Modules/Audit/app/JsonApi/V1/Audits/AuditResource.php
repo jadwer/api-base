@@ -31,7 +31,9 @@ class AuditResource extends JsonApiResource
             'userAgent' => $this->properties['user_agent'] ?? null,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
-            ];
+            'causer' => $this->causer,
+            'subject' => $this->subject,
+        ];
     }
 
     /**
@@ -42,9 +44,11 @@ class AuditResource extends JsonApiResource
      */
     public function relationships($request): iterable
     {
-        return [
-            // @TODO
-        ];
+    return [
+/*        'causer' => fn() => $this->when(
+            $this->causer instanceof \Illuminate\Database\Eloquent\Model,
+            $this->relation('causer')
+        ),
+*/    ];
     }
-
 }
