@@ -11,6 +11,9 @@ class AuditDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call([]);
+    $this->call([
+        AuditPermissionSeeder::class,
+        AuditAssignPermissionsSeeder::class,
+    ]);
     }
 }

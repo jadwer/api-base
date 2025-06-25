@@ -22,14 +22,8 @@ class AuditAuthorizer implements Authorizer
      */
     public function index(Request $request, string $modelClass): bool|Response
     {
-    $user = $request->user();
-
-        if (!$user) {
-            return false;
-        }
-
-
-        return $user->hasAnyRole(['admin', 'god']);
+        $user = $request->user();
+        return $user?->can('audit.index') ?? false;
     }
     /**
      * Authorize the store controller action.
@@ -40,8 +34,8 @@ class AuditAuthorizer implements Authorizer
      */
     public function store(Request $request, string $modelClass): bool|Response
     {
-        // TODO: Implement store() method.
-        return false;
+        $user = $request->user();
+        return $user?->can('audit.store') ?? false;
     }
 
     /**
@@ -54,12 +48,7 @@ class AuditAuthorizer implements Authorizer
     public function show(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-
-        if (!$user) {
-            return false;
-        }
-
-        return $user->hasAnyRole(['admin', 'god']);
+        return $user?->can('audit.show') ?? false;
     }
     /**
      * Authorize the update controller action.
@@ -70,8 +59,8 @@ class AuditAuthorizer implements Authorizer
      */
     public function update(Request $request, object $model): bool|Response
     {
-        // TODO: Implement update() method.
-        return false;
+        $user = $request->user();
+        return $user?->can('audit.update') ?? false;
     }
 
     /**
@@ -83,8 +72,8 @@ class AuditAuthorizer implements Authorizer
      */
     public function destroy(Request $request, object $model): bool|Response
     {
-        // TODO: Implement destroy() method.
-        return true;
+        $user = $request->user();
+        return $user?->can('audit.destroy') ?? false;
     }
 
     /**
@@ -97,8 +86,9 @@ class AuditAuthorizer implements Authorizer
      */
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response
     {
-        // TODO: Implement showRelated() method.
-        return true;
+
+        return $this->show($request, $model);
+
     }
 
     /**
@@ -111,8 +101,7 @@ class AuditAuthorizer implements Authorizer
      */
     public function showRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        // TODO: Implement showRelationship() method.
-        return true;
+       return $this->show($request, $model);
     }
 
     /**
@@ -125,8 +114,8 @@ class AuditAuthorizer implements Authorizer
      */
     public function updateRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        // TODO: Implement updateRelationship() method.
-        return true;
+        $user = $request->user();
+        return $user?->can('audit.update') ?? false;
     }
 
     /**
@@ -140,7 +129,7 @@ class AuditAuthorizer implements Authorizer
     public function attachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
         // TODO: Implement attachRelationship() method.
-        return true;
+        return false;
     }
 
     /**
@@ -154,6 +143,6 @@ class AuditAuthorizer implements Authorizer
     public function detachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
         // TODO: Implement detachRelationship() method.
-        return true;
+        return false;
     }
 }

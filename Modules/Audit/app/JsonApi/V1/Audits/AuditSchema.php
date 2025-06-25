@@ -38,27 +38,29 @@ class AuditSchema extends Schema
             DateTime::make('createdAt', 'created_at')->sortable(),
             DateTime::make('updatedAt', 'updated_at')->sortable(),
 
-           // MorphTo::make('causer')->types('users', 'users')->readOnly(),
+            // MorphTo::make('causer')->types('users', 'users')->readOnly(),
         ];
     }
 
     public function relationships(): array
     {
-        return [
-        ];
+        return [];
     }
 
     public function filters(): array
     {
         return [
-            Where::make('causer', 'causer_id'),
+        Where::make('causer', 'causer_id'),
+        Where::make('event'),
+        Where::make('auditableType', 'subject_type'),
+        Where::make('auditableId', 'subject_id'),
         ];
     }
 
     public function includePaths(): array
     {
         return [
-//            'causer'
+            //            'causer'
         ];
     }
 
