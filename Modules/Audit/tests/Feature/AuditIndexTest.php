@@ -22,54 +22,60 @@ class AuditIndexTest extends TestCase
         $this->admin->givePermissionTo('audit.index');
     }
 
-public function test_it_returns_a_list_of_audits_with_causer_and_optional_subject()
-{
-    $response = $this->jsonApi()->get('/api/v1/audits');
+    public function test_it_returns_a_list_of_audits_with_causer_and_optional_subject()
+    {
+        $response = $this->jsonApi()->get('/api/v1/audits');
 
-    $response->assertOk();
+        $response->assertOk();
 
-    $responseData = $response->json('data');
+        $responseData = $response->json('data');
 
-    $this->assertIsArray($responseData);
+        $this->assertIsArray($responseData);
 
-    foreach ($responseData as $item) {
-        $this->assertArrayHasKey('type', $item);
-        $this->assertArrayHasKey('id', $item);
-        $this->assertArrayHasKey('attributes', $item);
+        foreach ($responseData as $item) {
+            $this->assertArrayHasKey('type', $item);
+            $this->assertArrayHasKey('id', $item);
+            $this->assertArrayHasKey('attributes', $item);
 
-        $attributes = $item['attributes'];
+            $attributes = $item['attributes'];
 
-        foreach ([
-            'event',
-            'userId',
-            'auditableType',
-            'auditableId',
-            'oldValues',
-            'newValues',
-            'ipAddress',
-            'userAgent',
-            'createdAt',
-            'updatedAt',
-            'causer',
-            'subject',
-        ] as $key) {
-            $this->assertArrayHasKey($key, $attributes, "Falta el atributo '$key' en el audit ID {$item['id']}");
-        }
+            foreach (
+                [
+                    'event',
+                    'userId',
+                    'auditableType',
+                    'auditableId',
+                    'oldValues',
+                    'newValues',
+                    'ipAddress',
+                    'userAgent',
+                    'createdAt',
+                    'updatedAt',
+                    'causer',
+                    'subject',
+                ] as $key
+            ) {
+                $this->assertArrayHasKey($key, $attributes, "Falta el atributo '$key' en el audit ID {$item['id']}");
+            }
 
-        // ✅ Validar solo si causer NO es null
-        if (!is_null($attributes['causer'])) {
-            $this->assertIsArray($attributes['causer']);
-            $this->assertArrayHasKey('id', $attributes['causer']);
-            $this->assertArrayHasKey('email', $attributes['causer']);
-        }
+            // ✅ Validar solo si causer NO es null
+            if (!is_null($attributes['causer'])) {
+                $this->assertIsArray($attributes['causer']);
+                $this->assertArrayHasKey('id', $attributes['causer']);
+                $this->assertArrayHasKey('email', $attributes['causer']);
+            }
 
-        // ✅ Validar solo si subject NO es null
-        if (!is_null($attributes['subject'])) {
-            $this->assertArrayHasKey('id', $attributes['subject']);
-            $this->assertArrayHasKey('name', $attributes['subject']);
+            // ✅ Validar solo si subject NO es null
+            if (!is_null($attributes['subject'])) {
+                $this->assertArrayHasKey('id', $attributes['subject']);
+
+                // Solo si subject es un modelo tipo User u otro que tenga 'name'
+                if (array_key_exists('name', $attributes['subject'])) {
+                    $this->assertIsString($attributes['subject']['name']);
+                }
+            }
         }
     }
-}
 
 
     public function test_it_supports_sorting_by_created_at_desc()

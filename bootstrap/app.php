@@ -22,8 +22,4 @@ return Application::configure(basePath: dirname(__DIR__))
             \LaravelJsonApi\Exceptions\ExceptionParser::renderer(),
         );
     })
-    ->withProviders([
-        Modules\User\Providers\UserServiceProvider::class,
-        Modules\Audit\Providers\AuditServiceProvider::class,
-    ])
     ->create();

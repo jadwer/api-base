@@ -7,6 +7,7 @@ use LaravelJsonApi\Core\Server\Server as BaseServer;
 use Modules\Audit\JsonApi\V1\Audits\AuditAuthorizer;
 use Modules\Audit\JsonApi\V1\Audits\AuditSchema;
 use Modules\User\JsonApi\V1\Users\UserSchema;
+use Modules\PageBuilder\JsonApi\V1\Pages\PageSchema;
 
 class Server extends BaseServer
 {
@@ -39,6 +40,8 @@ class Server extends BaseServer
         return [
             UserSchema::class,
             AuditSchema::class,
+            PageSchema::class,
+
             // Aquí puedes ir agregando más schemas por módulo:
             // \Modules\Auth\JsonApi\V1\SomethingSchema::class,
             // \Modules\Product\JsonApi\V1\ProductSchema::class,

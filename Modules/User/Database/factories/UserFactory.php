@@ -27,4 +27,11 @@ class UserFactory extends Factory
             'status' => 'active',
         ];
     }
+
+    public function withRole(string $role): self
+    {
+        return $this->afterCreating(function ($user) use ($role) {
+            $user->assignRole($role);
+        });
+    }
 }

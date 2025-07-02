@@ -16,6 +16,7 @@ abstract class TestCase extends BaseTestCase
 
         $this->artisan('module:seed', ['module' => 'User']);
         $this->artisan('module:seed', ['module' => 'Audit']);
+        $this->artisan('module:seed', ['module' => 'PageBuilder']);
     }
 
 
