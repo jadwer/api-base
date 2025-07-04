@@ -42,9 +42,21 @@ class PageIndexTest extends TestCase
         ]);
     }
 
-    public function test_unauthenticated_user_cannot_list_pages(): void
+    public function test_unauthenticated_user_can_list_only_published_pages(): void
     {
+        $publishedPages = Page::factory()->count(2)->create(['published_at' => now()]);
+        Page::factory()->count(2)->create(['published_at' => null]);
+
         $response = $this->jsonApi()->get('/api/v1/pages');
-        $response->assertUnauthorized();
+
+        $response->assertOk();
+
+        // Validamos que estén las publicadas
+        foreach ($publishedPages as $page) {
+            $response->assertJsonFragment(['id' => (string)$page->id]);
+        }
+
+        // Solo 2 nuevas publicadas, además de las del seeder (3)
+        $response->assertJsonCount(5, 'data');
     }
 }

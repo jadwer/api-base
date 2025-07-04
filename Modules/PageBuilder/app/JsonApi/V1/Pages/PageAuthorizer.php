@@ -5,28 +5,23 @@ namespace Modules\PageBuilder\JsonApi\V1\Pages;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use LaravelJsonApi\Contracts\Auth\Authorizer;
+use Modules\PageBuilder\Models\Page;
 
 class PageAuthorizer implements Authorizer
 {
-
     /**
-     * Authorize the index controller action.
-     *
-     * @param Request $request
-     * @param string $modelClass
-     * @return bool|Response
+     * Autoriza el listado de páginas.
+     * Permite acceso total solo si el usuario tiene el permiso `page.index`.
+     * Si no lo tiene o no está autenticado, podrá acceder a la ruta,
+     * pero los resultados estarán filtrados por `published_at` desde el controlador o query builder.
      */
     public function index(Request $request, string $modelClass): bool|Response
     {
-        return $request->user()?->can('page.index') ?? false;
+        return true;
     }
 
     /**
-     * Authorize the store controller action.
-     *
-     * @param Request $request
-     * @param string $modelClass
-     * @return bool|Response
+     * Permite guardar una página solo a usuarios con permisos.
      */
     public function store(Request $request, string $modelClass): bool|Response
     {
@@ -34,23 +29,22 @@ class PageAuthorizer implements Authorizer
     }
 
     /**
-     * Authorize the show controller action.
-     *
-     * @param Request $request
-     * @param object $model
-     * @return bool|Response
+     * Permite ver una página publicada sin login, o cualquier página si tiene permisos.
      */
     public function show(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('page.show') ?? false;
+        /** @var Page $page */
+        $page = $model;
+
+        if ($request->user()?->can('page.show')) {
+            return true;
+        }
+
+        return $page->published_at !== null;
     }
 
     /**
-     * Authorize the update controller action.
-     *
-     * @param object $model
-     * @param Request $request
-     * @return bool|Response
+     * Solo usuarios con permiso pueden editar.
      */
     public function update(Request $request, object $model): bool|Response
     {
@@ -58,11 +52,7 @@ class PageAuthorizer implements Authorizer
     }
 
     /**
-     * Authorize the destroy controller action.
-     *
-     * @param Request $request
-     * @param object $model
-     * @return bool|Response
+     * Solo usuarios con permiso pueden eliminar.
      */
     public function destroy(Request $request, object $model): bool|Response
     {
@@ -70,68 +60,33 @@ class PageAuthorizer implements Authorizer
     }
 
     /**
-     * Authorize the show-related controller action
-     *
-     * @param Request $request
-     * @param object $model
-     * @param string $fieldName
-     * @return bool|Response
+     * Mostrar relaciones → misma regla que `show`.
      */
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('page.show') ?? false;
+        return $this->show($request, $model);
     }
 
-    /**
-     * Authorize the show-relationship controller action.
-     *
-     * @param Request $request
-     * @param object $model
-     * @param string $fieldName
-     * @return bool|Response
-     */
     public function showRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('page.show') ?? false;
+        return $this->show($request, $model);
     }
 
     /**
-     * Authorize the update-relationship controller action.
-     *
-     * @param Request $request
-     * @param object $model
-     * @param string $fieldName
-     * @return bool|Response
+     * Solo editores pueden cambiar relaciones.
      */
     public function updateRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
         return $request->user()?->can('page.update') ?? false;
     }
 
-    /**
-     * Authorize the attach-relationship controller action.
-     *
-     * @param Request $request
-     * @param object $model
-     * @param string $fieldName
-     * @return bool|Response
-     */
     public function attachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
         return $request->user()?->can('page.update') ?? false;
     }
 
-    /**
-     * Authorize the detach-relationship controller action.
-     *
-     * @param Request $request
-     * @param object $model
-     * @param string $fieldName
-     * @return bool|Response
-     */
     public function detachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
         return $request->user()?->can('page.update') ?? false;
     }
-
 }

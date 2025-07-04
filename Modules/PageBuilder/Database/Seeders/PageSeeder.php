@@ -26,6 +26,7 @@ class PageSeeder extends Seeder
         // Creamos páginas con trazabilidad
         $pages = Page::factory()->count(3)->create([
             'user_id' => $system->id,
+            'published_at' => now(), // ✅ evita tests rotos por datos sin publicar
         ]);
 
         foreach ($pages as $page) {

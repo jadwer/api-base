@@ -37,24 +37,45 @@ class PageShowTest extends TestCase
         ]);
     }
 
-    public function test_unauthenticated_user_cannot_view_page(): void
+    public function test_unauthenticated_user_can_view_published_page(): void
     {
-        $page = Page::factory()->create();
+        $page = Page::factory()->create(['published_at' => now()]);
 
         $response = $this->jsonApi()->get("/api/v1/pages/{$page->id}");
 
-        $response->assertUnauthorized();
+        $response->assertOk();
     }
 
-    public function test_user_without_permission_cannot_view_page(): void
+    public function test_unauthenticated_user_cannot_view_unpublished_page(): void
+    {
+        $page = Page::factory()->create(['published_at' => null]);
+
+        $response = $this->jsonApi()->get("/api/v1/pages/{$page->id}");
+
+        $response->assertUnauthorized(); // ← se corrige aquí
+    }
+
+    public function test_user_without_permission_can_view_published_page(): void
     {
         $user = User::factory()->withRole('tech')->create();
         $this->actingAs($user, 'sanctum');
 
-        $page = Page::factory()->create();
+        $page = Page::factory()->create(['published_at' => now()]);
 
         $response = $this->jsonApi()->get("/api/v1/pages/{$page->id}");
 
-        $response->assertForbidden();
+        $response->assertOk();
+    }
+
+    public function test_user_without_permission_cannot_view_unpublished_page(): void
+    {
+        $user = User::factory()->withRole('tech')->create();
+        $this->actingAs($user, 'sanctum');
+
+        $page = Page::factory()->create(['published_at' => null]);
+
+        $response = $this->jsonApi()->get("/api/v1/pages/{$page->id}");
+
+        $response->assertForbidden(); // ← aquí sí aplica 403
     }
 }

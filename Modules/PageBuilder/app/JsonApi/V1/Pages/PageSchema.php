@@ -8,17 +8,18 @@ use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\ArrayHash;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
-
+use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
 
-use Modules\PageBuilder\Models\Page;
 
+use Modules\PageBuilder\Models\Page;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 
 class PageSchema extends Schema
 {
-
     /**
      * The model the schema corresponds to.
      *
@@ -26,8 +27,7 @@ class PageSchema extends Schema
      */
     public static string $model = Page::class;
 
-        protected int $maxDepth = 3;
-
+    protected int $maxDepth = 3;
 
     /**
      * Get the resource fields.
@@ -57,17 +57,19 @@ class PageSchema extends Schema
     {
         return [
             WhereIdIn::make($this),
+            Where::make('slug'),
         ];
     }
 
-    /**
-     * Get the resource paginator.
-     *
-     * @return Paginator|null
-     */
-    public function pagination(): ?Paginator
+     public function indexQuery(?Request $request, Builder $query): Builder
     {
-        return PagePagination::make();
+        $user = $request->user();
+
+        if ($user?->can('page.index')) {
+            return $query;
+        }
+
+        return $query->whereNotNull('published_at');
     }
 
 }
