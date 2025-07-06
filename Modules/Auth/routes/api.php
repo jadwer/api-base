@@ -9,4 +9,7 @@ Route::prefix('auth')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
     });
+
+    Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
 });
+

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Modules\Auth\Http\Requests\LoginRequest;
 use Modules\User\Models\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -75,4 +76,31 @@ class AuthController extends Controller
             'message' => 'Sesión cerrada correctamente.',
         ]);
     }
+
+    public function register(Request $request): JsonResponse
+{
+    $data = $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+        'password' => ['required', 'string', 'min:8'],
+    ]);
+
+    $user = User::create([
+        'name' => $data['name'],
+        'email' => $data['email'],
+        'password' => $data['password'],
+        'status' => 'active', // o 'pending' si prefieres
+    ]);
+
+    $user->assignRole('customer');
+
+    $token = $user->createToken('auth_token')->plainTextToken;
+
+    return response()->json([
+        'access_token' => $token,
+        'token_type' => 'Bearer',
+        'user' => $user,
+    ]);
+}
+
 }
