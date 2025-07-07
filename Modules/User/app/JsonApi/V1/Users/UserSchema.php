@@ -19,12 +19,14 @@ class UserSchema extends Schema
             Str::make('name')->sortable(),
             Str::make('email')->sortable(),
             Str::make('status'),
+            Str::make('role'),
             Str::make('password')->hidden(),
             Str::make('password_confirmation')->hidden(),
             DateTime::make('email_verified_at')->readOnly(),
             DateTime::make('created_at')->readOnly()->sortable(),
             DateTime::make('updated_at')->readOnly(),
             DateTime::make('deleted_at')->readOnly(),
+
         ];
     }
 

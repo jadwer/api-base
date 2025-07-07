@@ -16,8 +16,9 @@ class PageAssignPermissionsSeeder extends Seeder
         $god = Role::where('name', 'god')->first();
 
         if ($god) {
+            $this->command->warn("Asignando permisos al rol {$god->name}, sin sobrescribir los existentes...");
             $permissions = Permission::where('name', 'like', 'page.%')->get();
-            $god->syncPermissions($permissions);
+            $god->givePermissionTo($permissions);
         }
 
         $admin = Role::where('name', 'admin')->first();

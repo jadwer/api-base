@@ -16,8 +16,9 @@ class AuditAssignPermissionsSeeder extends Seeder
         $god = Role::where('name', 'god')->first();
 
         if ($god) {
+            $this->command->warn("Asignando permisos al rol {$god->name}, sin sobrescribir los existentes...");
             $permissions = Permission::where('name', 'like', 'audit.%')->get();
-            $god->syncPermissions($permissions);
+            $god->givePermissionTo($permissions);
         }
 
         // Ejemplo adicional: también podrías asignar algunos permisos a admin
