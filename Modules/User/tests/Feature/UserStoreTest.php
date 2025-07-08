@@ -28,6 +28,7 @@ class UserStoreTest extends TestCase
                 'email' => 'nuevo@example.com',
                 'password' => 'password',
                 'status' => 'active',
+                'role' => 'customer'
             ],
         ];
 
@@ -53,6 +54,7 @@ class UserStoreTest extends TestCase
                 'email' => 'goduser@example.com',
                 'password' => 'password',
                 'status' => 'active',
+                'role' => 'customer'
             ],
         ];
 
@@ -79,6 +81,7 @@ class UserStoreTest extends TestCase
                     'email' => 'techuser@example.com',
                     'password' => 'password',
                     'status' => 'active',
+                    'role' => 'customer'
                 ],
             ])
             ->post('/api/v1/users');
@@ -97,6 +100,7 @@ class UserStoreTest extends TestCase
                     'email' => 'sin-auth@example.com',
                     'password' => 'password',
                     'status' => 'active',
+                    'role' => 'customer'
                 ],
             ])
             ->post('/api/v1/users');
@@ -139,6 +143,7 @@ class UserStoreTest extends TestCase
                     'email' => 'duplicado@example.com',
                     'password' => 'password',
                     'status' => 'active',
+                    'role' => 'customer'
                 ],
             ])
             ->post('/api/v1/users');
@@ -161,6 +166,7 @@ class UserStoreTest extends TestCase
                     'email' => 'x@example.com',
                     'password' => 'password',
                     'status' => 'active',
+                    'role' => 'customer'
                 ],
             ])
             ->post('/api/v1/users');

@@ -14,20 +14,7 @@ class AssignPermissionsSeeder extends Seeder
         $system = User::find(1); // usuario que causa los logs
 
         $permissionsMap = [
-            'god' => [
-                'users.index',
-                'users.view',
-                'users.create',
-                'users.update',
-                'users.delete',
-                'roles.view',
-                'roles.index',
-                'permissions.view',
-                'permissions.index',
-                'permissions.assign',
-                'profile.view',
-                'profile.update',
-            ],
+            'god' => Permission::all()->pluck('name')->toArray(),
             'admin' => [
                 'users.index',
                 'users.view',
@@ -68,7 +55,7 @@ class AssignPermissionsSeeder extends Seeder
 
             $permissions = Permission::whereIn('name', $permissionNames)->get();
 
-            $role->syncPermissions($permissions);
+            $role->givePermissionTo($permissions);
 
             $this->command->info("Asignando a rol: {$roleName}");
             $this->command->info("Permisos: " . implode(', ', $permissions->pluck('name')->toArray()));

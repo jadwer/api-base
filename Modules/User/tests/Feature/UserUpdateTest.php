@@ -13,8 +13,6 @@ class UserUpdateTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        // Seed del módulo User (incluye roles y usuarios como god@example.com)
         $this->artisan('module:seed', ['module' => 'User']);
     }
 
@@ -23,7 +21,7 @@ class UserUpdateTest extends TestCase
         $authUser = User::where('email', 'god@example.com')->firstOrFail();
         $this->actingAs($authUser, 'sanctum');
 
-        $targetUser = User::factory()->create();
+        $targetUser = User::factory()->create()->assignRole('customer');
 
         $payload = [
             'type' => 'users',
@@ -32,6 +30,7 @@ class UserUpdateTest extends TestCase
                 'name' => 'Nuevo Nombre',
                 'email' => 'nuevo@example.com',
                 'status' => 'active',
+                'role' => 'customer',
             ]
         ];
 
@@ -47,6 +46,11 @@ class UserUpdateTest extends TestCase
             'email' => 'nuevo@example.com',
             'status' => 'active',
         ]);
+
+        $this->assertTrue(
+            $targetUser->fresh()->hasRole('customer'),
+            'El usuario no tiene el rol esperado.'
+        );
     }
 
     public function test_unauthenticated_user_cannot_update_user(): void
@@ -81,6 +85,7 @@ class UserUpdateTest extends TestCase
             'attributes' => [
                 'name' => null,
                 'email' => null,
+                'role' => null,
             ]
         ];
 
@@ -92,6 +97,7 @@ class UserUpdateTest extends TestCase
         $this->assertJsonApiValidationErrors([
             '/data/attributes/name',
             '/data/attributes/email',
+            '/data/attributes/role',
         ], $response);
     }
 
@@ -101,7 +107,7 @@ class UserUpdateTest extends TestCase
         $this->actingAs($authUser, 'sanctum');
 
         $existingUser = User::factory()->create(['email' => 'existente@example.com']);
-        $targetUser = User::factory()->create();
+        $targetUser = User::factory()->create()->assignRole('customer');
 
         $payload = [
             'type' => 'users',
@@ -109,6 +115,8 @@ class UserUpdateTest extends TestCase
             'attributes' => [
                 'name' => 'Nombre actualizado',
                 'email' => $existingUser->email,
+                'status' => 'active',
+                'role' => 'customer',
             ]
         ];
 
@@ -154,7 +162,9 @@ class UserUpdateTest extends TestCase
             'id' => (string) $targetUser->id,
             'attributes' => [
                 'name' => 'Nombre',
-                'role' => 'admin', // campo no permitido
+                'status' => 'active',
+                'role' => 'customer',
+                'foo' => 'bar', // campo no permitido
             ]
         ];
 
@@ -165,7 +175,7 @@ class UserUpdateTest extends TestCase
         $response->assertStatus(400);
         $response->assertJsonFragment([
             'title' => 'Non-Compliant JSON:API Document',
-            'detail' => 'The field role is not a supported attribute.',
+            'detail' => 'The field foo is not a supported attribute.',
         ]);
     }
 }
