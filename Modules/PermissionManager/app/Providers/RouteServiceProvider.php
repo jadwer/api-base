@@ -4,6 +4,7 @@ namespace Modules\PermissionManager\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use LaravelJsonApi\Laravel\Facades\JsonApiRoute;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -26,6 +27,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->mapApiRoutes();
         $this->mapWebRoutes();
+        $this->mapJsonApiRoutes();
     }
 
     /**
@@ -46,5 +48,12 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapApiRoutes(): void
     {
         Route::middleware('api')->prefix('api')->name('api.')->group(module_path($this->name, '/Routes/api.php'));
+    }
+
+    protected function mapJsonApiRoutes(): void
+    {
+        Route::prefix('api')
+            ->middleware('api')
+            ->group(module_path($this->name, '/Routes/jsonapi.php'));
     }
 }
