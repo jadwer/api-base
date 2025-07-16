@@ -34,6 +34,7 @@ class PermissionSeeder extends Seeder
             'roles.store',
             'roles.update',
             'roles.delete',
+            'roles.destroy',
             // Permissions
             'permissions.view',
             'permissions.index',
@@ -41,6 +42,7 @@ class PermissionSeeder extends Seeder
             'permissions.store',
             'permissions.update',
             'permissions.delete',
+            'permissions.destroy',
             'permissions.assign',
             'permissions.revoke',
             // Users

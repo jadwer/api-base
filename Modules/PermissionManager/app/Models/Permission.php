@@ -3,8 +3,8 @@
 namespace Modules\PermissionManager\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\PermissionManager\Database\Factories\PermissionFactory;
 use Spatie\Permission\Models\Permission as SpatiePermission;
-// use Modules\PermissionManager\Database\Factories\PermissionFactory;
 
 class Permission extends SpatiePermission
 {
@@ -15,8 +15,8 @@ class Permission extends SpatiePermission
      */
     protected $fillable = ["name","guard_name"];
 
-    // protected static function newFactory(): PermissionFactory
-    // {
-    //     // return PermissionFactory::new();
-    // }
+    protected static function newFactory(): PermissionFactory
+    {
+        return PermissionFactory::new();
+    }
 }
