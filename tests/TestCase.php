@@ -14,9 +14,12 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->artisan('module:seed', ['module' => 'User']);
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+
+        $this->artisan('module:seed', ['module' => 'PermissionManager']);
         $this->artisan('module:seed', ['module' => 'Audit']);
         $this->artisan('module:seed', ['module' => 'PageBuilder']);
+        $this->artisan('module:seed', ['module' => 'User']);
     }
 
 

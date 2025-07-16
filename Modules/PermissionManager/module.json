@@ -1,0 +1,11 @@
+{
+    "name": "PermissionManager",
+    "alias": "permissionmanager",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\PermissionManager\\Providers\\PermissionManagerServiceProvider"
+    ],
+    "files": []
+}

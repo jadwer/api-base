@@ -3,6 +3,7 @@
 namespace Modules\PageBuilder\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
 
 class PageBuilderDatabaseSeeder extends Seeder
 {
@@ -16,5 +17,6 @@ class PageBuilderDatabaseSeeder extends Seeder
             PageAssignPermissionsSeeder::class,
             PageSeeder::class,
         ]);
+        Log::info('PageBuilderDatabaseSeeder executed successfully.');
     }
 }

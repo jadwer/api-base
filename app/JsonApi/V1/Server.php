@@ -8,6 +8,8 @@ use Modules\Audit\JsonApi\V1\Audits\AuditAuthorizer;
 use Modules\Audit\JsonApi\V1\Audits\AuditSchema;
 use Modules\User\JsonApi\V1\Users\UserSchema;
 use Modules\PageBuilder\JsonApi\V1\Pages\PageSchema;
+use Modules\PermissionManager\JsonApi\V1\Permissions\PermissionSchema;
+use Modules\PermissionManager\JsonApi\V1\Roles\RoleSchema;
 
 class Server extends BaseServer
 {
@@ -41,6 +43,8 @@ class Server extends BaseServer
             UserSchema::class,
             AuditSchema::class,
             PageSchema::class,
+            RoleSchema::class,
+            PermissionSchema::class,
 
             // Aquí puedes ir agregando más schemas por módulo:
             // \Modules\Auth\JsonApi\V1\SomethingSchema::class,

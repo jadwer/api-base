@@ -8,12 +8,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserStoreTest extends TestCase
 {
-    use RefreshDatabase;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->artisan('module:seed', ['module' => 'User']);
     }
 
     public function test_admin_can_create_user(): void

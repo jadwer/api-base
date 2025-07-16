@@ -8,4 +8,5 @@ return [
     Modules\User\Providers\UserServiceProvider::class,
     Modules\Audit\Providers\AuditServiceProvider::class,
     Modules\PageBuilder\Providers\PageBuilderServiceProvider::class,
+    Modules\PermissionManager\Providers\PermissionManagerServiceProvider::class,
 ];

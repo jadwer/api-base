@@ -25,7 +25,6 @@ class AuditServiceProvider extends ServiceProvider
         $this->registerCommandSchedules();
         $this->registerTranslations();
         $this->registerConfig();
-        $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'Database/migrations'));
     }
 

@@ -8,13 +8,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserDestroyTest extends TestCase
 {
-    use RefreshDatabase;
 
     protected function setUp(): void
     {
         parent::setUp();
-        // Ejecuta los seeders del módulo User (incluye roles y users base)
-        $this->artisan('module:seed', ['module' => 'User']);
     }
 
     public function test_admin_can_delete_regular_user(): void

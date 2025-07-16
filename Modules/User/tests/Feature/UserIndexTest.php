@@ -8,12 +8,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserIndexTest extends TestCase
 {
-    use RefreshDatabase;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->artisan('module:seed', ['module' => 'User']);
     }
 
     public function test_admin_can_list_users(): void

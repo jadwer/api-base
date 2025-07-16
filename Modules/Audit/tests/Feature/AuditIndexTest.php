@@ -8,9 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuditIndexTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected User $admin;
+     protected User $admin;
 
     protected function setUp(): void
     {

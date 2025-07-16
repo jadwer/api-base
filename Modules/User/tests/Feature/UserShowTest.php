@@ -8,12 +8,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserShowTest extends TestCase
 {
-    use RefreshDatabase;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->artisan('module:seed', ['module' => 'User']);
     }
 
     public function test_authenticated_user_can_view_another_user(): void

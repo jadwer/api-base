@@ -3,6 +3,7 @@
 namespace Modules\Audit\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
 
 class AuditDatabaseSeeder extends Seeder
 {
@@ -11,9 +12,10 @@ class AuditDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-    $this->call([
-        AuditPermissionSeeder::class,
-        AuditAssignPermissionsSeeder::class,
-    ]);
+        $this->call([
+            AuditPermissionSeeder::class,
+            AuditAssignPermissionsSeeder::class,
+        ]);
+        Log::info('AuditDatabaseSeeder executed successfully.');
     }
 }

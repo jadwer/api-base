@@ -1,15 +1,29 @@
 <?php
 
-namespace Modules\User\Database\Seeders;
+namespace Modules\PermissionManager\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
+use Modules\PermissionManager\Models\Role;
 use Modules\User\Models\User;
 
 class RoleSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
+        // Crear usuario System (causer_id = 1) si no existe
+        $system = User::firstOrCreate(
+            ['id' => 1],
+            [
+                'name' => 'System',
+                'email' => 'system@audit.local',
+                'password' => 'system',
+                'status' => 'active',
+            ]
+        );
+
         $roles = [
             ['name' => 'god', 'description' => 'Superadmin del sistema'],
             ['name' => 'admin', 'description' => 'Administrador general'],
@@ -25,7 +39,7 @@ class RoleSeeder extends Seeder
             );
 
             activity()
-                ->causedBy(User::find(1))
+                ->causedBy($system)
                 ->event('seeding')
                 ->withProperties([
                     'attributes' => $created->only('id', 'name', 'description'),

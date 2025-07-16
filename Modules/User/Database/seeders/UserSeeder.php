@@ -21,6 +21,7 @@ class UserSeeder extends Seeder
                 'status' => 'active',
             ]
         );
+        $system->assignRole('god');
 
         $god = User::factory()->create([
             'name' => 'God Admin',

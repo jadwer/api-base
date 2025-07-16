@@ -13,15 +13,11 @@ use Modules\User\Database\Seeders\AssignPermissionsSeeder;
 
 class RolePermissionTest extends TestCase
 {
-    use RefreshDatabase;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->artisan('db:seed', ['--class' => RoleSeeder::class]);
-        $this->artisan('db:seed', ['--class' => PermissionSeeder::class]);
-        $this->artisan('db:seed', ['--class' => AssignPermissionsSeeder::class]);
     }
 
     public function test_roles_are_created(): void

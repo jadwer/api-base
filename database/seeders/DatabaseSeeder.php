@@ -15,15 +15,20 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $system = User::factory()->create([
+                'name' => 'System',
+                'email' => 'system@audit.local',
+                'password' => 'system',
+                'status' => 'active',
         ]);
 
+        activity()->causedBy($system)->log('System user created');
+
         $this->call([
-            \Modules\User\Database\Seeders\UserDatabaseSeeder::class,
+            \Modules\PermissionManager\Database\Seeders\PermissionManagerDatabaseSeeder::class,
             \Modules\Audit\Database\Seeders\AuditDatabaseSeeder::class,
             \Modules\PageBuilder\Database\Seeders\PageBuilderDatabaseSeeder::class,
+            \Modules\User\Database\Seeders\UserDatabaseSeeder::class,
         ]);
     }
 }
