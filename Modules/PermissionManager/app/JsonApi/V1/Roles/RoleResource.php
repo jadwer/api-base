@@ -28,17 +28,17 @@ class RoleResource extends JsonApiResource
             'updatedAt' => $this->resource->updated_at,
         ];
     }
-
+    
     /**
      * Get the resource's relationships.
-     *
-     * @param Request|null $request
-     * @return iterable
-     */
+    *
+    * @param Request|null $request
+    * @return iterable
+    */
     public function relationships($request): iterable
     {
         return [
-            // @TODO
+            'permissions' => $this->relation('permissions'),
         ];
-    }
+        }
 }

@@ -58,4 +58,5 @@ class PermissionSchema extends Schema
     {
         return PagePagination::make();
     }
+
 }

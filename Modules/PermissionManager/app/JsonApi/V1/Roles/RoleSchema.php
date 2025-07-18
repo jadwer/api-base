@@ -2,6 +2,8 @@
 
 namespace Modules\PermissionManager\JsonApi\V1\Roles;
 
+use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\ID;
@@ -9,6 +11,7 @@ use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
+use LaravelJsonApi\Eloquent\Fields\Relations\BelongsToMany;
 use Modules\PermissionManager\Models\Role;
 
 class RoleSchema extends Schema
@@ -32,8 +35,11 @@ class RoleSchema extends Schema
             ID::make(),
             Str::make('name')->sortable(),
             Str::make('description'),
-            Str::make('guard_name'),            DateTime::make('createdAt')->sortable()->readOnly(),
+            Str::make('guard_name'),
+            DateTime::make('createdAt')->sortable()->readOnly(),
             DateTime::make('updatedAt')->sortable()->readOnly(),
+            BelongsToMany::make('permissions')->type('permissions'),
+
         ];
     }
 
@@ -57,6 +63,11 @@ class RoleSchema extends Schema
     public function pagination(): ?Paginator
     {
         return PagePagination::make();
+    }
+
+    public function with(): array
+    {
+        return ['permissions'];
     }
 
 }

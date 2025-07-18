@@ -18,7 +18,7 @@ class F1RoleUpdateTest extends TestCase
             'id' => (string) $role->id,
             'attributes' => [
                 'name' => 'updated.name',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
         ];
 

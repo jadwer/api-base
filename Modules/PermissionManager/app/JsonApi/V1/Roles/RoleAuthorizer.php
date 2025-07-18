@@ -105,6 +105,10 @@ class RoleAuthorizer implements Authorizer
      */
     public function updateRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
+        if ($fieldName === 'permissions') {
+            return $request->user()?->can('permissions.assign') ?? false;
+        }
+
         return $request->user()?->can('roles.update') ?? false;
     }
 
@@ -118,6 +122,10 @@ class RoleAuthorizer implements Authorizer
      */
     public function attachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
+        if ($fieldName === 'permissions') {
+            return $request->user()?->can('permissions.assign') ?? false;
+        }
+
         return $request->user()?->can('roles.update') ?? false;
     }
 
@@ -131,7 +139,10 @@ class RoleAuthorizer implements Authorizer
      */
     public function detachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
+        if ($fieldName === 'permissions') {
+            return $request->user()?->can('permissions.assign') ?? false;
+        }
+
         return $request->user()?->can('roles.update') ?? false;
     }
-
 }

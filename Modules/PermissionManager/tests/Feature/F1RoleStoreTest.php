@@ -16,7 +16,7 @@ class F1RoleStoreTest extends TestCase
             'type' => 'roles',
             'attributes' => [
                 'name' => 'new.role',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
         ];
 
