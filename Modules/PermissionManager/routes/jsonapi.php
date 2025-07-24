@@ -7,6 +7,7 @@ use Modules\PermissionManager\Http\Controllers\Api\V1\PermissionController;
 
 JsonApiRoute::server('v1')
     ->prefix('v1')
+    ->middleware('auth:sanctum')
     ->resources(function (ResourceRegistrar $server) {
         $server->resource('roles', RoleController::class)->relationships(function ($relationships) {
             $relationships->hasMany('permissions')->readOnly(false);});
