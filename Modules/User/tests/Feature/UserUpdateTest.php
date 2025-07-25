@@ -4,6 +4,7 @@ namespace Modules\User\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\User\Models\User;
+use Modules\PermissionManager\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserUpdateTest extends TestCase
@@ -20,6 +21,9 @@ class UserUpdateTest extends TestCase
         $this->actingAs($authUser, 'sanctum');
 
         $targetUser = User::factory()->create()->assignRole('customer');
+        
+        // Obtener el role ID del rol 'admin'
+        $adminRole = \Modules\PermissionManager\Models\Role::where('name', 'admin')->first();
 
         $payload = [
             'type' => 'users',
@@ -28,7 +32,16 @@ class UserUpdateTest extends TestCase
                 'name' => 'Nuevo Nombre',
                 'email' => 'nuevo@example.com',
                 'status' => 'active',
-                'role' => 'customer',
+            ],
+            'relationships' => [
+                'roles' => [
+                    'data' => [
+                        [
+                            'type' => 'roles',
+                            'id' => (string) $adminRole->id
+                        ]
+                    ]
+                ]
             ]
         ];
 
@@ -46,9 +59,12 @@ class UserUpdateTest extends TestCase
         ]);
 
         $this->assertTrue(
-            $targetUser->fresh()->hasRole('customer'),
+            $targetUser->fresh()->hasRole('admin'),
             'El usuario no tiene el rol esperado.'
         );
+        
+        // Verificar que la respuesta incluye el rol actualizado
+        $response->assertJsonPath('data.attributes.role', 'admin');
     }
 
     public function test_unauthenticated_user_cannot_update_user(): void
@@ -83,7 +99,6 @@ class UserUpdateTest extends TestCase
             'attributes' => [
                 'name' => null,
                 'email' => null,
-                'role' => null,
             ]
         ];
 
@@ -95,7 +110,6 @@ class UserUpdateTest extends TestCase
         $this->assertJsonApiValidationErrors([
             '/data/attributes/name',
             '/data/attributes/email',
-            '/data/attributes/role',
         ], $response);
     }
 
@@ -114,7 +128,6 @@ class UserUpdateTest extends TestCase
                 'name' => 'Nombre actualizado',
                 'email' => $existingUser->email,
                 'status' => 'active',
-                'role' => 'customer',
             ]
         ];
 
@@ -161,7 +174,6 @@ class UserUpdateTest extends TestCase
             'attributes' => [
                 'name' => 'Nombre',
                 'status' => 'active',
-                'role' => 'customer',
                 'foo' => 'bar', // campo no permitido
             ]
         ];
@@ -175,5 +187,83 @@ class UserUpdateTest extends TestCase
             'title' => 'Non-Compliant JSON:API Document',
             'detail' => 'The field foo is not a supported attribute.',
         ]);
+    }
+
+    public function test_can_update_user_roles_relationship(): void
+    {
+        $authUser = User::where('email', 'god@example.com')->firstOrFail();
+        $this->actingAs($authUser, 'sanctum');
+
+        $targetUser = User::factory()->create()->assignRole('customer');
+        
+        // Obtener roles para el test
+        $godRole = \Modules\PermissionManager\Models\Role::where('name', 'god')->first();
+        $adminRole = \Modules\PermissionManager\Models\Role::where('name', 'admin')->first();
+
+        // Asignar múltiples roles
+        $payload = [
+            'type' => 'users',
+            'id' => (string) $targetUser->id,
+            'relationships' => [
+                'roles' => [
+                    'data' => [
+                        [
+                            'type' => 'roles',
+                            'id' => (string) $godRole->id
+                        ],
+                        [
+                            'type' => 'roles',
+                            'id' => (string) $adminRole->id
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $response = $this->jsonApi()
+            ->withData($payload)
+            ->patch("/api/v1/users/{$targetUser->id}");
+
+        $response->assertStatus(200);
+
+        $updatedUser = $targetUser->fresh();
+        $this->assertTrue($updatedUser->hasRole('god'));
+        $this->assertTrue($updatedUser->hasRole('admin'));
+        $this->assertFalse($updatedUser->hasRole('customer'));
+        
+        // Verificar que el primer rol aparece en el campo 'role'
+        $response->assertJsonPath('data.attributes.role', 'god');
+    }
+
+    public function test_can_remove_all_roles(): void
+    {
+        $authUser = User::where('email', 'god@example.com')->firstOrFail();
+        $this->actingAs($authUser, 'sanctum');
+
+        $targetUser = User::factory()->create()->assignRole('customer');
+
+        // Remover todos los roles enviando array vacío
+        $payload = [
+            'type' => 'users',
+            'id' => (string) $targetUser->id,
+            'relationships' => [
+                'roles' => [
+                    'data' => []
+                ]
+            ]
+        ];
+
+        $response = $this->jsonApi()
+            ->withData($payload)
+            ->patch("/api/v1/users/{$targetUser->id}");
+
+        $response->assertStatus(200);
+
+        $updatedUser = $targetUser->fresh();
+        $this->assertEquals(0, $updatedUser->roles()->count());
+        $this->assertNull($updatedUser->getRoleNames()->first());
+        
+        // Verificar que el campo 'role' es null cuando no hay roles
+        $response->assertJsonPath('data.attributes.role', null);
     }
 }

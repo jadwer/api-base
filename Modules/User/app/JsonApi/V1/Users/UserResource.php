@@ -22,6 +22,8 @@ class UserResource extends JsonApiResource
 
     public function relationships($request): iterable
     {
-        return [];
+        return [
+            'roles' => $this->relation('roles'),
+        ];
     }
 }

@@ -4,6 +4,7 @@ namespace Modules\User\JsonApi\V1\Users;
 
 use Illuminate\Validation\Rule;
 use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
+use LaravelJsonApi\Validation\Rule as JsonApiRule;
 use Spatie\Permission\Models\Role;
 use Modules\User\Models\User;
 
@@ -25,28 +26,14 @@ class UserRequest extends ResourceRequest
                 ? ['nullable', 'string', 'min:8']
                 : ['required', 'string', 'min:8'],
             'status' => ['required', Rule::in(['active', 'inactive', 'banned'])],
-            'role' => ['required', Rule::exists('roles', 'name')],
-
+            'roles' => JsonApiRule::toMany(),
         ];
     }
 
-
-    public function creating(User $user): void
+    public function withDefaults(): array
     {
-        $this->assignRoleToUser($user);
-    }
-
-    public function updating(User $user): void
-    {
-        $this->assignRoleToUser($user);
-    }
-
-    protected function assignRoleToUser(User $user): void
-    {
-        $role = $this->input('role');
-
-        if ($role && Role::where('name', $role)->exists()) {
-            $user->syncRoles([$role]);
-        }
+        return [
+            'status' => 'active',
+        ];
     }
 }

@@ -29,6 +29,7 @@ class UserServiceProvider extends ServiceProvider
         $this->registerTranslations();
         $this->registerConfig();
         $this->loadMigrationsFrom(module_path($this->name, 'Database/migrations'));
+        $this->registerObservers();
     }
 
     /**
@@ -141,6 +142,14 @@ class UserServiceProvider extends ServiceProvider
     public function provides(): array
     {
         return [];
+    }
+
+    /**
+     * Register model observers.
+     */
+    protected function registerObservers(): void
+    {
+        \Modules\User\Models\User::observe(\Modules\User\Observers\UserObserver::class);
     }
 
     private function getPublishableViewPaths(): array
