@@ -43,7 +43,9 @@ class UserSchema extends Schema
 
     public function includePaths(): array
     {
-        return [];
+        return [
+            'roles',
+        ];
     }
 
     public static function type(): string
