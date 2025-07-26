@@ -3,5 +3,6 @@
     "Auth": true,
     "Audit": true,
     "PageBuilder": true,
-    "PermissionManager": true
+    "PermissionManager": true,
+    "Product": true
 }

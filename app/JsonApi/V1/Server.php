@@ -10,6 +10,10 @@ use Modules\User\JsonApi\V1\Users\UserSchema;
 use Modules\PageBuilder\JsonApi\V1\Pages\PageSchema;
 use Modules\PermissionManager\JsonApi\V1\Permissions\PermissionSchema;
 use Modules\PermissionManager\JsonApi\V1\Roles\RoleSchema;
+use Modules\Product\JsonApi\V1\Products\ProductSchema;
+use Modules\Product\JsonApi\V1\Units\UnitSchema;
+use Modules\Product\JsonApi\V1\Categories\CategorySchema;
+use Modules\Product\JsonApi\V1\Brands\BrandSchema;
 
 class Server extends BaseServer
 {
@@ -46,9 +50,11 @@ class Server extends BaseServer
             RoleSchema::class,
             PermissionSchema::class,
 
-            // Aquí puedes ir agregando más schemas por módulo:
-            // \Modules\Auth\JsonApi\V1\SomethingSchema::class,
-            // \Modules\Product\JsonApi\V1\ProductSchema::class,
+            // Product Module
+            ProductSchema::class,
+            UnitSchema::class,
+            CategorySchema::class,
+            BrandSchema::class,
         ];
     }
 
@@ -56,6 +62,10 @@ class Server extends BaseServer
 {
     return [
         'audits' => AuditAuthorizer::class,
+        'products' => \Modules\Product\JsonApi\V1\Products\ProductAuthorizer::class,
+        'units' => \Modules\Product\JsonApi\V1\Units\UnitAuthorizer::class,
+        'categories' => \Modules\Product\JsonApi\V1\Categories\CategoryAuthorizer::class,
+        'brands' => \Modules\Product\JsonApi\V1\Brands\BrandAuthorizer::class,
     ];
 }
 }

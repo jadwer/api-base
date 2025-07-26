@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             \Modules\Audit\Database\Seeders\AuditDatabaseSeeder::class,
             \Modules\PageBuilder\Database\Seeders\PageBuilderDatabaseSeeder::class,
             \Modules\User\Database\Seeders\UserDatabaseSeeder::class,
+            \Modules\Product\Database\Seeders\ProductDatabaseSeeder::class,
         ]);
     }
 }
