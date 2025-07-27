@@ -13,11 +13,11 @@ class ProductBatchFactory extends Factory
 
     public function definition(): array
     {
-        $initialQuantity = $this->faker->numberBetween(50, 1000);
-        $consumedQuantity = $this->faker->numberBetween(0, $initialQuantity * 0.7);
-        $currentQuantity = $initialQuantity - $consumedQuantity;
-        $reservedQuantity = $this->faker->numberBetween(0, min(20, $currentQuantity));
-        $unitCost = $this->faker->randomFloat(4, 5, 200);
+        $initialQuantity = round($this->faker->randomFloat(4, 50, 1000), 4);
+        $consumedQuantity = round($this->faker->randomFloat(4, 0, $initialQuantity * 0.7), 4);
+        $currentQuantity = round($initialQuantity - $consumedQuantity, 4);
+        $reservedQuantity = round($this->faker->randomFloat(4, 0, min(20, $currentQuantity)), 4);
+        $unitCost = round($this->faker->randomFloat(4, 5, 200), 4);
         
         $manufacturingDate = $this->faker->dateTimeBetween('-2 years', '-1 month');
         $expirationDate = $this->faker->dateTimeBetween('now', '+3 years');
@@ -50,9 +50,9 @@ class ProductBatchFactory extends Factory
             ]),
             'certifications' => $this->faker->optional()->randomElement([
                 null,
-                ['ISO9001'],
-                ['ISO9001', 'HACCP'],
-                ['ISO9001', 'HACCP', 'Organic']
+                ['ISO9001' => true],
+                ['ISO9001' => true, 'HACCP' => true],
+                ['ISO9001' => true, 'HACCP' => true, 'Organic' => true]
             ]),
             'metadata' => $this->faker->optional()->randomElement([
                 null,

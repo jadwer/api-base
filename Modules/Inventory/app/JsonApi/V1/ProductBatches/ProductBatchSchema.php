@@ -8,7 +8,8 @@ use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
 use LaravelJsonApi\Eloquent\Fields\Str;
-use LaravelJsonApi\Eloquent\Fields\ArrayList;
+use LaravelJsonApi\Eloquent\Fields\ArrayHash;
+use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
@@ -69,9 +70,9 @@ class ProductBatchSchema extends Schema
             
             // Información de calidad
             Str::make('qualityNotes', 'quality_notes'),
-            ArrayList::make('testResults', 'test_results'),
-            ArrayList::make('certifications'),
-            ArrayList::make('metadata'),
+            ArrayHash::make('testResults', 'test_results'),
+            ArrayHash::make('certifications'),
+            ArrayHash::make('metadata'),
             
             // Fechas del sistema
             DateTime::make('createdAt')
@@ -83,14 +84,11 @@ class ProductBatchSchema extends Schema
             
             // Relaciones
             BelongsTo::make('product')
-                ->type('products')
-                ->readOnly(),
+                ->type('products'),
             BelongsTo::make('warehouse')
-                ->type('warehouses')
-                ->readOnly(),
-            BelongsTo::make('warehouseLocation', 'warehouse_location')
-                ->type('warehouse-locations')
-                ->readOnly(),
+                ->type('warehouses'),
+            BelongsTo::make('warehouseLocation')
+                ->type('warehouse-locations'),
         ];
     }
 
@@ -101,6 +99,24 @@ class ProductBatchSchema extends Schema
     {
         return [
             WhereIdIn::make($this),
+            Where::make('status'),
+            Where::make('batch_number'),
+            Where::make('lot_number'),
+            Where::make('product_id'),
+            Where::make('warehouse_id'),
+            Where::make('warehouse_location_id'),
+        ];
+    }
+
+    /**
+     * Get the resource include paths.
+     */
+    public function includePaths(): array
+    {
+        return [
+            'product',
+            'warehouse',
+            'warehouseLocation',
         ];
     }
 
@@ -110,5 +126,13 @@ class ProductBatchSchema extends Schema
     public function pagination(): ?Paginator
     {
         return PagePagination::make();
+    }
+
+    /**
+     * Get the JSON:API resource type.
+     */
+    public static function type(): string
+    {
+        return 'product-batches';
     }
 }

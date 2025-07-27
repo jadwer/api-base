@@ -3,7 +3,7 @@
 **Objetivo:** Migrar completamente el proyecto `lwm-crm-api` a la estructura modular `api-base` usando Laravel JSON:API 5.x con nwidart/laravel-modules.
 
 **Fecha de inicio:** Julio 2025  
-**Estado actual:** Módulo Product completado ✅
+**Estado actual:** Módulos Product ✅ e Inventory ✅ completados
 
 📖 **Para especificaciones técnicas detalladas:** Ver [MODULE_BLUEPRINT.md](./MODULE_BLUEPRINT.md)
 
@@ -20,9 +20,9 @@
 - Brand.php ✅
 
 📊 INVENTORY & WAREHOUSES:
-- Warehouse.php 
-- WarehouseLocation.php
-- Stock.php
+- Warehouse.php ✅
+- WarehouseLocation.php ✅
+- Stock.php ✅
 - ProductBatch.php
 
 🛒 PURCHASES:
@@ -72,42 +72,54 @@ Arquitectura establecida:
 
 ---
 
-### **✅ 2. INVENTORY MODULE - COMPLETADO**
+### **🔄 2. INVENTORY MODULE - EN PROGRESO**
 ```
-Status: ✅ 100% COMPLETADO (Julio 2025)
+Status: 🔄 75% COMPLETADO (Stock implementado - Julio 27, 2025)
 
 Entidades migradas:
 ✅ Warehouses - Bodegas/Almacenes físicos (5 rutas activas)
 ✅ WarehouseLocations - Ubicaciones dentro de bodegas (15+ campos, 5 rutas)
-✅ Stock - Existencias por producto/bodega/ubicación (20+ campos, 5 rutas)
-✅ ProductBatches - Lotes con fechas de vencimiento (25+ campos, 5 rutas)
+✅ Stock - Existencias por producto/bodega/ubicación (20+ campos, 5 rutas) - RECIÉN COMPLETADO
+❌ ProductBatches - Lotes con fechas de vencimiento (25+ campos, 5 rutas) - PENDIENTE
 
 Funcionalidades implementadas:
 ✅ Control de existencias en tiempo real
-✅ Gestión de lotes y vencimientos  
-✅ Ubicaciones físicas en bodegas
+✅ Gestión de ubicaciones físicas en bodegas  
 ✅ Campos computados (available_quantity, total_value)
 ✅ Stock tracking con cantidades reservadas
+✅ Validaciones de integridad (constraint único product+warehouse+location)
+✅ Validaciones de eliminación (WarehouseLocation con stock activo)
 ✅ Integración completa con JSON:API 5.x
+
+Últimas implementaciones (Stock - Julio 27):
+✅ CRUD completo con 34/34 tests pasando
+✅ Validaciones únicas funcionando correctamente (422 responses)
+✅ Sistema de permisos consistente (nomenclatura plural)
+✅ Integridad de datos con WarehouseLocation
+✅ Factory con manejo correcto de decimales
+✅ Esquema JSON:API con tipos de campo correctos
 
 Arquitectura establecida:
 ✅ Schemas con mapping camelCase ↔ snake_case
 ✅ Authorizers con interfaz correcta (LaravelJsonApi\Contracts\Auth\Authorizer)
-✅ Requests con validaciones comprehensivas
+✅ Requests con validaciones comprehensivas y constraint únicos
 ✅ Resources con relaciones completas
-✅ 20 rutas activas confirmadas (5 por entidad)
+✅ 15 rutas activas confirmadas (5 por entidad completada)
 ✅ Modelos alineados con migraciones
-✅ Permisos granulares (20 permisos inventory)
+✅ Permisos granulares (15 permisos inventory implementados)
 
-Total rutas implementadas: 40 (Product: 20 + Inventory: 20)
+Total rutas implementadas: 35 (Product: 20 + Inventory: 15) 
+FALTA: ProductBatch (5 rutas más) para completar módulo
+
+Commit actual: feat(inventory): Implement complete Stock CRUD with validations and fix WarehouseLocation deletion
+```
 ```
 
 ---
 
 ### **🛒 3. PURCHASE MODULE - SIGUIENTE PRIORIDAD**
-### **🛒 3. PURCHASE MODULE - SIGUIENTE PRIORIDAD**
 ```
-Status: ❌ PENDIENTE (Próximo a implementar)
+Status: ❌ PENDIENTE (Próximo después de completar ProductBatch)
 
 Entidades a migrar:
 🏪 Suppliers - Proveedores con datos fiscales
@@ -126,7 +138,7 @@ Funcionalidades:
 - Control de precios y costos de compra
 - Estados de órdenes (pendiente, parcial, completa)
 
-Dependencias: ✅ INVENTORY completado
+Dependencias: 🔄 INVENTORY 75% completado (falta ProductBatch)
 Estimación: 2-3 días de desarrollo + tests
 ```
 
@@ -162,7 +174,7 @@ Estimación: 3-4 días de desarrollo + tests
 
 ## ⚡ **PLAN DE TRABAJO DETALLADO**
 
-### **✅ FASE 1: INVENTORY MODULE - COMPLETADO**
+### **🔄 FASE 1: INVENTORY MODULE - EN PROGRESO (75% COMPLETADO)**
 
 #### **✅ Día 1: Estructura base - COMPLETADO**
 - ✅ Creado módulo Inventory  
@@ -178,21 +190,29 @@ Estimación: 3-4 días de desarrollo + tests
 - ✅ Permisos creados en InventoryPermissionSeeder
 - ✅ Modelo-migración alignment completado
 
-#### **✅ Día 3: JSON:API Implementation - COMPLETADO**
-- ✅ Implementados 4 Schemas (Warehouse, WarehouseLocation, Stock, ProductBatch)
-- ✅ Implementados 4 Authorizers corregidos según MODULE_BLUEPRINT
-- ✅ Implementados 4 Requests con validaciones comprehensivas
-- ✅ Implementados 4 Resources con relaciones completas
-- ✅ Server.php actualizado con todas las entidades
+#### **✅ Día 3: JSON:API Implementation - COMPLETADO (3 de 4 entidades)**
+- ✅ Implementados 3 Schemas (Warehouse, WarehouseLocation, Stock)
+- ✅ Implementados 3 Authorizers corregidos según MODULE_BLUEPRINT
+- ✅ Implementados 3 Requests con validaciones comprehensivas
+- ✅ Implementados 3 Resources con relaciones completas
+- ✅ Server.php actualizado con entidades completadas
 
-#### **✅ Día 4: Verificación y refinamiento - COMPLETADO**
-- ✅ 20 rutas activas confirmadas (5 por entidad)
-- ✅ Authorizers corregidos (interfaz correcta)
-- ✅ Namespaces corregidos
-- ✅ MODULE_BLUEPRINT_v2.md actualizado con advertencias
-- ✅ MIGRATION_ROADMAP actualizado
+#### **✅ Día 4: Stock Implementation - COMPLETADO (Julio 27, 2025)**
+- ✅ Stock CRUD completado con 34/34 tests pasando
+- ✅ Validaciones únicas implementadas con responses 422
+- ✅ Sistema de permisos corregido (nomenclatura plural)
+- ✅ Factory rebuildeado para manejo de decimales
+- ✅ Integridad de datos con WarehouseLocation establecida
+- ✅ Commit: feat(inventory): Implement complete Stock CRUD with validations
 
-**🏆 RESULTADO: INVENTORY MODULE 100% COMPLETADO**
+#### **❌ Día 5: ProductBatch Implementation - PENDIENTE**
+- ❌ ProductBatch CRUD (falta implementar)
+- ❌ Validaciones de fechas de vencimiento
+- ❌ Relaciones con Stock y Product
+- ❌ Tests comprehensivos para ProductBatch
+- ❌ Finalización del módulo Inventory
+
+**� PRÓXIMO OBJETIVO: Completar ProductBatch para finalizar INVENTORY MODULE**
 
 ---
 
@@ -294,4 +314,4 @@ php artisan route:list --path=api/v1
 
 ---
 
-**Próximo paso:** Implementar INVENTORY MODULE siguiendo el patrón establecido ✅
+**Próximo paso:** Completar ProductBatch para finalizar INVENTORY MODULE, luego implementar PURCHASE MODULE ⏳

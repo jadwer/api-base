@@ -2,6 +2,7 @@
 
 namespace Modules\Inventory\JsonApi\V1\ProductBatches;
 
+use Illuminate\Validation\Rule;
 use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
 use LaravelJsonApi\Validation\Rule as JsonApiRule;
 
@@ -14,14 +15,21 @@ class ProductBatchRequest extends ResourceRequest
      */
     public function rules(): array
     {
+        $productBatch = $this->model();
+
         return [
-            'batchNumber' => ['required', 'string', 'max:255'],
+            'batchNumber' => [
+                'required', 
+                'string', 
+                'max:255',
+                Rule::unique('product_batches', 'batch_number')->ignore($productBatch),
+            ],
             'lotNumber' => ['sometimes', 'nullable', 'string', 'max:255'],
             'manufacturingDate' => ['sometimes', 'nullable', 'date'],
-            'expirationDate' => ['sometimes', 'nullable', 'date', 'after_or_equal:manufacturing_date'],
-            'bestBeforeDate' => ['sometimes', 'nullable', 'date', 'after_or_equal:manufacturing_date'],
+            'expirationDate' => ['sometimes', 'nullable', 'date', 'after_or_equal:manufacturingDate'],
+            'bestBeforeDate' => ['sometimes', 'nullable', 'date', 'after_or_equal:manufacturingDate'],
             'initialQuantity' => ['required', 'numeric', 'min:0'],
-            'currentQuantity' => ['required', 'numeric', 'min:0'],
+            'currentQuantity' => ['required', 'numeric', 'min:0', 'lte:initialQuantity'],
             'reservedQuantity' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'unitCost' => ['required', 'numeric', 'min:0'],
             'status' => ['required', 'string', 'in:active,expired,quarantine,recalled,consumed'],
@@ -34,6 +42,15 @@ class ProductBatchRequest extends ResourceRequest
             'product' => JsonApiRule::toOne(),
             'warehouse' => JsonApiRule::toOne(),
             'warehouseLocation' => ['sometimes', JsonApiRule::toOne()],
+        ];
+    }
+
+    public function withDefaults(): array
+    {
+        return [
+            'status' => 'active',
+            'reservedQuantity' => 0,
+            'unitCost' => 0,
         ];
     }
 }

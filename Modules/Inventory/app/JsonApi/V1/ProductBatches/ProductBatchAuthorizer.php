@@ -13,7 +13,7 @@ class ProductBatchAuthorizer implements Authorizer
      */
     public function index(Request $request, string $modelClass): bool|Response
     {
-        return $request->user()?->can('product-batch.index') ?? false;
+        return $request->user()?->can('product-batches.index') ?? false;
     }
 
     /**
@@ -21,7 +21,7 @@ class ProductBatchAuthorizer implements Authorizer
      */
     public function store(Request $request, string $modelClass): bool|Response
     {
-        return $request->user()?->can('product-batch.store') ?? false;
+        return $request->user()?->can('product-batches.store') ?? false;
     }
 
     /**
@@ -29,7 +29,7 @@ class ProductBatchAuthorizer implements Authorizer
      */
     public function show(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('product-batch.show') ?? false;
+        return $request->user()?->can('product-batches.view') ?? false;
     }
 
     /**
@@ -37,7 +37,7 @@ class ProductBatchAuthorizer implements Authorizer
      */
     public function update(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('product-batch.update') ?? false;
+        return $request->user()?->can('product-batches.update') ?? false;
     }
 
     /**
@@ -45,7 +45,7 @@ class ProductBatchAuthorizer implements Authorizer
      */
     public function destroy(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('product-batch.destroy') ?? false;
+        return $request->user()?->can('product-batches.destroy') ?? false;
     }
 
     /**
