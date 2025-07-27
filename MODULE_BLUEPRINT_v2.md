@@ -691,18 +691,62 @@ public function store_validates_required_fields()
     $invalidData = [
         'data' => [
             'type' => '{entities}',
-            'attributes' => [
-                'name' => '', // Campo requerido vacío
+            'attributes' => (object) [ // ⚠️ IMPORTANTE: usar (object) para array vacío
+                // Campos requeridos faltantes
             ]
         ]
     ];
 
     $response = $this->actingAs($admin, 'sanctum')
-        ->postJson('/api/v1/{entities}', $invalidData);
+        ->jsonApi()
+        ->expects('{entities}')
+        ->withData($invalidData['data'])
+        ->post('/api/v1/{entities}');
 
     $response->assertStatus(422);
-    $response->assertJsonFragment([
-        'source' => ['pointer' => '/data/attributes/name']
+    $this->assertJsonApiValidationErrors([
+        '/data/attributes/name',
+        '/data/attributes/requiredField'
+    ], $response);
+}
+```
+
+**Para tests con campos JSON (ArrayHash):**
+```php
+/** @test */
+public function admin_can_create_entity_with_json_fields()
+{
+    $admin = $this->createUserWithPermissions(['{entities}.store']);
+    
+    $data = [
+        'data' => [
+            'type' => '{entities}',
+            'attributes' => [
+                'name' => 'Test Entity',
+                'jsonField' => [ // ⚠️ IMPORTANTE: array asociativo para ArrayHash
+                    'key1' => 'value1',
+                    'key2' => true,
+                    'key3' => 123
+                ],
+                'numericField' => 100.0 // ⚠️ IMPORTANTE: usar float, no strings "100.0000"
+            ]
+        ]
+    ];
+
+    $response = $this->actingAs($admin, 'sanctum')
+        ->jsonApi()
+        ->expects('{entities}')
+        ->withData($data['data'])
+        ->post('/api/v1/{entities}');
+
+    $response->assertStatus(201);
+    $response->assertJsonStructure([
+        'data' => [
+            'attributes' => [
+                'jsonField',
+                'numericField'
+            ]
+        ]
     ]);
 }
 ```
@@ -811,6 +855,36 @@ php artisan test Modules/{ModuleName}/Tests/Feature/
 - ✅ `'product-batches.store'` (plural + kebab-case)
 
 **Regla: Los permisos deben usar el nombre PLURAL del tipo de resource JSON:API**
+
+### **7. Campos JSON y tipos de datos (NUEVOS APRENDIZAJES - ProductBatch):**
+- ❌ `'certifications' => ['ISO9001', 'HACCP']` (array indexado)
+- ✅ `'certifications' => ['ISO9001' => true, 'HACCP' => true]` (array asociativo)
+
+**Para campos JSON en Schema:**
+- ❌ `ArrayList::make('certifications')` (obsoleto)
+- ✅ `ArrayHash::make('certifications')` (requiere arrays asociativos)
+
+**Para campos decimales en Model:**
+- ❌ `'initial_quantity' => 'decimal:4'` (puede causar string en JSON:API)
+- ✅ `'initial_quantity' => 'float'` (garantiza numeric en JSON:API)
+
+**En Factory para decimales:**
+- ❌ `'initial_quantity' => $this->faker->randomFloat(4, 10, 1000)`
+- ✅ `'initial_quantity' => round($this->faker->randomFloat(4, 10, 1000), 4)`
+
+### **8. User model integration (CRÍTICO para permisos):**
+- ❌ User model sin HasRoles trait
+- ✅ `use Spatie\Permission\Traits\HasRoles;` en User model
+
+**Agregar en User.php:**
+```php
+use Spatie\Permission\Traits\HasRoles;
+
+class User extends Authenticatable
+{
+    use HasRoles; // REQUERIDO para sistema de permisos
+}
+```
 
 ---
 
