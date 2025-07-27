@@ -29,12 +29,12 @@ class InventoryPermissionSeeder extends Seeder
             ['name' => 'warehouse-locations.update', 'guard_name' => 'api'],
             ['name' => 'warehouse-locations.destroy', 'guard_name' => 'api'],
 
-            // Stock permissions (ya está bien en plural)
-            ['name' => 'stock.index', 'guard_name' => 'api'],
-            ['name' => 'stock.view', 'guard_name' => 'api'],
-            ['name' => 'stock.store', 'guard_name' => 'api'],
-            ['name' => 'stock.update', 'guard_name' => 'api'],
-            ['name' => 'stock.destroy', 'guard_name' => 'api'],
+            // Stock permissions (PLURAL para coincidir con JSON:API type y Authorizer)
+            ['name' => 'stocks.index', 'guard_name' => 'api'],
+            ['name' => 'stocks.view', 'guard_name' => 'api'],
+            ['name' => 'stocks.store', 'guard_name' => 'api'],
+            ['name' => 'stocks.update', 'guard_name' => 'api'],
+            ['name' => 'stocks.destroy', 'guard_name' => 'api'],
 
             // Product Batch permissions (PLURAL para coincidir con JSON:API type)
             ['name' => 'product-batches.index', 'guard_name' => 'api'],

@@ -165,8 +165,6 @@ class WarehouseLocationDestroyTest extends TestCase
 
     public function test_delete_warehouse_location_with_active_stock_should_fail()
     {
-        $this->markTestSkipped('Skip until Stock model is implemented');
-        
         $admin = $this->createUserWithPermissions('admin', ['warehouse-locations.delete']);
         
         $warehouse = Warehouse::factory()->create();
@@ -174,8 +172,12 @@ class WarehouseLocationDestroyTest extends TestCase
             'warehouse_id' => $warehouse->id
         ]);
 
-        // Cuando se implemente Stock, crear stock activo para esta ubicación
-        // Stock::factory()->create(['warehouse_location_id' => $location->id]);
+        // Crear stock activo para esta ubicación
+        \Modules\Inventory\Models\Stock::factory()->create([
+            'warehouse_location_id' => $location->id,
+            'warehouse_id' => $warehouse->id,
+            'quantity' => 10.0000
+        ]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -187,6 +189,36 @@ class WarehouseLocationDestroyTest extends TestCase
         
         // Verificar que la ubicación NO fue eliminada
         $this->assertDatabaseHas('warehouse_locations', [
+            'id' => $location->id
+        ]);
+    }
+
+    public function test_can_delete_warehouse_location_with_zero_stock()
+    {
+        $admin = $this->createUserWithPermissions('admin', ['warehouse-locations.delete']);
+        
+        $warehouse = Warehouse::factory()->create();
+        $location = WarehouseLocation::factory()->create([
+            'warehouse_id' => $warehouse->id
+        ]);
+
+        // Crear stock con cantidad 0 (sin stock activo)
+        \Modules\Inventory\Models\Stock::factory()->create([
+            'warehouse_location_id' => $location->id,
+            'warehouse_id' => $warehouse->id,
+            'quantity' => 0.0000
+        ]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('warehouse-locations')
+            ->delete("/api/v1/warehouse-locations/{$location->id}");
+
+        // Debería permitir eliminar ubicaciones sin stock activo
+        $response->assertStatus(204);
+        
+        // Verificar que la ubicación fue eliminada
+        $this->assertDatabaseMissing('warehouse_locations', [
             'id' => $location->id
         ]);
     }

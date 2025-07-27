@@ -8,11 +8,13 @@ use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
 use LaravelJsonApi\Eloquent\Fields\Str;
-use LaravelJsonApi\Eloquent\Fields\ArrayList;
+use LaravelJsonApi\Eloquent\Fields\ArrayHash;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
+use LaravelJsonApi\Eloquent\Filters\Where;
+use LaravelJsonApi\Eloquent\Filters\WhereIn;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
-use Modules\Inventory\app\Models\Stock;
+use Modules\Inventory\Models\Stock;
 
 class StockSchema extends Schema
 {
@@ -61,8 +63,8 @@ class StockSchema extends Schema
             Str::make('lastMovementType', 'last_movement_type'),
             
             // Información adicional
-            ArrayList::make('batchInfo', 'batch_info'),
-            ArrayList::make('metadata'),
+            ArrayHash::make('batchInfo', 'batch_info'),
+            ArrayHash::make('metadata'),
             
             // Fechas del sistema
             DateTime::make('createdAt')
@@ -74,14 +76,11 @@ class StockSchema extends Schema
             
             // Relaciones
             BelongsTo::make('product')
-                ->type('products')
-                ->readOnly(),
+                ->type('products'),
             BelongsTo::make('warehouse')
-                ->type('warehouses')
-                ->readOnly(),
+                ->type('warehouses'),
             BelongsTo::make('location')
-                ->type('warehouse-locations')
-                ->readOnly(),
+                ->type('warehouse-locations'),
         ];
     }
 
@@ -92,6 +91,10 @@ class StockSchema extends Schema
     {
         return [
             WhereIdIn::make($this),
+            Where::make('status'),
+            Where::make('product_id'),
+            Where::make('warehouse_id'),
+            Where::make('warehouse_location_id'),
         ];
     }
 

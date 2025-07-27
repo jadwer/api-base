@@ -37,6 +37,11 @@ class Stock extends Model
     use HasFactory;
 
     /**
+     * The table associated with the model.
+     */
+    protected $table = 'stock';
+
+    /**
      * The attributes that aren't mass assignable.
      */
     protected $guarded = [];

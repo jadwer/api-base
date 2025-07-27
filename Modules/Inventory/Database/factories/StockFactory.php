@@ -13,36 +13,31 @@ class StockFactory extends Factory
 
     public function definition(): array
     {
-        $quantity = $this->faker->numberBetween(10, 1000);
-        $reservedQuantity = $this->faker->numberBetween(0, min(50, $quantity));
-        $unitCost = $this->faker->randomFloat(4, 1, 500);
+        $quantity = round(rand(100, 10000) / 10, 4); // Genera decimales como 150.2500
+        $reservedQuantity = round(rand(0, min(500, $quantity * 10)) / 10, 4);
+        $unitCost = round(rand(100, 50000) / 100, 4); // Genera como 125.4567
         
         return [
             'product_id' => \Modules\Product\Models\Product::factory(),
             'warehouse_id' => Warehouse::factory(),
-            'warehouse_location_id' => $this->faker->boolean(70) ? WarehouseLocation::factory() : null,
+            'warehouse_location_id' => rand(0, 1) ? WarehouseLocation::factory() : null,
             'quantity' => $quantity,
             'reserved_quantity' => $reservedQuantity,
-            'minimum_stock' => $this->faker->numberBetween(5, 20),
-            'maximum_stock' => $this->faker->optional()->numberBetween(500, 2000),
-            'reorder_point' => $this->faker->numberBetween(10, 50),
+            'minimum_stock' => round(rand(50, 200) / 10, 4),
+            'maximum_stock' => rand(0, 1) ? round(rand(5000, 20000) / 10, 4) : null,
+            'reorder_point' => round(rand(100, 500) / 10, 4),
             'unit_cost' => $unitCost,
-            'status' => $this->faker->randomElement(['active', 'inactive', 'blocked', 'depleted']),
-            'last_movement_date' => $this->faker->optional()->dateTimeBetween('-30 days', 'now'),
-            'last_movement_type' => $this->faker->optional()->randomElement(['in', 'out', 'adjustment', 'transfer']),
-            'batch_info' => $this->faker->optional()->randomElement([
-                null,
-                ['batch_number' => $this->faker->regexify('[A-Z]{3}[0-9]{6}')],
-                [
-                    'batch_number' => $this->faker->regexify('[A-Z]{3}[0-9]{6}'),
-                    'expiration_date' => $this->faker->dateTimeBetween('now', '+2 years')->format('Y-m-d')
-                ]
-            ]),
-            'metadata' => $this->faker->optional()->randomElement([
-                null,
-                ['supplier' => $this->faker->company],
-                ['supplier' => $this->faker->company, 'quality_grade' => 'A'],
-            ]),
+            'status' => ['active', 'inactive', 'quarantine', 'damaged'][array_rand(['active', 'inactive', 'quarantine', 'damaged'])],
+            'last_movement_date' => rand(0, 1) ? date('Y-m-d', strtotime('-' . rand(1, 30) . ' days')) : null,
+            'last_movement_type' => rand(0, 1) ? ['in', 'out', 'adjustment', 'transfer'][array_rand(['in', 'out', 'adjustment', 'transfer'])] : null,
+            'batch_info' => rand(0, 1) ? [
+                'batch_number' => 'BAT' . str_pad(rand(1, 999999), 6, '0', STR_PAD_LEFT),
+                'expiration_date' => date('Y-m-d', strtotime('+' . rand(30, 730) . ' days'))
+            ] : null,
+            'metadata' => rand(0, 1) ? [
+                'supplier' => 'Proveedor ' . rand(1, 10),
+                'quality_grade' => ['A', 'B', 'C'][array_rand(['A', 'B', 'C'])]
+            ] : null,
         ];
     }
 
@@ -52,9 +47,9 @@ class StockFactory extends Factory
     public function depleted(): static
     {
         return $this->state(fn (array $attributes) => [
-            'quantity' => 0,
-            'reserved_quantity' => 0,
-            'status' => 'depleted',
+            'quantity' => 0.0000,
+            'reserved_quantity' => 0.0000,
+            'status' => 'inactive',
             'last_movement_type' => 'out',
         ]);
     }
@@ -65,10 +60,10 @@ class StockFactory extends Factory
     public function belowMinimum(): static
     {
         return $this->state(function (array $attributes) {
-            $minStock = $this->faker->numberBetween(20, 50);
+            $minStock = round(rand(200, 500) / 10, 4);
             return [
                 'minimum_stock' => $minStock,
-                'quantity' => $this->faker->numberBetween(1, $minStock - 1),
+                'quantity' => round(rand(10, ($minStock * 10) - 10) / 10, 4),
                 'status' => 'active',
             ];
         });

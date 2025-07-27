@@ -13,7 +13,7 @@ class StockAuthorizer implements Authorizer
      */
     public function index(Request $request, string $modelClass): bool|Response
     {
-        return $request->user()?->can('stock.index') ?? false;
+        return $request->user()?->can('stocks.index') ?? false;
     }
 
     /**
@@ -21,7 +21,7 @@ class StockAuthorizer implements Authorizer
      */
     public function store(Request $request, string $modelClass): bool|Response
     {
-        return $request->user()?->can('stock.store') ?? false;
+        return $request->user()?->can('stocks.store') ?? false;
     }
 
     /**
@@ -29,7 +29,7 @@ class StockAuthorizer implements Authorizer
      */
     public function show(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('stock.show') ?? false;
+        return $request->user()?->can('stocks.show') ?? false;
     }
 
     /**
@@ -37,7 +37,7 @@ class StockAuthorizer implements Authorizer
      */
     public function update(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('stock.update') ?? false;
+        return $request->user()?->can('stocks.update') ?? false;
     }
 
     /**
@@ -45,7 +45,7 @@ class StockAuthorizer implements Authorizer
      */
     public function destroy(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('stock.destroy') ?? false;
+        return $request->user()?->can('stocks.destroy') ?? false;
     }
 
     /**
