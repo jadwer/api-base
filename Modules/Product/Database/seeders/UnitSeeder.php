@@ -13,14 +13,14 @@ class UnitSeeder extends Seeder
     public function run(): void
     {
         $units = [
-            ['type' => 'weight', 'code' => 'kg', 'name' => 'Kilogramo'],
-            ['type' => 'weight', 'code' => 'g', 'name' => 'Gramo'],
-            ['type' => 'volume', 'code' => 'l', 'name' => 'Litro'],
-            ['type' => 'volume', 'code' => 'ml', 'name' => 'Mililitro'],
-            ['type' => 'length', 'code' => 'm', 'name' => 'Metro'],
-            ['type' => 'length', 'code' => 'cm', 'name' => 'Centímetro'],
-            ['type' => 'unit', 'code' => 'pz', 'name' => 'Pieza'],
-            ['type' => 'unit', 'code' => 'box', 'name' => 'Caja'],
+            ['unit_type' => 'weight', 'code' => 'kg', 'name' => 'Kilogramo'],
+            ['unit_type' => 'weight', 'code' => 'g', 'name' => 'Gramo'],
+            ['unit_type' => 'volume', 'code' => 'l', 'name' => 'Litro'],
+            ['unit_type' => 'volume', 'code' => 'ml', 'name' => 'Mililitro'],
+            ['unit_type' => 'length', 'code' => 'm', 'name' => 'Metro'],
+            ['unit_type' => 'length', 'code' => 'cm', 'name' => 'Centímetro'],
+            ['unit_type' => 'unit', 'code' => 'pz', 'name' => 'Pieza'],
+            ['unit_type' => 'unit', 'code' => 'box', 'name' => 'Caja'],
         ];
 
         foreach ($units as $unit) {

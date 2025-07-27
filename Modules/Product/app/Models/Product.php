@@ -5,6 +5,7 @@ namespace Modules\Product\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
@@ -45,6 +46,22 @@ class Product extends Model
     public function brand(): BelongsTo
     {
         return $this->belongsTo(Brand::class);
+    }
+
+    /**
+     * Un producto puede tener registros de stock en diferentes bodegas.
+     */
+    public function stock(): HasMany
+    {
+        return $this->hasMany(\Modules\Inventory\Models\Stock::class);
+    }
+
+    /**
+     * Un producto puede tener múltiples lotes.
+     */
+    public function productBatches(): HasMany
+    {
+        return $this->hasMany(\Modules\Inventory\Models\ProductBatch::class);
     }
 
     /**

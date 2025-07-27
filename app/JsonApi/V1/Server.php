@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\Auth;
 use LaravelJsonApi\Core\Server\Server as BaseServer;
 use Modules\Audit\JsonApi\V1\Audits\AuditAuthorizer;
 use Modules\Audit\JsonApi\V1\Audits\AuditSchema;
+use Modules\Inventory\JsonApi\V1\Warehouses\WarehouseSchema;
+use Modules\Inventory\JsonApi\V1\WarehouseLocations\WarehouseLocationSchema;
+use Modules\Inventory\JsonApi\V1\Stocks\StockSchema;
+use Modules\Inventory\JsonApi\V1\ProductBatches\ProductBatchSchema;
 use Modules\User\JsonApi\V1\Users\UserSchema;
 use Modules\PageBuilder\JsonApi\V1\Pages\PageSchema;
 use Modules\PermissionManager\JsonApi\V1\Permissions\PermissionSchema;
@@ -55,6 +59,11 @@ class Server extends BaseServer
             UnitSchema::class,
             CategorySchema::class,
             BrandSchema::class,
+            // Inventory Module
+            WarehouseSchema::class,
+            WarehouseLocationSchema::class,
+            StockSchema::class,
+            ProductBatchSchema::class,
         ];
     }
 
@@ -66,6 +75,10 @@ class Server extends BaseServer
         'units' => \Modules\Product\JsonApi\V1\Units\UnitAuthorizer::class,
         'categories' => \Modules\Product\JsonApi\V1\Categories\CategoryAuthorizer::class,
         'brands' => \Modules\Product\JsonApi\V1\Brands\BrandAuthorizer::class,
+        'warehouses' => \Modules\Inventory\JsonApi\V1\Warehouses\WarehouseAuthorizer::class,
+        'warehouse-locations' => \Modules\Inventory\JsonApi\V1\WarehouseLocations\WarehouseLocationAuthorizer::class,
+        'stocks' => \Modules\Inventory\JsonApi\V1\Stocks\StockAuthorizer::class,
+        'product-batches' => \Modules\Inventory\JsonApi\V1\ProductBatches\ProductBatchAuthorizer::class,
     ];
 }
 }

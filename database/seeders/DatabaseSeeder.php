@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             \Modules\PageBuilder\Database\Seeders\PageBuilderDatabaseSeeder::class,
             \Modules\User\Database\Seeders\UserDatabaseSeeder::class,
             \Modules\Product\Database\Seeders\ProductDatabaseSeeder::class,
+            \Modules\Inventory\Database\Seeders\InventoryDatabaseSeeder::class,
         ]);
     }
 }

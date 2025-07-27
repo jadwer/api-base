@@ -55,6 +55,38 @@ class PermissionSeeder extends Seeder
             // Own profile
             'profile.view',
             'profile.update',
+            // Warehouses
+            'warehouses.view',
+            'warehouses.index',
+            'warehouses.create',
+            'warehouses.store',
+            'warehouses.update',
+            'warehouses.delete',
+            'warehouses.destroy',
+            // Warehouse Locations
+            'warehouse-locations.view',
+            'warehouse-locations.index',
+            'warehouse-locations.create',
+            'warehouse-locations.store',
+            'warehouse-locations.update',
+            'warehouse-locations.delete',
+            'warehouse-locations.destroy',
+            // Stock
+            'stock.view',
+            'stock.index',
+            'stock.create',
+            'stock.store',
+            'stock.update',
+            'stock.delete',
+            'stock.destroy',
+            // Product Batches
+            'product-batches.view',
+            'product-batches.index',
+            'product-batches.create',
+            'product-batches.store',
+            'product-batches.update',
+            'product-batches.delete',
+            'product-batches.destroy',
         ];
 
         foreach ($permissions as $perm) {

@@ -253,12 +253,27 @@ class {Entity}Schema extends Schema
 
 ### **4. Controllers - Laravel JSON:API 5.x**
 
+**Ubicación:** `Modules/{ModuleName}/app/Http/Controllers/Api/V1/{Entity}Controller.php`
+
+**Generación con comando oficial:**
+```bash
+# Generar los controladores usando el comando oficial de JSON:API
+php artisan jsonapi:controller WarehouseController
+php artisan jsonapi:controller WarehouseLocationController
+php artisan jsonapi:controller ProductBatchController
+php artisan jsonapi:controller StockController
+
+# Los archivos se generan en app/Http/Controllers/ y deben moverse a:
+# Modules/{ModuleName}/app/Http/Controllers/Api/V1/
+```
+
+**Estructura del Controller:**
 ```php
 <?php
 
 namespace Modules\{ModuleName}\Http\Controllers\Api\V1;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller;
 use LaravelJsonApi\Laravel\Http\Controllers\Actions;
 
 class {Entity}Controller extends Controller
@@ -278,6 +293,12 @@ class {Entity}Controller extends Controller
     use Actions\DetachRelationship;  // DELETE /api/v1/{entities}/{id}/relationships/child-entities
 }
 ```
+
+**Puntos importantes:**
+- ⚠️ **Namespace correcto:** `Modules\{ModuleName}\Http\Controllers\Api\V1` (SIN `/app/`)
+- 📁 **Ubicación física:** `Modules/{ModuleName}/app/Http/Controllers/Api/V1/` (CON `/app/`)
+- 🎯 **Herencia:** De `Illuminate\Routing\Controller` (no de `App\Http\Controllers\Controller`)
+- ⚡ **Actions:** Todos los traits de `LaravelJsonApi\Laravel\Http\Controllers\Actions`
 
 ### **5. Authorizers - Control de Acceso**
 
@@ -549,6 +570,8 @@ class {ModuleName}ServiceProvider extends ServiceProvider
 
 ### **9. Route Service Provider**
 
+**⚠️ CRÍTICO: Separación de rutas JSON:API vs API tradicionales**
+
 ```php
 <?php
 
@@ -561,6 +584,7 @@ class RouteServiceProvider extends ServiceProvider
 {
     /**
      * The module namespace to assume when generating URLs to actions.
+     * ⚠️ IMPORTANTE: Sin /app/ en el namespace
      */
     protected string $moduleNamespace = 'Modules\{ModuleName}\Http\Controllers';
 
@@ -574,42 +598,71 @@ class RouteServiceProvider extends ServiceProvider
 
     /**
      * Define the routes for the application.
+     * 🔥 NUEVO: Agregamos mapJsonApiRoutes() para separar rutas JSON:API
      */
     public function map(): void
     {
         $this->mapApiRoutes();
         $this->mapWebRoutes();
-        $this->mapJsonApiRoutes()
+        $this->mapJsonApiRoutes(); // ← NUEVO método para JSON:API
     }
 
     /**
      * Define the "web" routes for the application.
+     * 📁 Archivo: Routes/web.php (puede estar vacío)
      */
     protected function mapWebRoutes(): void
     {
         Route::middleware('web')
             ->namespace($this->moduleNamespace)
-            ->group(module_path('{ModuleName}', '/routes/web.php'));
+            ->group(module_path('{ModuleName}', '/Routes/web.php'));
     }
 
     /**
      * Define the "api" routes for the application.
+     * 📁 Archivo: Routes/api.php (debe estar VACÍO para JSON:API)
      */
     protected function mapApiRoutes(): void
     {
         Route::prefix('api')
             ->middleware('api')
             ->namespace($this->moduleNamespace)
-            ->group(module_path('{ModuleName}', '/routes/api.php'));
+            ->group(module_path('{ModuleName}', '/Routes/api.php'));
     }
 
+    /**
+     * 🚀 NUEVO: Define the "jsonapi" routes for the application.
+     * 📁 Archivo: Routes/jsonapi.php (contiene las rutas JSON:API)
+     * 
+     * Ventajas:
+     * - Separación clara entre API tradicional y JSON:API
+     * - Middleware específico para JSON:API
+     * - Organización mejorada del código
+     */
     protected function mapJsonApiRoutes(): void
     {
         Route::prefix('api')
             ->middleware('api')
-            ->group(module_path($this->name, '/Routes/jsonapi.php'));
-    }}
+            ->namespace($this->moduleNamespace)
+            ->group(module_path('{ModuleName}', '/Routes/jsonapi.php'));
+    }
+}
 ```
+
+**📋 Estructura de archivos de rutas:**
+
+```
+Routes/
+├── web.php      # Rutas web (generalmente vacío en módulos API)
+├── api.php      # API tradicional (DEBE ESTAR VACÍO para JSON:API)
+└── jsonapi.php  # Rutas JSON:API (contiene ResourceRegistrar)
+```
+
+**🎯 Puntos clave:**
+- ✅ **Tres tipos de rutas:** Web, API tradicional, y JSON:API
+- ✅ **Separación clara:** Cada tipo en su propio archivo
+- ✅ **Namespace correcto:** Sin `/app/` en el moduleNamespace
+- ✅ **Flexibilidad:** Puedes agregar middleware específico a JSON:API si necesitas
 
 ### **10. Seeders del Módulo**
 
@@ -1216,7 +1269,12 @@ php artisan module:make-test Feature/{Entity}IndexTest {ModuleName}
 php artisan module:make-test Feature/{Entity}StoreTest {ModuleName}
 
 # 8. Crear controllers
-php artisan module:make-controller Api/V1/{Entity}Controller {ModuleName}
+# ⚠️ IMPORTANTE: Los controllers se generan con jsonapi:controller
+php artisan jsonapi:controller {Entity}Controller
+
+# Luego mover desde app/Http/Controllers/ a:
+# Modules/{ModuleName}/app/Http/Controllers/Api/V1/{Entity}Controller.php
+# Y actualizar el namespace a: Modules\{ModuleName}\Http\Controllers\Api\V1
 
 # 9. Crear requests
 php artisan module:make-request {Entity}StoreRequest {ModuleName}

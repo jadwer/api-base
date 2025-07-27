@@ -4,5 +4,6 @@
     "Audit": true,
     "PageBuilder": true,
     "PermissionManager": true,
-    "Product": true
+    "Product": true,
+    "Inventory": true
 }
