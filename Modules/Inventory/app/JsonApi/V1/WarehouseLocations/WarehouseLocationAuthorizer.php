@@ -13,7 +13,7 @@ class WarehouseLocationAuthorizer implements Authorizer
      */
     public function index(Request $request, string $modelClass): bool|Response
     {
-        return $request->user()?->can('warehouse-location.index') ?? false;
+        return $request->user()?->can('warehouse-locations.index') ?? false;
     }
 
     /**
@@ -21,7 +21,7 @@ class WarehouseLocationAuthorizer implements Authorizer
      */
     public function store(Request $request, string $modelClass): bool|Response
     {
-        return $request->user()?->can('warehouse-location.store') ?? false;
+        return $request->user()?->can('warehouse-locations.store') ?? false;
     }
 
     /**
@@ -29,7 +29,7 @@ class WarehouseLocationAuthorizer implements Authorizer
      */
     public function show(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('warehouse-location.show') ?? false;
+        return $request->user()?->can('warehouse-locations.view') ?? false;
     }
 
     /**
@@ -37,7 +37,7 @@ class WarehouseLocationAuthorizer implements Authorizer
      */
     public function update(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('warehouse-location.update') ?? false;
+        return $request->user()?->can('warehouse-locations.update') ?? false;
     }
 
     /**
@@ -45,7 +45,7 @@ class WarehouseLocationAuthorizer implements Authorizer
      */
     public function destroy(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('warehouse-location.destroy') ?? false;
+        return $request->user()?->can('warehouse-locations.destroy') ?? false;
     }
 
     /**

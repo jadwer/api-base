@@ -9,6 +9,7 @@ use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Fields\Boolean;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
+use LaravelJsonApi\Eloquent\Fields\ArrayList;
 use LaravelJsonApi\Eloquent\Fields\Relations\HasMany;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
@@ -54,7 +55,7 @@ class WarehouseLocationSchema extends Schema
             Boolean::make('isPickable', 'is_pickable'),
             Boolean::make('isReceivable', 'is_receivable'),
             Number::make('priority')->sortable(),
-            Str::make('metadata'),
+            ArrayList::make('metadata')->readOnly(),
             
             // Timestamps
             DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
@@ -82,7 +83,6 @@ class WarehouseLocationSchema extends Schema
             Where::make('is_pickable'),
             Where::make('is_receivable'),
             WhereIn::make('location_type'),
-            WhereIn::make('warehouse_id'),
         ];
     }
 
