@@ -2,6 +2,15 @@
 
 Este es un proyecto base en Laravel 12 con una arquitectura totalmente desacoplada y modular, ideal para construir APIs robustas siguiendo el estándar [JSON:API](https://jsonapi.org/). Está optimizado para proyectos a gran escala como ERPs, CRMs o sistemas administrativos que requieran control granular por módulos.
 
+## 🎯 Estado del Proyecto
+
+**✅ 3 Módulos Completados:**
+- **Product Module**: 4 entidades, 45+ tests ✅
+- **Inventory Module**: 4 entidades, 78+ tests ✅  
+- **Purchase Module**: 3 entidades, 141+ tests ✅
+
+**Total: 11 entidades con 260+ tests funcionando**
+
 ## Autor
 
 **DCC Rodrigo Gabino Ramírez Moreno**  
