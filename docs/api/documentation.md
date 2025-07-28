@@ -1,6 +1,6 @@
 # API Documentation
 
-**Generado:** 2025-07-28T02:14:46.407120Z
+**Generado:** 2025-07-28T10:28:53.413047Z
 
 **Base URL:** `http://localhost/api/v1`
 
@@ -1720,6 +1720,351 @@
 ### 📦 Profile
 
 #### `PATCH` `api/v1/profile/password`
+
+---
+
+### 📦 Suppliers
+
+#### `GET` `api/v1/suppliers`
+
+**Campos disponibles:**
+
+- ✅ `quantity` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+- ✅ `quantity` (mixed) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/suppliers",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/suppliers`
+
+**Campos disponibles:**
+
+- ✅ `quantity` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+- ✅ `quantity` (mixed) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/suppliers",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "suppliers",
+            "attributes": [
+                "..."
+            ]
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/suppliers/{supplier}`
+
+**Campos disponibles:**
+
+- ✅ `quantity` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+- ✅ `quantity` (mixed) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/suppliers",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/suppliers/{supplier}`
+
+**Campos disponibles:**
+
+- ✅ `quantity` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+- ✅ `quantity` (mixed) 
+
+---
+
+#### `DELETE` `api/v1/suppliers/{supplier}`
+
+**Campos disponibles:**
+
+- ✅ `quantity` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+- ✅ `quantity` (mixed) 
+
+---
+
+### 📦 Purchase orders
+
+#### `GET` `api/v1/purchase-orders`
+
+**Campos disponibles:**
+
+- ✅ `quantity` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+- ✅ `quantity` (mixed) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/purchase_orders",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/purchase-orders`
+
+**Campos disponibles:**
+
+- ✅ `quantity` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+- ✅ `quantity` (mixed) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/purchase_orders",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "purchase_orders",
+            "attributes": [
+                "..."
+            ]
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/purchase-orders/{purchase_order}`
+
+**Campos disponibles:**
+
+- ✅ `quantity` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+- ✅ `quantity` (mixed) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/purchase_orders",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/purchase-orders/{purchase_order}`
+
+**Campos disponibles:**
+
+- ✅ `quantity` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+- ✅ `quantity` (mixed) 
+
+---
+
+#### `DELETE` `api/v1/purchase-orders/{purchase_order}`
+
+**Campos disponibles:**
+
+- ✅ `quantity` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+- ✅ `quantity` (mixed) 
+
+---
+
+### 📦 Purchase order items
+
+#### `GET` `api/v1/purchase-order-items`
+
+**Campos disponibles:**
+
+- ✅ `quantity` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+- ✅ `quantity` (mixed) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/purchase_order_items",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/purchase-order-items`
+
+**Campos disponibles:**
+
+- ✅ `quantity` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+- ✅ `quantity` (mixed) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/purchase_order_items",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "purchase_order_items",
+            "attributes": [
+                "..."
+            ]
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/purchase-order-items/{purchase_order_item}`
+
+**Campos disponibles:**
+
+- ✅ `quantity` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+- ✅ `quantity` (mixed) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/purchase_order_items",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/purchase-order-items/{purchase_order_item}`
+
+**Campos disponibles:**
+
+- ✅ `quantity` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+- ✅ `quantity` (mixed) 
+
+---
+
+#### `DELETE` `api/v1/purchase-order-items/{purchase_order_item}`
+
+**Campos disponibles:**
+
+- ✅ `quantity` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+- ✅ `quantity` (mixed) 
 
 ---
 

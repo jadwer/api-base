@@ -10,6 +10,9 @@ use Modules\Inventory\JsonApi\V1\Warehouses\WarehouseSchema;
 use Modules\Inventory\JsonApi\V1\WarehouseLocations\WarehouseLocationSchema;
 use Modules\Inventory\JsonApi\V1\Stocks\StockSchema;
 use Modules\Inventory\JsonApi\V1\ProductBatches\ProductBatchSchema;
+use Modules\Purchase\JsonApi\V1\Suppliers\SupplierSchema;
+use Modules\Purchase\JsonApi\V1\PurchaseOrders\PurchaseOrderSchema;
+use Modules\Purchase\JsonApi\V1\PurchaseOrderItems\PurchaseOrderItemSchema;
 use Modules\User\JsonApi\V1\Users\UserSchema;
 use Modules\PageBuilder\JsonApi\V1\Pages\PageSchema;
 use Modules\PermissionManager\JsonApi\V1\Permissions\PermissionSchema;
@@ -59,26 +62,35 @@ class Server extends BaseServer
             UnitSchema::class,
             CategorySchema::class,
             BrandSchema::class,
+            
             // Inventory Module
             WarehouseSchema::class,
             WarehouseLocationSchema::class,
             StockSchema::class,
             ProductBatchSchema::class,
+            
+            // Purchase Module
+            SupplierSchema::class,
+            PurchaseOrderSchema::class,
+            PurchaseOrderItemSchema::class,
         ];
     }
 
     protected function authorizers(): array
-{
-    return [
-        'audits' => AuditAuthorizer::class,
-        'products' => \Modules\Product\JsonApi\V1\Products\ProductAuthorizer::class,
-        'units' => \Modules\Product\JsonApi\V1\Units\UnitAuthorizer::class,
-        'categories' => \Modules\Product\JsonApi\V1\Categories\CategoryAuthorizer::class,
-        'brands' => \Modules\Product\JsonApi\V1\Brands\BrandAuthorizer::class,
-        'warehouses' => \Modules\Inventory\JsonApi\V1\Warehouses\WarehouseAuthorizer::class,
-        'warehouse-locations' => \Modules\Inventory\JsonApi\V1\WarehouseLocations\WarehouseLocationAuthorizer::class,
-        'stocks' => \Modules\Inventory\JsonApi\V1\Stocks\StockAuthorizer::class,
-        'product-batches' => \Modules\Inventory\JsonApi\V1\ProductBatches\ProductBatchAuthorizer::class,
-    ];
-}
+    {
+        return [
+            'audits' => AuditAuthorizer::class,
+            'products' => \Modules\Product\JsonApi\V1\Products\ProductAuthorizer::class,
+            'units' => \Modules\Product\JsonApi\V1\Units\UnitAuthorizer::class,
+            'categories' => \Modules\Product\JsonApi\V1\Categories\CategoryAuthorizer::class,
+            'brands' => \Modules\Product\JsonApi\V1\Brands\BrandAuthorizer::class,
+            'warehouses' => \Modules\Inventory\JsonApi\V1\Warehouses\WarehouseAuthorizer::class,
+            'warehouse-locations' => \Modules\Inventory\JsonApi\V1\WarehouseLocations\WarehouseLocationAuthorizer::class,
+            'stocks' => \Modules\Inventory\JsonApi\V1\Stocks\StockAuthorizer::class,
+            'product-batches' => \Modules\Inventory\JsonApi\V1\ProductBatches\ProductBatchAuthorizer::class,
+            'suppliers' => \Modules\Purchase\JsonApi\V1\Suppliers\SupplierAuthorizer::class,
+            'purchase-orders' => \Modules\Purchase\JsonApi\V1\PurchaseOrders\PurchaseOrderAuthorizer::class,
+            'purchase-order-items' => \Modules\Purchase\JsonApi\V1\PurchaseOrderItems\PurchaseOrderItemAuthorizer::class,
+        ];
+    }
 }

@@ -22,6 +22,7 @@ abstract class TestCase extends BaseTestCase
         $this->artisan('module:seed', ['module' => 'User']);
         $this->artisan('module:seed', ['module' => 'Product']);
         $this->artisan('module:seed', ['module' => 'Inventory']);
+        $this->artisan('module:seed', ['module' => 'Purchase']);
     }
 
 

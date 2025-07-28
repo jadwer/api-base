@@ -1,5 +1,5 @@
 {
-    "generated_at": "2025-07-28T02:14:46.407120Z",
+    "generated_at": "2025-07-28T10:28:53.413047Z",
     "base_url": "http:\/\/localhost\/api\/v1",
     "authentication": {
         "type": "Bearer Token",
@@ -5780,6 +5780,1086 @@
                 "auth:sanctum"
             ],
             "schema": null,
+            "examples": []
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/suppliers",
+            "resource_type": "suppliers",
+            "controller": "Modules\\Purchase\\Http\\Controllers\\Api\\V1\\SupplierController",
+            "action": "index",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "PurchaseOrderItemSchema.php",
+                "fields": [
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/suppliers",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "suppliers",
+                                "id": "1",
+                                "attributes": [
+                                    "..."
+                                ],
+                                "relationships": [
+                                    "..."
+                                ]
+                            }
+                        ],
+                        "meta": {
+                            "pagination": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "POST"
+            ],
+            "uri": "api\/v1\/suppliers",
+            "resource_type": "suppliers",
+            "controller": "Modules\\Purchase\\Http\\Controllers\\Api\\V1\\SupplierController",
+            "action": "store",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "PurchaseOrderItemSchema.php",
+                "fields": [
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "POST",
+                    "url": "\/api\/v1\/suppliers",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "suppliers",
+                            "attributes": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/suppliers\/{supplier}",
+            "resource_type": "suppliers",
+            "controller": "Modules\\Purchase\\Http\\Controllers\\Api\\V1\\SupplierController",
+            "action": "show",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "PurchaseOrderItemSchema.php",
+                "fields": [
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/suppliers",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "suppliers",
+                                "id": "1",
+                                "attributes": [
+                                    "..."
+                                ],
+                                "relationships": [
+                                    "..."
+                                ]
+                            }
+                        ],
+                        "meta": {
+                            "pagination": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "PATCH"
+            ],
+            "uri": "api\/v1\/suppliers\/{supplier}",
+            "resource_type": "suppliers",
+            "controller": "Modules\\Purchase\\Http\\Controllers\\Api\\V1\\SupplierController",
+            "action": "update",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "PurchaseOrderItemSchema.php",
+                "fields": [
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": []
+        },
+        {
+            "methods": [
+                "DELETE"
+            ],
+            "uri": "api\/v1\/suppliers\/{supplier}",
+            "resource_type": "suppliers",
+            "controller": "Modules\\Purchase\\Http\\Controllers\\Api\\V1\\SupplierController",
+            "action": "destroy",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "PurchaseOrderItemSchema.php",
+                "fields": [
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": []
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/purchase-orders",
+            "resource_type": "purchase_orders",
+            "controller": "Modules\\Purchase\\Http\\Controllers\\Api\\V1\\PurchaseOrderController",
+            "action": "index",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "PurchaseOrderItemSchema.php",
+                "fields": [
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/purchase_orders",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "purchase_orders",
+                                "id": "1",
+                                "attributes": [
+                                    "..."
+                                ],
+                                "relationships": [
+                                    "..."
+                                ]
+                            }
+                        ],
+                        "meta": {
+                            "pagination": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "POST"
+            ],
+            "uri": "api\/v1\/purchase-orders",
+            "resource_type": "purchase_orders",
+            "controller": "Modules\\Purchase\\Http\\Controllers\\Api\\V1\\PurchaseOrderController",
+            "action": "store",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "PurchaseOrderItemSchema.php",
+                "fields": [
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "POST",
+                    "url": "\/api\/v1\/purchase_orders",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "purchase_orders",
+                            "attributes": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/purchase-orders\/{purchase_order}",
+            "resource_type": "purchase_orders",
+            "controller": "Modules\\Purchase\\Http\\Controllers\\Api\\V1\\PurchaseOrderController",
+            "action": "show",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "PurchaseOrderItemSchema.php",
+                "fields": [
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/purchase_orders",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "purchase_orders",
+                                "id": "1",
+                                "attributes": [
+                                    "..."
+                                ],
+                                "relationships": [
+                                    "..."
+                                ]
+                            }
+                        ],
+                        "meta": {
+                            "pagination": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "PATCH"
+            ],
+            "uri": "api\/v1\/purchase-orders\/{purchase_order}",
+            "resource_type": "purchase_orders",
+            "controller": "Modules\\Purchase\\Http\\Controllers\\Api\\V1\\PurchaseOrderController",
+            "action": "update",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "PurchaseOrderItemSchema.php",
+                "fields": [
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": []
+        },
+        {
+            "methods": [
+                "DELETE"
+            ],
+            "uri": "api\/v1\/purchase-orders\/{purchase_order}",
+            "resource_type": "purchase_orders",
+            "controller": "Modules\\Purchase\\Http\\Controllers\\Api\\V1\\PurchaseOrderController",
+            "action": "destroy",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "PurchaseOrderItemSchema.php",
+                "fields": [
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": []
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/purchase-order-items",
+            "resource_type": "purchase_order_items",
+            "controller": "Modules\\Purchase\\Http\\Controllers\\Api\\V1\\PurchaseOrderItemController",
+            "action": "index",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "PurchaseOrderItemSchema.php",
+                "fields": [
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/purchase_order_items",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "purchase_order_items",
+                                "id": "1",
+                                "attributes": [
+                                    "..."
+                                ],
+                                "relationships": [
+                                    "..."
+                                ]
+                            }
+                        ],
+                        "meta": {
+                            "pagination": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "POST"
+            ],
+            "uri": "api\/v1\/purchase-order-items",
+            "resource_type": "purchase_order_items",
+            "controller": "Modules\\Purchase\\Http\\Controllers\\Api\\V1\\PurchaseOrderItemController",
+            "action": "store",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "PurchaseOrderItemSchema.php",
+                "fields": [
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "POST",
+                    "url": "\/api\/v1\/purchase_order_items",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "purchase_order_items",
+                            "attributes": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/purchase-order-items\/{purchase_order_item}",
+            "resource_type": "purchase_order_items",
+            "controller": "Modules\\Purchase\\Http\\Controllers\\Api\\V1\\PurchaseOrderItemController",
+            "action": "show",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "PurchaseOrderItemSchema.php",
+                "fields": [
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/purchase_order_items",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "purchase_order_items",
+                                "id": "1",
+                                "attributes": [
+                                    "..."
+                                ],
+                                "relationships": [
+                                    "..."
+                                ]
+                            }
+                        ],
+                        "meta": {
+                            "pagination": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "PATCH"
+            ],
+            "uri": "api\/v1\/purchase-order-items\/{purchase_order_item}",
+            "resource_type": "purchase_order_items",
+            "controller": "Modules\\Purchase\\Http\\Controllers\\Api\\V1\\PurchaseOrderItemController",
+            "action": "update",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "PurchaseOrderItemSchema.php",
+                "fields": [
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": []
+        },
+        {
+            "methods": [
+                "DELETE"
+            ],
+            "uri": "api\/v1\/purchase-order-items\/{purchase_order_item}",
+            "resource_type": "purchase_order_items",
+            "controller": "Modules\\Purchase\\Http\\Controllers\\Api\\V1\\PurchaseOrderItemController",
+            "action": "destroy",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "PurchaseOrderItemSchema.php",
+                "fields": [
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
             "examples": []
         }
     ]
