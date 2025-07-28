@@ -16,6 +16,21 @@ Repositorio: privado
 - Sistema de roles y permisos (`spatie/laravel-permission`)
 - Auditoría con `spatie/laravel-activitylog`
 - Estructura escalable y limpia para nuevos módulos
+- **Documentación automática** de API con `php artisan api:generate-docs`
+
+## 📚 Documentación
+
+Toda la documentación del proyecto está organizada en la carpeta [`docs/`](./docs/):
+
+- **API**: Documentación completa de endpoints → [`docs/api/`](./docs/api/)
+- **Desarrollo**: Blueprints y roadmaps → [`docs/development/`](./docs/development/)
+- **Arquitectura**: Visión general del sistema → [`docs/architecture/`](./docs/architecture/)
+
+### Generar Documentación de API
+
+```bash
+php artisan api:generate-docs
+```
 
 ## Instalación
 

@@ -1,0 +1,11 @@
+# La documentación de API se regenera automáticamente
+# Puedes ignorar estos archivos si prefieres generarlos localmente
+
+# Descomenta las siguientes líneas si quieres ignorar la documentación autogenerada:
+# api/documentation.md
+# api/endpoints.json
+
+# Mantén los archivos de desarrollo en el repositorio
+!development/
+!architecture/
+!README.md
