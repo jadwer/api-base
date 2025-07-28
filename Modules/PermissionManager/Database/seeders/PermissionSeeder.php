@@ -2,7 +2,7 @@
 
 namespace Modules\PermissionManager\Database\Seeders;
 
-use App\Models\User;
+use Modules\User\Models\User;
 use Illuminate\Database\Seeder;
 use Modules\PermissionManager\Models\Permission;
 

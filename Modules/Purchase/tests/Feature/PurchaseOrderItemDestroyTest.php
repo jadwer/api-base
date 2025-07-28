@@ -3,7 +3,7 @@
 namespace Modules\Purchase\Tests\Feature;
 
 use Tests\TestCase;
-use App\Models\User;
+use Modules\User\Models\User;
 use Modules\Purchase\Models\PurchaseOrderItem;
 use Modules\Purchase\Models\PurchaseOrder;
 use Modules\Purchase\Models\Supplier;

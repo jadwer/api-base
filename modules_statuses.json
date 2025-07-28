@@ -6,5 +6,6 @@
     "PermissionManager": true,
     "Product": true,
     "Inventory": true,
-    "Purchase": true
+    "Purchase": true,
+    "Sales": true
 }

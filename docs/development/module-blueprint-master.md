@@ -1043,7 +1043,7 @@ class {Entity}Seeder extends Seeder
 namespace Modules\{ModuleName}\Tests\Feature;
 
 use Tests\TestCase;
-use App\Models\User;
+use Modules\User\Models\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Modules\{ModuleName}\Models\{Entity};

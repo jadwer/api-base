@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use Modules\User\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             \Modules\Product\Database\Seeders\ProductDatabaseSeeder::class,
             \Modules\Inventory\Database\Seeders\InventoryDatabaseSeeder::class,
             \Modules\Purchase\Database\Seeders\PurchaseDatabaseSeeder::class,
+            \Modules\Sales\Database\Seeders\SalesDatabaseSeeder::class,
         ]);
     }
 }

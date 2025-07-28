@@ -4,7 +4,7 @@ namespace Modules\Purchase\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
-use App\Models\User;
+use Modules\User\Models\User;
 use Modules\PermissionManager\Models\Role;
 use Modules\PermissionManager\Models\Permission;
 

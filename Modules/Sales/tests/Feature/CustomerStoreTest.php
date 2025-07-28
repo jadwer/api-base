@@ -1,0 +1,312 @@
+<?php
+
+namespace Modules\Sales\Tests\Feature;
+
+use Tests\TestCase;
+use Modules\Sales\Models\Customer;
+use Modules\User\Models\User;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+class CustomerStoreTest extends TestCase
+{
+    use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        
+        // Crear permisos necesarios
+        Permission::firstOrCreate(['name' => 'customers.store', 'guard_name' => 'api']);
+        Permission::firstOrCreate(['name' => 'customers.view', 'guard_name' => 'api']);
+        
+        // Crear roles
+        Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'api']);
+        Role::firstOrCreate(['name' => 'tech', 'guard_name' => 'api']);
+        Role::firstOrCreate(['name' => 'customer', 'guard_name' => 'api']);
+    }
+
+    private function createUserWithPermissions(string $role, array $permissions = []): User
+    {
+        $user = User::factory()->create();
+        $roleModel = Role::findByName($role, 'api');
+        
+        if (!empty($permissions)) {
+            $roleModel->givePermissionTo($permissions);
+        }
+        
+        $user->assignRole($role);
+        return $user;
+    }
+
+    public function test_admin_can_create_customer()
+    {
+        $admin = $this->createUserWithPermissions('admin', ['customers.store']);
+
+        $customerData = [
+            'type' => 'customers',
+            'attributes' => [
+                'name' => 'Cliente Test S.A.',
+                'email' => 'cliente@test.com',
+                'phone' => '+1234567890',
+                'address' => 'Calle Principal 123',
+                'city' => 'Ciudad Test',
+                'state' => 'Estado Test',
+                'country' => 'País Test',
+                'classification' => 'mayorista',
+                'creditLimit' => 50000.00,
+                'currentCredit' => 0.00,
+                'isActive' => true,
+                'metadata' => [
+                    'source' => 'web',
+                    'preferences' => ['payment_method' => 'credit']
+                ]
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->withData($customerData)
+            ->post('/api/v1/customers');
+
+        $response->assertStatus(201);
+        
+        // Verificar que el customer fue creado en la base de datos
+        $this->assertDatabaseHas('customers', [
+            'name' => 'Cliente Test S.A.',
+            'email' => 'cliente@test.com',
+            'classification' => 'mayorista',
+            'credit_limit' => 50000.00,
+            'is_active' => true
+        ]);
+        
+        // Verificar estructura de respuesta
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'type',
+                'attributes' => [
+                    'name',
+                    'email',
+                    'phone',
+                    'address',
+                    'city',
+                    'state',
+                    'country',
+                    'classification',
+                    'creditLimit',
+                    'currentCredit',
+                    'isActive',
+                    'metadata'
+                ]
+            ]
+        ]);
+        
+        // Verificar valores específicos
+        $this->assertEquals('Cliente Test S.A.', $response->json('data.attributes.name'));
+        $this->assertEquals('mayorista', $response->json('data.attributes.classification'));
+        $this->assertEquals(50000.00, $response->json('data.attributes.creditLimit'));
+    }
+
+    public function test_admin_can_create_customer_with_minimal_data()
+    {
+        $admin = $this->createUserWithPermissions('admin', ['customers.store']);
+
+        $customerData = [
+            'type' => 'customers',
+            'attributes' => [
+                'name' => 'Cliente Mínimo',
+                'email' => 'minimo@test.com'
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->withData($customerData)
+            ->post('/api/v1/customers');
+
+        $response->assertStatus(201);
+        
+        // Verificar valores por defecto
+        $this->assertEquals('minorista', $response->json('data.attributes.classification'));
+        $this->assertEquals(0.00, $response->json('data.attributes.creditLimit'));
+        $this->assertTrue($response->json('data.attributes.isActive'));
+    }
+
+    public function test_cannot_create_customer_with_duplicate_email()
+    {
+        $admin = $this->createUserWithPermissions('admin', ['customers.store']);
+        
+        // Crear customer existente
+        Customer::factory()->create(['email' => 'existente@test.com']);
+
+        $customerData = [
+            'type' => 'customers',
+            'attributes' => [
+                'name' => 'Cliente Duplicado',
+                'email' => 'existente@test.com'
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->withData($customerData)
+            ->post('/api/v1/customers');
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['email']);
+    }
+
+    public function test_cannot_create_customer_without_required_fields()
+    {
+        $admin = $this->createUserWithPermissions('admin', ['customers.store']);
+
+        $customerData = [
+            'type' => 'customers',
+            'attributes' => [
+                'phone' => '+1234567890'
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->withData($customerData)
+            ->post('/api/v1/customers');
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['name', 'email']);
+    }
+
+    public function test_cannot_create_customer_with_invalid_email()
+    {
+        $admin = $this->createUserWithPermissions('admin', ['customers.store']);
+
+        $customerData = [
+            'type' => 'customers',
+            'attributes' => [
+                'name' => 'Cliente Test',
+                'email' => 'email-invalido'
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->withData($customerData)
+            ->post('/api/v1/customers');
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['email']);
+    }
+
+    public function test_cannot_create_customer_with_invalid_classification()
+    {
+        $admin = $this->createUserWithPermissions('admin', ['customers.store']);
+
+        $customerData = [
+            'type' => 'customers',
+            'attributes' => [
+                'name' => 'Cliente Test',
+                'email' => 'test@test.com',
+                'classification' => 'tipo_invalido'
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->withData($customerData)
+            ->post('/api/v1/customers');
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['classification']);
+    }
+
+    public function test_cannot_create_customer_with_negative_credit_limit()
+    {
+        $admin = $this->createUserWithPermissions('admin', ['customers.store']);
+
+        $customerData = [
+            'type' => 'customers',
+            'attributes' => [
+                'name' => 'Cliente Test',
+                'email' => 'test@test.com',
+                'creditLimit' => -1000.00
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->withData($customerData)
+            ->post('/api/v1/customers');
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['creditLimit']);
+    }
+
+    public function test_tech_user_can_create_customer_with_permission()
+    {
+        $tech = $this->createUserWithPermissions('tech', ['customers.store']);
+
+        $customerData = [
+            'type' => 'customers',
+            'attributes' => [
+                'name' => 'Cliente Tech',
+                'email' => 'tech@test.com'
+            ]
+        ];
+
+        $response = $this->actingAs($tech, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->withData($customerData)
+            ->post('/api/v1/customers');
+
+        $response->assertStatus(201);
+    }
+
+    public function test_user_without_permission_cannot_create_customer()
+    {
+        $user = $this->createUserWithPermissions('customer', []);
+
+        $customerData = [
+            'type' => 'customers',
+            'attributes' => [
+                'name' => 'Cliente Sin Permiso',
+                'email' => 'sinpermiso@test.com'
+            ]
+        ];
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->withData($customerData)
+            ->post('/api/v1/customers');
+
+        $response->assertStatus(403);
+    }
+
+    public function test_guest_cannot_create_customer()
+    {
+        $customerData = [
+            'type' => 'customers',
+            'attributes' => [
+                'name' => 'Cliente Guest',
+                'email' => 'guest@test.com'
+            ]
+        ];
+
+        $response = $this->jsonApi()
+            ->expects('customers')
+            ->withData($customerData)
+            ->post('/api/v1/customers');
+
+        $response->assertStatus(401);
+    }
+}
