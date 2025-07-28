@@ -1,5 +1,5 @@
 {
-    "generated_at": "2025-07-28T10:28:53.413047Z",
+    "generated_at": "2025-07-28T12:34:45.201174Z",
     "base_url": "http:\/\/localhost\/api\/v1",
     "authentication": {
         "type": "Bearer Token",
@@ -5811,12 +5811,6 @@
                         "readonly": false
                     },
                     {
-                        "name": "purchaseOrder",
-                        "type": "relationship",
-                        "required": true,
-                        "readonly": false
-                    },
-                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -5825,6 +5819,18 @@
                     {
                         "name": "updatedAt",
                         "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
                         "required": true,
                         "readonly": false
                     },
@@ -5898,12 +5904,6 @@
                         "readonly": false
                     },
                     {
-                        "name": "purchaseOrder",
-                        "type": "relationship",
-                        "required": true,
-                        "readonly": false
-                    },
-                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -5912,6 +5912,18 @@
                     {
                         "name": "updatedAt",
                         "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
                         "required": true,
                         "readonly": false
                     },
@@ -5972,12 +5984,6 @@
                         "readonly": false
                     },
                     {
-                        "name": "purchaseOrder",
-                        "type": "relationship",
-                        "required": true,
-                        "readonly": false
-                    },
-                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -5986,6 +5992,18 @@
                     {
                         "name": "updatedAt",
                         "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
                         "required": true,
                         "readonly": false
                     },
@@ -6059,12 +6077,6 @@
                         "readonly": false
                     },
                     {
-                        "name": "purchaseOrder",
-                        "type": "relationship",
-                        "required": true,
-                        "readonly": false
-                    },
-                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -6073,6 +6085,18 @@
                     {
                         "name": "updatedAt",
                         "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
                         "required": true,
                         "readonly": false
                     },
@@ -6115,12 +6139,6 @@
                         "readonly": false
                     },
                     {
-                        "name": "purchaseOrder",
-                        "type": "relationship",
-                        "required": true,
-                        "readonly": false
-                    },
-                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -6129,6 +6147,18 @@
                     {
                         "name": "updatedAt",
                         "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
                         "required": true,
                         "readonly": false
                     },
@@ -6171,12 +6201,6 @@
                         "readonly": false
                     },
                     {
-                        "name": "purchaseOrder",
-                        "type": "relationship",
-                        "required": true,
-                        "readonly": false
-                    },
-                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -6185,6 +6209,18 @@
                     {
                         "name": "updatedAt",
                         "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
                         "required": true,
                         "readonly": false
                     },
@@ -6258,12 +6294,6 @@
                         "readonly": false
                     },
                     {
-                        "name": "purchaseOrder",
-                        "type": "relationship",
-                        "required": true,
-                        "readonly": false
-                    },
-                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -6272,6 +6302,18 @@
                     {
                         "name": "updatedAt",
                         "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
                         "required": true,
                         "readonly": false
                     },
@@ -6332,12 +6374,6 @@
                         "readonly": false
                     },
                     {
-                        "name": "purchaseOrder",
-                        "type": "relationship",
-                        "required": true,
-                        "readonly": false
-                    },
-                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -6346,6 +6382,18 @@
                     {
                         "name": "updatedAt",
                         "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
                         "required": true,
                         "readonly": false
                     },
@@ -6419,12 +6467,6 @@
                         "readonly": false
                     },
                     {
-                        "name": "purchaseOrder",
-                        "type": "relationship",
-                        "required": true,
-                        "readonly": false
-                    },
-                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -6433,6 +6475,18 @@
                     {
                         "name": "updatedAt",
                         "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
                         "required": true,
                         "readonly": false
                     },
@@ -6475,12 +6529,6 @@
                         "readonly": false
                     },
                     {
-                        "name": "purchaseOrder",
-                        "type": "relationship",
-                        "required": true,
-                        "readonly": false
-                    },
-                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -6489,6 +6537,18 @@
                     {
                         "name": "updatedAt",
                         "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
                         "required": true,
                         "readonly": false
                     },
@@ -6531,12 +6591,6 @@
                         "readonly": false
                     },
                     {
-                        "name": "purchaseOrder",
-                        "type": "relationship",
-                        "required": true,
-                        "readonly": false
-                    },
-                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -6545,6 +6599,18 @@
                     {
                         "name": "updatedAt",
                         "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
                         "required": true,
                         "readonly": false
                     },
@@ -6618,12 +6684,6 @@
                         "readonly": false
                     },
                     {
-                        "name": "purchaseOrder",
-                        "type": "relationship",
-                        "required": true,
-                        "readonly": false
-                    },
-                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -6632,6 +6692,18 @@
                     {
                         "name": "updatedAt",
                         "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
                         "required": true,
                         "readonly": false
                     },
@@ -6692,12 +6764,6 @@
                         "readonly": false
                     },
                     {
-                        "name": "purchaseOrder",
-                        "type": "relationship",
-                        "required": true,
-                        "readonly": false
-                    },
-                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -6706,6 +6772,18 @@
                     {
                         "name": "updatedAt",
                         "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
                         "required": true,
                         "readonly": false
                     },
@@ -6779,12 +6857,6 @@
                         "readonly": false
                     },
                     {
-                        "name": "purchaseOrder",
-                        "type": "relationship",
-                        "required": true,
-                        "readonly": false
-                    },
-                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -6793,6 +6865,18 @@
                     {
                         "name": "updatedAt",
                         "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
                         "required": true,
                         "readonly": false
                     },
@@ -6835,12 +6919,6 @@
                         "readonly": false
                     },
                     {
-                        "name": "purchaseOrder",
-                        "type": "relationship",
-                        "required": true,
-                        "readonly": false
-                    },
-                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -6849,6 +6927,18 @@
                     {
                         "name": "updatedAt",
                         "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "purchaseOrder",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
                         "required": true,
                         "readonly": false
                     },

@@ -1,6 +1,6 @@
 # API Documentation
 
-**Generado:** 2025-07-28T10:28:53.413047Z
+**Generado:** 2025-07-28T12:34:45.201174Z
 
 **Base URL:** `http://localhost/api/v1`
 
@@ -1731,9 +1731,10 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `purchaseOrder` (relationship) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `product` (relationship) 
 - ✅ `quantity` (mixed) 
 
 **Ejemplo de Request:**
@@ -1757,9 +1758,10 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `purchaseOrder` (relationship) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `product` (relationship) 
 - ✅ `quantity` (mixed) 
 
 **Ejemplo de Request:**
@@ -1792,9 +1794,10 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `purchaseOrder` (relationship) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `product` (relationship) 
 - ✅ `quantity` (mixed) 
 
 **Ejemplo de Request:**
@@ -1818,9 +1821,10 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `purchaseOrder` (relationship) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `product` (relationship) 
 - ✅ `quantity` (mixed) 
 
 ---
@@ -1831,9 +1835,10 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `purchaseOrder` (relationship) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `product` (relationship) 
 - ✅ `quantity` (mixed) 
 
 ---
@@ -1846,9 +1851,10 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `purchaseOrder` (relationship) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `product` (relationship) 
 - ✅ `quantity` (mixed) 
 
 **Ejemplo de Request:**
@@ -1872,9 +1878,10 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `purchaseOrder` (relationship) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `product` (relationship) 
 - ✅ `quantity` (mixed) 
 
 **Ejemplo de Request:**
@@ -1907,9 +1914,10 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `purchaseOrder` (relationship) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `product` (relationship) 
 - ✅ `quantity` (mixed) 
 
 **Ejemplo de Request:**
@@ -1933,9 +1941,10 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `purchaseOrder` (relationship) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `product` (relationship) 
 - ✅ `quantity` (mixed) 
 
 ---
@@ -1946,9 +1955,10 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `purchaseOrder` (relationship) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `product` (relationship) 
 - ✅ `quantity` (mixed) 
 
 ---
@@ -1961,9 +1971,10 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `purchaseOrder` (relationship) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `product` (relationship) 
 - ✅ `quantity` (mixed) 
 
 **Ejemplo de Request:**
@@ -1987,9 +1998,10 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `purchaseOrder` (relationship) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `product` (relationship) 
 - ✅ `quantity` (mixed) 
 
 **Ejemplo de Request:**
@@ -2022,9 +2034,10 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `purchaseOrder` (relationship) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `product` (relationship) 
 - ✅ `quantity` (mixed) 
 
 **Ejemplo de Request:**
@@ -2048,9 +2061,10 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `purchaseOrder` (relationship) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `product` (relationship) 
 - ✅ `quantity` (mixed) 
 
 ---
@@ -2061,9 +2075,10 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `purchaseOrder` (relationship) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
+- ✅ `purchaseOrder` (relationship) 
+- ✅ `product` (relationship) 
 - ✅ `quantity` (mixed) 
 
 ---
