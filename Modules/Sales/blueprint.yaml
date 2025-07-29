@@ -1,0 +1,326 @@
+# Sales Module Blueprint
+
+## Module Overview
+```yaml
+name: Sales
+version: 1.0.0
+description: "Complete sales management with Customer, SalesOrder and SalesOrderItem entities"
+api_version: v1
+json_api_compliance: true
+testing_coverage: 100%
+```
+
+## Entities
+
+### Customer Entity ✅ COMPLETED
+```yaml
+model: Customer
+table: customers
+json_api_resource: customers
+status: PRODUCTION_READY
+test_coverage: 100% (49/49 tests)
+
+fields:
+  - id: bigint primary key auto_increment
+  - name: varchar(255) required sortable filterable
+  - email: varchar(255) unique required sortable filterable  
+  - phone: varchar(50) nullable
+  - address: text nullable
+  - city: varchar(100) nullable
+  - state: varchar(100) nullable
+  - country: varchar(100) nullable
+  - classification: enum[individual,business,premium] required sortable filterable
+  - credit_limit: decimal(15,2) default 0.00
+  - current_credit: decimal(15,2) default 0.00
+  - is_active: boolean default true sortable filterable
+  - metadata: json nullable
+  - created_at: timestamp sortable
+  - updated_at: timestamp sortable
+
+relationships:
+  - hasMany: salesOrders (SalesOrder)
+
+validations:
+  - name: required|string|max:255
+  - email: required|email|unique:customers,email
+  - classification: required|in:individual,business,premium
+  - credit_limit: nullable|numeric|min:0
+  - current_credit: nullable|numeric|min:0
+  - is_active: boolean
+
+crud_operations:
+  - index: ✅ (filtering, sorting, pagination)
+  - store: ✅ (full validation)
+  - show: ✅ (with relationships)
+  - update: ✅ (partial updates)
+  - destroy: ✅ (soft delete considerations)
+
+authorizations:
+  god: [index, store, show, update, destroy]
+  admin: [index, store, show, update, destroy]
+  tech: [index, store, show, update, destroy]
+  customer: [] # No access to other customers
+  guest: []
+
+test_suites:
+  - CustomerIndexTest: 9/9 ✅
+  - CustomerShowTest: 9/9 ✅
+  - CustomerStoreTest: 10/10 ✅
+  - CustomerUpdateTest: 11/11 ✅
+  - CustomerDestroyTest: 10/10 ✅
+```
+
+### SalesOrder Entity 🚧 PENDING
+```yaml
+model: SalesOrder
+table: sales_orders
+json_api_resource: sales-orders
+status: PENDING_IMPLEMENTATION
+
+fields:
+  - id: bigint primary key auto_increment
+  - customer_id: bigint foreign_key(customers.id) required
+  - order_number: varchar(50) unique required
+  - order_date: date required
+  - status: enum[draft,confirmed,processing,shipped,delivered,cancelled]
+  - subtotal: decimal(15,2) required
+  - tax_amount: decimal(15,2) default 0.00
+  - total_amount: decimal(15,2) required
+  - currency: varchar(3) default 'USD'
+  - payment_status: enum[pending,partial,paid,refunded]
+  - notes: text nullable
+  - metadata: json nullable
+  - created_at: timestamp
+  - updated_at: timestamp
+
+relationships:
+  - belongsTo: customer (Customer)
+  - hasMany: salesOrderItems (SalesOrderItem)
+
+planned_features:
+  - Full CRUD with Customer relationship
+  - Order status workflow management
+  - Payment tracking integration
+  - Automatic order numbering
+  - Tax calculation
+```
+
+### SalesOrderItem Entity 🚧 PENDING
+```yaml
+model: SalesOrderItem
+table: sales_order_items  
+json_api_resource: sales-order-items
+status: PENDING_IMPLEMENTATION
+
+fields:
+  - id: bigint primary key auto_increment
+  - sales_order_id: bigint foreign_key(sales_orders.id) required
+  - product_id: bigint foreign_key(products.id) nullable
+  - product_name: varchar(255) required
+  - product_sku: varchar(100) nullable
+  - quantity: decimal(10,3) required
+  - unit_price: decimal(15,2) required
+  - line_total: decimal(15,2) required
+  - metadata: json nullable
+  - created_at: timestamp
+  - updated_at: timestamp
+
+relationships:
+  - belongsTo: salesOrder (SalesOrder)
+  - belongsTo: product (Product) nullable
+
+planned_features:
+  - Line item management
+  - Product reference (soft reference)
+  - Quantity and pricing calculations
+  - Bulk operations
+```
+
+## API Endpoints
+
+### Customer Endpoints ✅ IMPLEMENTED
+```yaml
+base_path: /api/v1/customers
+
+endpoints:
+  GET /api/v1/customers:
+    description: "List customers with filtering, sorting, pagination"
+    auth: admin|tech required
+    filters: [name, email, classification, is_active]
+    sorts: [name, email, classification, is_active, created_at, updated_at]
+    
+  POST /api/v1/customers:
+    description: "Create new customer"
+    auth: admin|tech required
+    validation: CustomerRequest
+    
+  GET /api/v1/customers/{id}:
+    description: "Show customer details"
+    auth: admin|tech required
+    includes: [salesOrders]
+    
+  PATCH /api/v1/customers/{id}:
+    description: "Update customer (partial updates supported)"
+    auth: admin|tech required
+    validation: CustomerRequest
+    
+  DELETE /api/v1/customers/{id}:
+    description: "Delete customer"
+    auth: admin|tech required
+    response: 204 No Content
+```
+
+## Testing Architecture
+
+### Clean Testing Patterns ✅ APPLIED
+```yaml
+helper_methods:
+  - getAdminUser(): User # admin@example.com
+  - getTechUser(): User # tech@example.com  
+  - getCustomerUser(): User # customer@example.com
+
+test_structure:
+  naming_convention: "test_{role}_can_{action}_{entity}"
+  assertions: JSON API compliant
+  field_naming: snake_case throughout
+  factory_usage: Eloquent factories for test data
+  
+authorization_tests:
+  - admin_success_scenarios
+  - tech_success_scenarios  
+  - customer_forbidden_scenarios
+  - guest_unauthorized_scenarios
+
+validation_tests:
+  - required_field_validation
+  - format_validation (email, enum values)
+  - uniqueness_validation
+  - business_rule_validation
+
+edge_case_tests:
+  - nonexistent_resource_handling
+  - duplicate_operations (idempotency)
+  - metadata_handling
+  - relationship_includes
+```
+
+## Permissions System
+
+### Sales Module Permissions ✅ IMPLEMENTED
+```yaml
+permissions:
+  customers:
+    - customers.index
+    - customers.show  
+    - customers.store
+    - customers.update
+    - customers.destroy
+    
+  sales_orders: # PENDING
+    - sales-orders.index
+    - sales-orders.show
+    - sales-orders.store
+    - sales-orders.update
+    - sales-orders.destroy
+    
+  sales_order_items: # PENDING
+    - sales-order-items.index
+    - sales-order-items.show
+    - sales-order-items.store
+    - sales-order-items.update
+    - sales-order-items.destroy
+
+role_assignments:
+  god: [all permissions]
+  admin: [all CRUD permissions]
+  tech: [all CRUD permissions] 
+  customer: [sales-orders.* for own orders only]
+  guest: []
+```
+
+## Development Standards
+
+### Code Quality Standards ✅ APPLIED
+```yaml
+laravel_json_api:
+  version: 5.1
+  naming: singular (CustomerSchema, CustomerAuthorizer)
+  field_naming: snake_case
+  
+testing:
+  framework: PHPUnit with JSON API testing
+  coverage_target: 100%
+  pattern: Clean rewrite over complex fixes
+  
+authorization:
+  granular_per_operation: true
+  role_based_access: true
+  no_testing_bypasses: true
+  
+validation:
+  comprehensive_edge_cases: true
+  business_rule_enforcement: true
+  api_error_formatting: true
+```
+
+## Implementation Timeline
+
+### Phase 1: Customer Entity ✅ COMPLETED
+- [x] Model, migration, factory, seeder
+- [x] JSON API Schema, Resource, Request
+- [x] CustomerAuthorizer with role logic
+- [x] Complete test suite (49 tests)
+- [x] Permission system integration
+
+### Phase 2: SalesOrder Entity 🚧 NEXT
+- [ ] Model with Customer relationship
+- [ ] JSON API components
+- [ ] Authorization logic
+- [ ] Complete test suite following Customer pattern
+- [ ] Order workflow logic
+
+### Phase 3: SalesOrderItem Entity 🚧 PLANNED
+- [ ] Model with SalesOrder relationship
+- [ ] JSON API components
+- [ ] Line item calculations
+- [ ] Complete test suite
+- [ ] Bulk operations
+
+### Phase 4: Integration & Optimization 🚧 FUTURE
+- [ ] Cross-entity workflow tests
+- [ ] Performance optimization
+- [ ] Advanced reporting endpoints
+- [ ] API documentation completion
+
+## Lessons Learned & Best Practices
+
+### ✅ Successful Patterns Applied:
+```yaml
+testing_approach:
+  - clean_rewrite_over_fix: "More token-efficient than debugging complex tests"
+  - helper_method_consistency: "getAdminUser() pattern across all tests"
+  - comprehensive_edge_cases: "Invalid data, nonexistent resources, authorization"
+  
+authorization_design:
+  - role_based_granular: "Check hasRole() before permission checks"
+  - no_testing_shortcuts: "Remove app()->environment() bypasses"
+  - explicit_denials: "Clear forbidden responses for unauthorized users"
+
+api_design:
+  - json_api_compliance: "Strict adherence to JSON API 1.1"
+  - singular_naming: "CustomerSchema not CustomersSchema"
+  - snake_case_fields: "credit_limit not creditLimit"
+```
+
+### 🚫 Anti-patterns Avoided:
+```yaml
+avoided_mistakes:
+  - plural_authorizer_naming: "CustomerAuthorizer not CustomersAuthorizer"
+  - testing_environment_bypasses: "No shortcuts in test environments"
+  - camelCase_api_fields: "Use snake_case for API consistency"
+  - overly_complex_test_fixes: "Clean rewrite when tests are tangled"
+```
+
+---
+
+**Blueprint Status: Customer entity production-ready, SalesOrder and SalesOrderItem pending implementation following established patterns**

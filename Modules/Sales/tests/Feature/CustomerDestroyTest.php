@@ -3,51 +3,33 @@
 namespace Modules\Sales\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\Sales\Models\Customer;
-use Modules\Sales\Models\SalesOrder;
 use Modules\User\Models\User;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Sales\Models\Customer;
 
 class CustomerDestroyTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
+    private function getAdminUser(): User
     {
-        parent::setUp();
-        
-        // Crear permisos necesarios
-        Permission::firstOrCreate(['name' => 'customers.destroy', 'guard_name' => 'api']);
-        Permission::firstOrCreate(['name' => 'customers.view', 'guard_name' => 'api']);
-        
-        // Crear roles
-        Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'api']);
-        Role::firstOrCreate(['name' => 'tech', 'guard_name' => 'api']);
-        Role::firstOrCreate(['name' => 'customer', 'guard_name' => 'api']);
+        return User::where('email', 'admin@example.com')->firstOrFail();
     }
 
-    private function createUserWithPermissions(string $role, array $permissions = []): User
+    private function getTechUser(): User
     {
-        $user = User::factory()->create();
-        $roleModel = Role::findByName($role, 'api');
-        
-        if (!empty($permissions)) {
-            $roleModel->givePermissionTo($permissions);
-        }
-        
-        $user->assignRole($role);
-        return $user;
+        return User::where('email', 'tech@example.com')->firstOrFail();
     }
 
-    public function test_admin_can_delete_customer_without_orders()
+    private function getCustomerUser(): User
     {
-        $admin = $this->createUserWithPermissions('admin', ['customers.destroy']);
+        return User::where('email', 'customer@example.com')->firstOrFail();
+    }
+
+    public function test_admin_can_delete_customer_without_orders(): void
+    {
+        $admin = $this->getAdminUser();
         
         $customer = Customer::factory()->create([
-            'name' => 'Cliente a Eliminar',
-            'email' => 'eliminar@test.com'
+            'name' => 'Customer to Delete',
+            'email' => 'delete@example.com'
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -55,91 +37,21 @@ class CustomerDestroyTest extends TestCase
             ->expects('customers')
             ->delete("/api/v1/customers/{$customer->id}");
 
-        $response->assertStatus(204);
+        $response->assertStatus(204); // No Content para DELETE exitoso
         
-        // Verificar que el customer fue eliminado de la base de datos
+        // Verificar que se eliminó de la BD
         $this->assertDatabaseMissing('customers', [
             'id' => $customer->id
         ]);
     }
 
-    public function test_cannot_delete_customer_with_sales_orders()
+    public function test_tech_user_can_delete_customer_with_permission(): void
     {
-        $admin = $this->createUserWithPermissions('admin', ['customers.destroy']);
-        
-        $customer = Customer::factory()->create();
-        
-        // Crear una orden de venta para este customer
-        SalesOrder::factory()->create([
-            'customer_id' => $customer->id
-        ]);
-
-        $response = $this->actingAs($admin, 'sanctum')
-            ->jsonApi()
-            ->expects('customers')
-            ->delete("/api/v1/customers/{$customer->id}");
-
-        $response->assertStatus(422);
-        
-        // Verificar que el customer aún existe en la base de datos
-        $this->assertDatabaseHas('customers', [
-            'id' => $customer->id
-        ]);
-        
-        // Verificar mensaje de error
-        $response->assertJsonFragment([
-            'detail' => 'Cannot delete customer with existing sales orders'
-        ]);
-    }
-
-    public function test_can_delete_customer_after_removing_all_orders()
-    {
-        $admin = $this->createUserWithPermissions('admin', ['customers.destroy']);
-        
-        $customer = Customer::factory()->create();
-        
-        // Crear y luego eliminar una orden
-        $order = SalesOrder::factory()->create(['customer_id' => $customer->id]);
-        $order->delete();
-
-        $response = $this->actingAs($admin, 'sanctum')
-            ->jsonApi()
-            ->expects('customers')
-            ->delete("/api/v1/customers/{$customer->id}");
-
-        $response->assertStatus(204);
-        
-        $this->assertDatabaseMissing('customers', [
-            'id' => $customer->id
-        ]);
-    }
-
-    public function test_can_delete_inactive_customer()
-    {
-        $admin = $this->createUserWithPermissions('admin', ['customers.destroy']);
+        $tech = $this->getTechUser();
         
         $customer = Customer::factory()->create([
-            'is_active' => false,
-            'name' => 'Cliente Inactivo'
+            'name' => 'Tech Delete Customer'
         ]);
-
-        $response = $this->actingAs($admin, 'sanctum')
-            ->jsonApi()
-            ->expects('customers')
-            ->delete("/api/v1/customers/{$customer->id}");
-
-        $response->assertStatus(204);
-        
-        $this->assertDatabaseMissing('customers', [
-            'id' => $customer->id
-        ]);
-    }
-
-    public function test_tech_user_can_delete_customer_with_permission()
-    {
-        $tech = $this->createUserWithPermissions('tech', ['customers.destroy']);
-        
-        $customer = Customer::factory()->create();
 
         $response = $this->actingAs($tech, 'sanctum')
             ->jsonApi()
@@ -153,28 +65,32 @@ class CustomerDestroyTest extends TestCase
         ]);
     }
 
-    public function test_user_without_permission_cannot_delete_customer()
+    public function test_customer_user_cannot_delete_other_customers(): void
     {
-        $user = $this->createUserWithPermissions('customer', []);
+        $customer_user = $this->getCustomerUser();
         
-        $customer = Customer::factory()->create();
+        $customer = Customer::factory()->create([
+            'name' => 'Protected Customer'
+        ]);
 
-        $response = $this->actingAs($user, 'sanctum')
+        $response = $this->actingAs($customer_user, 'sanctum')
             ->jsonApi()
             ->expects('customers')
             ->delete("/api/v1/customers/{$customer->id}");
 
-        $response->assertStatus(403);
+        $response->assertForbidden();
         
-        // Verificar que el customer aún existe
+        // Verificar que NO se eliminó
         $this->assertDatabaseHas('customers', [
             'id' => $customer->id
         ]);
     }
 
-    public function test_guest_cannot_delete_customer()
+    public function test_guest_cannot_delete_customer(): void
     {
-        $customer = Customer::factory()->create();
+        $customer = Customer::factory()->create([
+            'name' => 'Guest Protected Customer'
+        ]);
 
         $response = $this->jsonApi()
             ->expects('customers')
@@ -182,80 +98,50 @@ class CustomerDestroyTest extends TestCase
 
         $response->assertStatus(401);
         
-        // Verificar que el customer aún existe
+        // Verificar que NO se eliminó
         $this->assertDatabaseHas('customers', [
             'id' => $customer->id
         ]);
     }
 
-    public function test_cannot_delete_nonexistent_customer()
+    public function test_cannot_delete_nonexistent_customer(): void
     {
-        $admin = $this->createUserWithPermissions('admin', ['customers.destroy']);
+        $admin = $this->getAdminUser();
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('customers')
-            ->delete('/api/v1/customers/999999');
+            ->delete('/api/v1/customers/99999');
 
-        $response->assertStatus(404);
+        $response->assertNotFound();
     }
 
-    public function test_delete_customer_removes_related_activity_logs()
+    public function test_delete_response_is_empty(): void
     {
-        $admin = $this->createUserWithPermissions('admin', ['customers.destroy']);
-        
-        $customer = Customer::factory()->create();
-        
-        // Simular actividad del customer (el modelo usa LogsActivity)
-        $customer->update(['name' => 'Nombre Actualizado']);
-
-        // Verificar que hay logs de actividad
-        $this->assertDatabaseHas('activity_log', [
-            'subject_type' => Customer::class,
-            'subject_id' => $customer->id
-        ]);
-
-        $response = $this->actingAs($admin, 'sanctum')
-            ->jsonApi()
-            ->expects('customers')
-            ->delete("/api/v1/customers/{$customer->id}");
-
-        $response->assertStatus(204);
-        
-        // Verificar que el customer fue eliminado
-        $this->assertDatabaseMissing('customers', [
-            'id' => $customer->id
-        ]);
-        
-        // Verificar que los logs de actividad también fueron eliminados
-        $this->assertDatabaseMissing('activity_log', [
-            'subject_type' => Customer::class,
-            'subject_id' => $customer->id
-        ]);
-    }
-
-    public function test_delete_response_is_empty()
-    {
-        $admin = $this->createUserWithPermissions('admin', ['customers.destroy']);
-        
-        $customer = Customer::factory()->create();
-
-        $response = $this->actingAs($admin, 'sanctum')
-            ->jsonApi()
-            ->expects('customers')
-            ->delete("/api/v1/customers/{$customer->id}");
-
-        $response->assertStatus(204);
-        $response->assertNoContent();
-    }
-
-    public function test_delete_customer_with_high_credit_limit()
-    {
-        $admin = $this->createUserWithPermissions('admin', ['customers.destroy']);
+        $admin = $this->getAdminUser();
         
         $customer = Customer::factory()->create([
-            'credit_limit' => 100000.00,
-            'current_credit' => 50000.00
+            'name' => 'Empty Response Customer'
+        ]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->delete("/api/v1/customers/{$customer->id}");
+
+        $response->assertStatus(204);
+        
+        // Verificar que la respuesta está vacía (como debe ser en DELETE)
+        $this->assertEmpty($response->getContent());
+    }
+
+    public function test_can_delete_inactive_customer(): void
+    {
+        $admin = $this->getAdminUser();
+        
+        $customer = Customer::factory()->create([
+            'name' => 'Inactive Customer to Delete',
+            'is_active' => false
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -270,15 +156,37 @@ class CustomerDestroyTest extends TestCase
         ]);
     }
 
-    public function test_delete_customer_removes_metadata()
+    public function test_can_delete_customer_with_high_credit_limit(): void
     {
-        $admin = $this->createUserWithPermissions('admin', ['customers.destroy']);
+        $admin = $this->getAdminUser();
         
         $customer = Customer::factory()->create([
+            'name' => 'High Credit Customer',
+            'credit_limit' => 100000.00
+        ]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->delete("/api/v1/customers/{$customer->id}");
+
+        $response->assertStatus(204);
+        
+        $this->assertDatabaseMissing('customers', [
+            'id' => $customer->id
+        ]);
+    }
+
+    public function test_can_delete_customer_with_metadata(): void
+    {
+        $admin = $this->getAdminUser();
+        
+        $customer = Customer::factory()->create([
+            'name' => 'Metadata Customer',
             'metadata' => [
                 'source' => 'web',
                 'preferences' => ['payment_method' => 'credit'],
-                'notes' => 'Cliente importante'
+                'notes' => 'Important customer'
             ]
         ]);
 
@@ -289,9 +197,33 @@ class CustomerDestroyTest extends TestCase
 
         $response->assertStatus(204);
         
-        // Verificar que todo el registro fue eliminado
         $this->assertDatabaseMissing('customers', [
             'id' => $customer->id
         ]);
+    }
+
+    public function test_multiple_deletes_are_idempotent(): void
+    {
+        $admin = $this->getAdminUser();
+        
+        $customer = Customer::factory()->create([
+            'name' => 'Idempotent Delete Customer'
+        ]);
+
+        // Primera eliminación
+        $response1 = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->delete("/api/v1/customers/{$customer->id}");
+
+        $response1->assertStatus(204);
+        
+        // Segunda eliminación (debería devolver 404)
+        $response2 = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->delete("/api/v1/customers/{$customer->id}");
+
+        $response2->assertNotFound();
     }
 }

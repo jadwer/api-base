@@ -1,6 +1,6 @@
 # API Documentation
 
-**Generado:** 2025-07-28T18:28:32.523469Z
+**Generado:** 2025-07-29T00:14:37.302677Z
 
 **Base URL:** `http://localhost/api/v1`
 
@@ -2080,6 +2080,546 @@
 - ✅ `purchaseOrder` (relationship) 
 - ✅ `product` (relationship) 
 - ✅ `quantity` (mixed) 
+
+---
+
+### 📦 Customers
+
+#### `GET` `api/v1/customers`
+
+**Campos disponibles:**
+
+- ✅ `name` (string) 
+- ✅ `email` (string) 
+- ✅ `phone` (string) 
+- ✅ `address` (string) 
+- ✅ `city` (string) 
+- ✅ `state` (string) 
+- ✅ `country` (string) 
+- ✅ `classification` (string) 
+- ✅ `credit_limit` (number) 
+- ✅ `current_credit` (number) 
+- ✅ `is_active` (boolean) 
+- ✅ `metadata` (object) 
+- ✅ `created_at` (datetime) 
+- ✅ `updated_at` (datetime) 
+- ✅ `salesOrders` (relationship[]) 
+- ✅ `name` (mixed) 
+- ✅ `email` (mixed) 
+- ✅ `classification` (mixed) 
+- ✅ `is_active` (mixed) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/customers",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/customers`
+
+**Campos disponibles:**
+
+- ✅ `name` (string) 
+- ✅ `email` (string) 
+- ✅ `phone` (string) 
+- ✅ `address` (string) 
+- ✅ `city` (string) 
+- ✅ `state` (string) 
+- ✅ `country` (string) 
+- ✅ `classification` (string) 
+- ✅ `credit_limit` (number) 
+- ✅ `current_credit` (number) 
+- ✅ `is_active` (boolean) 
+- ✅ `metadata` (object) 
+- ✅ `created_at` (datetime) 
+- ✅ `updated_at` (datetime) 
+- ✅ `salesOrders` (relationship[]) 
+- ✅ `name` (mixed) 
+- ✅ `email` (mixed) 
+- ✅ `classification` (mixed) 
+- ✅ `is_active` (mixed) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/customers",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "customers",
+            "attributes": [
+                "..."
+            ]
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/customers/{customer}`
+
+**Campos disponibles:**
+
+- ✅ `name` (string) 
+- ✅ `email` (string) 
+- ✅ `phone` (string) 
+- ✅ `address` (string) 
+- ✅ `city` (string) 
+- ✅ `state` (string) 
+- ✅ `country` (string) 
+- ✅ `classification` (string) 
+- ✅ `credit_limit` (number) 
+- ✅ `current_credit` (number) 
+- ✅ `is_active` (boolean) 
+- ✅ `metadata` (object) 
+- ✅ `created_at` (datetime) 
+- ✅ `updated_at` (datetime) 
+- ✅ `salesOrders` (relationship[]) 
+- ✅ `name` (mixed) 
+- ✅ `email` (mixed) 
+- ✅ `classification` (mixed) 
+- ✅ `is_active` (mixed) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/customers",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/customers/{customer}`
+
+**Campos disponibles:**
+
+- ✅ `name` (string) 
+- ✅ `email` (string) 
+- ✅ `phone` (string) 
+- ✅ `address` (string) 
+- ✅ `city` (string) 
+- ✅ `state` (string) 
+- ✅ `country` (string) 
+- ✅ `classification` (string) 
+- ✅ `credit_limit` (number) 
+- ✅ `current_credit` (number) 
+- ✅ `is_active` (boolean) 
+- ✅ `metadata` (object) 
+- ✅ `created_at` (datetime) 
+- ✅ `updated_at` (datetime) 
+- ✅ `salesOrders` (relationship[]) 
+- ✅ `name` (mixed) 
+- ✅ `email` (mixed) 
+- ✅ `classification` (mixed) 
+- ✅ `is_active` (mixed) 
+
+---
+
+#### `DELETE` `api/v1/customers/{customer}`
+
+**Campos disponibles:**
+
+- ✅ `name` (string) 
+- ✅ `email` (string) 
+- ✅ `phone` (string) 
+- ✅ `address` (string) 
+- ✅ `city` (string) 
+- ✅ `state` (string) 
+- ✅ `country` (string) 
+- ✅ `classification` (string) 
+- ✅ `credit_limit` (number) 
+- ✅ `current_credit` (number) 
+- ✅ `is_active` (boolean) 
+- ✅ `metadata` (object) 
+- ✅ `created_at` (datetime) 
+- ✅ `updated_at` (datetime) 
+- ✅ `salesOrders` (relationship[]) 
+- ✅ `name` (mixed) 
+- ✅ `email` (mixed) 
+- ✅ `classification` (mixed) 
+- ✅ `is_active` (mixed) 
+
+---
+
+### 📦 Sales orders
+
+#### `GET` `api/v1/sales-orders`
+
+**Campos disponibles:**
+
+- ✅ `name` (string) 
+- ✅ `email` (string) 
+- ✅ `phone` (string) 
+- ✅ `address` (string) 
+- ✅ `city` (string) 
+- ✅ `state` (string) 
+- ✅ `country` (string) 
+- ✅ `classification` (string) 
+- ✅ `credit_limit` (number) 
+- ✅ `current_credit` (number) 
+- ✅ `is_active` (boolean) 
+- ✅ `metadata` (object) 
+- ✅ `created_at` (datetime) 
+- ✅ `updated_at` (datetime) 
+- ✅ `salesOrders` (relationship[]) 
+- ✅ `name` (mixed) 
+- ✅ `email` (mixed) 
+- ✅ `classification` (mixed) 
+- ✅ `is_active` (mixed) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/sales_orders",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/sales-orders`
+
+**Campos disponibles:**
+
+- ✅ `name` (string) 
+- ✅ `email` (string) 
+- ✅ `phone` (string) 
+- ✅ `address` (string) 
+- ✅ `city` (string) 
+- ✅ `state` (string) 
+- ✅ `country` (string) 
+- ✅ `classification` (string) 
+- ✅ `credit_limit` (number) 
+- ✅ `current_credit` (number) 
+- ✅ `is_active` (boolean) 
+- ✅ `metadata` (object) 
+- ✅ `created_at` (datetime) 
+- ✅ `updated_at` (datetime) 
+- ✅ `salesOrders` (relationship[]) 
+- ✅ `name` (mixed) 
+- ✅ `email` (mixed) 
+- ✅ `classification` (mixed) 
+- ✅ `is_active` (mixed) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/sales_orders",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "sales_orders",
+            "attributes": [
+                "..."
+            ]
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/sales-orders/{sales_order}`
+
+**Campos disponibles:**
+
+- ✅ `name` (string) 
+- ✅ `email` (string) 
+- ✅ `phone` (string) 
+- ✅ `address` (string) 
+- ✅ `city` (string) 
+- ✅ `state` (string) 
+- ✅ `country` (string) 
+- ✅ `classification` (string) 
+- ✅ `credit_limit` (number) 
+- ✅ `current_credit` (number) 
+- ✅ `is_active` (boolean) 
+- ✅ `metadata` (object) 
+- ✅ `created_at` (datetime) 
+- ✅ `updated_at` (datetime) 
+- ✅ `salesOrders` (relationship[]) 
+- ✅ `name` (mixed) 
+- ✅ `email` (mixed) 
+- ✅ `classification` (mixed) 
+- ✅ `is_active` (mixed) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/sales_orders",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/sales-orders/{sales_order}`
+
+**Campos disponibles:**
+
+- ✅ `name` (string) 
+- ✅ `email` (string) 
+- ✅ `phone` (string) 
+- ✅ `address` (string) 
+- ✅ `city` (string) 
+- ✅ `state` (string) 
+- ✅ `country` (string) 
+- ✅ `classification` (string) 
+- ✅ `credit_limit` (number) 
+- ✅ `current_credit` (number) 
+- ✅ `is_active` (boolean) 
+- ✅ `metadata` (object) 
+- ✅ `created_at` (datetime) 
+- ✅ `updated_at` (datetime) 
+- ✅ `salesOrders` (relationship[]) 
+- ✅ `name` (mixed) 
+- ✅ `email` (mixed) 
+- ✅ `classification` (mixed) 
+- ✅ `is_active` (mixed) 
+
+---
+
+#### `DELETE` `api/v1/sales-orders/{sales_order}`
+
+**Campos disponibles:**
+
+- ✅ `name` (string) 
+- ✅ `email` (string) 
+- ✅ `phone` (string) 
+- ✅ `address` (string) 
+- ✅ `city` (string) 
+- ✅ `state` (string) 
+- ✅ `country` (string) 
+- ✅ `classification` (string) 
+- ✅ `credit_limit` (number) 
+- ✅ `current_credit` (number) 
+- ✅ `is_active` (boolean) 
+- ✅ `metadata` (object) 
+- ✅ `created_at` (datetime) 
+- ✅ `updated_at` (datetime) 
+- ✅ `salesOrders` (relationship[]) 
+- ✅ `name` (mixed) 
+- ✅ `email` (mixed) 
+- ✅ `classification` (mixed) 
+- ✅ `is_active` (mixed) 
+
+---
+
+### 📦 Sales order items
+
+#### `GET` `api/v1/sales-order-items`
+
+**Campos disponibles:**
+
+- ✅ `name` (string) 
+- ✅ `email` (string) 
+- ✅ `phone` (string) 
+- ✅ `address` (string) 
+- ✅ `city` (string) 
+- ✅ `state` (string) 
+- ✅ `country` (string) 
+- ✅ `classification` (string) 
+- ✅ `credit_limit` (number) 
+- ✅ `current_credit` (number) 
+- ✅ `is_active` (boolean) 
+- ✅ `metadata` (object) 
+- ✅ `created_at` (datetime) 
+- ✅ `updated_at` (datetime) 
+- ✅ `salesOrders` (relationship[]) 
+- ✅ `name` (mixed) 
+- ✅ `email` (mixed) 
+- ✅ `classification` (mixed) 
+- ✅ `is_active` (mixed) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/sales_order_items",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/sales-order-items`
+
+**Campos disponibles:**
+
+- ✅ `name` (string) 
+- ✅ `email` (string) 
+- ✅ `phone` (string) 
+- ✅ `address` (string) 
+- ✅ `city` (string) 
+- ✅ `state` (string) 
+- ✅ `country` (string) 
+- ✅ `classification` (string) 
+- ✅ `credit_limit` (number) 
+- ✅ `current_credit` (number) 
+- ✅ `is_active` (boolean) 
+- ✅ `metadata` (object) 
+- ✅ `created_at` (datetime) 
+- ✅ `updated_at` (datetime) 
+- ✅ `salesOrders` (relationship[]) 
+- ✅ `name` (mixed) 
+- ✅ `email` (mixed) 
+- ✅ `classification` (mixed) 
+- ✅ `is_active` (mixed) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/sales_order_items",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "sales_order_items",
+            "attributes": [
+                "..."
+            ]
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/sales-order-items/{sales_order_item}`
+
+**Campos disponibles:**
+
+- ✅ `name` (string) 
+- ✅ `email` (string) 
+- ✅ `phone` (string) 
+- ✅ `address` (string) 
+- ✅ `city` (string) 
+- ✅ `state` (string) 
+- ✅ `country` (string) 
+- ✅ `classification` (string) 
+- ✅ `credit_limit` (number) 
+- ✅ `current_credit` (number) 
+- ✅ `is_active` (boolean) 
+- ✅ `metadata` (object) 
+- ✅ `created_at` (datetime) 
+- ✅ `updated_at` (datetime) 
+- ✅ `salesOrders` (relationship[]) 
+- ✅ `name` (mixed) 
+- ✅ `email` (mixed) 
+- ✅ `classification` (mixed) 
+- ✅ `is_active` (mixed) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/sales_order_items",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/sales-order-items/{sales_order_item}`
+
+**Campos disponibles:**
+
+- ✅ `name` (string) 
+- ✅ `email` (string) 
+- ✅ `phone` (string) 
+- ✅ `address` (string) 
+- ✅ `city` (string) 
+- ✅ `state` (string) 
+- ✅ `country` (string) 
+- ✅ `classification` (string) 
+- ✅ `credit_limit` (number) 
+- ✅ `current_credit` (number) 
+- ✅ `is_active` (boolean) 
+- ✅ `metadata` (object) 
+- ✅ `created_at` (datetime) 
+- ✅ `updated_at` (datetime) 
+- ✅ `salesOrders` (relationship[]) 
+- ✅ `name` (mixed) 
+- ✅ `email` (mixed) 
+- ✅ `classification` (mixed) 
+- ✅ `is_active` (mixed) 
+
+---
+
+#### `DELETE` `api/v1/sales-order-items/{sales_order_item}`
+
+**Campos disponibles:**
+
+- ✅ `name` (string) 
+- ✅ `email` (string) 
+- ✅ `phone` (string) 
+- ✅ `address` (string) 
+- ✅ `city` (string) 
+- ✅ `state` (string) 
+- ✅ `country` (string) 
+- ✅ `classification` (string) 
+- ✅ `credit_limit` (number) 
+- ✅ `current_credit` (number) 
+- ✅ `is_active` (boolean) 
+- ✅ `metadata` (object) 
+- ✅ `created_at` (datetime) 
+- ✅ `updated_at` (datetime) 
+- ✅ `salesOrders` (relationship[]) 
+- ✅ `name` (mixed) 
+- ✅ `email` (mixed) 
+- ✅ `classification` (mixed) 
+- ✅ `is_active` (mixed) 
 
 ---
 

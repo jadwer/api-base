@@ -1,0 +1,258 @@
+<?php
+
+namespace Modules\Sales\Tests\Feature;
+
+use Tests\TestCase;
+use Modules\User\Models\User;
+use Modules\Sales\Models\Customer;
+
+class CustomerShowTest extends TestCase
+{
+    private function getAdminUser(): User
+    {
+        return User::where('email', 'admin@example.com')->firstOrFail();
+    }
+
+    private function getTechUser(): User
+    {
+        return User::where('email', 'tech@example.com')->firstOrFail();
+    }
+
+    private function getCustomerUser(): User
+    {
+        return User::where('email', 'customer@example.com')->firstOrFail();
+    }
+
+    public function test_admin_can_view_customer(): void
+    {
+        $admin = $this->getAdminUser();
+        
+        $customer = Customer::factory()->create([
+            'name' => 'Test Customer Show',
+            'email' => 'test.show@example.com',
+            'classification' => 'mayorista',
+            'credit_limit' => 50000.00,
+            'current_credit' => 15000.00,
+            'is_active' => true
+        ]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->get("/api/v1/customers/{$customer->id}");
+
+        $response->assertOk();
+        
+        // Verificar estructura básica
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'type',
+                'attributes' => [
+                    'name',
+                    'email',
+                    'classification',
+                    'credit_limit',
+                    'current_credit',
+                    'is_active',
+                ]
+            ]
+        ]);
+
+        // Verificar datos específicos
+        $this->assertEquals('Test Customer Show', $response->json('data.attributes.name'));
+        $this->assertEquals('test.show@example.com', $response->json('data.attributes.email'));
+        $this->assertEquals('mayorista', $response->json('data.attributes.classification'));
+        $this->assertEquals(50000.00, $response->json('data.attributes.credit_limit'));
+        $this->assertEquals(15000.00, $response->json('data.attributes.current_credit'));
+        $this->assertTrue($response->json('data.attributes.is_active'));
+    }
+            'credit_limit' => 50000.00,
+            'current_credit' => 15000.00,
+            'is_active' => true,
+            'metadata' => [
+                'source' => 'web',
+                'preferences' => ['payment_method' => 'credit']
+            ]
+        ]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->get("/api/v1/customers/{$customer->id}");
+
+        $response->assertStatus(200);
+        
+        // Verificar estructura de respuesta
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'type',
+                'attributes' => [
+                    'name',
+                    'email',
+                    'phone',
+                    'address',
+                    'city',
+                    'state',
+                    'country',
+                    'classification',
+                    'credit_limit',
+                    'current_credit',
+                    'is_active',
+                    'metadata'
+                ]
+            ]
+        ]);
+        
+        // Verificar valores específicos
+        $this->assertEquals($customer->id, $response->json('data.id'));
+        $this->assertEquals('customers', $response->json('data.type'));
+        $this->assertEquals('Cliente Test S.A.', $response->json('data.attributes.name'));
+        $this->assertEquals('cliente@test.com', $response->json('data.attributes.email'));
+        $this->assertEquals('mayorista', $response->json('data.attributes.classification'));
+        $this->assertEquals(50000.00, $response->json('data.attributes.credit_limit'));
+        $this->assertEquals(15000.00, $response->json('data.attributes.current_credit'));
+        $this->assertTrue($response->json('data.attributes.is_active'));
+    }
+
+    public function test_admin_can_view_customer_with_relationships()
+    {
+        $admin = $this->createUserWithPermissions('admin', ['customers.view']);
+        
+        $customer = Customer::factory()->create();
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->get("/api/v1/customers/{$customer->id}?include=salesOrders");
+
+        $response->assertStatus(200);
+        
+        // Verificar que incluye la estructura de relaciones
+        $response->assertJsonStructure([
+            'data' => [
+                'relationships' => [
+                    'salesOrders' => [
+                        'data'
+                    ]
+                ]
+            ]
+        ]);
+    }
+
+    public function test_admin_can_view_inactive_customer()
+    {
+        $admin = $this->createUserWithPermissions('admin', ['customers.view']);
+        
+        $customer = Customer::factory()->create([
+            'is_active' => false,
+            'name' => 'Cliente Inactivo'
+        ]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->get("/api/v1/customers/{$customer->id}");
+
+        $response->assertStatus(200);
+        $this->assertFalse($response->json('data.attributes.is_active'));
+        $this->assertEquals('Cliente Inactivo', $response->json('data.attributes.name'));
+    }
+
+    public function test_tech_user_can_view_customer_with_permission()
+    {
+        $tech = $this->createUserWithPermissions('tech', ['customers.view']);
+        
+        $customer = Customer::factory()->create();
+
+        $response = $this->actingAs($tech, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->get("/api/v1/customers/{$customer->id}");
+
+        $response->assertStatus(200);
+    }
+
+    public function test_user_without_permission_cannot_view_customer()
+    {
+        $user = $this->createUserWithPermissions('customer', []);
+        
+        $customer = Customer::factory()->create();
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->get("/api/v1/customers/{$customer->id}");
+
+        $response->assertStatus(403);
+    }
+
+    public function test_guest_cannot_view_customer()
+    {
+        $customer = Customer::factory()->create();
+
+        $response = $this->jsonApi()
+            ->expects('customers')
+            ->get("/api/v1/customers/{$customer->id}");
+
+        $response->assertStatus(401);
+    }
+
+    public function test_cannot_view_nonexistent_customer()
+    {
+        $admin = $this->createUserWithPermissions('admin', ['customers.view']);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->get('/api/v1/customers/999999');
+
+        $response->assertStatus(404);
+    }
+
+    public function test_response_includes_timestamps()
+    {
+        $admin = $this->createUserWithPermissions('admin', ['customers.view']);
+        
+        $customer = Customer::factory()->create();
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->get("/api/v1/customers/{$customer->id}");
+
+        $response->assertStatus(200);
+        
+        $this->assertNotNull($response->json('data.attributes.created_at'));
+        $this->assertNotNull($response->json('data.attributes.updated_at'));
+    }
+
+    public function test_metadata_is_properly_formatted()
+    {
+        $admin = $this->createUserWithPermissions('admin', ['customers.view']);
+        
+        $metadata = [
+            'source' => 'mobile_app',
+            'preferences' => [
+                'payment_method' => 'bank_transfer',
+                'delivery_preference' => 'morning'
+            ],
+            'notes' => 'Cliente VIP'
+        ];
+        
+        $customer = Customer::factory()->create(['metadata' => $metadata]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->get("/api/v1/customers/{$customer->id}");
+
+        $response->assertStatus(200);
+        
+        $responseMetadata = $response->json('data.attributes.metadata');
+        $this->assertEquals($metadata, $responseMetadata);
+        $this->assertEquals('mobile_app', $responseMetadata['source']);
+        $this->assertEquals('bank_transfer', $responseMetadata['preferences']['payment_method']);
+    }
+}

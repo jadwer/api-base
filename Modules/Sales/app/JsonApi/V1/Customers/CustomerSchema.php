@@ -22,25 +22,25 @@ class CustomerSchema extends Schema
     {
         return [
             ID::make(),
-            Str::make('name'),
-            Str::make('email'),
+            Str::make('name')->sortable(),
+            Str::make('email')->sortable(),
             Str::make('phone'),
             Str::make('address'),
             Str::make('city'),
             Str::make('state'),
             Str::make('country'),
-            Str::make('classification'),
+            Str::make('classification')->sortable(),
             Number::make('credit_limit'),
             Number::make('current_credit'),
-            Boolean::make('is_active'),
+            Boolean::make('is_active')->sortable(),
             ArrayHash::make('metadata'),
-            DateTime::make('created_at'),
-            DateTime::make('updated_at'),
+            DateTime::make('created_at')->sortable(),
+            DateTime::make('updated_at')->sortable(),
             HasMany::make('salesOrders'),
         ];
     }
 
-    public function filters(): array
+    public function filters(): iterable
     {
         return [
             Where::make('name'),

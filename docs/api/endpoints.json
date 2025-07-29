@@ -1,5 +1,5 @@
 {
-    "generated_at": "2025-07-28T18:28:32.523469Z",
+    "generated_at": "2025-07-29T00:14:37.302677Z",
     "base_url": "http:\/\/localhost\/api\/v1",
     "authentication": {
         "type": "Bearer Token",
@@ -6944,6 +6944,2256 @@
                     },
                     {
                         "name": "quantity",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": []
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/customers",
+            "resource_type": "customers",
+            "controller": "Modules\\Sales\\Http\\Controllers\\Api\\V1\\CustomerController",
+            "action": "index",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CustomerSchema.php",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "address",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "city",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "state",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "country",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "credit_limit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "current_credit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updated_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "salesOrders",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/customers",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "customers",
+                                "id": "1",
+                                "attributes": [
+                                    "..."
+                                ],
+                                "relationships": [
+                                    "..."
+                                ]
+                            }
+                        ],
+                        "meta": {
+                            "pagination": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "POST"
+            ],
+            "uri": "api\/v1\/customers",
+            "resource_type": "customers",
+            "controller": "Modules\\Sales\\Http\\Controllers\\Api\\V1\\CustomerController",
+            "action": "store",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CustomerSchema.php",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "address",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "city",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "state",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "country",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "credit_limit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "current_credit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updated_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "salesOrders",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "POST",
+                    "url": "\/api\/v1\/customers",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "customers",
+                            "attributes": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/customers\/{customer}",
+            "resource_type": "customers",
+            "controller": "Modules\\Sales\\Http\\Controllers\\Api\\V1\\CustomerController",
+            "action": "show",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CustomerSchema.php",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "address",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "city",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "state",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "country",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "credit_limit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "current_credit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updated_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "salesOrders",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/customers",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "customers",
+                                "id": "1",
+                                "attributes": [
+                                    "..."
+                                ],
+                                "relationships": [
+                                    "..."
+                                ]
+                            }
+                        ],
+                        "meta": {
+                            "pagination": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "PATCH"
+            ],
+            "uri": "api\/v1\/customers\/{customer}",
+            "resource_type": "customers",
+            "controller": "Modules\\Sales\\Http\\Controllers\\Api\\V1\\CustomerController",
+            "action": "update",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CustomerSchema.php",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "address",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "city",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "state",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "country",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "credit_limit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "current_credit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updated_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "salesOrders",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": []
+        },
+        {
+            "methods": [
+                "DELETE"
+            ],
+            "uri": "api\/v1\/customers\/{customer}",
+            "resource_type": "customers",
+            "controller": "Modules\\Sales\\Http\\Controllers\\Api\\V1\\CustomerController",
+            "action": "destroy",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CustomerSchema.php",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "address",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "city",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "state",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "country",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "credit_limit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "current_credit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updated_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "salesOrders",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": []
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/sales-orders",
+            "resource_type": "sales_orders",
+            "controller": "Modules\\Sales\\Http\\Controllers\\Api\\V1\\SalesOrderController",
+            "action": "index",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CustomerSchema.php",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "address",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "city",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "state",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "country",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "credit_limit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "current_credit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updated_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "salesOrders",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/sales_orders",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "sales_orders",
+                                "id": "1",
+                                "attributes": [
+                                    "..."
+                                ],
+                                "relationships": [
+                                    "..."
+                                ]
+                            }
+                        ],
+                        "meta": {
+                            "pagination": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "POST"
+            ],
+            "uri": "api\/v1\/sales-orders",
+            "resource_type": "sales_orders",
+            "controller": "Modules\\Sales\\Http\\Controllers\\Api\\V1\\SalesOrderController",
+            "action": "store",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CustomerSchema.php",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "address",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "city",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "state",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "country",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "credit_limit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "current_credit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updated_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "salesOrders",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "POST",
+                    "url": "\/api\/v1\/sales_orders",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "sales_orders",
+                            "attributes": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/sales-orders\/{sales_order}",
+            "resource_type": "sales_orders",
+            "controller": "Modules\\Sales\\Http\\Controllers\\Api\\V1\\SalesOrderController",
+            "action": "show",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CustomerSchema.php",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "address",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "city",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "state",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "country",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "credit_limit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "current_credit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updated_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "salesOrders",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/sales_orders",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "sales_orders",
+                                "id": "1",
+                                "attributes": [
+                                    "..."
+                                ],
+                                "relationships": [
+                                    "..."
+                                ]
+                            }
+                        ],
+                        "meta": {
+                            "pagination": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "PATCH"
+            ],
+            "uri": "api\/v1\/sales-orders\/{sales_order}",
+            "resource_type": "sales_orders",
+            "controller": "Modules\\Sales\\Http\\Controllers\\Api\\V1\\SalesOrderController",
+            "action": "update",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CustomerSchema.php",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "address",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "city",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "state",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "country",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "credit_limit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "current_credit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updated_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "salesOrders",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": []
+        },
+        {
+            "methods": [
+                "DELETE"
+            ],
+            "uri": "api\/v1\/sales-orders\/{sales_order}",
+            "resource_type": "sales_orders",
+            "controller": "Modules\\Sales\\Http\\Controllers\\Api\\V1\\SalesOrderController",
+            "action": "destroy",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CustomerSchema.php",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "address",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "city",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "state",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "country",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "credit_limit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "current_credit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updated_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "salesOrders",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": []
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/sales-order-items",
+            "resource_type": "sales_order_items",
+            "controller": "Modules\\Sales\\Http\\Controllers\\Api\\V1\\SalesOrderItemController",
+            "action": "index",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CustomerSchema.php",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "address",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "city",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "state",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "country",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "credit_limit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "current_credit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updated_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "salesOrders",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/sales_order_items",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "sales_order_items",
+                                "id": "1",
+                                "attributes": [
+                                    "..."
+                                ],
+                                "relationships": [
+                                    "..."
+                                ]
+                            }
+                        ],
+                        "meta": {
+                            "pagination": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "POST"
+            ],
+            "uri": "api\/v1\/sales-order-items",
+            "resource_type": "sales_order_items",
+            "controller": "Modules\\Sales\\Http\\Controllers\\Api\\V1\\SalesOrderItemController",
+            "action": "store",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CustomerSchema.php",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "address",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "city",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "state",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "country",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "credit_limit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "current_credit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updated_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "salesOrders",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "POST",
+                    "url": "\/api\/v1\/sales_order_items",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "sales_order_items",
+                            "attributes": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/sales-order-items\/{sales_order_item}",
+            "resource_type": "sales_order_items",
+            "controller": "Modules\\Sales\\Http\\Controllers\\Api\\V1\\SalesOrderItemController",
+            "action": "show",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CustomerSchema.php",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "address",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "city",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "state",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "country",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "credit_limit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "current_credit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updated_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "salesOrders",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/sales_order_items",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "sales_order_items",
+                                "id": "1",
+                                "attributes": [
+                                    "..."
+                                ],
+                                "relationships": [
+                                    "..."
+                                ]
+                            }
+                        ],
+                        "meta": {
+                            "pagination": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "PATCH"
+            ],
+            "uri": "api\/v1\/sales-order-items\/{sales_order_item}",
+            "resource_type": "sales_order_items",
+            "controller": "Modules\\Sales\\Http\\Controllers\\Api\\V1\\SalesOrderItemController",
+            "action": "update",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CustomerSchema.php",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "address",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "city",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "state",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "country",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "credit_limit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "current_credit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updated_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "salesOrders",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": []
+        },
+        {
+            "methods": [
+                "DELETE"
+            ],
+            "uri": "api\/v1\/sales-order-items\/{sales_order_item}",
+            "resource_type": "sales_order_items",
+            "controller": "Modules\\Sales\\Http\\Controllers\\Api\\V1\\SalesOrderItemController",
+            "action": "destroy",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CustomerSchema.php",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "address",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "city",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "state",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "country",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "credit_limit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "current_credit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updated_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "salesOrders",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "mixed",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "is_active",
                         "type": "mixed",
                         "required": true,
                         "readonly": false

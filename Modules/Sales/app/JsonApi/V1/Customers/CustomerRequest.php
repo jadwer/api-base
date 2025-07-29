@@ -5,7 +5,7 @@ namespace Modules\Sales\JsonApi\V1\Customers;
 use Illuminate\Validation\Rule;
 use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
 
-class CustomersRequest extends ResourceRequest
+class CustomerRequest extends ResourceRequest
 {
     public function rules(): array
     {
@@ -24,5 +24,11 @@ class CustomersRequest extends ResourceRequest
             'is_active' => ['boolean'],
             'metadata' => ['nullable', 'array'],
         ];
+    }
+
+    public function deleteRules(): array
+    {
+        // No validation rules for delete operations
+        return [];
     }
 }

@@ -96,9 +96,9 @@ class Server extends BaseServer
             'suppliers' => \Modules\Purchase\JsonApi\V1\Suppliers\SupplierAuthorizer::class,
             'purchase-orders' => \Modules\Purchase\JsonApi\V1\PurchaseOrders\PurchaseOrderAuthorizer::class,
             'purchase-order-items' => \Modules\Purchase\JsonApi\V1\PurchaseOrderItems\PurchaseOrderItemAuthorizer::class,
-            'sales-orders' => \Modules\Sales\JsonApi\V1\SalesOrders\SalesOrdersAuthorizer::class,
+            'sales-orders' => \Modules\Sales\JsonApi\V1\SalesOrders\SalesOrderAuthorizer::class,
             'customers' => \Modules\Sales\JsonApi\V1\Customers\CustomersAuthorizer::class,
-            'sales-order-items' => \Modules\Sales\JsonApi\V1\SalesOrderItems\SalesOrderItemsAuthorizer::class,
+            'sales-order-items' => \Modules\Sales\JsonApi\V1\SalesOrderItems\SalesOrderItemAuthorizer::class,
         ];
     }
 }

@@ -5,8 +5,11 @@ namespace Modules\Sales\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Modules\Sales\Models\SalesOrder;
 
 /**
  * @property int $id
@@ -40,6 +43,23 @@ class Customer extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function (Customer $customer) {
+            // Verificar si tiene sales orders activas
+            if ($customer->salesOrders()->exists()) {
+                throw new ValidationException(
+                    Validator::make([], []),
+                    [
+                        'customer' => ['Cannot delete customer with existing sales orders']
+                    ]
+                );
+            }
+        });
+    }
 
     // Configuración de Activity Log
     public function getActivitylogOptions(): LogOptions

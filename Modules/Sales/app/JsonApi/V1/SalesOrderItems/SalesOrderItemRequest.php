@@ -4,7 +4,7 @@ namespace Modules\Sales\JsonApi\V1\SalesOrderItems;
 
 use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
 
-class SalesOrderItemsRequest extends ResourceRequest
+class SalesOrderItemRequest extends ResourceRequest
 {
     public function rules(): array
     {

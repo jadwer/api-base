@@ -7,10 +7,15 @@ use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Log;
 use LaravelJsonApi\Contracts\Auth\Authorizer;
 
-class CustomersAuthorizer implements Authorizer
+class CustomerAuthorizer implements Authorizer
 {
     public function index(Request $request, string $modelClass): bool|Response
     {
+        Log::info('CustomerAuthorizer@index called', [
+            'user_id' => $request->user()?->id,
+            'model_class' => $modelClass,
+        ]);
+        
         $user = $request->user();
         
         // Customer users cannot list all customers
@@ -20,9 +25,13 @@ class CustomersAuthorizer implements Authorizer
         
         return $user?->can('customers.index') ?? false;
     }
-    
     public function store(Request $request, string $modelClass): bool|Response
     {
+        Log::info('CustomerAuthorizer@store called', [
+            'user_id' => $request->user()?->id,
+            'model_class' => $modelClass,
+        ]);
+        
         $user = $request->user();
         
         // Customer users cannot create new customers

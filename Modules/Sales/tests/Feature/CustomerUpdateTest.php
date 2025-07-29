@@ -3,50 +3,33 @@
 namespace Modules\Sales\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\Sales\Models\Customer;
 use Modules\User\Models\User;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Sales\Models\Customer;
 
 class CustomerUpdateTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
+    private function getAdminUser(): User
     {
-        parent::setUp();
-        
-        // Crear permisos necesarios
-        Permission::firstOrCreate(['name' => 'customers.update', 'guard_name' => 'api']);
-        Permission::firstOrCreate(['name' => 'customers.view', 'guard_name' => 'api']);
-        
-        // Crear roles
-        Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'api']);
-        Role::firstOrCreate(['name' => 'tech', 'guard_name' => 'api']);
-        Role::firstOrCreate(['name' => 'customer', 'guard_name' => 'api']);
+        return User::where('email', 'admin@example.com')->firstOrFail();
     }
 
-    private function createUserWithPermissions(string $role, array $permissions = []): User
+    private function getTechUser(): User
     {
-        $user = User::factory()->create();
-        $roleModel = Role::findByName($role, 'api');
-        
-        if (!empty($permissions)) {
-            $roleModel->givePermissionTo($permissions);
-        }
-        
-        $user->assignRole($role);
-        return $user;
+        return User::where('email', 'tech@example.com')->firstOrFail();
     }
 
-    public function test_admin_can_update_customer()
+    private function getCustomerUser(): User
     {
-        $admin = $this->createUserWithPermissions('admin', ['customers.update']);
+        return User::where('email', 'customer@example.com')->firstOrFail();
+    }
+
+    public function test_admin_can_update_customer(): void
+    {
+        $admin = $this->getAdminUser();
         
         $customer = Customer::factory()->create([
-            'name' => 'Cliente Original',
-            'email' => 'original@test.com',
+            'name' => 'Original Customer',
+            'email' => 'original@example.com',
             'classification' => 'minorista',
             'credit_limit' => 10000.00,
             'is_active' => true
@@ -56,20 +39,14 @@ class CustomerUpdateTest extends TestCase
             'type' => 'customers',
             'id' => (string) $customer->id,
             'attributes' => [
-                'name' => 'Cliente Actualizado S.A.',
-                'email' => 'actualizado@test.com',
-                'phone' => '+9876543210',
-                'address' => 'Nueva Dirección 456',
-                'city' => 'Nueva Ciudad',
-                'state' => 'Nuevo Estado',
-                'country' => 'Nuevo País',
+                'name' => 'Updated Customer Name',
                 'classification' => 'mayorista',
-                'creditLimit' => 75000.00,
-                'currentCredit' => 25000.00,
-                'isActive' => false,
+                'credit_limit' => 50000.00,
+                'current_credit' => 15000.00,
+                'is_active' => false,
                 'metadata' => [
-                    'updated_by' => 'admin',
-                    'reason' => 'Upgrade to wholesale'
+                    'source' => 'updated_web',
+                    'notes' => 'Customer updated via API'
                 ]
             ]
         ];
@@ -80,43 +57,40 @@ class CustomerUpdateTest extends TestCase
             ->withData($updateData)
             ->patch("/api/v1/customers/{$customer->id}");
 
-        $response->assertStatus(200);
+        $response->assertOk();
         
-        // Verificar que los datos fueron actualizados en la base de datos
+        // Verificar que se actualizó en BD
         $this->assertDatabaseHas('customers', [
             'id' => $customer->id,
-            'name' => 'Cliente Actualizado S.A.',
-            'email' => 'actualizado@test.com',
+            'name' => 'Updated Customer Name',
             'classification' => 'mayorista',
-            'credit_limit' => 75000.00,
-            'current_credit' => 25000.00,
+            'credit_limit' => 50000.00,
             'is_active' => false
         ]);
-        
-        // Verificar valores específicos en la respuesta
-        $this->assertEquals('Cliente Actualizado S.A.', $response->json('data.attributes.name'));
+
+        // Verificar respuesta JSON
+        $this->assertEquals('Updated Customer Name', $response->json('data.attributes.name'));
         $this->assertEquals('mayorista', $response->json('data.attributes.classification'));
-        $this->assertEquals(75000.00, $response->json('data.attributes.creditLimit'));
-        $this->assertFalse($response->json('data.attributes.isActive'));
+        $this->assertEquals(50000.00, $response->json('data.attributes.credit_limit'));
+        $this->assertFalse($response->json('data.attributes.is_active'));
     }
 
-    public function test_admin_can_partially_update_customer()
+    public function test_admin_can_partially_update_customer(): void
     {
-        $admin = $this->createUserWithPermissions('admin', ['customers.update']);
+        $admin = $this->getAdminUser();
         
         $customer = Customer::factory()->create([
-            'name' => 'Cliente Original',
-            'email' => 'original@test.com',
+            'name' => 'Partial Update Customer',
+            'email' => 'partial@example.com',
             'classification' => 'minorista',
-            'credit_limit' => 10000.00
+            'credit_limit' => 20000.00
         ]);
 
         $updateData = [
             'type' => 'customers',
             'id' => (string) $customer->id,
             'attributes' => [
-                'creditLimit' => 20000.00,
-                'phone' => '+1111111111'
+                'credit_limit' => 35000.00
             ]
         ];
 
@@ -126,156 +100,35 @@ class CustomerUpdateTest extends TestCase
             ->withData($updateData)
             ->patch("/api/v1/customers/{$customer->id}");
 
-        $response->assertStatus(200);
+        $response->assertOk();
         
-        // Verificar que solo los campos especificados fueron actualizados
+        // Verificar que solo se actualizó credit_limit
         $this->assertDatabaseHas('customers', [
             'id' => $customer->id,
-            'name' => 'Cliente Original', // No cambió
-            'email' => 'original@test.com', // No cambió
-            'classification' => 'minorista', // No cambió
-            'credit_limit' => 20000.00, // Sí cambió
-            'phone' => '+1111111111' // Sí cambió
+            'name' => 'Partial Update Customer', // Sin cambios
+            'email' => 'partial@example.com',    // Sin cambios
+            'classification' => 'minorista',      // Sin cambios
+            'credit_limit' => 35000.00           // Actualizado
         ]);
+
+        $this->assertEquals(35000.00, $response->json('data.attributes.credit_limit'));
+        $this->assertEquals('Partial Update Customer', $response->json('data.attributes.name'));
     }
 
-    public function test_cannot_update_customer_with_duplicate_email()
+    public function test_tech_user_can_update_customer_with_permission(): void
     {
-        $admin = $this->createUserWithPermissions('admin', ['customers.update']);
-        
-        // Crear dos customers
-        $customer1 = Customer::factory()->create(['email' => 'existente@test.com']);
-        $customer2 = Customer::factory()->create(['email' => 'original@test.com']);
-
-        $updateData = [
-            'type' => 'customers',
-            'id' => (string) $customer2->id,
-            'attributes' => [
-                'email' => 'existente@test.com' // Email que ya existe
-            ]
-        ];
-
-        $response = $this->actingAs($admin, 'sanctum')
-            ->jsonApi()
-            ->expects('customers')
-            ->withData($updateData)
-            ->patch("/api/v1/customers/{$customer2->id}");
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['email']);
-    }
-
-    public function test_can_update_customer_with_same_email()
-    {
-        $admin = $this->createUserWithPermissions('admin', ['customers.update']);
+        $tech = $this->getTechUser();
         
         $customer = Customer::factory()->create([
-            'email' => 'mismo@test.com',
-            'name' => 'Cliente Original'
+            'name' => 'Tech Update Customer',
+            'email' => 'tech.update@example.com'
         ]);
 
         $updateData = [
             'type' => 'customers',
             'id' => (string) $customer->id,
             'attributes' => [
-                'email' => 'mismo@test.com', // Mismo email
-                'name' => 'Cliente Actualizado'
-            ]
-        ];
-
-        $response = $this->actingAs($admin, 'sanctum')
-            ->jsonApi()
-            ->expects('customers')
-            ->withData($updateData)
-            ->patch("/api/v1/customers/{$customer->id}");
-
-        $response->assertStatus(200);
-        $this->assertEquals('Cliente Actualizado', $response->json('data.attributes.name'));
-    }
-
-    public function test_cannot_update_customer_with_invalid_classification()
-    {
-        $admin = $this->createUserWithPermissions('admin', ['customers.update']);
-        
-        $customer = Customer::factory()->create();
-
-        $updateData = [
-            'type' => 'customers',
-            'id' => (string) $customer->id,
-            'attributes' => [
-                'classification' => 'tipo_invalido'
-            ]
-        ];
-
-        $response = $this->actingAs($admin, 'sanctum')
-            ->jsonApi()
-            ->expects('customers')
-            ->withData($updateData)
-            ->patch("/api/v1/customers/{$customer->id}");
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['classification']);
-    }
-
-    public function test_cannot_update_customer_with_negative_credit_limit()
-    {
-        $admin = $this->createUserWithPermissions('admin', ['customers.update']);
-        
-        $customer = Customer::factory()->create();
-
-        $updateData = [
-            'type' => 'customers',
-            'id' => (string) $customer->id,
-            'attributes' => [
-                'creditLimit' => -5000.00
-            ]
-        ];
-
-        $response = $this->actingAs($admin, 'sanctum')
-            ->jsonApi()
-            ->expects('customers')
-            ->withData($updateData)
-            ->patch("/api/v1/customers/{$customer->id}");
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['creditLimit']);
-    }
-
-    public function test_cannot_update_customer_with_invalid_email()
-    {
-        $admin = $this->createUserWithPermissions('admin', ['customers.update']);
-        
-        $customer = Customer::factory()->create();
-
-        $updateData = [
-            'type' => 'customers',
-            'id' => (string) $customer->id,
-            'attributes' => [
-                'email' => 'email-invalido'
-            ]
-        ];
-
-        $response = $this->actingAs($admin, 'sanctum')
-            ->jsonApi()
-            ->expects('customers')
-            ->withData($updateData)
-            ->patch("/api/v1/customers/{$customer->id}");
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['email']);
-    }
-
-    public function test_tech_user_can_update_customer_with_permission()
-    {
-        $tech = $this->createUserWithPermissions('tech', ['customers.update']);
-        
-        $customer = Customer::factory()->create(['name' => 'Original']);
-
-        $updateData = [
-            'type' => 'customers',
-            'id' => (string) $customer->id,
-            'attributes' => [
-                'name' => 'Actualizado por Tech'
+                'name' => 'Tech Updated Name'
             ]
         ];
 
@@ -285,42 +138,44 @@ class CustomerUpdateTest extends TestCase
             ->withData($updateData)
             ->patch("/api/v1/customers/{$customer->id}");
 
-        $response->assertStatus(200);
-        $this->assertEquals('Actualizado por Tech', $response->json('data.attributes.name'));
+        $response->assertOk();
+        $this->assertEquals('Tech Updated Name', $response->json('data.attributes.name'));
     }
 
-    public function test_user_without_permission_cannot_update_customer()
+    public function test_customer_user_cannot_update_other_customers(): void
     {
-        $user = $this->createUserWithPermissions('customer', []);
+        $customer_user = $this->getCustomerUser();
         
-        $customer = Customer::factory()->create();
+        $customer = Customer::factory()->create([
+            'name' => 'Other Customer to Update'
+        ]);
 
         $updateData = [
             'type' => 'customers',
             'id' => (string) $customer->id,
             'attributes' => [
-                'name' => 'Intento de actualización'
+                'name' => 'Unauthorized Update'
             ]
         ];
 
-        $response = $this->actingAs($user, 'sanctum')
+        $response = $this->actingAs($customer_user, 'sanctum')
             ->jsonApi()
             ->expects('customers')
             ->withData($updateData)
             ->patch("/api/v1/customers/{$customer->id}");
 
-        $response->assertStatus(403);
+        $response->assertForbidden();
     }
 
-    public function test_guest_cannot_update_customer()
+    public function test_guest_cannot_update_customer(): void
     {
-        $customer = Customer::factory()->create();
+        $customer = Customer::factory()->create(['name' => 'Guest Update Customer']);
 
         $updateData = [
             'type' => 'customers',
             'id' => (string) $customer->id,
             'attributes' => [
-                'name' => 'Intento guest'
+                'name' => 'Guest Updated Name'
             ]
         ];
 
@@ -332,15 +187,19 @@ class CustomerUpdateTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_cannot_update_nonexistent_customer()
+    public function test_cannot_update_customer_with_duplicate_email(): void
     {
-        $admin = $this->createUserWithPermissions('admin', ['customers.update']);
+        $admin = $this->getAdminUser();
+        
+        // Crear dos customers
+        $customer1 = Customer::factory()->create(['email' => 'existing@example.com']);
+        $customer2 = Customer::factory()->create(['email' => 'toupdate@example.com']);
 
         $updateData = [
             'type' => 'customers',
-            'id' => '999999',
+            'id' => (string) $customer2->id,
             'attributes' => [
-                'name' => 'No existe'
+                'email' => 'existing@example.com' // Email ya existente
             ]
         ];
 
@@ -348,8 +207,161 @@ class CustomerUpdateTest extends TestCase
             ->jsonApi()
             ->expects('customers')
             ->withData($updateData)
-            ->patch('/api/v1/customers/999999');
+            ->patch("/api/v1/customers/{$customer2->id}");
 
-        $response->assertStatus(404);
+        $response->assertStatus(422);
+        
+        // Verificar error específico de email duplicado
+        $errors = $response->json('errors');
+        $this->assertTrue(
+            collect($errors)->contains(fn($e) => 
+                str_contains($e['source']['pointer'], 'email') && 
+                str_contains($e['detail'], 'taken')
+            )
+        );
+    }
+
+    public function test_can_update_customer_with_same_email(): void
+    {
+        $admin = $this->getAdminUser();
+        
+        $customer = Customer::factory()->create([
+            'name' => 'Same Email Customer',
+            'email' => 'same@example.com'
+        ]);
+
+        $updateData = [
+            'type' => 'customers',
+            'id' => (string) $customer->id,
+            'attributes' => [
+                'name' => 'Updated Name',
+                'email' => 'same@example.com' // Mismo email, debería permitirse
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->withData($updateData)
+            ->patch("/api/v1/customers/{$customer->id}");
+
+        $response->assertOk();
+        $this->assertEquals('Updated Name', $response->json('data.attributes.name'));
+        $this->assertEquals('same@example.com', $response->json('data.attributes.email'));
+    }
+
+    public function test_cannot_update_customer_with_invalid_classification(): void
+    {
+        $admin = $this->getAdminUser();
+        
+        $customer = Customer::factory()->create(['name' => 'Invalid Class Customer']);
+
+        $updateData = [
+            'type' => 'customers',
+            'id' => (string) $customer->id,
+            'attributes' => [
+                'classification' => 'invalid_classification'
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->withData($updateData)
+            ->patch("/api/v1/customers/{$customer->id}");
+
+        $response->assertStatus(422);
+        
+        // Verificar error de classification inválida
+        $errors = $response->json('errors');
+        $this->assertTrue(
+            collect($errors)->contains(fn($e) => 
+                str_contains($e['source']['pointer'], 'classification')
+            )
+        );
+    }
+
+    public function test_cannot_update_customer_with_negative_credit_limit(): void
+    {
+        $admin = $this->getAdminUser();
+        
+        $customer = Customer::factory()->create(['name' => 'Negative Credit Customer']);
+
+        $updateData = [
+            'type' => 'customers',
+            'id' => (string) $customer->id,
+            'attributes' => [
+                'credit_limit' => -5000.00
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->withData($updateData)
+            ->patch("/api/v1/customers/{$customer->id}");
+
+        $response->assertStatus(422);
+        
+        // Verificar error de credit_limit negativo
+        $errors = $response->json('errors');
+        $this->assertTrue(
+            collect($errors)->contains(fn($e) => 
+                str_contains($e['source']['pointer'], 'credit_limit')
+            )
+        );
+    }
+
+    public function test_cannot_update_customer_with_invalid_email(): void
+    {
+        $admin = $this->getAdminUser();
+        
+        $customer = Customer::factory()->create(['name' => 'Invalid Email Customer']);
+
+        $updateData = [
+            'type' => 'customers',
+            'id' => (string) $customer->id,
+            'attributes' => [
+                'email' => 'invalid-email-format'
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->withData($updateData)
+            ->patch("/api/v1/customers/{$customer->id}");
+
+        $response->assertStatus(422);
+        
+        // Verificar error de formato de email
+        $errors = $response->json('errors');
+        $this->assertTrue(
+            collect($errors)->contains(fn($e) => 
+                str_contains($e['source']['pointer'], 'email') && 
+                str_contains($e['detail'], 'valid email')
+            )
+        );
+    }
+
+    public function test_cannot_update_nonexistent_customer(): void
+    {
+        $admin = $this->getAdminUser();
+
+        $updateData = [
+            'type' => 'customers',
+            'id' => '99999',
+            'attributes' => [
+                'name' => 'Updated Nonexistent'
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('customers')
+            ->withData($updateData)
+            ->patch('/api/v1/customers/99999');
+
+        $response->assertNotFound();
     }
 }

@@ -4,7 +4,7 @@ namespace Modules\Sales\JsonApi\V1\SalesOrders;
 
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
-class SalesOrdersResource extends JsonApiResource
+class SalesOrderResource extends JsonApiResource
 {
     public function attributes($request): iterable
     {

@@ -4,7 +4,7 @@ namespace Modules\Sales\JsonApi\V1\Customers;
 
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
-class CustomersResource extends JsonApiResource
+class CustomerResource extends JsonApiResource
 {
     public function attributes($request): iterable
     {
@@ -23,12 +23,6 @@ class CustomersResource extends JsonApiResource
             'metadata' => $this->metadata,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-        ];
-    }
-    public function relationships($request): iterable
-    {
-        return [
-            'salesOrders' => $this->salesOrders,
         ];
     }
 }

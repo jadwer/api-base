@@ -45,14 +45,30 @@ class SalesAssignPermissionsSeeder extends Seeder
         }
 
         if ($techRole) {
-            // Tech solo lectura
+            // Tech tiene permisos CRUD completos (similar a admin)
             $techPermissions = Permission::where('guard_name', 'api')
                                        ->whereIn('name', [
-                                           'customers.index', 'customers.view', 'customers.show',
-                                           'sales-orders.index', 'sales-orders.view', 'sales-orders.show',
+                                           'customers.index', 'customers.view', 'customers.show', 'customers.store', 
+                                           'customers.update', 'customers.destroy',
+                                           'sales-orders.index', 'sales-orders.view', 'sales-orders.show', 
+                                           'sales-orders.store', 'sales-orders.update', 'sales-orders.destroy',
                                            'sales-order-items.index', 'sales-order-items.view', 'sales-order-items.show',
+                                           'sales-order-items.store', 'sales-order-items.update', 'sales-order-items.destroy',
                                        ])->get();
             $techRole->givePermissionTo($techPermissions);
+        }
+
+        // Customer role - Solo puede ver SUS PROPIOS datos (implementamos lógica específica en el Authorizer)
+        $customerRole = Role::where('name', 'customer')->where('guard_name', 'api')->first();
+        if ($customerRole) {
+            // Customer NO tiene permisos de customers.* - solo acceso a sus propios datos
+            $customerPermissions = Permission::where('guard_name', 'api')
+                                           ->whereIn('name', [
+                                               // NO customers.* permissions - handled by authorizer logic
+                                               'sales-orders.index', 'sales-orders.view', 'sales-orders.show',
+                                               'sales-order-items.index', 'sales-order-items.view', 'sales-order-items.show',
+                                           ])->get();
+            $customerRole->givePermissionTo($customerPermissions);
         }
     }
 }

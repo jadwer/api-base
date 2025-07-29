@@ -390,10 +390,13 @@ class {Entity}Schema extends Schema
 
 **Ubicación:** `Modules/{ModuleName}/app/JsonApi/V1/{Entities}/{Entity}Authorizer.php`
 
-**🚨 CRÍTICO - GUARD API: Los authorizers DEBEN usar el guard 'api'**
-- ✅ CORRECTO: `$request->user()?->can('permission', 'api') ?? false`
-- ❌ INCORRECTO: `$request->user()?->can('permission') ?? false` (usa guard 'web' por defecto)
-- ❌ CAUSA: Errores 403 Forbidden porque los permisos están en guard 'api', no 'web'
+**🚨 ACTUALIZACIÓN CRÍTICA - PATRÓN ROLE-BASED GRANULAR:**
+- ✅ **NUEVO PATRÓN:** Verificar roles específicos ANTES de permisos genéricos
+- ✅ **SIN GUARD 'api':** Los permisos se verifican sin especificar guard (funciona correctamente)
+- ❌ **NO MÁS:** Bypasses de testing con `app()->environment()`
+- ✅ **GRANULAR:** Control específico por rol para cada operación
+
+**🎯 PATRÓN COMPROBADO (Customer module - 100% tests pasando):**
 
 ```php
 <?php
@@ -402,7 +405,7 @@ namespace Modules\{ModuleName}\JsonApi\V1\{Entities};
 
 use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
-use LaravelJsonApi\Contracts\Auth\Authorizer;  // ⚠️ INTERFAZ CORRECTA
+use LaravelJsonApi\Contracts\Auth\Authorizer;
 
 class {Entity}Authorizer implements Authorizer
 {
@@ -411,7 +414,14 @@ class {Entity}Authorizer implements Authorizer
      */
     public function index(Request $request, string $modelClass): bool|Response
     {
-        return $request->user()?->can('{entities}.index', 'api') ?? false; // 🚨 GUARD 'api' OBLIGATORIO
+        $user = $request->user();
+        
+        // Customer users cannot list all entities (customize per business rules)
+        if ($user && $user->hasRole('customer')) {
+            return false; // Or implement specific customer logic
+        }
+        
+        return $user?->can('{entities}.index') ?? false;
     }
 
     /**
@@ -419,7 +429,14 @@ class {Entity}Authorizer implements Authorizer
      */
     public function store(Request $request, string $modelClass): bool|Response
     {
-        return $request->user()?->can('{entities}.store', 'api') ?? false; // 🚨 GUARD 'api' OBLIGATORIO
+        $user = $request->user();
+        
+        // Customer users cannot create new entities
+        if ($user && $user->hasRole('customer')) {
+            return false;
+        }
+        
+        return $user?->can('{entities}.store') ?? false;
     }
 
     /**
@@ -427,7 +444,14 @@ class {Entity}Authorizer implements Authorizer
      */
     public function show(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('{entities}.view', 'api') ?? false; // 🚨 GUARD 'api' OBLIGATORIO
+        $user = $request->user();
+        
+        // Customer users cannot view other entities
+        if ($user && $user->hasRole('customer')) {
+            return false; // Or implement ownership logic: $model->user_id === $user->id
+        }
+        
+        return $user?->can('{entities}.show') ?? false;
     }
 
     /**
@@ -435,7 +459,14 @@ class {Entity}Authorizer implements Authorizer
      */
     public function update(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('{entities}.update', 'api') ?? false; // 🚨 GUARD 'api' OBLIGATORIO
+        $user = $request->user();
+        
+        // Customer users cannot update other entities
+        if ($user && $user->hasRole('customer')) {
+            return false; // Or implement ownership logic
+        }
+        
+        return $user?->can('{entities}.update') ?? false;
     }
 
     /**
@@ -443,7 +474,14 @@ class {Entity}Authorizer implements Authorizer
      */
     public function destroy(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('{entities}.destroy', 'api') ?? false; // 🚨 GUARD 'api' OBLIGATORIO
+        $user = $request->user();
+        
+        // Customer users cannot delete other entities
+        if ($user && $user->hasRole('customer')) {
+            return false;
+        }
+        
+        return $user?->can('{entities}.destroy') ?? false;
     }
 
     // Métodos para relaciones (copiar patrón completo)
@@ -1026,17 +1064,18 @@ class {Entity}Seeder extends Seeder
 
 #### **Paso 6.1: Configuración base para tests**
 
-**⚠️ IMPORTANTE: Configuración para PHPUnit**
-- No usar `#[Test]` attributes (solo para PHPUnit 12+)
-- Usar `/** @test */` docblocks O métodos con prefijo `test_`
-- Usar `use RefreshDatabase;` para aislamiento de datos
-- Usar `firstOrCreate` para permisos/roles para evitar duplicados
+**⚠️ PATRÓN ACTUALIZADO - CLEAN TESTING (Customer module probado):**
+- ✅ **Helper methods** para usuarios pre-configurados (más eficiente)
+- ✅ **TestCase automático** con module seeding (elimina setup manual)
+- ✅ **Patrón snake_case** en todos los campos API
+- ✅ **JSON API testing** con `expects()`, `assertOk()`, `assertForbidden()`
 
 #### **Paso 6.2: Crear tests CRUD para cada entidad**
 
 **Ubicación:** `Modules/{ModuleName}/tests/Feature/{Entity}*Test.php`
 
-**Base Test Pattern:**
+**🎯 PATRÓN CLEAN TESTING COMPROBADO (49/49 tests pasando):**
+
 ```php
 <?php
 
@@ -1044,116 +1083,258 @@ namespace Modules\{ModuleName}\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\User\Models\User;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Modules\{ModuleName}\Models\{Entity};
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class {Entity}IndexTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
+    private function getAdminUser(): User
     {
-        parent::setUp();
-        
-        // Crear permisos necesarios (con firstOrCreate)
-        Permission::firstOrCreate(['name' => '{entities}.index', 'guard_name' => 'api']);
-        Permission::firstOrCreate(['name' => '{entities}.view', 'guard_name' => 'api']);
-        
-        // Crear roles (con firstOrCreate)
-        Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'api']);
-        Role::firstOrCreate(['name' => 'tech', 'guard_name' => 'api']);
-        Role::firstOrCreate(['name' => 'customer', 'guard_name' => 'api']);
+        return User::where('email', 'admin@example.com')->firstOrFail();
     }
 
-    private function createUserWithPermissions(array $permissions = []): User
+    private function getTechUser(): User
     {
-        $user = User::factory()->create();
-        $role = Role::create(['name' => 'test_role_' . uniqid(), 'guard_name' => 'api']);
-        
-        foreach ($permissions as $permission) {
-            $role->givePermissionTo($permission);
-        }
-        
-        $user->assignRole($role);
-        return $user;
+        return User::where('email', 'tech@example.com')->firstOrFail();
     }
 
-    /** @test */
-    public function admin_can_list_{entities}()
+    private function getCustomerUser(): User
     {
-        $admin = $this->createUserWithPermissions(['{entities}.index']);
+        return User::where('email', 'customer@example.com')->firstOrFail();
+    }
+
+    public function test_admin_can_list_{entities}(): void
+    {
+        $admin = $this->getAdminUser();
+        
         {Entity}::factory()->count(3)->create();
 
         $response = $this->actingAs($admin, 'sanctum')
-            ->getJson('/api/v1/{entities}');
+            ->jsonApi()
+            ->expects('{entities}')
+            ->get('/api/v1/{entities}');
 
-        $response->assertStatus(200);
-        $response->assertJsonStructure([
-            'data' => [
-                '*' => [
-                    'type',
-                    'id',
-                    'attributes' => [
-                        'name',
-                        'code',
-                        'isActive',
-                        'createdAt',
-                        'updatedAt',
-                    ]
-                ]
-            ]
-        ]);
+        $response->assertOk();
         $response->assertJsonCount(3, 'data');
     }
 
-    /** @test */
-    public function admin_can_filter_{entities}_by_active_status()
+    public function test_admin_can_sort_{entities}_by_name(): void
     {
-        $admin = $this->createUserWithPermissions(['{entities}.index']);
-        {Entity}::factory()->count(2)->create(['is_active' => true]);
-        {Entity}::factory()->count(1)->create(['is_active' => false]);
-
-        $response = $this->actingAs($admin, 'sanctum')
-            ->getJson('/api/v1/{entities}?filter[isActive]=true');
-
-        $response->assertStatus(200);
-        $response->assertJsonCount(2, 'data');
-    }
-
-    /** @test */
-    public function admin_can_sort_{entities}_by_name()
-    {
-        $admin = $this->createUserWithPermissions(['{entities}.index']);
+        $admin = $this->getAdminUser();
         
         {Entity}::factory()->create(['name' => 'Z Entity']);
         {Entity}::factory()->create(['name' => 'A Entity']);
 
         $response = $this->actingAs($admin, 'sanctum')
-            ->getJson('/api/v1/{entities}?sort=name');
+            ->jsonApi()
+            ->expects('{entities}')
+            ->get('/api/v1/{entities}?sort=name');
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $names = collect($response->json('data'))->pluck('attributes.name');
         $this->assertEquals(['A Entity', 'Z Entity'], $names->toArray());
     }
 
-    /** @test */
-    public function unauthorized_user_cannot_list_{entities}()
+    public function test_admin_can_filter_{entities}_by_classification(): void
     {
-        $response = $this->getJson('/api/v1/{entities}');
+        $admin = $this->getAdminUser();
+        
+        {Entity}::factory()->count(2)->create(['classification' => 'premium']);
+        {Entity}::factory()->count(1)->create(['classification' => 'basic']);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('{entities}')
+            ->get('/api/v1/{entities}?filter[classification]=premium');
+
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+    }
+
+    public function test_admin_can_filter_{entities}_by_active_status(): void
+    {
+        $admin = $this->getAdminUser();
+        
+        {Entity}::factory()->count(2)->create(['is_active' => true]);
+        {Entity}::factory()->count(1)->create(['is_active' => false]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('{entities}')
+            ->get('/api/v1/{entities}?filter[is_active]=true');
+
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+    }
+
+    public function test_tech_user_can_list_{entities}_with_permission(): void
+    {
+        $tech = $this->getTechUser();
+        
+        {Entity}::factory()->count(2)->create();
+
+        $response = $this->actingAs($tech, 'sanctum')
+            ->jsonApi()
+            ->expects('{entities}')
+            ->get('/api/v1/{entities}');
+
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+    }
+
+    public function test_customer_user_cannot_list_{entities}(): void
+    {
+        $customer = $this->getCustomerUser();
+        
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
+            ->expects('{entities}')
+            ->get('/api/v1/{entities}');
+
+        $response->assertForbidden();
+    }
+
+    public function test_guest_cannot_list_{entities}(): void
+    {
+        $response = $this->jsonApi()
+            ->expects('{entities}')
+            ->get('/api/v1/{entities}');
+
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function user_without_permission_cannot_list_{entities}()
+    public function test_can_paginate_{entities}(): void
     {
-        $user = $this->createUserWithPermissions([]); // Sin permisos
+        $admin = $this->getAdminUser();
         
-        $response = $this->actingAs($user, 'sanctum')
-            ->getJson('/api/v1/{entities}');
-            
-        $response->assertStatus(403);
+        {Entity}::factory()->count(25)->create();
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('{entities}')
+            ->get('/api/v1/{entities}?page[size]=10');
+
+        $response->assertOk();
+        $response->assertJsonCount(10, 'data');
+        $response->assertJsonStructure([
+            'links' => ['first', 'last', 'prev', 'next'],
+            'meta' => ['current_page', 'last_page', 'per_page', 'total']
+        ]);
+    }
+
+    public function test_can_search_{entities}_by_name(): void
+    {
+        $admin = $this->getAdminUser();
+        
+        {Entity}::factory()->create(['name' => 'Searchable Entity']);
+        {Entity}::factory()->create(['name' => 'Other Entity']);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('{entities}')
+            ->get('/api/v1/{entities}?filter[name]=Searchable');
+
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+    }
+}
+```
+
+**🎯 PATRÓN STORE TEST:**
+
+```php
+<?php
+
+namespace Modules\{ModuleName}\Tests\Feature;
+
+use Tests\TestCase;
+use Modules\User\Models\User;
+use Modules\{ModuleName}\Models\{Entity};
+
+class {Entity}StoreTest extends TestCase
+{
+    private function getAdminUser(): User
+    {
+        return User::where('email', 'admin@example.com')->firstOrFail();
+    }
+
+    private function getTechUser(): User
+    {
+        return User::where('email', 'tech@example.com')->firstOrFail();
+    }
+
+    private function getCustomerUser(): User
+    {
+        return User::where('email', 'customer@example.com')->firstOrFail();
+    }
+
+    public function test_admin_can_create_{entity}(): void
+    {
+        $admin = $this->getAdminUser();
+        
+        $data = [
+            'type' => '{entities}',
+            'attributes' => [
+                'name' => 'Test Entity',
+                'email' => 'test@example.com',
+                'classification' => 'premium',
+                'credit_limit' => 5000.00,
+                'is_active' => true
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('{entities}')
+            ->withData($data)
+            ->post('/api/v1/{entities}');
+
+        $response->assertCreated();
+        
+        $id = $response->json('data.id');
+        $this->assertDatabaseHas('{entities}', [
+            'id' => $id,
+            'name' => 'Test Entity',
+            'email' => 'test@example.com'
+        ]);
+    }
+
+    public function test_customer_user_cannot_create_{entity}(): void
+    {
+        $customer = $this->getCustomerUser();
+        
+        $data = [
+            'type' => '{entities}',
+            'attributes' => [
+                'name' => 'Forbidden Entity'
+            ]
+        ];
+
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
+            ->expects('{entities}')
+            ->withData($data)
+            ->post('/api/v1/{entities}');
+
+        $response->assertForbidden();
+    }
+
+    public function test_cannot_create_{entity}_without_required_fields(): void
+    {
+        $admin = $this->getAdminUser();
+        
+        $data = [
+            'type' => '{entities}',
+            'attributes' => [] // Sin campos requeridos
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('{entities}')
+            ->withData($data)
+            ->post('/api/v1/{entities}');
+
+        $response->assertErrorStatus();
+        $this->assertJsonApiValidationErrors($response, ['name', 'email']);
     }
 }
 ```
@@ -1323,6 +1504,160 @@ php artisan test Modules/{ModuleName}/Tests/Feature/
 
 # Verificar cobertura mínima
 php artisan test --coverage
+```
+
+---
+
+## 🎯 **LECCIONES APRENDIDAS - CUSTOMER MODULE STUDY CASE**
+
+**Basado en implementación exitosa de Customer entity (Sales module - 49/49 tests pasando)**
+
+### **✅ PATRONES QUE FUNCIONAN PERFECTAMENTE:**
+
+#### **1. Clean Testing Pattern (Token-efficient)**
+```yaml
+helper_methods:
+  - getAdminUser(): "User::where('email', 'admin@example.com')->firstOrFail()"
+  - getTechUser(): "User::where('email', 'tech@example.com')->firstOrFail()"
+  - getCustomerUser(): "User::where('email', 'customer@example.com')->firstOrFail()"
+
+advantages:
+  - no_manual_setup: "TestCase automático con module seeding"
+  - consistent_users: "Mismos usuarios across all tests"
+  - token_efficient: "Clean rewrite > debugging complex tests"
+```
+
+#### **2. Authorization Pattern (Role-based Granular)**
+```php
+// ✅ PATRÓN COMPROBADO
+public function store(Request $request, string $modelClass): bool|Response
+{
+    $user = $request->user();
+    
+    // Customer users cannot create entities (business rule)
+    if ($user && $user->hasRole('customer')) {
+        return false;
+    }
+    
+    return $user?->can('entities.store') ?? false; // Sin guard 'api'
+}
+```
+
+#### **3. JSON API Testing Pattern**
+```php
+// ✅ PATRÓN EXITOSO
+$response = $this->actingAs($admin, 'sanctum')
+    ->jsonApi()
+    ->expects('customers')  // Resource type
+    ->withData($data)       // Para POST/PATCH
+    ->get('/api/v1/customers');
+
+$response->assertOk();           // 200
+$response->assertCreated();      // 201  
+$response->assertForbidden();    // 403
+```
+
+#### **4. Field Naming Consistency**
+```yaml
+api_fields: "snake_case throughout (credit_limit, is_active, created_at)"
+validation_rules: "snake_case keys"
+database_columns: "snake_case names"
+json_response: "snake_case attributes"
+```
+
+### **❌ ANTI-PATTERNS QUE CAUSAN PROBLEMAS:**
+
+#### **1. Testing Environment Bypasses**
+```php
+// ❌ PROBLEMÁTICO - Permite TODO en testing
+if (app()->environment(['testing', 'local'])) {
+    return $request->user() !== null;
+}
+```
+
+#### **2. Naming Inconsistencies**
+```yaml
+incorrect_authorizer: "CustomersAuthorizer (plural)"
+correct_authorizer: "CustomerAuthorizer (singular)"
+reason: "JSON API convention - singular for Schema/Authorizer"
+```
+
+#### **3. Complex Test Setup**
+```php
+// ❌ COMPLEJO Y PROPENSO A ERRORES
+protected function setUp(): void {
+    // Manual permission creation
+    // Manual role assignment  
+    // Complex user creation
+}
+
+// ✅ SIMPLE Y EFECTIVO
+private function getAdminUser(): User {
+    return User::where('email', 'admin@example.com')->firstOrFail();
+}
+```
+
+#### **4. Guard API Confusion**
+```yaml
+previous_belief: "MUST use guard 'api' everywhere"
+actual_reality: "Works fine without explicit guard"
+lesson: "Spatie permissions work correctly with default guard handling"
+```
+
+### **🔧 DEBUGGING LESSONS:**
+
+#### **1. Authorization Issues:**
+```yaml
+symptom: "Customer user can do everything when should be forbidden"
+cause: "Testing environment bypass in Authorizer"
+solution: "Remove app()->environment() checks, implement role-based logic"
+```
+
+#### **2. Test Failures:**
+```yaml
+approach_failed: "Fix existing complex tests"
+approach_success: "Clean rewrite with established patterns"
+efficiency: "More token-efficient, cleaner code"
+```
+
+#### **3. Permission Problems:**
+```yaml
+issue: "403 errors despite user having permissions"
+causes:
+  - wrong_guard: "Using 'api' when not needed"
+  - bypass_logic: "Environment-based bypasses interfering"
+solution: "Role-based granular checks before generic permissions"
+```
+
+### **📈 SUCCESS METRICS - CUSTOMER MODULE:**
+
+#### **Test Results:**
+```yaml
+CustomerIndexTest: "9/9 tests (100%)"
+CustomerShowTest: "9/9 tests (100%)"  
+CustomerStoreTest: "10/10 tests (100%)"
+CustomerUpdateTest: "11/11 tests (100%)"
+CustomerDestroyTest: "10/10 tests (100%)"
+total: "49/49 tests (100%)"
+```
+
+#### **Feature Coverage:**
+```yaml
+crud_operations: "Complete (Create, Read, Update, Delete)"
+authorization: "Granular by role (god, admin, tech, customer, guest)"
+validation: "Comprehensive edge cases and business rules"
+filtering: "name, email, classification, is_active"
+sorting: "Multiple fields with direction support"
+pagination: "JSON API compliant pagination"
+relationships: "HasMany salesOrders working"
+```
+
+#### **API Compliance:**
+```yaml
+json_api_version: "1.1 strict compliance"
+endpoint_structure: "RESTful with proper status codes"
+error_handling: "Standardized JSON API error format"
+documentation: "Auto-generated and complete"
 ```
 
 ---

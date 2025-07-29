@@ -26,6 +26,15 @@ class SalesOrder extends Model
         'metadata',
     ];
 
+    protected $casts = [
+        'metadata' => 'array',
+        'order_date' => 'date',
+        'approved_at' => 'datetime',
+        'delivered_at' => 'datetime',
+        'total_amount' => 'decimal:2',
+        'discount_total' => 'decimal:2',
+    ];
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);

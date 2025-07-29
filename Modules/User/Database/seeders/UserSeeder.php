@@ -63,5 +63,12 @@ class UserSeeder extends Seeder
             'status' => 'active',
         ]);
         $cliente2->assignRole('customer');
+
+        $customer = User::factory()->create([
+            'name' => 'Customer Test',
+            'email' => 'customer@example.com',
+            'status' => 'active',
+        ]);
+        $customer->assignRole('customer');
     }
 }

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Auth\Access\Response;
 use LaravelJsonApi\Contracts\Auth\Authorizer;
 
-class SalesOrdersAuthorizer implements Authorizer
+class SalesOrderAuthorizer implements Authorizer
 {
     public function index(Request $request, string $modelClass): bool|Response
     {

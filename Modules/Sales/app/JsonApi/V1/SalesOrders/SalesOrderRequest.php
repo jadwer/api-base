@@ -5,7 +5,7 @@ namespace Modules\Sales\JsonApi\V1\SalesOrders;
 use Illuminate\Validation\Rule;
 use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
 
-class SalesOrdersRequest extends ResourceRequest
+class SalesOrderRequest extends ResourceRequest
 {
     public function rules(): array
     {
