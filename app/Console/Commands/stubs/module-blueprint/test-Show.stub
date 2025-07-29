@@ -1,0 +1,138 @@
+<?php
+
+namespace Modules\{{moduleName}}\Tests\Feature;
+
+use Tests\TestCase;
+use Modules\User\Models\User;
+use Modules\{{moduleName}}\app\Models\{{modelName}};
+
+class {{modelName}}ShowTest extends TestCase
+{
+    private function getAdminUser(): User
+    {
+        return User::where('email', 'admin@example.com')->firstOrFail();
+    }
+
+    private function getTechUser(): User
+    {
+        return User::where('email', 'tech@example.com')->firstOrFail();
+    }
+
+    private function getCustomerUser(): User
+    {
+        return User::where('email', 'customer@example.com')->firstOrFail();
+    }
+
+    public function test_admin_can_view_{{modelName}}(): void
+    {
+        $admin = $this->getAdminUser();
+        ${{modelName}} = {{modelName}}::factory()->create();
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('{{resourceType}}')
+            ->get("/api/v1/{{resourceType}}/{${{modelName}}->id}");
+
+        $response->assertOk();
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'type',
+                'attributes' => [
+                    'name',
+                    'is_active',
+                    'metadata',
+                    'created_at',
+                    'updated_at'
+                ]
+            ]
+        ]);
+    }
+
+    public function test_admin_can_view_{{modelName}}_with_metadata(): void
+    {
+        $admin = $this->getAdminUser();
+        $metadata = [
+            'priority' => 'high',
+            'source' => 'import',
+            'custom_field' => 'value'
+        ];
+        
+        ${{modelName}} = {{modelName}}::factory()->create(['metadata' => $metadata]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('{{resourceType}}')
+            ->get("/api/v1/{{resourceType}}/{${{modelName}}->id}");
+
+        $response->assertOk();
+        
+        $responseMetadata = $response->json('data.attributes.metadata');
+        $this->assertEquals($metadata, $responseMetadata);
+    }
+
+    public function test_tech_user_can_view_{{modelName}}_with_permission(): void
+    {
+        $tech = $this->getTechUser();
+        ${{modelName}} = {{modelName}}::factory()->create();
+
+        $response = $this->actingAs($tech, 'sanctum')
+            ->jsonApi()
+            ->expects('{{resourceType}}')
+            ->get("/api/v1/{{resourceType}}/{${{modelName}}->id}");
+
+        $response->assertOk();
+    }
+
+    public function test_customer_user_cannot_view_{{modelName}}(): void
+    {
+        $customer = $this->getCustomerUser();
+        ${{modelName}} = {{modelName}}::factory()->create();
+
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
+            ->expects('{{resourceType}}')
+            ->get("/api/v1/{{resourceType}}/{${{modelName}}->id}");
+
+        $response->assertStatus(403);
+    }
+
+    public function test_guest_cannot_view_{{modelName}}(): void
+    {
+        ${{modelName}} = {{modelName}}::factory()->create();
+
+        $response = $this->jsonApi()
+            ->expects('{{resourceType}}')
+            ->get("/api/v1/{{resourceType}}/{${{modelName}}->id}");
+
+        $response->assertStatus(401);
+    }
+
+    public function test_returns_404_for_nonexistent_{{modelName}}(): void
+    {
+        $admin = $this->getAdminUser();
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('{{resourceType}}')
+            ->get('/api/v1/{{resourceType}}/999999');
+
+        $response->assertStatus(404);
+    }
+
+    public function test_response_includes_timestamps(): void
+    {
+        $admin = $this->getAdminUser();
+        ${{modelName}} = {{modelName}}::factory()->create();
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('{{resourceType}}')
+            ->get("/api/v1/{{resourceType}}/{${{modelName}}->id}");
+
+        $response->assertOk();
+        
+        $this->assertNotNull($response->json('data.attributes.created_at'));
+        $this->assertNotNull($response->json('data.attributes.updated_at'));
+    }
+}

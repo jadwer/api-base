@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('{{tableName}}', function (Blueprint $table) {
+            $table->id();
+            
+            // Campos generados
+{{fields}}
+            
+            // Metadatos JSON
+            $table->json('metadata')->nullable();
+            
+            // Foreign keys - Agregar según necesidad
+            // $table->foreignId('related_id')->nullable()->constrained('related_table');
+            
+            $table->timestamps();
+            
+            // Índices
+            $table->index('is_active');
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('{{tableName}}');
+    }
+};

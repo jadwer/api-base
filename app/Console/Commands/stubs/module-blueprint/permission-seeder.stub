@@ -1,0 +1,38 @@
+<?php
+
+namespace Modules\{{moduleName}}\Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+
+class {{modelName}}PermissionsSeeder extends Seeder
+{
+    public function run()
+    {
+        // Crear permisos para {{modelName}}
+        $permissions = [
+            '{{permissionPrefix}}.index',
+            '{{permissionPrefix}}.store', 
+            '{{permissionPrefix}}.show',
+            '{{permissionPrefix}}.update',
+            '{{permissionPrefix}}.destroy',
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
+
+        // Asignar permisos a roles
+        $adminRole = Role::firstOrCreate(['name' => 'admin']);
+        $techRole = Role::firstOrCreate(['name' => 'tech']);
+        
+        $adminRole->givePermissionTo($permissions);
+        $techRole->givePermissionTo([
+            '{{permissionPrefix}}.index',
+            '{{permissionPrefix}}.show',
+        ]);
+
+        $this->command->info('{{modelName}} permissions created successfully.');
+    }
+}

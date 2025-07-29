@@ -1,0 +1,32 @@
+{
+  "entities": {
+    "Producto": {
+      "name": "Producto",
+      "tableName": "productos",
+      "fields": [
+        {
+          "name": "nombre",
+          "type": "string",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "descripcion",
+          "type": "text",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "precio",
+          "type": "decimal",
+          "nullable": false,
+          "unique": false
+        }
+      ]
+    }
+  },
+  "relationships": [],
+  "permissions": {
+    "prefix": "productos"
+  }
+}

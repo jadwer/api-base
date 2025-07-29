@@ -1,0 +1,134 @@
+<?php
+
+namespace Modules\{{moduleName}}\Tests\Feature;
+
+use Tests\TestCase;
+use Modules\User\Models\User;
+use Modules\{{moduleName}}\app\Models\{{modelName}};
+
+class {{modelName}}IndexTest extends TestCase
+{
+    private function getAdminUser(): User
+    {
+        return User::where('email', 'admin@example.com')->firstOrFail();
+    }
+
+    private function getTechUser(): User
+    {
+        return User::where('email', 'tech@example.com')->firstOrFail();
+    }
+
+    private function getCustomerUser(): User
+    {
+        return User::where('email', 'customer@example.com')->firstOrFail();
+    }
+
+    public function test_admin_can_list_{{modelPlural}}(): void
+    {
+        $admin = $this->getAdminUser();
+        
+        {{modelName}}::factory()->count(3)->create();
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('{{resourceType}}')
+            ->get('/api/v1/{{resourceType}}');
+
+        $response->assertOk();
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'type',
+                    'attributes' => [
+                        'name',
+                        'is_active',
+                    ]
+                ]
+            ]
+        ]);
+    }
+
+    public function test_admin_can_sort_{{modelPlural}}_by_name(): void
+    {
+        $admin = $this->getAdminUser();
+        
+        {{modelName}}::factory()->create(['name' => 'B Item']);
+        {{modelName}}::factory()->create(['name' => 'A Item']);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('{{resourceType}}')
+            ->get('/api/v1/{{resourceType}}?sort=name');
+
+        $response->assertOk();
+        $names = collect($response->json('data'))->pluck('attributes.name');
+        $this->assertEquals(['A Item', 'B Item'], $names->toArray());
+    }
+
+    public function test_admin_can_filter_{{modelPlural}}_by_status(): void
+    {
+        $admin = $this->getAdminUser();
+        
+        {{modelName}}::factory()->create(['is_active' => true]);
+        {{modelName}}::factory()->create(['is_active' => false]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('{{resourceType}}')
+            ->get('/api/v1/{{resourceType}}?filter[is_active]=true');
+
+        $response->assertOk();
+        $statuses = collect($response->json('data'))->pluck('attributes.is_active')->unique();
+        $this->assertEquals([true], $statuses->toArray());
+    }
+
+    public function test_tech_user_can_list_{{modelPlural}}_with_permission(): void
+    {
+        $tech = $this->getTechUser();
+
+        $response = $this->actingAs($tech, 'sanctum')
+            ->jsonApi()
+            ->expects('{{resourceType}}')
+            ->get('/api/v1/{{resourceType}}');
+
+        $response->assertOk();
+    }
+
+    public function test_customer_user_cannot_list_{{modelPlural}}(): void
+    {
+        $customer = $this->getCustomerUser();
+
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
+            ->expects('{{resourceType}}')
+            ->get('/api/v1/{{resourceType}}');
+
+        $response->assertStatus(403);
+    }
+
+    public function test_guest_cannot_list_{{modelPlural}}(): void
+    {
+        $response = $this->jsonApi()
+            ->expects('{{resourceType}}')
+            ->get('/api/v1/{{resourceType}}');
+
+        $response->assertStatus(401);
+    }
+
+    public function test_can_paginate_{{modelPlural}}(): void
+    {
+        $admin = $this->getAdminUser();
+        
+        {{modelName}}::factory()->count(25)->create();
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('{{resourceType}}')
+            ->get('/api/v1/{{resourceType}}?page[size]=10');
+
+        $response->assertOk();
+        $this->assertCount(10, $response->json('data'));
+        $response->assertJsonStructure(['links', 'meta']);
+    }
+}

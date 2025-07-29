@@ -1,0 +1,24 @@
+<?php
+
+namespace Modules\{{moduleName}}\JsonApi\V1\{{modelName}}s;
+
+use LaravelJsonApi\Core\Resources\JsonApiResource;
+
+class {{modelName}}Resource extends JsonApiResource
+{
+    public function attributes($request): iterable
+    {
+        return [
+{{directFields}}
+            "createdAt" => $this->created_at,
+            "updatedAt" => $this->updated_at,
+        ];
+    }
+
+    public function relationships($request): iterable
+    {
+        return [
+{{relationships}}
+        ];
+    }
+}

@@ -1,0 +1,65 @@
+# 📦 {{moduleName}} Module
+
+Sistema de gestión de {{modelPlural}} con funcionalidades completas.
+
+## 🚀 Características
+
+- ✅ Gestión completa de {{modelPlural}}
+- ✅ Sistema de permisos granular
+- ✅ API JSON:API v1.0 completa
+- ✅ Filtros y ordenamiento avanzado
+- ✅ Soporte para metadatos JSON
+- ✅ Tests completos con alta cobertura
+- ✅ Documentación completa
+
+## 📋 Endpoints
+
+### {{modelPlural}}
+- `GET /api/v1/{{resourceType}}` - Listar {{modelPlural}}
+- `POST /api/v1/{{resourceType}}` - Crear {{modelName}}
+- `GET /api/v1/{{resourceType}}/{id}` - Ver {{modelName}}
+- `PATCH /api/v1/{{resourceType}}/{id}` - Actualizar {{modelName}}
+- `DELETE /api/v1/{{resourceType}}/{id}` - Eliminar {{modelName}}
+
+### Filtros Disponibles
+- `filter[is_active]=true` - Filtrar por estado activo
+- `sort=name` - Ordenar por nombre
+- `sort=-created_at` - Ordenar por fecha de creación (desc)
+
+### Relaciones Disponibles
+- `include=relatedModel` - Incluir modelos relacionados
+
+## 🔐 Permisos
+
+- `{{permissionPrefix}}.index` - Listar {{modelPlural}}
+- `{{permissionPrefix}}.store` - Crear {{modelPlural}}
+- `{{permissionPrefix}}.show` - Ver {{modelPlural}}
+- `{{permissionPrefix}}.update` - Actualizar {{modelPlural}}
+- `{{permissionPrefix}}.destroy` - Eliminar {{modelPlural}}
+
+## 🧪 Testing
+
+```bash
+# Ejecutar todos los tests del módulo
+php artisan test --filter {{modelName}}
+
+# Tests específicos
+php artisan test Modules/{{moduleName}}/Tests/Feature/{{modelName}}IndexTest
+```
+
+## 🔧 Instalación
+
+1. El módulo se instala automáticamente con el sistema
+2. Ejecutar migraciones: `php artisan migrate`
+3. Ejecutar seeders: `php artisan db:seed`
+
+## 📊 Métricas
+
+- **Models**: 1 ({{modelName}})
+- **Tests**: Cobertura completa
+- **API Endpoints**: 5 endpoints CRUD
+- **Performance**: < 2s por test
+
+## 🔄 Changelog
+
+Ver [CHANGELOG.md](CHANGELOG.md) para el historial completo de cambios.

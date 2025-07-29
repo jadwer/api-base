@@ -1,0 +1,28 @@
+<?php
+
+namespace Modules\{{moduleName}}\Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\{{moduleName}}\app\Models\{{modelName}};
+
+class {{modelName}}Factory extends Factory
+{
+    protected $model = {{modelName}}::class;
+
+    public function definition()
+    {
+        return [
+{{fields}}
+            'metadata' => [
+                'source' => fake()->randomElement(['manual', 'import', 'api']),
+                'priority' => fake()->randomElement(['low', 'medium', 'high']),
+                'notes' => fake()->sentence()
+            ]
+        ];
+    }
+
+    public function inactive()
+    {
+        return $this->state(['is_active' => false]);
+    }
+}

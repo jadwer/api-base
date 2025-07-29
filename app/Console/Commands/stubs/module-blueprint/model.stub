@@ -1,0 +1,40 @@
+<?php
+
+namespace Modules\{{moduleName}}\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\Permission\Traits\HasPermissions;
+
+class {{modelName}} extends Model
+{
+    use HasFactory, HasPermissions;
+
+    protected $table = '{{tableName}}';
+    
+    protected $fillable = [
+        {{fillable}}
+    ];
+
+    protected $casts = [
+        {{casts}}
+    ];
+
+    // Scopes
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    // Relaciones - Agregar según necesidad
+    // public function relatedModel(): BelongsTo
+    // {
+    //     return $this->belongsTo(RelatedModel::class);
+    // }
+
+    // Factory
+    protected static function newFactory()
+    {
+        return \Modules\{{moduleName}}\Database\Factories\{{modelName}}Factory::new();
+    }
+}

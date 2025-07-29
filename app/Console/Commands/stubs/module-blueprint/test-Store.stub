@@ -1,0 +1,159 @@
+<?php
+
+namespace Modules\{{moduleName}}\Tests\Feature;
+
+use Tests\TestCase;
+use Modules\User\Models\User;
+use Modules\{{moduleName}}\app\Models\{{modelName}};
+
+class {{modelName}}StoreTest extends TestCase
+{
+    private function getAdminUser(): User
+    {
+        return User::where('email', 'admin@example.com')->firstOrFail();
+    }
+
+    private function getTechUser(): User
+    {
+        return User::where('email', 'tech@example.com')->firstOrFail();
+    }
+
+    private function getCustomerUser(): User
+    {
+        return User::where('email', 'customer@example.com')->firstOrFail();
+    }
+
+    public function test_admin_can_create_{{modelName}}(): void
+    {
+        $admin = $this->getAdminUser();
+
+        $data = [
+            'type' => '{{resourceType}}',
+            'attributes' => [
+                'name' => 'Test {{modelName}}',
+                'description' => 'Test description',
+                'is_active' => true,
+                'metadata' => [
+                    'source' => 'test',
+                    'priority' => 'high'
+                ]
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('{{resourceType}}')
+            ->withData($data)
+            ->post('/api/v1/{{resourceType}}');
+
+        $response->assertCreated();
+        
+        $this->assertDatabaseHas('{{tableName}}', [
+            'name' => 'Test {{modelName}}',
+            'description' => 'Test description',
+            'is_active' => true
+        ]);
+    }
+
+    public function test_admin_can_create_{{modelName}}_with_minimal_data(): void
+    {
+        $admin = $this->getAdminUser();
+
+        $data = [
+            'type' => '{{resourceType}}',
+            'attributes' => [
+                'name' => 'Minimal {{modelName}}',
+                'is_active' => true
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('{{resourceType}}')
+            ->withData($data)
+            ->post('/api/v1/{{resourceType}}');
+
+        $response->assertCreated();
+    }
+
+    public function test_customer_user_cannot_create_{{modelName}}(): void
+    {
+        $customer = $this->getCustomerUser();
+
+        $data = [
+            'type' => '{{resourceType}}',
+            'attributes' => [
+                'name' => 'Unauthorized {{modelName}}',
+                'is_active' => true
+            ]
+        ];
+
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
+            ->expects('{{resourceType}}')
+            ->withData($data)
+            ->post('/api/v1/{{resourceType}}');
+
+        $response->assertStatus(403);
+    }
+
+    public function test_guest_cannot_create_{{modelName}}(): void
+    {
+        $data = [
+            'type' => '{{resourceType}}',
+            'attributes' => [
+                'name' => 'Guest {{modelName}}',
+                'is_active' => true
+            ]
+        ];
+
+        $response = $this->jsonApi()
+            ->expects('{{resourceType}}')
+            ->withData($data)
+            ->post('/api/v1/{{resourceType}}');
+
+        $response->assertStatus(401);
+    }
+
+    public function test_cannot_create_{{modelName}}_without_required_fields(): void
+    {
+        $admin = $this->getAdminUser();
+
+        $data = [
+            'type' => '{{resourceType}}',
+            'attributes' => [
+                'description' => 'Missing name'
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('{{resourceType}}')
+            ->withData($data)
+            ->post('/api/v1/{{resourceType}}');
+
+        $response->assertStatus(422);
+        $this->assertJsonApiValidationErrors(['/data/attributes/name'], $response);
+    }
+
+    public function test_cannot_create_{{modelName}}_with_invalid_data(): void
+    {
+        $admin = $this->getAdminUser();
+
+        $data = [
+            'type' => '{{resourceType}}',
+            'attributes' => [
+                'name' => '', // Empty name
+                'is_active' => 'not_boolean' // Invalid boolean
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('{{resourceType}}')
+            ->withData($data)
+            ->post('/api/v1/{{resourceType}}');
+
+        $response->assertStatus(422);
+    }
+}

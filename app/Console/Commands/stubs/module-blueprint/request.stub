@@ -1,0 +1,26 @@
+<?php
+
+namespace Modules\{{moduleName}}\JsonApi\V1\{{modelPlural}};
+
+use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
+use Illuminate\Validation\Rule;
+
+class {{modelName}}Request extends ResourceRequest
+{
+    public function rules(): array
+    {
+        ${{modelNameLower}} = $this->model();
+        
+        return [
+{{rules}}
+            'metadata' => ['nullable', 'array'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+{{messages}}
+        ];
+    }
+}

@@ -1,0 +1,38 @@
+# Changelog - {{moduleName}} Module
+
+All notable changes to the {{moduleName}} module will be documented in this file.
+
+## [1.0.0] - {{date}}
+
+### Added
+- ✅ {{modelName}} management with full CRUD operations
+- ✅ JSON API v1.0 compliance
+- ✅ Granular permission system with Spatie
+- ✅ Complete test suite with high coverage
+- ✅ Factory-based data generation
+- ✅ Advanced filtering and sorting capabilities
+- ✅ Metadata support for custom attributes
+- ✅ Comprehensive documentation
+
+### Technical Details
+- Laravel JSON API v5.x integration
+- Spatie Permissions for authorization
+- PostgreSQL/MySQL compatible migrations
+- PHPUnit test coverage
+- PSR-4 autoloading compliance
+
+### API Endpoints
+- {{modelPlural}} CRUD operations
+- Advanced filtering by status and other attributes
+- Sorting by name, dates, and custom fields
+- Include relationships support
+
+### Database Schema
+- `{{tableName}}` table with optimized indexes
+- JSON metadata column for extensibility
+- Foreign key constraints for data integrity
+
+### Security
+- Permission-based authorization
+- Input validation and sanitization
+- Protected against common vulnerabilities

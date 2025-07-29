@@ -1,0 +1,159 @@
+{
+  "entities": {
+    "Persona": {
+      "name": "Persona",
+      "tableName": "personas",
+      "fields": [
+        {
+          "name": "nombre",
+          "type": "string",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "apellido",
+          "type": "string",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "email",
+          "type": "string",
+          "nullable": false,
+          "unique": true
+        },
+        {
+          "name": "telefono",
+          "type": "string",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "fecha_nacimiento",
+          "type": "date",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "activo",
+          "type": "boolean",
+          "nullable": false,
+          "unique": false
+        }
+      ]
+    },
+    "Direccion": {
+      "name": "Direccion",
+      "tableName": "direcciones",
+      "fields": [
+        {
+          "name": "calle",
+          "type": "string",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "numero",
+          "type": "string",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "ciudad",
+          "type": "string",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "codigo_postal",
+          "type": "string",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "pais",
+          "type": "string",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "tipo",
+          "type": "string",
+          "nullable": false,
+          "unique": false
+        }
+      ]
+    },
+    "DatosPerfil": {
+      "name": "DatosPerfil",
+      "tableName": "datos_perfiles",
+      "fields": [
+        {
+          "name": "biografia",
+          "type": "text",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "website",
+          "type": "string",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "linkedin",
+          "type": "string",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "github",
+          "type": "string",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "habilidades",
+          "type": "json",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "experiencia_anos",
+          "type": "integer",
+          "nullable": true,
+          "unique": false
+        }
+      ]
+    }
+  },
+  "relationships": [
+    {
+      "entityA": "Persona",
+      "entityB": "Direccion",
+      "type": "many-to-many",
+      "description": "Una persona puede tener múltiples direcciones y una dirección puede ser compartida por múltiples personas"
+    },
+    {
+      "entityA": "Persona",
+      "entityB": "DatosPerfil", 
+      "type": "one-to-one",
+      "description": "Cada persona tiene exactamente un perfil de datos adicionales"
+    }
+  ],
+  "permissions": {
+    "prefix": "personas",
+    "resources": ["personas", "direcciones", "datos-perfiles"],
+    "actions": ["index", "show", "store", "update", "destroy"],
+    "roles": {
+      "admin": ["all"],
+      "hr": ["personas.index", "personas.show", "datos-perfiles.index", "datos-perfiles.show"],
+      "employee": ["personas.show", "datos-perfiles.show"]
+    }
+  },
+  "seeding": {
+    "personas": 50,
+    "direcciones": 25,
+    "datos_perfiles": 50
+  }
+}

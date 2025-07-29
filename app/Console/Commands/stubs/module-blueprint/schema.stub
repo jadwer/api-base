@@ -1,0 +1,79 @@
+<?php
+
+nause LaravelJsonApi\Eloquent\Relations\BelongsTo;
+use LaravelJsonApi\Eloquent\Relations\HasMany;
+use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
+use LaravelJsonApi\Eloquent\Pagination\PagePagination;
+use LaravelJsonApi\Eloquent\Schema;
+use Modules\{{moduleName}}\app\Models\{{modelName}};e Modules\{{moduleName}}\JsonApi\V1\{{modelPlural}};
+
+use LaravelJsonApi\Eloquent\Contracts\Paginator;
+use LaravelJsonApi\Eloquent\Fields\DateTime;
+use LaravelJsonApi\Eloquent\Fields\ID;
+use LaravelJsonApi\Eloquent\Fields\Number;
+use LaravelJsonApi\Eloquent\Fields\Str;
+use LaravelJsonApi\Eloquent\Fields\Boolean;
+use LaravelJsonApi\Eloquent\Fields\ArrayHash;
+use LaravelJsonApi\Eloquent\Relations\BelongsTo;
+use LaravelJsonApi\Eloquent\Relations\HasMany;
+use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
+use LaravelJsonApi\Eloquent\Pagination\PagePagination;
+use LaravelJsonApi\Eloquent\Schema;
+use Modules\{{moduleName}}\app\Models\{{modelName}};
+
+class {{modelName}}Schema extends Schema
+{
+    public static string $model = {{modelName}}::class;
+
+    public function fields(): array
+    {
+        return [
+            ID::make(),
+            
+            // Campos generados
+{{fields}}
+            
+            // Metadatos
+            ArrayHash::make('metadata'),
+            
+            // Relaciones - Agregar según necesidad
+            // BelongsTo::make('relatedModel')->type('related-models'),
+            // HasMany::make('children')->type('child-models'),
+            
+            // Timestamps
+            DateTime::make('created_at')->readOnly()->sortable(),
+            DateTime::make('updated_at')->readOnly()->sortable(),
+        ];
+    }
+
+    public function filters(): array
+    {
+        return [
+            WhereIdIn::make($this),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('is_active'),
+        ];
+    }
+
+    public function sortables(): array
+    {
+        return [
+            'name',
+            'is_active',
+            'created_at',
+            'updated_at',
+        ];
+    }
+
+    public function includePaths(): array
+    {
+        return [
+            // 'relatedModel',
+            // 'children',
+        ];
+    }
+
+    public function pagination(): ?Paginator
+    {
+        return PagePagination::make();
+    }
+}
