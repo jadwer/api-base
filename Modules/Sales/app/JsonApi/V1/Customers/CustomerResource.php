@@ -25,4 +25,11 @@ class CustomerResource extends JsonApiResource
             'updated_at' => $this->updated_at,
         ];
     }
+
+    public function relationships($request): iterable
+    {
+        return [
+            'salesOrders' => $this->relation('salesOrders'),
+        ];
+    }
 }

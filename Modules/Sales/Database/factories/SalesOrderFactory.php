@@ -13,13 +13,13 @@ class SalesOrderFactory extends Factory
     public function definition(): array
     {
         $orderDate = $this->faker->dateTimeBetween('-6 months', 'now');
-        $status = $this->faker->randomElement(['draft', 'pending', 'approved', 'delivered', 'cancelled']);
+        $status = $this->faker->randomElement(['draft', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled']);
         
         // Calcular fechas según el estado
         $approvedAt = null;
         $deliveredAt = null;
         
-        if (in_array($status, ['approved', 'delivered'])) {
+        if (in_array($status, ['confirmed', 'processing', 'shipped', 'delivered'])) {
             $approvedAt = $this->faker->dateTimeBetween($orderDate, 'now');
         }
         

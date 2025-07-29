@@ -5,6 +5,7 @@ namespace Modules\Sales\Tests\Feature;
 use Tests\TestCase;
 use Modules\User\Models\User;
 use Modules\Sales\Models\Customer;
+use Modules\Sales\Models\SalesOrder;
 
 class CustomerShowTest extends TestCase
 {
@@ -73,6 +74,9 @@ class CustomerShowTest extends TestCase
         $admin = $this->getAdminUser();
         
         $customer = Customer::factory()->create(['name' => 'Customer with Relations']);
+        
+        // Crear algunos sales orders para probar la relación
+        SalesOrder::factory()->count(2)->create(['customer_id' => $customer->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -82,6 +86,22 @@ class CustomerShowTest extends TestCase
 
         $response->assertOk();
         $this->assertEquals('Customer with Relations', $response->json('data.attributes.name'));
+        
+        // Verificar que se incluyen las relaciones
+        $response->assertJsonStructure([
+            'data' => [
+                'relationships' => [
+                    'salesOrders' => ['data']
+                ]
+            ],
+            'included'
+        ]);
+        
+        // Verificar que los sales orders están en included
+        $included = $response->json('included');
+        $this->assertCount(2, $included);
+        $this->assertEquals('sales-orders', $included[0]['type']);
+        $this->assertEquals('sales-orders', $included[1]['type']);
     }
 
     public function test_admin_can_view_inactive_customer(): void

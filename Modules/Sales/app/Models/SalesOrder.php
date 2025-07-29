@@ -4,47 +4,71 @@ namespace Modules\Sales\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-// use Modules\Sales\Database\Factories\SalesOrderFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int $id
+ * @property int $customer_id
+ * @property string $order_number
+ * @property string $status
+ * @property \Carbon\Carbon $order_date
+ * @property \Carbon\Carbon|null $approved_at
+ * @property \Carbon\Carbon|null $delivered_at
+ * @property float $total_amount
+ * @property float|null $discount_total
+ * @property string|null $notes
+ * @property array|null $metadata
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ */
 class SalesOrder extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     */
-    protected $fillable = [
-        'customer_id',
-        'order_number',
-        'status',
-        'order_date',
-        'approved_at',
-        'delivered_at',
-        'total_amount',
-        'discount_total',
-        'notes',
-        'metadata',
-    ];
+    protected $guarded = [];
 
     protected $casts = [
-        'metadata' => 'array',
+        'id' => 'integer',
+        'customer_id' => 'integer',
         'order_date' => 'date',
         'approved_at' => 'datetime',
         'delivered_at' => 'datetime',
-        'total_amount' => 'decimal:2',
-        'discount_total' => 'decimal:2',
+        'total_amount' => 'float',
+        'discount_total' => 'float',
+        'metadata' => 'array',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
-    public function customer()
+    // Scopes útiles
+    public function scopeActive($query)
+    {
+        return $query->whereNotIn('status', ['cancelled']);
+    }
+
+    public function scopeByStatus($query, string $status)
+    {
+        return $query->where('status', $status);
+    }
+
+    public function scopeByCustomer($query, int $customerId)
+    {
+        return $query->where('customer_id', $customerId);
+    }
+
+    // Relaciones
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }
 
-    public function items()
+    public function items(): HasMany
     {
         return $this->hasMany(SalesOrderItem::class);
     }
 
+    // Factory
     protected static function newFactory()
     {
         return \Modules\Sales\Database\Factories\SalesOrderFactory::new();

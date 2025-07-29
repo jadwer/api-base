@@ -17,14 +17,9 @@ class CustomerAuthorizer implements Authorizer
         ]);
         
         $user = $request->user();
-        
-        // Customer users cannot list all customers
-        if ($user && $user->hasRole('customer')) {
-            return false;
-        }
-        
         return $user?->can('customers.index') ?? false;
     }
+
     public function store(Request $request, string $modelClass): bool|Response
     {
         Log::info('CustomerAuthorizer@store called', [
@@ -33,48 +28,24 @@ class CustomerAuthorizer implements Authorizer
         ]);
         
         $user = $request->user();
-        
-        // Customer users cannot create new customers
-        if ($user && $user->hasRole('customer')) {
-            return false;
-        }
-        
         return $user?->can('customers.store') ?? false;
     }
     
     public function show(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        
-        // Customer users cannot view other customers
-        if ($user && $user->hasRole('customer')) {
-            return false;
-        }
-        
         return $user?->can('customers.show') ?? false;
     }
     
     public function update(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        
-        // Customer users cannot update other customers
-        if ($user && $user->hasRole('customer')) {
-            return false;
-        }
-        
         return $user?->can('customers.update') ?? false;
     }
     
     public function destroy(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        
-        // Customer users cannot delete other customers
-        if ($user && $user->hasRole('customer')) {
-            return false;
-        }
-        
         return $user?->can('customers.destroy') ?? false;
     }
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response

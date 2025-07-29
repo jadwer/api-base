@@ -50,6 +50,16 @@ class CustomerSchema extends Schema
         ];
     }
 
+    /**
+     * Get the resource include paths.
+     */
+    public function includePaths(): array
+    {
+        return [
+            'salesOrders',
+        ];
+    }
+
     public function pagination(): ?PagePagination
     {
         return PagePagination::make();

@@ -30,7 +30,9 @@ class SalesOrderItemFactory extends Factory
                 'special_instructions' => $this->faker->optional(0.3)->sentence(),
                 'warehouse_location' => $this->faker->optional(0.6)->randomElement(['A1', 'B2', 'C3', 'D4']),
                 'batch_number' => $this->faker->optional(0.4)->regexify('BAT[0-9]{6}'),
-                'delivery_date' => $this->faker->optional(0.3)->dateTimeBetween('now', '+1 month')->format('Y-m-d')
+                'delivery_date' => $this->faker->optional(0.3)->passthrough(
+                    $this->faker->dateTimeBetween('now', '+1 month')?->format('Y-m-d')
+                ),
             ]),
         ];
     }

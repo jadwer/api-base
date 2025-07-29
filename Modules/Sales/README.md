@@ -164,3 +164,11 @@ php artisan api:generate-docs
 ---
 
 **Módulo desarrollado siguiendo estándares de Laravel JSON API v1.1 y mejores prácticas de testing**
+
+
+## 📊 Métricas
+
+- **Test Files**: 15
+- **Generated**: 2025-07-29 14:52:13
+- **Status**: ✅ Documentation up to date
+- **API Version**: JSON:API v1.0

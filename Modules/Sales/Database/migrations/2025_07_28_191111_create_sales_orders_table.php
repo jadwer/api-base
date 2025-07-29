@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('customer_id')->constrained('customers');
             $table->string('order_number')->unique();
-            $table->enum('status', ['draft', 'pending', 'approved', 'delivered', 'cancelled'])->default('draft');
+            $table->enum('status', ['draft', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'])->default('draft');
             $table->date('order_date');
             $table->dateTime('approved_at')->nullable();
             $table->dateTime('delivered_at')->nullable();

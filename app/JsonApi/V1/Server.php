@@ -40,7 +40,7 @@ class Server extends BaseServer
     public function serving(): void
     {
         // no-op
-    Auth::shouldUse('sanctum');
+        Auth::shouldUse('sanctum');
     }
 
     /**
@@ -62,13 +62,13 @@ class Server extends BaseServer
             UnitSchema::class,
             CategorySchema::class,
             BrandSchema::class,
-            
+
             // Inventory Module
             WarehouseSchema::class,
             WarehouseLocationSchema::class,
             StockSchema::class,
             ProductBatchSchema::class,
-            
+
             // Purchase Module
             SupplierSchema::class,
             PurchaseOrderSchema::class,
