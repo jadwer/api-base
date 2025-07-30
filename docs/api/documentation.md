@@ -1,6 +1,6 @@
 # API Documentation
 
-**Generado:** 2025-07-29T00:14:37.302677Z
+**Generado:** 2025-07-30T01:06:28.539591Z
 
 **Base URL:** `http://localhost/api/v1`
 
