@@ -4,7 +4,7 @@ namespace Modules\{{moduleName}}\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\User\Models\User;
-use Modules\{{moduleName}}\app\Models\{{modelName}};
+use Modules\{{moduleName}}\Models\{{modelName}};
 
 class {{modelName}}DestroyTest extends TestCase
 {
@@ -26,24 +26,24 @@ class {{modelName}}DestroyTest extends TestCase
     public function test_admin_can_delete_{{modelName}}(): void
     {
         $admin = $this->getAdminUser();
-        ${{modelName}} = {{modelName}}::factory()->create();
+        ${{modelNameLower}} = {{modelName}}::factory()->create();
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('{{resourceType}}')
-            ->delete("/api/v1/{{resourceType}}/{${{modelName}}->id}");
+            ->delete("/api/v1/{{resourceType}}/{${{modelNameLower}}->id}");
 
         $response->assertNoContent();
         
         $this->assertDatabaseMissing('{{tableName}}', [
-            'id' => ${{modelName}}->id
+            'id' => ${{modelNameLower}}->id
         ]);
     }
 
     public function test_admin_can_delete_{{modelName}}_with_metadata(): void
     {
         $admin = $this->getAdminUser();
-        ${{modelName}} = {{modelName}}::factory()->create([
+        ${{modelNameLower}} = {{modelName}}::factory()->create([
             'metadata' => [
                 'priority' => 'high',
                 'source' => 'import'
@@ -53,61 +53,61 @@ class {{modelName}}DestroyTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('{{resourceType}}')
-            ->delete("/api/v1/{{resourceType}}/{${{modelName}}->id}");
+            ->delete("/api/v1/{{resourceType}}/{${{modelNameLower}}->id}");
 
         $response->assertNoContent();
         
         $this->assertDatabaseMissing('{{tableName}}', [
-            'id' => ${{modelName}}->id
+            'id' => ${{modelNameLower}}->id
         ]);
     }
 
     public function test_can_delete_inactive_{{modelName}}(): void
     {
         $admin = $this->getAdminUser();
-        ${{modelName}} = {{modelName}}::factory()->inactive()->create();
+        ${{modelNameLower}} = {{modelName}}::factory()->inactive()->create();
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('{{resourceType}}')
-            ->delete("/api/v1/{{resourceType}}/{${{modelName}}->id}");
+            ->delete("/api/v1/{{resourceType}}/{${{modelNameLower}}->id}");
 
         $response->assertNoContent();
         
         $this->assertDatabaseMissing('{{tableName}}', [
-            'id' => ${{modelName}}->id
+            'id' => ${{modelNameLower}}->id
         ]);
     }
 
     public function test_customer_user_cannot_delete_{{modelName}}(): void
     {
         $customer = $this->getCustomerUser();
-        ${{modelName}} = {{modelName}}::factory()->create();
+        ${{modelNameLower}} = {{modelName}}::factory()->create();
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
             ->expects('{{resourceType}}')
-            ->delete("/api/v1/{{resourceType}}/{${{modelName}}->id}");
+            ->delete("/api/v1/{{resourceType}}/{${{modelNameLower}}->id}");
 
         $response->assertStatus(403);
         
         $this->assertDatabaseHas('{{tableName}}', [
-            'id' => ${{modelName}}->id
+            'id' => ${{modelNameLower}}->id
         ]);
     }
 
     public function test_guest_cannot_delete_{{modelName}}(): void
     {
-        ${{modelName}} = {{modelName}}::factory()->create();
+        ${{modelNameLower}} = {{modelName}}::factory()->create();
 
         $response = $this->jsonApi()
             ->expects('{{resourceType}}')
-            ->delete("/api/v1/{{resourceType}}/{${{modelName}}->id}");
+            ->delete("/api/v1/{{resourceType}}/{${{modelNameLower}}->id}");
 
         $response->assertStatus(401);
         
         $this->assertDatabaseHas('{{tableName}}', [
-            'id' => ${{modelName}}->id
+            'id' => ${{modelNameLower}}->id
         ]);
     }
 
@@ -126,12 +126,12 @@ class {{modelName}}DestroyTest extends TestCase
     public function test_delete_response_is_empty(): void
     {
         $admin = $this->getAdminUser();
-        ${{modelName}} = {{modelName}}::factory()->create();
+        ${{modelNameLower}} = {{modelName}}::factory()->create();
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('{{resourceType}}')
-            ->delete("/api/v1/{{resourceType}}/{${{modelName}}->id}");
+            ->delete("/api/v1/{{resourceType}}/{${{modelNameLower}}->id}");
 
         $response->assertNoContent();
         $this->assertEmpty($response->getContent());
@@ -140,13 +140,13 @@ class {{modelName}}DestroyTest extends TestCase
     public function test_multiple_deletes_are_idempotent(): void
     {
         $admin = $this->getAdminUser();
-        ${{modelName}} = {{modelName}}::factory()->create();
+        ${{modelNameLower}} = {{modelName}}::factory()->create();
 
         // First delete
         $response1 = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('{{resourceType}}')
-            ->delete("/api/v1/{{resourceType}}/{${{modelName}}->id}");
+            ->delete("/api/v1/{{resourceType}}/{${{modelNameLower}}->id}");
 
         $response1->assertNoContent();
 
@@ -154,7 +154,7 @@ class {{modelName}}DestroyTest extends TestCase
         $response2 = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('{{resourceType}}')
-            ->delete("/api/v1/{{resourceType}}/{${{modelName}}->id}");
+            ->delete("/api/v1/{{resourceType}}/{${{modelNameLower}}->id}");
 
         $response2->assertStatus(404);
     }

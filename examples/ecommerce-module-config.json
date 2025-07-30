@@ -1,0 +1,281 @@
+{
+  "entities": {
+    "ShoppingCart": {
+      "name": "ShoppingCart",
+      "tableName": "shopping_carts",
+      "fields": [
+        {
+          "name": "session_id",
+          "type": "string",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "user_id",
+          "type": "foreignId",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "expires_at",
+          "type": "datetime",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "total_amount",
+          "type": "decimal",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "currency",
+          "type": "string",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "coupon_code",
+          "type": "string",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "discount_amount",
+          "type": "decimal",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "tax_amount",
+          "type": "decimal",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "shipping_amount",
+          "type": "decimal",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "notes",
+          "type": "text",
+          "nullable": true,
+          "unique": false
+        }
+      ]
+    },
+    "CartItem": {
+      "name": "CartItem",
+      "tableName": "cart_items",
+      "fields": [
+        {
+          "name": "shopping_cart_id",
+          "type": "foreignId",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "product_id",
+          "type": "foreignId",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "quantity",
+          "type": "decimal",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "unit_price",
+          "type": "decimal",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "original_price",
+          "type": "decimal",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "discount_percent",
+          "type": "decimal",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "discount_amount",
+          "type": "decimal",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "subtotal",
+          "type": "decimal",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "tax_rate",
+          "type": "decimal",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "tax_amount",
+          "type": "decimal",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "total",
+          "type": "decimal",
+          "nullable": false,
+          "unique": false
+        }
+      ]
+    },
+    "Coupon": {
+      "name": "Coupon",
+      "tableName": "coupons",
+      "fields": [
+        {
+          "name": "code",
+          "type": "string",
+          "nullable": false,
+          "unique": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "value",
+          "type": "decimal",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "min_amount",
+          "type": "decimal",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "max_amount",
+          "type": "decimal",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "max_uses",
+          "type": "integer",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "used_count",
+          "type": "integer",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "starts_at",
+          "type": "datetime",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "expires_at",
+          "type": "datetime",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "is_active",
+          "type": "boolean",
+          "nullable": false,
+          "unique": false
+        },
+        {
+          "name": "customer_ids",
+          "type": "json",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "product_ids",
+          "type": "json",
+          "nullable": true,
+          "unique": false
+        },
+        {
+          "name": "category_ids",
+          "type": "json",
+          "nullable": true,
+          "unique": false
+        }
+      ]
+    }
+  },
+  "relationships": [
+    {
+      "entityA": "ShoppingCart",
+      "entityB": "CartItem",
+      "type": "one-to-many",
+      "description": "Un carrito puede tener múltiples items"
+    },
+    {
+      "entityA": "CartItem",
+      "entityB": "Product",
+      "type": "many-to-one",
+      "description": "Cada item del carrito está relacionado con un producto específico"
+    },
+    {
+      "entityA": "ShoppingCart",
+      "entityB": "User",
+      "type": "many-to-one",
+      "description": "Los carritos pueden estar asociados a usuarios registrados"
+    }
+  ],
+  "permissions": {
+    "prefix": "ecommerce",
+    "resources": ["shopping-carts", "cart-items", "coupons"],
+    "actions": ["index", "show", "store", "update", "destroy"],
+    "roles": {
+      "god": ["all"],
+      "admin": ["all"],
+      "manager": ["shopping-carts.index", "shopping-carts.show", "cart-items.index", "cart-items.show", "coupons.*"],
+      "customer": ["shopping-carts.*", "cart-items.*", "coupons.show"],
+      "guest": ["shopping-carts.store", "shopping-carts.update", "shopping-carts.show", "cart-items.store", "cart-items.update", "cart-items.destroy"]
+    }
+  },
+  "seeding": {
+    "shopping_carts": 25,
+    "cart_items": 100,
+    "coupons": 15
+  }
+}

@@ -4,7 +4,7 @@ namespace Modules\{{moduleName}}\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\User\Models\User;
-use Modules\{{moduleName}}\app\Models\{{modelName}};
+use Modules\{{moduleName}}\Models\{{modelName}};
 
 class {{modelName}}IndexTest extends TestCase
 {
@@ -41,8 +41,7 @@ class {{modelName}}IndexTest extends TestCase
                     'id',
                     'type',
                     'attributes' => [
-                        'name',
-                        'is_active',
+{{testableFields}}
                     ]
                 ]
             ]

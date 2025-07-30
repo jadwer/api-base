@@ -1,6 +1,6 @@
 # API Documentation
 
-**Generado:** 2025-07-30T01:06:28.539591Z
+**Generado:** 2025-07-30T03:01:16.020703Z
 
 **Base URL:** `http://localhost/api/v1`
 
@@ -1720,6 +1720,486 @@
 ### 📦 Profile
 
 #### `PATCH` `api/v1/profile/password`
+
+---
+
+### 📦 Shopping carts
+
+#### `GET` `api/v1/shopping-carts`
+
+**Campos disponibles:**
+
+- ✅ `shopping_cart_id` (string) 
+- ✅ `product_id` (string) 
+- ✅ `quantity` (number) 
+- ✅ `unit_price` (number) 
+- ✅ `original_price` (number) 
+- ✅ `discount_percent` (number) 
+- ✅ `discount_amount` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `tax_rate` (number) 
+- ✅ `tax_amount` (number) 
+- ✅ `total` (number) 
+- ✅ `shoppingCart` (relationship) 
+- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/shopping_carts",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/shopping-carts`
+
+**Campos disponibles:**
+
+- ✅ `shopping_cart_id` (string) 
+- ✅ `product_id` (string) 
+- ✅ `quantity` (number) 
+- ✅ `unit_price` (number) 
+- ✅ `original_price` (number) 
+- ✅ `discount_percent` (number) 
+- ✅ `discount_amount` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `tax_rate` (number) 
+- ✅ `tax_amount` (number) 
+- ✅ `total` (number) 
+- ✅ `shoppingCart` (relationship) 
+- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/shopping_carts",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "shopping_carts",
+            "attributes": [
+                "..."
+            ]
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/shopping-carts/{shopping_cart}`
+
+**Campos disponibles:**
+
+- ✅ `shopping_cart_id` (string) 
+- ✅ `product_id` (string) 
+- ✅ `quantity` (number) 
+- ✅ `unit_price` (number) 
+- ✅ `original_price` (number) 
+- ✅ `discount_percent` (number) 
+- ✅ `discount_amount` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `tax_rate` (number) 
+- ✅ `tax_amount` (number) 
+- ✅ `total` (number) 
+- ✅ `shoppingCart` (relationship) 
+- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/shopping_carts",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/shopping-carts/{shopping_cart}`
+
+**Campos disponibles:**
+
+- ✅ `shopping_cart_id` (string) 
+- ✅ `product_id` (string) 
+- ✅ `quantity` (number) 
+- ✅ `unit_price` (number) 
+- ✅ `original_price` (number) 
+- ✅ `discount_percent` (number) 
+- ✅ `discount_amount` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `tax_rate` (number) 
+- ✅ `tax_amount` (number) 
+- ✅ `total` (number) 
+- ✅ `shoppingCart` (relationship) 
+- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+
+---
+
+#### `DELETE` `api/v1/shopping-carts/{shopping_cart}`
+
+**Campos disponibles:**
+
+- ✅ `shopping_cart_id` (string) 
+- ✅ `product_id` (string) 
+- ✅ `quantity` (number) 
+- ✅ `unit_price` (number) 
+- ✅ `original_price` (number) 
+- ✅ `discount_percent` (number) 
+- ✅ `discount_amount` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `tax_rate` (number) 
+- ✅ `tax_amount` (number) 
+- ✅ `total` (number) 
+- ✅ `shoppingCart` (relationship) 
+- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+
+---
+
+### 📦 Cart items
+
+#### `GET` `api/v1/cart-items`
+
+**Campos disponibles:**
+
+- ✅ `shopping_cart_id` (string) 
+- ✅ `product_id` (string) 
+- ✅ `quantity` (number) 
+- ✅ `unit_price` (number) 
+- ✅ `original_price` (number) 
+- ✅ `discount_percent` (number) 
+- ✅ `discount_amount` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `tax_rate` (number) 
+- ✅ `tax_amount` (number) 
+- ✅ `total` (number) 
+- ✅ `shoppingCart` (relationship) 
+- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/cart_items",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/cart-items`
+
+**Campos disponibles:**
+
+- ✅ `shopping_cart_id` (string) 
+- ✅ `product_id` (string) 
+- ✅ `quantity` (number) 
+- ✅ `unit_price` (number) 
+- ✅ `original_price` (number) 
+- ✅ `discount_percent` (number) 
+- ✅ `discount_amount` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `tax_rate` (number) 
+- ✅ `tax_amount` (number) 
+- ✅ `total` (number) 
+- ✅ `shoppingCart` (relationship) 
+- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/cart_items",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "cart_items",
+            "attributes": [
+                "..."
+            ]
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/cart-items/{cart_item}`
+
+**Campos disponibles:**
+
+- ✅ `shopping_cart_id` (string) 
+- ✅ `product_id` (string) 
+- ✅ `quantity` (number) 
+- ✅ `unit_price` (number) 
+- ✅ `original_price` (number) 
+- ✅ `discount_percent` (number) 
+- ✅ `discount_amount` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `tax_rate` (number) 
+- ✅ `tax_amount` (number) 
+- ✅ `total` (number) 
+- ✅ `shoppingCart` (relationship) 
+- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/cart_items",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/cart-items/{cart_item}`
+
+**Campos disponibles:**
+
+- ✅ `shopping_cart_id` (string) 
+- ✅ `product_id` (string) 
+- ✅ `quantity` (number) 
+- ✅ `unit_price` (number) 
+- ✅ `original_price` (number) 
+- ✅ `discount_percent` (number) 
+- ✅ `discount_amount` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `tax_rate` (number) 
+- ✅ `tax_amount` (number) 
+- ✅ `total` (number) 
+- ✅ `shoppingCart` (relationship) 
+- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+
+---
+
+#### `DELETE` `api/v1/cart-items/{cart_item}`
+
+**Campos disponibles:**
+
+- ✅ `shopping_cart_id` (string) 
+- ✅ `product_id` (string) 
+- ✅ `quantity` (number) 
+- ✅ `unit_price` (number) 
+- ✅ `original_price` (number) 
+- ✅ `discount_percent` (number) 
+- ✅ `discount_amount` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `tax_rate` (number) 
+- ✅ `tax_amount` (number) 
+- ✅ `total` (number) 
+- ✅ `shoppingCart` (relationship) 
+- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+
+---
+
+### 📦 Coupons
+
+#### `GET` `api/v1/coupons`
+
+**Campos disponibles:**
+
+- ✅ `shopping_cart_id` (string) 
+- ✅ `product_id` (string) 
+- ✅ `quantity` (number) 
+- ✅ `unit_price` (number) 
+- ✅ `original_price` (number) 
+- ✅ `discount_percent` (number) 
+- ✅ `discount_amount` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `tax_rate` (number) 
+- ✅ `tax_amount` (number) 
+- ✅ `total` (number) 
+- ✅ `shoppingCart` (relationship) 
+- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/coupons",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/coupons`
+
+**Campos disponibles:**
+
+- ✅ `shopping_cart_id` (string) 
+- ✅ `product_id` (string) 
+- ✅ `quantity` (number) 
+- ✅ `unit_price` (number) 
+- ✅ `original_price` (number) 
+- ✅ `discount_percent` (number) 
+- ✅ `discount_amount` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `tax_rate` (number) 
+- ✅ `tax_amount` (number) 
+- ✅ `total` (number) 
+- ✅ `shoppingCart` (relationship) 
+- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/coupons",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "coupons",
+            "attributes": [
+                "..."
+            ]
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/coupons/{coupon}`
+
+**Campos disponibles:**
+
+- ✅ `shopping_cart_id` (string) 
+- ✅ `product_id` (string) 
+- ✅ `quantity` (number) 
+- ✅ `unit_price` (number) 
+- ✅ `original_price` (number) 
+- ✅ `discount_percent` (number) 
+- ✅ `discount_amount` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `tax_rate` (number) 
+- ✅ `tax_amount` (number) 
+- ✅ `total` (number) 
+- ✅ `shoppingCart` (relationship) 
+- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/coupons",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/coupons/{coupon}`
+
+**Campos disponibles:**
+
+- ✅ `shopping_cart_id` (string) 
+- ✅ `product_id` (string) 
+- ✅ `quantity` (number) 
+- ✅ `unit_price` (number) 
+- ✅ `original_price` (number) 
+- ✅ `discount_percent` (number) 
+- ✅ `discount_amount` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `tax_rate` (number) 
+- ✅ `tax_amount` (number) 
+- ✅ `total` (number) 
+- ✅ `shoppingCart` (relationship) 
+- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
+
+---
+
+#### `DELETE` `api/v1/coupons/{coupon}`
+
+**Campos disponibles:**
+
+- ✅ `shopping_cart_id` (string) 
+- ✅ `product_id` (string) 
+- ✅ `quantity` (number) 
+- ✅ `unit_price` (number) 
+- ✅ `original_price` (number) 
+- ✅ `discount_percent` (number) 
+- ✅ `discount_amount` (number) 
+- ✅ `subtotal` (number) 
+- ✅ `tax_rate` (number) 
+- ✅ `tax_amount` (number) 
+- ✅ `total` (number) 
+- ✅ `shoppingCart` (relationship) 
+- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 
+- ✅ `updatedAt` (datetime) 
 
 ---
 

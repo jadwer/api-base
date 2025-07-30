@@ -1,5 +1,5 @@
 {
-    "generated_at": "2025-07-30T01:06:28.539591Z",
+    "generated_at": "2025-07-30T03:01:16.020703Z",
     "base_url": "http:\/\/localhost\/api\/v1",
     "authentication": {
         "type": "Bearer Token",
@@ -5780,6 +5780,1896 @@
                 "auth:sanctum"
             ],
             "schema": null,
+            "examples": []
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/shopping-carts",
+            "resource_type": "shopping_carts",
+            "controller": "Modules\\Ecommerce\\Http\\Controllers\\Api\\V1\\ShoppingCartController",
+            "action": "index",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CartItemSchema.php",
+                "fields": [
+                    {
+                        "name": "shopping_cart_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "unit_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "original_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_percent",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_rate",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "shoppingCart",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/shopping_carts",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "shopping_carts",
+                                "id": "1",
+                                "attributes": [
+                                    "..."
+                                ],
+                                "relationships": [
+                                    "..."
+                                ]
+                            }
+                        ],
+                        "meta": {
+                            "pagination": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "POST"
+            ],
+            "uri": "api\/v1\/shopping-carts",
+            "resource_type": "shopping_carts",
+            "controller": "Modules\\Ecommerce\\Http\\Controllers\\Api\\V1\\ShoppingCartController",
+            "action": "store",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CartItemSchema.php",
+                "fields": [
+                    {
+                        "name": "shopping_cart_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "unit_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "original_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_percent",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_rate",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "shoppingCart",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "POST",
+                    "url": "\/api\/v1\/shopping_carts",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "shopping_carts",
+                            "attributes": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/shopping-carts\/{shopping_cart}",
+            "resource_type": "shopping_carts",
+            "controller": "Modules\\Ecommerce\\Http\\Controllers\\Api\\V1\\ShoppingCartController",
+            "action": "show",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CartItemSchema.php",
+                "fields": [
+                    {
+                        "name": "shopping_cart_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "unit_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "original_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_percent",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_rate",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "shoppingCart",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/shopping_carts",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "shopping_carts",
+                                "id": "1",
+                                "attributes": [
+                                    "..."
+                                ],
+                                "relationships": [
+                                    "..."
+                                ]
+                            }
+                        ],
+                        "meta": {
+                            "pagination": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "PATCH"
+            ],
+            "uri": "api\/v1\/shopping-carts\/{shopping_cart}",
+            "resource_type": "shopping_carts",
+            "controller": "Modules\\Ecommerce\\Http\\Controllers\\Api\\V1\\ShoppingCartController",
+            "action": "update",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CartItemSchema.php",
+                "fields": [
+                    {
+                        "name": "shopping_cart_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "unit_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "original_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_percent",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_rate",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "shoppingCart",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": []
+        },
+        {
+            "methods": [
+                "DELETE"
+            ],
+            "uri": "api\/v1\/shopping-carts\/{shopping_cart}",
+            "resource_type": "shopping_carts",
+            "controller": "Modules\\Ecommerce\\Http\\Controllers\\Api\\V1\\ShoppingCartController",
+            "action": "destroy",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CartItemSchema.php",
+                "fields": [
+                    {
+                        "name": "shopping_cart_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "unit_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "original_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_percent",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_rate",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "shoppingCart",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": []
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/cart-items",
+            "resource_type": "cart_items",
+            "controller": "Modules\\Ecommerce\\Http\\Controllers\\Api\\V1\\CartItemController",
+            "action": "index",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CartItemSchema.php",
+                "fields": [
+                    {
+                        "name": "shopping_cart_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "unit_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "original_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_percent",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_rate",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "shoppingCart",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/cart_items",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "cart_items",
+                                "id": "1",
+                                "attributes": [
+                                    "..."
+                                ],
+                                "relationships": [
+                                    "..."
+                                ]
+                            }
+                        ],
+                        "meta": {
+                            "pagination": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "POST"
+            ],
+            "uri": "api\/v1\/cart-items",
+            "resource_type": "cart_items",
+            "controller": "Modules\\Ecommerce\\Http\\Controllers\\Api\\V1\\CartItemController",
+            "action": "store",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CartItemSchema.php",
+                "fields": [
+                    {
+                        "name": "shopping_cart_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "unit_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "original_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_percent",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_rate",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "shoppingCart",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "POST",
+                    "url": "\/api\/v1\/cart_items",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "cart_items",
+                            "attributes": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/cart-items\/{cart_item}",
+            "resource_type": "cart_items",
+            "controller": "Modules\\Ecommerce\\Http\\Controllers\\Api\\V1\\CartItemController",
+            "action": "show",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CartItemSchema.php",
+                "fields": [
+                    {
+                        "name": "shopping_cart_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "unit_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "original_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_percent",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_rate",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "shoppingCart",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/cart_items",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "cart_items",
+                                "id": "1",
+                                "attributes": [
+                                    "..."
+                                ],
+                                "relationships": [
+                                    "..."
+                                ]
+                            }
+                        ],
+                        "meta": {
+                            "pagination": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "PATCH"
+            ],
+            "uri": "api\/v1\/cart-items\/{cart_item}",
+            "resource_type": "cart_items",
+            "controller": "Modules\\Ecommerce\\Http\\Controllers\\Api\\V1\\CartItemController",
+            "action": "update",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CartItemSchema.php",
+                "fields": [
+                    {
+                        "name": "shopping_cart_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "unit_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "original_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_percent",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_rate",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "shoppingCart",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": []
+        },
+        {
+            "methods": [
+                "DELETE"
+            ],
+            "uri": "api\/v1\/cart-items\/{cart_item}",
+            "resource_type": "cart_items",
+            "controller": "Modules\\Ecommerce\\Http\\Controllers\\Api\\V1\\CartItemController",
+            "action": "destroy",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CartItemSchema.php",
+                "fields": [
+                    {
+                        "name": "shopping_cart_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "unit_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "original_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_percent",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_rate",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "shoppingCart",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": []
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/coupons",
+            "resource_type": "coupons",
+            "controller": "Modules\\Ecommerce\\Http\\Controllers\\Api\\V1\\CouponController",
+            "action": "index",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CartItemSchema.php",
+                "fields": [
+                    {
+                        "name": "shopping_cart_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "unit_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "original_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_percent",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_rate",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "shoppingCart",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/coupons",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "coupons",
+                                "id": "1",
+                                "attributes": [
+                                    "..."
+                                ],
+                                "relationships": [
+                                    "..."
+                                ]
+                            }
+                        ],
+                        "meta": {
+                            "pagination": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "POST"
+            ],
+            "uri": "api\/v1\/coupons",
+            "resource_type": "coupons",
+            "controller": "Modules\\Ecommerce\\Http\\Controllers\\Api\\V1\\CouponController",
+            "action": "store",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CartItemSchema.php",
+                "fields": [
+                    {
+                        "name": "shopping_cart_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "unit_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "original_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_percent",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_rate",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "shoppingCart",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "POST",
+                    "url": "\/api\/v1\/coupons",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "coupons",
+                            "attributes": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/coupons\/{coupon}",
+            "resource_type": "coupons",
+            "controller": "Modules\\Ecommerce\\Http\\Controllers\\Api\\V1\\CouponController",
+            "action": "show",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CartItemSchema.php",
+                "fields": [
+                    {
+                        "name": "shopping_cart_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "unit_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "original_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_percent",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_rate",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "shoppingCart",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/coupons",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "coupons",
+                                "id": "1",
+                                "attributes": [
+                                    "..."
+                                ],
+                                "relationships": [
+                                    "..."
+                                ]
+                            }
+                        ],
+                        "meta": {
+                            "pagination": [
+                                "..."
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "PATCH"
+            ],
+            "uri": "api\/v1\/coupons\/{coupon}",
+            "resource_type": "coupons",
+            "controller": "Modules\\Ecommerce\\Http\\Controllers\\Api\\V1\\CouponController",
+            "action": "update",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CartItemSchema.php",
+                "fields": [
+                    {
+                        "name": "shopping_cart_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "unit_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "original_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_percent",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_rate",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "shoppingCart",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
+            "examples": []
+        },
+        {
+            "methods": [
+                "DELETE"
+            ],
+            "uri": "api\/v1\/coupons\/{coupon}",
+            "resource_type": "coupons",
+            "controller": "Modules\\Ecommerce\\Http\\Controllers\\Api\\V1\\CouponController",
+            "action": "destroy",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "CartItemSchema.php",
+                "fields": [
+                    {
+                        "name": "shopping_cart_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product_id",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "unit_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "original_price",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_percent",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "discount_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "subtotal",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_rate",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "tax_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "shoppingCart",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "product",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false
+                    }
+                ]
+            },
             "examples": []
         },
         {

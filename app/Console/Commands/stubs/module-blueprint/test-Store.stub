@@ -4,7 +4,7 @@ namespace Modules\{{moduleName}}\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\User\Models\User;
-use Modules\{{moduleName}}\app\Models\{{modelName}};
+use Modules\{{moduleName}}\Models\{{modelName}};
 
 class {{modelName}}StoreTest extends TestCase
 {
@@ -30,13 +30,7 @@ class {{modelName}}StoreTest extends TestCase
         $data = [
             'type' => '{{resourceType}}',
             'attributes' => [
-                'name' => 'Test {{modelName}}',
-                'description' => 'Test description',
-                'is_active' => true,
-                'metadata' => [
-                    'source' => 'test',
-                    'priority' => 'high'
-                ]
+{{storeTestFields}}
             ]
         ];
 
@@ -48,11 +42,7 @@ class {{modelName}}StoreTest extends TestCase
 
         $response->assertCreated();
         
-        $this->assertDatabaseHas('{{tableName}}', [
-            'name' => 'Test {{modelName}}',
-            'description' => 'Test description',
-            'is_active' => true
-        ]);
+        $this->assertDatabaseHas('{{tableName}}', [{{storeTestDbFields}}]);
     }
 
     public function test_admin_can_create_{{modelName}}_with_minimal_data(): void
@@ -62,8 +52,7 @@ class {{modelName}}StoreTest extends TestCase
         $data = [
             'type' => '{{resourceType}}',
             'attributes' => [
-                'name' => 'Minimal {{modelName}}',
-                'is_active' => true
+{{minimalStoreTestFields}}
             ]
         ];
 
