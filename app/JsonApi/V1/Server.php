@@ -21,6 +21,10 @@ use Modules\Product\JsonApi\V1\Products\ProductSchema;
 use Modules\Product\JsonApi\V1\Units\UnitSchema;
 use Modules\Product\JsonApi\V1\Categories\CategorySchema;
 use Modules\Product\JsonApi\V1\Brands\BrandSchema;
+use Modules\Ecommerce\JsonApi\V1\ShoppingCarts\ShoppingCartSchema;
+use Modules\Ecommerce\JsonApi\V1\CartItems\CartItemSchema;
+use Modules\Ecommerce\JsonApi\V1\Coupons\CouponSchema;
+use Modules\VerificationTest\JsonApi\V1\VerificationItems\VerificationItemSchema;
 
 class Server extends BaseServer
 {
@@ -78,25 +82,15 @@ class Server extends BaseServer
             \Modules\Sales\JsonApi\V1\SalesOrders\SalesOrderSchema::class,
             \Modules\Sales\JsonApi\V1\Customers\CustomerSchema::class,
             \Modules\Sales\JsonApi\V1\SalesOrderItems\SalesOrderItemSchema::class,
+
+            // Ecommerce Module
+            ShoppingCartSchema::class,
+            CartItemSchema::class,
+            CouponSchema::class,
+
         ];
         
-        // 🧪 TESTING MODULES: Auto-register schemas if they exist
-        // This prevents errors when modules are deleted/regenerated during development
-        // To add new test modules, just add them to this conditional block
-        $testSchemas = [];
-        
-        // Ecommerce Module (Testing)
-        if (class_exists('\Modules\Ecommerce\JsonApi\V1\ShoppingCarts\ShoppingCartSchema')) {
-            $testSchemas[] = \Modules\Ecommerce\JsonApi\V1\ShoppingCarts\ShoppingCartSchema::class;
-        }
-        if (class_exists('\Modules\Ecommerce\JsonApi\V1\CartItems\CartItemSchema')) {
-            $testSchemas[] = \Modules\Ecommerce\JsonApi\V1\CartItems\CartItemSchema::class;
-        }
-        if (class_exists('\Modules\Ecommerce\JsonApi\V1\Coupons\CouponSchema')) {
-            $testSchemas[] = \Modules\Ecommerce\JsonApi\V1\Coupons\CouponSchema::class;
-        }
-        
-        return array_merge($schemas, $testSchemas);
+        return $schemas;
     }
 
     protected function authorizers(): array
@@ -117,22 +111,13 @@ class Server extends BaseServer
             'sales-orders' => \Modules\Sales\JsonApi\V1\SalesOrders\SalesOrderAuthorizer::class,
             'customers' => \Modules\Sales\JsonApi\V1\Customers\CustomersAuthorizer::class,
             'sales-order-items' => \Modules\Sales\JsonApi\V1\SalesOrderItems\SalesOrderItemAuthorizer::class,
+            
+            // Ecommerce Module
+            'shopping-carts' => \Modules\Ecommerce\JsonApi\V1\ShoppingCarts\ShoppingCartAuthorizer::class,
+            'cart-items' => \Modules\Ecommerce\JsonApi\V1\CartItems\CartItemAuthorizer::class,
+            'coupons' => \Modules\Ecommerce\JsonApi\V1\Coupons\CouponAuthorizer::class,
+
         ];
-        
-        // 🧪 TESTING MODULES: Auto-register authorizers if they exist
-        // This prevents errors when modules are deleted/regenerated during development
-        // To add new test modules, just add them to this conditional block
-        
-        // Ecommerce Module (Testing)
-        if (class_exists('\Modules\Ecommerce\JsonApi\V1\ShoppingCarts\ShoppingCartAuthorizer')) {
-            $authorizers['shopping-carts'] = \Modules\Ecommerce\JsonApi\V1\ShoppingCarts\ShoppingCartAuthorizer::class;
-        }
-        if (class_exists('\Modules\Ecommerce\JsonApi\V1\CartItems\CartItemAuthorizer')) {
-            $authorizers['cart-items'] = \Modules\Ecommerce\JsonApi\V1\CartItems\CartItemAuthorizer::class;
-        }
-        if (class_exists('\Modules\Ecommerce\JsonApi\V1\Coupons\CouponAuthorizer')) {
-            $authorizers['coupons'] = \Modules\Ecommerce\JsonApi\V1\Coupons\CouponAuthorizer::class;
-        }
         
         return $authorizers;
     }

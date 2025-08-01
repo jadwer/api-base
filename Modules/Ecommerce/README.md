@@ -2,7 +2,7 @@
 
 Advanced module with multiple entities and complex relationships.
 
-**Generated:** 2025-07-30 06:18:14
+**Generated:** 2025-07-31 22:47:46
 
 ## 📋 Entities
 

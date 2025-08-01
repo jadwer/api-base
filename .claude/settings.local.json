@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php artisan help:*)",
+      "Bash(php artisan module:advanced-blueprint:*)",
+      "Bash(php:*)",
+      "Bash(mkdir:*)",
+      "Bash(composer:*)",
+      "Bash(ren:*)",
+      "Bash(mv:*)",
+      "Bash(ls:*)"
+    ],
+    "deny": []
+  }
+}

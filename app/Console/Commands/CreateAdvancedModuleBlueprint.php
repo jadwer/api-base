@@ -2,13 +2,21 @@
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\ModuleGeneration\ModuleValidator;
+use App\Console\Commands\ModuleGeneration\ConfigurationParser;
+use App\Console\Commands\ModuleGeneration\PermissionGenerator;
+use App\Console\Commands\ModuleGeneration\MigrationGenerator;
+use App\Console\Commands\ModuleGeneration\SchemaGenerator;
+use App\Console\Commands\ModuleGeneration\TestGenerator;
+use App\Console\Commands\ModuleGeneration\IntegrationManager;
+
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class CreateAdvancedModuleBlueprint extends Command
 {
-    protected $signature = 'module:advanced-blueprint {module} {--config=}';
+    protected $signature = 'module:advanced-blueprint {module} {--config=} {--force}';
     protected $description = 'Create a module with multiple entities and complex relationships';
     
     private $entities = [];
@@ -19,6 +27,12 @@ class CreateAdvancedModuleBlueprint extends Command
     {
         $moduleName = $this->argument('module');
         $configFile = $this->option('config');
+        $force = $this->option('force');
+
+        // Si se especifica --force, limpiar el módulo existente completamente
+        if ($force && $this->moduleExists($moduleName)) {
+            $this->cleanExistingModule($moduleName);
+        }
 
         if ($configFile && File::exists($configFile)) {
             $config = json_decode(File::get($configFile), true);
@@ -32,20 +46,20 @@ class CreateAdvancedModuleBlueprint extends Command
     {
         $this->info("🚀 Creating module from config: {$moduleName}");
         
-        // Transform entities from object to array format expected by generator
-        $entitiesConfig = $config['entities'] ?? [];
-        $entities = [];
+        // Use refactored classes
+        $validator = new ModuleValidator($this);
+        $configParser = new ConfigurationParser();
         
-        foreach ($entitiesConfig as $entityName => $entityData) {
-            $entity = [
-                'name' => $entityData['name'],
-                'tableName' => $entityData['tableName'],
-                'fillable' => array_column($entityData['fields'], 'name'),
-                'fields' => $entityData['fields'],
-                'relationships' => []
-            ];
-            $entities[] = $entity;
-        }
+        // Validate configuration structure
+        $configParser->validateConfiguration($config);
+        
+        // Parse and normalize configuration
+        $normalizedConfig = $configParser->normalizeConfiguration($config);
+        $entitiesConfig = $normalizedConfig['entitiesConfig'];
+        $entities = $normalizedConfig['entities'];
+        
+        // 🔍 VALIDATE ENTITY NAMES FOR CONFLICTS
+        $validator->validateEntityNamesForConflicts($entitiesConfig, $moduleName);
         
         $this->entities = $entities;
         $this->permissionsConfig = $config['permissions'] ?? null;
@@ -142,7 +156,12 @@ class CreateAdvancedModuleBlueprint extends Command
         // Reset entity index for proper timestamp ordering
         $this->currentEntityIndex = 0;
         
-        // Create module structure
+        // Create module structure - verificar que realmente no existe
+        if ($this->moduleExists($moduleName)) {
+            $this->error("ERROR: Module {$moduleName} still exists after cleanup! Check Laravel Modules configuration.");
+            return;
+        }
+        
         $this->call('module:make', ['name' => [$moduleName]]);
         
         // Update composer.json to include JsonApi PSR-4 mapping
@@ -159,9 +178,10 @@ class CreateAdvancedModuleBlueprint extends Command
         // Update main seeder with all entity seeders
         $this->updateMainSeeder($moduleName, $entities);
 
-        // Generate permissions seeder if permissions are configured
+        // Generate permissions seeder if permissions are configured using extracted class
         if ($this->permissionsConfig) {
-            $this->generatePermissionsSeeder($moduleName, $this->permissionsConfig);
+            $permissionGenerator = new PermissionGenerator($this);
+            $permissionGenerator->generatePermissionsSeeder($moduleName, $this->permissionsConfig);
         }
 
         // Generate relationship migrations
@@ -176,6 +196,10 @@ class CreateAdvancedModuleBlueprint extends Command
         // Generate module documentation
         $this->generateModuleDocumentation($moduleName, $entities, $relationships);
 
+        // Integración automática completa usando extracted class
+        $integrationManager = new IntegrationManager($moduleName, $this);
+        $integrationManager->integrateModuleCompletely($entities);
+
         $this->info("✅ Advanced module '{$moduleName}' created successfully!");
         $this->showModuleSummary($moduleName, $entities, $relationships);
     }
@@ -188,8 +212,9 @@ class CreateAdvancedModuleBlueprint extends Command
         // Model with relationships
         $this->generateAdvancedModel($moduleName, $entity, $relationships);
         
-        // Migration
-        $this->generateAdvancedMigration($moduleName, $entity, $relationships);
+        // Migration using extracted class
+        $migrationGenerator = new MigrationGenerator($this);
+        $migrationGenerator->generateEntityMigration($moduleName, $entity);
         
         // Factory
         $this->generateAdvancedFactory($moduleName, $entity);
@@ -197,8 +222,9 @@ class CreateAdvancedModuleBlueprint extends Command
         // Seeder
         $this->generateAdvancedSeeder($moduleName, $entity);
         
-        // JSON API Schema
-        $this->generateAdvancedSchema($moduleName, $entity, $relationships);
+        // JSON API Schema using extracted class
+        $schemaGenerator = new SchemaGenerator($this);
+        $schemaGenerator->generateEntitySchema($moduleName, $entity, $relationships);
         
         // JSON API Resource
         $this->generateAdvancedResource($moduleName, $entity, $relationships);
@@ -241,16 +267,26 @@ class CreateAdvancedModuleBlueprint extends Command
             return [];
         })->toArray();
 
-        // Generate relationships
-        $relationshipMethods = $this->generateRelationshipMethods($entityName, $relationships);
+        // Generate relationships and get required imports
+        $relationshipData = $this->generateRelationshipMethodsWithImports($entityName, $relationships, $moduleName);
+        $relationshipMethods = $relationshipData['methods'];
+        $requiredImports = $relationshipData['imports'];
 
-        $modelTemplate = $this->getStub('advanced-model');
+        $modelTemplate = $this->getStub('model');
+        
+        // Prepare imports string
+        $importsString = '';
+        if (!empty($requiredImports)) {
+            $importsString = implode("\n", $requiredImports);
+        }
+        
         $modelContent = str_replace([
             '{{moduleName}}',
             '{{modelName}}',
             '{{tableName}}',
             '{{fillable}}',
             '{{casts}}',
+            '{{additionalImports}}',
             '{{relationships}}'
         ], [
             $moduleName,
@@ -258,6 +294,7 @@ class CreateAdvancedModuleBlueprint extends Command
             $tableName,
             "'" . implode("', '", $fillable) . "'",
             $this->arrayToString($casts),
+            $importsString,
             $relationshipMethods
         ], $modelTemplate);
 
@@ -270,6 +307,48 @@ class CreateAdvancedModuleBlueprint extends Command
         }
         
         File::put($modelPath, $modelContent);
+    }
+
+    private function generateRelationshipMethodsWithImports(string $entityName, array $relationships, string $currentModuleName): array
+    {
+        $methods = [];
+        $imports = [];
+        $moduleModels = $this->discoverModuleModels();
+        
+        foreach ($relationships as $rel) {
+            // Handle both old format (entityA/entityB) and new format (from/to)
+            $fromEntity = $rel['from'] ?? $rel['entityA'] ?? null;
+            $toEntity = $rel['to'] ?? $rel['entityB'] ?? null;
+            
+            if ($fromEntity === $entityName) {
+                $relatedEntity = $toEntity;
+                $methodName = $this->getRelationshipMethodName($rel['type'], $relatedEntity, false);
+                $method = $this->generateRelationshipMethod($rel['type'], $relatedEntity, $methodName, false);
+                $methods[] = $method;
+                
+                // Check if we need to import this model
+                $import = $this->getModelImport($relatedEntity, $currentModuleName, $moduleModels);
+                if ($import) {
+                    $imports[] = $import;
+                }
+            } elseif ($toEntity === $entityName) {
+                $relatedEntity = $fromEntity;
+                $methodName = $this->getRelationshipMethodName($rel['type'], $relatedEntity, true);
+                $method = $this->generateRelationshipMethod($rel['type'], $relatedEntity, $methodName, true);
+                $methods[] = $method;
+                
+                // Check if we need to import this model
+                $import = $this->getModelImport($relatedEntity, $currentModuleName, $moduleModels);
+                if ($import) {
+                    $imports[] = $import;
+                }
+            }
+        }
+        
+        return [
+            'methods' => implode("\n\n", $methods),
+            'imports' => array_unique($imports)
+        ];
     }
 
     private function generateRelationshipMethods(string $entityName, array $relationships): string
@@ -313,7 +392,12 @@ class CreateAdvancedModuleBlueprint extends Command
             'one-to-one' => $isReverse ? 'belongsTo' : 'hasOne',
             'one-to-many' => $isReverse ? 'belongsTo' : 'hasMany',
             'many-to-one' => 'belongsTo',
-            'many-to-many' => 'belongsToMany'
+            'many-to-many' => 'belongsToMany',
+            // Direct Laravel relationship types
+            'hasOne' => 'hasOne',
+            'hasMany' => 'hasMany',
+            'belongsTo' => 'belongsTo', 
+            'belongsToMany' => 'belongsToMany'
         ];
 
         $laravelMethod = $relationshipMap[$type];
@@ -334,11 +418,11 @@ class CreateAdvancedModuleBlueprint extends Command
         $fieldDefinitions = collect($entity['fields'])->map(function($field) {
             $line = "\$table->{$field['type']}('{$field['name']}')";
             
-            if ($field['nullable']) {
+            if (isset($field['nullable']) && $field['nullable']) {
                 $line .= '->nullable()';
             }
             
-            if ($field['unique']) {
+            if (isset($field['unique']) && $field['unique']) {
                 $line .= '->unique()';
             }
             
@@ -828,6 +912,8 @@ class CreateAdvancedModuleBlueprint extends Command
                 '{{minimalStoreTestFields}}',
                 '{{sortableField}}',
                 '{{filterableField}}',
+                '{{sortTestData}}',
+                '{{filterTestData}}',
                 '{{tableName}}'
             ], [
                 $moduleName,
@@ -842,6 +928,8 @@ class CreateAdvancedModuleBlueprint extends Command
                 $minimalStoreTestFields,
                 $this->getSortableField($entity),
                 $this->getFilterableField($entity),
+                $this->getSortTestData($entity),
+                $this->getFilterTestData($entity),
                 $entity['tableName'] ?? Str::snake(Str::plural($entityName))
             ], $testTemplate);
 
@@ -969,6 +1057,82 @@ class CreateAdvancedModuleBlueprint extends Command
         foreach ($fields as $field) {
             if ($field['type'] === 'boolean') {
                 return Str::camel($field['name']);
+            }
+        }
+        
+        return 'status'; // Ultimate fallback
+    }
+    
+    private function getSortTestData($entity): string
+    {
+        $sortField = $this->getSortableFieldName($entity);
+        $fields = $entity['fields'] ?? [];
+        
+        // Find the sortable field and create test data
+        foreach ($fields as $field) {
+            if ($field['name'] === $sortField) {
+                $testValue = $this->getTestValueForField($field['name'], $field['type']);
+                return "['{$sortField}' => {$testValue}]";
+            }
+        }
+        
+        return "[]"; // Fallback
+    }
+    
+    private function getFilterTestData($entity): string
+    {
+        $filterField = $this->getFilterableFieldName($entity);
+        $fields = $entity['fields'] ?? [];
+        
+        // Find the filterable field and create test data
+        foreach ($fields as $field) {
+            if ($field['name'] === $filterField) {
+                $testValue = $this->getTestValueForField($field['name'], $field['type']);
+                return "['{$filterField}' => {$testValue}]";
+            }
+        }
+        
+        return "[]"; // Fallback
+    }
+    
+    private function getSortableFieldName($entity): string
+    {
+        $fields = $entity['fields'] ?? [];
+        
+        // Look for common sortable fields
+        foreach ($fields as $field) {
+            $fieldName = $field['name'];
+            if (in_array($fieldName, ['name', 'title', 'created_at', 'status'])) {
+                return $fieldName;
+            }
+        }
+        
+        // Fallback to first string field
+        foreach ($fields as $field) {
+            if ($field['type'] === 'string') {
+                return $field['name'];
+            }
+        }
+        
+        return 'created_at'; // Ultimate fallback
+    }
+    
+    private function getFilterableFieldName($entity): string
+    {
+        $fields = $entity['fields'] ?? [];
+        
+        // Look for common filterable fields
+        foreach ($fields as $field) {
+            $fieldName = $field['name'];
+            if (in_array($fieldName, ['status', 'is_active', 'type', 'category'])) {
+                return $fieldName;
+            }
+        }
+        
+        // Look for boolean fields
+        foreach ($fields as $field) {
+            if ($field['type'] === 'boolean') {
+                return $field['name'];
             }
         }
         
@@ -1140,14 +1304,18 @@ class CreateAdvancedModuleBlueprint extends Command
         $relationshipLines = [];
         
         foreach ($relationships as $rel) {
-            if ($rel['entityA'] === $entityName) {
-                $relatedEntity = $rel['entityB'];
+            // Handle both old format (entityA/entityB) and new format (from/to)
+            $fromEntity = $rel['from'] ?? $rel['entityA'] ?? null;
+            $toEntity = $rel['to'] ?? $rel['entityB'] ?? null;
+            
+            if ($fromEntity === $entityName) {
+                $relatedEntity = $toEntity;
                 $methodName = $this->getRelationshipMethodName($rel['type'], $relatedEntity, false);
-                $relationshipLines[] = "            \$this->relationshipData('{$methodName}'),";
-            } elseif ($rel['entityB'] === $entityName) {
-                $relatedEntity = $rel['entityA'];
+                $relationshipLines[] = "            '{$methodName}' => \$this->relation('{$methodName}'),";
+            } elseif ($toEntity === $entityName) {
+                $relatedEntity = $fromEntity;
                 $methodName = $this->getRelationshipMethodName($rel['type'], $relatedEntity, true);
-                $relationshipLines[] = "            \$this->relationshipData('{$methodName}'),";
+                $relationshipLines[] = "            '{$methodName}' => \$this->relation('{$methodName}'),";
             }
         }
         
@@ -1163,7 +1331,7 @@ class CreateAdvancedModuleBlueprint extends Command
             $fieldRules = [];
             
             // Required/nullable
-            if (!$field['nullable']) {
+            if (isset($field['nullable']) && !$field['nullable']) {
                 $fieldRules[] = 'required';
             } else {
                 $fieldRules[] = 'nullable';
@@ -1198,7 +1366,7 @@ class CreateAdvancedModuleBlueprint extends Command
             }
             
             // Unique validation
-            if ($field['unique']) {
+            if (isset($field['unique']) && $field['unique']) {
                 $tableName = $entity['tableName'];
                 $modelVarName = Str::lower($entity['name']);
                 $fieldRules[] = "Rule::unique('{$tableName}')->ignore(\${$modelVarName}?->id)";
@@ -1238,7 +1406,7 @@ class CreateAdvancedModuleBlueprint extends Command
             $fieldName = $field['name'];
             $fieldLabel = ucfirst(str_replace('_', ' ', $fieldName));
             
-            if (!$field['nullable']) {
+            if (isset($field['nullable']) && !$field['nullable']) {
                 $messages[] = "            '{$fieldName}.required' => 'El campo {$fieldLabel} es obligatorio.',";
             }
             
@@ -1264,7 +1432,7 @@ class CreateAdvancedModuleBlueprint extends Command
                     break;
             }
             
-            if ($field['unique']) {
+            if (isset($field['unique']) && $field['unique']) {
                 $messages[] = "            '{$fieldName}.unique' => 'Este {$fieldLabel} ya está en uso.',";
             }
             
@@ -1278,14 +1446,14 @@ class CreateAdvancedModuleBlueprint extends Command
 
     private function arrayToString(array $array): string
     {
-        if (empty($array)) return '[]';
+        if (empty($array)) return '';
         
         $items = [];
         foreach ($array as $key => $value) {
             $items[] = "        '{$key}' => '{$value}'";
         }
         
-        return "[\n" . implode(",\n", $items) . "\n    ]";
+        return implode(",\n", $items);
     }
 
     private function getStub(string $name): string
@@ -1606,8 +1774,8 @@ class {{modelName}}IndexTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        {{modelName}}::factory()->create([{{factoryFields}}]);
-        {{modelName}}::factory()->create([{{factoryFields}}]);
+        {{modelName}}::factory()->create({{sortTestData}});
+        {{modelName}}::factory()->create({{sortTestData}});
 
         $response = $this->actingAs($admin, \'sanctum\')
             ->jsonApi()
@@ -1621,8 +1789,8 @@ class {{modelName}}IndexTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        {{modelName}}::factory()->create([{{factoryFields}}]);
-        {{modelName}}::factory()->create([{{factoryFields}}]);
+        {{modelName}}::factory()->create({{filterTestData}});
+        {{modelName}}::factory()->create({{filterTestData}});
 
         $response = $this->actingAs($admin, \'sanctum\')
             ->jsonApi()
@@ -2103,7 +2271,9 @@ class {{modelName}}DestroyTest extends TestCase
         
         $readme .= "## 🔗 Relationships\n\n";
         foreach ($relationships as $rel) {
-            $readme .= "- **{$rel['entityA']}** ↔ **{$rel['entityB']}** ({$rel['type']})\n";
+            $fromEntity = $rel['from'] ?? $rel['entityA'] ?? 'Unknown';
+            $toEntity = $rel['to'] ?? $rel['entityB'] ?? 'Unknown';
+            $readme .= "- **{$fromEntity}** ↔ **{$toEntity}** ({$rel['type']})\n";
         }
         
         $readme .= "\n## 🧪 Testing\n\n";
@@ -2613,7 +2783,8 @@ class {$moduleName}DatabaseSeeder extends Seeder
         $seederDir = "Modules/{$moduleName}/Database/seeders";
         $seederPath = "{$seederDir}/PermissionsSeeder.php";
         
-        $seederContent = $this->generatePermissionsSeederContent($moduleName, $permissionsConfig);
+        $permissionGenerator = new PermissionGenerator($this);
+        $seederContent = $permissionGenerator->generatePermissionsSeederContent($moduleName, $permissionsConfig);
         
         File::put($seederPath, $seederContent);
         $this->info("🔐 Generated permissions seeder");
@@ -2630,8 +2801,11 @@ class {$moduleName}DatabaseSeeder extends Seeder
         $actions = $permissionsConfig['actions'] ?? ['index', 'show', 'store', 'update', 'destroy'];
         $roles = $permissionsConfig['roles'] ?? [];
 
+        // Extract all unique permissions from roles configuration
+        $allPermissions = $this->extractUniquePermissionsFromRoles($roles, $resources, $actions, $prefix);
+        
         // Generate permissions creation code
-        $permissionsCode = $this->generatePermissionsCreationCode($prefix, $resources, $actions);
+        $permissionsCode = $this->generatePermissionsCreationCodeFromList($allPermissions);
         
         // Generate role assignments code
         $roleAssignmentsCode = $this->generateRoleAssignmentsCode($prefix, $resources, $actions, $roles);
@@ -2686,6 +2860,9 @@ class PermissionsSeeder extends Seeder
     {
         $assignments = [];
         
+        // Ensure essential roles are included with sensible defaults
+        $roles = $this->ensureEssentialRoles($roles, $resources);
+        
         foreach ($roles as $roleName => $rolePermissions) {
             $assignments[] = "\n        // {$roleName} role permissions";
             $assignments[] = "        \$role{$roleName} = Role::where('name', '{$roleName}')->where('guard_name', 'api')->first();";
@@ -2708,9 +2885,8 @@ class PermissionsSeeder extends Seeder
                         $assignments[] = "            \$role{$roleName}->givePermissionTo('{$permissionName}');";
                     }
                 } else {
-                    // Grant specific permission
-                    $permissionName = "{$prefix}.{$permission}";
-                    $assignments[] = "            \$role{$roleName}->givePermissionTo('{$permissionName}');";
+                    // Grant specific permission (use as-is from config, no prefix needed)
+                    $assignments[] = "            \$role{$roleName}->givePermissionTo('{$permission}');";
                 }
             }
             
@@ -2830,5 +3006,839 @@ class PermissionsSeeder extends Seeder
             }
         }
         return false;
+    }
+
+    private function moduleExists(string $moduleName): bool
+    {
+        return File::isDirectory(base_path("Modules/{$moduleName}"));
+    }
+
+    private function cleanExistingModule(string $moduleName)
+    {
+        $this->warn("🗑️ Cleaning existing module: {$moduleName}");
+        
+        // 1. Limpiar integraciones primero usando extracted class
+        $integrationManager = new IntegrationManager($moduleName, $this);
+        $integrationManager->cleanModuleIntegration();
+        
+        // 2. Hacer limpieza manual directamente (más confiable que el comando nativo)
+        $this->manualModuleCleanup($moduleName);
+        $this->cleanModuleStatus($moduleName);
+        
+        // 3. Intentar usar comando nativo como backup (solo si existe)
+        try {
+            if (File::isDirectory(base_path("Modules/{$moduleName}"))) {
+                $this->call('module:delete', [
+                    'module' => $moduleName,
+                    '--force' => true
+                ]);
+                $this->comment("ℹ️ Used native module:delete command as backup");
+            }
+        } catch (\Exception $e) {
+            $this->comment("ℹ️ Native delete command not available, manual cleanup completed");
+        }
+        
+        // 4. Limpiar cache de módulos y composer
+        $this->call('cache:clear');
+        $this->call('config:clear');
+        
+        // Clear Laravel Modules cache
+        try {
+            $this->call('module:cache-clear');
+        } catch (\Exception $e) {
+            $this->comment("ℹ️ Module cache clearing not available");
+        }
+        
+        // Importante: Limpiar autoload de composer después de eliminar el módulo
+        exec('composer dump-autoload -o', $output, $returnCode);
+        if ($returnCode === 0) {
+            $this->comment("ℹ️ Composer autoload refreshed");
+        }
+
+        $this->info("✅ Module {$moduleName} cleaned successfully");
+    }
+
+    private function manualModuleCleanup(string $moduleName)
+    {
+        // Eliminar la carpeta del módulo manualmente con método Windows-compatible
+        $modulePath = base_path("Modules/{$moduleName}");
+        if (File::isDirectory($modulePath)) {
+            $this->info("🗑️ Attempting to delete module directory: {$modulePath}");
+            
+            // Try Laravel's method first
+            try {
+                File::deleteDirectory($modulePath);
+                if (!File::isDirectory($modulePath)) {
+                    $this->info("✓ Successfully deleted with Laravel File::deleteDirectory()");
+                    return;
+                }
+            } catch (Exception $e) {
+                $this->warn("Laravel File::deleteDirectory() failed: " . $e->getMessage());
+            }
+            
+            // Windows-compatible fallback using native rmdir command
+            if (PHP_OS_FAMILY === 'Windows') {
+                $command = 'rmdir /s /q "' . $modulePath . '"';
+                $this->info("🔧 Using Windows rmdir command: {$command}");
+                
+                exec($command, $output, $returnCode);
+                
+                if ($returnCode === 0 && !File::isDirectory($modulePath)) {
+                    $this->info("✓ Successfully deleted with Windows rmdir command");
+                } else {
+                    $this->error("❌ Windows rmdir failed. Return code: {$returnCode}");
+                    if (!empty($output)) {
+                        $this->error("Output: " . implode("\n", $output));
+                    }
+                }
+            } else {
+                // Unix/Linux fallback
+                $command = 'rm -rf "' . $modulePath . '"';
+                $this->info("🔧 Using Unix rm command: {$command}");
+                
+                exec($command, $output, $returnCode);
+                
+                if ($returnCode === 0 && !File::isDirectory($modulePath)) {
+                    $this->info("✓ Successfully deleted with Unix rm command");
+                } else {
+                    $this->error("❌ Unix rm failed. Return code: {$returnCode}");
+                    if (!empty($output)) {
+                        $this->error("Output: " . implode("\n", $output));
+                    }
+                }
+            }
+            
+            // Final verification
+            if (File::isDirectory($modulePath)) {
+                $this->error("❌ CRITICAL: Module directory still exists after all deletion attempts!");
+                $this->error("   Manual intervention required: {$modulePath}");
+            } else {
+                $this->info("✅ Module directory successfully deleted");
+            }
+        } else {
+            $this->comment("ℹ️ Module directory does not exist: {$modulePath}");
+        }
+    }
+
+    /**
+     * Discover all models in existing modules
+     * Returns array with model name => module name mapping
+     */
+    private function discoverModuleModels(): array
+    {
+        $models = [];
+        $modulesPath = base_path('Modules');
+        
+        if (!File::isDirectory($modulesPath)) {
+            return $models;
+        }
+        
+        $modules = File::directories($modulesPath);
+        
+        foreach ($modules as $moduleDir) {
+            $moduleName = basename($moduleDir);
+            $modelsPath = $moduleDir . '/app/Models';
+            
+            if (File::isDirectory($modelsPath)) {
+                $modelFiles = File::files($modelsPath);
+                
+                foreach ($modelFiles as $modelFile) {
+                    $modelName = pathinfo($modelFile->getFilename(), PATHINFO_FILENAME);
+                    $models[$modelName] = $moduleName;
+                }
+            }
+        }
+        
+        return $models;
+    }
+    
+    /**
+     * Get the import statement for a model if it's from another module
+     */
+    private function getModelImport(string $modelName, string $currentModuleName, array $moduleModels): ?string
+    {
+        // If the model exists in another module, return the import statement
+        if (isset($moduleModels[$modelName]) && $moduleModels[$modelName] !== $currentModuleName) {
+            $targetModule = $moduleModels[$modelName];
+            return "use Modules\\{$targetModule}\\Models\\{$modelName};";
+        }
+        
+        return null;
+    }
+    
+    private function cleanModuleStatus(string $moduleName)
+    {
+        $statusFile = base_path('modules_statuses.json');
+        if (!File::exists($statusFile)) {
+            return;
+        }
+
+        $statuses = json_decode(File::get($statusFile), true) ?? [];
+        
+        if (isset($statuses[$moduleName])) {
+            unset($statuses[$moduleName]);
+            File::put($statusFile, json_encode($statuses, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+            $this->info("✓ Removed {$moduleName} from modules_statuses.json");
+        }
+    }
+
+    private function cleanServerSchemas(string $moduleName)
+    {
+        $serverPath = base_path('app/JsonApi/V1/Server.php');
+        if (!File::exists($serverPath)) {
+            return;
+        }
+
+        $content = File::get($serverPath);
+        $originalContent = $content;
+        
+        // Step 1: Clean imports line by line
+        $content = $this->cleanServerImports($content, $moduleName);
+        
+        // Step 2: Clean schemas array line by line
+        $content = $this->cleanServerSchemasArray($content, $moduleName);
+        
+        // Step 3: Clean authorizers array line by line  
+        $content = $this->cleanServerAuthorizersArray($content, $moduleName);
+        
+        // Step 4: Clean up multiple empty lines
+        $content = preg_replace("/\n\s*\n\s*\n/", "\n\n", $content);
+        
+        // Step 5: Validation - ensure we didn't break the syntax
+        if ($this->validateServerSyntax($content)) {
+            File::put($serverPath, $content);
+            $this->info("✓ Cleaned Server.php schemas and authorizers for {$moduleName}");
+        } else {
+            $this->error("❌ Server.php cleanup would cause syntax errors, reverting changes");
+            File::put($serverPath, $originalContent);
+        }
+    }
+    
+    /**
+     * Clean imports from Server.php for specific module
+     */
+    private function cleanServerImports(string $content, string $moduleName): string
+    {
+        $lines = explode("\n", $content);
+        $cleanedLines = [];
+        
+        foreach ($lines as $line) {
+            // Skip lines that import from the target module
+            if (preg_match("/^use Modules\\\\{$moduleName}\\\\.*?;$/", trim($line))) {
+                continue;
+            }
+            $cleanedLines[] = $line;
+        }
+        
+        return implode("\n", $cleanedLines);
+    }
+    
+    /**
+     * Clean schemas array from Server.php for specific module
+     */
+    private function cleanServerSchemasArray(string $content, string $moduleName): string
+    {
+        // First, identify which schemas belong to the target module by analyzing imports
+        $moduleSchemas = $this->extractModuleSchemas($content, $moduleName);
+        
+        $lines = explode("\n", $content);
+        $cleanedLines = [];
+        $inSchemasArray = false;
+        
+        foreach ($lines as $line) {
+            // Detect start of schemas array
+            if (preg_match('/\$schemas = \[/', $line)) {
+                $inSchemasArray = true;
+                $cleanedLines[] = $line;
+                continue;
+            }
+            
+            // Detect end of schemas array
+            if ($inSchemasArray && preg_match('/^\s*\];\s*$/', $line)) {
+                $inSchemasArray = false;
+                $cleanedLines[] = $line;
+                continue;
+            }
+            
+            // If we're in the schemas array, check for module-specific schemas
+            if ($inSchemasArray) {
+                // Skip module comments
+                if (preg_match("/\/\/ {$moduleName} Module/", $line)) {
+                    continue;
+                }
+                
+                // Skip schema classes from the target module (full namespace)
+                if (preg_match("/\\\\?Modules\\\\{$moduleName}\\\\.*?Schema::class,?/", $line)) {
+                    continue;
+                }
+                
+                // Skip schema classes from the target module (short form using imports)
+                $shouldSkip = false;
+                foreach ($moduleSchemas as $schemaClass) {
+                    if (preg_match("/{$schemaClass}::class,?/", $line)) {
+                        $shouldSkip = true;
+                        break;
+                    }
+                }
+                if ($shouldSkip) {
+                    continue;
+                }
+                
+                // Skip any schema classes that are part of corrupted lines
+                if (preg_match("/Schema::class,\s*\w+Schema::class/", $line)) {
+                    // This line has multiple schemas, need to clean it carefully
+                    $cleanedLine = preg_replace("/\w+Schema::class,\s*/", '', $line);
+                    if (trim($cleanedLine) !== '') {
+                        $cleanedLines[] = $cleanedLine;
+                    }
+                    continue;
+                }
+            }
+            
+            $cleanedLines[] = $line;
+        }
+        
+        return implode("\n", $cleanedLines);
+    }
+    
+    /**
+     * Extract schema class names that belong to a specific module by analyzing imports
+     */
+    private function extractModuleSchemas(string $content, string $moduleName): array
+    {
+        $schemas = [];
+        $lines = explode("\n", $content);
+        
+        foreach ($lines as $line) {
+            if (preg_match("/^use Modules\\\\{$moduleName}\\\\.*?\\\\(\w+Schema);$/", trim($line), $matches)) {
+                $schemas[] = $matches[1];
+            }
+        }
+        
+        return $schemas;
+    }
+    
+    /**
+     * Clean authorizers array from Server.php for specific module
+     */
+    private function cleanServerAuthorizersArray(string $content, string $moduleName): string
+    {
+        $lines = explode("\n", $content);
+        $cleanedLines = [];
+        $inAuthorizersArray = false;
+        
+        foreach ($lines as $line) {
+            // Detect start of authorizers array
+            if (preg_match('/\$authorizers = \[/', $line)) {
+                $inAuthorizersArray = true;
+                $cleanedLines[] = $line;
+                continue;
+            }
+            
+            // Detect end of authorizers array
+            if ($inAuthorizersArray && preg_match('/^\s*\];\s*$/', $line)) {
+                $inAuthorizersArray = false;
+                $cleanedLines[] = $line;
+                continue;
+            }
+            
+            // If we're in the authorizers array, check for module-specific authorizers
+            if ($inAuthorizersArray) {
+                // Skip module comments
+                if (preg_match("/\/\/ {$moduleName} Module/", $line)) {
+                    continue;
+                }
+                
+                // Skip authorizer mappings from the target module
+                if (preg_match("/'[^']*' => \\\\Modules\\\\{$moduleName}\\\\.*?Authorizer::class,?/", $line)) {
+                    continue;
+                }
+            }
+            
+            $cleanedLines[] = $line;
+        }
+        
+        return implode("\n", $cleanedLines);
+    }
+    
+    /**
+     * Validate that Server.php content has valid PHP syntax
+     */
+    private function validateServerSyntax(string $content): bool
+    {
+        // Basic syntax checks
+        if (substr_count($content, 'protected function allSchemas()') !== 1) {
+            return false;
+        }
+        
+        if (substr_count($content, 'protected function authorizers()') !== 1) {
+            return false;
+        }
+        
+        // Check that arrays are properly formed
+        if (!preg_match('/protected function allSchemas\(\).*?\{.*?\$schemas = \[.*?\];.*?return \$schemas;.*?\}/s', $content)) {
+            return false;
+        }
+        
+        if (!preg_match('/protected function authorizers\(\).*?\{.*?\$authorizers = \[.*?\];.*?return \$authorizers;.*?\}/s', $content)) {
+            return false;
+        }
+        
+        return true;
+    }
+
+    private function cleanDatabaseSeeder(string $moduleName)
+    {
+        $seederPath = base_path('database/seeders/DatabaseSeeder.php');
+        if (!File::exists($seederPath)) {
+            return;
+        }
+
+        $content = File::get($seederPath);
+        $originalContent = $content;
+        
+        // Usar procesamiento línea por línea para mayor precisión
+        $lines = explode("\n", $content);
+        $cleanedLines = [];
+        
+        foreach ($lines as $line) {
+            // Buscar líneas que contengan el seeder del módulo específico
+            if (preg_match("/\\\\Modules\\\\{$moduleName}\\\\Database\\\\Seeders\\\\{$moduleName}DatabaseSeeder::class/", $line)) {
+                // Si la línea solo contiene este seeder, eliminarla completamente
+                if (preg_match("/^\s*\\\\Modules\\\\{$moduleName}\\\\Database\\\\Seeders\\\\{$moduleName}DatabaseSeeder::class,?\s*$/", $line)) {
+                    continue; // Saltar esta línea
+                }
+                // Si la línea contiene múltiples seeders pegados, limpiar solo el módulo específico
+                else {
+                    $cleanedLine = preg_replace("/\\\\Modules\\\\{$moduleName}\\\\Database\\\\Seeders\\\\{$moduleName}DatabaseSeeder::class,?\s*/", '', $line);
+                    $cleanedLines[] = $cleanedLine;
+                }
+            } else {
+                $cleanedLines[] = $line;
+            }
+        }
+        
+        $newContent = implode("\n", $cleanedLines);
+        
+        // Validación antes de guardar
+        if ($this->validateDatabaseSeederSyntax($newContent)) {
+            File::put($seederPath, $newContent);
+            $this->info("✓ Cleaned DatabaseSeeder.php for {$moduleName}");
+        } else {
+            $this->error("❌ DatabaseSeeder.php cleanup would cause syntax errors, reverting changes");
+            File::put($seederPath, $originalContent);
+        }
+    }
+    
+    /**
+     * Validate that DatabaseSeeder.php content has valid structure
+     */
+    private function validateDatabaseSeederSyntax(string $content): bool
+    {
+        // Check that call method exists
+        if (!preg_match('/\$this->call\(\[/', $content)) {
+            return false;
+        }
+        
+        // Check that PermissionManager seeder exists (it should always be there)
+        if (!preg_match("/PermissionManager.*DatabaseSeeder/", $content)) {
+            return false;
+        }
+        
+        // Verify we don't have corrupted lines with multiple seeder classes
+        $lines = explode("\n", $content);
+        foreach ($lines as $line) {
+            // Count occurrences of DatabaseSeeder::class in a single line
+            $seederCount = substr_count($line, 'DatabaseSeeder::class');
+            if ($seederCount > 1) {
+                return false; // Multiple seeders on same line = corruption
+            }
+        }
+        
+        return true;
+    }
+
+    private function cleanTestCase(string $moduleName)
+    {
+        $testCasePath = base_path('tests/TestCase.php');
+        if (!File::exists($testCasePath)) {
+            return;
+        }
+
+        $content = File::get($testCasePath);
+        $originalContent = $content;
+        
+        // Usar procesamiento línea por línea para mayor precisión
+        $lines = explode("\n", $content);
+        $cleanedLines = [];
+        
+        foreach ($lines as $line) {
+            // Buscar líneas que contengan el seeder del módulo específico
+            if (preg_match("/\\\$this->artisan\('module:seed', \['module' => '{$moduleName}'\]\);/", $line)) {
+                // Si la línea solo contiene este seeder, eliminarla completamente
+                if (preg_match("/^\s*\\\$this->artisan\('module:seed', \['module' => '{$moduleName}'\]\);\s*$/", $line)) {
+                    continue; // Saltar esta línea
+                }
+                // Si la línea contiene múltiples comandos pegados, limpiar solo el módulo específico
+                else {
+                    $cleanedLine = preg_replace("/\\\$this->artisan\('module:seed', \['module' => '{$moduleName}'\]\);\s*/", '', $line);
+                    $cleanedLines[] = $cleanedLine;
+                }
+            } else {
+                $cleanedLines[] = $line;
+            }
+        }
+        
+        $newContent = implode("\n", $cleanedLines);
+        
+        // Validación antes de guardar
+        if ($this->validateTestCaseSyntax($newContent)) {
+            File::put($testCasePath, $newContent);
+            $this->info("✓ Cleaned TestCase.php for {$moduleName}");
+        } else {
+            $this->error("❌ TestCase.php cleanup would cause syntax errors, reverting changes");
+            File::put($testCasePath, $originalContent);
+        }
+    }
+    
+    /**
+     * Validate that TestCase.php content has valid structure
+     */
+    private function validateTestCaseSyntax(string $content): bool
+    {
+        // Check that setUp method exists
+        if (!preg_match('/protected function setUp\(\): void/', $content)) {
+            return false;
+        }
+        
+        // Check that PermissionManager seeder exists (it should always be there)
+        if (!preg_match("/module:seed.*PermissionManager/", $content)) {
+            return false;
+        }
+        
+        // Verify we don't have corrupted lines with multiple artisan commands
+        $lines = explode("\n", $content);
+        foreach ($lines as $line) {
+            // Count occurrences of artisan commands in a single line
+            $artisanCount = substr_count($line, "\$this->artisan('module:seed'");
+            if ($artisanCount > 1) {
+                return false; // Multiple commands on same line = corruption
+            }
+        }
+        
+        return true;
+    }
+
+    private function integrateModuleCompletely(string $moduleName, array $entities)
+    {
+        $this->info("🔗 Integrating module {$moduleName} completely...");
+
+        // 1. Agregar schemas al Server.php
+        $this->addSchemasToServer($moduleName, $entities);
+
+        // 2. Agregar seeder al DatabaseSeeder
+        $this->addSeederToDatabase($moduleName);
+
+        // 3. Agregar seeder al TestCase
+        $this->addSeederToTestCase($moduleName);
+
+        $this->info("✅ Module {$moduleName} integrated successfully");
+    }
+
+    private function addSchemasToServer(string $moduleName, array $entities)
+    {
+        $serverPath = base_path('app/JsonApi/V1/Server.php');
+        if (!File::exists($serverPath)) {
+            $this->warn("Server.php not found, skipping schema integration");
+            return;
+        }
+
+        $content = File::get($serverPath);
+        
+        // Agregar imports en la sección de imports
+        $imports = [];
+        foreach ($entities as $entity) {
+            $entityName = $entity['name'];
+            $entityPlural = Str::plural($entityName);
+            $imports[] = "use Modules\\{$moduleName}\\JsonApi\\V1\\{$entityPlural}\\{$entityName}Schema;";
+        }
+        
+        // Buscar donde termina el último import de Modules
+        $lastModuleImport = '/use Modules\\\\.*?;/';
+        if (preg_match_all($lastModuleImport, $content, $matches, PREG_OFFSET_CAPTURE)) {
+            $lastMatch = end($matches[0]);
+            $insertPosition = $lastMatch[1] + strlen($lastMatch[0]);
+            $content = substr_replace($content, "\n" . implode("\n", $imports), $insertPosition, 0);
+        }
+
+        // Agregar schemas en el array allSchemas()
+        $schemaLines = [];
+        $schemaLines[] = "\n            // {$moduleName} Module";
+        foreach ($entities as $entity) {
+            $entityName = $entity['name'];
+            $schemaLines[] = "            {$entityName}Schema::class,";
+        }
+
+        // Buscar el final del array de schemas
+        $schemasArrayPattern = '/(\$schemas = \[.*?)(        \];)/s';
+        if (preg_match($schemasArrayPattern, $content, $matches)) {
+            $replacement = $matches[1] . implode("\n", $schemaLines) . "\n\n" . $matches[2];
+            $content = str_replace($matches[0], $replacement, $content);
+        }
+
+        File::put($serverPath, $content);
+        $this->info("✓ Added schemas to Server.php for {$moduleName}");
+    }
+
+    private function addSeederToDatabase(string $moduleName)
+    {
+        $seederPath = base_path('database/seeders/DatabaseSeeder.php');
+        if (!File::exists($seederPath)) {
+            $this->warn("DatabaseSeeder.php not found, skipping seeder integration");
+            return;
+        }
+
+        $content = File::get($seederPath);
+        
+        // Agregar seeder antes del cierre del array
+        $seederLine = "            \\Modules\\{$moduleName}\\Database\\Seeders\\{$moduleName}DatabaseSeeder::class,";
+        
+        // Buscar el final del array de seeders
+        $pattern = '/(\$this->call\(\[.*?)(        \]\);)/s';
+        if (preg_match($pattern, $content, $matches)) {
+            $replacement = $matches[1] . "\n" . $seederLine . "\n" . $matches[2];
+            $content = str_replace($matches[0], $replacement, $content);
+        }
+
+        File::put($seederPath, $content);
+        $this->info("✓ Added seeder to DatabaseSeeder.php for {$moduleName}");
+    }
+
+    private function addSeederToTestCase(string $moduleName)
+    {
+        $testCasePath = base_path('tests/TestCase.php');
+        if (!File::exists($testCasePath)) {
+            $this->warn("TestCase.php not found, skipping TestCase integration");
+            return;
+        }
+
+        $content = File::get($testCasePath);
+        
+        // Agregar seeder antes del cierre del método setUp
+        $seederLine = "        \$this->artisan('module:seed', ['module' => '{$moduleName}']);";
+        
+        // Buscar el final de los artisan commands en setUp
+        $pattern = '/(\$this->artisan\(\'module:seed\'.*?\);)(.*?)(    \})/s';
+        if (preg_match($pattern, $content, $matches)) {
+            $replacement = $matches[1] . "\n" . $seederLine . $matches[2] . $matches[3];
+            $content = str_replace($matches[0], $replacement, $content);
+        }
+
+        File::put($testCasePath, $content);
+        $this->info("✓ Added seeder to TestCase.php for {$moduleName}");
+    }
+
+    private function ensureEssentialRoles($roles, $resources)
+    {
+        // Define standard roles that should exist in the system
+        $systemRoles = ['god', 'admin', 'tech', 'customer', 'guest'];
+        
+        // Remove roles that don't exist in the system (like 'manager')
+        $roles = array_filter($roles, function($permissions, $roleName) use ($systemRoles) {
+            return in_array($roleName, $systemRoles);
+        }, ARRAY_FILTER_USE_BOTH);
+        
+        // Add 'tech' role with read-only permissions if not present
+        if (!isset($roles['tech'])) {
+            $readOnlyPermissions = [];
+            foreach ($resources as $resource) {
+                $readOnlyPermissions[] = "{$resource}.index";
+                $readOnlyPermissions[] = "{$resource}.show"; 
+            }
+            $roles['tech'] = $readOnlyPermissions;
+            $this->info("ℹ️  Auto-added 'tech' role with read-only permissions");
+        }
+        
+        return $roles;
+    }
+
+    /**
+     * Validate entity names for conflicts with existing models
+     * 
+     * @param array $entitiesConfig
+     * @param string $moduleName
+     * @return void
+     * @throws \Exception
+     */
+    private function validateEntityNamesForConflicts(array $entitiesConfig, string $moduleName): void
+    {
+        $this->info("🔍 Validating entity names for conflicts...");
+        
+        // Get all existing models from other modules
+        $existingModels = $this->discoverModuleModels();
+        $conflicts = [];
+        $warnings = [];
+        
+        foreach ($entitiesConfig as $entityName => $entityData) {
+            $modelName = $entityData['name'];
+            
+            // Check if model name already exists in another module
+            if (isset($existingModels[$modelName])) {
+                $existingModule = $existingModels[$modelName];
+                if ($existingModule !== $moduleName) {
+                    $conflicts[] = [
+                        'model' => $modelName,
+                        'existing_module' => $existingModule,
+                        'suggested' => $this->suggestAlternativeName($modelName, $existingModels)
+                    ];
+                }
+            }
+            
+            // Check for potential permission conflicts
+            $resourceType = Str::kebab(Str::plural($modelName));
+            $this->checkPermissionConflicts($resourceType, $modelName, $warnings);
+            
+            // Check for route conflicts
+            $this->checkRouteConflicts($resourceType, $modelName, $warnings);
+        }
+        
+        // Display warnings first
+        foreach ($warnings as $warning) {
+            $this->warn("⚠️  {$warning}");
+        }
+        
+        // Handle conflicts
+        if (!empty($conflicts)) {
+            $this->error("❌ CONFLICTOS DETECTADOS:");
+            $this->error("Los siguientes nombres de entidades ya existen en otros módulos:");
+            $this->newLine();
+            
+            foreach ($conflicts as $conflict) {
+                $this->error("  • '{$conflict['model']}' ya existe en módulo '{$conflict['existing_module']}'");
+                $this->info("    💡 Sugerencia: '{$conflict['suggested']}'");
+            }
+            
+            $this->newLine();
+            $this->error("🚫 No se puede continuar con la generación del módulo.");
+            $this->error("Por favor, modifica la configuración para usar nombres únicos.");
+            $this->newLine();
+            $this->info("📝 Ejemplo de nombres únicos:");
+            foreach ($conflicts as $conflict) {
+                $this->info("    {$conflict['model']} → {$conflict['suggested']}");
+            }
+            
+            throw new \Exception("Entity name conflicts detected. Please use unique names.");
+        }
+        
+        $this->info("✅ No se detectaron conflictos de nombres");
+    }
+    
+    /**
+     * Suggest alternative name for conflicting entity
+     */
+    private function suggestAlternativeName(string $modelName, array $existingModels): string
+    {
+        // Try prefixing with module-specific prefixes
+        $prefixes = ['New', 'Alt', 'Custom', 'Extended'];
+        
+        foreach ($prefixes as $prefix) {
+            $suggestion = $prefix . $modelName;
+            if (!isset($existingModels[$suggestion])) {
+                return $suggestion;
+            }
+        }
+        
+        // If all prefixes are taken, add a number
+        $counter = 2;
+        while (isset($existingModels[$modelName . $counter])) {
+            $counter++;
+        }
+        
+        return $modelName . $counter;
+    }
+    
+    /**
+     * Check for permission conflicts
+     */
+    private function checkPermissionConflicts(string $resourceType, string $modelName, array &$warnings): void
+    {
+        // Check if similar permission patterns exist
+        // This is a basic check - could be expanded to check actual permissions in database
+        $commonConflictPatterns = [
+            'users' => 'User management permissions already exist',
+            'products' => 'Product permissions already exist - consider: new-products, custom-products',
+            'categories' => 'Category permissions already exist - consider: new-categories, custom-categories', 
+            'brands' => 'Brand permissions already exist - consider: new-brands, custom-brands',
+            'units' => 'Unit permissions already exist - consider: new-units, custom-units'
+        ];
+        
+        if (isset($commonConflictPatterns[$resourceType])) {
+            $warnings[] = $commonConflictPatterns[$resourceType];
+        }
+    }
+    
+    /**
+     * Check for route conflicts  
+     */
+    private function checkRouteConflicts(string $resourceType, string $modelName, array &$warnings): void
+    {
+        // Check for common route conflicts
+        $commonRoutes = [
+            'users', 'products', 'categories', 'brands', 'units', 
+            'orders', 'items', 'customers', 'suppliers'
+        ];
+        
+        if (in_array($resourceType, $commonRoutes)) {
+            $warnings[] = "Route '/api/v1/{$resourceType}' may conflict with existing routes";
+        }
+    }
+    
+    /**
+     * Extract all unique permissions from roles configuration 
+     */
+    private function extractUniquePermissionsFromRoles(array $roles, array $resources, array $actions, string $prefix): array
+    {
+        $permissions = [];
+        
+        foreach ($roles as $roleName => $rolePermissions) {            
+            foreach ($rolePermissions as $permission) {
+                if ($permission === 'all') {
+                    // Add all resource.action combinations
+                    foreach ($resources as $resource) {
+                        foreach ($actions as $action) {
+                            $permissions[] = "{$prefix}.{$resource}.{$action}";
+                        }
+                    }
+                } elseif (str_contains($permission, '.*')) {
+                    // Add all actions for specific resource
+                    $resource = str_replace('.*', '', $permission);
+                    foreach ($actions as $action) {
+                        $permissions[] = "{$prefix}.{$resource}.{$action}";
+                    }
+                } else {
+                    // Add specific permission as-is (no prefix)
+                    $permissions[] = $permission;
+                }
+            }
+        }
+        
+        return array_unique($permissions);
+    }
+    
+    /**
+     * Generate permissions creation code from a list of permission names
+     */
+    private function generatePermissionsCreationCodeFromList(array $permissions): string
+    {
+        $permissionStatements = [];
+        
+        foreach ($permissions as $permission) {
+            $permissionStatements[] = "        Permission::firstOrCreate([
+            'name' => '{$permission}',
+            'guard_name' => 'api',
+        ]);";
+        }
+
+        return implode("\n", $permissionStatements);
     }
 }

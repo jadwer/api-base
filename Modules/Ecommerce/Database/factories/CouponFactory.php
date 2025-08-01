@@ -24,9 +24,9 @@ class CouponFactory extends Factory
             'starts_at' => $this->faker->dateTimeBetween('-30 days', 'now'),
             'expires_at' => $this->faker->dateTimeBetween('+1 day', '+90 days'),
             'is_active' => $this->faker->boolean(70),
-            'customer_ids' => $this->faker->sentence(),
-            'product_ids' => $this->faker->sentence(),
-            'category_ids' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
+            'customer_ids' => $this->faker->optional(0.6)->randomElements([1, 2, 3, 4, 5], $this->faker->numberBetween(0, 3)),
+            'product_ids' => $this->faker->optional(0.6)->randomElements([1, 2, 3, 4, 5], $this->faker->numberBetween(0, 3)),
+            'category_ids' => $this->faker->optional(0.6)->randomElements([1, 2, 3, 4, 5], $this->faker->numberBetween(0, 3)),
         ];
     }
 

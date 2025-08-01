@@ -1,0 +1,74 @@
+{
+    "entities": {
+        "NewUnit": {
+            "name": "NewUnit",
+            "tableName": "new_units",
+            "fields": [
+                {"name": "name", "type": "string", "nullable": false, "unique": true},
+                {"name": "abbreviation", "type": "string", "nullable": false, "unique": true},
+                {"name": "description", "type": "text", "nullable": true}
+            ]
+        },
+        "NewCategory": {
+            "name": "NewCategory", 
+            "tableName": "new_categories",
+            "fields": [
+                {"name": "name", "type": "string", "nullable": false, "unique": true},
+                {"name": "description", "type": "text", "nullable": true},
+                {"name": "is_active", "type": "boolean", "nullable": false, "default": true}
+            ]
+        },
+        "NewBrand": {
+            "name": "NewBrand",
+            "tableName": "new_brands", 
+            "fields": [
+                {"name": "name", "type": "string", "nullable": false, "unique": true},
+                {"name": "description", "type": "text", "nullable": true},
+                {"name": "website", "type": "string", "nullable": true},
+                {"name": "is_active", "type": "boolean", "nullable": false, "default": true}
+            ]
+        },
+        "NewProduct": {
+            "name": "NewProduct",
+            "tableName": "new_products",
+            "fields": [
+                {"name": "name", "type": "string", "nullable": false},
+                {"name": "sku", "type": "string", "nullable": true, "unique": true},
+                {"name": "description", "type": "text", "nullable": false},
+                {"name": "full_description", "type": "text", "nullable": false},
+                {"name": "price", "type": "decimal", "nullable": true},
+                {"name": "cost", "type": "decimal", "nullable": true},
+                {"name": "iva", "type": "boolean", "nullable": false, "default": false},
+                {"name": "img_path", "type": "string", "nullable": true},
+                {"name": "datasheet_path", "type": "string", "nullable": true},
+                {"name": "unit_id", "type": "bigInteger", "nullable": false},
+                {"name": "category_id", "type": "bigInteger", "nullable": false},
+                {"name": "brand_id", "type": "bigInteger", "nullable": false}
+            ]
+        }
+    },
+    "relationships": [
+        {
+            "entityA": "NewUnit",
+            "entityB": "NewProduct", 
+            "type": "one-to-many"
+        },
+        {
+            "entityA": "NewCategory",
+            "entityB": "NewProduct",
+            "type": "one-to-many"
+        },
+        {
+            "entityA": "NewBrand", 
+            "entityB": "NewProduct",
+            "type": "one-to-many"
+        }
+    ],
+    "permissions": {
+        "roles": {
+            "god": ["new-units.index", "new-units.show", "new-units.store", "new-units.update", "new-units.destroy", "new-categories.index", "new-categories.show", "new-categories.store", "new-categories.update", "new-categories.destroy", "new-brands.index", "new-brands.show", "new-brands.store", "new-brands.update", "new-brands.destroy", "new-products.index", "new-products.show", "new-products.store", "new-products.update", "new-products.destroy"],
+            "admin": ["new-units.index", "new-units.show", "new-units.store", "new-units.update", "new-units.destroy", "new-categories.index", "new-categories.show", "new-categories.store", "new-categories.update", "new-categories.destroy", "new-brands.index", "new-brands.show", "new-brands.store", "new-brands.update", "new-brands.destroy", "new-products.index", "new-products.show", "new-products.store", "new-products.update", "new-products.destroy"],
+            "customer": ["new-units.index", "new-units.show", "new-categories.index", "new-categories.show", "new-brands.index", "new-brands.show", "new-products.index", "new-products.show"]
+        }
+    }
+}

@@ -17,6 +17,7 @@ abstract class TestCase extends BaseTestCase
         app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
 
         $this->artisan('module:seed', ['module' => 'PermissionManager']);
+        $this->artisan('module:seed', ['module' => 'Ecommerce']);
         $this->artisan('module:seed', ['module' => 'Audit']);
         $this->artisan('module:seed', ['module' => 'PageBuilder']);
         $this->artisan('module:seed', ['module' => 'User']);
@@ -24,7 +25,6 @@ abstract class TestCase extends BaseTestCase
         $this->artisan('module:seed', ['module' => 'Inventory']);
         $this->artisan('module:seed', ['module' => 'Purchase']);
         $this->artisan('module:seed', ['module' => 'Sales']);
-        $this->artisan('module:seed', ['module' => 'Ecommerce']);
     }
 
 

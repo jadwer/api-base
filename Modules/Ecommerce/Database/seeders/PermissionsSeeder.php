@@ -119,20 +119,6 @@ class PermissionsSeeder extends Seeder
             $roleadmin->givePermissionTo('ecommerce.coupons.destroy');
         }
 
-        // manager role permissions
-        $rolemanager = Role::where('name', 'manager')->where('guard_name', 'api')->first();
-        if ($rolemanager) {
-            $rolemanager->givePermissionTo('ecommerce.shopping-carts.index');
-            $rolemanager->givePermissionTo('ecommerce.shopping-carts.show');
-            $rolemanager->givePermissionTo('ecommerce.cart-items.index');
-            $rolemanager->givePermissionTo('ecommerce.cart-items.show');
-            $rolemanager->givePermissionTo('ecommerce.coupons.index');
-            $rolemanager->givePermissionTo('ecommerce.coupons.show');
-            $rolemanager->givePermissionTo('ecommerce.coupons.store');
-            $rolemanager->givePermissionTo('ecommerce.coupons.update');
-            $rolemanager->givePermissionTo('ecommerce.coupons.destroy');
-        }
-
         // customer role permissions
         $rolecustomer = Role::where('name', 'customer')->where('guard_name', 'api')->first();
         if ($rolecustomer) {
@@ -158,6 +144,17 @@ class PermissionsSeeder extends Seeder
             $roleguest->givePermissionTo('ecommerce.cart-items.store');
             $roleguest->givePermissionTo('ecommerce.cart-items.update');
             $roleguest->givePermissionTo('ecommerce.cart-items.destroy');
+        }
+
+        // tech role permissions
+        $roletech = Role::where('name', 'tech')->where('guard_name', 'api')->first();
+        if ($roletech) {
+            $roletech->givePermissionTo('ecommerce.shopping-carts.index');
+            $roletech->givePermissionTo('ecommerce.shopping-carts.show');
+            $roletech->givePermissionTo('ecommerce.cart-items.index');
+            $roletech->givePermissionTo('ecommerce.cart-items.show');
+            $roletech->givePermissionTo('ecommerce.coupons.index');
+            $roletech->givePermissionTo('ecommerce.coupons.show');
         }
         
         $this->command->info('✅ Ecommerce permissions seeded successfully!');

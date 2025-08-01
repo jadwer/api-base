@@ -1,0 +1,211 @@
+{
+  "entities": {
+    "NewSupplier": {
+      "name": "NewSupplier",
+      "tableName": "new_suppliers",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "email",
+          "type": "string",
+          "required": false,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "phone",
+          "type": "string",
+          "required": false,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "address",
+          "type": "text",
+          "required": false,
+          "fillable": true,
+          "sortable": false,
+          "filterable": false
+        },
+        {
+          "name": "rfc",
+          "type": "string",
+          "required": false,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "is_active",
+          "type": "boolean",
+          "default": true,
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        }
+      ]
+    },
+    "NewPurchaseOrder": {
+      "name": "NewPurchaseOrder",
+      "tableName": "new_purchase_orders",
+      "fields": [
+        {
+          "name": "new_supplier_id",
+          "type": "foreignId",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "order_date",
+          "type": "date",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "default": "pending",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "total_amount",
+          "type": "decimal",
+          "precision": 10,
+          "scale": 2,
+          "default": "0.00",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "notes",
+          "type": "text",
+          "required": false,
+          "fillable": true,
+          "sortable": false,
+          "filterable": false
+        }
+      ]
+    },
+    "NewPurchaseOrderItem": {
+      "name": "NewPurchaseOrderItem",
+      "tableName": "new_purchase_order_items",
+      "fields": [
+        {
+          "name": "new_purchase_order_id",
+          "type": "foreignId",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "product_id",
+          "type": "foreignId",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "quantity",
+          "type": "decimal",
+          "precision": 8,
+          "scale": 2,
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "unit_price",
+          "type": "decimal",
+          "precision": 8,
+          "scale": 2,
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "subtotal",
+          "type": "decimal",
+          "precision": 10,
+          "scale": 2,
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        }
+      ]
+    }
+  },
+  "relationships": [
+    {
+      "from": "NewSupplier",
+      "to": "NewPurchaseOrder",
+      "type": "hasMany",
+      "foreignKey": "new_supplier_id"
+    },
+    {
+      "from": "NewPurchaseOrder",
+      "to": "NewSupplier",
+      "type": "belongsTo",
+      "foreignKey": "new_supplier_id"
+    },
+    {
+      "from": "NewPurchaseOrder",
+      "to": "NewPurchaseOrderItem",
+      "type": "hasMany",
+      "foreignKey": "new_purchase_order_id"
+    },
+    {
+      "from": "NewPurchaseOrderItem",
+      "to": "NewPurchaseOrder",
+      "type": "belongsTo",
+      "foreignKey": "new_purchase_order_id"
+    },
+    {
+      "from": "NewPurchaseOrderItem",
+      "to": "Product",
+      "type": "belongsTo",
+      "foreignKey": "product_id",
+      "targetModule": "Product"
+    }
+  ],
+  "permissions": {
+    "new-suppliers.index": ["admin", "tech"],
+    "new-suppliers.show": ["admin", "tech"],
+    "new-suppliers.store": ["admin"],
+    "new-suppliers.update": ["admin"],
+    "new-suppliers.destroy": ["admin"],
+    "new-purchase-orders.index": ["admin", "tech"],
+    "new-purchase-orders.show": ["admin", "tech"],
+    "new-purchase-orders.store": ["admin"],
+    "new-purchase-orders.update": ["admin"],
+    "new-purchase-orders.destroy": ["admin"],
+    "new-purchase-order-items.index": ["admin", "tech"],
+    "new-purchase-order-items.show": ["admin", "tech"],
+    "new-purchase-order-items.store": ["admin"],
+    "new-purchase-order-items.update": ["admin"],
+    "new-purchase-order-items.destroy": ["admin"]
+  }
+}

@@ -42,12 +42,12 @@ class ShoppingCartUpdateTest extends TestCase
             ->jsonApi()
             ->expects('shopping-carts')
             ->withData($data)
-            ->patch("/api/v1/shopping-carts/{\$\{\{modelNameLower\}\}->id}");
+            ->patch("/api/v1/shopping-carts/{$shoppingCart->id}");
 
         $response->assertOk();
         
         $this->assertDatabaseHas('shopping_carts', [
-            'id' => \$\{\{modelNameLower\}\}->id,
+            'id' => $shoppingCart->id,
             'name' => 'Updated ShoppingCart',
             'description' => 'Updated description',
             'is_active' => false
@@ -57,14 +57,14 @@ class ShoppingCartUpdateTest extends TestCase
     public function test_admin_can_partially_update_ShoppingCart(): void
     {
         $admin = $this->getAdminUser();
-        \$\{\{modelNameLower\}\} = ShoppingCart::factory()->create([
+        $shoppingCart = ShoppingCart::factory()->create([
             'name' => 'Original Name',
             'description' => 'Original Description'
         ]);
 
         $data = [
             'type' => 'shopping-carts',
-            'id' => (string) \$\{\{modelNameLower\}\}->id,
+            'id' => (string) $shoppingCart->id,
             'attributes' => [
                 'name' => 'Partially Updated Name'
                 // description should remain unchanged
@@ -75,12 +75,12 @@ class ShoppingCartUpdateTest extends TestCase
             ->jsonApi()
             ->expects('shopping-carts')
             ->withData($data)
-            ->patch("/api/v1/shopping-carts/{\$\{\{modelNameLower\}\}->id}");
+            ->patch("/api/v1/shopping-carts/{$shoppingCart->id}");
 
         $response->assertOk();
         
         $this->assertDatabaseHas('shopping_carts', [
-            'id' => \$\{\{modelNameLower\}\}->id,
+            'id' => $shoppingCart->id,
             'name' => 'Partially Updated Name',
             'description' => 'Original Description'
         ]);
@@ -89,7 +89,7 @@ class ShoppingCartUpdateTest extends TestCase
     public function test_admin_can_update_ShoppingCart_metadata(): void
     {
         $admin = $this->getAdminUser();
-        \$\{\{modelNameLower\}\} = ShoppingCart::factory()->create();
+        $shoppingCart = ShoppingCart::factory()->create();
 
         $metadata = [
             'updated_field' => 'new_value',
@@ -99,7 +99,7 @@ class ShoppingCartUpdateTest extends TestCase
 
         $data = [
             'type' => 'shopping-carts',
-            'id' => (string) \$\{\{modelNameLower\}\}->id,
+            'id' => (string) $shoppingCart->id,
             'attributes' => [
                 'metadata' => $metadata
             ]
@@ -109,22 +109,22 @@ class ShoppingCartUpdateTest extends TestCase
             ->jsonApi()
             ->expects('shopping-carts')
             ->withData($data)
-            ->patch("/api/v1/shopping-carts/{\$\{\{modelNameLower\}\}->id}");
+            ->patch("/api/v1/shopping-carts/{$shoppingCart->id}");
 
         $response->assertOk();
         
-        \$\{\{modelNameLower\}\}->refresh();
-        $this->assertEquals($metadata, \$\{\{modelNameLower\}\}->metadata);
+        $shoppingCart->refresh();
+        $this->assertEquals($metadata, $shoppingCart->metadata);
     }
 
     public function test_customer_user_cannot_update_ShoppingCart(): void
     {
         $customer = $this->getCustomerUser();
-        \$\{\{modelNameLower\}\} = ShoppingCart::factory()->create();
+        $shoppingCart = ShoppingCart::factory()->create();
 
         $data = [
             'type' => 'shopping-carts',
-            'id' => (string) \$\{\{modelNameLower\}\}->id,
+            'id' => (string) $shoppingCart->id,
             'attributes' => [
                 'name' => 'Unauthorized Update'
             ]
@@ -134,18 +134,18 @@ class ShoppingCartUpdateTest extends TestCase
             ->jsonApi()
             ->expects('shopping-carts')
             ->withData($data)
-            ->patch("/api/v1/shopping-carts/{\$\{\{modelNameLower\}\}->id}");
+            ->patch("/api/v1/shopping-carts/{$shoppingCart->id}");
 
         $response->assertStatus(403);
     }
 
     public function test_guest_cannot_update_ShoppingCart(): void
     {
-        \$\{\{modelNameLower\}\} = ShoppingCart::factory()->create();
+        $shoppingCart = ShoppingCart::factory()->create();
 
         $data = [
             'type' => 'shopping-carts',
-            'id' => (string) \$\{\{modelNameLower\}\}->id,
+            'id' => (string) $shoppingCart->id,
             'attributes' => [
                 'name' => 'Guest Update'
             ]
@@ -154,7 +154,7 @@ class ShoppingCartUpdateTest extends TestCase
         $response = $this->jsonApi()
             ->expects('shopping-carts')
             ->withData($data)
-            ->patch("/api/v1/shopping-carts/{\$\{\{modelNameLower\}\}->id}");
+            ->patch("/api/v1/shopping-carts/{$shoppingCart->id}");
 
         $response->assertStatus(401);
     }
@@ -183,11 +183,11 @@ class ShoppingCartUpdateTest extends TestCase
     public function test_cannot_update_ShoppingCart_with_invalid_data(): void
     {
         $admin = $this->getAdminUser();
-        \$\{\{modelNameLower\}\} = ShoppingCart::factory()->create();
+        $shoppingCart = ShoppingCart::factory()->create();
 
         $data = [
             'type' => 'shopping-carts',
-            'id' => (string) \$\{\{modelNameLower\}\}->id,
+            'id' => (string) $shoppingCart->id,
             'attributes' => [
                 'name' => '', // Empty name
                 'is_active' => 'invalid_boolean'
@@ -198,7 +198,7 @@ class ShoppingCartUpdateTest extends TestCase
             ->jsonApi()
             ->expects('shopping-carts')
             ->withData($data)
-            ->patch("/api/v1/shopping-carts/{\$\{\{modelNameLower\}\}->id}");
+            ->patch("/api/v1/shopping-carts/{$shoppingCart->id}");
 
         $response->assertStatus(422);
     }

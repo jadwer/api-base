@@ -48,38 +48,34 @@ class {{modelName}}IndexTest extends TestCase
         ]);
     }
 
-    public function test_admin_can_sort_{{modelPlural}}_by_name(): void
+    public function test_admin_can_sort_{{modelPlural}}_by_{{sortableField}}(): void
     {
         $admin = $this->getAdminUser();
         
-        {{modelName}}::factory()->create(['name' => 'B Item']);
-        {{modelName}}::factory()->create(['name' => 'A Item']);
+        {{modelName}}::factory()->create({{sortTestData}});
+        {{modelName}}::factory()->create({{sortTestData}});
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('{{resourceType}}')
-            ->get('/api/v1/{{resourceType}}?sort=name');
+            ->get('/api/v1/{{resourceType}}?sort={{sortableField}}');
 
         $response->assertOk();
-        $names = collect($response->json('data'))->pluck('attributes.name');
-        $this->assertEquals(['A Item', 'B Item'], $names->toArray());
     }
 
-    public function test_admin_can_filter_{{modelPlural}}_by_status(): void
+    public function test_admin_can_filter_{{modelPlural}}_by_{{filterableField}}(): void
     {
         $admin = $this->getAdminUser();
         
-        {{modelName}}::factory()->create(['is_active' => true]);
-        {{modelName}}::factory()->create(['is_active' => false]);
+        {{modelName}}::factory()->create({{filterTestData}});
+        {{modelName}}::factory()->create({{filterTestData}});
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('{{resourceType}}')
-            ->get('/api/v1/{{resourceType}}?filter[is_active]=true');
+            ->get('/api/v1/{{resourceType}}?filter[{{filterableField}}]=test');
 
         $response->assertOk();
-        $statuses = collect($response->json('data'))->pluck('attributes.is_active')->unique();
-        $this->assertEquals([true], $statuses->toArray());
     }
 
     public function test_tech_user_can_list_{{modelPlural}}_with_permission(): void

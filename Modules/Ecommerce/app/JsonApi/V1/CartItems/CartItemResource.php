@@ -28,8 +28,8 @@ class CartItemResource extends JsonApiResource
     public function relationships($request): iterable
     {
         return [
-            $this->relationshipData('shoppingCart'),
-            $this->relationshipData('product'),
+            'shoppingCart' => $this->relation('shoppingCart'),
+            'product' => $this->relation('product'),
         ];
     }
 }

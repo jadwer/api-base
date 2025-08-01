@@ -1,5 +1,5 @@
 {
-    "generated_at": "2025-07-30T03:01:16.020703Z",
+    "generated_at": "2025-08-01T23:02:28.078157Z",
     "base_url": "http:\/\/localhost\/api\/v1",
     "authentication": {
         "type": "Bearer Token",
@@ -5799,13 +5799,13 @@
                 "file": "CartItemSchema.php",
                 "fields": [
                     {
-                        "name": "shopping_cart_id",
+                        "name": "shoppingCartId",
                         "type": "string",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "product_id",
+                        "name": "productId",
                         "type": "string",
                         "required": true,
                         "readonly": false
@@ -5817,25 +5817,25 @@
                         "readonly": false
                     },
                     {
-                        "name": "unit_price",
+                        "name": "unitPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "original_price",
+                        "name": "originalPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_percent",
+                        "name": "discountPercent",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_amount",
+                        "name": "discountAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -5847,13 +5847,13 @@
                         "readonly": false
                     },
                     {
-                        "name": "tax_rate",
+                        "name": "taxRate",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "tax_amount",
+                        "name": "taxAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -5940,13 +5940,13 @@
                 "file": "CartItemSchema.php",
                 "fields": [
                     {
-                        "name": "shopping_cart_id",
+                        "name": "shoppingCartId",
                         "type": "string",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "product_id",
+                        "name": "productId",
                         "type": "string",
                         "required": true,
                         "readonly": false
@@ -5958,25 +5958,25 @@
                         "readonly": false
                     },
                     {
-                        "name": "unit_price",
+                        "name": "unitPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "original_price",
+                        "name": "originalPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_percent",
+                        "name": "discountPercent",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_amount",
+                        "name": "discountAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -5988,13 +5988,13 @@
                         "readonly": false
                     },
                     {
-                        "name": "tax_rate",
+                        "name": "taxRate",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "tax_amount",
+                        "name": "taxAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -6068,13 +6068,13 @@
                 "file": "CartItemSchema.php",
                 "fields": [
                     {
-                        "name": "shopping_cart_id",
+                        "name": "shoppingCartId",
                         "type": "string",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "product_id",
+                        "name": "productId",
                         "type": "string",
                         "required": true,
                         "readonly": false
@@ -6086,25 +6086,25 @@
                         "readonly": false
                     },
                     {
-                        "name": "unit_price",
+                        "name": "unitPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "original_price",
+                        "name": "originalPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_percent",
+                        "name": "discountPercent",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_amount",
+                        "name": "discountAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -6116,13 +6116,13 @@
                         "readonly": false
                     },
                     {
-                        "name": "tax_rate",
+                        "name": "taxRate",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "tax_amount",
+                        "name": "taxAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -6209,13 +6209,13 @@
                 "file": "CartItemSchema.php",
                 "fields": [
                     {
-                        "name": "shopping_cart_id",
+                        "name": "shoppingCartId",
                         "type": "string",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "product_id",
+                        "name": "productId",
                         "type": "string",
                         "required": true,
                         "readonly": false
@@ -6227,25 +6227,25 @@
                         "readonly": false
                     },
                     {
-                        "name": "unit_price",
+                        "name": "unitPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "original_price",
+                        "name": "originalPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_percent",
+                        "name": "discountPercent",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_amount",
+                        "name": "discountAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -6257,13 +6257,13 @@
                         "readonly": false
                     },
                     {
-                        "name": "tax_rate",
+                        "name": "taxRate",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "tax_amount",
+                        "name": "taxAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -6319,13 +6319,13 @@
                 "file": "CartItemSchema.php",
                 "fields": [
                     {
-                        "name": "shopping_cart_id",
+                        "name": "shoppingCartId",
                         "type": "string",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "product_id",
+                        "name": "productId",
                         "type": "string",
                         "required": true,
                         "readonly": false
@@ -6337,25 +6337,25 @@
                         "readonly": false
                     },
                     {
-                        "name": "unit_price",
+                        "name": "unitPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "original_price",
+                        "name": "originalPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_percent",
+                        "name": "discountPercent",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_amount",
+                        "name": "discountAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -6367,13 +6367,13 @@
                         "readonly": false
                     },
                     {
-                        "name": "tax_rate",
+                        "name": "taxRate",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "tax_amount",
+                        "name": "taxAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -6429,13 +6429,13 @@
                 "file": "CartItemSchema.php",
                 "fields": [
                     {
-                        "name": "shopping_cart_id",
+                        "name": "shoppingCartId",
                         "type": "string",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "product_id",
+                        "name": "productId",
                         "type": "string",
                         "required": true,
                         "readonly": false
@@ -6447,25 +6447,25 @@
                         "readonly": false
                     },
                     {
-                        "name": "unit_price",
+                        "name": "unitPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "original_price",
+                        "name": "originalPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_percent",
+                        "name": "discountPercent",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_amount",
+                        "name": "discountAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -6477,13 +6477,13 @@
                         "readonly": false
                     },
                     {
-                        "name": "tax_rate",
+                        "name": "taxRate",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "tax_amount",
+                        "name": "taxAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -6570,13 +6570,13 @@
                 "file": "CartItemSchema.php",
                 "fields": [
                     {
-                        "name": "shopping_cart_id",
+                        "name": "shoppingCartId",
                         "type": "string",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "product_id",
+                        "name": "productId",
                         "type": "string",
                         "required": true,
                         "readonly": false
@@ -6588,25 +6588,25 @@
                         "readonly": false
                     },
                     {
-                        "name": "unit_price",
+                        "name": "unitPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "original_price",
+                        "name": "originalPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_percent",
+                        "name": "discountPercent",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_amount",
+                        "name": "discountAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -6618,13 +6618,13 @@
                         "readonly": false
                     },
                     {
-                        "name": "tax_rate",
+                        "name": "taxRate",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "tax_amount",
+                        "name": "taxAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -6698,13 +6698,13 @@
                 "file": "CartItemSchema.php",
                 "fields": [
                     {
-                        "name": "shopping_cart_id",
+                        "name": "shoppingCartId",
                         "type": "string",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "product_id",
+                        "name": "productId",
                         "type": "string",
                         "required": true,
                         "readonly": false
@@ -6716,25 +6716,25 @@
                         "readonly": false
                     },
                     {
-                        "name": "unit_price",
+                        "name": "unitPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "original_price",
+                        "name": "originalPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_percent",
+                        "name": "discountPercent",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_amount",
+                        "name": "discountAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -6746,13 +6746,13 @@
                         "readonly": false
                     },
                     {
-                        "name": "tax_rate",
+                        "name": "taxRate",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "tax_amount",
+                        "name": "taxAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -6839,13 +6839,13 @@
                 "file": "CartItemSchema.php",
                 "fields": [
                     {
-                        "name": "shopping_cart_id",
+                        "name": "shoppingCartId",
                         "type": "string",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "product_id",
+                        "name": "productId",
                         "type": "string",
                         "required": true,
                         "readonly": false
@@ -6857,25 +6857,25 @@
                         "readonly": false
                     },
                     {
-                        "name": "unit_price",
+                        "name": "unitPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "original_price",
+                        "name": "originalPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_percent",
+                        "name": "discountPercent",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_amount",
+                        "name": "discountAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -6887,13 +6887,13 @@
                         "readonly": false
                     },
                     {
-                        "name": "tax_rate",
+                        "name": "taxRate",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "tax_amount",
+                        "name": "taxAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -6949,13 +6949,13 @@
                 "file": "CartItemSchema.php",
                 "fields": [
                     {
-                        "name": "shopping_cart_id",
+                        "name": "shoppingCartId",
                         "type": "string",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "product_id",
+                        "name": "productId",
                         "type": "string",
                         "required": true,
                         "readonly": false
@@ -6967,25 +6967,25 @@
                         "readonly": false
                     },
                     {
-                        "name": "unit_price",
+                        "name": "unitPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "original_price",
+                        "name": "originalPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_percent",
+                        "name": "discountPercent",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_amount",
+                        "name": "discountAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -6997,13 +6997,13 @@
                         "readonly": false
                     },
                     {
-                        "name": "tax_rate",
+                        "name": "taxRate",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "tax_amount",
+                        "name": "taxAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -7059,13 +7059,13 @@
                 "file": "CartItemSchema.php",
                 "fields": [
                     {
-                        "name": "shopping_cart_id",
+                        "name": "shoppingCartId",
                         "type": "string",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "product_id",
+                        "name": "productId",
                         "type": "string",
                         "required": true,
                         "readonly": false
@@ -7077,25 +7077,25 @@
                         "readonly": false
                     },
                     {
-                        "name": "unit_price",
+                        "name": "unitPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "original_price",
+                        "name": "originalPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_percent",
+                        "name": "discountPercent",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_amount",
+                        "name": "discountAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -7107,13 +7107,13 @@
                         "readonly": false
                     },
                     {
-                        "name": "tax_rate",
+                        "name": "taxRate",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "tax_amount",
+                        "name": "taxAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -7200,13 +7200,13 @@
                 "file": "CartItemSchema.php",
                 "fields": [
                     {
-                        "name": "shopping_cart_id",
+                        "name": "shoppingCartId",
                         "type": "string",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "product_id",
+                        "name": "productId",
                         "type": "string",
                         "required": true,
                         "readonly": false
@@ -7218,25 +7218,25 @@
                         "readonly": false
                     },
                     {
-                        "name": "unit_price",
+                        "name": "unitPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "original_price",
+                        "name": "originalPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_percent",
+                        "name": "discountPercent",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_amount",
+                        "name": "discountAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -7248,13 +7248,13 @@
                         "readonly": false
                     },
                     {
-                        "name": "tax_rate",
+                        "name": "taxRate",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "tax_amount",
+                        "name": "taxAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -7328,13 +7328,13 @@
                 "file": "CartItemSchema.php",
                 "fields": [
                     {
-                        "name": "shopping_cart_id",
+                        "name": "shoppingCartId",
                         "type": "string",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "product_id",
+                        "name": "productId",
                         "type": "string",
                         "required": true,
                         "readonly": false
@@ -7346,25 +7346,25 @@
                         "readonly": false
                     },
                     {
-                        "name": "unit_price",
+                        "name": "unitPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "original_price",
+                        "name": "originalPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_percent",
+                        "name": "discountPercent",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_amount",
+                        "name": "discountAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -7376,13 +7376,13 @@
                         "readonly": false
                     },
                     {
-                        "name": "tax_rate",
+                        "name": "taxRate",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "tax_amount",
+                        "name": "taxAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -7469,13 +7469,13 @@
                 "file": "CartItemSchema.php",
                 "fields": [
                     {
-                        "name": "shopping_cart_id",
+                        "name": "shoppingCartId",
                         "type": "string",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "product_id",
+                        "name": "productId",
                         "type": "string",
                         "required": true,
                         "readonly": false
@@ -7487,25 +7487,25 @@
                         "readonly": false
                     },
                     {
-                        "name": "unit_price",
+                        "name": "unitPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "original_price",
+                        "name": "originalPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_percent",
+                        "name": "discountPercent",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_amount",
+                        "name": "discountAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -7517,13 +7517,13 @@
                         "readonly": false
                     },
                     {
-                        "name": "tax_rate",
+                        "name": "taxRate",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "tax_amount",
+                        "name": "taxAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -7579,13 +7579,13 @@
                 "file": "CartItemSchema.php",
                 "fields": [
                     {
-                        "name": "shopping_cart_id",
+                        "name": "shoppingCartId",
                         "type": "string",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "product_id",
+                        "name": "productId",
                         "type": "string",
                         "required": true,
                         "readonly": false
@@ -7597,25 +7597,25 @@
                         "readonly": false
                     },
                     {
-                        "name": "unit_price",
+                        "name": "unitPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "original_price",
+                        "name": "originalPrice",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_percent",
+                        "name": "discountPercent",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "discount_amount",
+                        "name": "discountAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false
@@ -7627,13 +7627,13 @@
                         "readonly": false
                     },
                     {
-                        "name": "tax_rate",
+                        "name": "taxRate",
                         "type": "number",
                         "required": true,
                         "readonly": false
                     },
                     {
-                        "name": "tax_amount",
+                        "name": "taxAmount",
                         "type": "number",
                         "required": true,
                         "readonly": false

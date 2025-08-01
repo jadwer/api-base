@@ -42,12 +42,12 @@ class {{modelName}}UpdateTest extends TestCase
             ->jsonApi()
             ->expects('{{resourceType}}')
             ->withData($data)
-            ->patch("/api/v1/{{resourceType}}/{\$\{\{modelNameLower\}\}->id}");
+            ->patch("/api/v1/{{resourceType}}/{${{modelNameLower}}->id}");
 
         $response->assertOk();
         
         $this->assertDatabaseHas('{{tableName}}', [
-            'id' => \$\{\{modelNameLower\}\}->id,
+            'id' => ${{modelNameLower}}->id,
             'name' => 'Updated {{modelName}}',
             'description' => 'Updated description',
             'is_active' => false
@@ -57,14 +57,14 @@ class {{modelName}}UpdateTest extends TestCase
     public function test_admin_can_partially_update_{{modelName}}(): void
     {
         $admin = $this->getAdminUser();
-        \$\{\{modelNameLower\}\} = {{modelName}}::factory()->create([
+        ${{modelNameLower}} = {{modelName}}::factory()->create([
             'name' => 'Original Name',
             'description' => 'Original Description'
         ]);
 
         $data = [
             'type' => '{{resourceType}}',
-            'id' => (string) \$\{\{modelNameLower\}\}->id,
+            'id' => (string) ${{modelNameLower}}->id,
             'attributes' => [
                 'name' => 'Partially Updated Name'
                 // description should remain unchanged
@@ -75,12 +75,12 @@ class {{modelName}}UpdateTest extends TestCase
             ->jsonApi()
             ->expects('{{resourceType}}')
             ->withData($data)
-            ->patch("/api/v1/{{resourceType}}/{\$\{\{modelNameLower\}\}->id}");
+            ->patch("/api/v1/{{resourceType}}/{${{modelNameLower}}->id}");
 
         $response->assertOk();
         
         $this->assertDatabaseHas('{{tableName}}', [
-            'id' => \$\{\{modelNameLower\}\}->id,
+            'id' => ${{modelNameLower}}->id,
             'name' => 'Partially Updated Name',
             'description' => 'Original Description'
         ]);
@@ -89,7 +89,7 @@ class {{modelName}}UpdateTest extends TestCase
     public function test_admin_can_update_{{modelName}}_metadata(): void
     {
         $admin = $this->getAdminUser();
-        \$\{\{modelNameLower\}\} = {{modelName}}::factory()->create();
+        ${{modelNameLower}} = {{modelName}}::factory()->create();
 
         $metadata = [
             'updated_field' => 'new_value',
@@ -99,7 +99,7 @@ class {{modelName}}UpdateTest extends TestCase
 
         $data = [
             'type' => '{{resourceType}}',
-            'id' => (string) \$\{\{modelNameLower\}\}->id,
+            'id' => (string) ${{modelNameLower}}->id,
             'attributes' => [
                 'metadata' => $metadata
             ]
@@ -109,22 +109,22 @@ class {{modelName}}UpdateTest extends TestCase
             ->jsonApi()
             ->expects('{{resourceType}}')
             ->withData($data)
-            ->patch("/api/v1/{{resourceType}}/{\$\{\{modelNameLower\}\}->id}");
+            ->patch("/api/v1/{{resourceType}}/{${{modelNameLower}}->id}");
 
         $response->assertOk();
         
-        \$\{\{modelNameLower\}\}->refresh();
-        $this->assertEquals($metadata, \$\{\{modelNameLower\}\}->metadata);
+        ${{modelNameLower}}->refresh();
+        $this->assertEquals($metadata, ${{modelNameLower}}->metadata);
     }
 
     public function test_customer_user_cannot_update_{{modelName}}(): void
     {
         $customer = $this->getCustomerUser();
-        \$\{\{modelNameLower\}\} = {{modelName}}::factory()->create();
+        ${{modelNameLower}} = {{modelName}}::factory()->create();
 
         $data = [
             'type' => '{{resourceType}}',
-            'id' => (string) \$\{\{modelNameLower\}\}->id,
+            'id' => (string) ${{modelNameLower}}->id,
             'attributes' => [
                 'name' => 'Unauthorized Update'
             ]
@@ -134,18 +134,18 @@ class {{modelName}}UpdateTest extends TestCase
             ->jsonApi()
             ->expects('{{resourceType}}')
             ->withData($data)
-            ->patch("/api/v1/{{resourceType}}/{\$\{\{modelNameLower\}\}->id}");
+            ->patch("/api/v1/{{resourceType}}/{${{modelNameLower}}->id}");
 
         $response->assertStatus(403);
     }
 
     public function test_guest_cannot_update_{{modelName}}(): void
     {
-        \$\{\{modelNameLower\}\} = {{modelName}}::factory()->create();
+        ${{modelNameLower}} = {{modelName}}::factory()->create();
 
         $data = [
             'type' => '{{resourceType}}',
-            'id' => (string) \$\{\{modelNameLower\}\}->id,
+            'id' => (string) ${{modelNameLower}}->id,
             'attributes' => [
                 'name' => 'Guest Update'
             ]
@@ -154,7 +154,7 @@ class {{modelName}}UpdateTest extends TestCase
         $response = $this->jsonApi()
             ->expects('{{resourceType}}')
             ->withData($data)
-            ->patch("/api/v1/{{resourceType}}/{\$\{\{modelNameLower\}\}->id}");
+            ->patch("/api/v1/{{resourceType}}/{${{modelNameLower}}->id}");
 
         $response->assertStatus(401);
     }
@@ -183,11 +183,11 @@ class {{modelName}}UpdateTest extends TestCase
     public function test_cannot_update_{{modelName}}_with_invalid_data(): void
     {
         $admin = $this->getAdminUser();
-        \$\{\{modelNameLower\}\} = {{modelName}}::factory()->create();
+        ${{modelNameLower}} = {{modelName}}::factory()->create();
 
         $data = [
             'type' => '{{resourceType}}',
-            'id' => (string) \$\{\{modelNameLower\}\}->id,
+            'id' => (string) ${{modelNameLower}}->id,
             'attributes' => [
                 'name' => '', // Empty name
                 'is_active' => 'invalid_boolean'
@@ -198,7 +198,7 @@ class {{modelName}}UpdateTest extends TestCase
             ->jsonApi()
             ->expects('{{resourceType}}')
             ->withData($data)
-            ->patch("/api/v1/{{resourceType}}/{\$\{\{modelNameLower\}\}->id}");
+            ->patch("/api/v1/{{resourceType}}/{${{modelNameLower}}->id}");
 
         $response->assertStatus(422);
     }

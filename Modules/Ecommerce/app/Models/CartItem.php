@@ -4,22 +4,15 @@ namespace Modules\Ecommerce\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Ecommerce\Database\Factories\CartItemFactory;
+use Spatie\Permission\Traits\HasPermissions;
+use Modules\Product\Models\Product;
 
 class CartItem extends Model
 {
-    use HasFactory;
+    use HasFactory, HasPermissions;
 
-    /**
-     * Create a new factory instance for the model.
-     */
-    protected static function newFactory()
-    {
-        return CartItemFactory::new();
-    }
-
-    protected $table = "cart_items";
-
+    protected $table = 'cart_items';
+    
     protected $fillable = [
         'shopping_cart_id', 'product_id', 'quantity', 'unit_price', 'original_price', 'discount_percent', 'discount_amount', 'subtotal', 'tax_rate', 'tax_amount', 'total'
     ];
@@ -36,6 +29,12 @@ class CartItem extends Model
         'total' => 'decimal:2'
     ];
 
+    // Scopes
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
     public function shoppingCart()
     {
         return $this->belongsTo(ShoppingCart::class);
@@ -44,5 +43,11 @@ class CartItem extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    // Factory
+    protected static function newFactory()
+    {
+        return \Modules\Ecommerce\Database\Factories\CartItemFactory::new();
     }
 }

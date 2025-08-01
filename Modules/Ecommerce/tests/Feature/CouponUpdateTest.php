@@ -42,12 +42,12 @@ class CouponUpdateTest extends TestCase
             ->jsonApi()
             ->expects('coupons')
             ->withData($data)
-            ->patch("/api/v1/coupons/{\$\{\{modelNameLower\}\}->id}");
+            ->patch("/api/v1/coupons/{$coupon->id}");
 
         $response->assertOk();
         
         $this->assertDatabaseHas('coupons', [
-            'id' => \$\{\{modelNameLower\}\}->id,
+            'id' => $coupon->id,
             'name' => 'Updated Coupon',
             'description' => 'Updated description',
             'is_active' => false
@@ -57,14 +57,14 @@ class CouponUpdateTest extends TestCase
     public function test_admin_can_partially_update_Coupon(): void
     {
         $admin = $this->getAdminUser();
-        \$\{\{modelNameLower\}\} = Coupon::factory()->create([
+        $coupon = Coupon::factory()->create([
             'name' => 'Original Name',
             'description' => 'Original Description'
         ]);
 
         $data = [
             'type' => 'coupons',
-            'id' => (string) \$\{\{modelNameLower\}\}->id,
+            'id' => (string) $coupon->id,
             'attributes' => [
                 'name' => 'Partially Updated Name'
                 // description should remain unchanged
@@ -75,12 +75,12 @@ class CouponUpdateTest extends TestCase
             ->jsonApi()
             ->expects('coupons')
             ->withData($data)
-            ->patch("/api/v1/coupons/{\$\{\{modelNameLower\}\}->id}");
+            ->patch("/api/v1/coupons/{$coupon->id}");
 
         $response->assertOk();
         
         $this->assertDatabaseHas('coupons', [
-            'id' => \$\{\{modelNameLower\}\}->id,
+            'id' => $coupon->id,
             'name' => 'Partially Updated Name',
             'description' => 'Original Description'
         ]);
@@ -89,7 +89,7 @@ class CouponUpdateTest extends TestCase
     public function test_admin_can_update_Coupon_metadata(): void
     {
         $admin = $this->getAdminUser();
-        \$\{\{modelNameLower\}\} = Coupon::factory()->create();
+        $coupon = Coupon::factory()->create();
 
         $metadata = [
             'updated_field' => 'new_value',
@@ -99,7 +99,7 @@ class CouponUpdateTest extends TestCase
 
         $data = [
             'type' => 'coupons',
-            'id' => (string) \$\{\{modelNameLower\}\}->id,
+            'id' => (string) $coupon->id,
             'attributes' => [
                 'metadata' => $metadata
             ]
@@ -109,22 +109,22 @@ class CouponUpdateTest extends TestCase
             ->jsonApi()
             ->expects('coupons')
             ->withData($data)
-            ->patch("/api/v1/coupons/{\$\{\{modelNameLower\}\}->id}");
+            ->patch("/api/v1/coupons/{$coupon->id}");
 
         $response->assertOk();
         
-        \$\{\{modelNameLower\}\}->refresh();
-        $this->assertEquals($metadata, \$\{\{modelNameLower\}\}->metadata);
+        $coupon->refresh();
+        $this->assertEquals($metadata, $coupon->metadata);
     }
 
     public function test_customer_user_cannot_update_Coupon(): void
     {
         $customer = $this->getCustomerUser();
-        \$\{\{modelNameLower\}\} = Coupon::factory()->create();
+        $coupon = Coupon::factory()->create();
 
         $data = [
             'type' => 'coupons',
-            'id' => (string) \$\{\{modelNameLower\}\}->id,
+            'id' => (string) $coupon->id,
             'attributes' => [
                 'name' => 'Unauthorized Update'
             ]
@@ -134,18 +134,18 @@ class CouponUpdateTest extends TestCase
             ->jsonApi()
             ->expects('coupons')
             ->withData($data)
-            ->patch("/api/v1/coupons/{\$\{\{modelNameLower\}\}->id}");
+            ->patch("/api/v1/coupons/{$coupon->id}");
 
         $response->assertStatus(403);
     }
 
     public function test_guest_cannot_update_Coupon(): void
     {
-        \$\{\{modelNameLower\}\} = Coupon::factory()->create();
+        $coupon = Coupon::factory()->create();
 
         $data = [
             'type' => 'coupons',
-            'id' => (string) \$\{\{modelNameLower\}\}->id,
+            'id' => (string) $coupon->id,
             'attributes' => [
                 'name' => 'Guest Update'
             ]
@@ -154,7 +154,7 @@ class CouponUpdateTest extends TestCase
         $response = $this->jsonApi()
             ->expects('coupons')
             ->withData($data)
-            ->patch("/api/v1/coupons/{\$\{\{modelNameLower\}\}->id}");
+            ->patch("/api/v1/coupons/{$coupon->id}");
 
         $response->assertStatus(401);
     }
@@ -183,11 +183,11 @@ class CouponUpdateTest extends TestCase
     public function test_cannot_update_Coupon_with_invalid_data(): void
     {
         $admin = $this->getAdminUser();
-        \$\{\{modelNameLower\}\} = Coupon::factory()->create();
+        $coupon = Coupon::factory()->create();
 
         $data = [
             'type' => 'coupons',
-            'id' => (string) \$\{\{modelNameLower\}\}->id,
+            'id' => (string) $coupon->id,
             'attributes' => [
                 'name' => '', // Empty name
                 'is_active' => 'invalid_boolean'
@@ -198,7 +198,7 @@ class CouponUpdateTest extends TestCase
             ->jsonApi()
             ->expects('coupons')
             ->withData($data)
-            ->patch("/api/v1/coupons/{\$\{\{modelNameLower\}\}->id}");
+            ->patch("/api/v1/coupons/{$coupon->id}");
 
         $response->assertStatus(422);
     }

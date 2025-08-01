@@ -1,0 +1,851 @@
+{
+  "module": {
+    "name": "NewPurchase",
+    "description": "Complete NewPurchase module configuration replicating Purchase module structure",
+    "version": "1.0.0",
+    "namespace": "Modules\\NewPurchase",
+    "api_prefix": "new-purchase",
+    "table_prefix": "new_",
+    "json_api_version": "5.x",
+    "laravel_version": "12"
+  },
+  "entities": [
+    {
+      "name": "Supplier",
+      "table_name": "new_suppliers",
+      "model_name": "NewSupplier",
+      "schema_name": "NewSupplierSchema",
+      "controller_name": "NewSupplierController",
+      "resource_type": "new-suppliers",
+      "description": "Supplier entity for NewPurchase module",
+      "traits": [
+        "HasFactory",
+        "LogsActivity",
+        "SoftDeletes"
+      ],
+      "fields": [
+        {
+          "name": "id",
+          "type": "id",
+          "database_type": "id",
+          "required": false,
+          "fillable": false,
+          "cast": "integer",
+          "json_api_type": "ID",
+          "sortable": false,
+          "filterable": true,
+          "validation": []
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "database_type": "string",
+          "length": 255,
+          "required": true,
+          "fillable": true,
+          "cast": null,
+          "json_api_type": "Str",
+          "sortable": true,
+          "filterable": true,
+          "indexed": true,
+          "validation": [
+            "required",
+            "string",
+            "max:255"
+          ]
+        },
+        {
+          "name": "email",
+          "type": "string",
+          "database_type": "string",
+          "length": 255,
+          "required": false,
+          "nullable": true,
+          "fillable": true,
+          "cast": null,
+          "json_api_type": "Str",
+          "sortable": true,
+          "filterable": true,
+          "indexed": true,
+          "unique": true,
+          "validation": [
+            "nullable",
+            "email",
+            "max:255",
+            "unique:new_suppliers,email"
+          ]
+        },
+        {
+          "name": "phone",
+          "type": "string",
+          "database_type": "string",
+          "length": 20,
+          "required": false,
+          "nullable": true,
+          "fillable": true,
+          "cast": null,
+          "json_api_type": "Str",
+          "sortable": false,
+          "filterable": false,
+          "validation": [
+            "nullable",
+            "string",
+            "max:20"
+          ]
+        },
+        {
+          "name": "address",
+          "type": "text",
+          "database_type": "text",
+          "required": false,
+          "nullable": true,
+          "fillable": true,
+          "cast": null,
+          "json_api_type": "Str",
+          "sortable": false,
+          "filterable": false,
+          "validation": [
+            "nullable",
+            "string",
+            "max:500"
+          ]
+        },
+        {
+          "name": "rfc",
+          "type": "string",
+          "database_type": "string",
+          "length": 13,
+          "required": false,
+          "nullable": true,
+          "fillable": true,
+          "cast": null,
+          "json_api_type": "Str",
+          "sortable": false,
+          "filterable": true,
+          "indexed": true,
+          "unique": true,
+          "validation": [
+            "nullable",
+            "string",
+            "max:13",
+            "unique:new_suppliers,rfc"
+          ]
+        },
+        {
+          "name": "is_active",
+          "type": "boolean",
+          "database_type": "boolean",
+          "required": false,
+          "fillable": true,
+          "default": true,
+          "cast": "boolean",
+          "json_api_type": "Boolean",
+          "json_api_field_name": "isActive",
+          "sortable": true,
+          "filterable": true,
+          "indexed": true,
+          "validation": [
+            "sometimes",
+            "boolean"
+          ]
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "database_type": "timestamps",
+          "required": false,
+          "fillable": false,
+          "cast": "datetime",
+          "json_api_type": "DateTime",
+          "json_api_field_name": "createdAt",
+          "sortable": true,
+          "filterable": false,
+          "readonly": true,
+          "validation": []
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "database_type": "timestamps",
+          "required": false,
+          "fillable": false,
+          "cast": "datetime",
+          "json_api_type": "DateTime",
+          "json_api_field_name": "updatedAt",
+          "sortable": true,
+          "filterable": false,
+          "readonly": true,
+          "validation": []
+        },
+        {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "database_type": "softDeletes",
+          "required": false,
+          "fillable": false,
+          "nullable": true,
+          "cast": "datetime",
+          "indexed": true,
+          "validation": []
+        }
+      ],
+      "relationships": [
+        {
+          "name": "newPurchaseOrders",
+          "type": "hasMany",
+          "related_entity": "NewPurchaseOrder",
+          "foreign_key": "new_supplier_id",
+          "json_api_type": "HasMany",
+          "json_api_resource_type": "new-purchase-orders",
+          "includable": true
+        }
+      ],
+      "scopes": [
+        {
+          "name": "active",
+          "condition": "where('is_active', true)"
+        },
+        {
+          "name": "inactive",
+          "condition": "where('is_active', false)"
+        }
+      ],
+      "validation_messages": {
+        "name.required": "El nombre del proveedor es obligatorio.",
+        "email.email": "El email debe tener un formato válido.",
+        "email.unique": "Este email ya está registrado para otro proveedor.",
+        "rfc.unique": "Este RFC ya está registrado para otro proveedor.",
+        "phone.max": "El teléfono no puede tener más de 20 caracteres.",
+        "address.max": "La dirección no puede tener más de 500 caracteres."
+      },
+      "activity_log_fields": [
+        "name",
+        "email",
+        "phone",
+        "address",
+        "rfc",
+        "is_active"
+      ],
+      "boot_logic": [
+        {
+          "event": "deleting",
+          "action": "prevent_if_has_orders",
+          "condition": "newPurchaseOrders()->exists()",
+          "error_message": "Cannot delete supplier with existing purchase orders."
+        }
+      ]
+    },
+    {
+      "name": "PurchaseOrder",
+      "table_name": "new_purchase_orders",
+      "model_name": "NewPurchaseOrder",
+      "schema_name": "NewPurchaseOrderSchema",
+      "controller_name": "NewPurchaseOrderController",
+      "resource_type": "new-purchase-orders",
+      "description": "Purchase Order entity for NewPurchase module",
+      "traits": [
+        "HasFactory"
+      ],
+      "fields": [
+        {
+          "name": "id",
+          "type": "id",
+          "database_type": "id",
+          "required": false,
+          "fillable": false,
+          "cast": "integer",
+          "json_api_type": "ID",
+          "sortable": false,
+          "filterable": true,
+          "validation": []
+        },
+        {
+          "name": "new_supplier_id",
+          "type": "foreign_id",
+          "database_type": "foreignId",
+          "required": true,
+          "fillable": true,
+          "cast": "integer",
+          "json_api_type": "Number",
+          "json_api_field_name": "newSupplierId",
+          "sortable": true,
+          "filterable": true,
+          "foreign_table": "new_suppliers",
+          "foreign_constraint": "cascade",
+          "validation": []
+        },
+        {
+          "name": "order_date",
+          "type": "date",
+          "database_type": "date",
+          "required": true,
+          "fillable": true,
+          "cast": "date",
+          "json_api_type": "DateTime",
+          "json_api_field_name": "orderDate",
+          "sortable": true,
+          "filterable": true,
+          "validation": [
+            "required",
+            "date"
+          ]
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "database_type": "enum",
+          "enum_values": [
+            "pending",
+            "approved",
+            "received",
+            "cancelled"
+          ],
+          "required": true,
+          "fillable": true,
+          "default": "pending",
+          "cast": null,
+          "json_api_type": "Str",
+          "sortable": true,
+          "filterable": true,
+          "validation": [
+            "required",
+            "string",
+            "in:pending,approved,received,cancelled"
+          ]
+        },
+        {
+          "name": "total_amount",
+          "type": "decimal",
+          "database_type": "decimal",
+          "precision": 10,
+          "scale": 2,
+          "required": true,
+          "fillable": true,
+          "cast": "float",
+          "json_api_type": "Number",
+          "json_api_field_name": "totalAmount",
+          "sortable": true,
+          "filterable": false,
+          "validation": [
+            "required",
+            "numeric",
+            "min:0"
+          ]
+        },
+        {
+          "name": "notes",
+          "type": "text",
+          "database_type": "text",
+          "required": false,
+          "nullable": true,
+          "fillable": true,
+          "cast": null,
+          "json_api_type": "Str",
+          "sortable": false,
+          "filterable": false,
+          "validation": [
+            "nullable",
+            "string"
+          ]
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "database_type": "timestamps",
+          "required": false,
+          "fillable": false,
+          "cast": "datetime",
+          "json_api_type": "DateTime",
+          "json_api_field_name": "createdAt",
+          "sortable": true,
+          "filterable": false,
+          "readonly": true,
+          "validation": []
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "database_type": "timestamps",
+          "required": false,
+          "fillable": false,
+          "cast": "datetime",
+          "json_api_type": "DateTime",
+          "json_api_field_name": "updatedAt",
+          "sortable": true,
+          "filterable": false,
+          "readonly": true,
+          "validation": []
+        }
+      ],
+      "relationships": [
+        {
+          "name": "newSupplier",
+          "type": "belongsTo",
+          "related_entity": "NewSupplier",
+          "foreign_key": "new_supplier_id",
+          "json_api_type": "BelongsTo",
+          "json_api_resource_type": "new-suppliers",
+          "includable": true
+        },
+        {
+          "name": "newPurchaseOrderItems",
+          "type": "hasMany",
+          "related_entity": "NewPurchaseOrderItem",
+          "foreign_key": "new_purchase_order_id",
+          "json_api_type": "HasMany",
+          "json_api_resource_type": "new-purchase-order-items",
+          "includable": true
+        }
+      ],
+      "scopes": [
+        {
+          "name": "filters",
+          "type": "custom",
+          "parameters": [
+            "new_supplier_id",
+            "status",
+            "order_date_from",
+            "order_date_to"
+          ]
+        }
+      ],
+      "validation_for_relationships": {
+        "newSupplier": "required|json_api_to_one"
+      }
+    },
+    {
+      "name": "PurchaseOrderItem",
+      "table_name": "new_purchase_order_items",
+      "model_name": "NewPurchaseOrderItem",
+      "schema_name": "NewPurchaseOrderItemSchema",
+      "controller_name": "NewPurchaseOrderItemController",
+      "resource_type": "new-purchase-order-items",
+      "description": "Purchase Order Item entity for NewPurchase module",
+      "traits": [
+        "HasFactory"
+      ],
+      "fields": [
+        {
+          "name": "id",
+          "type": "id",
+          "database_type": "id",
+          "required": false,
+          "fillable": false,
+          "cast": "integer",
+          "json_api_type": "ID",
+          "sortable": false,
+          "filterable": true,
+          "validation": []
+        },
+        {
+          "name": "new_purchase_order_id",
+          "type": "foreign_id",
+          "database_type": "foreignId",
+          "required": true,
+          "fillable": true,
+          "cast": "integer",
+          "json_api_type": "Number",
+          "json_api_field_name": "newPurchaseOrderId",
+          "sortable": false,
+          "filterable": true,
+          "foreign_table": "new_purchase_orders",
+          "foreign_constraint": "cascade",
+          "validation": []
+        },
+        {
+          "name": "product_id",
+          "type": "unsigned_big_integer",
+          "database_type": "unsignedBigInteger",
+          "required": false,
+          "nullable": true,
+          "fillable": true,
+          "cast": "integer",
+          "json_api_type": "Number",
+          "json_api_field_name": "productId",
+          "sortable": false,
+          "filterable": true,
+          "validation": []
+        },
+        {
+          "name": "quantity",
+          "type": "integer",
+          "database_type": "integer",
+          "required": true,
+          "fillable": true,
+          "cast": "integer",
+          "json_api_type": "Number",
+          "sortable": true,
+          "filterable": true,
+          "validation": [
+            "required",
+            "numeric",
+            "min:0.01"
+          ]
+        },
+        {
+          "name": "unit_price",
+          "type": "decimal",
+          "database_type": "decimal",
+          "precision": 10,
+          "scale": 2,
+          "required": true,
+          "fillable": true,
+          "cast": "float",
+          "json_api_type": "Number",
+          "json_api_field_name": "unitPrice",
+          "sortable": true,
+          "filterable": false,
+          "validation": [
+            "required",
+            "numeric",
+            "min:0"
+          ]
+        },
+        {
+          "name": "subtotal",
+          "type": "decimal",
+          "database_type": "decimal",
+          "precision": 10,
+          "scale": 2,
+          "required": true,
+          "fillable": true,
+          "cast": "float",
+          "json_api_type": "Number",
+          "sortable": true,
+          "filterable": false,
+          "validation": []
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "database_type": "timestamps",
+          "required": false,
+          "fillable": false,
+          "cast": "datetime",
+          "json_api_type": "DateTime",
+          "json_api_field_name": "createdAt",
+          "sortable": true,
+          "filterable": false,
+          "readonly": true,
+          "validation": []
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "database_type": "timestamps",
+          "required": false,
+          "fillable": false,
+          "cast": "datetime",
+          "json_api_type": "DateTime",
+          "json_api_field_name": "updatedAt",
+          "sortable": true,
+          "filterable": false,
+          "readonly": true,
+          "validation": []
+        }
+      ],
+      "relationships": [
+        {
+          "name": "newPurchaseOrder",
+          "type": "belongsTo",
+          "related_entity": "NewPurchaseOrder",
+          "foreign_key": "new_purchase_order_id",
+          "json_api_type": "BelongsTo",
+          "json_api_resource_type": "new-purchase-orders",
+          "includable": true
+        },
+        {
+          "name": "product",
+          "type": "belongsTo",
+          "related_entity": "Product",
+          "related_module": "Product",
+          "foreign_key": "product_id",
+          "json_api_type": "BelongsTo",
+          "json_api_resource_type": "products",
+          "includable": true,
+          "model_class": "\\Modules\\Product\\Models\\Product"
+        }
+      ],
+      "scopes": [
+        {
+          "name": "filters",
+          "type": "custom",
+          "parameters": [
+            "new_purchase_order_id",
+            "product_id",
+            "quantity"
+          ]
+        }
+      ],
+      "boot_logic": [
+        {
+          "event": "saving",
+          "action": "calculate_subtotal",
+          "condition": "quantity && unit_price",
+          "calculation": "subtotal = quantity * unit_price"
+        }
+      ],
+      "validation_messages": {
+        "quantity.required": "La cantidad es obligatoria.",
+        "quantity.numeric": "La cantidad debe ser un número válido.",
+        "quantity.min": "La cantidad debe ser mayor a 0.",
+        "unitPrice.required": "El precio unitario es obligatorio.",
+        "unitPrice.numeric": "El precio unitario debe ser un número válido.",
+        "unitPrice.min": "El precio unitario debe ser mayor o igual a 0."
+      },
+      "validation_for_relationships": {
+        "newPurchaseOrder": "json_api_to_one",
+        "product": "json_api_to_one"
+      }
+    }
+  ],
+  "permissions": [
+    {
+      "entity": "new-suppliers",
+      "actions": [
+        "index",
+        "show",
+        "store",
+        "update",
+        "destroy"
+      ]
+    },
+    {
+      "entity": "new-purchase-orders",
+      "actions": [
+        "index",
+        "show",
+        "store",
+        "update",
+        "destroy"
+      ]
+    },
+    {
+      "entity": "new-purchase-order-items",
+      "actions": [
+        "index",
+        "show",
+        "store",
+        "update",
+        "destroy"
+      ]
+    }
+  ],
+  "role_permissions": {
+    "god": [
+      "new-suppliers.index",
+      "new-suppliers.show",
+      "new-suppliers.store",
+      "new-suppliers.update",
+      "new-suppliers.destroy",
+      "new-purchase-orders.index",
+      "new-purchase-orders.show",
+      "new-purchase-orders.store",
+      "new-purchase-orders.update",
+      "new-purchase-orders.destroy",
+      "new-purchase-order-items.index",
+      "new-purchase-order-items.show",
+      "new-purchase-order-items.store",
+      "new-purchase-order-items.update",
+      "new-purchase-order-items.destroy"
+    ],
+    "admin": [
+      "new-suppliers.index",
+      "new-suppliers.show",
+      "new-suppliers.store",
+      "new-suppliers.update",
+      "new-suppliers.destroy",
+      "new-purchase-orders.index",
+      "new-purchase-orders.show",
+      "new-purchase-orders.store",
+      "new-purchase-orders.update",
+      "new-purchase-orders.destroy",
+      "new-purchase-order-items.index",
+      "new-purchase-order-items.show",
+      "new-purchase-order-items.store",
+      "new-purchase-order-items.update",
+      "new-purchase-order-items.destroy"
+    ]
+  },
+  "routes": [
+    {
+      "resource_type": "new-suppliers",
+      "controller": "NewSupplierController"
+    },
+    {
+      "resource_type": "new-purchase-orders",
+      "controller": "NewPurchaseOrderController"
+    },
+    {
+      "resource_type": "new-purchase-order-items",
+      "controller": "NewPurchaseOrderItemController"
+    }
+  ],
+  "controller_actions": [
+    "FetchMany",
+    "FetchOne",
+    "Store",
+    "Update",
+    "Destroy",
+    "FetchRelated",
+    "FetchRelationship",
+    "UpdateRelationship",
+    "AttachRelationship",
+    "DetachRelationship"
+  ],
+  "factories": [
+    {
+      "entity": "NewSupplier",
+      "factory_name": "NewSupplierFactory",
+      "factory_fields": {
+        "name": "fake()->company()",
+        "email": "fake()->unique()->safeEmail()",
+        "phone": "fake()->phoneNumber()",
+        "address": "fake()->address()",
+        "rfc": "fake()->regexify('[A-Z]{4}[0-9]{6}[A-Z0-9]{3}')",
+        "is_active": "fake()->boolean(80)"
+      }
+    },
+    {
+      "entity": "NewPurchaseOrder",
+      "factory_name": "NewPurchaseOrderFactory",
+      "factory_fields": {
+        "new_supplier_id": "NewSupplier::factory()",
+        "order_date": "fake()->date()",
+        "status": "fake()->randomElement(['pending', 'approved', 'received', 'cancelled'])",
+        "total_amount": "fake()->randomFloat(2, 100, 10000)",
+        "notes": "fake()->optional()->sentence()"
+      }
+    },
+    {
+      "entity": "NewPurchaseOrderItem",
+      "factory_name": "NewPurchaseOrderItemFactory",
+      "factory_fields": {
+        "new_purchase_order_id": "NewPurchaseOrder::factory()",
+        "product_id": "fake()->numberBetween(1, 100)",
+        "quantity": "fake()->numberBetween(1, 100)",
+        "unit_price": "fake()->randomFloat(2, 10, 1000)",
+        "subtotal": "calculated_from_quantity_and_unit_price"
+      }
+    }
+  ],
+  "seeders": [
+    {
+      "name": "NewPurchasePermissionSeeder",
+      "description": "Creates all permissions for NewPurchase module"
+    },
+    {
+      "name": "NewPurchaseAssignPermissionsSeeder",
+      "description": "Assigns permissions to god and admin roles"
+    },
+    {
+      "name": "NewSupplierSeeder",
+      "description": "Seeds sample suppliers data"
+    },
+    {
+      "name": "NewPurchaseOrderSeeder",
+      "description": "Seeds sample purchase orders data"
+    },
+    {
+      "name": "NewPurchaseModuleSeeder",
+      "description": "Main seeder that calls all other module seeders"
+    },
+    {
+      "name": "NewPurchaseDatabaseSeeder",
+      "description": "Database seeder that runs all NewPurchase seeders"
+    }
+  ],
+  "tests": [
+    {
+      "entity": "NewSupplier",
+      "test_files": [
+        "NewSupplierBasicTest",
+        "NewSupplierIndexTest",
+        "NewSupplierShowTest",
+        "NewSupplierStoreTest",
+        "NewSupplierUpdateTest",
+        "NewSupplierDestroyTest"
+      ]
+    },
+    {
+      "entity": "NewPurchaseOrder",
+      "test_files": [
+        "NewPurchaseOrderIndexTest",
+        "NewPurchaseOrderShowTest",
+        "NewPurchaseOrderStoreTest",
+        "NewPurchaseOrderUpdateTest",
+        "NewPurchaseOrderDestroyTest"
+      ]
+    },
+    {
+      "entity": "NewPurchaseOrderItem",
+      "test_files": [
+        "NewPurchaseOrderItemIndexTest",
+        "NewPurchaseOrderItemShowTest",
+        "NewPurchaseOrderItemStoreTest",
+        "NewPurchaseOrderItemUpdateTest",
+        "NewPurchaseOrderItemDestroyTest"
+      ]
+    }
+  ],
+  "api_endpoints": {
+    "base_url": "/api/v1",
+    "endpoints": [
+      {
+        "resource": "new-suppliers",
+        "methods": ["GET", "POST", "GET /{id}", "PATCH /{id}", "DELETE /{id}"],
+        "relationships": [
+          "GET /{id}/new-purchase-orders",
+          "GET /{id}/relationships/new-purchase-orders",
+          "PATCH /{id}/relationships/new-purchase-orders",
+          "POST /{id}/relationships/new-purchase-orders",
+          "DELETE /{id}/relationships/new-purchase-orders"
+        ]
+      },
+      {
+        "resource": "new-purchase-orders",
+        "methods": ["GET", "POST", "GET /{id}", "PATCH /{id}", "DELETE /{id}"],
+        "relationships": [
+          "GET /{id}/new-supplier",
+          "GET /{id}/new-purchase-order-items",
+          "GET /{id}/relationships/new-supplier",
+          "GET /{id}/relationships/new-purchase-order-items"
+        ]
+      },
+      {
+        "resource": "new-purchase-order-items",
+        "methods": ["GET", "POST", "GET /{id}", "PATCH /{id}", "DELETE /{id}"],
+        "relationships": [
+          "GET /{id}/new-purchase-order",
+          "GET /{id}/product",
+          "GET /{id}/relationships/new-purchase-order",
+          "GET /{id}/relationships/product"
+        ]
+      }
+    ]
+  },
+  "configuration": {
+    "middleware": ["auth:sanctum"],
+    "json_api_server": "v1",
+    "max_include_depth": 3,
+    "pagination": "PagePagination",
+    "guard_name": "api",
+    "soft_deletes": ["NewSupplier"],
+    "activity_logging": ["NewSupplier"],
+    "file_structure": {
+      "app": {
+        "Http/Controllers/Api/V1": ["Controllers"],
+        "JsonApi/V1": ["Schemas", "Resources", "Requests", "Authorizers"],
+        "Models": ["Eloquent Models"],
+        "Providers": ["Service Providers"]
+      },
+      "Database": {
+        "factories": ["Model Factories"],
+        "migrations": ["Database Migrations"],
+        "seeders": ["Database Seeders"]
+      },
+      "Tests/Feature": ["Feature Tests"],
+      "routes": ["API Routes"]
+    }
+  }
+}

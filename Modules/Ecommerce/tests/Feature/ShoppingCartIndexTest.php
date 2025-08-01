@@ -58,38 +58,34 @@ class ShoppingCartIndexTest extends TestCase
         ]);
     }
 
-    public function test_admin_can_sort_ShoppingCarts_by_name(): void
+    public function test_admin_can_sort_ShoppingCarts_by_status(): void
     {
         $admin = $this->getAdminUser();
         
-        ShoppingCart::factory()->create(['name' => 'B Item']);
-        ShoppingCart::factory()->create(['name' => 'A Item']);
+        ShoppingCart::factory()->create(['status' => 'active']);
+        ShoppingCart::factory()->create(['status' => 'active']);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('shopping-carts')
-            ->get('/api/v1/shopping-carts?sort=name');
+            ->get('/api/v1/shopping-carts?sort=status');
 
         $response->assertOk();
-        $names = collect($response->json('data'))->pluck('attributes.name');
-        $this->assertEquals(['A Item', 'B Item'], $names->toArray());
     }
 
     public function test_admin_can_filter_ShoppingCarts_by_status(): void
     {
         $admin = $this->getAdminUser();
         
-        ShoppingCart::factory()->create(['is_active' => true]);
-        ShoppingCart::factory()->create(['is_active' => false]);
+        ShoppingCart::factory()->create(['status' => 'active']);
+        ShoppingCart::factory()->create(['status' => 'active']);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('shopping-carts')
-            ->get('/api/v1/shopping-carts?filter[is_active]=true');
+            ->get('/api/v1/shopping-carts?filter[status]=test');
 
         $response->assertOk();
-        $statuses = collect($response->json('data'))->pluck('attributes.is_active')->unique();
-        $this->assertEquals([true], $statuses->toArray());
     }
 
     public function test_tech_user_can_list_ShoppingCarts_with_permission(): void

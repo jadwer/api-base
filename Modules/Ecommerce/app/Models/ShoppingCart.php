@@ -4,22 +4,15 @@ namespace Modules\Ecommerce\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Ecommerce\Database\Factories\ShoppingCartFactory;
+use Spatie\Permission\Traits\HasPermissions;
+use Modules\User\Models\User;
 
 class ShoppingCart extends Model
 {
-    use HasFactory;
+    use HasFactory, HasPermissions;
 
-    /**
-     * Create a new factory instance for the model.
-     */
-    protected static function newFactory()
-    {
-        return ShoppingCartFactory::new();
-    }
-
-    protected $table = "shopping_carts";
-
+    protected $table = 'shopping_carts';
+    
     protected $fillable = [
         'session_id', 'user_id', 'status', 'expires_at', 'total_amount', 'currency', 'coupon_code', 'discount_amount', 'tax_amount', 'shipping_amount', 'notes'
     ];
@@ -32,6 +25,12 @@ class ShoppingCart extends Model
         'shipping_amount' => 'decimal:2'
     ];
 
+    // Scopes
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
     public function cartItems()
     {
         return $this->hasMany(CartItem::class);
@@ -40,5 +39,11 @@ class ShoppingCart extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // Factory
+    protected static function newFactory()
+    {
+        return \Modules\Ecommerce\Database\Factories\ShoppingCartFactory::new();
     }
 }

@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
             \Modules\Inventory\Database\Seeders\InventoryDatabaseSeeder::class,
             \Modules\Purchase\Database\Seeders\PurchaseDatabaseSeeder::class,
             \Modules\Sales\Database\Seeders\SalesDatabaseSeeder::class,
+            \Modules\Ecommerce\Database\Seeders\EcommerceDatabaseSeeder::class,
+
         ]);
     }
 }
