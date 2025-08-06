@@ -12,6 +12,7 @@ use LaravelJsonApi\Eloquent\Fields\ArrayHash;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
 use LaravelJsonApi\Eloquent\Fields\Relations\HasMany;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
+use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
 use Modules\Ecommerce\Models\ShoppingCart;
@@ -26,7 +27,7 @@ class ShoppingCartSchema extends Schema
             ID::make(),
             Str::make('sessionId'),
             Str::make('userId'),
-            Str::make('status'),
+            Str::make('status')->sortable(),
             DateTime::make('expiresAt'),
             Number::make('totalAmount'),
             Str::make('currency'),
@@ -35,6 +36,7 @@ class ShoppingCartSchema extends Schema
             Number::make('taxAmount'),
             Number::make('shippingAmount'),
             Str::make('notes'),
+            ArrayHash::make('metadata'),
 
             // Relationships
             HasMany::make('cartItems'),
@@ -48,6 +50,7 @@ class ShoppingCartSchema extends Schema
     {
         return [
             WhereIdIn::make($this),
+            Where::make('status'),
         ];
     }
 

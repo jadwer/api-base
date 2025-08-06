@@ -61,7 +61,17 @@ class ShoppingCartShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $shoppingCart = ShoppingCart::factory()->create(['status' => 'active', 'expires_at' => now(), 'total_amount' => 99.99, 'currency' => 'test string', 'coupon_code' => 'TEST123', 'discount_amount' => 99.99, 'tax_amount' => 99.99, 'shipping_amount' => 99.99, 'notes' => 'test description']);
+        $shoppingCart = ShoppingCart::factory()->create([
+            'status' => 'active',
+            'expires_at' => now()->addDays(7),
+            'total_amount' => 199.99,
+            'currency' => 'USD',
+            'coupon_code' => 'SAVE20',
+            'discount_amount' => 20.00,
+            'tax_amount' => 15.99,
+            'shipping_amount' => 9.99,
+            'notes' => 'Premium shopping cart'
+        ]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

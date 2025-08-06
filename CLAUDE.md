@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a **modular Laravel 12 API** built with **JSON:API 5.x** specification, designed as a scalable base for enterprise applications like ERPs and CRMs. The project uses `nwidart/laravel-modules` for modular architecture with complete module isolation.
 
-**Current Status:** 4 complete modules (Product, Inventory, Purchase, Sales) with 438+ tests and JSON:API compliance.
+**Current Status:** 5 complete modules (Product, Inventory, Purchase, Sales, Ecommerce) with 543+ tests and JSON:API compliance.
 
 ## Architecture
 
@@ -130,6 +130,10 @@ npm run build
 - **JSON Fields:** Use associative arrays for `ArrayHash` fields
 - **Testing:** Don't use environment bypasses in Authorizers
 - **Seeder Registration:** Always register module seeders in main `DatabaseSeeder`
+- **User Model Guard:** Always set `protected $guard_name = 'api'` in User model for Spatie permissions
+- **Factory Dependencies:** Validate existence of related models before creating records
+- **Field Mapping:** Ensure camelCase (JSON:API) ↔ snake_case (database) consistency
+- **Validation Types:** Use `numeric` for amounts, `sometimes` for PATCH updates
 
 ## API Usage
 
@@ -171,6 +175,7 @@ Content-Type: application/vnd.api+json
 - **Inventory:** Warehouses, Locations, Stock, Batches (20 routes, 78+ tests)  
 - **Purchase:** Suppliers, Orders, Items (15 routes, 141+ tests)
 - **Sales:** Customers, Orders, Items (15 routes, 148+ tests)
+- **Ecommerce:** Shopping Carts, Cart Items, Coupons (15 routes, 105+ tests)
 
 ### Core Configuration
 - `app/JsonApi/V1/Server.php` - Central JSON:API server configuration

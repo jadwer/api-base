@@ -2,10 +2,10 @@
 
 **Especificación técnica unificada para crear módulos en api-base usando Laravel JSON:API 5.x + nwidart/laravel-modules**
 
-**Versión:** 3.0 Master  
-**Basado en:** Análisis completo Product, Inventory y Purchase modules  
+**Versión:** 3.1 Master  
+**Basado en:** Análisis completo Product, Inventory, Purchase, Sales y Ecommerce modules  
 **Arquitectura:** Laravel 12 + JSON:API 5.x + Módulos + Spatie Permissions  
-**Actualizado:** 27 de julio de 2025
+**Actualizado:** 6 de agosto de 2025
 
 ---
 
@@ -1832,11 +1832,27 @@ php artisan test Modules/{ModuleName}/Tests/Feature/
 - ✅ Tests exhaustivos previenen regresiones
 - ✅ Factory con estados (active/inactive) es muy útil
 
-### **Del módulo PURCHASE (en desarrollo):**
+### **Del módulo PURCHASE (completado):**
 - ✅ Namespace consistency crítico para evitar errores
 - ✅ JSON:API 5.x requiere relaciones en fields(), no relationships()
 - ✅ Rutas simples funcionan mejor que relaciones complejas en routes
 - ✅ Importancia de corregir errores inmediatamente
+
+### **Del módulo SALES (completado):**
+- ✅ JSON:API v5.1 Actions traits simplifican controllers
+- ✅ Validaciones con $this->model() más robustas
+- ✅ Test patterns con helpers mejoran mantenibilidad
+- ✅ Cross-module relationships funcionan perfectamente
+
+### **Del módulo ECOMMERCE (completado - 105 tests):**
+- ✅ **User Model Guard:** CRÍTICO configurar `protected $guard_name = 'api'` para Spatie permissions
+- ✅ **Factory Dependencies:** Validar existencia de productos antes de crear cart items
+- ✅ **Field Mapping:** camelCase (JSON:API) ↔ snake_case (database) debe ser perfecto
+- ✅ **Validation Types:** `numeric` para amounts, `sometimes` para PATCH updates
+- ✅ **Array Fields:** ArrayList vs ArrayHash según el tipo de datos
+- ✅ **Test Realism:** Usar campos reales del schema, no campos inventados
+- ✅ **Migration Completeness:** Incluir TODOS los campos desde el inicio
+- ✅ **Permission Logic:** E-commerce requiere permisos customer más amplios
 
 ### **Patrones generales identificados:**
 - 🔄 Iteración rápida con validación constante
@@ -1849,4 +1865,4 @@ php artisan test Modules/{ModuleName}/Tests/Feature/
 
 **¡Con esta guía técnica unificada puedes crear cualquier módulo siguiendo el patrón establecido y mantener la consistencia arquitectónica perfecta!** 🚀
 
-**Versión 3.0 Master - Actualizada con todos los aprendizajes y patrones validados en producción.**
+**Versión 3.1 Master - Actualizada con todos los aprendizajes y patrones validados en producción, incluyendo los críticos descubrimientos del módulo Ecommerce.**

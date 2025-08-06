@@ -8,7 +8,9 @@
       "Bash(composer:*)",
       "Bash(ren:*)",
       "Bash(mv:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   }

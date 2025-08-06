@@ -17,10 +17,11 @@ return new class extends Migration
             $table->decimal('total_amount');
             $table->string('currency');
             $table->string('coupon_code')->nullable();
-            $table->decimal('discount_amount');
-            $table->decimal('tax_amount');
-            $table->decimal('shipping_amount');
+            $table->decimal('discount_amount')->nullable()->default(0);
+            $table->decimal('tax_amount')->nullable()->default(0);
+            $table->decimal('shipping_amount')->nullable()->default(0);
             $table->text('notes')->nullable();
+            $table->json('metadata')->nullable();
             $table->timestamps();
         });
     }

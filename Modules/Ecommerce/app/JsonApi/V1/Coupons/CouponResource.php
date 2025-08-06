@@ -12,7 +12,7 @@ class CouponResource extends JsonApiResource
             'code' => $this->code,
             'name' => $this->name,
             'description' => $this->description,
-            'type' => $this->type,
+            'couponType' => $this->type,
             'value' => $this->value,
             'minAmount' => $this->min_amount,
             'maxAmount' => $this->max_amount,

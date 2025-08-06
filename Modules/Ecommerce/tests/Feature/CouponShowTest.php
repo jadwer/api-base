@@ -42,7 +42,7 @@ class CouponShowTest extends TestCase
                         'code',
                         'name',
                         'description',
-                        'type',
+                        'couponType',
                         'value',
                         'minAmount',
                         'maxAmount',
@@ -65,7 +65,23 @@ class CouponShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $coupon = Coupon::factory()->create(['code' => 'TEST123', 'name' => 'Test Name', 'description' => 'test description', 'type' => 'test string', 'value' => 99.99, 'min_amount' => 99.99, 'max_amount' => 99.99, 'max_uses' => 100, 'used_count' => 100, 'starts_at' => now(), 'expires_at' => now(), 'is_active' => true, 'customer_ids' => 'test value', 'product_ids' => 'test value', 'category_ids' => 'test value']);
+        $coupon = Coupon::factory()->create([
+            'code' => 'TEST123',
+            'name' => 'Test Name',
+            'description' => 'test description',
+            'type' => 'percentage',
+            'value' => 99.99,
+            'min_amount' => 50.00,
+            'max_amount' => 500.00,
+            'max_uses' => 100,
+            'used_count' => 5,
+            'starts_at' => now()->subDay(),
+            'expires_at' => now()->addMonth(),
+            'is_active' => true,
+            'customer_ids' => [1, 2, 3],
+            'product_ids' => [4, 5, 6],
+            'category_ids' => [7, 8, 9]
+        ]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -81,7 +97,7 @@ class CouponShowTest extends TestCase
                         'code',
                         'name',
                         'description',
-                        'type',
+                        'couponType',
                         'value',
                         'minAmount',
                         'maxAmount',
@@ -113,7 +129,7 @@ class CouponShowTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_customer_user_cannot_view_Coupon(): void
+    public function test_customer_user_can_view_Coupon(): void
     {
         $customer = $this->getCustomerUser();
         $coupon = Coupon::factory()->create();
@@ -123,7 +139,7 @@ class CouponShowTest extends TestCase
             ->expects('coupons')
             ->get("/api/v1/coupons/{$coupon->id}");
 
-        $response->assertStatus(403);
+        $response->assertOk();
     }
 
     public function test_guest_cannot_view_Coupon(): void

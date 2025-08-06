@@ -44,7 +44,7 @@ class CouponIndexTest extends TestCase
                         'code',
                         'name',
                         'description',
-                        'type',
+                        'couponType',
                         'value',
                         'minAmount',
                         'maxAmount',
@@ -66,8 +66,8 @@ class CouponIndexTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        Coupon::factory()->create(['name' => 'Test Name']);
-        Coupon::factory()->create(['name' => 'Test Name']);
+        Coupon::factory()->create(['name' => 'B Coupon']);
+        Coupon::factory()->create(['name' => 'A Coupon']);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -77,19 +77,20 @@ class CouponIndexTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_admin_can_filter_Coupons_by_type(): void
+    public function test_admin_can_filter_Coupons_by_id(): void
     {
         $admin = $this->getAdminUser();
         
-        Coupon::factory()->create(['type' => 'test string']);
-        Coupon::factory()->create(['type' => 'test string']);
+        $coupon1 = Coupon::factory()->create();
+        $coupon2 = Coupon::factory()->create();
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('coupons')
-            ->get('/api/v1/coupons?filter[type]=test');
+            ->get("/api/v1/coupons?filter[id][]={$coupon1->id}");
 
         $response->assertOk();
+        $this->assertCount(1, $response->json('data'));
     }
 
     public function test_tech_user_can_list_Coupons_with_permission(): void

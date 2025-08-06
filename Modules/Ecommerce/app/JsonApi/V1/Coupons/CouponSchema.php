@@ -9,6 +9,7 @@ use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Fields\Boolean;
 use LaravelJsonApi\Eloquent\Fields\ArrayHash;
+use LaravelJsonApi\Eloquent\Fields\ArrayList;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
 use LaravelJsonApi\Eloquent\Fields\Relations\HasMany;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
@@ -24,10 +25,10 @@ class CouponSchema extends Schema
     {
         return [
             ID::make(),
-            Str::make('code'),
-            Str::make('name'),
+            Str::make('code')->sortable(),
+            Str::make('name')->sortable(),
             Str::make('description'),
-            Str::make('type'),
+            Str::make('couponType', 'type')->sortable(),
             Number::make('value'),
             Number::make('minAmount'),
             Number::make('maxAmount'),
@@ -35,10 +36,10 @@ class CouponSchema extends Schema
             Number::make('usedCount'),
             DateTime::make('startsAt'),
             DateTime::make('expiresAt'),
-            Boolean::make('isActive'),
-            ArrayHash::make('customerIds'),
-            ArrayHash::make('productIds'),
-            ArrayHash::make('categoryIds'),
+            Boolean::make('isActive')->sortable(),
+            ArrayList::make('customerIds'),
+            ArrayList::make('productIds'),
+            ArrayList::make('categoryIds'),
             DateTime::make("createdAt")->sortable()->readOnly(),
             DateTime::make("updatedAt")->sortable()->readOnly(),
         ];

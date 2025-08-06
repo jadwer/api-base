@@ -40,14 +40,13 @@ class CouponDestroyTest extends TestCase
         ]);
     }
 
-    public function test_admin_can_delete_Coupon_with_metadata(): void
+    public function test_admin_can_delete_Coupon_with_arrays(): void
     {
         $admin = $this->getAdminUser();
         $coupon = Coupon::factory()->create([
-            'metadata' => [
-                'priority' => 'high',
-                'source' => 'import'
-            ]
+            'customer_ids' => [1, 2, 3],
+            'product_ids' => [4, 5, 6],
+            'category_ids' => [7, 8, 9]
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

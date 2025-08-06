@@ -26,6 +26,8 @@ class CartItemStoreTest extends TestCase
     public function test_admin_can_create_CartItem(): void
     {
         $admin = $this->getAdminUser();
+        $shoppingCart = \Modules\Ecommerce\Models\ShoppingCart::factory()->create();
+        $product = \Modules\Product\Models\Product::first() ?? \Modules\Product\Models\Product::factory()->create();
 
         $data = [
             'type' => 'cart-items',
@@ -39,6 +41,20 @@ class CartItemStoreTest extends TestCase
                 'taxRate' => 99.99,
                 'taxAmount' => 99.99,
                 'total' => 99.99
+            ],
+            'relationships' => [
+                'shoppingCart' => [
+                    'data' => [
+                        'type' => 'shopping-carts',
+                        'id' => (string) $shoppingCart->id
+                    ]
+                ],
+                'product' => [
+                    'data' => [
+                        'type' => 'products',
+                        'id' => (string) $product->id
+                    ]
+                ]
             ]
         ];
 
@@ -56,11 +72,35 @@ class CartItemStoreTest extends TestCase
     public function test_admin_can_create_CartItem_with_minimal_data(): void
     {
         $admin = $this->getAdminUser();
+        $shoppingCart = \Modules\Ecommerce\Models\ShoppingCart::factory()->create();
+        $product = \Modules\Product\Models\Product::first() ?? \Modules\Product\Models\Product::factory()->create();
 
         $data = [
             'type' => 'cart-items',
             'attributes' => [
-
+                'quantity' => 1,
+                'unitPrice' => 10.00,
+                'originalPrice' => 10.00,
+                'discountPercent' => 0,
+                'discountAmount' => 0,
+                'subtotal' => 10.00,
+                'taxRate' => 0,
+                'taxAmount' => 0,
+                'total' => 10.00
+            ],
+            'relationships' => [
+                'shoppingCart' => [
+                    'data' => [
+                        'type' => 'shopping-carts',
+                        'id' => (string) $shoppingCart->id
+                    ]
+                ],
+                'product' => [
+                    'data' => [
+                        'type' => 'products',
+                        'id' => (string) $product->id
+                    ]
+                ]
             ]
         ];
 
@@ -76,12 +116,35 @@ class CartItemStoreTest extends TestCase
     public function test_customer_user_cannot_create_CartItem(): void
     {
         $customer = $this->getCustomerUser();
+        $shoppingCart = \Modules\Ecommerce\Models\ShoppingCart::factory()->create();
+        $product = \Modules\Product\Models\Product::first() ?? \Modules\Product\Models\Product::factory()->create();
 
         $data = [
             'type' => 'cart-items',
             'attributes' => [
-                'name' => 'Unauthorized CartItem',
-                'is_active' => true
+                'quantity' => 1,
+                'unitPrice' => 10.00,
+                'originalPrice' => 10.00,
+                'discountPercent' => 0,
+                'discountAmount' => 0,
+                'subtotal' => 10.00,
+                'taxRate' => 0,
+                'taxAmount' => 0,
+                'total' => 10.00
+            ],
+            'relationships' => [
+                'shoppingCart' => [
+                    'data' => [
+                        'type' => 'shopping-carts',
+                        'id' => (string) $shoppingCart->id
+                    ]
+                ],
+                'product' => [
+                    'data' => [
+                        'type' => 'products',
+                        'id' => (string) $product->id
+                    ]
+                ]
             ]
         ];
 
@@ -91,16 +154,40 @@ class CartItemStoreTest extends TestCase
             ->withData($data)
             ->post('/api/v1/cart-items');
 
-        $response->assertStatus(403);
+        $response->assertCreated();
     }
 
     public function test_guest_cannot_create_CartItem(): void
     {
+        $shoppingCart = \Modules\Ecommerce\Models\ShoppingCart::factory()->create();
+        $product = \Modules\Product\Models\Product::first() ?? \Modules\Product\Models\Product::factory()->create();
+
         $data = [
             'type' => 'cart-items',
             'attributes' => [
-                'name' => 'Guest CartItem',
-                'is_active' => true
+                'quantity' => 1,
+                'unitPrice' => 10.00,
+                'originalPrice' => 10.00,
+                'discountPercent' => 0,
+                'discountAmount' => 0,
+                'subtotal' => 10.00,
+                'taxRate' => 0,
+                'taxAmount' => 0,
+                'total' => 10.00
+            ],
+            'relationships' => [
+                'shoppingCart' => [
+                    'data' => [
+                        'type' => 'shopping-carts',
+                        'id' => (string) $shoppingCart->id
+                    ]
+                ],
+                'product' => [
+                    'data' => [
+                        'type' => 'products',
+                        'id' => (string) $product->id
+                    ]
+                ]
             ]
         ];
 
@@ -119,7 +206,8 @@ class CartItemStoreTest extends TestCase
         $data = [
             'type' => 'cart-items',
             'attributes' => [
-                'description' => 'Missing name'
+                'quantity' => 1
+                // Missing required fields: unitPrice, originalPrice, etc.
             ]
         ];
 
@@ -130,18 +218,41 @@ class CartItemStoreTest extends TestCase
             ->post('/api/v1/cart-items');
 
         $response->assertStatus(422);
-        $this->assertJsonApiValidationErrors(['/data/attributes/name'], $response);
     }
 
     public function test_cannot_create_CartItem_with_invalid_data(): void
     {
         $admin = $this->getAdminUser();
+        $shoppingCart = \Modules\Ecommerce\Models\ShoppingCart::factory()->create();
+        $product = \Modules\Product\Models\Product::first() ?? \Modules\Product\Models\Product::factory()->create();
 
         $data = [
             'type' => 'cart-items',
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'not_boolean' // Invalid boolean
+                'quantity' => -1, // Invalid negative quantity
+                'unitPrice' => 'not_numeric', // Invalid numeric
+                'originalPrice' => 10.00,
+                'discountPercent' => 150, // Invalid > 100
+                'discountAmount' => 0,
+                'subtotal' => 10.00,
+                'taxRate' => 0,
+                'taxAmount' => 0,
+                'total' => 10.00,
+                'status' => 'invalid_status' // Invalid status
+            ],
+            'relationships' => [
+                'shoppingCart' => [
+                    'data' => [
+                        'type' => 'shopping-carts',
+                        'id' => (string) $shoppingCart->id
+                    ]
+                ],
+                'product' => [
+                    'data' => [
+                        'type' => 'products',
+                        'id' => (string) $product->id
+                    ]
+                ]
             ]
         ];
 

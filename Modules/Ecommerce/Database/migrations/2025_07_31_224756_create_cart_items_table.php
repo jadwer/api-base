@@ -21,6 +21,8 @@ return new class extends Migration
             $table->decimal('tax_rate');
             $table->decimal('tax_amount');
             $table->decimal('total');
+            $table->json('metadata')->nullable();
+            $table->string('status')->default('active');
             $table->timestamps();
         });
     }

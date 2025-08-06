@@ -14,7 +14,7 @@ class ShoppingCart extends Model
     protected $table = 'shopping_carts';
     
     protected $fillable = [
-        'session_id', 'user_id', 'status', 'expires_at', 'total_amount', 'currency', 'coupon_code', 'discount_amount', 'tax_amount', 'shipping_amount', 'notes'
+        'session_id', 'user_id', 'status', 'expires_at', 'total_amount', 'currency', 'coupon_code', 'discount_amount', 'tax_amount', 'shipping_amount', 'notes', 'metadata'
     ];
 
     protected $casts = [
@@ -22,7 +22,8 @@ class ShoppingCart extends Model
         'total_amount' => 'decimal:2',
         'discount_amount' => 'decimal:2',
         'tax_amount' => 'decimal:2',
-        'shipping_amount' => 'decimal:2'
+        'shipping_amount' => 'decimal:2',
+        'metadata' => 'array'
     ];
 
     // Scopes

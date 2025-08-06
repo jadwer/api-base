@@ -15,12 +15,12 @@ class CouponFactory extends Factory
             'code' => $this->faker->lexify('????##'),
             'name' => $this->faker->words(2, true),
             'description' => $this->faker->optional(0.7)->paragraph(),
-            'type' => $this->faker->sentence(3),
+            'type' => $this->faker->randomElement(['percentage', 'fixed_amount', 'free_shipping']),
             'value' => $this->faker->randomFloat(2, 1, 100),
             'min_amount' => $this->faker->randomFloat(2, 1, 1000),
             'max_amount' => $this->faker->randomFloat(2, 1, 1000),
             'max_uses' => $this->faker->numberBetween(1, 100),
-            'used_count' => $this->faker->numberBetween(1, 10),
+            'used_count' => $this->faker->numberBetween(0, 10),
             'starts_at' => $this->faker->dateTimeBetween('-30 days', 'now'),
             'expires_at' => $this->faker->dateTimeBetween('+1 day', '+90 days'),
             'is_active' => $this->faker->boolean(70),
@@ -30,4 +30,10 @@ class CouponFactory extends Factory
         ];
     }
 
+    public function inactive(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_active' => false,
+        ]);
+    }
 }

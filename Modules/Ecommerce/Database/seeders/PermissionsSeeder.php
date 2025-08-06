@@ -119,19 +119,11 @@ class PermissionsSeeder extends Seeder
             $roleadmin->givePermissionTo('ecommerce.coupons.destroy');
         }
 
-        // customer role permissions
+        // customer role permissions (can manage their own carts/items but not list all or manage others')
         $rolecustomer = Role::where('name', 'customer')->where('guard_name', 'api')->first();
         if ($rolecustomer) {
-            $rolecustomer->givePermissionTo('ecommerce.shopping-carts.index');
-            $rolecustomer->givePermissionTo('ecommerce.shopping-carts.show');
             $rolecustomer->givePermissionTo('ecommerce.shopping-carts.store');
-            $rolecustomer->givePermissionTo('ecommerce.shopping-carts.update');
-            $rolecustomer->givePermissionTo('ecommerce.shopping-carts.destroy');
-            $rolecustomer->givePermissionTo('ecommerce.cart-items.index');
-            $rolecustomer->givePermissionTo('ecommerce.cart-items.show');
             $rolecustomer->givePermissionTo('ecommerce.cart-items.store');
-            $rolecustomer->givePermissionTo('ecommerce.cart-items.update');
-            $rolecustomer->givePermissionTo('ecommerce.cart-items.destroy');
             $rolecustomer->givePermissionTo('ecommerce.coupons.show');
         }
 

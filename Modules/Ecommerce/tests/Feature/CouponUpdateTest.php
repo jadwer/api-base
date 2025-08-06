@@ -34,7 +34,7 @@ class CouponUpdateTest extends TestCase
             'attributes' => [
                 'name' => 'Updated Coupon',
                 'description' => 'Updated description',
-                'is_active' => false
+                'isActive' => false
             ]
         ];
 
@@ -86,22 +86,20 @@ class CouponUpdateTest extends TestCase
         ]);
     }
 
-    public function test_admin_can_update_Coupon_metadata(): void
+    public function test_admin_can_update_Coupon_arrays(): void
     {
         $admin = $this->getAdminUser();
         $coupon = Coupon::factory()->create();
 
-        $metadata = [
-            'updated_field' => 'new_value',
-            'priority' => 'urgent',
-            'tags' => ['important', 'updated']
-        ];
+        $customerIds = [1, 2, 3];
+        $productIds = [4, 5, 6];
 
         $data = [
             'type' => 'coupons',
             'id' => (string) $coupon->id,
             'attributes' => [
-                'metadata' => $metadata
+                'customerIds' => $customerIds,
+                'productIds' => $productIds
             ]
         ];
 
@@ -114,7 +112,8 @@ class CouponUpdateTest extends TestCase
         $response->assertOk();
         
         $coupon->refresh();
-        $this->assertEquals($metadata, $coupon->metadata);
+        $this->assertEquals([1, 2, 3], $coupon->customer_ids);
+        $this->assertEquals([4, 5, 6], $coupon->product_ids);
     }
 
     public function test_customer_user_cannot_update_Coupon(): void
@@ -190,7 +189,7 @@ class CouponUpdateTest extends TestCase
             'id' => (string) $coupon->id,
             'attributes' => [
                 'name' => '', // Empty name
-                'is_active' => 'invalid_boolean'
+                'isActive' => 'invalid_boolean'
             ]
         ];
 

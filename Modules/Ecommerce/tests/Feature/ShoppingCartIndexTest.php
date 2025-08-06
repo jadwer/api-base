@@ -78,12 +78,12 @@ class ShoppingCartIndexTest extends TestCase
         $admin = $this->getAdminUser();
         
         ShoppingCart::factory()->create(['status' => 'active']);
-        ShoppingCart::factory()->create(['status' => 'active']);
+        ShoppingCart::factory()->create(['status' => 'inactive']);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('shopping-carts')
-            ->get('/api/v1/shopping-carts?filter[status]=test');
+            ->get('/api/v1/shopping-carts?filter[status]=active');
 
         $response->assertOk();
     }

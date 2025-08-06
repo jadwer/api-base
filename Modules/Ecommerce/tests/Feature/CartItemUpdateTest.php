@@ -32,9 +32,9 @@ class CartItemUpdateTest extends TestCase
             'type' => 'cart-items',
             'id' => (string) $cartItem->id,
             'attributes' => [
-                'name' => 'Updated CartItem',
-                'description' => 'Updated description',
-                'is_active' => false
+                'quantity' => 5.0,
+                'unitPrice' => 25.99,
+                'status' => 'inactive'
             ]
         ];
 
@@ -48,9 +48,9 @@ class CartItemUpdateTest extends TestCase
         
         $this->assertDatabaseHas('cart_items', [
             'id' => $cartItem->id,
-            'name' => 'Updated CartItem',
-            'description' => 'Updated description',
-            'is_active' => false
+            'quantity' => 5.0,
+            'unit_price' => 25.99,
+            'status' => 'inactive'
         ]);
     }
 
@@ -58,16 +58,16 @@ class CartItemUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $cartItem = CartItem::factory()->create([
-            'name' => 'Original Name',
-            'description' => 'Original Description'
+            'quantity' => 2.0,
+            'metadata' => ['note' => 'Original Note']
         ]);
 
         $data = [
             'type' => 'cart-items',
             'id' => (string) $cartItem->id,
             'attributes' => [
-                'name' => 'Partially Updated Name'
-                // description should remain unchanged
+                'quantity' => 5.0
+                // metadata should remain unchanged
             ]
         ];
 
@@ -81,9 +81,11 @@ class CartItemUpdateTest extends TestCase
         
         $this->assertDatabaseHas('cart_items', [
             'id' => $cartItem->id,
-            'name' => 'Partially Updated Name',
-            'description' => 'Original Description'
+            'quantity' => 5.0
         ]);
+        
+        $cartItem->refresh();
+        $this->assertEquals(['note' => 'Original Note'], $cartItem->metadata);
     }
 
     public function test_admin_can_update_CartItem_metadata(): void
@@ -126,7 +128,7 @@ class CartItemUpdateTest extends TestCase
             'type' => 'cart-items',
             'id' => (string) $cartItem->id,
             'attributes' => [
-                'name' => 'Unauthorized Update'
+                'quantity' => 10.0
             ]
         ];
 
@@ -147,7 +149,7 @@ class CartItemUpdateTest extends TestCase
             'type' => 'cart-items',
             'id' => (string) $cartItem->id,
             'attributes' => [
-                'name' => 'Guest Update'
+                'status' => 'inactive'
             ]
         ];
 
@@ -167,7 +169,7 @@ class CartItemUpdateTest extends TestCase
             'type' => 'cart-items',
             'id' => '999999',
             'attributes' => [
-                'name' => 'Nonexistent Update'
+                'quantity' => 5.0
             ]
         ];
 
@@ -189,8 +191,8 @@ class CartItemUpdateTest extends TestCase
             'type' => 'cart-items',
             'id' => (string) $cartItem->id,
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'invalid_boolean'
+                'quantity' => -5.0, // Negative quantity
+                'status' => 'invalid_status' // Invalid status
             ]
         ];
 

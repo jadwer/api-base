@@ -31,14 +31,14 @@ class ShoppingCartStoreTest extends TestCase
             'type' => 'shopping-carts',
             'attributes' => [
                 'status' => 'active',
-                'expiresAt' => '2024-01-01',
+                'expiresAt' => '2024-12-31',
                 'totalAmount' => 99.99,
-                'currency' => 'test string',
+                'currency' => 'USD',
                 'couponCode' => 'TEST123',
-                'discountAmount' => 99.99,
-                'taxAmount' => 99.99,
-                'shippingAmount' => 99.99,
-                'notes' => 'test description'
+                'discountAmount' => 10.00,
+                'taxAmount' => 8.99,
+                'shippingAmount' => 5.99,
+                'notes' => 'Test shopping cart'
             ]
         ];
 
@@ -50,7 +50,7 @@ class ShoppingCartStoreTest extends TestCase
 
         $response->assertCreated();
         
-        $this->assertDatabaseHas('shopping_carts', ['status' => 'active', 'expires_at' => 'test value', 'total_amount' => 99.99, 'currency' => 'test string', 'coupon_code' => 'TEST123', 'discount_amount' => 99.99, 'tax_amount' => 99.99, 'shipping_amount' => 99.99, 'notes' => 'test description']);
+        $this->assertDatabaseHas('shopping_carts', ['status' => 'active', 'total_amount' => 99.99, 'currency' => 'USD', 'coupon_code' => 'TEST123', 'discount_amount' => 10.00, 'tax_amount' => 8.99, 'shipping_amount' => 5.99, 'notes' => 'Test shopping cart']);
     }
 
     public function test_admin_can_create_ShoppingCart_with_minimal_data(): void
@@ -60,7 +60,9 @@ class ShoppingCartStoreTest extends TestCase
         $data = [
             'type' => 'shopping-carts',
             'attributes' => [
-
+                'status' => 'active',
+                'totalAmount' => 0.00,
+                'currency' => 'USD'
             ]
         ];
 
@@ -73,15 +75,16 @@ class ShoppingCartStoreTest extends TestCase
         $response->assertCreated();
     }
 
-    public function test_customer_user_cannot_create_ShoppingCart(): void
+    public function test_customer_user_can_create_ShoppingCart(): void
     {
         $customer = $this->getCustomerUser();
 
         $data = [
             'type' => 'shopping-carts',
             'attributes' => [
-                'name' => 'Unauthorized ShoppingCart',
-                'is_active' => true
+                'status' => 'active',
+                'totalAmount' => 50.00,
+                'currency' => 'USD'
             ]
         ];
 
@@ -91,16 +94,23 @@ class ShoppingCartStoreTest extends TestCase
             ->withData($data)
             ->post('/api/v1/shopping-carts');
 
-        $response->assertStatus(403);
+        $response->assertCreated();
+        
+        $this->assertDatabaseHas('shopping_carts', [
+            'status' => 'active',
+            'total_amount' => 50.00,
+            'currency' => 'USD'
+        ]);
     }
 
-    public function test_guest_cannot_create_ShoppingCart(): void
+    public function test_guest_cannot_create_ShoppingCart_without_auth(): void
     {
         $data = [
             'type' => 'shopping-carts',
             'attributes' => [
-                'name' => 'Guest ShoppingCart',
-                'is_active' => true
+                'status' => 'active',
+                'totalAmount' => 25.00,
+                'currency' => 'USD'
             ]
         ];
 
@@ -119,7 +129,7 @@ class ShoppingCartStoreTest extends TestCase
         $data = [
             'type' => 'shopping-carts',
             'attributes' => [
-                'description' => 'Missing name'
+                'notes' => 'Missing required fields'
             ]
         ];
 
@@ -130,7 +140,7 @@ class ShoppingCartStoreTest extends TestCase
             ->post('/api/v1/shopping-carts');
 
         $response->assertStatus(422);
-        $this->assertJsonApiValidationErrors(['/data/attributes/name'], $response);
+        $this->assertJsonApiValidationErrors(['/data/attributes/status', '/data/attributes/totalAmount', '/data/attributes/currency'], $response);
     }
 
     public function test_cannot_create_ShoppingCart_with_invalid_data(): void
@@ -140,8 +150,9 @@ class ShoppingCartStoreTest extends TestCase
         $data = [
             'type' => 'shopping-carts',
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'not_boolean' // Invalid boolean
+                'status' => 'invalid_status', // Invalid status
+                'totalAmount' => -10.00, // Negative amount
+                'currency' => 'TOOLONG' // Invalid currency format
             ]
         ];
 

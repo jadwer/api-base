@@ -14,19 +14,20 @@ class CartItem extends Model
     protected $table = 'cart_items';
     
     protected $fillable = [
-        'shopping_cart_id', 'product_id', 'quantity', 'unit_price', 'original_price', 'discount_percent', 'discount_amount', 'subtotal', 'tax_rate', 'tax_amount', 'total'
+        'shopping_cart_id', 'product_id', 'quantity', 'unit_price', 'original_price', 'discount_percent', 'discount_amount', 'subtotal', 'tax_rate', 'tax_amount', 'total', 'metadata', 'status'
     ];
 
     protected $casts = [
-        'quantity' => 'decimal:2',
-        'unit_price' => 'decimal:2',
-        'original_price' => 'decimal:2',
-        'discount_percent' => 'decimal:2',
-        'discount_amount' => 'decimal:2',
-        'subtotal' => 'decimal:2',
-        'tax_rate' => 'decimal:2',
-        'tax_amount' => 'decimal:2',
-        'total' => 'decimal:2'
+        'quantity' => 'float',
+        'unit_price' => 'float',
+        'original_price' => 'float',
+        'discount_percent' => 'float',
+        'discount_amount' => 'float',
+        'subtotal' => 'float',
+        'tax_rate' => 'float',
+        'tax_amount' => 'float',
+        'total' => 'float',
+        'metadata' => 'array'
     ];
 
     // Scopes

@@ -32,9 +32,14 @@ class ShoppingCartUpdateTest extends TestCase
             'type' => 'shopping-carts',
             'id' => (string) $shoppingCart->id,
             'attributes' => [
-                'name' => 'Updated ShoppingCart',
-                'description' => 'Updated description',
-                'is_active' => false
+                'status' => 'inactive',
+                'totalAmount' => 150.00,
+                'currency' => 'EUR',
+                'couponCode' => 'UPDATED123',
+                'discountAmount' => 15.00,
+                'taxAmount' => 12.00,
+                'shippingAmount' => 8.00,
+                'notes' => 'Updated shopping cart'
             ]
         ];
 
@@ -48,9 +53,12 @@ class ShoppingCartUpdateTest extends TestCase
         
         $this->assertDatabaseHas('shopping_carts', [
             'id' => $shoppingCart->id,
-            'name' => 'Updated ShoppingCart',
-            'description' => 'Updated description',
-            'is_active' => false
+            'status' => 'inactive',
+            'total_amount' => 150.00,
+            'currency' => 'EUR',
+            'coupon_code' => 'UPDATED123',
+            'discount_amount' => 15.00,
+            'notes' => 'Updated shopping cart'
         ]);
     }
 
@@ -58,16 +66,21 @@ class ShoppingCartUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $shoppingCart = ShoppingCart::factory()->create([
-            'name' => 'Original Name',
-            'description' => 'Original Description'
+            'status' => 'active',
+            'total_amount' => 100.00,
+            'currency' => 'USD',
+            'notes' => 'Original Notes'
         ]);
 
         $data = [
             'type' => 'shopping-carts',
             'id' => (string) $shoppingCart->id,
             'attributes' => [
-                'name' => 'Partially Updated Name'
-                // description should remain unchanged
+                'totalAmount' => 200.00,
+                'discountAmount' => 0.00,
+                'taxAmount' => 0.00,
+                'shippingAmount' => 0.00
+                // other fields should remain unchanged
             ]
         ];
 
@@ -81,8 +94,10 @@ class ShoppingCartUpdateTest extends TestCase
         
         $this->assertDatabaseHas('shopping_carts', [
             'id' => $shoppingCart->id,
-            'name' => 'Partially Updated Name',
-            'description' => 'Original Description'
+            'total_amount' => 200.00,
+            'status' => 'active',
+            'currency' => 'USD',
+            'notes' => 'Original Notes'
         ]);
     }
 
@@ -101,7 +116,11 @@ class ShoppingCartUpdateTest extends TestCase
             'type' => 'shopping-carts',
             'id' => (string) $shoppingCart->id,
             'attributes' => [
-                'metadata' => $metadata
+                'metadata' => $metadata,
+                'totalAmount' => (float)$shoppingCart->total_amount,
+                'discountAmount' => 0.00,
+                'taxAmount' => 0.00,
+                'shippingAmount' => 0.00
             ]
         ];
 
@@ -126,7 +145,8 @@ class ShoppingCartUpdateTest extends TestCase
             'type' => 'shopping-carts',
             'id' => (string) $shoppingCart->id,
             'attributes' => [
-                'name' => 'Unauthorized Update'
+                'status' => 'inactive',
+                'totalAmount' => 75.00
             ]
         ];
 
@@ -147,7 +167,8 @@ class ShoppingCartUpdateTest extends TestCase
             'type' => 'shopping-carts',
             'id' => (string) $shoppingCart->id,
             'attributes' => [
-                'name' => 'Guest Update'
+                'status' => 'expired',
+                'totalAmount' => 30.00
             ]
         ];
 
@@ -167,7 +188,8 @@ class ShoppingCartUpdateTest extends TestCase
             'type' => 'shopping-carts',
             'id' => '999999',
             'attributes' => [
-                'name' => 'Nonexistent Update'
+                'status' => 'active',
+                'totalAmount' => 99.99
             ]
         ];
 
@@ -189,8 +211,9 @@ class ShoppingCartUpdateTest extends TestCase
             'type' => 'shopping-carts',
             'id' => (string) $shoppingCart->id,
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'invalid_boolean'
+                'status' => 'invalid_status', // Invalid status
+                'totalAmount' => -50.00, // Negative amount
+                'currency' => 'INVALID' // Invalid currency format
             ]
         ];
 
