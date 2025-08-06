@@ -18,8 +18,8 @@
     "autoload": {
         "psr-4": {
             "Modules\\PageBuilder\\": "app/",
-            "Modules\\PageBuilder\\Database\\Factories\\": "database/factories/",
-            "Modules\\PageBuilder\\Database\\Seeders\\": "database/seeders/"
+            "Modules\\PageBuilder\\Database\\Factories\\": "Database/factories/",
+            "Modules\\PageBuilder\\Database\\Seeders\\": "Database/seeders/"
         }
     },
     "autoload-dev": {
