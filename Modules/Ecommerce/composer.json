@@ -16,8 +16,8 @@
     "autoload": {
         "psr-4": {
             "Modules\\Ecommerce\\": "app/",
-            "Modules\\Ecommerce\\Database\\Factories\\": "database/factories/",
-            "Modules\\Ecommerce\\Database\\Seeders\\": "database/seeders/",
+            "Modules\\Ecommerce\\Database\\Factories\\": "Database/factories/",
+            "Modules\\Ecommerce\\Database\\Seeders\\": "Database/seeders/",
             "Modules\\Ecommerce\\JsonApi\\": "JsonApi/"
         }
     },
