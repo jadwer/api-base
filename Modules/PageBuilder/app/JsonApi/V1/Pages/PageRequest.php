@@ -28,8 +28,9 @@ class PageRequest extends ResourceRequest
             'html' => ['nullable', 'string'],
             'css' => ['nullable', 'string'],
             'json' => ['nullable', 'array'],
+            'status' => ['sometimes', 'string', 'in:draft,published'],
             'publishedAt' => ['nullable', 'date'],
-            'user' => ['nullable'],
+            'user' => JsonApiRule::toOne(),
         ];
     }
 }

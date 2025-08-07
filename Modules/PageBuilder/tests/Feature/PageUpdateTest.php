@@ -19,11 +19,18 @@ class PageUpdateTest extends TestCase
         $response = $this->jsonApi()->withData([
             'type' => 'pages',
             'id' => (string) $page->getRouteKey(),
-            'attributes' => ['title' => 'Updated Title'],
+            'attributes' => [
+                'title' => 'Updated Title',
+                'status' => 'published'
+            ],
         ])->patch("/api/v1/pages/{$page->getRouteKey()}");
 
         $response->assertOk();
-        $this->assertDatabaseHas('pages', ['id' => $page->id, 'title' => 'Updated Title']);
+        $this->assertDatabaseHas('pages', [
+            'id' => $page->id, 
+            'title' => 'Updated Title',
+            'status' => 'published'
+        ]);
     }
 
     public function test_unauthenticated_user_cannot_update_page(): void

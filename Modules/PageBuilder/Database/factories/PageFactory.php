@@ -19,15 +19,40 @@ class PageFactory extends Factory
     public function definition(): array
     {
         $title = $this->faker->sentence(4);
+        $userId = \App\Models\User::inRandomOrder()->first()?->id ?? \App\Models\User::factory()->create()->id;
+        
         return [
             'title' => $title,
             'slug' => Str::slug($title),
             'html' => '<div>Hello World</div>',
             'css' => 'div { color: red; }',
             'json' => ['html' => '<div>Hello World</div>', 'css' => '...'],
+            'status' => $this->faker->randomElement(['draft', 'published']),
             'published_at' => now(),
-            'user_id' => 1, // reemplazable
+            'user_id' => $userId,
         ];
+    }
+    
+    /**
+     * Indicate that the page is a draft.
+     */
+    public function draft(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'draft',
+            'published_at' => null,
+        ]);
+    }
+    
+    /**
+     * Indicate that the page is published.
+     */
+    public function published(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'published',
+            'published_at' => now(),
+        ]);
     }
 }
 

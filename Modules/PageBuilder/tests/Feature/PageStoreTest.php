@@ -17,22 +17,33 @@ class PageStoreTest extends TestCase
         // Autenticar
         $this->actingAs($admin);
 
-        $data = [
-            'title' => 'Test Page',
-            'slug' => 'test-page',
-            'html' => '<h1>Hello</h1>',
-            'css' => 'h1 { color: red; }',
-            'json' => ['type' => 'landing'],
-            'publishedAt' => now()->toISOString(),
-        ];
-
         $response = $this->jsonApi()->withData([
             'type' => 'pages',
-            'attributes' => $data,
+            'attributes' => [
+                'title' => 'Test Page',
+                'slug' => 'test-page',
+                'html' => '<h1>Hello</h1>',
+                'css' => 'h1 { color: red; }',
+                'json' => ['type' => 'landing'],
+                'status' => 'draft',
+                'publishedAt' => now()->toISOString(),
+            ],
+            'relationships' => [
+                'user' => [
+                    'data' => [
+                        'type' => 'users',
+                        'id' => (string) $admin->id,
+                    ]
+                ]
+            ]
         ])->post('/api/v1/pages');
 
         $response->assertCreated();
-        $this->assertDatabaseHas('pages', ['slug' => 'test-page']);
+        $this->assertDatabaseHas('pages', [
+            'slug' => 'test-page',
+            'status' => 'draft',
+            'user_id' => $admin->id
+        ]);
     }
 
     public function test_unauthorized_user_cannot_create_page(): void

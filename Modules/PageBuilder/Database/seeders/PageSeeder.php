@@ -23,11 +23,16 @@ class PageSeeder extends Seeder
             'status' => 'active',
         ]);
 
-        // Creamos páginas con trazabilidad
-        $pages = Page::factory()->count(3)->create([
+        // Creamos páginas con trazabilidad - mix de draft y published
+        $publishedPages = Page::factory()->published()->count(2)->create([
             'user_id' => $system->id,
-            'published_at' => now(), // ✅ evita tests rotos por datos sin publicar
         ]);
+        
+        $draftPages = Page::factory()->draft()->count(1)->create([
+            'user_id' => $system->id,
+        ]);
+        
+        $pages = $publishedPages->concat($draftPages);
 
         foreach ($pages as $page) {
             activity()

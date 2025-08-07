@@ -1,6 +1,6 @@
 # API Documentation
 
-**Generado:** 2025-08-01T23:02:28.078157Z
+**Generado:** 2025-08-07T07:28:00.056128Z
 
 **Base URL:** `http://localhost/api/v1`
 
@@ -20,17 +20,26 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
-- ✅ `email` (string) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
 - ✅ `status` (string) 
 - ✅ `role` (string) 
-- ✅ `roles` (relationship[]) 
 - ✅ `password` (string) 
 - ✅ `password_confirmation` (string) 
-- ✅ `email_verified_at` (datetime) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
-- ✅ `deleted_at` (datetime) 
+- ✅ `email_verified_at` (datetime) 🔒
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+- ✅ `deleted_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `roles` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `email`: required, email, max:255, users, email
+- `status`: required, active, inactive, banned
 
 **Ejemplo de Request:**
 
@@ -51,17 +60,26 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
-- ✅ `email` (string) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
 - ✅ `status` (string) 
 - ✅ `role` (string) 
-- ✅ `roles` (relationship[]) 
 - ✅ `password` (string) 
 - ✅ `password_confirmation` (string) 
-- ✅ `email_verified_at` (datetime) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
-- ✅ `deleted_at` (datetime) 
+- ✅ `email_verified_at` (datetime) 🔒
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+- ✅ `deleted_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `roles` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `email`: required, email, max:255, users, email
+- `status`: required, active, inactive, banned
 
 **Ejemplo de Request:**
 
@@ -77,9 +95,24 @@
     "body": {
         "data": {
             "type": "users",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -91,17 +124,26 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
-- ✅ `email` (string) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
 - ✅ `status` (string) 
 - ✅ `role` (string) 
-- ✅ `roles` (relationship[]) 
 - ✅ `password` (string) 
 - ✅ `password_confirmation` (string) 
-- ✅ `email_verified_at` (datetime) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
-- ✅ `deleted_at` (datetime) 
+- ✅ `email_verified_at` (datetime) 🔒
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+- ✅ `deleted_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `roles` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `email`: required, email, max:255, users, email
+- `status`: required, active, inactive, banned
 
 **Ejemplo de Request:**
 
@@ -122,17 +164,50 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
-- ✅ `email` (string) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
 - ✅ `status` (string) 
 - ✅ `role` (string) 
-- ✅ `roles` (relationship[]) 
 - ✅ `password` (string) 
 - ✅ `password_confirmation` (string) 
-- ✅ `email_verified_at` (datetime) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
-- ✅ `deleted_at` (datetime) 
+- ✅ `email_verified_at` (datetime) 🔒
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+- ✅ `deleted_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `roles` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `email`: required, email, max:255, users, email
+- `status`: required, active, inactive, banned
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/users\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "users",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -140,17 +215,26 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
-- ✅ `email` (string) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
 - ✅ `status` (string) 
 - ✅ `role` (string) 
-- ✅ `roles` (relationship[]) 
 - ✅ `password` (string) 
 - ✅ `password_confirmation` (string) 
-- ✅ `email_verified_at` (datetime) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
-- ✅ `deleted_at` (datetime) 
+- ✅ `email_verified_at` (datetime) 🔒
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+- ✅ `deleted_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `roles` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `email`: required, email, max:255, users, email
+- `status`: required, active, inactive, banned
 
 ---
 
@@ -160,7 +244,7 @@
 
 **Campos disponibles:**
 
-- ✅ `event` (string) 
+- ✅ `event` (string) 🔄
 - ✅ `causer` (mixed) 
 - ✅ `event` (mixed) 
 
@@ -183,7 +267,7 @@
 
 **Campos disponibles:**
 
-- ✅ `event` (string) 
+- ✅ `event` (string) 🔄
 - ✅ `causer` (mixed) 
 - ✅ `event` (mixed) 
 
@@ -201,9 +285,24 @@
     "body": {
         "data": {
             "type": "audits",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -215,7 +314,7 @@
 
 **Campos disponibles:**
 
-- ✅ `event` (string) 
+- ✅ `event` (string) 🔄
 - ✅ `causer` (mixed) 
 - ✅ `event` (mixed) 
 
@@ -238,9 +337,33 @@
 
 **Campos disponibles:**
 
-- ✅ `event` (string) 
+- ✅ `event` (string) 🔄
 - ✅ `causer` (mixed) 
 - ✅ `event` (mixed) 
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/audits\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "audits",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -248,7 +371,7 @@
 
 **Campos disponibles:**
 
-- ✅ `event` (string) 
+- ✅ `event` (string) 🔄
 - ✅ `causer` (mixed) 
 - ✅ `event` (mixed) 
 
@@ -260,14 +383,29 @@
 
 **Campos disponibles:**
 
-- ✅ `title` (string) 
+- ✅ `title` (string) 🔄
 - ✅ `slug` (string) 
 - ✅ `html` (string) 
 - ✅ `css` (string) 
 - ✅ `json` (object) 
-- ✅ `publishedAt` (datetime) 
-- ✅ `user` (relationship) 
+- ✅ `status` (string) 🔄
+- ✅ `publishedAt` (datetime) 🔄
 - ✅ `slug` (mixed) 
+- ✅ `status` (mixed) 
+
+**Relaciones disponibles:**
+
+- `user` (relationship)
+
+**Validaciones:**
+
+- `title`: required, string, max:255
+- `slug`: required, string, max:255, pages, slug
+- `html`: nullable, string
+- `css`: nullable, string
+- `json`: nullable, array
+- `status`: sometimes, string, in:draft,published
+- `publishedAt`: nullable, date
 
 **Ejemplo de Request:**
 
@@ -288,14 +426,29 @@
 
 **Campos disponibles:**
 
-- ✅ `title` (string) 
+- ✅ `title` (string) 🔄
 - ✅ `slug` (string) 
 - ✅ `html` (string) 
 - ✅ `css` (string) 
 - ✅ `json` (object) 
-- ✅ `publishedAt` (datetime) 
-- ✅ `user` (relationship) 
+- ✅ `status` (string) 🔄
+- ✅ `publishedAt` (datetime) 🔄
 - ✅ `slug` (mixed) 
+- ✅ `status` (mixed) 
+
+**Relaciones disponibles:**
+
+- `user` (relationship)
+
+**Validaciones:**
+
+- `title`: required, string, max:255
+- `slug`: required, string, max:255, pages, slug
+- `html`: nullable, string
+- `css`: nullable, string
+- `json`: nullable, array
+- `status`: sometimes, string, in:draft,published
+- `publishedAt`: nullable, date
 
 **Ejemplo de Request:**
 
@@ -311,9 +464,24 @@
     "body": {
         "data": {
             "type": "pages",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -325,14 +493,29 @@
 
 **Campos disponibles:**
 
-- ✅ `title` (string) 
+- ✅ `title` (string) 🔄
 - ✅ `slug` (string) 
 - ✅ `html` (string) 
 - ✅ `css` (string) 
 - ✅ `json` (object) 
-- ✅ `publishedAt` (datetime) 
-- ✅ `user` (relationship) 
+- ✅ `status` (string) 🔄
+- ✅ `publishedAt` (datetime) 🔄
 - ✅ `slug` (mixed) 
+- ✅ `status` (mixed) 
+
+**Relaciones disponibles:**
+
+- `user` (relationship)
+
+**Validaciones:**
+
+- `title`: required, string, max:255
+- `slug`: required, string, max:255, pages, slug
+- `html`: nullable, string
+- `css`: nullable, string
+- `json`: nullable, array
+- `status`: sometimes, string, in:draft,published
+- `publishedAt`: nullable, date
 
 **Ejemplo de Request:**
 
@@ -353,14 +536,53 @@
 
 **Campos disponibles:**
 
-- ✅ `title` (string) 
+- ✅ `title` (string) 🔄
 - ✅ `slug` (string) 
 - ✅ `html` (string) 
 - ✅ `css` (string) 
 - ✅ `json` (object) 
-- ✅ `publishedAt` (datetime) 
-- ✅ `user` (relationship) 
+- ✅ `status` (string) 🔄
+- ✅ `publishedAt` (datetime) 🔄
 - ✅ `slug` (mixed) 
+- ✅ `status` (mixed) 
+
+**Relaciones disponibles:**
+
+- `user` (relationship)
+
+**Validaciones:**
+
+- `title`: required, string, max:255
+- `slug`: required, string, max:255, pages, slug
+- `html`: nullable, string
+- `css`: nullable, string
+- `json`: nullable, array
+- `status`: sometimes, string, in:draft,published
+- `publishedAt`: nullable, date
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/pages\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "pages",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -368,14 +590,29 @@
 
 **Campos disponibles:**
 
-- ✅ `title` (string) 
+- ✅ `title` (string) 🔄
 - ✅ `slug` (string) 
 - ✅ `html` (string) 
 - ✅ `css` (string) 
 - ✅ `json` (object) 
-- ✅ `publishedAt` (datetime) 
-- ✅ `user` (relationship) 
+- ✅ `status` (string) 🔄
+- ✅ `publishedAt` (datetime) 🔄
 - ✅ `slug` (mixed) 
+- ✅ `status` (mixed) 
+
+**Relaciones disponibles:**
+
+- `user` (relationship)
+
+**Validaciones:**
+
+- `title`: required, string, max:255
+- `slug`: required, string, max:255, pages, slug
+- `html`: nullable, string
+- `css`: nullable, string
+- `json`: nullable, array
+- `status`: sometimes, string, in:draft,published
+- `publishedAt`: nullable, date
 
 ---
 
@@ -385,10 +622,15 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `guard_name` (string) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `guard_name`: required, string
 
 **Ejemplo de Request:**
 
@@ -409,10 +651,15 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `guard_name` (string) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `guard_name`: required, string
 
 **Ejemplo de Request:**
 
@@ -428,9 +675,24 @@
     "body": {
         "data": {
             "type": "roles",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -442,10 +704,15 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `guard_name` (string) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `guard_name`: required, string
 
 **Ejemplo de Request:**
 
@@ -466,10 +733,39 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `guard_name` (string) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `guard_name`: required, string
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/roles\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "roles",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -477,10 +773,15 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `guard_name` (string) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `guard_name`: required, string
 
 ---
 
@@ -488,10 +789,15 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `guard_name` (string) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `guard_name`: required, string
 
 **Ejemplo de Request:**
 
@@ -512,10 +818,15 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `guard_name` (string) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `guard_name`: required, string
 
 **Ejemplo de Request:**
 
@@ -538,10 +849,15 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `guard_name` (string) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `guard_name`: required, string
 
 **Ejemplo de Request:**
 
@@ -562,10 +878,15 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `guard_name` (string) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `guard_name`: required, string
 
 **Ejemplo de Request:**
 
@@ -581,9 +902,24 @@
     "body": {
         "data": {
             "type": "permissions",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -595,10 +931,15 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `guard_name` (string) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `guard_name`: required, string
 
 **Ejemplo de Request:**
 
@@ -619,10 +960,39 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `guard_name` (string) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `guard_name`: required, string
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/permissions\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "permissions",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -630,10 +1000,15 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `guard_name` (string) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `guard_name`: required, string
 
 ---
 
@@ -643,12 +1018,20 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 
-- ✅ `products` (relationship[]) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
+- ✅ `slug` (string) 🔄
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255, brands, name
+- `description`: nullable, string, max:500
 
 **Ejemplo de Request:**
 
@@ -669,12 +1052,20 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 
-- ✅ `products` (relationship[]) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
+- ✅ `slug` (string) 🔄
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255, brands, name
+- `description`: nullable, string, max:500
 
 **Ejemplo de Request:**
 
@@ -690,9 +1081,24 @@
     "body": {
         "data": {
             "type": "products",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -704,12 +1110,20 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 
-- ✅ `products` (relationship[]) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
+- ✅ `slug` (string) 🔄
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255, brands, name
+- `description`: nullable, string, max:500
 
 **Ejemplo de Request:**
 
@@ -730,12 +1144,44 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 
-- ✅ `products` (relationship[]) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
+- ✅ `slug` (string) 🔄
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255, brands, name
+- `description`: nullable, string, max:500
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/products\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "products",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -743,12 +1189,20 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 
-- ✅ `products` (relationship[]) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
+- ✅ `slug` (string) 🔄
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255, brands, name
+- `description`: nullable, string, max:500
 
 ---
 
@@ -758,12 +1212,20 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 
-- ✅ `products` (relationship[]) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
+- ✅ `slug` (string) 🔄
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255, brands, name
+- `description`: nullable, string, max:500
 
 **Ejemplo de Request:**
 
@@ -784,12 +1246,20 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 
-- ✅ `products` (relationship[]) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
+- ✅ `slug` (string) 🔄
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255, brands, name
+- `description`: nullable, string, max:500
 
 **Ejemplo de Request:**
 
@@ -805,9 +1275,24 @@
     "body": {
         "data": {
             "type": "units",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -819,12 +1304,20 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 
-- ✅ `products` (relationship[]) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
+- ✅ `slug` (string) 🔄
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255, brands, name
+- `description`: nullable, string, max:500
 
 **Ejemplo de Request:**
 
@@ -845,12 +1338,44 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 
-- ✅ `products` (relationship[]) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
+- ✅ `slug` (string) 🔄
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255, brands, name
+- `description`: nullable, string, max:500
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/units\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "units",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -858,12 +1383,20 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 
-- ✅ `products` (relationship[]) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
+- ✅ `slug` (string) 🔄
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255, brands, name
+- `description`: nullable, string, max:500
 
 ---
 
@@ -873,12 +1406,20 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 
-- ✅ `products` (relationship[]) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
+- ✅ `slug` (string) 🔄
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255, brands, name
+- `description`: nullable, string, max:500
 
 **Ejemplo de Request:**
 
@@ -899,12 +1440,20 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 
-- ✅ `products` (relationship[]) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
+- ✅ `slug` (string) 🔄
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255, brands, name
+- `description`: nullable, string, max:500
 
 **Ejemplo de Request:**
 
@@ -920,9 +1469,24 @@
     "body": {
         "data": {
             "type": "categories",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -934,12 +1498,20 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 
-- ✅ `products` (relationship[]) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
+- ✅ `slug` (string) 🔄
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255, brands, name
+- `description`: nullable, string, max:500
 
 **Ejemplo de Request:**
 
@@ -960,12 +1532,44 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 
-- ✅ `products` (relationship[]) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
+- ✅ `slug` (string) 🔄
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255, brands, name
+- `description`: nullable, string, max:500
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/categories\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "categories",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -973,12 +1577,20 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 
-- ✅ `products` (relationship[]) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
+- ✅ `slug` (string) 🔄
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255, brands, name
+- `description`: nullable, string, max:500
 
 ---
 
@@ -988,12 +1600,20 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 
-- ✅ `products` (relationship[]) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
+- ✅ `slug` (string) 🔄
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255, brands, name
+- `description`: nullable, string, max:500
 
 **Ejemplo de Request:**
 
@@ -1014,12 +1634,20 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 
-- ✅ `products` (relationship[]) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
+- ✅ `slug` (string) 🔄
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255, brands, name
+- `description`: nullable, string, max:500
 
 **Ejemplo de Request:**
 
@@ -1035,9 +1663,24 @@
     "body": {
         "data": {
             "type": "brands",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -1049,12 +1692,20 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 
-- ✅ `products` (relationship[]) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
+- ✅ `slug` (string) 🔄
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255, brands, name
+- `description`: nullable, string, max:500
 
 **Ejemplo de Request:**
 
@@ -1075,12 +1726,44 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 
-- ✅ `products` (relationship[]) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
+- ✅ `slug` (string) 🔄
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255, brands, name
+- `description`: nullable, string, max:500
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/brands\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "brands",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -1088,12 +1771,20 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
+- ✅ `name` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 
-- ✅ `products` (relationship[]) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
+- ✅ `slug` (string) 🔄
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255, brands, name
+- `description`: nullable, string, max:500
 
 ---
 
@@ -1108,15 +1799,38 @@
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `product` (relationship) 
-- ✅ `warehouse` (relationship) 
-- ✅ `warehouseLocation` (relationship) 
 - ✅ `status` (mixed) 
 - ✅ `batch_number` (mixed) 
 - ✅ `lot_number` (mixed) 
 - ✅ `product_id` (mixed) 
 - ✅ `warehouse_id` (mixed) 
 - ✅ `warehouse_location_id` (mixed) 
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `warehouseLocation` (relationship)
+
+**Validaciones:**
+
+- `batchNumber`: required, string, max:255, product_batches, batch_number
+- `lotNumber`: sometimes, nullable, string, max:255
+- `manufacturingDate`: sometimes, nullable, date
+- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `initialQuantity`: required, numeric, min:0
+- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `unitCost`: required, numeric, min:0
+- `status`: required, string, in:active,expired,quarantine,recalled,consumed
+- `supplierName`: sometimes, nullable, string, max:255
+- `supplierBatch`: sometimes, nullable, string, max:255
+- `qualityNotes`: sometimes, nullable, string
+- `testResults`: sometimes, nullable, array
+- `certifications`: sometimes, nullable, array
+- `metadata`: sometimes, nullable, array
+- `warehouseLocation`: sometimes
 
 **Ejemplo de Request:**
 
@@ -1142,15 +1856,38 @@
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `product` (relationship) 
-- ✅ `warehouse` (relationship) 
-- ✅ `warehouseLocation` (relationship) 
 - ✅ `status` (mixed) 
 - ✅ `batch_number` (mixed) 
 - ✅ `lot_number` (mixed) 
 - ✅ `product_id` (mixed) 
 - ✅ `warehouse_id` (mixed) 
 - ✅ `warehouse_location_id` (mixed) 
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `warehouseLocation` (relationship)
+
+**Validaciones:**
+
+- `batchNumber`: required, string, max:255, product_batches, batch_number
+- `lotNumber`: sometimes, nullable, string, max:255
+- `manufacturingDate`: sometimes, nullable, date
+- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `initialQuantity`: required, numeric, min:0
+- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `unitCost`: required, numeric, min:0
+- `status`: required, string, in:active,expired,quarantine,recalled,consumed
+- `supplierName`: sometimes, nullable, string, max:255
+- `supplierBatch`: sometimes, nullable, string, max:255
+- `qualityNotes`: sometimes, nullable, string
+- `testResults`: sometimes, nullable, array
+- `certifications`: sometimes, nullable, array
+- `metadata`: sometimes, nullable, array
+- `warehouseLocation`: sometimes
 
 **Ejemplo de Request:**
 
@@ -1166,9 +1903,24 @@
     "body": {
         "data": {
             "type": "warehouses",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -1185,15 +1937,38 @@
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `product` (relationship) 
-- ✅ `warehouse` (relationship) 
-- ✅ `warehouseLocation` (relationship) 
 - ✅ `status` (mixed) 
 - ✅ `batch_number` (mixed) 
 - ✅ `lot_number` (mixed) 
 - ✅ `product_id` (mixed) 
 - ✅ `warehouse_id` (mixed) 
 - ✅ `warehouse_location_id` (mixed) 
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `warehouseLocation` (relationship)
+
+**Validaciones:**
+
+- `batchNumber`: required, string, max:255, product_batches, batch_number
+- `lotNumber`: sometimes, nullable, string, max:255
+- `manufacturingDate`: sometimes, nullable, date
+- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `initialQuantity`: required, numeric, min:0
+- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `unitCost`: required, numeric, min:0
+- `status`: required, string, in:active,expired,quarantine,recalled,consumed
+- `supplierName`: sometimes, nullable, string, max:255
+- `supplierBatch`: sometimes, nullable, string, max:255
+- `qualityNotes`: sometimes, nullable, string
+- `testResults`: sometimes, nullable, array
+- `certifications`: sometimes, nullable, array
+- `metadata`: sometimes, nullable, array
+- `warehouseLocation`: sometimes
 
 **Ejemplo de Request:**
 
@@ -1219,15 +1994,62 @@
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `product` (relationship) 
-- ✅ `warehouse` (relationship) 
-- ✅ `warehouseLocation` (relationship) 
 - ✅ `status` (mixed) 
 - ✅ `batch_number` (mixed) 
 - ✅ `lot_number` (mixed) 
 - ✅ `product_id` (mixed) 
 - ✅ `warehouse_id` (mixed) 
 - ✅ `warehouse_location_id` (mixed) 
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `warehouseLocation` (relationship)
+
+**Validaciones:**
+
+- `batchNumber`: required, string, max:255, product_batches, batch_number
+- `lotNumber`: sometimes, nullable, string, max:255
+- `manufacturingDate`: sometimes, nullable, date
+- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `initialQuantity`: required, numeric, min:0
+- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `unitCost`: required, numeric, min:0
+- `status`: required, string, in:active,expired,quarantine,recalled,consumed
+- `supplierName`: sometimes, nullable, string, max:255
+- `supplierBatch`: sometimes, nullable, string, max:255
+- `qualityNotes`: sometimes, nullable, string
+- `testResults`: sometimes, nullable, array
+- `certifications`: sometimes, nullable, array
+- `metadata`: sometimes, nullable, array
+- `warehouseLocation`: sometimes
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/warehouses\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "warehouses",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -1240,15 +2062,38 @@
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `product` (relationship) 
-- ✅ `warehouse` (relationship) 
-- ✅ `warehouseLocation` (relationship) 
 - ✅ `status` (mixed) 
 - ✅ `batch_number` (mixed) 
 - ✅ `lot_number` (mixed) 
 - ✅ `product_id` (mixed) 
 - ✅ `warehouse_id` (mixed) 
 - ✅ `warehouse_location_id` (mixed) 
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `warehouseLocation` (relationship)
+
+**Validaciones:**
+
+- `batchNumber`: required, string, max:255, product_batches, batch_number
+- `lotNumber`: sometimes, nullable, string, max:255
+- `manufacturingDate`: sometimes, nullable, date
+- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `initialQuantity`: required, numeric, min:0
+- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `unitCost`: required, numeric, min:0
+- `status`: required, string, in:active,expired,quarantine,recalled,consumed
+- `supplierName`: sometimes, nullable, string, max:255
+- `supplierBatch`: sometimes, nullable, string, max:255
+- `qualityNotes`: sometimes, nullable, string
+- `testResults`: sometimes, nullable, array
+- `certifications`: sometimes, nullable, array
+- `metadata`: sometimes, nullable, array
+- `warehouseLocation`: sometimes
 
 ---
 
@@ -1263,15 +2108,38 @@
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `product` (relationship) 
-- ✅ `warehouse` (relationship) 
-- ✅ `warehouseLocation` (relationship) 
 - ✅ `status` (mixed) 
 - ✅ `batch_number` (mixed) 
 - ✅ `lot_number` (mixed) 
 - ✅ `product_id` (mixed) 
 - ✅ `warehouse_id` (mixed) 
 - ✅ `warehouse_location_id` (mixed) 
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `warehouseLocation` (relationship)
+
+**Validaciones:**
+
+- `batchNumber`: required, string, max:255, product_batches, batch_number
+- `lotNumber`: sometimes, nullable, string, max:255
+- `manufacturingDate`: sometimes, nullable, date
+- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `initialQuantity`: required, numeric, min:0
+- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `unitCost`: required, numeric, min:0
+- `status`: required, string, in:active,expired,quarantine,recalled,consumed
+- `supplierName`: sometimes, nullable, string, max:255
+- `supplierBatch`: sometimes, nullable, string, max:255
+- `qualityNotes`: sometimes, nullable, string
+- `testResults`: sometimes, nullable, array
+- `certifications`: sometimes, nullable, array
+- `metadata`: sometimes, nullable, array
+- `warehouseLocation`: sometimes
 
 **Ejemplo de Request:**
 
@@ -1297,15 +2165,38 @@
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `product` (relationship) 
-- ✅ `warehouse` (relationship) 
-- ✅ `warehouseLocation` (relationship) 
 - ✅ `status` (mixed) 
 - ✅ `batch_number` (mixed) 
 - ✅ `lot_number` (mixed) 
 - ✅ `product_id` (mixed) 
 - ✅ `warehouse_id` (mixed) 
 - ✅ `warehouse_location_id` (mixed) 
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `warehouseLocation` (relationship)
+
+**Validaciones:**
+
+- `batchNumber`: required, string, max:255, product_batches, batch_number
+- `lotNumber`: sometimes, nullable, string, max:255
+- `manufacturingDate`: sometimes, nullable, date
+- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `initialQuantity`: required, numeric, min:0
+- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `unitCost`: required, numeric, min:0
+- `status`: required, string, in:active,expired,quarantine,recalled,consumed
+- `supplierName`: sometimes, nullable, string, max:255
+- `supplierBatch`: sometimes, nullable, string, max:255
+- `qualityNotes`: sometimes, nullable, string
+- `testResults`: sometimes, nullable, array
+- `certifications`: sometimes, nullable, array
+- `metadata`: sometimes, nullable, array
+- `warehouseLocation`: sometimes
 
 **Ejemplo de Request:**
 
@@ -1321,9 +2212,24 @@
     "body": {
         "data": {
             "type": "warehouse_locations",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -1340,15 +2246,38 @@
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `product` (relationship) 
-- ✅ `warehouse` (relationship) 
-- ✅ `warehouseLocation` (relationship) 
 - ✅ `status` (mixed) 
 - ✅ `batch_number` (mixed) 
 - ✅ `lot_number` (mixed) 
 - ✅ `product_id` (mixed) 
 - ✅ `warehouse_id` (mixed) 
 - ✅ `warehouse_location_id` (mixed) 
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `warehouseLocation` (relationship)
+
+**Validaciones:**
+
+- `batchNumber`: required, string, max:255, product_batches, batch_number
+- `lotNumber`: sometimes, nullable, string, max:255
+- `manufacturingDate`: sometimes, nullable, date
+- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `initialQuantity`: required, numeric, min:0
+- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `unitCost`: required, numeric, min:0
+- `status`: required, string, in:active,expired,quarantine,recalled,consumed
+- `supplierName`: sometimes, nullable, string, max:255
+- `supplierBatch`: sometimes, nullable, string, max:255
+- `qualityNotes`: sometimes, nullable, string
+- `testResults`: sometimes, nullable, array
+- `certifications`: sometimes, nullable, array
+- `metadata`: sometimes, nullable, array
+- `warehouseLocation`: sometimes
 
 **Ejemplo de Request:**
 
@@ -1374,15 +2303,62 @@
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `product` (relationship) 
-- ✅ `warehouse` (relationship) 
-- ✅ `warehouseLocation` (relationship) 
 - ✅ `status` (mixed) 
 - ✅ `batch_number` (mixed) 
 - ✅ `lot_number` (mixed) 
 - ✅ `product_id` (mixed) 
 - ✅ `warehouse_id` (mixed) 
 - ✅ `warehouse_location_id` (mixed) 
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `warehouseLocation` (relationship)
+
+**Validaciones:**
+
+- `batchNumber`: required, string, max:255, product_batches, batch_number
+- `lotNumber`: sometimes, nullable, string, max:255
+- `manufacturingDate`: sometimes, nullable, date
+- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `initialQuantity`: required, numeric, min:0
+- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `unitCost`: required, numeric, min:0
+- `status`: required, string, in:active,expired,quarantine,recalled,consumed
+- `supplierName`: sometimes, nullable, string, max:255
+- `supplierBatch`: sometimes, nullable, string, max:255
+- `qualityNotes`: sometimes, nullable, string
+- `testResults`: sometimes, nullable, array
+- `certifications`: sometimes, nullable, array
+- `metadata`: sometimes, nullable, array
+- `warehouseLocation`: sometimes
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/warehouse_locations\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "warehouse_locations",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -1395,15 +2371,38 @@
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `product` (relationship) 
-- ✅ `warehouse` (relationship) 
-- ✅ `warehouseLocation` (relationship) 
 - ✅ `status` (mixed) 
 - ✅ `batch_number` (mixed) 
 - ✅ `lot_number` (mixed) 
 - ✅ `product_id` (mixed) 
 - ✅ `warehouse_id` (mixed) 
 - ✅ `warehouse_location_id` (mixed) 
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `warehouseLocation` (relationship)
+
+**Validaciones:**
+
+- `batchNumber`: required, string, max:255, product_batches, batch_number
+- `lotNumber`: sometimes, nullable, string, max:255
+- `manufacturingDate`: sometimes, nullable, date
+- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `initialQuantity`: required, numeric, min:0
+- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `unitCost`: required, numeric, min:0
+- `status`: required, string, in:active,expired,quarantine,recalled,consumed
+- `supplierName`: sometimes, nullable, string, max:255
+- `supplierBatch`: sometimes, nullable, string, max:255
+- `qualityNotes`: sometimes, nullable, string
+- `testResults`: sometimes, nullable, array
+- `certifications`: sometimes, nullable, array
+- `metadata`: sometimes, nullable, array
+- `warehouseLocation`: sometimes
 
 ---
 
@@ -1418,15 +2417,38 @@
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `product` (relationship) 
-- ✅ `warehouse` (relationship) 
-- ✅ `warehouseLocation` (relationship) 
 - ✅ `status` (mixed) 
 - ✅ `batch_number` (mixed) 
 - ✅ `lot_number` (mixed) 
 - ✅ `product_id` (mixed) 
 - ✅ `warehouse_id` (mixed) 
 - ✅ `warehouse_location_id` (mixed) 
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `warehouseLocation` (relationship)
+
+**Validaciones:**
+
+- `batchNumber`: required, string, max:255, product_batches, batch_number
+- `lotNumber`: sometimes, nullable, string, max:255
+- `manufacturingDate`: sometimes, nullable, date
+- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `initialQuantity`: required, numeric, min:0
+- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `unitCost`: required, numeric, min:0
+- `status`: required, string, in:active,expired,quarantine,recalled,consumed
+- `supplierName`: sometimes, nullable, string, max:255
+- `supplierBatch`: sometimes, nullable, string, max:255
+- `qualityNotes`: sometimes, nullable, string
+- `testResults`: sometimes, nullable, array
+- `certifications`: sometimes, nullable, array
+- `metadata`: sometimes, nullable, array
+- `warehouseLocation`: sometimes
 
 **Ejemplo de Request:**
 
@@ -1452,15 +2474,38 @@
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `product` (relationship) 
-- ✅ `warehouse` (relationship) 
-- ✅ `warehouseLocation` (relationship) 
 - ✅ `status` (mixed) 
 - ✅ `batch_number` (mixed) 
 - ✅ `lot_number` (mixed) 
 - ✅ `product_id` (mixed) 
 - ✅ `warehouse_id` (mixed) 
 - ✅ `warehouse_location_id` (mixed) 
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `warehouseLocation` (relationship)
+
+**Validaciones:**
+
+- `batchNumber`: required, string, max:255, product_batches, batch_number
+- `lotNumber`: sometimes, nullable, string, max:255
+- `manufacturingDate`: sometimes, nullable, date
+- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `initialQuantity`: required, numeric, min:0
+- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `unitCost`: required, numeric, min:0
+- `status`: required, string, in:active,expired,quarantine,recalled,consumed
+- `supplierName`: sometimes, nullable, string, max:255
+- `supplierBatch`: sometimes, nullable, string, max:255
+- `qualityNotes`: sometimes, nullable, string
+- `testResults`: sometimes, nullable, array
+- `certifications`: sometimes, nullable, array
+- `metadata`: sometimes, nullable, array
+- `warehouseLocation`: sometimes
 
 **Ejemplo de Request:**
 
@@ -1476,9 +2521,24 @@
     "body": {
         "data": {
             "type": "product_batches",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -1495,15 +2555,38 @@
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `product` (relationship) 
-- ✅ `warehouse` (relationship) 
-- ✅ `warehouseLocation` (relationship) 
 - ✅ `status` (mixed) 
 - ✅ `batch_number` (mixed) 
 - ✅ `lot_number` (mixed) 
 - ✅ `product_id` (mixed) 
 - ✅ `warehouse_id` (mixed) 
 - ✅ `warehouse_location_id` (mixed) 
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `warehouseLocation` (relationship)
+
+**Validaciones:**
+
+- `batchNumber`: required, string, max:255, product_batches, batch_number
+- `lotNumber`: sometimes, nullable, string, max:255
+- `manufacturingDate`: sometimes, nullable, date
+- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `initialQuantity`: required, numeric, min:0
+- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `unitCost`: required, numeric, min:0
+- `status`: required, string, in:active,expired,quarantine,recalled,consumed
+- `supplierName`: sometimes, nullable, string, max:255
+- `supplierBatch`: sometimes, nullable, string, max:255
+- `qualityNotes`: sometimes, nullable, string
+- `testResults`: sometimes, nullable, array
+- `certifications`: sometimes, nullable, array
+- `metadata`: sometimes, nullable, array
+- `warehouseLocation`: sometimes
 
 **Ejemplo de Request:**
 
@@ -1529,15 +2612,62 @@
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `product` (relationship) 
-- ✅ `warehouse` (relationship) 
-- ✅ `warehouseLocation` (relationship) 
 - ✅ `status` (mixed) 
 - ✅ `batch_number` (mixed) 
 - ✅ `lot_number` (mixed) 
 - ✅ `product_id` (mixed) 
 - ✅ `warehouse_id` (mixed) 
 - ✅ `warehouse_location_id` (mixed) 
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `warehouseLocation` (relationship)
+
+**Validaciones:**
+
+- `batchNumber`: required, string, max:255, product_batches, batch_number
+- `lotNumber`: sometimes, nullable, string, max:255
+- `manufacturingDate`: sometimes, nullable, date
+- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `initialQuantity`: required, numeric, min:0
+- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `unitCost`: required, numeric, min:0
+- `status`: required, string, in:active,expired,quarantine,recalled,consumed
+- `supplierName`: sometimes, nullable, string, max:255
+- `supplierBatch`: sometimes, nullable, string, max:255
+- `qualityNotes`: sometimes, nullable, string
+- `testResults`: sometimes, nullable, array
+- `certifications`: sometimes, nullable, array
+- `metadata`: sometimes, nullable, array
+- `warehouseLocation`: sometimes
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/product_batches\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "product_batches",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -1550,15 +2680,38 @@
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `product` (relationship) 
-- ✅ `warehouse` (relationship) 
-- ✅ `warehouseLocation` (relationship) 
 - ✅ `status` (mixed) 
 - ✅ `batch_number` (mixed) 
 - ✅ `lot_number` (mixed) 
 - ✅ `product_id` (mixed) 
 - ✅ `warehouse_id` (mixed) 
 - ✅ `warehouse_location_id` (mixed) 
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `warehouseLocation` (relationship)
+
+**Validaciones:**
+
+- `batchNumber`: required, string, max:255, product_batches, batch_number
+- `lotNumber`: sometimes, nullable, string, max:255
+- `manufacturingDate`: sometimes, nullable, date
+- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `initialQuantity`: required, numeric, min:0
+- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `unitCost`: required, numeric, min:0
+- `status`: required, string, in:active,expired,quarantine,recalled,consumed
+- `supplierName`: sometimes, nullable, string, max:255
+- `supplierBatch`: sometimes, nullable, string, max:255
+- `qualityNotes`: sometimes, nullable, string
+- `testResults`: sometimes, nullable, array
+- `certifications`: sometimes, nullable, array
+- `metadata`: sometimes, nullable, array
+- `warehouseLocation`: sometimes
 
 ---
 
@@ -1573,15 +2726,38 @@
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `product` (relationship) 
-- ✅ `warehouse` (relationship) 
-- ✅ `warehouseLocation` (relationship) 
 - ✅ `status` (mixed) 
 - ✅ `batch_number` (mixed) 
 - ✅ `lot_number` (mixed) 
 - ✅ `product_id` (mixed) 
 - ✅ `warehouse_id` (mixed) 
 - ✅ `warehouse_location_id` (mixed) 
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `warehouseLocation` (relationship)
+
+**Validaciones:**
+
+- `batchNumber`: required, string, max:255, product_batches, batch_number
+- `lotNumber`: sometimes, nullable, string, max:255
+- `manufacturingDate`: sometimes, nullable, date
+- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `initialQuantity`: required, numeric, min:0
+- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `unitCost`: required, numeric, min:0
+- `status`: required, string, in:active,expired,quarantine,recalled,consumed
+- `supplierName`: sometimes, nullable, string, max:255
+- `supplierBatch`: sometimes, nullable, string, max:255
+- `qualityNotes`: sometimes, nullable, string
+- `testResults`: sometimes, nullable, array
+- `certifications`: sometimes, nullable, array
+- `metadata`: sometimes, nullable, array
+- `warehouseLocation`: sometimes
 
 **Ejemplo de Request:**
 
@@ -1607,15 +2783,38 @@
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `product` (relationship) 
-- ✅ `warehouse` (relationship) 
-- ✅ `warehouseLocation` (relationship) 
 - ✅ `status` (mixed) 
 - ✅ `batch_number` (mixed) 
 - ✅ `lot_number` (mixed) 
 - ✅ `product_id` (mixed) 
 - ✅ `warehouse_id` (mixed) 
 - ✅ `warehouse_location_id` (mixed) 
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `warehouseLocation` (relationship)
+
+**Validaciones:**
+
+- `batchNumber`: required, string, max:255, product_batches, batch_number
+- `lotNumber`: sometimes, nullable, string, max:255
+- `manufacturingDate`: sometimes, nullable, date
+- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `initialQuantity`: required, numeric, min:0
+- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `unitCost`: required, numeric, min:0
+- `status`: required, string, in:active,expired,quarantine,recalled,consumed
+- `supplierName`: sometimes, nullable, string, max:255
+- `supplierBatch`: sometimes, nullable, string, max:255
+- `qualityNotes`: sometimes, nullable, string
+- `testResults`: sometimes, nullable, array
+- `certifications`: sometimes, nullable, array
+- `metadata`: sometimes, nullable, array
+- `warehouseLocation`: sometimes
 
 **Ejemplo de Request:**
 
@@ -1631,9 +2830,24 @@
     "body": {
         "data": {
             "type": "stocks",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -1650,15 +2864,38 @@
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `product` (relationship) 
-- ✅ `warehouse` (relationship) 
-- ✅ `warehouseLocation` (relationship) 
 - ✅ `status` (mixed) 
 - ✅ `batch_number` (mixed) 
 - ✅ `lot_number` (mixed) 
 - ✅ `product_id` (mixed) 
 - ✅ `warehouse_id` (mixed) 
 - ✅ `warehouse_location_id` (mixed) 
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `warehouseLocation` (relationship)
+
+**Validaciones:**
+
+- `batchNumber`: required, string, max:255, product_batches, batch_number
+- `lotNumber`: sometimes, nullable, string, max:255
+- `manufacturingDate`: sometimes, nullable, date
+- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `initialQuantity`: required, numeric, min:0
+- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `unitCost`: required, numeric, min:0
+- `status`: required, string, in:active,expired,quarantine,recalled,consumed
+- `supplierName`: sometimes, nullable, string, max:255
+- `supplierBatch`: sometimes, nullable, string, max:255
+- `qualityNotes`: sometimes, nullable, string
+- `testResults`: sometimes, nullable, array
+- `certifications`: sometimes, nullable, array
+- `metadata`: sometimes, nullable, array
+- `warehouseLocation`: sometimes
 
 **Ejemplo de Request:**
 
@@ -1684,15 +2921,62 @@
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `product` (relationship) 
-- ✅ `warehouse` (relationship) 
-- ✅ `warehouseLocation` (relationship) 
 - ✅ `status` (mixed) 
 - ✅ `batch_number` (mixed) 
 - ✅ `lot_number` (mixed) 
 - ✅ `product_id` (mixed) 
 - ✅ `warehouse_id` (mixed) 
 - ✅ `warehouse_location_id` (mixed) 
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `warehouseLocation` (relationship)
+
+**Validaciones:**
+
+- `batchNumber`: required, string, max:255, product_batches, batch_number
+- `lotNumber`: sometimes, nullable, string, max:255
+- `manufacturingDate`: sometimes, nullable, date
+- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `initialQuantity`: required, numeric, min:0
+- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `unitCost`: required, numeric, min:0
+- `status`: required, string, in:active,expired,quarantine,recalled,consumed
+- `supplierName`: sometimes, nullable, string, max:255
+- `supplierBatch`: sometimes, nullable, string, max:255
+- `qualityNotes`: sometimes, nullable, string
+- `testResults`: sometimes, nullable, array
+- `certifications`: sometimes, nullable, array
+- `metadata`: sometimes, nullable, array
+- `warehouseLocation`: sometimes
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/stocks\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "stocks",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -1705,9 +2989,6 @@
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `product` (relationship) 
-- ✅ `warehouse` (relationship) 
-- ✅ `warehouseLocation` (relationship) 
 - ✅ `status` (mixed) 
 - ✅ `batch_number` (mixed) 
 - ✅ `lot_number` (mixed) 
@@ -1715,11 +2996,61 @@
 - ✅ `warehouse_id` (mixed) 
 - ✅ `warehouse_location_id` (mixed) 
 
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `warehouseLocation` (relationship)
+
+**Validaciones:**
+
+- `batchNumber`: required, string, max:255, product_batches, batch_number
+- `lotNumber`: sometimes, nullable, string, max:255
+- `manufacturingDate`: sometimes, nullable, date
+- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
+- `initialQuantity`: required, numeric, min:0
+- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `unitCost`: required, numeric, min:0
+- `status`: required, string, in:active,expired,quarantine,recalled,consumed
+- `supplierName`: sometimes, nullable, string, max:255
+- `supplierBatch`: sometimes, nullable, string, max:255
+- `qualityNotes`: sometimes, nullable, string
+- `testResults`: sometimes, nullable, array
+- `certifications`: sometimes, nullable, array
+- `metadata`: sometimes, nullable, array
+- `warehouseLocation`: sometimes
+
 ---
 
 ### 📦 Profile
 
 #### `PATCH` `api/v1/profile/password`
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/profile\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "profile",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -1740,10 +3071,32 @@
 - ✅ `taxRate` (number) 
 - ✅ `taxAmount` (number) 
 - ✅ `total` (number) 
-- ✅ `shoppingCart` (relationship) 
-- ✅ `product` (relationship) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `metadata` (object) 
+- ✅ `status` (string) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+- ✅ `status` (mixed) 
+
+**Relaciones disponibles:**
+
+- `shoppingCart` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `shoppingCart`: required
+- `product`: required
+- `quantity`: required, numeric, min:0
+- `unitPrice`: required, numeric, min:0
+- `originalPrice`: required, numeric, min:0
+- `discountPercent`: required, numeric, min:0, max:100
+- `discountAmount`: required, numeric, min:0
+- `subtotal`: required, numeric, min:0
+- `taxRate`: required, numeric, min:0, max:100
+- `taxAmount`: required, numeric, min:0
+- `total`: required, numeric, min:0
+- `metadata`: nullable, array
+- `status`: nullable, string, in:active,inactive
 
 **Ejemplo de Request:**
 
@@ -1775,10 +3128,32 @@
 - ✅ `taxRate` (number) 
 - ✅ `taxAmount` (number) 
 - ✅ `total` (number) 
-- ✅ `shoppingCart` (relationship) 
-- ✅ `product` (relationship) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `metadata` (object) 
+- ✅ `status` (string) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+- ✅ `status` (mixed) 
+
+**Relaciones disponibles:**
+
+- `shoppingCart` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `shoppingCart`: required
+- `product`: required
+- `quantity`: required, numeric, min:0
+- `unitPrice`: required, numeric, min:0
+- `originalPrice`: required, numeric, min:0
+- `discountPercent`: required, numeric, min:0, max:100
+- `discountAmount`: required, numeric, min:0
+- `subtotal`: required, numeric, min:0
+- `taxRate`: required, numeric, min:0, max:100
+- `taxAmount`: required, numeric, min:0
+- `total`: required, numeric, min:0
+- `metadata`: nullable, array
+- `status`: nullable, string, in:active,inactive
 
 **Ejemplo de Request:**
 
@@ -1794,9 +3169,24 @@
     "body": {
         "data": {
             "type": "shopping_carts",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -1819,10 +3209,32 @@
 - ✅ `taxRate` (number) 
 - ✅ `taxAmount` (number) 
 - ✅ `total` (number) 
-- ✅ `shoppingCart` (relationship) 
-- ✅ `product` (relationship) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `metadata` (object) 
+- ✅ `status` (string) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+- ✅ `status` (mixed) 
+
+**Relaciones disponibles:**
+
+- `shoppingCart` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `shoppingCart`: required
+- `product`: required
+- `quantity`: required, numeric, min:0
+- `unitPrice`: required, numeric, min:0
+- `originalPrice`: required, numeric, min:0
+- `discountPercent`: required, numeric, min:0, max:100
+- `discountAmount`: required, numeric, min:0
+- `subtotal`: required, numeric, min:0
+- `taxRate`: required, numeric, min:0, max:100
+- `taxAmount`: required, numeric, min:0
+- `total`: required, numeric, min:0
+- `metadata`: nullable, array
+- `status`: nullable, string, in:active,inactive
 
 **Ejemplo de Request:**
 
@@ -1854,10 +3266,56 @@
 - ✅ `taxRate` (number) 
 - ✅ `taxAmount` (number) 
 - ✅ `total` (number) 
-- ✅ `shoppingCart` (relationship) 
-- ✅ `product` (relationship) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `metadata` (object) 
+- ✅ `status` (string) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+- ✅ `status` (mixed) 
+
+**Relaciones disponibles:**
+
+- `shoppingCart` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `shoppingCart`: required
+- `product`: required
+- `quantity`: required, numeric, min:0
+- `unitPrice`: required, numeric, min:0
+- `originalPrice`: required, numeric, min:0
+- `discountPercent`: required, numeric, min:0, max:100
+- `discountAmount`: required, numeric, min:0
+- `subtotal`: required, numeric, min:0
+- `taxRate`: required, numeric, min:0, max:100
+- `taxAmount`: required, numeric, min:0
+- `total`: required, numeric, min:0
+- `metadata`: nullable, array
+- `status`: nullable, string, in:active,inactive
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/shopping_carts\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "shopping_carts",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -1876,10 +3334,32 @@
 - ✅ `taxRate` (number) 
 - ✅ `taxAmount` (number) 
 - ✅ `total` (number) 
-- ✅ `shoppingCart` (relationship) 
-- ✅ `product` (relationship) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `metadata` (object) 
+- ✅ `status` (string) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+- ✅ `status` (mixed) 
+
+**Relaciones disponibles:**
+
+- `shoppingCart` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `shoppingCart`: required
+- `product`: required
+- `quantity`: required, numeric, min:0
+- `unitPrice`: required, numeric, min:0
+- `originalPrice`: required, numeric, min:0
+- `discountPercent`: required, numeric, min:0, max:100
+- `discountAmount`: required, numeric, min:0
+- `subtotal`: required, numeric, min:0
+- `taxRate`: required, numeric, min:0, max:100
+- `taxAmount`: required, numeric, min:0
+- `total`: required, numeric, min:0
+- `metadata`: nullable, array
+- `status`: nullable, string, in:active,inactive
 
 ---
 
@@ -1900,10 +3380,32 @@
 - ✅ `taxRate` (number) 
 - ✅ `taxAmount` (number) 
 - ✅ `total` (number) 
-- ✅ `shoppingCart` (relationship) 
-- ✅ `product` (relationship) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `metadata` (object) 
+- ✅ `status` (string) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+- ✅ `status` (mixed) 
+
+**Relaciones disponibles:**
+
+- `shoppingCart` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `shoppingCart`: required
+- `product`: required
+- `quantity`: required, numeric, min:0
+- `unitPrice`: required, numeric, min:0
+- `originalPrice`: required, numeric, min:0
+- `discountPercent`: required, numeric, min:0, max:100
+- `discountAmount`: required, numeric, min:0
+- `subtotal`: required, numeric, min:0
+- `taxRate`: required, numeric, min:0, max:100
+- `taxAmount`: required, numeric, min:0
+- `total`: required, numeric, min:0
+- `metadata`: nullable, array
+- `status`: nullable, string, in:active,inactive
 
 **Ejemplo de Request:**
 
@@ -1935,10 +3437,32 @@
 - ✅ `taxRate` (number) 
 - ✅ `taxAmount` (number) 
 - ✅ `total` (number) 
-- ✅ `shoppingCart` (relationship) 
-- ✅ `product` (relationship) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `metadata` (object) 
+- ✅ `status` (string) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+- ✅ `status` (mixed) 
+
+**Relaciones disponibles:**
+
+- `shoppingCart` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `shoppingCart`: required
+- `product`: required
+- `quantity`: required, numeric, min:0
+- `unitPrice`: required, numeric, min:0
+- `originalPrice`: required, numeric, min:0
+- `discountPercent`: required, numeric, min:0, max:100
+- `discountAmount`: required, numeric, min:0
+- `subtotal`: required, numeric, min:0
+- `taxRate`: required, numeric, min:0, max:100
+- `taxAmount`: required, numeric, min:0
+- `total`: required, numeric, min:0
+- `metadata`: nullable, array
+- `status`: nullable, string, in:active,inactive
 
 **Ejemplo de Request:**
 
@@ -1954,9 +3478,24 @@
     "body": {
         "data": {
             "type": "cart_items",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -1979,10 +3518,32 @@
 - ✅ `taxRate` (number) 
 - ✅ `taxAmount` (number) 
 - ✅ `total` (number) 
-- ✅ `shoppingCart` (relationship) 
-- ✅ `product` (relationship) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `metadata` (object) 
+- ✅ `status` (string) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+- ✅ `status` (mixed) 
+
+**Relaciones disponibles:**
+
+- `shoppingCart` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `shoppingCart`: required
+- `product`: required
+- `quantity`: required, numeric, min:0
+- `unitPrice`: required, numeric, min:0
+- `originalPrice`: required, numeric, min:0
+- `discountPercent`: required, numeric, min:0, max:100
+- `discountAmount`: required, numeric, min:0
+- `subtotal`: required, numeric, min:0
+- `taxRate`: required, numeric, min:0, max:100
+- `taxAmount`: required, numeric, min:0
+- `total`: required, numeric, min:0
+- `metadata`: nullable, array
+- `status`: nullable, string, in:active,inactive
 
 **Ejemplo de Request:**
 
@@ -2014,10 +3575,56 @@
 - ✅ `taxRate` (number) 
 - ✅ `taxAmount` (number) 
 - ✅ `total` (number) 
-- ✅ `shoppingCart` (relationship) 
-- ✅ `product` (relationship) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `metadata` (object) 
+- ✅ `status` (string) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+- ✅ `status` (mixed) 
+
+**Relaciones disponibles:**
+
+- `shoppingCart` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `shoppingCart`: required
+- `product`: required
+- `quantity`: required, numeric, min:0
+- `unitPrice`: required, numeric, min:0
+- `originalPrice`: required, numeric, min:0
+- `discountPercent`: required, numeric, min:0, max:100
+- `discountAmount`: required, numeric, min:0
+- `subtotal`: required, numeric, min:0
+- `taxRate`: required, numeric, min:0, max:100
+- `taxAmount`: required, numeric, min:0
+- `total`: required, numeric, min:0
+- `metadata`: nullable, array
+- `status`: nullable, string, in:active,inactive
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/cart_items\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "cart_items",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -2036,10 +3643,32 @@
 - ✅ `taxRate` (number) 
 - ✅ `taxAmount` (number) 
 - ✅ `total` (number) 
-- ✅ `shoppingCart` (relationship) 
-- ✅ `product` (relationship) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `metadata` (object) 
+- ✅ `status` (string) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+- ✅ `status` (mixed) 
+
+**Relaciones disponibles:**
+
+- `shoppingCart` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `shoppingCart`: required
+- `product`: required
+- `quantity`: required, numeric, min:0
+- `unitPrice`: required, numeric, min:0
+- `originalPrice`: required, numeric, min:0
+- `discountPercent`: required, numeric, min:0, max:100
+- `discountAmount`: required, numeric, min:0
+- `subtotal`: required, numeric, min:0
+- `taxRate`: required, numeric, min:0, max:100
+- `taxAmount`: required, numeric, min:0
+- `total`: required, numeric, min:0
+- `metadata`: nullable, array
+- `status`: nullable, string, in:active,inactive
 
 ---
 
@@ -2060,10 +3689,32 @@
 - ✅ `taxRate` (number) 
 - ✅ `taxAmount` (number) 
 - ✅ `total` (number) 
-- ✅ `shoppingCart` (relationship) 
-- ✅ `product` (relationship) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `metadata` (object) 
+- ✅ `status` (string) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+- ✅ `status` (mixed) 
+
+**Relaciones disponibles:**
+
+- `shoppingCart` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `shoppingCart`: required
+- `product`: required
+- `quantity`: required, numeric, min:0
+- `unitPrice`: required, numeric, min:0
+- `originalPrice`: required, numeric, min:0
+- `discountPercent`: required, numeric, min:0, max:100
+- `discountAmount`: required, numeric, min:0
+- `subtotal`: required, numeric, min:0
+- `taxRate`: required, numeric, min:0, max:100
+- `taxAmount`: required, numeric, min:0
+- `total`: required, numeric, min:0
+- `metadata`: nullable, array
+- `status`: nullable, string, in:active,inactive
 
 **Ejemplo de Request:**
 
@@ -2095,10 +3746,32 @@
 - ✅ `taxRate` (number) 
 - ✅ `taxAmount` (number) 
 - ✅ `total` (number) 
-- ✅ `shoppingCart` (relationship) 
-- ✅ `product` (relationship) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `metadata` (object) 
+- ✅ `status` (string) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+- ✅ `status` (mixed) 
+
+**Relaciones disponibles:**
+
+- `shoppingCart` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `shoppingCart`: required
+- `product`: required
+- `quantity`: required, numeric, min:0
+- `unitPrice`: required, numeric, min:0
+- `originalPrice`: required, numeric, min:0
+- `discountPercent`: required, numeric, min:0, max:100
+- `discountAmount`: required, numeric, min:0
+- `subtotal`: required, numeric, min:0
+- `taxRate`: required, numeric, min:0, max:100
+- `taxAmount`: required, numeric, min:0
+- `total`: required, numeric, min:0
+- `metadata`: nullable, array
+- `status`: nullable, string, in:active,inactive
 
 **Ejemplo de Request:**
 
@@ -2114,9 +3787,24 @@
     "body": {
         "data": {
             "type": "coupons",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -2139,10 +3827,32 @@
 - ✅ `taxRate` (number) 
 - ✅ `taxAmount` (number) 
 - ✅ `total` (number) 
-- ✅ `shoppingCart` (relationship) 
-- ✅ `product` (relationship) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `metadata` (object) 
+- ✅ `status` (string) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+- ✅ `status` (mixed) 
+
+**Relaciones disponibles:**
+
+- `shoppingCart` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `shoppingCart`: required
+- `product`: required
+- `quantity`: required, numeric, min:0
+- `unitPrice`: required, numeric, min:0
+- `originalPrice`: required, numeric, min:0
+- `discountPercent`: required, numeric, min:0, max:100
+- `discountAmount`: required, numeric, min:0
+- `subtotal`: required, numeric, min:0
+- `taxRate`: required, numeric, min:0, max:100
+- `taxAmount`: required, numeric, min:0
+- `total`: required, numeric, min:0
+- `metadata`: nullable, array
+- `status`: nullable, string, in:active,inactive
 
 **Ejemplo de Request:**
 
@@ -2174,10 +3884,56 @@
 - ✅ `taxRate` (number) 
 - ✅ `taxAmount` (number) 
 - ✅ `total` (number) 
-- ✅ `shoppingCart` (relationship) 
-- ✅ `product` (relationship) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `metadata` (object) 
+- ✅ `status` (string) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+- ✅ `status` (mixed) 
+
+**Relaciones disponibles:**
+
+- `shoppingCart` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `shoppingCart`: required
+- `product`: required
+- `quantity`: required, numeric, min:0
+- `unitPrice`: required, numeric, min:0
+- `originalPrice`: required, numeric, min:0
+- `discountPercent`: required, numeric, min:0, max:100
+- `discountAmount`: required, numeric, min:0
+- `subtotal`: required, numeric, min:0
+- `taxRate`: required, numeric, min:0, max:100
+- `taxAmount`: required, numeric, min:0
+- `total`: required, numeric, min:0
+- `metadata`: nullable, array
+- `status`: nullable, string, in:active,inactive
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/coupons\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "coupons",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -2196,10 +3952,32 @@
 - ✅ `taxRate` (number) 
 - ✅ `taxAmount` (number) 
 - ✅ `total` (number) 
-- ✅ `shoppingCart` (relationship) 
-- ✅ `product` (relationship) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
+- ✅ `metadata` (object) 
+- ✅ `status` (string) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+- ✅ `status` (mixed) 
+
+**Relaciones disponibles:**
+
+- `shoppingCart` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `shoppingCart`: required
+- `product`: required
+- `quantity`: required, numeric, min:0
+- `unitPrice`: required, numeric, min:0
+- `originalPrice`: required, numeric, min:0
+- `discountPercent`: required, numeric, min:0, max:100
+- `discountAmount`: required, numeric, min:0
+- `subtotal`: required, numeric, min:0
+- `taxRate`: required, numeric, min:0, max:100
+- `taxAmount`: required, numeric, min:0
+- `total`: required, numeric, min:0
+- `metadata`: nullable, array
+- `status`: nullable, string, in:active,inactive
 
 ---
 
@@ -2211,11 +3989,19 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `purchaseOrder` (relationship) 
-- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 - ✅ `quantity` (mixed) 
+
+**Relaciones disponibles:**
+
+- `purchaseOrder` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `quantity`: required, numeric, min:0.01
+- `unitPrice`: required, numeric, min:0
 
 **Ejemplo de Request:**
 
@@ -2238,11 +4024,19 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `purchaseOrder` (relationship) 
-- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 - ✅ `quantity` (mixed) 
+
+**Relaciones disponibles:**
+
+- `purchaseOrder` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `quantity`: required, numeric, min:0.01
+- `unitPrice`: required, numeric, min:0
 
 **Ejemplo de Request:**
 
@@ -2258,9 +4052,24 @@
     "body": {
         "data": {
             "type": "suppliers",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -2274,11 +4083,19 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `purchaseOrder` (relationship) 
-- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 - ✅ `quantity` (mixed) 
+
+**Relaciones disponibles:**
+
+- `purchaseOrder` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `quantity`: required, numeric, min:0.01
+- `unitPrice`: required, numeric, min:0
 
 **Ejemplo de Request:**
 
@@ -2301,11 +4118,43 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `purchaseOrder` (relationship) 
-- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 - ✅ `quantity` (mixed) 
+
+**Relaciones disponibles:**
+
+- `purchaseOrder` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `quantity`: required, numeric, min:0.01
+- `unitPrice`: required, numeric, min:0
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/suppliers\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "suppliers",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -2315,11 +4164,19 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `purchaseOrder` (relationship) 
-- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 - ✅ `quantity` (mixed) 
+
+**Relaciones disponibles:**
+
+- `purchaseOrder` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `quantity`: required, numeric, min:0.01
+- `unitPrice`: required, numeric, min:0
 
 ---
 
@@ -2331,11 +4188,19 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `purchaseOrder` (relationship) 
-- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 - ✅ `quantity` (mixed) 
+
+**Relaciones disponibles:**
+
+- `purchaseOrder` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `quantity`: required, numeric, min:0.01
+- `unitPrice`: required, numeric, min:0
 
 **Ejemplo de Request:**
 
@@ -2358,11 +4223,19 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `purchaseOrder` (relationship) 
-- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 - ✅ `quantity` (mixed) 
+
+**Relaciones disponibles:**
+
+- `purchaseOrder` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `quantity`: required, numeric, min:0.01
+- `unitPrice`: required, numeric, min:0
 
 **Ejemplo de Request:**
 
@@ -2378,9 +4251,24 @@
     "body": {
         "data": {
             "type": "purchase_orders",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -2394,11 +4282,19 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `purchaseOrder` (relationship) 
-- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 - ✅ `quantity` (mixed) 
+
+**Relaciones disponibles:**
+
+- `purchaseOrder` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `quantity`: required, numeric, min:0.01
+- `unitPrice`: required, numeric, min:0
 
 **Ejemplo de Request:**
 
@@ -2421,11 +4317,43 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `purchaseOrder` (relationship) 
-- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 - ✅ `quantity` (mixed) 
+
+**Relaciones disponibles:**
+
+- `purchaseOrder` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `quantity`: required, numeric, min:0.01
+- `unitPrice`: required, numeric, min:0
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/purchase_orders\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "purchase_orders",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -2435,11 +4363,19 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `purchaseOrder` (relationship) 
-- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 - ✅ `quantity` (mixed) 
+
+**Relaciones disponibles:**
+
+- `purchaseOrder` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `quantity`: required, numeric, min:0.01
+- `unitPrice`: required, numeric, min:0
 
 ---
 
@@ -2451,11 +4387,19 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `purchaseOrder` (relationship) 
-- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 - ✅ `quantity` (mixed) 
+
+**Relaciones disponibles:**
+
+- `purchaseOrder` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `quantity`: required, numeric, min:0.01
+- `unitPrice`: required, numeric, min:0
 
 **Ejemplo de Request:**
 
@@ -2478,11 +4422,19 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `purchaseOrder` (relationship) 
-- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 - ✅ `quantity` (mixed) 
+
+**Relaciones disponibles:**
+
+- `purchaseOrder` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `quantity`: required, numeric, min:0.01
+- `unitPrice`: required, numeric, min:0
 
 **Ejemplo de Request:**
 
@@ -2498,9 +4450,24 @@
     "body": {
         "data": {
             "type": "purchase_order_items",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -2514,11 +4481,19 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `purchaseOrder` (relationship) 
-- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 - ✅ `quantity` (mixed) 
+
+**Relaciones disponibles:**
+
+- `purchaseOrder` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `quantity`: required, numeric, min:0.01
+- `unitPrice`: required, numeric, min:0
 
 **Ejemplo de Request:**
 
@@ -2541,11 +4516,43 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `purchaseOrder` (relationship) 
-- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 - ✅ `quantity` (mixed) 
+
+**Relaciones disponibles:**
+
+- `purchaseOrder` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `quantity`: required, numeric, min:0.01
+- `unitPrice`: required, numeric, min:0
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/purchase_order_items\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "purchase_order_items",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -2555,11 +4562,19 @@
 
 - ✅ `quantity` (number) 
 - ✅ `subtotal` (number) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `purchaseOrder` (relationship) 
-- ✅ `product` (relationship) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 - ✅ `quantity` (mixed) 
+
+**Relaciones disponibles:**
+
+- `purchaseOrder` (relationship)
+- `product` (relationship)
+
+**Validaciones:**
+
+- `quantity`: required, numeric, min:0.01
+- `unitPrice`: required, numeric, min:0
 
 ---
 
@@ -2569,25 +4584,43 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
-- ✅ `email` (string) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
 - ✅ `phone` (string) 
 - ✅ `address` (string) 
 - ✅ `city` (string) 
 - ✅ `state` (string) 
 - ✅ `country` (string) 
-- ✅ `classification` (string) 
+- ✅ `classification` (string) 🔄
 - ✅ `credit_limit` (number) 
 - ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 
+- ✅ `is_active` (boolean) 🔄
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
-- ✅ `salesOrders` (relationship[]) 
+- ✅ `created_at` (datetime) 🔄
+- ✅ `updated_at` (datetime) 🔄
 - ✅ `name` (mixed) 
 - ✅ `email` (mixed) 
 - ✅ `classification` (mixed) 
 - ✅ `is_active` (mixed) 
+
+**Relaciones disponibles:**
+
+- `salesOrders` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `email`: required, email, max:255, customers, email
+- `phone`: nullable, string, max:50
+- `address`: nullable, string, max:255
+- `city`: nullable, string, max:100
+- `state`: nullable, string, max:100
+- `country`: nullable, string, max:100
+- `classification`: required, mayorista, minorista, especial
+- `credit_limit`: nullable, numeric, min:0
+- `current_credit`: nullable, numeric, min:0
+- `is_active`: boolean
+- `metadata`: nullable, array
 
 **Ejemplo de Request:**
 
@@ -2608,25 +4641,43 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
-- ✅ `email` (string) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
 - ✅ `phone` (string) 
 - ✅ `address` (string) 
 - ✅ `city` (string) 
 - ✅ `state` (string) 
 - ✅ `country` (string) 
-- ✅ `classification` (string) 
+- ✅ `classification` (string) 🔄
 - ✅ `credit_limit` (number) 
 - ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 
+- ✅ `is_active` (boolean) 🔄
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
-- ✅ `salesOrders` (relationship[]) 
+- ✅ `created_at` (datetime) 🔄
+- ✅ `updated_at` (datetime) 🔄
 - ✅ `name` (mixed) 
 - ✅ `email` (mixed) 
 - ✅ `classification` (mixed) 
 - ✅ `is_active` (mixed) 
+
+**Relaciones disponibles:**
+
+- `salesOrders` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `email`: required, email, max:255, customers, email
+- `phone`: nullable, string, max:50
+- `address`: nullable, string, max:255
+- `city`: nullable, string, max:100
+- `state`: nullable, string, max:100
+- `country`: nullable, string, max:100
+- `classification`: required, mayorista, minorista, especial
+- `credit_limit`: nullable, numeric, min:0
+- `current_credit`: nullable, numeric, min:0
+- `is_active`: boolean
+- `metadata`: nullable, array
 
 **Ejemplo de Request:**
 
@@ -2642,9 +4693,24 @@
     "body": {
         "data": {
             "type": "customers",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -2656,25 +4722,43 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
-- ✅ `email` (string) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
 - ✅ `phone` (string) 
 - ✅ `address` (string) 
 - ✅ `city` (string) 
 - ✅ `state` (string) 
 - ✅ `country` (string) 
-- ✅ `classification` (string) 
+- ✅ `classification` (string) 🔄
 - ✅ `credit_limit` (number) 
 - ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 
+- ✅ `is_active` (boolean) 🔄
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
-- ✅ `salesOrders` (relationship[]) 
+- ✅ `created_at` (datetime) 🔄
+- ✅ `updated_at` (datetime) 🔄
 - ✅ `name` (mixed) 
 - ✅ `email` (mixed) 
 - ✅ `classification` (mixed) 
 - ✅ `is_active` (mixed) 
+
+**Relaciones disponibles:**
+
+- `salesOrders` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `email`: required, email, max:255, customers, email
+- `phone`: nullable, string, max:50
+- `address`: nullable, string, max:255
+- `city`: nullable, string, max:100
+- `state`: nullable, string, max:100
+- `country`: nullable, string, max:100
+- `classification`: required, mayorista, minorista, especial
+- `credit_limit`: nullable, numeric, min:0
+- `current_credit`: nullable, numeric, min:0
+- `is_active`: boolean
+- `metadata`: nullable, array
 
 **Ejemplo de Request:**
 
@@ -2695,25 +4779,67 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
-- ✅ `email` (string) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
 - ✅ `phone` (string) 
 - ✅ `address` (string) 
 - ✅ `city` (string) 
 - ✅ `state` (string) 
 - ✅ `country` (string) 
-- ✅ `classification` (string) 
+- ✅ `classification` (string) 🔄
 - ✅ `credit_limit` (number) 
 - ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 
+- ✅ `is_active` (boolean) 🔄
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
-- ✅ `salesOrders` (relationship[]) 
+- ✅ `created_at` (datetime) 🔄
+- ✅ `updated_at` (datetime) 🔄
 - ✅ `name` (mixed) 
 - ✅ `email` (mixed) 
 - ✅ `classification` (mixed) 
 - ✅ `is_active` (mixed) 
+
+**Relaciones disponibles:**
+
+- `salesOrders` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `email`: required, email, max:255, customers, email
+- `phone`: nullable, string, max:50
+- `address`: nullable, string, max:255
+- `city`: nullable, string, max:100
+- `state`: nullable, string, max:100
+- `country`: nullable, string, max:100
+- `classification`: required, mayorista, minorista, especial
+- `credit_limit`: nullable, numeric, min:0
+- `current_credit`: nullable, numeric, min:0
+- `is_active`: boolean
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/customers\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "customers",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -2721,25 +4847,43 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
-- ✅ `email` (string) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
 - ✅ `phone` (string) 
 - ✅ `address` (string) 
 - ✅ `city` (string) 
 - ✅ `state` (string) 
 - ✅ `country` (string) 
-- ✅ `classification` (string) 
+- ✅ `classification` (string) 🔄
 - ✅ `credit_limit` (number) 
 - ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 
+- ✅ `is_active` (boolean) 🔄
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
-- ✅ `salesOrders` (relationship[]) 
+- ✅ `created_at` (datetime) 🔄
+- ✅ `updated_at` (datetime) 🔄
 - ✅ `name` (mixed) 
 - ✅ `email` (mixed) 
 - ✅ `classification` (mixed) 
 - ✅ `is_active` (mixed) 
+
+**Relaciones disponibles:**
+
+- `salesOrders` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `email`: required, email, max:255, customers, email
+- `phone`: nullable, string, max:50
+- `address`: nullable, string, max:255
+- `city`: nullable, string, max:100
+- `state`: nullable, string, max:100
+- `country`: nullable, string, max:100
+- `classification`: required, mayorista, minorista, especial
+- `credit_limit`: nullable, numeric, min:0
+- `current_credit`: nullable, numeric, min:0
+- `is_active`: boolean
+- `metadata`: nullable, array
 
 ---
 
@@ -2749,25 +4893,43 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
-- ✅ `email` (string) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
 - ✅ `phone` (string) 
 - ✅ `address` (string) 
 - ✅ `city` (string) 
 - ✅ `state` (string) 
 - ✅ `country` (string) 
-- ✅ `classification` (string) 
+- ✅ `classification` (string) 🔄
 - ✅ `credit_limit` (number) 
 - ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 
+- ✅ `is_active` (boolean) 🔄
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
-- ✅ `salesOrders` (relationship[]) 
+- ✅ `created_at` (datetime) 🔄
+- ✅ `updated_at` (datetime) 🔄
 - ✅ `name` (mixed) 
 - ✅ `email` (mixed) 
 - ✅ `classification` (mixed) 
 - ✅ `is_active` (mixed) 
+
+**Relaciones disponibles:**
+
+- `salesOrders` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `email`: required, email, max:255, customers, email
+- `phone`: nullable, string, max:50
+- `address`: nullable, string, max:255
+- `city`: nullable, string, max:100
+- `state`: nullable, string, max:100
+- `country`: nullable, string, max:100
+- `classification`: required, mayorista, minorista, especial
+- `credit_limit`: nullable, numeric, min:0
+- `current_credit`: nullable, numeric, min:0
+- `is_active`: boolean
+- `metadata`: nullable, array
 
 **Ejemplo de Request:**
 
@@ -2788,25 +4950,43 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
-- ✅ `email` (string) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
 - ✅ `phone` (string) 
 - ✅ `address` (string) 
 - ✅ `city` (string) 
 - ✅ `state` (string) 
 - ✅ `country` (string) 
-- ✅ `classification` (string) 
+- ✅ `classification` (string) 🔄
 - ✅ `credit_limit` (number) 
 - ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 
+- ✅ `is_active` (boolean) 🔄
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
-- ✅ `salesOrders` (relationship[]) 
+- ✅ `created_at` (datetime) 🔄
+- ✅ `updated_at` (datetime) 🔄
 - ✅ `name` (mixed) 
 - ✅ `email` (mixed) 
 - ✅ `classification` (mixed) 
 - ✅ `is_active` (mixed) 
+
+**Relaciones disponibles:**
+
+- `salesOrders` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `email`: required, email, max:255, customers, email
+- `phone`: nullable, string, max:50
+- `address`: nullable, string, max:255
+- `city`: nullable, string, max:100
+- `state`: nullable, string, max:100
+- `country`: nullable, string, max:100
+- `classification`: required, mayorista, minorista, especial
+- `credit_limit`: nullable, numeric, min:0
+- `current_credit`: nullable, numeric, min:0
+- `is_active`: boolean
+- `metadata`: nullable, array
 
 **Ejemplo de Request:**
 
@@ -2822,9 +5002,24 @@
     "body": {
         "data": {
             "type": "sales_orders",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -2836,25 +5031,43 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
-- ✅ `email` (string) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
 - ✅ `phone` (string) 
 - ✅ `address` (string) 
 - ✅ `city` (string) 
 - ✅ `state` (string) 
 - ✅ `country` (string) 
-- ✅ `classification` (string) 
+- ✅ `classification` (string) 🔄
 - ✅ `credit_limit` (number) 
 - ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 
+- ✅ `is_active` (boolean) 🔄
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
-- ✅ `salesOrders` (relationship[]) 
+- ✅ `created_at` (datetime) 🔄
+- ✅ `updated_at` (datetime) 🔄
 - ✅ `name` (mixed) 
 - ✅ `email` (mixed) 
 - ✅ `classification` (mixed) 
 - ✅ `is_active` (mixed) 
+
+**Relaciones disponibles:**
+
+- `salesOrders` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `email`: required, email, max:255, customers, email
+- `phone`: nullable, string, max:50
+- `address`: nullable, string, max:255
+- `city`: nullable, string, max:100
+- `state`: nullable, string, max:100
+- `country`: nullable, string, max:100
+- `classification`: required, mayorista, minorista, especial
+- `credit_limit`: nullable, numeric, min:0
+- `current_credit`: nullable, numeric, min:0
+- `is_active`: boolean
+- `metadata`: nullable, array
 
 **Ejemplo de Request:**
 
@@ -2875,25 +5088,67 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
-- ✅ `email` (string) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
 - ✅ `phone` (string) 
 - ✅ `address` (string) 
 - ✅ `city` (string) 
 - ✅ `state` (string) 
 - ✅ `country` (string) 
-- ✅ `classification` (string) 
+- ✅ `classification` (string) 🔄
 - ✅ `credit_limit` (number) 
 - ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 
+- ✅ `is_active` (boolean) 🔄
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
-- ✅ `salesOrders` (relationship[]) 
+- ✅ `created_at` (datetime) 🔄
+- ✅ `updated_at` (datetime) 🔄
 - ✅ `name` (mixed) 
 - ✅ `email` (mixed) 
 - ✅ `classification` (mixed) 
 - ✅ `is_active` (mixed) 
+
+**Relaciones disponibles:**
+
+- `salesOrders` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `email`: required, email, max:255, customers, email
+- `phone`: nullable, string, max:50
+- `address`: nullable, string, max:255
+- `city`: nullable, string, max:100
+- `state`: nullable, string, max:100
+- `country`: nullable, string, max:100
+- `classification`: required, mayorista, minorista, especial
+- `credit_limit`: nullable, numeric, min:0
+- `current_credit`: nullable, numeric, min:0
+- `is_active`: boolean
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/sales_orders\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "sales_orders",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -2901,25 +5156,43 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
-- ✅ `email` (string) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
 - ✅ `phone` (string) 
 - ✅ `address` (string) 
 - ✅ `city` (string) 
 - ✅ `state` (string) 
 - ✅ `country` (string) 
-- ✅ `classification` (string) 
+- ✅ `classification` (string) 🔄
 - ✅ `credit_limit` (number) 
 - ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 
+- ✅ `is_active` (boolean) 🔄
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
-- ✅ `salesOrders` (relationship[]) 
+- ✅ `created_at` (datetime) 🔄
+- ✅ `updated_at` (datetime) 🔄
 - ✅ `name` (mixed) 
 - ✅ `email` (mixed) 
 - ✅ `classification` (mixed) 
 - ✅ `is_active` (mixed) 
+
+**Relaciones disponibles:**
+
+- `salesOrders` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `email`: required, email, max:255, customers, email
+- `phone`: nullable, string, max:50
+- `address`: nullable, string, max:255
+- `city`: nullable, string, max:100
+- `state`: nullable, string, max:100
+- `country`: nullable, string, max:100
+- `classification`: required, mayorista, minorista, especial
+- `credit_limit`: nullable, numeric, min:0
+- `current_credit`: nullable, numeric, min:0
+- `is_active`: boolean
+- `metadata`: nullable, array
 
 ---
 
@@ -2929,25 +5202,43 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
-- ✅ `email` (string) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
 - ✅ `phone` (string) 
 - ✅ `address` (string) 
 - ✅ `city` (string) 
 - ✅ `state` (string) 
 - ✅ `country` (string) 
-- ✅ `classification` (string) 
+- ✅ `classification` (string) 🔄
 - ✅ `credit_limit` (number) 
 - ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 
+- ✅ `is_active` (boolean) 🔄
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
-- ✅ `salesOrders` (relationship[]) 
+- ✅ `created_at` (datetime) 🔄
+- ✅ `updated_at` (datetime) 🔄
 - ✅ `name` (mixed) 
 - ✅ `email` (mixed) 
 - ✅ `classification` (mixed) 
 - ✅ `is_active` (mixed) 
+
+**Relaciones disponibles:**
+
+- `salesOrders` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `email`: required, email, max:255, customers, email
+- `phone`: nullable, string, max:50
+- `address`: nullable, string, max:255
+- `city`: nullable, string, max:100
+- `state`: nullable, string, max:100
+- `country`: nullable, string, max:100
+- `classification`: required, mayorista, minorista, especial
+- `credit_limit`: nullable, numeric, min:0
+- `current_credit`: nullable, numeric, min:0
+- `is_active`: boolean
+- `metadata`: nullable, array
 
 **Ejemplo de Request:**
 
@@ -2968,25 +5259,43 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
-- ✅ `email` (string) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
 - ✅ `phone` (string) 
 - ✅ `address` (string) 
 - ✅ `city` (string) 
 - ✅ `state` (string) 
 - ✅ `country` (string) 
-- ✅ `classification` (string) 
+- ✅ `classification` (string) 🔄
 - ✅ `credit_limit` (number) 
 - ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 
+- ✅ `is_active` (boolean) 🔄
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
-- ✅ `salesOrders` (relationship[]) 
+- ✅ `created_at` (datetime) 🔄
+- ✅ `updated_at` (datetime) 🔄
 - ✅ `name` (mixed) 
 - ✅ `email` (mixed) 
 - ✅ `classification` (mixed) 
 - ✅ `is_active` (mixed) 
+
+**Relaciones disponibles:**
+
+- `salesOrders` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `email`: required, email, max:255, customers, email
+- `phone`: nullable, string, max:50
+- `address`: nullable, string, max:255
+- `city`: nullable, string, max:100
+- `state`: nullable, string, max:100
+- `country`: nullable, string, max:100
+- `classification`: required, mayorista, minorista, especial
+- `credit_limit`: nullable, numeric, min:0
+- `current_credit`: nullable, numeric, min:0
+- `is_active`: boolean
+- `metadata`: nullable, array
 
 **Ejemplo de Request:**
 
@@ -3002,9 +5311,24 @@
     "body": {
         "data": {
             "type": "sales_order_items",
-            "attributes": [
-                "..."
-            ]
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
         }
     }
 }
@@ -3016,25 +5340,43 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
-- ✅ `email` (string) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
 - ✅ `phone` (string) 
 - ✅ `address` (string) 
 - ✅ `city` (string) 
 - ✅ `state` (string) 
 - ✅ `country` (string) 
-- ✅ `classification` (string) 
+- ✅ `classification` (string) 🔄
 - ✅ `credit_limit` (number) 
 - ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 
+- ✅ `is_active` (boolean) 🔄
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
-- ✅ `salesOrders` (relationship[]) 
+- ✅ `created_at` (datetime) 🔄
+- ✅ `updated_at` (datetime) 🔄
 - ✅ `name` (mixed) 
 - ✅ `email` (mixed) 
 - ✅ `classification` (mixed) 
 - ✅ `is_active` (mixed) 
+
+**Relaciones disponibles:**
+
+- `salesOrders` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `email`: required, email, max:255, customers, email
+- `phone`: nullable, string, max:50
+- `address`: nullable, string, max:255
+- `city`: nullable, string, max:100
+- `state`: nullable, string, max:100
+- `country`: nullable, string, max:100
+- `classification`: required, mayorista, minorista, especial
+- `credit_limit`: nullable, numeric, min:0
+- `current_credit`: nullable, numeric, min:0
+- `is_active`: boolean
+- `metadata`: nullable, array
 
 **Ejemplo de Request:**
 
@@ -3055,25 +5397,67 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
-- ✅ `email` (string) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
 - ✅ `phone` (string) 
 - ✅ `address` (string) 
 - ✅ `city` (string) 
 - ✅ `state` (string) 
 - ✅ `country` (string) 
-- ✅ `classification` (string) 
+- ✅ `classification` (string) 🔄
 - ✅ `credit_limit` (number) 
 - ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 
+- ✅ `is_active` (boolean) 🔄
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
-- ✅ `salesOrders` (relationship[]) 
+- ✅ `created_at` (datetime) 🔄
+- ✅ `updated_at` (datetime) 🔄
 - ✅ `name` (mixed) 
 - ✅ `email` (mixed) 
 - ✅ `classification` (mixed) 
 - ✅ `is_active` (mixed) 
+
+**Relaciones disponibles:**
+
+- `salesOrders` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `email`: required, email, max:255, customers, email
+- `phone`: nullable, string, max:50
+- `address`: nullable, string, max:255
+- `city`: nullable, string, max:100
+- `state`: nullable, string, max:100
+- `country`: nullable, string, max:100
+- `classification`: required, mayorista, minorista, especial
+- `credit_limit`: nullable, numeric, min:0
+- `current_credit`: nullable, numeric, min:0
+- `is_active`: boolean
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/sales_order_items\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "sales_order_items",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
 
 ---
 
@@ -3081,25 +5465,43 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 
-- ✅ `email` (string) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
 - ✅ `phone` (string) 
 - ✅ `address` (string) 
 - ✅ `city` (string) 
 - ✅ `state` (string) 
 - ✅ `country` (string) 
-- ✅ `classification` (string) 
+- ✅ `classification` (string) 🔄
 - ✅ `credit_limit` (number) 
 - ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 
+- ✅ `is_active` (boolean) 🔄
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 
-- ✅ `updated_at` (datetime) 
-- ✅ `salesOrders` (relationship[]) 
+- ✅ `created_at` (datetime) 🔄
+- ✅ `updated_at` (datetime) 🔄
 - ✅ `name` (mixed) 
 - ✅ `email` (mixed) 
 - ✅ `classification` (mixed) 
 - ✅ `is_active` (mixed) 
+
+**Relaciones disponibles:**
+
+- `salesOrders` (relationship[])
+
+**Validaciones:**
+
+- `name`: required, string, max:255
+- `email`: required, email, max:255, customers, email
+- `phone`: nullable, string, max:50
+- `address`: nullable, string, max:255
+- `city`: nullable, string, max:100
+- `state`: nullable, string, max:100
+- `country`: nullable, string, max:100
+- `classification`: required, mayorista, minorista, especial
+- `credit_limit`: nullable, numeric, min:0
+- `current_credit`: nullable, numeric, min:0
+- `is_active`: boolean
+- `metadata`: nullable, array
 
 ---
 

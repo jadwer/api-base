@@ -5,6 +5,7 @@ namespace Modules\PageBuilder\JsonApi\V1\Pages;
 use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Str;
+use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\ArrayHash;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
@@ -43,6 +44,7 @@ class PageSchema extends Schema
             Str::make('html'),
             Str::make('css'),
             ArrayHash::make('json'),
+            Str::make('status')->sortable(),
             DateTime::make('publishedAt')->sortable(),
             BelongsTo::make('user'),
         ];
@@ -58,6 +60,7 @@ class PageSchema extends Schema
         return [
             WhereIdIn::make($this),
             Where::make('slug'),
+            Where::make('status'),
         ];
     }
 

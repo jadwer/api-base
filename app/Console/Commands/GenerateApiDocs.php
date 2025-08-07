@@ -127,26 +127,79 @@ class GenerateApiDocs extends Command
     {
         $content = file_get_contents($filePath);
         
-        // Extraer campos básicos
+        // Extraer campos y relaciones con más detalle
         $fields = [];
-        if (preg_match_all('/(\w+)::make\([\'"]([^\'"]+)[\'"]?\)/', $content, $matches)) {
+        $relationships = [];
+        
+        // Mejorar la regex para capturar más detalles de los campos - línea por línea
+        if (preg_match_all('/(\w+)::make\([\'"]([^\'"]+)[\'"]?\)([^,\n]*)/m', $content, $matches)) {
             for ($i = 0; $i < count($matches[0]); $i++) {
                 $type = $matches[1][$i];
                 $name = $matches[2][$i];
+                $modifiers = $matches[3][$i];
                 
-                $fields[] = [
+                $fieldInfo = [
                     'name' => $name,
                     'type' => $this->mapFieldType($type),
-                    'required' => !str_contains($matches[0][$i], 'nullable'),
-                    'readonly' => str_contains($matches[0][$i], 'readOnly')
+                    'required' => !str_contains($modifiers, 'nullable'),
+                    'readonly' => str_contains($modifiers, 'readOnly'),
+                    'sortable' => str_contains($modifiers, 'sortable'),
+                    'filterable' => str_contains($modifiers, 'filterable')
                 ];
+                
+                if (in_array($type, ['BelongsTo', 'BelongsToMany', 'HasMany', 'HasOne'])) {
+                    $relationships[] = $fieldInfo;
+                } else {
+                    $fields[] = $fieldInfo;
+                }
             }
         }
+        
+        // Buscar validaciones en el Request correspondiente
+        $validations = $this->findValidationRules($filePath);
 
         return [
             'file' => basename($filePath),
-            'fields' => $fields
+            'fields' => $fields,
+            'relationships' => $relationships,
+            'validations' => $validations
         ];
+    }
+
+    private function findValidationRules(string $schemaPath): array
+    {
+        // Encontrar el Request correspondiente
+        $requestPath = str_replace('Schema.php', 'Request.php', $schemaPath);
+        
+        if (!file_exists($requestPath)) {
+            return [];
+        }
+        
+        $content = file_get_contents($requestPath);
+        $validations = [];
+        
+        // Extraer reglas de validación con mejor parsing
+        if (preg_match('/public function rules.*?\{(.*?)\}/s', $content, $matches)) {
+            $rulesContent = $matches[1];
+            
+            // Buscar patrones como 'field' => ['required', 'string'] de manera más flexible
+            if (preg_match_all('/[\'"](\w+)[\'"]\s*=>\s*\[([^\]]*)\]/s', $rulesContent, $ruleMatches)) {
+                for ($i = 0; $i < count($ruleMatches[0]); $i++) {
+                    $field = $ruleMatches[1][$i];
+                    $rulesText = $ruleMatches[2][$i];
+                    
+                    // Extraer reglas individuales, manteniendo comillas simples
+                    $rules = [];
+                    if (preg_match_all('/[\'"]([^\'"]+)[\'"]/', $rulesText, $ruleItems)) {
+                        $rules = $ruleItems[1];
+                    }
+                    
+                    $validations[$field] = $rules;
+                }
+            }
+        }
+        
+        return $validations;
     }
 
     private function mapFieldType(string $laravelType): string
@@ -158,9 +211,11 @@ class GenerateApiDocs extends Command
             'DateTime' => 'datetime',
             'Boolean' => 'boolean',
             'ArrayHash' => 'object',
+            'ArrayList' => 'array',
             'BelongsTo' => 'relationship',
             'BelongsToMany' => 'relationship[]',
             'HasMany' => 'relationship[]',
+            'HasOne' => 'relationship',
             default => 'mixed'
         };
     }
@@ -200,12 +255,37 @@ class GenerateApiDocs extends Command
                             [
                                 'type' => $resourceType,
                                 'id' => '1',
-                                'attributes' => ['...'],
-                                'relationships' => ['...']
+                                'attributes' => [
+                                    'title' => 'Ejemplo',
+                                    'status' => 'published',
+                                    'createdAt' => '2025-01-01T00:00:00.000000Z'
+                                ],
+                                'relationships' => [
+                                    'user' => [
+                                        'data' => [
+                                            'type' => 'users',
+                                            'id' => '1'
+                                        ],
+                                        'links' => [
+                                            'self' => "/api/v1/{$resourceType}/1/relationships/user",
+                                            'related' => "/api/v1/{$resourceType}/1/user"
+                                        ]
+                                    ]
+                                ],
+                                'links' => [
+                                    'self' => "/api/v1/{$resourceType}/1"
+                                ]
                             ]
                         ],
                         'meta' => [
-                            'pagination' => ['...']
+                            'pagination' => [
+                                'currentPage' => 1,
+                                'from' => 1,
+                                'lastPage' => 1,
+                                'perPage' => 15,
+                                'to' => 1,
+                                'total' => 1
+                            ]
                         ]
                     ]
                 ];
@@ -223,7 +303,59 @@ class GenerateApiDocs extends Command
                     'body' => [
                         'data' => [
                             'type' => $resourceType,
-                            'attributes' => ['...']
+                            'attributes' => [
+                                'title' => 'Nueva página',
+                                'slug' => 'nueva-pagina',
+                                'html' => '<h1>Contenido HTML</h1>',
+                                'css' => 'h1 { color: blue; }',
+                                'json' => ['component' => 'header'],
+                                'status' => 'draft'
+                            ],
+                            'relationships' => [
+                                'user' => [
+                                    'data' => [
+                                        'type' => 'users',
+                                        'id' => '1'
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ];
+                
+                $examples['response'] = [
+                    'status' => 201,
+                    'body' => [
+                        'data' => [
+                            'type' => $resourceType,
+                            'id' => '2',
+                            'attributes' => [
+                                'title' => 'Nueva página',
+                                'status' => 'draft',
+                                'createdAt' => '2025-01-01T00:00:00.000000Z'
+                            ]
+                        ]
+                    ]
+                ];
+                break;
+                
+            case 'PATCH':
+                $examples['request'] = [
+                    'method' => 'PATCH',
+                    'url' => "/api/v1/{$resourceType}/1",
+                    'headers' => [
+                        'Content-Type' => 'application/vnd.api+json',
+                        'Accept' => 'application/vnd.api+json',
+                        'Authorization' => 'Bearer {token}'
+                    ],
+                    'body' => [
+                        'data' => [
+                            'type' => $resourceType,
+                            'id' => '1',
+                            'attributes' => [
+                                'status' => 'published',
+                                'title' => 'Título actualizado'
+                            ]
                         ]
                     ]
                 ];
@@ -260,8 +392,26 @@ class GenerateApiDocs extends Command
                     foreach ($endpoint['schema']['fields'] as $field) {
                         $required = $field['required'] ? '✅' : '⚪';
                         $readonly = $field['readonly'] ? '🔒' : '';
-                        $markdown .= "- {$required} `{$field['name']}` ({$field['type']}) {$readonly}\n";
+                        $sortable = $field['sortable'] ? '🔄' : '';
+                        $filterable = $field['filterable'] ? '🔍' : '';
+                        $markdown .= "- {$required} `{$field['name']}` ({$field['type']}) {$readonly}{$sortable}{$filterable}\n";
                     }
+                    
+                    if (!empty($endpoint['schema']['relationships'])) {
+                        $markdown .= "\n**Relaciones disponibles:**\n\n";
+                        foreach ($endpoint['schema']['relationships'] as $rel) {
+                            $markdown .= "- `{$rel['name']}` ({$rel['type']})\n";
+                        }
+                    }
+                    
+                    if (!empty($endpoint['schema']['validations'])) {
+                        $markdown .= "\n**Validaciones:**\n\n";
+                        foreach ($endpoint['schema']['validations'] as $field => $rules) {
+                            $rulesText = implode(', ', $rules);
+                            $markdown .= "- `{$field}`: {$rulesText}\n";
+                        }
+                    }
+                    
                     $markdown .= "\n";
                 }
                 

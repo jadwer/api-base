@@ -26,8 +26,8 @@ class PageResource extends JsonApiResource
             'html'         => $this->resource->html,
             'css'          => $this->resource->css,
             'json'         => $this->resource->json,
+            'status'       => $this->resource->status,
             'publishedAt'  => $this->resource->published_at,
-            'user'         => $this->resource->user,
             'createdAt'    => $this->resource->created_at,
             'updatedAt'    => $this->resource->updated_at,
         ];

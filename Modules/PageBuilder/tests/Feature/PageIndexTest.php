@@ -30,6 +30,7 @@ class PageIndexTest extends TestCase
                         'html',
                         'css',
                         'json',
+                        'status',
                         'publishedAt',
                         'createdAt',
                         'updatedAt',
@@ -44,8 +45,8 @@ class PageIndexTest extends TestCase
 
     public function test_unauthenticated_user_can_list_only_published_pages(): void
     {
-        $publishedPages = Page::factory()->count(2)->create(['published_at' => now()]);
-        Page::factory()->count(2)->create(['published_at' => null]);
+        $publishedPages = Page::factory()->published()->count(2)->create();
+        Page::factory()->draft()->count(2)->create();
 
         $response = $this->jsonApi()->get('/api/v1/pages');
 
@@ -56,7 +57,7 @@ class PageIndexTest extends TestCase
             $response->assertJsonFragment(['id' => (string)$page->id]);
         }
 
-        // Solo 2 nuevas publicadas, además de las del seeder (3)
-        $response->assertJsonCount(5, 'data');
+        // Solo 2 nuevas publicadas, además de las del seeder (2 published)
+        $response->assertJsonCount(4, 'data');
     }
 }

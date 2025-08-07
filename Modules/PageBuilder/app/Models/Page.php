@@ -19,6 +19,7 @@ class Page extends Model
         'html',
         'css',
         'json',
+        'status',
         'published_at',
         'user_id',
     ];
@@ -42,7 +43,7 @@ class Page extends Model
     {
         return LogOptions::defaults()
             ->useLogName('page')
-            ->logOnly(['title', 'slug', 'html', 'css', 'json', 'published_at'])
+            ->logOnly(['title', 'slug', 'html', 'css', 'json', 'status', 'published_at'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
