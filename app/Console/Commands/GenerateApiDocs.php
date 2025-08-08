@@ -105,19 +105,25 @@ class GenerateApiDocs extends Command
 
     private function findSchema(string $controllerClass): ?array
     {
-        // Intentar encontrar el schema correspondiente
+        // Intentar encontrar el schema correspondiente basado en el controlador
         $modulePath = $this->getModulePath($controllerClass);
         if (!$modulePath) return null;
 
-        $schemaFiles = glob($modulePath . '/app/JsonApi/V1/*/');
+        // Extract entity name from controller (e.g., ProductController -> Product)
+        $entityName = $this->extractEntityName($controllerClass);
+        if (!$entityName) return null;
         
-        foreach ($schemaFiles as $schemaDir) {
-            $schemaFile = $schemaDir . '*Schema.php';
-            $schemaFiles = glob($schemaFile);
-            
-            if (!empty($schemaFiles)) {
-                return $this->parseSchemaFile($schemaFiles[0]);
-            }
+        // Construct schema path: Modules/Product/app/JsonApi/V1/Products/ProductSchema.php
+        $schemaPath = $modulePath . '/app/JsonApi/V1/' . $entityName . 's/' . $entityName . 'Schema.php';
+        
+        if (file_exists($schemaPath)) {
+            return $this->parseSchemaFile($schemaPath);
+        }
+
+        // Fallback to old method if exact match not found
+        $schemaFiles = glob($modulePath . '/app/JsonApi/V1/*/' . $entityName . 'Schema.php');
+        if (!empty($schemaFiles)) {
+            return $this->parseSchemaFile($schemaFiles[0]);
         }
 
         return null;
@@ -127,16 +133,30 @@ class GenerateApiDocs extends Command
     {
         $content = file_get_contents($filePath);
         
-        // Extraer campos y relaciones con más detalle
+        // Extraer solo el contenido del método fields()
+        $fieldsContent = '';
+        if (preg_match('/public function fields\(\)[^{]*\{(.*?)\}/s', $content, $matches)) {
+            $fieldsContent = $matches[1];
+        }
+        
+        // Extraer campos y relaciones con más detalle del método fields()
         $fields = [];
         $relationships = [];
         
         // Mejorar la regex para capturar más detalles de los campos - línea por línea
-        if (preg_match_all('/(\w+)::make\([\'"]([^\'"]+)[\'"]?\)([^,\n]*)/m', $content, $matches)) {
+        if (preg_match_all('/(\w+)::make\(([^)]+)\)([^,;\n]*)/m', $fieldsContent, $matches)) {
             for ($i = 0; $i < count($matches[0]); $i++) {
                 $type = $matches[1][$i];
-                $name = $matches[2][$i];
+                $params = $matches[2][$i];
                 $modifiers = $matches[3][$i];
+                
+                // Extract field name from parameters
+                $name = $this->extractFieldName($params);
+                
+                // Skip if no valid name found or if it's $this (for filters)
+                if (!$name || $name === '$this') {
+                    continue;
+                }
                 
                 $fieldInfo = [
                     'name' => $name,
@@ -202,6 +222,30 @@ class GenerateApiDocs extends Command
         return $validations;
     }
 
+    private function extractFieldName(string $params): ?string
+    {
+        // Handle cases like:
+        // 'name' -> name
+        // 'fullDescription', 'full_description' -> fullDescription
+        // (empty) -> null
+        
+        if (empty(trim($params))) {
+            return null;
+        }
+        
+        // Extract first quoted parameter
+        if (preg_match('/[\'"]([^\'"]+)[\'"]/', $params, $matches)) {
+            return $matches[1];
+        }
+        
+        // Handle cases like $this
+        if (trim($params) === '$this') {
+            return null;
+        }
+        
+        return null;
+    }
+
     private function mapFieldType(string $laravelType): string
     {
         return match($laravelType) {
@@ -218,6 +262,16 @@ class GenerateApiDocs extends Command
             'HasOne' => 'relationship',
             default => 'mixed'
         };
+    }
+
+    private function extractEntityName(string $controllerClass): ?string
+    {
+        // Extract entity name from controller class
+        // E.g., Modules\Product\Http\Controllers\Api\V1\ProductController -> Product
+        if (preg_match('/\\\\(\w+)Controller$/', $controllerClass, $matches)) {
+            return $matches[1];
+        }
+        return null;
     }
 
     private function getModulePath(string $controllerClass): ?string

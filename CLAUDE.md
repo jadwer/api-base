@@ -334,4 +334,11 @@ This command safely removes:
 - modules_statuses.json entries
 - Composer autoload cache
 
-This modular architecture provides a scalable foundation for enterprise applications with complete JSON:API compliance and robust testing coverage. The advanced generator can replicate complex module structures with full relationship support across modules.
+### Documentation Generator (Fixed 2025-08-08)
+- **Missing fields issue**: Fixed regex pattern to capture all schema fields correctly
+- **Incomplete parsing**: Added specific parsing of `fields()` method in schemas
+- **Field name extraction**: Enhanced to handle complex field definitions with multiple parameters
+- **Entity targeting**: Improved schema matching based on controller entity names
+- **Complete coverage**: Now captures 12+ fields, relationships, and validations properly
+
+This modular architecture provides a scalable foundation for enterprise applications with complete JSON:API compliance, robust testing coverage, and comprehensive automated documentation generation. The advanced generator can replicate complex module structures with full relationship support across modules.

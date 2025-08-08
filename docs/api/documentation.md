@@ -1,6 +1,6 @@
 # API Documentation
 
-**Generado:** 2025-08-07T07:28:00.056128Z
+**Generado:** 2025-08-08T01:40:45.025099Z
 
 **Base URL:** `http://localhost/api/v1`
 
@@ -24,16 +24,6 @@
 - ✅ `email` (string) 🔄
 - ✅ `status` (string) 
 - ✅ `role` (string) 
-- ✅ `password` (string) 
-- ✅ `password_confirmation` (string) 
-- ✅ `email_verified_at` (datetime) 🔒
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
-- ✅ `deleted_at` (datetime) 🔒
-
-**Relaciones disponibles:**
-
-- `roles` (relationship[])
 
 **Validaciones:**
 
@@ -64,16 +54,6 @@
 - ✅ `email` (string) 🔄
 - ✅ `status` (string) 
 - ✅ `role` (string) 
-- ✅ `password` (string) 
-- ✅ `password_confirmation` (string) 
-- ✅ `email_verified_at` (datetime) 🔒
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
-- ✅ `deleted_at` (datetime) 🔒
-
-**Relaciones disponibles:**
-
-- `roles` (relationship[])
 
 **Validaciones:**
 
@@ -128,16 +108,6 @@
 - ✅ `email` (string) 🔄
 - ✅ `status` (string) 
 - ✅ `role` (string) 
-- ✅ `password` (string) 
-- ✅ `password_confirmation` (string) 
-- ✅ `email_verified_at` (datetime) 🔒
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
-- ✅ `deleted_at` (datetime) 🔒
-
-**Relaciones disponibles:**
-
-- `roles` (relationship[])
 
 **Validaciones:**
 
@@ -168,16 +138,6 @@
 - ✅ `email` (string) 🔄
 - ✅ `status` (string) 
 - ✅ `role` (string) 
-- ✅ `password` (string) 
-- ✅ `password_confirmation` (string) 
-- ✅ `email_verified_at` (datetime) 🔒
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
-- ✅ `deleted_at` (datetime) 🔒
-
-**Relaciones disponibles:**
-
-- `roles` (relationship[])
 
 **Validaciones:**
 
@@ -219,16 +179,6 @@
 - ✅ `email` (string) 🔄
 - ✅ `status` (string) 
 - ✅ `role` (string) 
-- ✅ `password` (string) 
-- ✅ `password_confirmation` (string) 
-- ✅ `email_verified_at` (datetime) 🔒
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
-- ✅ `deleted_at` (datetime) 🔒
-
-**Relaciones disponibles:**
-
-- `roles` (relationship[])
 
 **Validaciones:**
 
@@ -245,8 +195,16 @@
 **Campos disponibles:**
 
 - ✅ `event` (string) 🔄
+- ✅ `userId` (number) 🔄
+- ✅ `auditableType` (string) 🔄
+- ✅ `auditableId` (number) 🔄
+- ✅ `oldValues` (string) 
+- ✅ `newValues` (string) 
+- ✅ `ipAddress` (string) 
+- ✅ `userAgent` (string) 
+- ✅ `createdAt` (datetime) 🔄
+- ✅ `updatedAt` (datetime) 🔄
 - ✅ `causer` (mixed) 
-- ✅ `event` (mixed) 
 
 **Ejemplo de Request:**
 
@@ -268,8 +226,16 @@
 **Campos disponibles:**
 
 - ✅ `event` (string) 🔄
+- ✅ `userId` (number) 🔄
+- ✅ `auditableType` (string) 🔄
+- ✅ `auditableId` (number) 🔄
+- ✅ `oldValues` (string) 
+- ✅ `newValues` (string) 
+- ✅ `ipAddress` (string) 
+- ✅ `userAgent` (string) 
+- ✅ `createdAt` (datetime) 🔄
+- ✅ `updatedAt` (datetime) 🔄
 - ✅ `causer` (mixed) 
-- ✅ `event` (mixed) 
 
 **Ejemplo de Request:**
 
@@ -315,8 +281,16 @@
 **Campos disponibles:**
 
 - ✅ `event` (string) 🔄
+- ✅ `userId` (number) 🔄
+- ✅ `auditableType` (string) 🔄
+- ✅ `auditableId` (number) 🔄
+- ✅ `oldValues` (string) 
+- ✅ `newValues` (string) 
+- ✅ `ipAddress` (string) 
+- ✅ `userAgent` (string) 
+- ✅ `createdAt` (datetime) 🔄
+- ✅ `updatedAt` (datetime) 🔄
 - ✅ `causer` (mixed) 
-- ✅ `event` (mixed) 
 
 **Ejemplo de Request:**
 
@@ -338,8 +312,16 @@
 **Campos disponibles:**
 
 - ✅ `event` (string) 🔄
+- ✅ `userId` (number) 🔄
+- ✅ `auditableType` (string) 🔄
+- ✅ `auditableId` (number) 🔄
+- ✅ `oldValues` (string) 
+- ✅ `newValues` (string) 
+- ✅ `ipAddress` (string) 
+- ✅ `userAgent` (string) 
+- ✅ `createdAt` (datetime) 🔄
+- ✅ `updatedAt` (datetime) 🔄
 - ✅ `causer` (mixed) 
-- ✅ `event` (mixed) 
 
 **Ejemplo de Request:**
 
@@ -372,8 +354,16 @@
 **Campos disponibles:**
 
 - ✅ `event` (string) 🔄
+- ✅ `userId` (number) 🔄
+- ✅ `auditableType` (string) 🔄
+- ✅ `auditableId` (number) 🔄
+- ✅ `oldValues` (string) 
+- ✅ `newValues` (string) 
+- ✅ `ipAddress` (string) 
+- ✅ `userAgent` (string) 
+- ✅ `createdAt` (datetime) 🔄
+- ✅ `updatedAt` (datetime) 🔄
 - ✅ `causer` (mixed) 
-- ✅ `event` (mixed) 
 
 ---
 
@@ -390,8 +380,6 @@
 - ✅ `json` (object) 
 - ✅ `status` (string) 🔄
 - ✅ `publishedAt` (datetime) 🔄
-- ✅ `slug` (mixed) 
-- ✅ `status` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -404,7 +392,7 @@
 - `html`: nullable, string
 - `css`: nullable, string
 - `json`: nullable, array
-- `status`: sometimes, string, in:draft,published
+- `status`: sometimes, string, in:draft,published,deleted,archived,active,inactive
 - `publishedAt`: nullable, date
 
 **Ejemplo de Request:**
@@ -433,8 +421,6 @@
 - ✅ `json` (object) 
 - ✅ `status` (string) 🔄
 - ✅ `publishedAt` (datetime) 🔄
-- ✅ `slug` (mixed) 
-- ✅ `status` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -447,7 +433,7 @@
 - `html`: nullable, string
 - `css`: nullable, string
 - `json`: nullable, array
-- `status`: sometimes, string, in:draft,published
+- `status`: sometimes, string, in:draft,published,deleted,archived,active,inactive
 - `publishedAt`: nullable, date
 
 **Ejemplo de Request:**
@@ -500,8 +486,6 @@
 - ✅ `json` (object) 
 - ✅ `status` (string) 🔄
 - ✅ `publishedAt` (datetime) 🔄
-- ✅ `slug` (mixed) 
-- ✅ `status` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -514,7 +498,7 @@
 - `html`: nullable, string
 - `css`: nullable, string
 - `json`: nullable, array
-- `status`: sometimes, string, in:draft,published
+- `status`: sometimes, string, in:draft,published,deleted,archived,active,inactive
 - `publishedAt`: nullable, date
 
 **Ejemplo de Request:**
@@ -543,8 +527,6 @@
 - ✅ `json` (object) 
 - ✅ `status` (string) 🔄
 - ✅ `publishedAt` (datetime) 🔄
-- ✅ `slug` (mixed) 
-- ✅ `status` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -557,7 +539,7 @@
 - `html`: nullable, string
 - `css`: nullable, string
 - `json`: nullable, array
-- `status`: sometimes, string, in:draft,published
+- `status`: sometimes, string, in:draft,published,deleted,archived,active,inactive
 - `publishedAt`: nullable, date
 
 **Ejemplo de Request:**
@@ -597,8 +579,6 @@
 - ✅ `json` (object) 
 - ✅ `status` (string) 🔄
 - ✅ `publishedAt` (datetime) 🔄
-- ✅ `slug` (mixed) 
-- ✅ `status` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -611,7 +591,7 @@
 - `html`: nullable, string
 - `css`: nullable, string
 - `json`: nullable, array
-- `status`: sometimes, string, in:draft,published
+- `status`: sometimes, string, in:draft,published,deleted,archived,active,inactive
 - `publishedAt`: nullable, date
 
 ---
@@ -623,14 +603,14 @@
 **Campos disponibles:**
 
 - ✅ `name` (string) 🔄
+- ✅ `description` (string) 
 - ✅ `guard_name` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
 
-**Validaciones:**
+**Relaciones disponibles:**
 
-- `name`: required, string, max:255
-- `guard_name`: required, string
+- `permissions` (relationship[])
 
 **Ejemplo de Request:**
 
@@ -652,14 +632,14 @@
 **Campos disponibles:**
 
 - ✅ `name` (string) 🔄
+- ✅ `description` (string) 
 - ✅ `guard_name` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
 
-**Validaciones:**
+**Relaciones disponibles:**
 
-- `name`: required, string, max:255
-- `guard_name`: required, string
+- `permissions` (relationship[])
 
 **Ejemplo de Request:**
 
@@ -705,14 +685,14 @@
 **Campos disponibles:**
 
 - ✅ `name` (string) 🔄
+- ✅ `description` (string) 
 - ✅ `guard_name` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
 
-**Validaciones:**
+**Relaciones disponibles:**
 
-- `name`: required, string, max:255
-- `guard_name`: required, string
+- `permissions` (relationship[])
 
 **Ejemplo de Request:**
 
@@ -734,14 +714,14 @@
 **Campos disponibles:**
 
 - ✅ `name` (string) 🔄
+- ✅ `description` (string) 
 - ✅ `guard_name` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
 
-**Validaciones:**
+**Relaciones disponibles:**
 
-- `name`: required, string, max:255
-- `guard_name`: required, string
+- `permissions` (relationship[])
 
 **Ejemplo de Request:**
 
@@ -774,14 +754,14 @@
 **Campos disponibles:**
 
 - ✅ `name` (string) 🔄
+- ✅ `description` (string) 
 - ✅ `guard_name` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
 
-**Validaciones:**
+**Relaciones disponibles:**
 
-- `name`: required, string, max:255
-- `guard_name`: required, string
+- `permissions` (relationship[])
 
 ---
 
@@ -790,14 +770,14 @@
 **Campos disponibles:**
 
 - ✅ `name` (string) 🔄
+- ✅ `description` (string) 
 - ✅ `guard_name` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
 
-**Validaciones:**
+**Relaciones disponibles:**
 
-- `name`: required, string, max:255
-- `guard_name`: required, string
+- `permissions` (relationship[])
 
 **Ejemplo de Request:**
 
@@ -819,14 +799,14 @@
 **Campos disponibles:**
 
 - ✅ `name` (string) 🔄
+- ✅ `description` (string) 
 - ✅ `guard_name` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
 
-**Validaciones:**
+**Relaciones disponibles:**
 
-- `name`: required, string, max:255
-- `guard_name`: required, string
+- `permissions` (relationship[])
 
 **Ejemplo de Request:**
 
@@ -1019,19 +999,34 @@
 **Campos disponibles:**
 
 - ✅ `name` (string) 🔄
+- ✅ `sku` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 🔄
+- ✅ `fullDescription` (string) 
+- ✅ `price` (number) 🔄
+- ✅ `cost` (number) 🔄
+- ✅ `iva` (boolean) 
+- ✅ `imgPath` (string) 
+- ✅ `datasheetPath` (string) 
 - ✅ `created_at` (datetime) 🔒🔄
 - ✅ `updated_at` (datetime) 🔒
 
 **Relaciones disponibles:**
 
-- `products` (relationship[])
+- `unit` (relationship)
+- `category` (relationship)
+- `brand` (relationship)
 
 **Validaciones:**
 
-- `name`: required, string, max:255, brands, name
+- `name`: required, string, max:255
+- `sku`: required, string, max:100, products, sku
 - `description`: nullable, string, max:500
+- `fullDescription`: nullable, string
+- `price`: required, numeric, min:0
+- `cost`: nullable, numeric, min:0
+- `iva`: required, boolean
+- `imgPath`: nullable, string
+- `datasheetPath`: nullable, string
 
 **Ejemplo de Request:**
 
@@ -1053,19 +1048,34 @@
 **Campos disponibles:**
 
 - ✅ `name` (string) 🔄
+- ✅ `sku` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 🔄
+- ✅ `fullDescription` (string) 
+- ✅ `price` (number) 🔄
+- ✅ `cost` (number) 🔄
+- ✅ `iva` (boolean) 
+- ✅ `imgPath` (string) 
+- ✅ `datasheetPath` (string) 
 - ✅ `created_at` (datetime) 🔒🔄
 - ✅ `updated_at` (datetime) 🔒
 
 **Relaciones disponibles:**
 
-- `products` (relationship[])
+- `unit` (relationship)
+- `category` (relationship)
+- `brand` (relationship)
 
 **Validaciones:**
 
-- `name`: required, string, max:255, brands, name
+- `name`: required, string, max:255
+- `sku`: required, string, max:100, products, sku
 - `description`: nullable, string, max:500
+- `fullDescription`: nullable, string
+- `price`: required, numeric, min:0
+- `cost`: nullable, numeric, min:0
+- `iva`: required, boolean
+- `imgPath`: nullable, string
+- `datasheetPath`: nullable, string
 
 **Ejemplo de Request:**
 
@@ -1111,19 +1121,34 @@
 **Campos disponibles:**
 
 - ✅ `name` (string) 🔄
+- ✅ `sku` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 🔄
+- ✅ `fullDescription` (string) 
+- ✅ `price` (number) 🔄
+- ✅ `cost` (number) 🔄
+- ✅ `iva` (boolean) 
+- ✅ `imgPath` (string) 
+- ✅ `datasheetPath` (string) 
 - ✅ `created_at` (datetime) 🔒🔄
 - ✅ `updated_at` (datetime) 🔒
 
 **Relaciones disponibles:**
 
-- `products` (relationship[])
+- `unit` (relationship)
+- `category` (relationship)
+- `brand` (relationship)
 
 **Validaciones:**
 
-- `name`: required, string, max:255, brands, name
+- `name`: required, string, max:255
+- `sku`: required, string, max:100, products, sku
 - `description`: nullable, string, max:500
+- `fullDescription`: nullable, string
+- `price`: required, numeric, min:0
+- `cost`: nullable, numeric, min:0
+- `iva`: required, boolean
+- `imgPath`: nullable, string
+- `datasheetPath`: nullable, string
 
 **Ejemplo de Request:**
 
@@ -1145,19 +1170,34 @@
 **Campos disponibles:**
 
 - ✅ `name` (string) 🔄
+- ✅ `sku` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 🔄
+- ✅ `fullDescription` (string) 
+- ✅ `price` (number) 🔄
+- ✅ `cost` (number) 🔄
+- ✅ `iva` (boolean) 
+- ✅ `imgPath` (string) 
+- ✅ `datasheetPath` (string) 
 - ✅ `created_at` (datetime) 🔒🔄
 - ✅ `updated_at` (datetime) 🔒
 
 **Relaciones disponibles:**
 
-- `products` (relationship[])
+- `unit` (relationship)
+- `category` (relationship)
+- `brand` (relationship)
 
 **Validaciones:**
 
-- `name`: required, string, max:255, brands, name
+- `name`: required, string, max:255
+- `sku`: required, string, max:100, products, sku
 - `description`: nullable, string, max:500
+- `fullDescription`: nullable, string
+- `price`: required, numeric, min:0
+- `cost`: nullable, numeric, min:0
+- `iva`: required, boolean
+- `imgPath`: nullable, string
+- `datasheetPath`: nullable, string
 
 **Ejemplo de Request:**
 
@@ -1190,19 +1230,34 @@
 **Campos disponibles:**
 
 - ✅ `name` (string) 🔄
+- ✅ `sku` (string) 🔄
 - ✅ `description` (string) 
-- ✅ `slug` (string) 🔄
+- ✅ `fullDescription` (string) 
+- ✅ `price` (number) 🔄
+- ✅ `cost` (number) 🔄
+- ✅ `iva` (boolean) 
+- ✅ `imgPath` (string) 
+- ✅ `datasheetPath` (string) 
 - ✅ `created_at` (datetime) 🔒🔄
 - ✅ `updated_at` (datetime) 🔒
 
 **Relaciones disponibles:**
 
-- `products` (relationship[])
+- `unit` (relationship)
+- `category` (relationship)
+- `brand` (relationship)
 
 **Validaciones:**
 
-- `name`: required, string, max:255, brands, name
+- `name`: required, string, max:255
+- `sku`: required, string, max:100, products, sku
 - `description`: nullable, string, max:500
+- `fullDescription`: nullable, string
+- `price`: required, numeric, min:0
+- `cost`: nullable, numeric, min:0
+- `iva`: required, boolean
+- `imgPath`: nullable, string
+- `datasheetPath`: nullable, string
 
 ---
 
@@ -1213,19 +1268,16 @@
 **Campos disponibles:**
 
 - ✅ `name` (string) 🔄
-- ✅ `description` (string) 
-- ✅ `slug` (string) 🔄
+- ✅ `code` (string) 🔄
+- ✅ `unitType` (string) 🔄
 - ✅ `created_at` (datetime) 🔒🔄
 - ✅ `updated_at` (datetime) 🔒
 
-**Relaciones disponibles:**
-
-- `products` (relationship[])
-
 **Validaciones:**
 
-- `name`: required, string, max:255, brands, name
-- `description`: nullable, string, max:500
+- `name`: required, string, max:255, units, name
+- `code`: required, string, max:10, units, code
+- `unitType`: required, string
 
 **Ejemplo de Request:**
 
@@ -1247,19 +1299,16 @@
 **Campos disponibles:**
 
 - ✅ `name` (string) 🔄
-- ✅ `description` (string) 
-- ✅ `slug` (string) 🔄
+- ✅ `code` (string) 🔄
+- ✅ `unitType` (string) 🔄
 - ✅ `created_at` (datetime) 🔒🔄
 - ✅ `updated_at` (datetime) 🔒
 
-**Relaciones disponibles:**
-
-- `products` (relationship[])
-
 **Validaciones:**
 
-- `name`: required, string, max:255, brands, name
-- `description`: nullable, string, max:500
+- `name`: required, string, max:255, units, name
+- `code`: required, string, max:10, units, code
+- `unitType`: required, string
 
 **Ejemplo de Request:**
 
@@ -1305,19 +1354,16 @@
 **Campos disponibles:**
 
 - ✅ `name` (string) 🔄
-- ✅ `description` (string) 
-- ✅ `slug` (string) 🔄
+- ✅ `code` (string) 🔄
+- ✅ `unitType` (string) 🔄
 - ✅ `created_at` (datetime) 🔒🔄
 - ✅ `updated_at` (datetime) 🔒
 
-**Relaciones disponibles:**
-
-- `products` (relationship[])
-
 **Validaciones:**
 
-- `name`: required, string, max:255, brands, name
-- `description`: nullable, string, max:500
+- `name`: required, string, max:255, units, name
+- `code`: required, string, max:10, units, code
+- `unitType`: required, string
 
 **Ejemplo de Request:**
 
@@ -1339,19 +1385,16 @@
 **Campos disponibles:**
 
 - ✅ `name` (string) 🔄
-- ✅ `description` (string) 
-- ✅ `slug` (string) 🔄
+- ✅ `code` (string) 🔄
+- ✅ `unitType` (string) 🔄
 - ✅ `created_at` (datetime) 🔒🔄
 - ✅ `updated_at` (datetime) 🔒
 
-**Relaciones disponibles:**
-
-- `products` (relationship[])
-
 **Validaciones:**
 
-- `name`: required, string, max:255, brands, name
-- `description`: nullable, string, max:500
+- `name`: required, string, max:255, units, name
+- `code`: required, string, max:10, units, code
+- `unitType`: required, string
 
 **Ejemplo de Request:**
 
@@ -1384,19 +1427,16 @@
 **Campos disponibles:**
 
 - ✅ `name` (string) 🔄
-- ✅ `description` (string) 
-- ✅ `slug` (string) 🔄
+- ✅ `code` (string) 🔄
+- ✅ `unitType` (string) 🔄
 - ✅ `created_at` (datetime) 🔒🔄
 - ✅ `updated_at` (datetime) 🔒
 
-**Relaciones disponibles:**
-
-- `products` (relationship[])
-
 **Validaciones:**
 
-- `name`: required, string, max:255, brands, name
-- `description`: nullable, string, max:500
+- `name`: required, string, max:255, units, name
+- `code`: required, string, max:10, units, code
+- `unitType`: required, string
 
 ---
 
@@ -1418,7 +1458,7 @@
 
 **Validaciones:**
 
-- `name`: required, string, max:255, brands, name
+- `name`: required, string, max:255, categories, name
 - `description`: nullable, string, max:500
 
 **Ejemplo de Request:**
@@ -1452,7 +1492,7 @@
 
 **Validaciones:**
 
-- `name`: required, string, max:255, brands, name
+- `name`: required, string, max:255, categories, name
 - `description`: nullable, string, max:500
 
 **Ejemplo de Request:**
@@ -1510,7 +1550,7 @@
 
 **Validaciones:**
 
-- `name`: required, string, max:255, brands, name
+- `name`: required, string, max:255, categories, name
 - `description`: nullable, string, max:500
 
 **Ejemplo de Request:**
@@ -1544,7 +1584,7 @@
 
 **Validaciones:**
 
-- `name`: required, string, max:255, brands, name
+- `name`: required, string, max:255, categories, name
 - `description`: nullable, string, max:500
 
 **Ejemplo de Request:**
@@ -1589,7 +1629,7 @@
 
 **Validaciones:**
 
-- `name`: required, string, max:255, brands, name
+- `name`: required, string, max:255, categories, name
 - `description`: nullable, string, max:500
 
 ---
@@ -1794,43 +1834,53 @@
 
 **Campos disponibles:**
 
-- ✅ `status` (string) 
-- ✅ `certifications` (object) 
-- ✅ `metadata` (object) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `status` (mixed) 
-- ✅ `batch_number` (mixed) 
-- ✅ `lot_number` (mixed) 
-- ✅ `product_id` (mixed) 
-- ✅ `warehouse_id` (mixed) 
-- ✅ `warehouse_location_id` (mixed) 
+- ✅ `name` (string) 🔄
+- ✅ `slug` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `code` (string) 🔄
+- ✅ `warehouseType` (string) 🔄
+- ✅ `address` (string) 
+- ✅ `city` (string) 🔄
+- ✅ `state` (string) 
+- ✅ `country` (string) 
+- ✅ `postalCode` (string) 
+- ✅ `phone` (string) 
+- ✅ `email` (string) 
+- ✅ `managerName` (string) 
+- ✅ `maxCapacity` (number) 
+- ✅ `capacityUnit` (string) 
+- ✅ `operatingHours` (string) 🔒
+- ✅ `metadata` (string) 🔒
+- ✅ `isActive` (boolean) 🔄
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 
 **Relaciones disponibles:**
 
-- `product` (relationship)
-- `warehouse` (relationship)
-- `warehouseLocation` (relationship)
+- `locations` (relationship[])
+- `stock` (relationship[])
+- `productBatches` (relationship[])
 
 **Validaciones:**
 
-- `batchNumber`: required, string, max:255, product_batches, batch_number
-- `lotNumber`: sometimes, nullable, string, max:255
-- `manufacturingDate`: sometimes, nullable, date
-- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `initialQuantity`: required, numeric, min:0
-- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
-- `reservedQuantity`: sometimes, nullable, numeric, min:0
-- `unitCost`: required, numeric, min:0
-- `status`: required, string, in:active,expired,quarantine,recalled,consumed
-- `supplierName`: sometimes, nullable, string, max:255
-- `supplierBatch`: sometimes, nullable, string, max:255
-- `qualityNotes`: sometimes, nullable, string
-- `testResults`: sometimes, nullable, array
-- `certifications`: sometimes, nullable, array
-- `metadata`: sometimes, nullable, array
-- `warehouseLocation`: sometimes
+- `name`: required, string, max:255
+- `slug`: required, string, max:255, warehouses, slug
+- `description`: nullable, string
+- `code`: required, string, max:50, warehouses, code
+- `warehouseType`: required, string, main, secondary, distribution, returns
+- `address`: nullable, string
+- `city`: nullable, string, max:255
+- `state`: nullable, string, max:255
+- `country`: nullable, string, max:255
+- `postalCode`: nullable, string, max:20
+- `phone`: nullable, string, max:20
+- `email`: nullable, email, max:255
+- `managerName`: nullable, string, max:255
+- `maxCapacity`: nullable, numeric, min:0
+- `capacityUnit`: nullable, string, max:10
+- `operatingHours`: nullable, array
+- `metadata`: nullable, array
+- `isActive`: sometimes, boolean
 
 **Ejemplo de Request:**
 
@@ -1851,43 +1901,53 @@
 
 **Campos disponibles:**
 
-- ✅ `status` (string) 
-- ✅ `certifications` (object) 
-- ✅ `metadata` (object) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `status` (mixed) 
-- ✅ `batch_number` (mixed) 
-- ✅ `lot_number` (mixed) 
-- ✅ `product_id` (mixed) 
-- ✅ `warehouse_id` (mixed) 
-- ✅ `warehouse_location_id` (mixed) 
+- ✅ `name` (string) 🔄
+- ✅ `slug` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `code` (string) 🔄
+- ✅ `warehouseType` (string) 🔄
+- ✅ `address` (string) 
+- ✅ `city` (string) 🔄
+- ✅ `state` (string) 
+- ✅ `country` (string) 
+- ✅ `postalCode` (string) 
+- ✅ `phone` (string) 
+- ✅ `email` (string) 
+- ✅ `managerName` (string) 
+- ✅ `maxCapacity` (number) 
+- ✅ `capacityUnit` (string) 
+- ✅ `operatingHours` (string) 🔒
+- ✅ `metadata` (string) 🔒
+- ✅ `isActive` (boolean) 🔄
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 
 **Relaciones disponibles:**
 
-- `product` (relationship)
-- `warehouse` (relationship)
-- `warehouseLocation` (relationship)
+- `locations` (relationship[])
+- `stock` (relationship[])
+- `productBatches` (relationship[])
 
 **Validaciones:**
 
-- `batchNumber`: required, string, max:255, product_batches, batch_number
-- `lotNumber`: sometimes, nullable, string, max:255
-- `manufacturingDate`: sometimes, nullable, date
-- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `initialQuantity`: required, numeric, min:0
-- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
-- `reservedQuantity`: sometimes, nullable, numeric, min:0
-- `unitCost`: required, numeric, min:0
-- `status`: required, string, in:active,expired,quarantine,recalled,consumed
-- `supplierName`: sometimes, nullable, string, max:255
-- `supplierBatch`: sometimes, nullable, string, max:255
-- `qualityNotes`: sometimes, nullable, string
-- `testResults`: sometimes, nullable, array
-- `certifications`: sometimes, nullable, array
-- `metadata`: sometimes, nullable, array
-- `warehouseLocation`: sometimes
+- `name`: required, string, max:255
+- `slug`: required, string, max:255, warehouses, slug
+- `description`: nullable, string
+- `code`: required, string, max:50, warehouses, code
+- `warehouseType`: required, string, main, secondary, distribution, returns
+- `address`: nullable, string
+- `city`: nullable, string, max:255
+- `state`: nullable, string, max:255
+- `country`: nullable, string, max:255
+- `postalCode`: nullable, string, max:20
+- `phone`: nullable, string, max:20
+- `email`: nullable, email, max:255
+- `managerName`: nullable, string, max:255
+- `maxCapacity`: nullable, numeric, min:0
+- `capacityUnit`: nullable, string, max:10
+- `operatingHours`: nullable, array
+- `metadata`: nullable, array
+- `isActive`: sometimes, boolean
 
 **Ejemplo de Request:**
 
@@ -1932,43 +1992,53 @@
 
 **Campos disponibles:**
 
-- ✅ `status` (string) 
-- ✅ `certifications` (object) 
-- ✅ `metadata` (object) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `status` (mixed) 
-- ✅ `batch_number` (mixed) 
-- ✅ `lot_number` (mixed) 
-- ✅ `product_id` (mixed) 
-- ✅ `warehouse_id` (mixed) 
-- ✅ `warehouse_location_id` (mixed) 
+- ✅ `name` (string) 🔄
+- ✅ `slug` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `code` (string) 🔄
+- ✅ `warehouseType` (string) 🔄
+- ✅ `address` (string) 
+- ✅ `city` (string) 🔄
+- ✅ `state` (string) 
+- ✅ `country` (string) 
+- ✅ `postalCode` (string) 
+- ✅ `phone` (string) 
+- ✅ `email` (string) 
+- ✅ `managerName` (string) 
+- ✅ `maxCapacity` (number) 
+- ✅ `capacityUnit` (string) 
+- ✅ `operatingHours` (string) 🔒
+- ✅ `metadata` (string) 🔒
+- ✅ `isActive` (boolean) 🔄
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 
 **Relaciones disponibles:**
 
-- `product` (relationship)
-- `warehouse` (relationship)
-- `warehouseLocation` (relationship)
+- `locations` (relationship[])
+- `stock` (relationship[])
+- `productBatches` (relationship[])
 
 **Validaciones:**
 
-- `batchNumber`: required, string, max:255, product_batches, batch_number
-- `lotNumber`: sometimes, nullable, string, max:255
-- `manufacturingDate`: sometimes, nullable, date
-- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `initialQuantity`: required, numeric, min:0
-- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
-- `reservedQuantity`: sometimes, nullable, numeric, min:0
-- `unitCost`: required, numeric, min:0
-- `status`: required, string, in:active,expired,quarantine,recalled,consumed
-- `supplierName`: sometimes, nullable, string, max:255
-- `supplierBatch`: sometimes, nullable, string, max:255
-- `qualityNotes`: sometimes, nullable, string
-- `testResults`: sometimes, nullable, array
-- `certifications`: sometimes, nullable, array
-- `metadata`: sometimes, nullable, array
-- `warehouseLocation`: sometimes
+- `name`: required, string, max:255
+- `slug`: required, string, max:255, warehouses, slug
+- `description`: nullable, string
+- `code`: required, string, max:50, warehouses, code
+- `warehouseType`: required, string, main, secondary, distribution, returns
+- `address`: nullable, string
+- `city`: nullable, string, max:255
+- `state`: nullable, string, max:255
+- `country`: nullable, string, max:255
+- `postalCode`: nullable, string, max:20
+- `phone`: nullable, string, max:20
+- `email`: nullable, email, max:255
+- `managerName`: nullable, string, max:255
+- `maxCapacity`: nullable, numeric, min:0
+- `capacityUnit`: nullable, string, max:10
+- `operatingHours`: nullable, array
+- `metadata`: nullable, array
+- `isActive`: sometimes, boolean
 
 **Ejemplo de Request:**
 
@@ -1989,43 +2059,53 @@
 
 **Campos disponibles:**
 
-- ✅ `status` (string) 
-- ✅ `certifications` (object) 
-- ✅ `metadata` (object) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `status` (mixed) 
-- ✅ `batch_number` (mixed) 
-- ✅ `lot_number` (mixed) 
-- ✅ `product_id` (mixed) 
-- ✅ `warehouse_id` (mixed) 
-- ✅ `warehouse_location_id` (mixed) 
+- ✅ `name` (string) 🔄
+- ✅ `slug` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `code` (string) 🔄
+- ✅ `warehouseType` (string) 🔄
+- ✅ `address` (string) 
+- ✅ `city` (string) 🔄
+- ✅ `state` (string) 
+- ✅ `country` (string) 
+- ✅ `postalCode` (string) 
+- ✅ `phone` (string) 
+- ✅ `email` (string) 
+- ✅ `managerName` (string) 
+- ✅ `maxCapacity` (number) 
+- ✅ `capacityUnit` (string) 
+- ✅ `operatingHours` (string) 🔒
+- ✅ `metadata` (string) 🔒
+- ✅ `isActive` (boolean) 🔄
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 
 **Relaciones disponibles:**
 
-- `product` (relationship)
-- `warehouse` (relationship)
-- `warehouseLocation` (relationship)
+- `locations` (relationship[])
+- `stock` (relationship[])
+- `productBatches` (relationship[])
 
 **Validaciones:**
 
-- `batchNumber`: required, string, max:255, product_batches, batch_number
-- `lotNumber`: sometimes, nullable, string, max:255
-- `manufacturingDate`: sometimes, nullable, date
-- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `initialQuantity`: required, numeric, min:0
-- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
-- `reservedQuantity`: sometimes, nullable, numeric, min:0
-- `unitCost`: required, numeric, min:0
-- `status`: required, string, in:active,expired,quarantine,recalled,consumed
-- `supplierName`: sometimes, nullable, string, max:255
-- `supplierBatch`: sometimes, nullable, string, max:255
-- `qualityNotes`: sometimes, nullable, string
-- `testResults`: sometimes, nullable, array
-- `certifications`: sometimes, nullable, array
-- `metadata`: sometimes, nullable, array
-- `warehouseLocation`: sometimes
+- `name`: required, string, max:255
+- `slug`: required, string, max:255, warehouses, slug
+- `description`: nullable, string
+- `code`: required, string, max:50, warehouses, code
+- `warehouseType`: required, string, main, secondary, distribution, returns
+- `address`: nullable, string
+- `city`: nullable, string, max:255
+- `state`: nullable, string, max:255
+- `country`: nullable, string, max:255
+- `postalCode`: nullable, string, max:20
+- `phone`: nullable, string, max:20
+- `email`: nullable, email, max:255
+- `managerName`: nullable, string, max:255
+- `maxCapacity`: nullable, numeric, min:0
+- `capacityUnit`: nullable, string, max:10
+- `operatingHours`: nullable, array
+- `metadata`: nullable, array
+- `isActive`: sometimes, boolean
 
 **Ejemplo de Request:**
 
@@ -2057,43 +2137,53 @@
 
 **Campos disponibles:**
 
-- ✅ `status` (string) 
-- ✅ `certifications` (object) 
-- ✅ `metadata` (object) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `status` (mixed) 
-- ✅ `batch_number` (mixed) 
-- ✅ `lot_number` (mixed) 
-- ✅ `product_id` (mixed) 
-- ✅ `warehouse_id` (mixed) 
-- ✅ `warehouse_location_id` (mixed) 
+- ✅ `name` (string) 🔄
+- ✅ `slug` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `code` (string) 🔄
+- ✅ `warehouseType` (string) 🔄
+- ✅ `address` (string) 
+- ✅ `city` (string) 🔄
+- ✅ `state` (string) 
+- ✅ `country` (string) 
+- ✅ `postalCode` (string) 
+- ✅ `phone` (string) 
+- ✅ `email` (string) 
+- ✅ `managerName` (string) 
+- ✅ `maxCapacity` (number) 
+- ✅ `capacityUnit` (string) 
+- ✅ `operatingHours` (string) 🔒
+- ✅ `metadata` (string) 🔒
+- ✅ `isActive` (boolean) 🔄
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 
 **Relaciones disponibles:**
 
-- `product` (relationship)
-- `warehouse` (relationship)
-- `warehouseLocation` (relationship)
+- `locations` (relationship[])
+- `stock` (relationship[])
+- `productBatches` (relationship[])
 
 **Validaciones:**
 
-- `batchNumber`: required, string, max:255, product_batches, batch_number
-- `lotNumber`: sometimes, nullable, string, max:255
-- `manufacturingDate`: sometimes, nullable, date
-- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `initialQuantity`: required, numeric, min:0
-- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
-- `reservedQuantity`: sometimes, nullable, numeric, min:0
-- `unitCost`: required, numeric, min:0
-- `status`: required, string, in:active,expired,quarantine,recalled,consumed
-- `supplierName`: sometimes, nullable, string, max:255
-- `supplierBatch`: sometimes, nullable, string, max:255
-- `qualityNotes`: sometimes, nullable, string
-- `testResults`: sometimes, nullable, array
-- `certifications`: sometimes, nullable, array
-- `metadata`: sometimes, nullable, array
-- `warehouseLocation`: sometimes
+- `name`: required, string, max:255
+- `slug`: required, string, max:255, warehouses, slug
+- `description`: nullable, string
+- `code`: required, string, max:50, warehouses, code
+- `warehouseType`: required, string, main, secondary, distribution, returns
+- `address`: nullable, string
+- `city`: nullable, string, max:255
+- `state`: nullable, string, max:255
+- `country`: nullable, string, max:255
+- `postalCode`: nullable, string, max:20
+- `phone`: nullable, string, max:20
+- `email`: nullable, email, max:255
+- `managerName`: nullable, string, max:255
+- `maxCapacity`: nullable, numeric, min:0
+- `capacityUnit`: nullable, string, max:10
+- `operatingHours`: nullable, array
+- `metadata`: nullable, array
+- `isActive`: sometimes, boolean
 
 ---
 
@@ -2103,43 +2193,53 @@
 
 **Campos disponibles:**
 
-- ✅ `status` (string) 
-- ✅ `certifications` (object) 
-- ✅ `metadata` (object) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `status` (mixed) 
-- ✅ `batch_number` (mixed) 
-- ✅ `lot_number` (mixed) 
-- ✅ `product_id` (mixed) 
-- ✅ `warehouse_id` (mixed) 
-- ✅ `warehouse_location_id` (mixed) 
+- ✅ `name` (string) 🔄
+- ✅ `code` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `locationType` (string) 🔄
+- ✅ `aisle` (string) 
+- ✅ `rack` (string) 
+- ✅ `shelf` (string) 
+- ✅ `level` (string) 
+- ✅ `position` (string) 
+- ✅ `barcode` (string) 
+- ✅ `maxWeight` (number) 
+- ✅ `maxVolume` (number) 
+- ✅ `dimensions` (string) 
+- ✅ `isActive` (boolean) 🔄
+- ✅ `isPickable` (boolean) 
+- ✅ `isReceivable` (boolean) 
+- ✅ `priority` (number) 🔄
+- ✅ `metadata` (array) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 
 **Relaciones disponibles:**
 
-- `product` (relationship)
 - `warehouse` (relationship)
-- `warehouseLocation` (relationship)
+- `stock` (relationship[])
+- `productBatches` (relationship[])
 
 **Validaciones:**
 
-- `batchNumber`: required, string, max:255, product_batches, batch_number
-- `lotNumber`: sometimes, nullable, string, max:255
-- `manufacturingDate`: sometimes, nullable, date
-- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `initialQuantity`: required, numeric, min:0
-- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
-- `reservedQuantity`: sometimes, nullable, numeric, min:0
-- `unitCost`: required, numeric, min:0
-- `status`: required, string, in:active,expired,quarantine,recalled,consumed
-- `supplierName`: sometimes, nullable, string, max:255
-- `supplierBatch`: sometimes, nullable, string, max:255
-- `qualityNotes`: sometimes, nullable, string
-- `testResults`: sometimes, nullable, array
-- `certifications`: sometimes, nullable, array
-- `metadata`: sometimes, nullable, array
-- `warehouseLocation`: sometimes
+- `name`: required, string, max:255
+- `code`: required, string, max:255, warehouse_locations, code
+- `description`: nullable, string
+- `locationType`: required, string, aisle, rack, shelf, bin, zone, bay
+- `aisle`: nullable, string, max:255
+- `rack`: nullable, string, max:255
+- `shelf`: nullable, string, max:255
+- `level`: nullable, string, max:255
+- `position`: nullable, string, max:255
+- `barcode`: nullable, string, max:255, warehouse_locations, barcode
+- `maxWeight`: nullable, numeric, min:0
+- `maxVolume`: nullable, numeric, min:0
+- `dimensions`: nullable, string, max:255
+- `isActive`: sometimes, boolean
+- `isPickable`: sometimes, boolean
+- `isReceivable`: sometimes, boolean
+- `priority`: sometimes, integer, min:1, max:10
+- `metadata`: nullable, array
 
 **Ejemplo de Request:**
 
@@ -2160,43 +2260,53 @@
 
 **Campos disponibles:**
 
-- ✅ `status` (string) 
-- ✅ `certifications` (object) 
-- ✅ `metadata` (object) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `status` (mixed) 
-- ✅ `batch_number` (mixed) 
-- ✅ `lot_number` (mixed) 
-- ✅ `product_id` (mixed) 
-- ✅ `warehouse_id` (mixed) 
-- ✅ `warehouse_location_id` (mixed) 
+- ✅ `name` (string) 🔄
+- ✅ `code` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `locationType` (string) 🔄
+- ✅ `aisle` (string) 
+- ✅ `rack` (string) 
+- ✅ `shelf` (string) 
+- ✅ `level` (string) 
+- ✅ `position` (string) 
+- ✅ `barcode` (string) 
+- ✅ `maxWeight` (number) 
+- ✅ `maxVolume` (number) 
+- ✅ `dimensions` (string) 
+- ✅ `isActive` (boolean) 🔄
+- ✅ `isPickable` (boolean) 
+- ✅ `isReceivable` (boolean) 
+- ✅ `priority` (number) 🔄
+- ✅ `metadata` (array) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 
 **Relaciones disponibles:**
 
-- `product` (relationship)
 - `warehouse` (relationship)
-- `warehouseLocation` (relationship)
+- `stock` (relationship[])
+- `productBatches` (relationship[])
 
 **Validaciones:**
 
-- `batchNumber`: required, string, max:255, product_batches, batch_number
-- `lotNumber`: sometimes, nullable, string, max:255
-- `manufacturingDate`: sometimes, nullable, date
-- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `initialQuantity`: required, numeric, min:0
-- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
-- `reservedQuantity`: sometimes, nullable, numeric, min:0
-- `unitCost`: required, numeric, min:0
-- `status`: required, string, in:active,expired,quarantine,recalled,consumed
-- `supplierName`: sometimes, nullable, string, max:255
-- `supplierBatch`: sometimes, nullable, string, max:255
-- `qualityNotes`: sometimes, nullable, string
-- `testResults`: sometimes, nullable, array
-- `certifications`: sometimes, nullable, array
-- `metadata`: sometimes, nullable, array
-- `warehouseLocation`: sometimes
+- `name`: required, string, max:255
+- `code`: required, string, max:255, warehouse_locations, code
+- `description`: nullable, string
+- `locationType`: required, string, aisle, rack, shelf, bin, zone, bay
+- `aisle`: nullable, string, max:255
+- `rack`: nullable, string, max:255
+- `shelf`: nullable, string, max:255
+- `level`: nullable, string, max:255
+- `position`: nullable, string, max:255
+- `barcode`: nullable, string, max:255, warehouse_locations, barcode
+- `maxWeight`: nullable, numeric, min:0
+- `maxVolume`: nullable, numeric, min:0
+- `dimensions`: nullable, string, max:255
+- `isActive`: sometimes, boolean
+- `isPickable`: sometimes, boolean
+- `isReceivable`: sometimes, boolean
+- `priority`: sometimes, integer, min:1, max:10
+- `metadata`: nullable, array
 
 **Ejemplo de Request:**
 
@@ -2241,43 +2351,53 @@
 
 **Campos disponibles:**
 
-- ✅ `status` (string) 
-- ✅ `certifications` (object) 
-- ✅ `metadata` (object) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `status` (mixed) 
-- ✅ `batch_number` (mixed) 
-- ✅ `lot_number` (mixed) 
-- ✅ `product_id` (mixed) 
-- ✅ `warehouse_id` (mixed) 
-- ✅ `warehouse_location_id` (mixed) 
+- ✅ `name` (string) 🔄
+- ✅ `code` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `locationType` (string) 🔄
+- ✅ `aisle` (string) 
+- ✅ `rack` (string) 
+- ✅ `shelf` (string) 
+- ✅ `level` (string) 
+- ✅ `position` (string) 
+- ✅ `barcode` (string) 
+- ✅ `maxWeight` (number) 
+- ✅ `maxVolume` (number) 
+- ✅ `dimensions` (string) 
+- ✅ `isActive` (boolean) 🔄
+- ✅ `isPickable` (boolean) 
+- ✅ `isReceivable` (boolean) 
+- ✅ `priority` (number) 🔄
+- ✅ `metadata` (array) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 
 **Relaciones disponibles:**
 
-- `product` (relationship)
 - `warehouse` (relationship)
-- `warehouseLocation` (relationship)
+- `stock` (relationship[])
+- `productBatches` (relationship[])
 
 **Validaciones:**
 
-- `batchNumber`: required, string, max:255, product_batches, batch_number
-- `lotNumber`: sometimes, nullable, string, max:255
-- `manufacturingDate`: sometimes, nullable, date
-- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `initialQuantity`: required, numeric, min:0
-- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
-- `reservedQuantity`: sometimes, nullable, numeric, min:0
-- `unitCost`: required, numeric, min:0
-- `status`: required, string, in:active,expired,quarantine,recalled,consumed
-- `supplierName`: sometimes, nullable, string, max:255
-- `supplierBatch`: sometimes, nullable, string, max:255
-- `qualityNotes`: sometimes, nullable, string
-- `testResults`: sometimes, nullable, array
-- `certifications`: sometimes, nullable, array
-- `metadata`: sometimes, nullable, array
-- `warehouseLocation`: sometimes
+- `name`: required, string, max:255
+- `code`: required, string, max:255, warehouse_locations, code
+- `description`: nullable, string
+- `locationType`: required, string, aisle, rack, shelf, bin, zone, bay
+- `aisle`: nullable, string, max:255
+- `rack`: nullable, string, max:255
+- `shelf`: nullable, string, max:255
+- `level`: nullable, string, max:255
+- `position`: nullable, string, max:255
+- `barcode`: nullable, string, max:255, warehouse_locations, barcode
+- `maxWeight`: nullable, numeric, min:0
+- `maxVolume`: nullable, numeric, min:0
+- `dimensions`: nullable, string, max:255
+- `isActive`: sometimes, boolean
+- `isPickable`: sometimes, boolean
+- `isReceivable`: sometimes, boolean
+- `priority`: sometimes, integer, min:1, max:10
+- `metadata`: nullable, array
 
 **Ejemplo de Request:**
 
@@ -2298,43 +2418,53 @@
 
 **Campos disponibles:**
 
-- ✅ `status` (string) 
-- ✅ `certifications` (object) 
-- ✅ `metadata` (object) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `status` (mixed) 
-- ✅ `batch_number` (mixed) 
-- ✅ `lot_number` (mixed) 
-- ✅ `product_id` (mixed) 
-- ✅ `warehouse_id` (mixed) 
-- ✅ `warehouse_location_id` (mixed) 
+- ✅ `name` (string) 🔄
+- ✅ `code` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `locationType` (string) 🔄
+- ✅ `aisle` (string) 
+- ✅ `rack` (string) 
+- ✅ `shelf` (string) 
+- ✅ `level` (string) 
+- ✅ `position` (string) 
+- ✅ `barcode` (string) 
+- ✅ `maxWeight` (number) 
+- ✅ `maxVolume` (number) 
+- ✅ `dimensions` (string) 
+- ✅ `isActive` (boolean) 🔄
+- ✅ `isPickable` (boolean) 
+- ✅ `isReceivable` (boolean) 
+- ✅ `priority` (number) 🔄
+- ✅ `metadata` (array) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 
 **Relaciones disponibles:**
 
-- `product` (relationship)
 - `warehouse` (relationship)
-- `warehouseLocation` (relationship)
+- `stock` (relationship[])
+- `productBatches` (relationship[])
 
 **Validaciones:**
 
-- `batchNumber`: required, string, max:255, product_batches, batch_number
-- `lotNumber`: sometimes, nullable, string, max:255
-- `manufacturingDate`: sometimes, nullable, date
-- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `initialQuantity`: required, numeric, min:0
-- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
-- `reservedQuantity`: sometimes, nullable, numeric, min:0
-- `unitCost`: required, numeric, min:0
-- `status`: required, string, in:active,expired,quarantine,recalled,consumed
-- `supplierName`: sometimes, nullable, string, max:255
-- `supplierBatch`: sometimes, nullable, string, max:255
-- `qualityNotes`: sometimes, nullable, string
-- `testResults`: sometimes, nullable, array
-- `certifications`: sometimes, nullable, array
-- `metadata`: sometimes, nullable, array
-- `warehouseLocation`: sometimes
+- `name`: required, string, max:255
+- `code`: required, string, max:255, warehouse_locations, code
+- `description`: nullable, string
+- `locationType`: required, string, aisle, rack, shelf, bin, zone, bay
+- `aisle`: nullable, string, max:255
+- `rack`: nullable, string, max:255
+- `shelf`: nullable, string, max:255
+- `level`: nullable, string, max:255
+- `position`: nullable, string, max:255
+- `barcode`: nullable, string, max:255, warehouse_locations, barcode
+- `maxWeight`: nullable, numeric, min:0
+- `maxVolume`: nullable, numeric, min:0
+- `dimensions`: nullable, string, max:255
+- `isActive`: sometimes, boolean
+- `isPickable`: sometimes, boolean
+- `isReceivable`: sometimes, boolean
+- `priority`: sometimes, integer, min:1, max:10
+- `metadata`: nullable, array
 
 **Ejemplo de Request:**
 
@@ -2366,43 +2496,53 @@
 
 **Campos disponibles:**
 
-- ✅ `status` (string) 
-- ✅ `certifications` (object) 
-- ✅ `metadata` (object) 
-- ✅ `createdAt` (datetime) 
-- ✅ `updatedAt` (datetime) 
-- ✅ `status` (mixed) 
-- ✅ `batch_number` (mixed) 
-- ✅ `lot_number` (mixed) 
-- ✅ `product_id` (mixed) 
-- ✅ `warehouse_id` (mixed) 
-- ✅ `warehouse_location_id` (mixed) 
+- ✅ `name` (string) 🔄
+- ✅ `code` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `locationType` (string) 🔄
+- ✅ `aisle` (string) 
+- ✅ `rack` (string) 
+- ✅ `shelf` (string) 
+- ✅ `level` (string) 
+- ✅ `position` (string) 
+- ✅ `barcode` (string) 
+- ✅ `maxWeight` (number) 
+- ✅ `maxVolume` (number) 
+- ✅ `dimensions` (string) 
+- ✅ `isActive` (boolean) 🔄
+- ✅ `isPickable` (boolean) 
+- ✅ `isReceivable` (boolean) 
+- ✅ `priority` (number) 🔄
+- ✅ `metadata` (array) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 
 **Relaciones disponibles:**
 
-- `product` (relationship)
 - `warehouse` (relationship)
-- `warehouseLocation` (relationship)
+- `stock` (relationship[])
+- `productBatches` (relationship[])
 
 **Validaciones:**
 
-- `batchNumber`: required, string, max:255, product_batches, batch_number
-- `lotNumber`: sometimes, nullable, string, max:255
-- `manufacturingDate`: sometimes, nullable, date
-- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `initialQuantity`: required, numeric, min:0
-- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
-- `reservedQuantity`: sometimes, nullable, numeric, min:0
-- `unitCost`: required, numeric, min:0
-- `status`: required, string, in:active,expired,quarantine,recalled,consumed
-- `supplierName`: sometimes, nullable, string, max:255
-- `supplierBatch`: sometimes, nullable, string, max:255
-- `qualityNotes`: sometimes, nullable, string
-- `testResults`: sometimes, nullable, array
-- `certifications`: sometimes, nullable, array
-- `metadata`: sometimes, nullable, array
-- `warehouseLocation`: sometimes
+- `name`: required, string, max:255
+- `code`: required, string, max:255, warehouse_locations, code
+- `description`: nullable, string
+- `locationType`: required, string, aisle, rack, shelf, bin, zone, bay
+- `aisle`: nullable, string, max:255
+- `rack`: nullable, string, max:255
+- `shelf`: nullable, string, max:255
+- `level`: nullable, string, max:255
+- `position`: nullable, string, max:255
+- `barcode`: nullable, string, max:255, warehouse_locations, barcode
+- `maxWeight`: nullable, numeric, min:0
+- `maxVolume`: nullable, numeric, min:0
+- `dimensions`: nullable, string, max:255
+- `isActive`: sometimes, boolean
+- `isPickable`: sometimes, boolean
+- `isReceivable`: sometimes, boolean
+- `priority`: sometimes, integer, min:1, max:10
+- `metadata`: nullable, array
 
 ---
 
@@ -2412,17 +2552,26 @@
 
 **Campos disponibles:**
 
+- ✅ `batchNumber` (string) 
+- ✅ `lotNumber` (string) 
+- ✅ `manufacturingDate` (datetime) 
+- ✅ `expirationDate` (datetime) 
+- ✅ `bestBeforeDate` (datetime) 
+- ✅ `initialQuantity` (number) 
+- ✅ `currentQuantity` (number) 
+- ✅ `reservedQuantity` (number) 
+- ✅ `availableQuantity` (number) 
+- ✅ `unitCost` (number) 
+- ✅ `totalValue` (number) 
 - ✅ `status` (string) 
+- ✅ `supplierName` (string) 
+- ✅ `supplierBatch` (string) 
+- ✅ `qualityNotes` (string) 
+- ✅ `testResults` (object) 
 - ✅ `certifications` (object) 
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `status` (mixed) 
-- ✅ `batch_number` (mixed) 
-- ✅ `lot_number` (mixed) 
-- ✅ `product_id` (mixed) 
-- ✅ `warehouse_id` (mixed) 
-- ✅ `warehouse_location_id` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -2469,17 +2618,26 @@
 
 **Campos disponibles:**
 
+- ✅ `batchNumber` (string) 
+- ✅ `lotNumber` (string) 
+- ✅ `manufacturingDate` (datetime) 
+- ✅ `expirationDate` (datetime) 
+- ✅ `bestBeforeDate` (datetime) 
+- ✅ `initialQuantity` (number) 
+- ✅ `currentQuantity` (number) 
+- ✅ `reservedQuantity` (number) 
+- ✅ `availableQuantity` (number) 
+- ✅ `unitCost` (number) 
+- ✅ `totalValue` (number) 
 - ✅ `status` (string) 
+- ✅ `supplierName` (string) 
+- ✅ `supplierBatch` (string) 
+- ✅ `qualityNotes` (string) 
+- ✅ `testResults` (object) 
 - ✅ `certifications` (object) 
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `status` (mixed) 
-- ✅ `batch_number` (mixed) 
-- ✅ `lot_number` (mixed) 
-- ✅ `product_id` (mixed) 
-- ✅ `warehouse_id` (mixed) 
-- ✅ `warehouse_location_id` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -2550,17 +2708,26 @@
 
 **Campos disponibles:**
 
+- ✅ `batchNumber` (string) 
+- ✅ `lotNumber` (string) 
+- ✅ `manufacturingDate` (datetime) 
+- ✅ `expirationDate` (datetime) 
+- ✅ `bestBeforeDate` (datetime) 
+- ✅ `initialQuantity` (number) 
+- ✅ `currentQuantity` (number) 
+- ✅ `reservedQuantity` (number) 
+- ✅ `availableQuantity` (number) 
+- ✅ `unitCost` (number) 
+- ✅ `totalValue` (number) 
 - ✅ `status` (string) 
+- ✅ `supplierName` (string) 
+- ✅ `supplierBatch` (string) 
+- ✅ `qualityNotes` (string) 
+- ✅ `testResults` (object) 
 - ✅ `certifications` (object) 
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `status` (mixed) 
-- ✅ `batch_number` (mixed) 
-- ✅ `lot_number` (mixed) 
-- ✅ `product_id` (mixed) 
-- ✅ `warehouse_id` (mixed) 
-- ✅ `warehouse_location_id` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -2607,17 +2774,26 @@
 
 **Campos disponibles:**
 
+- ✅ `batchNumber` (string) 
+- ✅ `lotNumber` (string) 
+- ✅ `manufacturingDate` (datetime) 
+- ✅ `expirationDate` (datetime) 
+- ✅ `bestBeforeDate` (datetime) 
+- ✅ `initialQuantity` (number) 
+- ✅ `currentQuantity` (number) 
+- ✅ `reservedQuantity` (number) 
+- ✅ `availableQuantity` (number) 
+- ✅ `unitCost` (number) 
+- ✅ `totalValue` (number) 
 - ✅ `status` (string) 
+- ✅ `supplierName` (string) 
+- ✅ `supplierBatch` (string) 
+- ✅ `qualityNotes` (string) 
+- ✅ `testResults` (object) 
 - ✅ `certifications` (object) 
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `status` (mixed) 
-- ✅ `batch_number` (mixed) 
-- ✅ `lot_number` (mixed) 
-- ✅ `product_id` (mixed) 
-- ✅ `warehouse_id` (mixed) 
-- ✅ `warehouse_location_id` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -2675,17 +2851,26 @@
 
 **Campos disponibles:**
 
+- ✅ `batchNumber` (string) 
+- ✅ `lotNumber` (string) 
+- ✅ `manufacturingDate` (datetime) 
+- ✅ `expirationDate` (datetime) 
+- ✅ `bestBeforeDate` (datetime) 
+- ✅ `initialQuantity` (number) 
+- ✅ `currentQuantity` (number) 
+- ✅ `reservedQuantity` (number) 
+- ✅ `availableQuantity` (number) 
+- ✅ `unitCost` (number) 
+- ✅ `totalValue` (number) 
 - ✅ `status` (string) 
+- ✅ `supplierName` (string) 
+- ✅ `supplierBatch` (string) 
+- ✅ `qualityNotes` (string) 
+- ✅ `testResults` (object) 
 - ✅ `certifications` (object) 
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `status` (mixed) 
-- ✅ `batch_number` (mixed) 
-- ✅ `lot_number` (mixed) 
-- ✅ `product_id` (mixed) 
-- ✅ `warehouse_id` (mixed) 
-- ✅ `warehouse_location_id` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -2721,43 +2906,41 @@
 
 **Campos disponibles:**
 
+- ✅ `quantity` (number) 
+- ✅ `reservedQuantity` (number) 
+- ✅ `availableQuantity` (number) 
+- ✅ `minimumStock` (number) 
+- ✅ `maximumStock` (number) 
+- ✅ `reorderPoint` (number) 
+- ✅ `unitCost` (number) 
+- ✅ `totalValue` (number) 
 - ✅ `status` (string) 
-- ✅ `certifications` (object) 
+- ✅ `lastMovementDate` (datetime) 
+- ✅ `lastMovementType` (string) 
+- ✅ `batchInfo` (object) 
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `status` (mixed) 
-- ✅ `batch_number` (mixed) 
-- ✅ `lot_number` (mixed) 
-- ✅ `product_id` (mixed) 
-- ✅ `warehouse_id` (mixed) 
-- ✅ `warehouse_location_id` (mixed) 
 
 **Relaciones disponibles:**
 
 - `product` (relationship)
 - `warehouse` (relationship)
-- `warehouseLocation` (relationship)
+- `location` (relationship)
 
 **Validaciones:**
 
-- `batchNumber`: required, string, max:255, product_batches, batch_number
-- `lotNumber`: sometimes, nullable, string, max:255
-- `manufacturingDate`: sometimes, nullable, date
-- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `initialQuantity`: required, numeric, min:0
-- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `quantity`: required, numeric, min:0
 - `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `minimumStock`: sometimes, nullable, numeric, min:0
+- `maximumStock`: sometimes, nullable, numeric, min:0
+- `reorderPoint`: sometimes, nullable, numeric, min:0
 - `unitCost`: required, numeric, min:0
-- `status`: required, string, in:active,expired,quarantine,recalled,consumed
-- `supplierName`: sometimes, nullable, string, max:255
-- `supplierBatch`: sometimes, nullable, string, max:255
-- `qualityNotes`: sometimes, nullable, string
-- `testResults`: sometimes, nullable, array
-- `certifications`: sometimes, nullable, array
+- `status`: required, string, in:active,inactive,quarantine,damaged
+- `lastMovementDate`: sometimes, nullable, date
+- `lastMovementType`: sometimes, nullable, string, in:in,out,adjustment,transfer
+- `batchInfo`: sometimes, nullable, array
 - `metadata`: sometimes, nullable, array
-- `warehouseLocation`: sometimes
 
 **Ejemplo de Request:**
 
@@ -2778,43 +2961,41 @@
 
 **Campos disponibles:**
 
+- ✅ `quantity` (number) 
+- ✅ `reservedQuantity` (number) 
+- ✅ `availableQuantity` (number) 
+- ✅ `minimumStock` (number) 
+- ✅ `maximumStock` (number) 
+- ✅ `reorderPoint` (number) 
+- ✅ `unitCost` (number) 
+- ✅ `totalValue` (number) 
 - ✅ `status` (string) 
-- ✅ `certifications` (object) 
+- ✅ `lastMovementDate` (datetime) 
+- ✅ `lastMovementType` (string) 
+- ✅ `batchInfo` (object) 
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `status` (mixed) 
-- ✅ `batch_number` (mixed) 
-- ✅ `lot_number` (mixed) 
-- ✅ `product_id` (mixed) 
-- ✅ `warehouse_id` (mixed) 
-- ✅ `warehouse_location_id` (mixed) 
 
 **Relaciones disponibles:**
 
 - `product` (relationship)
 - `warehouse` (relationship)
-- `warehouseLocation` (relationship)
+- `location` (relationship)
 
 **Validaciones:**
 
-- `batchNumber`: required, string, max:255, product_batches, batch_number
-- `lotNumber`: sometimes, nullable, string, max:255
-- `manufacturingDate`: sometimes, nullable, date
-- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `initialQuantity`: required, numeric, min:0
-- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `quantity`: required, numeric, min:0
 - `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `minimumStock`: sometimes, nullable, numeric, min:0
+- `maximumStock`: sometimes, nullable, numeric, min:0
+- `reorderPoint`: sometimes, nullable, numeric, min:0
 - `unitCost`: required, numeric, min:0
-- `status`: required, string, in:active,expired,quarantine,recalled,consumed
-- `supplierName`: sometimes, nullable, string, max:255
-- `supplierBatch`: sometimes, nullable, string, max:255
-- `qualityNotes`: sometimes, nullable, string
-- `testResults`: sometimes, nullable, array
-- `certifications`: sometimes, nullable, array
+- `status`: required, string, in:active,inactive,quarantine,damaged
+- `lastMovementDate`: sometimes, nullable, date
+- `lastMovementType`: sometimes, nullable, string, in:in,out,adjustment,transfer
+- `batchInfo`: sometimes, nullable, array
 - `metadata`: sometimes, nullable, array
-- `warehouseLocation`: sometimes
 
 **Ejemplo de Request:**
 
@@ -2859,43 +3040,41 @@
 
 **Campos disponibles:**
 
+- ✅ `quantity` (number) 
+- ✅ `reservedQuantity` (number) 
+- ✅ `availableQuantity` (number) 
+- ✅ `minimumStock` (number) 
+- ✅ `maximumStock` (number) 
+- ✅ `reorderPoint` (number) 
+- ✅ `unitCost` (number) 
+- ✅ `totalValue` (number) 
 - ✅ `status` (string) 
-- ✅ `certifications` (object) 
+- ✅ `lastMovementDate` (datetime) 
+- ✅ `lastMovementType` (string) 
+- ✅ `batchInfo` (object) 
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `status` (mixed) 
-- ✅ `batch_number` (mixed) 
-- ✅ `lot_number` (mixed) 
-- ✅ `product_id` (mixed) 
-- ✅ `warehouse_id` (mixed) 
-- ✅ `warehouse_location_id` (mixed) 
 
 **Relaciones disponibles:**
 
 - `product` (relationship)
 - `warehouse` (relationship)
-- `warehouseLocation` (relationship)
+- `location` (relationship)
 
 **Validaciones:**
 
-- `batchNumber`: required, string, max:255, product_batches, batch_number
-- `lotNumber`: sometimes, nullable, string, max:255
-- `manufacturingDate`: sometimes, nullable, date
-- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `initialQuantity`: required, numeric, min:0
-- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `quantity`: required, numeric, min:0
 - `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `minimumStock`: sometimes, nullable, numeric, min:0
+- `maximumStock`: sometimes, nullable, numeric, min:0
+- `reorderPoint`: sometimes, nullable, numeric, min:0
 - `unitCost`: required, numeric, min:0
-- `status`: required, string, in:active,expired,quarantine,recalled,consumed
-- `supplierName`: sometimes, nullable, string, max:255
-- `supplierBatch`: sometimes, nullable, string, max:255
-- `qualityNotes`: sometimes, nullable, string
-- `testResults`: sometimes, nullable, array
-- `certifications`: sometimes, nullable, array
+- `status`: required, string, in:active,inactive,quarantine,damaged
+- `lastMovementDate`: sometimes, nullable, date
+- `lastMovementType`: sometimes, nullable, string, in:in,out,adjustment,transfer
+- `batchInfo`: sometimes, nullable, array
 - `metadata`: sometimes, nullable, array
-- `warehouseLocation`: sometimes
 
 **Ejemplo de Request:**
 
@@ -2916,43 +3095,41 @@
 
 **Campos disponibles:**
 
+- ✅ `quantity` (number) 
+- ✅ `reservedQuantity` (number) 
+- ✅ `availableQuantity` (number) 
+- ✅ `minimumStock` (number) 
+- ✅ `maximumStock` (number) 
+- ✅ `reorderPoint` (number) 
+- ✅ `unitCost` (number) 
+- ✅ `totalValue` (number) 
 - ✅ `status` (string) 
-- ✅ `certifications` (object) 
+- ✅ `lastMovementDate` (datetime) 
+- ✅ `lastMovementType` (string) 
+- ✅ `batchInfo` (object) 
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `status` (mixed) 
-- ✅ `batch_number` (mixed) 
-- ✅ `lot_number` (mixed) 
-- ✅ `product_id` (mixed) 
-- ✅ `warehouse_id` (mixed) 
-- ✅ `warehouse_location_id` (mixed) 
 
 **Relaciones disponibles:**
 
 - `product` (relationship)
 - `warehouse` (relationship)
-- `warehouseLocation` (relationship)
+- `location` (relationship)
 
 **Validaciones:**
 
-- `batchNumber`: required, string, max:255, product_batches, batch_number
-- `lotNumber`: sometimes, nullable, string, max:255
-- `manufacturingDate`: sometimes, nullable, date
-- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `initialQuantity`: required, numeric, min:0
-- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `quantity`: required, numeric, min:0
 - `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `minimumStock`: sometimes, nullable, numeric, min:0
+- `maximumStock`: sometimes, nullable, numeric, min:0
+- `reorderPoint`: sometimes, nullable, numeric, min:0
 - `unitCost`: required, numeric, min:0
-- `status`: required, string, in:active,expired,quarantine,recalled,consumed
-- `supplierName`: sometimes, nullable, string, max:255
-- `supplierBatch`: sometimes, nullable, string, max:255
-- `qualityNotes`: sometimes, nullable, string
-- `testResults`: sometimes, nullable, array
-- `certifications`: sometimes, nullable, array
+- `status`: required, string, in:active,inactive,quarantine,damaged
+- `lastMovementDate`: sometimes, nullable, date
+- `lastMovementType`: sometimes, nullable, string, in:in,out,adjustment,transfer
+- `batchInfo`: sometimes, nullable, array
 - `metadata`: sometimes, nullable, array
-- `warehouseLocation`: sometimes
 
 **Ejemplo de Request:**
 
@@ -2984,43 +3161,41 @@
 
 **Campos disponibles:**
 
+- ✅ `quantity` (number) 
+- ✅ `reservedQuantity` (number) 
+- ✅ `availableQuantity` (number) 
+- ✅ `minimumStock` (number) 
+- ✅ `maximumStock` (number) 
+- ✅ `reorderPoint` (number) 
+- ✅ `unitCost` (number) 
+- ✅ `totalValue` (number) 
 - ✅ `status` (string) 
-- ✅ `certifications` (object) 
+- ✅ `lastMovementDate` (datetime) 
+- ✅ `lastMovementType` (string) 
+- ✅ `batchInfo` (object) 
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 
 - ✅ `updatedAt` (datetime) 
-- ✅ `status` (mixed) 
-- ✅ `batch_number` (mixed) 
-- ✅ `lot_number` (mixed) 
-- ✅ `product_id` (mixed) 
-- ✅ `warehouse_id` (mixed) 
-- ✅ `warehouse_location_id` (mixed) 
 
 **Relaciones disponibles:**
 
 - `product` (relationship)
 - `warehouse` (relationship)
-- `warehouseLocation` (relationship)
+- `location` (relationship)
 
 **Validaciones:**
 
-- `batchNumber`: required, string, max:255, product_batches, batch_number
-- `lotNumber`: sometimes, nullable, string, max:255
-- `manufacturingDate`: sometimes, nullable, date
-- `expirationDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `bestBeforeDate`: sometimes, nullable, date, after_or_equal:manufacturingDate
-- `initialQuantity`: required, numeric, min:0
-- `currentQuantity`: required, numeric, min:0, lte:initialQuantity
+- `quantity`: required, numeric, min:0
 - `reservedQuantity`: sometimes, nullable, numeric, min:0
+- `minimumStock`: sometimes, nullable, numeric, min:0
+- `maximumStock`: sometimes, nullable, numeric, min:0
+- `reorderPoint`: sometimes, nullable, numeric, min:0
 - `unitCost`: required, numeric, min:0
-- `status`: required, string, in:active,expired,quarantine,recalled,consumed
-- `supplierName`: sometimes, nullable, string, max:255
-- `supplierBatch`: sometimes, nullable, string, max:255
-- `qualityNotes`: sometimes, nullable, string
-- `testResults`: sometimes, nullable, array
-- `certifications`: sometimes, nullable, array
+- `status`: required, string, in:active,inactive,quarantine,damaged
+- `lastMovementDate`: sometimes, nullable, date
+- `lastMovementType`: sometimes, nullable, string, in:in,out,adjustment,transfer
+- `batchInfo`: sometimes, nullable, array
 - `metadata`: sometimes, nullable, array
-- `warehouseLocation`: sometimes
 
 ---
 
@@ -3060,43 +3235,40 @@
 
 **Campos disponibles:**
 
-- ✅ `shoppingCartId` (string) 
-- ✅ `productId` (string) 
-- ✅ `quantity` (number) 
-- ✅ `unitPrice` (number) 
-- ✅ `originalPrice` (number) 
-- ✅ `discountPercent` (number) 
+- ✅ `sessionId` (string) 
+- ✅ `userId` (string) 
+- ✅ `status` (string) 🔄
+- ✅ `expiresAt` (datetime) 
+- ✅ `totalAmount` (number) 
+- ✅ `currency` (string) 
+- ✅ `couponCode` (string) 
 - ✅ `discountAmount` (number) 
-- ✅ `subtotal` (number) 
-- ✅ `taxRate` (number) 
 - ✅ `taxAmount` (number) 
-- ✅ `total` (number) 
+- ✅ `shippingAmount` (number) 
+- ✅ `notes` (string) 
 - ✅ `metadata` (object) 
-- ✅ `status` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `status` (mixed) 
 
 **Relaciones disponibles:**
 
-- `shoppingCart` (relationship)
-- `product` (relationship)
+- `cartItems` (relationship[])
+- `user` (relationship)
 
 **Validaciones:**
 
-- `shoppingCart`: required
-- `product`: required
-- `quantity`: required, numeric, min:0
-- `unitPrice`: required, numeric, min:0
-- `originalPrice`: required, numeric, min:0
-- `discountPercent`: required, numeric, min:0, max:100
-- `discountAmount`: required, numeric, min:0
-- `subtotal`: required, numeric, min:0
-- `taxRate`: required, numeric, min:0, max:100
-- `taxAmount`: required, numeric, min:0
-- `total`: required, numeric, min:0
+- `sessionId`: nullable, string, max:255
+- `user`: nullable
+- `status`: required, string, in:active,inactive,expired
+- `expiresAt`: nullable, date
+- `totalAmount`: required, numeric, min:0
+- `currency`: required, string, max:3
+- `couponCode`: nullable, string, max:255
+- `discountAmount`: nullable, numeric, min:0
+- `taxAmount`: nullable, numeric, min:0
+- `shippingAmount`: nullable, numeric, min:0
+- `notes`: nullable, string
 - `metadata`: nullable, array
-- `status`: nullable, string, in:active,inactive
 
 **Ejemplo de Request:**
 
@@ -3117,43 +3289,40 @@
 
 **Campos disponibles:**
 
-- ✅ `shoppingCartId` (string) 
-- ✅ `productId` (string) 
-- ✅ `quantity` (number) 
-- ✅ `unitPrice` (number) 
-- ✅ `originalPrice` (number) 
-- ✅ `discountPercent` (number) 
+- ✅ `sessionId` (string) 
+- ✅ `userId` (string) 
+- ✅ `status` (string) 🔄
+- ✅ `expiresAt` (datetime) 
+- ✅ `totalAmount` (number) 
+- ✅ `currency` (string) 
+- ✅ `couponCode` (string) 
 - ✅ `discountAmount` (number) 
-- ✅ `subtotal` (number) 
-- ✅ `taxRate` (number) 
 - ✅ `taxAmount` (number) 
-- ✅ `total` (number) 
+- ✅ `shippingAmount` (number) 
+- ✅ `notes` (string) 
 - ✅ `metadata` (object) 
-- ✅ `status` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `status` (mixed) 
 
 **Relaciones disponibles:**
 
-- `shoppingCart` (relationship)
-- `product` (relationship)
+- `cartItems` (relationship[])
+- `user` (relationship)
 
 **Validaciones:**
 
-- `shoppingCart`: required
-- `product`: required
-- `quantity`: required, numeric, min:0
-- `unitPrice`: required, numeric, min:0
-- `originalPrice`: required, numeric, min:0
-- `discountPercent`: required, numeric, min:0, max:100
-- `discountAmount`: required, numeric, min:0
-- `subtotal`: required, numeric, min:0
-- `taxRate`: required, numeric, min:0, max:100
-- `taxAmount`: required, numeric, min:0
-- `total`: required, numeric, min:0
+- `sessionId`: nullable, string, max:255
+- `user`: nullable
+- `status`: required, string, in:active,inactive,expired
+- `expiresAt`: nullable, date
+- `totalAmount`: required, numeric, min:0
+- `currency`: required, string, max:3
+- `couponCode`: nullable, string, max:255
+- `discountAmount`: nullable, numeric, min:0
+- `taxAmount`: nullable, numeric, min:0
+- `shippingAmount`: nullable, numeric, min:0
+- `notes`: nullable, string
 - `metadata`: nullable, array
-- `status`: nullable, string, in:active,inactive
 
 **Ejemplo de Request:**
 
@@ -3198,43 +3367,40 @@
 
 **Campos disponibles:**
 
-- ✅ `shoppingCartId` (string) 
-- ✅ `productId` (string) 
-- ✅ `quantity` (number) 
-- ✅ `unitPrice` (number) 
-- ✅ `originalPrice` (number) 
-- ✅ `discountPercent` (number) 
+- ✅ `sessionId` (string) 
+- ✅ `userId` (string) 
+- ✅ `status` (string) 🔄
+- ✅ `expiresAt` (datetime) 
+- ✅ `totalAmount` (number) 
+- ✅ `currency` (string) 
+- ✅ `couponCode` (string) 
 - ✅ `discountAmount` (number) 
-- ✅ `subtotal` (number) 
-- ✅ `taxRate` (number) 
 - ✅ `taxAmount` (number) 
-- ✅ `total` (number) 
+- ✅ `shippingAmount` (number) 
+- ✅ `notes` (string) 
 - ✅ `metadata` (object) 
-- ✅ `status` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `status` (mixed) 
 
 **Relaciones disponibles:**
 
-- `shoppingCart` (relationship)
-- `product` (relationship)
+- `cartItems` (relationship[])
+- `user` (relationship)
 
 **Validaciones:**
 
-- `shoppingCart`: required
-- `product`: required
-- `quantity`: required, numeric, min:0
-- `unitPrice`: required, numeric, min:0
-- `originalPrice`: required, numeric, min:0
-- `discountPercent`: required, numeric, min:0, max:100
-- `discountAmount`: required, numeric, min:0
-- `subtotal`: required, numeric, min:0
-- `taxRate`: required, numeric, min:0, max:100
-- `taxAmount`: required, numeric, min:0
-- `total`: required, numeric, min:0
+- `sessionId`: nullable, string, max:255
+- `user`: nullable
+- `status`: required, string, in:active,inactive,expired
+- `expiresAt`: nullable, date
+- `totalAmount`: required, numeric, min:0
+- `currency`: required, string, max:3
+- `couponCode`: nullable, string, max:255
+- `discountAmount`: nullable, numeric, min:0
+- `taxAmount`: nullable, numeric, min:0
+- `shippingAmount`: nullable, numeric, min:0
+- `notes`: nullable, string
 - `metadata`: nullable, array
-- `status`: nullable, string, in:active,inactive
 
 **Ejemplo de Request:**
 
@@ -3255,43 +3421,40 @@
 
 **Campos disponibles:**
 
-- ✅ `shoppingCartId` (string) 
-- ✅ `productId` (string) 
-- ✅ `quantity` (number) 
-- ✅ `unitPrice` (number) 
-- ✅ `originalPrice` (number) 
-- ✅ `discountPercent` (number) 
+- ✅ `sessionId` (string) 
+- ✅ `userId` (string) 
+- ✅ `status` (string) 🔄
+- ✅ `expiresAt` (datetime) 
+- ✅ `totalAmount` (number) 
+- ✅ `currency` (string) 
+- ✅ `couponCode` (string) 
 - ✅ `discountAmount` (number) 
-- ✅ `subtotal` (number) 
-- ✅ `taxRate` (number) 
 - ✅ `taxAmount` (number) 
-- ✅ `total` (number) 
+- ✅ `shippingAmount` (number) 
+- ✅ `notes` (string) 
 - ✅ `metadata` (object) 
-- ✅ `status` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `status` (mixed) 
 
 **Relaciones disponibles:**
 
-- `shoppingCart` (relationship)
-- `product` (relationship)
+- `cartItems` (relationship[])
+- `user` (relationship)
 
 **Validaciones:**
 
-- `shoppingCart`: required
-- `product`: required
-- `quantity`: required, numeric, min:0
-- `unitPrice`: required, numeric, min:0
-- `originalPrice`: required, numeric, min:0
-- `discountPercent`: required, numeric, min:0, max:100
-- `discountAmount`: required, numeric, min:0
-- `subtotal`: required, numeric, min:0
-- `taxRate`: required, numeric, min:0, max:100
-- `taxAmount`: required, numeric, min:0
-- `total`: required, numeric, min:0
+- `sessionId`: nullable, string, max:255
+- `user`: nullable
+- `status`: required, string, in:active,inactive,expired
+- `expiresAt`: nullable, date
+- `totalAmount`: required, numeric, min:0
+- `currency`: required, string, max:3
+- `couponCode`: nullable, string, max:255
+- `discountAmount`: nullable, numeric, min:0
+- `taxAmount`: nullable, numeric, min:0
+- `shippingAmount`: nullable, numeric, min:0
+- `notes`: nullable, string
 - `metadata`: nullable, array
-- `status`: nullable, string, in:active,inactive
 
 **Ejemplo de Request:**
 
@@ -3323,43 +3486,40 @@
 
 **Campos disponibles:**
 
-- ✅ `shoppingCartId` (string) 
-- ✅ `productId` (string) 
-- ✅ `quantity` (number) 
-- ✅ `unitPrice` (number) 
-- ✅ `originalPrice` (number) 
-- ✅ `discountPercent` (number) 
+- ✅ `sessionId` (string) 
+- ✅ `userId` (string) 
+- ✅ `status` (string) 🔄
+- ✅ `expiresAt` (datetime) 
+- ✅ `totalAmount` (number) 
+- ✅ `currency` (string) 
+- ✅ `couponCode` (string) 
 - ✅ `discountAmount` (number) 
-- ✅ `subtotal` (number) 
-- ✅ `taxRate` (number) 
 - ✅ `taxAmount` (number) 
-- ✅ `total` (number) 
+- ✅ `shippingAmount` (number) 
+- ✅ `notes` (string) 
 - ✅ `metadata` (object) 
-- ✅ `status` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `status` (mixed) 
 
 **Relaciones disponibles:**
 
-- `shoppingCart` (relationship)
-- `product` (relationship)
+- `cartItems` (relationship[])
+- `user` (relationship)
 
 **Validaciones:**
 
-- `shoppingCart`: required
-- `product`: required
-- `quantity`: required, numeric, min:0
-- `unitPrice`: required, numeric, min:0
-- `originalPrice`: required, numeric, min:0
-- `discountPercent`: required, numeric, min:0, max:100
-- `discountAmount`: required, numeric, min:0
-- `subtotal`: required, numeric, min:0
-- `taxRate`: required, numeric, min:0, max:100
-- `taxAmount`: required, numeric, min:0
-- `total`: required, numeric, min:0
+- `sessionId`: nullable, string, max:255
+- `user`: nullable
+- `status`: required, string, in:active,inactive,expired
+- `expiresAt`: nullable, date
+- `totalAmount`: required, numeric, min:0
+- `currency`: required, string, max:3
+- `couponCode`: nullable, string, max:255
+- `discountAmount`: nullable, numeric, min:0
+- `taxAmount`: nullable, numeric, min:0
+- `shippingAmount`: nullable, numeric, min:0
+- `notes`: nullable, string
 - `metadata`: nullable, array
-- `status`: nullable, string, in:active,inactive
 
 ---
 
@@ -3384,7 +3544,6 @@
 - ✅ `status` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `status` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -3441,7 +3600,6 @@
 - ✅ `status` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `status` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -3522,7 +3680,6 @@
 - ✅ `status` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `status` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -3579,7 +3736,6 @@
 - ✅ `status` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `status` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -3647,7 +3803,6 @@
 - ✅ `status` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `status` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -3678,43 +3833,41 @@
 
 **Campos disponibles:**
 
-- ✅ `shoppingCartId` (string) 
-- ✅ `productId` (string) 
-- ✅ `quantity` (number) 
-- ✅ `unitPrice` (number) 
-- ✅ `originalPrice` (number) 
-- ✅ `discountPercent` (number) 
-- ✅ `discountAmount` (number) 
-- ✅ `subtotal` (number) 
-- ✅ `taxRate` (number) 
-- ✅ `taxAmount` (number) 
-- ✅ `total` (number) 
-- ✅ `metadata` (object) 
-- ✅ `status` (string) 
+- ✅ `code` (string) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `couponType` (string) 🔄
+- ✅ `value` (number) 
+- ✅ `minAmount` (number) 
+- ✅ `maxAmount` (number) 
+- ✅ `maxUses` (number) 
+- ✅ `usedCount` (number) 
+- ✅ `startsAt` (datetime) 
+- ✅ `expiresAt` (datetime) 
+- ✅ `isActive` (boolean) 🔄
+- ✅ `customerIds` (array) 
+- ✅ `productIds` (array) 
+- ✅ `categoryIds` (array) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `status` (mixed) 
-
-**Relaciones disponibles:**
-
-- `shoppingCart` (relationship)
-- `product` (relationship)
 
 **Validaciones:**
 
-- `shoppingCart`: required
-- `product`: required
-- `quantity`: required, numeric, min:0
-- `unitPrice`: required, numeric, min:0
-- `originalPrice`: required, numeric, min:0
-- `discountPercent`: required, numeric, min:0, max:100
-- `discountAmount`: required, numeric, min:0
-- `subtotal`: required, numeric, min:0
-- `taxRate`: required, numeric, min:0, max:100
-- `taxAmount`: required, numeric, min:0
-- `total`: required, numeric, min:0
-- `metadata`: nullable, array
-- `status`: nullable, string, in:active,inactive
+- `code`: sometimes, required, string, max:255, coupons
+- `name`: sometimes, required, string, max:255
+- `description`: nullable, string
+- `couponType`: sometimes, required, string, max:255
+- `value`: sometimes, required, numeric, min:0
+- `minAmount`: nullable, numeric, min:0
+- `maxAmount`: nullable, numeric, min:0
+- `maxUses`: nullable, integer, min:1
+- `usedCount`: nullable, integer, min:0
+- `startsAt`: nullable, date
+- `expiresAt`: nullable, date, after:startsAt
+- `isActive`: sometimes, required, boolean
+- `customerIds`: nullable, array
+- `productIds`: nullable, array
+- `categoryIds`: nullable, array
 
 **Ejemplo de Request:**
 
@@ -3735,43 +3888,41 @@
 
 **Campos disponibles:**
 
-- ✅ `shoppingCartId` (string) 
-- ✅ `productId` (string) 
-- ✅ `quantity` (number) 
-- ✅ `unitPrice` (number) 
-- ✅ `originalPrice` (number) 
-- ✅ `discountPercent` (number) 
-- ✅ `discountAmount` (number) 
-- ✅ `subtotal` (number) 
-- ✅ `taxRate` (number) 
-- ✅ `taxAmount` (number) 
-- ✅ `total` (number) 
-- ✅ `metadata` (object) 
-- ✅ `status` (string) 
+- ✅ `code` (string) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `couponType` (string) 🔄
+- ✅ `value` (number) 
+- ✅ `minAmount` (number) 
+- ✅ `maxAmount` (number) 
+- ✅ `maxUses` (number) 
+- ✅ `usedCount` (number) 
+- ✅ `startsAt` (datetime) 
+- ✅ `expiresAt` (datetime) 
+- ✅ `isActive` (boolean) 🔄
+- ✅ `customerIds` (array) 
+- ✅ `productIds` (array) 
+- ✅ `categoryIds` (array) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `status` (mixed) 
-
-**Relaciones disponibles:**
-
-- `shoppingCart` (relationship)
-- `product` (relationship)
 
 **Validaciones:**
 
-- `shoppingCart`: required
-- `product`: required
-- `quantity`: required, numeric, min:0
-- `unitPrice`: required, numeric, min:0
-- `originalPrice`: required, numeric, min:0
-- `discountPercent`: required, numeric, min:0, max:100
-- `discountAmount`: required, numeric, min:0
-- `subtotal`: required, numeric, min:0
-- `taxRate`: required, numeric, min:0, max:100
-- `taxAmount`: required, numeric, min:0
-- `total`: required, numeric, min:0
-- `metadata`: nullable, array
-- `status`: nullable, string, in:active,inactive
+- `code`: sometimes, required, string, max:255, coupons
+- `name`: sometimes, required, string, max:255
+- `description`: nullable, string
+- `couponType`: sometimes, required, string, max:255
+- `value`: sometimes, required, numeric, min:0
+- `minAmount`: nullable, numeric, min:0
+- `maxAmount`: nullable, numeric, min:0
+- `maxUses`: nullable, integer, min:1
+- `usedCount`: nullable, integer, min:0
+- `startsAt`: nullable, date
+- `expiresAt`: nullable, date, after:startsAt
+- `isActive`: sometimes, required, boolean
+- `customerIds`: nullable, array
+- `productIds`: nullable, array
+- `categoryIds`: nullable, array
 
 **Ejemplo de Request:**
 
@@ -3816,43 +3967,41 @@
 
 **Campos disponibles:**
 
-- ✅ `shoppingCartId` (string) 
-- ✅ `productId` (string) 
-- ✅ `quantity` (number) 
-- ✅ `unitPrice` (number) 
-- ✅ `originalPrice` (number) 
-- ✅ `discountPercent` (number) 
-- ✅ `discountAmount` (number) 
-- ✅ `subtotal` (number) 
-- ✅ `taxRate` (number) 
-- ✅ `taxAmount` (number) 
-- ✅ `total` (number) 
-- ✅ `metadata` (object) 
-- ✅ `status` (string) 
+- ✅ `code` (string) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `couponType` (string) 🔄
+- ✅ `value` (number) 
+- ✅ `minAmount` (number) 
+- ✅ `maxAmount` (number) 
+- ✅ `maxUses` (number) 
+- ✅ `usedCount` (number) 
+- ✅ `startsAt` (datetime) 
+- ✅ `expiresAt` (datetime) 
+- ✅ `isActive` (boolean) 🔄
+- ✅ `customerIds` (array) 
+- ✅ `productIds` (array) 
+- ✅ `categoryIds` (array) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `status` (mixed) 
-
-**Relaciones disponibles:**
-
-- `shoppingCart` (relationship)
-- `product` (relationship)
 
 **Validaciones:**
 
-- `shoppingCart`: required
-- `product`: required
-- `quantity`: required, numeric, min:0
-- `unitPrice`: required, numeric, min:0
-- `originalPrice`: required, numeric, min:0
-- `discountPercent`: required, numeric, min:0, max:100
-- `discountAmount`: required, numeric, min:0
-- `subtotal`: required, numeric, min:0
-- `taxRate`: required, numeric, min:0, max:100
-- `taxAmount`: required, numeric, min:0
-- `total`: required, numeric, min:0
-- `metadata`: nullable, array
-- `status`: nullable, string, in:active,inactive
+- `code`: sometimes, required, string, max:255, coupons
+- `name`: sometimes, required, string, max:255
+- `description`: nullable, string
+- `couponType`: sometimes, required, string, max:255
+- `value`: sometimes, required, numeric, min:0
+- `minAmount`: nullable, numeric, min:0
+- `maxAmount`: nullable, numeric, min:0
+- `maxUses`: nullable, integer, min:1
+- `usedCount`: nullable, integer, min:0
+- `startsAt`: nullable, date
+- `expiresAt`: nullable, date, after:startsAt
+- `isActive`: sometimes, required, boolean
+- `customerIds`: nullable, array
+- `productIds`: nullable, array
+- `categoryIds`: nullable, array
 
 **Ejemplo de Request:**
 
@@ -3873,43 +4022,41 @@
 
 **Campos disponibles:**
 
-- ✅ `shoppingCartId` (string) 
-- ✅ `productId` (string) 
-- ✅ `quantity` (number) 
-- ✅ `unitPrice` (number) 
-- ✅ `originalPrice` (number) 
-- ✅ `discountPercent` (number) 
-- ✅ `discountAmount` (number) 
-- ✅ `subtotal` (number) 
-- ✅ `taxRate` (number) 
-- ✅ `taxAmount` (number) 
-- ✅ `total` (number) 
-- ✅ `metadata` (object) 
-- ✅ `status` (string) 
+- ✅ `code` (string) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `couponType` (string) 🔄
+- ✅ `value` (number) 
+- ✅ `minAmount` (number) 
+- ✅ `maxAmount` (number) 
+- ✅ `maxUses` (number) 
+- ✅ `usedCount` (number) 
+- ✅ `startsAt` (datetime) 
+- ✅ `expiresAt` (datetime) 
+- ✅ `isActive` (boolean) 🔄
+- ✅ `customerIds` (array) 
+- ✅ `productIds` (array) 
+- ✅ `categoryIds` (array) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `status` (mixed) 
-
-**Relaciones disponibles:**
-
-- `shoppingCart` (relationship)
-- `product` (relationship)
 
 **Validaciones:**
 
-- `shoppingCart`: required
-- `product`: required
-- `quantity`: required, numeric, min:0
-- `unitPrice`: required, numeric, min:0
-- `originalPrice`: required, numeric, min:0
-- `discountPercent`: required, numeric, min:0, max:100
-- `discountAmount`: required, numeric, min:0
-- `subtotal`: required, numeric, min:0
-- `taxRate`: required, numeric, min:0, max:100
-- `taxAmount`: required, numeric, min:0
-- `total`: required, numeric, min:0
-- `metadata`: nullable, array
-- `status`: nullable, string, in:active,inactive
+- `code`: sometimes, required, string, max:255, coupons
+- `name`: sometimes, required, string, max:255
+- `description`: nullable, string
+- `couponType`: sometimes, required, string, max:255
+- `value`: sometimes, required, numeric, min:0
+- `minAmount`: nullable, numeric, min:0
+- `maxAmount`: nullable, numeric, min:0
+- `maxUses`: nullable, integer, min:1
+- `usedCount`: nullable, integer, min:0
+- `startsAt`: nullable, date
+- `expiresAt`: nullable, date, after:startsAt
+- `isActive`: sometimes, required, boolean
+- `customerIds`: nullable, array
+- `productIds`: nullable, array
+- `categoryIds`: nullable, array
 
 **Ejemplo de Request:**
 
@@ -3941,43 +4088,41 @@
 
 **Campos disponibles:**
 
-- ✅ `shoppingCartId` (string) 
-- ✅ `productId` (string) 
-- ✅ `quantity` (number) 
-- ✅ `unitPrice` (number) 
-- ✅ `originalPrice` (number) 
-- ✅ `discountPercent` (number) 
-- ✅ `discountAmount` (number) 
-- ✅ `subtotal` (number) 
-- ✅ `taxRate` (number) 
-- ✅ `taxAmount` (number) 
-- ✅ `total` (number) 
-- ✅ `metadata` (object) 
-- ✅ `status` (string) 
+- ✅ `code` (string) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `couponType` (string) 🔄
+- ✅ `value` (number) 
+- ✅ `minAmount` (number) 
+- ✅ `maxAmount` (number) 
+- ✅ `maxUses` (number) 
+- ✅ `usedCount` (number) 
+- ✅ `startsAt` (datetime) 
+- ✅ `expiresAt` (datetime) 
+- ✅ `isActive` (boolean) 🔄
+- ✅ `customerIds` (array) 
+- ✅ `productIds` (array) 
+- ✅ `categoryIds` (array) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `status` (mixed) 
-
-**Relaciones disponibles:**
-
-- `shoppingCart` (relationship)
-- `product` (relationship)
 
 **Validaciones:**
 
-- `shoppingCart`: required
-- `product`: required
-- `quantity`: required, numeric, min:0
-- `unitPrice`: required, numeric, min:0
-- `originalPrice`: required, numeric, min:0
-- `discountPercent`: required, numeric, min:0, max:100
-- `discountAmount`: required, numeric, min:0
-- `subtotal`: required, numeric, min:0
-- `taxRate`: required, numeric, min:0, max:100
-- `taxAmount`: required, numeric, min:0
-- `total`: required, numeric, min:0
-- `metadata`: nullable, array
-- `status`: nullable, string, in:active,inactive
+- `code`: sometimes, required, string, max:255, coupons
+- `name`: sometimes, required, string, max:255
+- `description`: nullable, string
+- `couponType`: sometimes, required, string, max:255
+- `value`: sometimes, required, numeric, min:0
+- `minAmount`: nullable, numeric, min:0
+- `maxAmount`: nullable, numeric, min:0
+- `maxUses`: nullable, integer, min:1
+- `usedCount`: nullable, integer, min:0
+- `startsAt`: nullable, date
+- `expiresAt`: nullable, date, after:startsAt
+- `isActive`: sometimes, required, boolean
+- `customerIds`: nullable, array
+- `productIds`: nullable, array
+- `categoryIds`: nullable, array
 
 ---
 
@@ -3987,21 +4132,27 @@
 
 **Campos disponibles:**
 
-- ✅ `quantity` (number) 
-- ✅ `subtotal` (number) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
+- ✅ `phone` (string) 
+- ✅ `address` (string) 
+- ✅ `rfc` (string) 
+- ✅ `isActive` (boolean) 🔄
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `quantity` (mixed) 
 
 **Relaciones disponibles:**
 
-- `purchaseOrder` (relationship)
-- `product` (relationship)
+- `purchaseOrders` (relationship[])
 
 **Validaciones:**
 
-- `quantity`: required, numeric, min:0.01
-- `unitPrice`: required, numeric, min:0
+- `name`: required, string, max:255
+- `email`: nullable, email, max:255, suppliers, email
+- `phone`: nullable, string, max:20
+- `address`: nullable, string, max:500
+- `rfc`: nullable, string, max:13, suppliers, rfc
+- `isActive`: sometimes, boolean
 
 **Ejemplo de Request:**
 
@@ -4022,21 +4173,27 @@
 
 **Campos disponibles:**
 
-- ✅ `quantity` (number) 
-- ✅ `subtotal` (number) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
+- ✅ `phone` (string) 
+- ✅ `address` (string) 
+- ✅ `rfc` (string) 
+- ✅ `isActive` (boolean) 🔄
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `quantity` (mixed) 
 
 **Relaciones disponibles:**
 
-- `purchaseOrder` (relationship)
-- `product` (relationship)
+- `purchaseOrders` (relationship[])
 
 **Validaciones:**
 
-- `quantity`: required, numeric, min:0.01
-- `unitPrice`: required, numeric, min:0
+- `name`: required, string, max:255
+- `email`: nullable, email, max:255, suppliers, email
+- `phone`: nullable, string, max:20
+- `address`: nullable, string, max:500
+- `rfc`: nullable, string, max:13, suppliers, rfc
+- `isActive`: sometimes, boolean
 
 **Ejemplo de Request:**
 
@@ -4081,21 +4238,27 @@
 
 **Campos disponibles:**
 
-- ✅ `quantity` (number) 
-- ✅ `subtotal` (number) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
+- ✅ `phone` (string) 
+- ✅ `address` (string) 
+- ✅ `rfc` (string) 
+- ✅ `isActive` (boolean) 🔄
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `quantity` (mixed) 
 
 **Relaciones disponibles:**
 
-- `purchaseOrder` (relationship)
-- `product` (relationship)
+- `purchaseOrders` (relationship[])
 
 **Validaciones:**
 
-- `quantity`: required, numeric, min:0.01
-- `unitPrice`: required, numeric, min:0
+- `name`: required, string, max:255
+- `email`: nullable, email, max:255, suppliers, email
+- `phone`: nullable, string, max:20
+- `address`: nullable, string, max:500
+- `rfc`: nullable, string, max:13, suppliers, rfc
+- `isActive`: sometimes, boolean
 
 **Ejemplo de Request:**
 
@@ -4116,21 +4279,27 @@
 
 **Campos disponibles:**
 
-- ✅ `quantity` (number) 
-- ✅ `subtotal` (number) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
+- ✅ `phone` (string) 
+- ✅ `address` (string) 
+- ✅ `rfc` (string) 
+- ✅ `isActive` (boolean) 🔄
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `quantity` (mixed) 
 
 **Relaciones disponibles:**
 
-- `purchaseOrder` (relationship)
-- `product` (relationship)
+- `purchaseOrders` (relationship[])
 
 **Validaciones:**
 
-- `quantity`: required, numeric, min:0.01
-- `unitPrice`: required, numeric, min:0
+- `name`: required, string, max:255
+- `email`: nullable, email, max:255, suppliers, email
+- `phone`: nullable, string, max:20
+- `address`: nullable, string, max:500
+- `rfc`: nullable, string, max:13, suppliers, rfc
+- `isActive`: sometimes, boolean
 
 **Ejemplo de Request:**
 
@@ -4162,21 +4331,27 @@
 
 **Campos disponibles:**
 
-- ✅ `quantity` (number) 
-- ✅ `subtotal` (number) 
+- ✅ `name` (string) 🔄
+- ✅ `email` (string) 🔄
+- ✅ `phone` (string) 
+- ✅ `address` (string) 
+- ✅ `rfc` (string) 
+- ✅ `isActive` (boolean) 🔄
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `quantity` (mixed) 
 
 **Relaciones disponibles:**
 
-- `purchaseOrder` (relationship)
-- `product` (relationship)
+- `purchaseOrders` (relationship[])
 
 **Validaciones:**
 
-- `quantity`: required, numeric, min:0.01
-- `unitPrice`: required, numeric, min:0
+- `name`: required, string, max:255
+- `email`: nullable, email, max:255, suppliers, email
+- `phone`: nullable, string, max:20
+- `address`: nullable, string, max:500
+- `rfc`: nullable, string, max:13, suppliers, rfc
+- `isActive`: sometimes, boolean
 
 ---
 
@@ -4186,21 +4361,26 @@
 
 **Campos disponibles:**
 
-- ✅ `quantity` (number) 
-- ✅ `subtotal` (number) 
+- ✅ `supplierId` (number) 
+- ✅ `orderDate` (datetime) 
+- ✅ `status` (string) 
+- ✅ `totalAmount` (number) 
+- ✅ `notes` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `quantity` (mixed) 
 
 **Relaciones disponibles:**
 
-- `purchaseOrder` (relationship)
-- `product` (relationship)
+- `supplier` (relationship)
+- `purchaseOrderItems` (relationship[])
 
 **Validaciones:**
 
-- `quantity`: required, numeric, min:0.01
-- `unitPrice`: required, numeric, min:0
+- `orderDate`: required, sometimes, date
+- `status`: required, sometimes, string, in:pending,approved,received,cancelled
+- `totalAmount`: required, sometimes, numeric, min:0
+- `notes`: nullable, string
+- `supplier`: required, sometimes
 
 **Ejemplo de Request:**
 
@@ -4221,21 +4401,26 @@
 
 **Campos disponibles:**
 
-- ✅ `quantity` (number) 
-- ✅ `subtotal` (number) 
+- ✅ `supplierId` (number) 
+- ✅ `orderDate` (datetime) 
+- ✅ `status` (string) 
+- ✅ `totalAmount` (number) 
+- ✅ `notes` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `quantity` (mixed) 
 
 **Relaciones disponibles:**
 
-- `purchaseOrder` (relationship)
-- `product` (relationship)
+- `supplier` (relationship)
+- `purchaseOrderItems` (relationship[])
 
 **Validaciones:**
 
-- `quantity`: required, numeric, min:0.01
-- `unitPrice`: required, numeric, min:0
+- `orderDate`: required, sometimes, date
+- `status`: required, sometimes, string, in:pending,approved,received,cancelled
+- `totalAmount`: required, sometimes, numeric, min:0
+- `notes`: nullable, string
+- `supplier`: required, sometimes
 
 **Ejemplo de Request:**
 
@@ -4280,21 +4465,26 @@
 
 **Campos disponibles:**
 
-- ✅ `quantity` (number) 
-- ✅ `subtotal` (number) 
+- ✅ `supplierId` (number) 
+- ✅ `orderDate` (datetime) 
+- ✅ `status` (string) 
+- ✅ `totalAmount` (number) 
+- ✅ `notes` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `quantity` (mixed) 
 
 **Relaciones disponibles:**
 
-- `purchaseOrder` (relationship)
-- `product` (relationship)
+- `supplier` (relationship)
+- `purchaseOrderItems` (relationship[])
 
 **Validaciones:**
 
-- `quantity`: required, numeric, min:0.01
-- `unitPrice`: required, numeric, min:0
+- `orderDate`: required, sometimes, date
+- `status`: required, sometimes, string, in:pending,approved,received,cancelled
+- `totalAmount`: required, sometimes, numeric, min:0
+- `notes`: nullable, string
+- `supplier`: required, sometimes
 
 **Ejemplo de Request:**
 
@@ -4315,21 +4505,26 @@
 
 **Campos disponibles:**
 
-- ✅ `quantity` (number) 
-- ✅ `subtotal` (number) 
+- ✅ `supplierId` (number) 
+- ✅ `orderDate` (datetime) 
+- ✅ `status` (string) 
+- ✅ `totalAmount` (number) 
+- ✅ `notes` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `quantity` (mixed) 
 
 **Relaciones disponibles:**
 
-- `purchaseOrder` (relationship)
-- `product` (relationship)
+- `supplier` (relationship)
+- `purchaseOrderItems` (relationship[])
 
 **Validaciones:**
 
-- `quantity`: required, numeric, min:0.01
-- `unitPrice`: required, numeric, min:0
+- `orderDate`: required, sometimes, date
+- `status`: required, sometimes, string, in:pending,approved,received,cancelled
+- `totalAmount`: required, sometimes, numeric, min:0
+- `notes`: nullable, string
+- `supplier`: required, sometimes
 
 **Ejemplo de Request:**
 
@@ -4361,21 +4556,26 @@
 
 **Campos disponibles:**
 
-- ✅ `quantity` (number) 
-- ✅ `subtotal` (number) 
+- ✅ `supplierId` (number) 
+- ✅ `orderDate` (datetime) 
+- ✅ `status` (string) 
+- ✅ `totalAmount` (number) 
+- ✅ `notes` (string) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `quantity` (mixed) 
 
 **Relaciones disponibles:**
 
-- `purchaseOrder` (relationship)
-- `product` (relationship)
+- `supplier` (relationship)
+- `purchaseOrderItems` (relationship[])
 
 **Validaciones:**
 
-- `quantity`: required, numeric, min:0.01
-- `unitPrice`: required, numeric, min:0
+- `orderDate`: required, sometimes, date
+- `status`: required, sometimes, string, in:pending,approved,received,cancelled
+- `totalAmount`: required, sometimes, numeric, min:0
+- `notes`: nullable, string
+- `supplier`: required, sometimes
 
 ---
 
@@ -4386,10 +4586,10 @@
 **Campos disponibles:**
 
 - ✅ `quantity` (number) 
+- ✅ `unitPrice` (number) 
 - ✅ `subtotal` (number) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `quantity` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -4421,10 +4621,10 @@
 **Campos disponibles:**
 
 - ✅ `quantity` (number) 
+- ✅ `unitPrice` (number) 
 - ✅ `subtotal` (number) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `quantity` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -4480,10 +4680,10 @@
 **Campos disponibles:**
 
 - ✅ `quantity` (number) 
+- ✅ `unitPrice` (number) 
 - ✅ `subtotal` (number) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `quantity` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -4515,10 +4715,10 @@
 **Campos disponibles:**
 
 - ✅ `quantity` (number) 
+- ✅ `unitPrice` (number) 
 - ✅ `subtotal` (number) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `quantity` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -4561,10 +4761,10 @@
 **Campos disponibles:**
 
 - ✅ `quantity` (number) 
+- ✅ `unitPrice` (number) 
 - ✅ `subtotal` (number) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
-- ✅ `quantity` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -4598,10 +4798,6 @@
 - ✅ `metadata` (object) 
 - ✅ `created_at` (datetime) 🔄
 - ✅ `updated_at` (datetime) 🔄
-- ✅ `name` (mixed) 
-- ✅ `email` (mixed) 
-- ✅ `classification` (mixed) 
-- ✅ `is_active` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -4655,10 +4851,6 @@
 - ✅ `metadata` (object) 
 - ✅ `created_at` (datetime) 🔄
 - ✅ `updated_at` (datetime) 🔄
-- ✅ `name` (mixed) 
-- ✅ `email` (mixed) 
-- ✅ `classification` (mixed) 
-- ✅ `is_active` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -4736,10 +4928,6 @@
 - ✅ `metadata` (object) 
 - ✅ `created_at` (datetime) 🔄
 - ✅ `updated_at` (datetime) 🔄
-- ✅ `name` (mixed) 
-- ✅ `email` (mixed) 
-- ✅ `classification` (mixed) 
-- ✅ `is_active` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -4793,10 +4981,6 @@
 - ✅ `metadata` (object) 
 - ✅ `created_at` (datetime) 🔄
 - ✅ `updated_at` (datetime) 🔄
-- ✅ `name` (mixed) 
-- ✅ `email` (mixed) 
-- ✅ `classification` (mixed) 
-- ✅ `is_active` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -4861,10 +5045,6 @@
 - ✅ `metadata` (object) 
 - ✅ `created_at` (datetime) 🔄
 - ✅ `updated_at` (datetime) 🔄
-- ✅ `name` (mixed) 
-- ✅ `email` (mixed) 
-- ✅ `classification` (mixed) 
-- ✅ `is_active` (mixed) 
 
 **Relaciones disponibles:**
 
@@ -4893,42 +5073,37 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 🔄
-- ✅ `email` (string) 🔄
-- ✅ `phone` (string) 
-- ✅ `address` (string) 
-- ✅ `city` (string) 
-- ✅ `state` (string) 
-- ✅ `country` (string) 
-- ✅ `classification` (string) 🔄
-- ✅ `credit_limit` (number) 
-- ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 🔄
+- ✅ `customer_id` (number) 
+- ✅ `order_number` (string) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `order_date` (datetime) 🔄
+- ✅ `approved_at` (datetime) 🔄
+- ✅ `delivered_at` (datetime) 🔄
+- ✅ `subtotal_amount` (number) 🔄
+- ✅ `tax_amount` (number) 
+- ✅ `discount_total` (number) 
+- ✅ `total_amount` (number) 🔄
+- ✅ `notes` (string) 
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 🔄
-- ✅ `updated_at` (datetime) 🔄
-- ✅ `name` (mixed) 
-- ✅ `email` (mixed) 
-- ✅ `classification` (mixed) 
-- ✅ `is_active` (mixed) 
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒🔄
 
 **Relaciones disponibles:**
 
-- `salesOrders` (relationship[])
+- `customer` (relationship)
+- `items` (relationship[])
 
 **Validaciones:**
 
-- `name`: required, string, max:255
-- `email`: required, email, max:255, customers, email
-- `phone`: nullable, string, max:50
-- `address`: nullable, string, max:255
-- `city`: nullable, string, max:100
-- `state`: nullable, string, max:100
-- `country`: nullable, string, max:100
-- `classification`: required, mayorista, minorista, especial
-- `credit_limit`: nullable, numeric, min:0
-- `current_credit`: nullable, numeric, min:0
-- `is_active`: boolean
+- `customer_id`: required, exists:customers,id
+- `order_number`: required, string, max:50, sales_orders, order_number
+- `status`: required, draft, confirmed, processing, shipped, delivered, cancelled
+- `order_date`: required, date
+- `approved_at`: nullable, date
+- `delivered_at`: nullable, date
+- `total_amount`: required, numeric, min:0
+- `discount_total`: nullable, numeric, min:0
+- `notes`: nullable, string, max:1000
 - `metadata`: nullable, array
 
 **Ejemplo de Request:**
@@ -4950,42 +5125,37 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 🔄
-- ✅ `email` (string) 🔄
-- ✅ `phone` (string) 
-- ✅ `address` (string) 
-- ✅ `city` (string) 
-- ✅ `state` (string) 
-- ✅ `country` (string) 
-- ✅ `classification` (string) 🔄
-- ✅ `credit_limit` (number) 
-- ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 🔄
+- ✅ `customer_id` (number) 
+- ✅ `order_number` (string) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `order_date` (datetime) 🔄
+- ✅ `approved_at` (datetime) 🔄
+- ✅ `delivered_at` (datetime) 🔄
+- ✅ `subtotal_amount` (number) 🔄
+- ✅ `tax_amount` (number) 
+- ✅ `discount_total` (number) 
+- ✅ `total_amount` (number) 🔄
+- ✅ `notes` (string) 
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 🔄
-- ✅ `updated_at` (datetime) 🔄
-- ✅ `name` (mixed) 
-- ✅ `email` (mixed) 
-- ✅ `classification` (mixed) 
-- ✅ `is_active` (mixed) 
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒🔄
 
 **Relaciones disponibles:**
 
-- `salesOrders` (relationship[])
+- `customer` (relationship)
+- `items` (relationship[])
 
 **Validaciones:**
 
-- `name`: required, string, max:255
-- `email`: required, email, max:255, customers, email
-- `phone`: nullable, string, max:50
-- `address`: nullable, string, max:255
-- `city`: nullable, string, max:100
-- `state`: nullable, string, max:100
-- `country`: nullable, string, max:100
-- `classification`: required, mayorista, minorista, especial
-- `credit_limit`: nullable, numeric, min:0
-- `current_credit`: nullable, numeric, min:0
-- `is_active`: boolean
+- `customer_id`: required, exists:customers,id
+- `order_number`: required, string, max:50, sales_orders, order_number
+- `status`: required, draft, confirmed, processing, shipped, delivered, cancelled
+- `order_date`: required, date
+- `approved_at`: nullable, date
+- `delivered_at`: nullable, date
+- `total_amount`: required, numeric, min:0
+- `discount_total`: nullable, numeric, min:0
+- `notes`: nullable, string, max:1000
 - `metadata`: nullable, array
 
 **Ejemplo de Request:**
@@ -5031,42 +5201,37 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 🔄
-- ✅ `email` (string) 🔄
-- ✅ `phone` (string) 
-- ✅ `address` (string) 
-- ✅ `city` (string) 
-- ✅ `state` (string) 
-- ✅ `country` (string) 
-- ✅ `classification` (string) 🔄
-- ✅ `credit_limit` (number) 
-- ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 🔄
+- ✅ `customer_id` (number) 
+- ✅ `order_number` (string) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `order_date` (datetime) 🔄
+- ✅ `approved_at` (datetime) 🔄
+- ✅ `delivered_at` (datetime) 🔄
+- ✅ `subtotal_amount` (number) 🔄
+- ✅ `tax_amount` (number) 
+- ✅ `discount_total` (number) 
+- ✅ `total_amount` (number) 🔄
+- ✅ `notes` (string) 
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 🔄
-- ✅ `updated_at` (datetime) 🔄
-- ✅ `name` (mixed) 
-- ✅ `email` (mixed) 
-- ✅ `classification` (mixed) 
-- ✅ `is_active` (mixed) 
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒🔄
 
 **Relaciones disponibles:**
 
-- `salesOrders` (relationship[])
+- `customer` (relationship)
+- `items` (relationship[])
 
 **Validaciones:**
 
-- `name`: required, string, max:255
-- `email`: required, email, max:255, customers, email
-- `phone`: nullable, string, max:50
-- `address`: nullable, string, max:255
-- `city`: nullable, string, max:100
-- `state`: nullable, string, max:100
-- `country`: nullable, string, max:100
-- `classification`: required, mayorista, minorista, especial
-- `credit_limit`: nullable, numeric, min:0
-- `current_credit`: nullable, numeric, min:0
-- `is_active`: boolean
+- `customer_id`: required, exists:customers,id
+- `order_number`: required, string, max:50, sales_orders, order_number
+- `status`: required, draft, confirmed, processing, shipped, delivered, cancelled
+- `order_date`: required, date
+- `approved_at`: nullable, date
+- `delivered_at`: nullable, date
+- `total_amount`: required, numeric, min:0
+- `discount_total`: nullable, numeric, min:0
+- `notes`: nullable, string, max:1000
 - `metadata`: nullable, array
 
 **Ejemplo de Request:**
@@ -5088,42 +5253,37 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 🔄
-- ✅ `email` (string) 🔄
-- ✅ `phone` (string) 
-- ✅ `address` (string) 
-- ✅ `city` (string) 
-- ✅ `state` (string) 
-- ✅ `country` (string) 
-- ✅ `classification` (string) 🔄
-- ✅ `credit_limit` (number) 
-- ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 🔄
+- ✅ `customer_id` (number) 
+- ✅ `order_number` (string) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `order_date` (datetime) 🔄
+- ✅ `approved_at` (datetime) 🔄
+- ✅ `delivered_at` (datetime) 🔄
+- ✅ `subtotal_amount` (number) 🔄
+- ✅ `tax_amount` (number) 
+- ✅ `discount_total` (number) 
+- ✅ `total_amount` (number) 🔄
+- ✅ `notes` (string) 
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 🔄
-- ✅ `updated_at` (datetime) 🔄
-- ✅ `name` (mixed) 
-- ✅ `email` (mixed) 
-- ✅ `classification` (mixed) 
-- ✅ `is_active` (mixed) 
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒🔄
 
 **Relaciones disponibles:**
 
-- `salesOrders` (relationship[])
+- `customer` (relationship)
+- `items` (relationship[])
 
 **Validaciones:**
 
-- `name`: required, string, max:255
-- `email`: required, email, max:255, customers, email
-- `phone`: nullable, string, max:50
-- `address`: nullable, string, max:255
-- `city`: nullable, string, max:100
-- `state`: nullable, string, max:100
-- `country`: nullable, string, max:100
-- `classification`: required, mayorista, minorista, especial
-- `credit_limit`: nullable, numeric, min:0
-- `current_credit`: nullable, numeric, min:0
-- `is_active`: boolean
+- `customer_id`: required, exists:customers,id
+- `order_number`: required, string, max:50, sales_orders, order_number
+- `status`: required, draft, confirmed, processing, shipped, delivered, cancelled
+- `order_date`: required, date
+- `approved_at`: nullable, date
+- `delivered_at`: nullable, date
+- `total_amount`: required, numeric, min:0
+- `discount_total`: nullable, numeric, min:0
+- `notes`: nullable, string, max:1000
 - `metadata`: nullable, array
 
 **Ejemplo de Request:**
@@ -5156,42 +5316,37 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 🔄
-- ✅ `email` (string) 🔄
-- ✅ `phone` (string) 
-- ✅ `address` (string) 
-- ✅ `city` (string) 
-- ✅ `state` (string) 
-- ✅ `country` (string) 
-- ✅ `classification` (string) 🔄
-- ✅ `credit_limit` (number) 
-- ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 🔄
+- ✅ `customer_id` (number) 
+- ✅ `order_number` (string) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `order_date` (datetime) 🔄
+- ✅ `approved_at` (datetime) 🔄
+- ✅ `delivered_at` (datetime) 🔄
+- ✅ `subtotal_amount` (number) 🔄
+- ✅ `tax_amount` (number) 
+- ✅ `discount_total` (number) 
+- ✅ `total_amount` (number) 🔄
+- ✅ `notes` (string) 
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 🔄
-- ✅ `updated_at` (datetime) 🔄
-- ✅ `name` (mixed) 
-- ✅ `email` (mixed) 
-- ✅ `classification` (mixed) 
-- ✅ `is_active` (mixed) 
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒🔄
 
 **Relaciones disponibles:**
 
-- `salesOrders` (relationship[])
+- `customer` (relationship)
+- `items` (relationship[])
 
 **Validaciones:**
 
-- `name`: required, string, max:255
-- `email`: required, email, max:255, customers, email
-- `phone`: nullable, string, max:50
-- `address`: nullable, string, max:255
-- `city`: nullable, string, max:100
-- `state`: nullable, string, max:100
-- `country`: nullable, string, max:100
-- `classification`: required, mayorista, minorista, especial
-- `credit_limit`: nullable, numeric, min:0
-- `current_credit`: nullable, numeric, min:0
-- `is_active`: boolean
+- `customer_id`: required, exists:customers,id
+- `order_number`: required, string, max:50, sales_orders, order_number
+- `status`: required, draft, confirmed, processing, shipped, delivered, cancelled
+- `order_date`: required, date
+- `approved_at`: nullable, date
+- `delivered_at`: nullable, date
+- `total_amount`: required, numeric, min:0
+- `discount_total`: nullable, numeric, min:0
+- `notes`: nullable, string, max:1000
 - `metadata`: nullable, array
 
 ---
@@ -5202,42 +5357,29 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 🔄
-- ✅ `email` (string) 🔄
-- ✅ `phone` (string) 
-- ✅ `address` (string) 
-- ✅ `city` (string) 
-- ✅ `state` (string) 
-- ✅ `country` (string) 
-- ✅ `classification` (string) 🔄
-- ✅ `credit_limit` (number) 
-- ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 🔄
+- ✅ `salesOrderId` (number) 🔄
+- ✅ `productId` (number) 🔄
+- ✅ `quantity` (number) 🔄
+- ✅ `unitPrice` (number) 🔄
+- ✅ `discount` (number) 🔄
+- ✅ `total` (number) 🔄
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 🔄
-- ✅ `updated_at` (datetime) 🔄
-- ✅ `name` (mixed) 
-- ✅ `email` (mixed) 
-- ✅ `classification` (mixed) 
-- ✅ `is_active` (mixed) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 
 **Relaciones disponibles:**
 
-- `salesOrders` (relationship[])
+- `salesOrder` (relationship)
+- `product` (relationship)
 
 **Validaciones:**
 
-- `name`: required, string, max:255
-- `email`: required, email, max:255, customers, email
-- `phone`: nullable, string, max:50
-- `address`: nullable, string, max:255
-- `city`: nullable, string, max:100
-- `state`: nullable, string, max:100
-- `country`: nullable, string, max:100
-- `classification`: required, mayorista, minorista, especial
-- `credit_limit`: nullable, numeric, min:0
-- `current_credit`: nullable, numeric, min:0
-- `is_active`: boolean
+- `salesOrderId`: required, integer, exists:sales_orders,id
+- `productId`: required, integer, exists:products,id
+- `quantity`: required, numeric, min:0.01
+- `unitPrice`: required, numeric, min:0
+- `discount`: sometimes, numeric, min:0
+- `total`: required, numeric, min:0
 - `metadata`: nullable, array
 
 **Ejemplo de Request:**
@@ -5259,42 +5401,29 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 🔄
-- ✅ `email` (string) 🔄
-- ✅ `phone` (string) 
-- ✅ `address` (string) 
-- ✅ `city` (string) 
-- ✅ `state` (string) 
-- ✅ `country` (string) 
-- ✅ `classification` (string) 🔄
-- ✅ `credit_limit` (number) 
-- ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 🔄
+- ✅ `salesOrderId` (number) 🔄
+- ✅ `productId` (number) 🔄
+- ✅ `quantity` (number) 🔄
+- ✅ `unitPrice` (number) 🔄
+- ✅ `discount` (number) 🔄
+- ✅ `total` (number) 🔄
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 🔄
-- ✅ `updated_at` (datetime) 🔄
-- ✅ `name` (mixed) 
-- ✅ `email` (mixed) 
-- ✅ `classification` (mixed) 
-- ✅ `is_active` (mixed) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 
 **Relaciones disponibles:**
 
-- `salesOrders` (relationship[])
+- `salesOrder` (relationship)
+- `product` (relationship)
 
 **Validaciones:**
 
-- `name`: required, string, max:255
-- `email`: required, email, max:255, customers, email
-- `phone`: nullable, string, max:50
-- `address`: nullable, string, max:255
-- `city`: nullable, string, max:100
-- `state`: nullable, string, max:100
-- `country`: nullable, string, max:100
-- `classification`: required, mayorista, minorista, especial
-- `credit_limit`: nullable, numeric, min:0
-- `current_credit`: nullable, numeric, min:0
-- `is_active`: boolean
+- `salesOrderId`: required, integer, exists:sales_orders,id
+- `productId`: required, integer, exists:products,id
+- `quantity`: required, numeric, min:0.01
+- `unitPrice`: required, numeric, min:0
+- `discount`: sometimes, numeric, min:0
+- `total`: required, numeric, min:0
 - `metadata`: nullable, array
 
 **Ejemplo de Request:**
@@ -5340,42 +5469,29 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 🔄
-- ✅ `email` (string) 🔄
-- ✅ `phone` (string) 
-- ✅ `address` (string) 
-- ✅ `city` (string) 
-- ✅ `state` (string) 
-- ✅ `country` (string) 
-- ✅ `classification` (string) 🔄
-- ✅ `credit_limit` (number) 
-- ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 🔄
+- ✅ `salesOrderId` (number) 🔄
+- ✅ `productId` (number) 🔄
+- ✅ `quantity` (number) 🔄
+- ✅ `unitPrice` (number) 🔄
+- ✅ `discount` (number) 🔄
+- ✅ `total` (number) 🔄
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 🔄
-- ✅ `updated_at` (datetime) 🔄
-- ✅ `name` (mixed) 
-- ✅ `email` (mixed) 
-- ✅ `classification` (mixed) 
-- ✅ `is_active` (mixed) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 
 **Relaciones disponibles:**
 
-- `salesOrders` (relationship[])
+- `salesOrder` (relationship)
+- `product` (relationship)
 
 **Validaciones:**
 
-- `name`: required, string, max:255
-- `email`: required, email, max:255, customers, email
-- `phone`: nullable, string, max:50
-- `address`: nullable, string, max:255
-- `city`: nullable, string, max:100
-- `state`: nullable, string, max:100
-- `country`: nullable, string, max:100
-- `classification`: required, mayorista, minorista, especial
-- `credit_limit`: nullable, numeric, min:0
-- `current_credit`: nullable, numeric, min:0
-- `is_active`: boolean
+- `salesOrderId`: required, integer, exists:sales_orders,id
+- `productId`: required, integer, exists:products,id
+- `quantity`: required, numeric, min:0.01
+- `unitPrice`: required, numeric, min:0
+- `discount`: sometimes, numeric, min:0
+- `total`: required, numeric, min:0
 - `metadata`: nullable, array
 
 **Ejemplo de Request:**
@@ -5397,42 +5513,29 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 🔄
-- ✅ `email` (string) 🔄
-- ✅ `phone` (string) 
-- ✅ `address` (string) 
-- ✅ `city` (string) 
-- ✅ `state` (string) 
-- ✅ `country` (string) 
-- ✅ `classification` (string) 🔄
-- ✅ `credit_limit` (number) 
-- ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 🔄
+- ✅ `salesOrderId` (number) 🔄
+- ✅ `productId` (number) 🔄
+- ✅ `quantity` (number) 🔄
+- ✅ `unitPrice` (number) 🔄
+- ✅ `discount` (number) 🔄
+- ✅ `total` (number) 🔄
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 🔄
-- ✅ `updated_at` (datetime) 🔄
-- ✅ `name` (mixed) 
-- ✅ `email` (mixed) 
-- ✅ `classification` (mixed) 
-- ✅ `is_active` (mixed) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 
 **Relaciones disponibles:**
 
-- `salesOrders` (relationship[])
+- `salesOrder` (relationship)
+- `product` (relationship)
 
 **Validaciones:**
 
-- `name`: required, string, max:255
-- `email`: required, email, max:255, customers, email
-- `phone`: nullable, string, max:50
-- `address`: nullable, string, max:255
-- `city`: nullable, string, max:100
-- `state`: nullable, string, max:100
-- `country`: nullable, string, max:100
-- `classification`: required, mayorista, minorista, especial
-- `credit_limit`: nullable, numeric, min:0
-- `current_credit`: nullable, numeric, min:0
-- `is_active`: boolean
+- `salesOrderId`: required, integer, exists:sales_orders,id
+- `productId`: required, integer, exists:products,id
+- `quantity`: required, numeric, min:0.01
+- `unitPrice`: required, numeric, min:0
+- `discount`: sometimes, numeric, min:0
+- `total`: required, numeric, min:0
 - `metadata`: nullable, array
 
 **Ejemplo de Request:**
@@ -5465,42 +5568,29 @@
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 🔄
-- ✅ `email` (string) 🔄
-- ✅ `phone` (string) 
-- ✅ `address` (string) 
-- ✅ `city` (string) 
-- ✅ `state` (string) 
-- ✅ `country` (string) 
-- ✅ `classification` (string) 🔄
-- ✅ `credit_limit` (number) 
-- ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 🔄
+- ✅ `salesOrderId` (number) 🔄
+- ✅ `productId` (number) 🔄
+- ✅ `quantity` (number) 🔄
+- ✅ `unitPrice` (number) 🔄
+- ✅ `discount` (number) 🔄
+- ✅ `total` (number) 🔄
 - ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 🔄
-- ✅ `updated_at` (datetime) 🔄
-- ✅ `name` (mixed) 
-- ✅ `email` (mixed) 
-- ✅ `classification` (mixed) 
-- ✅ `is_active` (mixed) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 
 **Relaciones disponibles:**
 
-- `salesOrders` (relationship[])
+- `salesOrder` (relationship)
+- `product` (relationship)
 
 **Validaciones:**
 
-- `name`: required, string, max:255
-- `email`: required, email, max:255, customers, email
-- `phone`: nullable, string, max:50
-- `address`: nullable, string, max:255
-- `city`: nullable, string, max:100
-- `state`: nullable, string, max:100
-- `country`: nullable, string, max:100
-- `classification`: required, mayorista, minorista, especial
-- `credit_limit`: nullable, numeric, min:0
-- `current_credit`: nullable, numeric, min:0
-- `is_active`: boolean
+- `salesOrderId`: required, integer, exists:sales_orders,id
+- `productId`: required, integer, exists:products,id
+- `quantity`: required, numeric, min:0.01
+- `unitPrice`: required, numeric, min:0
+- `discount`: sometimes, numeric, min:0
+- `total`: required, numeric, min:0
 - `metadata`: nullable, array
 
 ---
