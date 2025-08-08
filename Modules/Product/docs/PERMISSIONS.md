@@ -1,6 +1,6 @@
 # 🔐 Permissions - Product
 
-**Generated:** 2025-08-08 07:32:23
+**Generated:** 2025-08-08 23:11:40
 
 ## Default Role Assignments
 

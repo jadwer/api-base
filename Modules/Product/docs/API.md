@@ -2,7 +2,7 @@
 
 Auto-generated API documentation.
 
-**Generated:** 2025-08-08 07:32:23
+**Generated:** 2025-08-08 23:11:40
 
 ## 📄 Brand
 
@@ -26,8 +26,10 @@ Auto-generated API documentation.
 | `description` | string | Auto-detected field |
 | `slug` | string | Auto-detected field |
 | `products` | relationship[] | Auto-detected field |
-| `created_at` | datetime | Auto-detected field |
-| `updated_at` | datetime | Auto-detected field |
+| `createdAt` | datetime | Auto-detected field |
+| `updatedAt` | datetime | Auto-detected field |
+| `name` | unknown | Auto-detected field |
+| `slug` | unknown | Auto-detected field |
 
 ### Query Parameters
 
@@ -76,14 +78,18 @@ GET /api/v1/brands?page[number]=1&page[size]=20
 | `unit` | relationship | Auto-detected field |
 | `category` | relationship | Auto-detected field |
 | `brand` | relationship | Auto-detected field |
-| `created_at` | datetime | Auto-detected field |
-| `updated_at` | datetime | Auto-detected field |
+| `createdAt` | datetime | Auto-detected field |
+| `updatedAt` | datetime | Auto-detected field |
 | `name` | unknown | Auto-detected field |
 | `sku` | unknown | Auto-detected field |
+| `search_name` | unknown | Auto-detected field |
+| `search_sku` | unknown | Auto-detected field |
 | `unit_id` | unknown | Auto-detected field |
 | `category_id` | unknown | Auto-detected field |
 | `brand_id` | unknown | Auto-detected field |
-| `brand_id` | unknown | Auto-detected field |
+| `brands` | unknown | Auto-detected field |
+| `categories` | unknown | Auto-detected field |
+| `units` | unknown | Auto-detected field |
 
 ### Query Parameters
 
@@ -123,8 +129,11 @@ GET /api/v1/products?page[number]=1&page[size]=20
 | `name` | string | Auto-detected field |
 | `code` | string | Auto-detected field |
 | `unitType` | string | Auto-detected field |
-| `created_at` | datetime | Auto-detected field |
-| `updated_at` | datetime | Auto-detected field |
+| `createdAt` | datetime | Auto-detected field |
+| `updatedAt` | datetime | Auto-detected field |
+| `name` | unknown | Auto-detected field |
+| `code` | unknown | Auto-detected field |
+| `unit_type` | unknown | Auto-detected field |
 
 ### Query Parameters
 

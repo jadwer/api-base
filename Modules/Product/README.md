@@ -112,18 +112,56 @@ Response includes complete pagination metadata:
 ```
 
 ### Filtering Examples
+
+#### Exact Filtering
 ```http
-# Filter products by name
+# Filter products by exact name
 GET /api/v1/products?filter[name]=iPhone
 
-# Filter by brand and category
-GET /api/v1/products?filter[brand_id]=1&filter[category_id]=2
+# Filter by single brand and category
+GET /api/v1/products?filter[brand_id]=2&filter[category_id]=1
 
 # Filter brands by slug
 GET /api/v1/brands?filter[slug]=apple
 
 # Filter units by type
 GET /api/v1/units?filter[unit_type]=weight
+```
+
+#### Partial Search (NEW)
+```http
+# Search products by partial name (contains)
+GET /api/v1/products?filter[search_name]=Pro
+
+# Search products by partial SKU (contains)
+GET /api/v1/products?filter[search_sku]=APL
+
+# Combined partial searches
+GET /api/v1/products?filter[search_name]=iPhone&filter[search_sku]=256
+```
+
+#### Multiple Values Filtering (NEW)
+```http
+# Filter by multiple brands (Apple AND Samsung)
+GET /api/v1/products?filter[brands]=2,1
+
+# Filter by multiple categories
+GET /api/v1/products?filter[categories]=1,2,3
+
+# Filter by multiple units
+GET /api/v1/products?filter[units]=1,7,8
+```
+
+#### Advanced Combined Filtering (NEW)
+```http
+# Smartphones from Apple and Samsung with "Pro" in name
+GET /api/v1/products?filter[search_name]=Pro&filter[brands]=2,1&filter[category_id]=1
+
+# Products with "Ultra" from specific brands
+GET /api/v1/products?filter[search_name]=Ultra&filter[brands]=1,2
+
+# Search by SKU pattern in specific categories
+GET /api/v1/products?filter[search_sku]=APL&filter[categories]=1,2,3
 ```
 
 ### Sorting
@@ -148,8 +186,10 @@ GET /api/v1/brands/1?include=products
 
 The module includes production-ready sample data:
 
-### 🏷️ **Brands (12)**
-- Apple, Samsung, Sony, LG, Huawei, Dell, HP, Lenovo, Microsoft, Google, Canon, Nikon
+### 🏷️ **Brands (12) - With IDs**
+- Samsung (ID: 1), Apple (ID: 2), Sony (ID: 3), LG (ID: 4), Huawei (ID: 5)
+- Dell (ID: 6), HP (ID: 7), Lenovo (ID: 8), Microsoft (ID: 9), Google (ID: 10)  
+- Canon (ID: 11), Nikon (ID: 12)
 
 ### 📂 **Categories (10)**  
 - Smartphones, Laptops, Tablets, Televisores, Audífonos, Cámaras, Consolas, Smartwatches, Electrodomésticos, Accesorios
@@ -332,6 +372,8 @@ php artisan db:seed --class="Modules\\Product\\Database\\Seeders\\ProductSeeder"
 - Eager loading support for relationships
 - Indexed database fields for common filters
 - Optimized queries with proper field selection
+- **NEW:** Partial search with LIKE operators for scalable text matching
+- **NEW:** Multiple value filtering with comma-separated WhereIn filters
 
 ### Consistency with Other Modules
 - Aligned with Sales, Inventory, and Ecommerce modules
@@ -341,7 +383,15 @@ php artisan db:seed --class="Modules\\Product\\Database\\Seeders\\ProductSeeder"
 
 ---
 
-**Module Version:** 2.0.0  
+**Module Version:** 2.1.0  
 **JSON:API Compliance:** 5.x  
 **Last Updated:** 2025-08-08
+**New Features:** ✨ Partial Search & Multiple Value Filtering
 **Status:** Production Ready ✅
+
+## 📊 Métricas
+
+- **Test Files**: 0
+- **Generated**: 2025-08-08 23:11:40
+- **Status**: ✅ Documentation up to date
+- **API Version**: JSON:API v1.0

@@ -50,10 +50,18 @@ class ProductSchema extends Schema
             WhereIdIn::make($this),
             Where::make('name'),
             Where::make('sku'),
+            Where::make('search_name', 'name')->deserializeUsing(
+                static fn($value) => "%{$value}%"
+            )->using('like'),
+            Where::make('search_sku', 'sku')->deserializeUsing(
+                static fn($value) => "%{$value}%"
+            )->using('like'),
             Where::make('unit_id'),
             Where::make('category_id'),
             Where::make('brand_id'),
-            WhereIn::make('brand_id', 'brands'),
+            WhereIn::make('brands', 'brand_id')->delimiter(','),
+            WhereIn::make('categories', 'category_id')->delimiter(','),
+            WhereIn::make('units', 'unit_id')->delimiter(','),
         ];
     }
 

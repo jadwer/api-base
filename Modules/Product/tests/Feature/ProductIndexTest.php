@@ -175,6 +175,62 @@ class ProductIndexTest extends TestCase
         $this->assertContains('MacBook Pro 14" M3', $productNames);
     }
 
+    public function test_admin_can_search_products_by_partial_name(): void
+    {
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $this->actingAs($admin, 'sanctum');
+
+        // Run seeders to get products with known names
+        $this->artisan('db:seed', ['--class' => 'Modules\\Product\\Database\\Seeders\\ProductDatabaseSeeder']);
+
+        // Search for "iPhone" - should match "iPhone 15 Pro"
+        $response = $this->jsonApi()->get('/api/v1/products?filter[search_name]=iPhone');
+
+        $response->assertOk();
+        $products = $response->json('data');
+        
+        $this->assertGreaterThan(0, count($products), 'Should find products matching "iPhone"');
+        
+        // Verify all returned products contain "iPhone" in name
+        foreach ($products as $product) {
+            $name = $product['attributes']['name'];
+            $this->assertStringContainsString('iPhone', $name, "Product name '{$name}' should contain 'iPhone'");
+        }
+        
+        echo "\n🔍 SEARCH RESULTS for 'iPhone':\n";
+        foreach ($products as $product) {
+            echo "   • " . $product['attributes']['name'] . " (" . $product['attributes']['sku'] . ")\n";
+        }
+    }
+
+    public function test_admin_can_search_products_by_partial_sku(): void
+    {
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $this->actingAs($admin, 'sanctum');
+
+        // Run seeders to get products with known SKUs
+        $this->artisan('db:seed', ['--class' => 'Modules\\Product\\Database\\Seeders\\ProductDatabaseSeeder']);
+
+        // Search for "APL" - should match SKUs containing APL (like APL-IPH15P-256)
+        $response = $this->jsonApi()->get('/api/v1/products?filter[search_sku]=APL');
+
+        $response->assertOk();
+        $products = $response->json('data');
+        
+        $this->assertGreaterThan(0, count($products), 'Should find products with SKU containing "APL"');
+        
+        // Verify all returned products contain "APL" in SKU
+        foreach ($products as $product) {
+            $sku = $product['attributes']['sku'];
+            $this->assertStringContainsString('APL', $sku, "Product SKU '{$sku}' should contain 'APL'");
+        }
+        
+        echo "\n🔍 SEARCH RESULTS for SKU 'APL':\n";
+        foreach ($products as $product) {
+            echo "   • " . $product['attributes']['name'] . " (" . $product['attributes']['sku'] . ")\n";
+        }
+    }
+
     private function findIncludedName($product, $relationKey, $included, $expectedType): string
     {
         $relationId = $product['relationships'][$relationKey]['data']['id'] ?? null;
@@ -242,5 +298,125 @@ class ProductIndexTest extends TestCase
         echo "Per Page: {$meta['perPage']}\n";
         echo "Total: {$meta['total']}\n";
         echo "Last Page: {$meta['lastPage']}\n";
+    }
+
+    public function test_admin_can_filter_products_by_multiple_brands(): void
+    {
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $this->actingAs($admin, 'sanctum');
+
+        // Run seeders to get products with known brands
+        $this->artisan('db:seed', ['--class' => 'Modules\\Product\\Database\\Seeders\\ProductDatabaseSeeder']);
+
+        // Filter by Apple (2) and Samsung (1) brands
+        $response = $this->jsonApi()->get('/api/v1/products?filter[brands]=2,1');
+
+        $response->assertOk();
+        $products = $response->json('data');
+        
+        $this->assertGreaterThan(0, count($products), 'Should find products from Apple and Samsung');
+        
+        // Verify products are only from Apple (brand_id=2) or Samsung (brand_id=1)
+        foreach ($products as $product) {
+            $name = $product['attributes']['name'];
+            $isApple = str_contains($name, 'iPhone') || str_contains($name, 'MacBook') || str_contains($name, 'iPad');
+            $isSamsung = str_contains($name, 'Samsung') || str_contains($name, 'Galaxy');
+            
+            $this->assertTrue($isApple || $isSamsung, "Product '{$name}' should be from Apple or Samsung");
+        }
+        
+        echo "\n🔍 MÚLTIPLES MARCAS (Apple + Samsung):\n";
+        foreach ($products as $product) {
+            $name = $product['attributes']['name'];
+            $sku = $product['attributes']['sku'];
+            echo "   • {$name} ({$sku})\n";
+        }
+    }
+
+    public function test_admin_can_filter_products_by_single_brand(): void
+    {
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $this->actingAs($admin, 'sanctum');
+
+        // Run seeders to get products with known brands
+        $this->artisan('db:seed', ['--class' => 'Modules\\Product\\Database\\Seeders\\ProductDatabaseSeeder']);
+
+        // Filter by Apple only (brand_id=2)
+        $response = $this->jsonApi()->get('/api/v1/products?filter[brand_id]=2');
+
+        $response->assertOk();
+        $products = $response->json('data');
+        
+        $this->assertGreaterThan(0, count($products), 'Should find Apple products');
+        
+        // Verify all products are from Apple
+        foreach ($products as $product) {
+            $name = $product['attributes']['name'];
+            $isApple = str_contains($name, 'iPhone') || str_contains($name, 'MacBook') || str_contains($name, 'iPad');
+            $this->assertTrue($isApple, "Product '{$name}' should be from Apple");
+        }
+        
+        echo "\n🍎 MARCA ÚNICA (Apple):\n";
+        foreach ($products as $product) {
+            echo "   • " . $product['attributes']['name'] . "\n";
+        }
+    }
+
+    public function test_admin_can_combine_search_and_brand_filters(): void
+    {
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $this->actingAs($admin, 'sanctum');
+
+        // Run seeders to get products with known brands
+        $this->artisan('db:seed', ['--class' => 'Modules\\Product\\Database\\Seeders\\ProductDatabaseSeeder']);
+
+        // Search for "Pro" products only from Apple (brand_id=2)
+        $response = $this->jsonApi()->get('/api/v1/products?filter[search_name]=Pro&filter[brands]=2');
+
+        $response->assertOk();
+        $products = $response->json('data');
+        
+        $this->assertGreaterThan(0, count($products), 'Should find Apple products with "Pro" in name');
+        
+        // Verify all products contain "Pro" and are from Apple
+        foreach ($products as $product) {
+            $name = $product['attributes']['name'];
+            $this->assertStringContainsString('Pro', $name, "Product name '{$name}' should contain 'Pro'");
+            $isApple = str_contains($name, 'iPhone') || str_contains($name, 'MacBook') || str_contains($name, 'iPad');
+            $this->assertTrue($isApple, "Product '{$name}' should be from Apple");
+        }
+        
+        echo "\n🎯 BÚSQUEDA + MARCA ('Pro' en Apple):\n";
+        foreach ($products as $product) {
+            echo "   • " . $product['attributes']['name'] . "\n";
+        }
+    }
+
+    public function test_admin_can_search_across_multiple_brands(): void
+    {
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $this->actingAs($admin, 'sanctum');
+
+        // Run seeders to get products with known brands
+        $this->artisan('db:seed', ['--class' => 'Modules\\Product\\Database\\Seeders\\ProductDatabaseSeeder']);
+
+        // Search for "Ultra" products from Samsung and Apple (should only find Samsung)
+        $response = $this->jsonApi()->get('/api/v1/products?filter[search_name]=Ultra&filter[brands]=2,1');
+
+        $response->assertOk();
+        $products = $response->json('data');
+        
+        $this->assertGreaterThan(0, count($products), 'Should find products with "Ultra" in name');
+        
+        // Verify all products contain "Ultra"
+        foreach ($products as $product) {
+            $name = $product['attributes']['name'];
+            $this->assertStringContainsString('Ultra', $name, "Product name '{$name}' should contain 'Ultra'");
+        }
+        
+        echo "\n🔍 BÚSQUEDA MÚLTIPLE ('Ultra' en Apple + Samsung):\n";
+        foreach ($products as $product) {
+            echo "   • " . $product['attributes']['name'] . "\n";
+        }
     }
 }
