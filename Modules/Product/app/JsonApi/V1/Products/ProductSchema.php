@@ -12,6 +12,8 @@ use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Filters\WhereIn;
+use LaravelJsonApi\Eloquent\Pagination\PagePagination;
+use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use Modules\Product\Models\Product;
 
 class ProductSchema extends Schema
@@ -37,8 +39,8 @@ class ProductSchema extends Schema
             BelongsTo::make('category')->type('categories'),
             BelongsTo::make('brand')->type('brands'),
             
-            DateTime::make('created_at')->readOnly()->sortable(),
-            DateTime::make('updated_at')->readOnly(),
+            DateTime::make('createdAt', 'created_at')->readOnly()->sortable(),
+            DateTime::make('updatedAt', 'updated_at')->readOnly(),
         ];
     }
 
@@ -62,6 +64,11 @@ class ProductSchema extends Schema
             'category', 
             'brand',
         ];
+    }
+
+    public function pagination(): ?Paginator
+    {
+        return PagePagination::make();
     }
 
     public static function type(): string

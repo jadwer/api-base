@@ -15,6 +15,9 @@ class ProductDatabaseSeeder extends Seeder
             ProductPermissionSeeder::class,
             ProductAssignPermissionsSeeder::class,
             UnitSeeder::class,
+            BrandSeeder::class,
+            CategorySeeder::class,
+            ProductSeeder::class,
         ]);
     }
 }

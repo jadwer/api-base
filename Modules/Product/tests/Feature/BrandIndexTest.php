@@ -92,4 +92,52 @@ class BrandIndexTest extends TestCase
             ],
         ]);
     }
+
+    public function test_seeded_brands_include_slug_field(): void
+    {
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $this->actingAs($admin, 'sanctum');
+
+        // Run seeder to ensure brands exist
+        $this->artisan('db:seed', ['--class' => 'Modules\\Product\\Database\\Seeders\\BrandSeeder']);
+
+        $response = $this->jsonApi()->get('/api/v1/brands');
+
+        $response->assertOk();
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'type',
+                    'attributes' => [
+                        'name',
+                        'description',
+                        'slug', // Verify slug field is present
+                        'createdAt',
+                        'updatedAt',
+                    ],
+                ],
+            ],
+        ]);
+
+        // Display brands with slugs
+        $brands = $response->json('data');
+        echo "\n🏷️  SEEDED BRANDS WITH SLUGS:\n";
+        echo "=" . str_repeat("=", 50) . "\n";
+        
+        foreach ($brands as $brand) {
+            $name = $brand['attributes']['name'];
+            $slug = $brand['attributes']['slug'];
+            $description = $brand['attributes']['description'];
+            echo "📱 {$name} (slug: {$slug})\n";
+            echo "   {$description}\n";
+            echo "   " . str_repeat("-", 45) . "\n";
+        }
+
+        // Assert specific seeded brands with slugs exist
+        $brandSlugs = array_column(array_column($brands, 'attributes'), 'slug');
+        $this->assertContains('apple', $brandSlugs);
+        $this->assertContains('samsung', $brandSlugs);
+        $this->assertContains('sony', $brandSlugs);
+    }
 }

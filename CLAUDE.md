@@ -341,4 +341,17 @@ This command safely removes:
 - **Entity targeting**: Improved schema matching based on controller entity names
 - **Complete coverage**: Now captures 12+ fields, relationships, and validations properly
 
+### Product Module Consistency (Fixed 2025-08-08)
+- **Pagination missing**: Added `PagePagination::make()` to all 4 schemas (Product, Brand, Category, Unit)
+- **Field naming inconsistency**: Fixed snake_case/camelCase mixing - now consistent camelCase (createdAt, updatedAt)
+- **Missing filters**: Added proper filtering support to all schemas with WhereIdIn and Where filters
+- **JSON:API compliance**: All responses now include proper meta.page and links structure
+- **Module alignment**: Product module now consistent with Sales, Inventory, and Ecommerce patterns
+
+## CRITICAL DEVELOPMENT RULE
+
+⚠️ **NEVER MAKE COMMITS AUTOMATICALLY** ⚠️
+
+Claude Code MUST NEVER execute git commit commands automatically. Always provide only the commit text for the user to execute manually. This prevents loss of work and maintains user control over the git repository.
+
 This modular architecture provides a scalable foundation for enterprise applications with complete JSON:API compliance, robust testing coverage, and comprehensive automated documentation generation. The advanced generator can replicate complex module structures with full relationship support across modules.

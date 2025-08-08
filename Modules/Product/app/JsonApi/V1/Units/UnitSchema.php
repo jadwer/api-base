@@ -6,6 +6,10 @@ use LaravelJsonApi\Eloquent\Schema;
 use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
+use LaravelJsonApi\Eloquent\Pagination\PagePagination;
+use LaravelJsonApi\Eloquent\Contracts\Paginator;
+use LaravelJsonApi\Eloquent\Filters\Where;
+use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use Modules\Product\Models\Unit;
 
 class UnitSchema extends Schema
@@ -19,19 +23,29 @@ class UnitSchema extends Schema
             Str::make('name')->sortable(),
             Str::make('code')->sortable(),
             Str::make('unitType', 'unit_type')->sortable(),
-            DateTime::make('created_at')->readOnly()->sortable(),
-            DateTime::make('updated_at')->readOnly(),
+            DateTime::make('createdAt', 'created_at')->readOnly()->sortable(),
+            DateTime::make('updatedAt', 'updated_at')->readOnly(),
         ];
     }
 
     public function filters(): array
     {
-        return [];
+        return [
+            WhereIdIn::make($this),
+            Where::make('name'),
+            Where::make('code'),
+            Where::make('unit_type'),
+        ];
     }
 
     public function includePaths(): array
     {
         return [];
+    }
+
+    public function pagination(): ?Paginator
+    {
+        return PagePagination::make();
     }
 
     public static function type(): string

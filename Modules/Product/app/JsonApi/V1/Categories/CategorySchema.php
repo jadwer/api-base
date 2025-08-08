@@ -7,6 +7,10 @@ use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\Relations\HasMany;
+use LaravelJsonApi\Eloquent\Pagination\PagePagination;
+use LaravelJsonApi\Eloquent\Contracts\Paginator;
+use LaravelJsonApi\Eloquent\Filters\Where;
+use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use Modules\Product\Models\Category;
 
 class CategorySchema extends Schema
@@ -24,14 +28,18 @@ class CategorySchema extends Schema
             // Relaciones
             HasMany::make('products')->type('products'),
             
-            DateTime::make('created_at')->readOnly()->sortable(),
-            DateTime::make('updated_at')->readOnly(),
+            DateTime::make('createdAt', 'created_at')->readOnly()->sortable(),
+            DateTime::make('updatedAt', 'updated_at')->readOnly(),
         ];
     }
 
     public function filters(): array
     {
-        return [];
+        return [
+            WhereIdIn::make($this),
+            Where::make('name'),
+            Where::make('slug'),
+        ];
     }
 
     public function includePaths(): array
@@ -39,6 +47,11 @@ class CategorySchema extends Schema
         return [
             'products',
         ];
+    }
+
+    public function pagination(): ?Paginator
+    {
+        return PagePagination::make();
     }
 
     public static function type(): string

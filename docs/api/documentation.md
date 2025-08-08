@@ -1,6 +1,6 @@
 # API Documentation
 
-**Generado:** 2025-08-08T01:40:45.025099Z
+**Generado:** 2025-08-08T12:51:12.038450Z
 
 **Base URL:** `http://localhost/api/v1`
 
@@ -1007,8 +1007,8 @@
 - ✅ `iva` (boolean) 
 - ✅ `imgPath` (string) 
 - ✅ `datasheetPath` (string) 
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Relaciones disponibles:**
 
@@ -1056,8 +1056,8 @@
 - ✅ `iva` (boolean) 
 - ✅ `imgPath` (string) 
 - ✅ `datasheetPath` (string) 
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Relaciones disponibles:**
 
@@ -1129,8 +1129,8 @@
 - ✅ `iva` (boolean) 
 - ✅ `imgPath` (string) 
 - ✅ `datasheetPath` (string) 
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Relaciones disponibles:**
 
@@ -1178,8 +1178,8 @@
 - ✅ `iva` (boolean) 
 - ✅ `imgPath` (string) 
 - ✅ `datasheetPath` (string) 
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Relaciones disponibles:**
 
@@ -1238,8 +1238,8 @@
 - ✅ `iva` (boolean) 
 - ✅ `imgPath` (string) 
 - ✅ `datasheetPath` (string) 
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Relaciones disponibles:**
 
@@ -1270,8 +1270,8 @@
 - ✅ `name` (string) 🔄
 - ✅ `code` (string) 🔄
 - ✅ `unitType` (string) 🔄
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Validaciones:**
 
@@ -1301,8 +1301,8 @@
 - ✅ `name` (string) 🔄
 - ✅ `code` (string) 🔄
 - ✅ `unitType` (string) 🔄
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Validaciones:**
 
@@ -1356,8 +1356,8 @@
 - ✅ `name` (string) 🔄
 - ✅ `code` (string) 🔄
 - ✅ `unitType` (string) 🔄
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Validaciones:**
 
@@ -1387,8 +1387,8 @@
 - ✅ `name` (string) 🔄
 - ✅ `code` (string) 🔄
 - ✅ `unitType` (string) 🔄
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Validaciones:**
 
@@ -1429,8 +1429,8 @@
 - ✅ `name` (string) 🔄
 - ✅ `code` (string) 🔄
 - ✅ `unitType` (string) 🔄
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Validaciones:**
 
@@ -1449,8 +1449,8 @@
 - ✅ `name` (string) 🔄
 - ✅ `description` (string) 
 - ✅ `slug` (string) 🔄
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Relaciones disponibles:**
 
@@ -1483,8 +1483,8 @@
 - ✅ `name` (string) 🔄
 - ✅ `description` (string) 
 - ✅ `slug` (string) 🔄
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Relaciones disponibles:**
 
@@ -1541,8 +1541,8 @@
 - ✅ `name` (string) 🔄
 - ✅ `description` (string) 
 - ✅ `slug` (string) 🔄
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Relaciones disponibles:**
 
@@ -1575,8 +1575,8 @@
 - ✅ `name` (string) 🔄
 - ✅ `description` (string) 
 - ✅ `slug` (string) 🔄
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Relaciones disponibles:**
 
@@ -1620,8 +1620,8 @@
 - ✅ `name` (string) 🔄
 - ✅ `description` (string) 
 - ✅ `slug` (string) 🔄
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Relaciones disponibles:**
 
@@ -1643,8 +1643,8 @@
 - ✅ `name` (string) 🔄
 - ✅ `description` (string) 
 - ✅ `slug` (string) 🔄
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Relaciones disponibles:**
 
@@ -1677,8 +1677,8 @@
 - ✅ `name` (string) 🔄
 - ✅ `description` (string) 
 - ✅ `slug` (string) 🔄
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Relaciones disponibles:**
 
@@ -1735,8 +1735,8 @@
 - ✅ `name` (string) 🔄
 - ✅ `description` (string) 
 - ✅ `slug` (string) 🔄
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Relaciones disponibles:**
 
@@ -1769,8 +1769,8 @@
 - ✅ `name` (string) 🔄
 - ✅ `description` (string) 
 - ✅ `slug` (string) 🔄
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Relaciones disponibles:**
 
@@ -1814,8 +1814,8 @@
 - ✅ `name` (string) 🔄
 - ✅ `description` (string) 
 - ✅ `slug` (string) 🔄
-- ✅ `created_at` (datetime) 🔒🔄
-- ✅ `updated_at` (datetime) 🔒
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Relaciones disponibles:**
 
