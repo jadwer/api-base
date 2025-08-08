@@ -19,7 +19,7 @@ return new class extends Migration
             $table->longText('css')->nullable();
             $table->json('json')->nullable(); // contiene data serializada de GrapesJS
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
-            $table->string('status')->default('draft'); // draft, published
+            $table->string('status')->default('draft'); // draft, published, deleted, archived, active, inactive
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
             $table->softDeletes();

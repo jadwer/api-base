@@ -27,7 +27,7 @@ class PageFactory extends Factory
             'html' => '<div>Hello World</div>',
             'css' => 'div { color: red; }',
             'json' => ['html' => '<div>Hello World</div>', 'css' => '...'],
-            'status' => $this->faker->randomElement(['draft', 'published']),
+            'status' => $this->faker->randomElement(['draft', 'published', 'deleted', 'archived', 'active', 'inactive']),
             'published_at' => now(),
             'user_id' => $userId,
         ];
@@ -52,6 +52,50 @@ class PageFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'status' => 'published',
             'published_at' => now(),
+        ]);
+    }
+    
+    /**
+     * Indicate that the page is active.
+     */
+    public function active(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'active',
+            'published_at' => now(),
+        ]);
+    }
+    
+    /**
+     * Indicate that the page is inactive.
+     */
+    public function inactive(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'inactive',
+            'published_at' => null,
+        ]);
+    }
+    
+    /**
+     * Indicate that the page is archived.
+     */
+    public function archived(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'archived',
+            'published_at' => null,
+        ]);
+    }
+    
+    /**
+     * Indicate that the page is deleted.
+     */
+    public function deleted(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'deleted',
+            'published_at' => null,
         ]);
     }
 }
