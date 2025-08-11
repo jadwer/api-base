@@ -31,6 +31,11 @@ class Category extends Model
         return $this->hasMany(Product::class);
     }
 
+    public function getProductsCountAttribute(): int
+    {
+        return $this->products()->count();
+    }
+
     /**
      * Create a new factory instance for the model.
      */

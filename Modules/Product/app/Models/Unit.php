@@ -4,6 +4,7 @@ namespace Modules\Product\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Unit extends Model
 {
@@ -24,6 +25,16 @@ class Unit extends Model
     protected $casts = [
         'id' => 'integer',
     ];
+
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    public function getProductsCountAttribute(): int
+    {
+        return $this->products()->count();
+    }
 
     /**
      * Create a new factory instance for the model.

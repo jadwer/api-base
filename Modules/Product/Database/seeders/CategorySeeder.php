@@ -64,6 +64,26 @@ class CategorySeeder extends Seeder
                 'name' => 'Accesorios',
                 'slug' => 'accesorios',
                 'description' => 'Complementos y periféricos para dispositivos electrónicos'
+            ],
+            [
+                'name' => 'Videojuegos',
+                'slug' => 'videojuegos',
+                'description' => 'Consolas y sistemas de entretenimiento interactivo'
+            ],
+            [
+                'name' => 'Audio',
+                'slug' => 'audio',
+                'description' => 'Equipos y sistemas de sonido profesional y doméstico'
+            ],
+            [
+                'name' => 'Drones',
+                'slug' => 'drones',
+                'description' => 'Vehículos aéreos no tripulados y accesorios'
+            ],
+            [
+                'name' => 'Componentes',
+                'slug' => 'componentes',
+                'description' => 'Piezas y componentes para construccion de PC'
             ]
         ];
 

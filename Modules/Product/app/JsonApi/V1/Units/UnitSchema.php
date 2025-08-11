@@ -5,7 +5,9 @@ namespace Modules\Product\JsonApi\V1\Units;
 use LaravelJsonApi\Eloquent\Schema;
 use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Str;
+use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
+use LaravelJsonApi\Eloquent\Fields\Relations\HasMany;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use LaravelJsonApi\Eloquent\Filters\Where;
@@ -23,6 +25,12 @@ class UnitSchema extends Schema
             Str::make('name')->sortable(),
             Str::make('code')->sortable(),
             Str::make('unitType', 'unit_type')->sortable(),
+            Number::make('productsCount')
+                ->readOnly(),
+            
+            // Relaciones
+            HasMany::make('products')->type('products'),
+            
             DateTime::make('createdAt', 'created_at')->readOnly()->sortable(),
             DateTime::make('updatedAt', 'updated_at')->readOnly(),
         ];
@@ -40,7 +48,9 @@ class UnitSchema extends Schema
 
     public function includePaths(): array
     {
-        return [];
+        return [
+            'products',
+        ];
     }
 
     public function pagination(): ?Paginator

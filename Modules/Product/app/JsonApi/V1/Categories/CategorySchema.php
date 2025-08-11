@@ -5,6 +5,7 @@ namespace Modules\Product\JsonApi\V1\Categories;
 use LaravelJsonApi\Eloquent\Schema;
 use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Str;
+use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\Relations\HasMany;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
@@ -24,6 +25,8 @@ class CategorySchema extends Schema
             Str::make('name')->sortable(),
             Str::make('description'),
             Str::make('slug')->sortable(),
+            Number::make('productsCount')
+                ->readOnly(),
             
             // Relaciones
             HasMany::make('products')->type('products'),
