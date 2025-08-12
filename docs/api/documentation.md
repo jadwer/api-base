@@ -1,6 +1,6 @@
 # API Documentation
 
-**Generado:** 2025-08-08T23:11:51.390917Z
+**Generado:** 2025-08-12T04:58:46.099715Z
 
 **Base URL:** `http://localhost/api/v1`
 
@@ -1270,8 +1270,13 @@
 - ✅ `name` (string) 🔄
 - ✅ `code` (string) 🔄
 - ✅ `unitType` (string) 🔄
+- ✅ `productsCount` (number) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
 
 **Validaciones:**
 
@@ -1301,8 +1306,13 @@
 - ✅ `name` (string) 🔄
 - ✅ `code` (string) 🔄
 - ✅ `unitType` (string) 🔄
+- ✅ `productsCount` (number) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
 
 **Validaciones:**
 
@@ -1356,8 +1366,13 @@
 - ✅ `name` (string) 🔄
 - ✅ `code` (string) 🔄
 - ✅ `unitType` (string) 🔄
+- ✅ `productsCount` (number) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
 
 **Validaciones:**
 
@@ -1387,8 +1402,13 @@
 - ✅ `name` (string) 🔄
 - ✅ `code` (string) 🔄
 - ✅ `unitType` (string) 🔄
+- ✅ `productsCount` (number) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
 
 **Validaciones:**
 
@@ -1429,8 +1449,13 @@
 - ✅ `name` (string) 🔄
 - ✅ `code` (string) 🔄
 - ✅ `unitType` (string) 🔄
+- ✅ `productsCount` (number) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒
+
+**Relaciones disponibles:**
+
+- `products` (relationship[])
 
 **Validaciones:**
 
@@ -1449,6 +1474,7 @@
 - ✅ `name` (string) 🔄
 - ✅ `description` (string) 
 - ✅ `slug` (string) 🔄
+- ✅ `productsCount` (number) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒
 
@@ -1483,6 +1509,7 @@
 - ✅ `name` (string) 🔄
 - ✅ `description` (string) 
 - ✅ `slug` (string) 🔄
+- ✅ `productsCount` (number) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒
 
@@ -1541,6 +1568,7 @@
 - ✅ `name` (string) 🔄
 - ✅ `description` (string) 
 - ✅ `slug` (string) 🔄
+- ✅ `productsCount` (number) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒
 
@@ -1575,6 +1603,7 @@
 - ✅ `name` (string) 🔄
 - ✅ `description` (string) 
 - ✅ `slug` (string) 🔄
+- ✅ `productsCount` (number) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒
 
@@ -1620,6 +1649,7 @@
 - ✅ `name` (string) 🔄
 - ✅ `description` (string) 
 - ✅ `slug` (string) 🔄
+- ✅ `productsCount` (number) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒
 
@@ -1643,6 +1673,7 @@
 - ✅ `name` (string) 🔄
 - ✅ `description` (string) 
 - ✅ `slug` (string) 🔄
+- ✅ `productsCount` (number) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒
 
@@ -1677,6 +1708,7 @@
 - ✅ `name` (string) 🔄
 - ✅ `description` (string) 
 - ✅ `slug` (string) 🔄
+- ✅ `productsCount` (number) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒
 
@@ -1735,6 +1767,7 @@
 - ✅ `name` (string) 🔄
 - ✅ `description` (string) 
 - ✅ `slug` (string) 🔄
+- ✅ `productsCount` (number) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒
 
@@ -1769,6 +1802,7 @@
 - ✅ `name` (string) 🔄
 - ✅ `description` (string) 
 - ✅ `slug` (string) 🔄
+- ✅ `productsCount` (number) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒
 
@@ -1814,6 +1848,7 @@
 - ✅ `name` (string) 🔄
 - ✅ `description` (string) 
 - ✅ `slug` (string) 🔄
+- ✅ `productsCount` (number) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒
 

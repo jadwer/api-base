@@ -2,7 +2,7 @@
 
 Auto-generated API documentation.
 
-**Generated:** 2025-08-08 23:11:40
+**Generated:** 2025-08-11 23:30:13
 
 ## 📄 Brand
 
@@ -25,6 +25,7 @@ Auto-generated API documentation.
 | `name` | string | Auto-detected field |
 | `description` | string | Auto-detected field |
 | `slug` | string | Auto-detected field |
+| `productsCount` | number | Auto-detected field |
 | `products` | relationship[] | Auto-detected field |
 | `createdAt` | datetime | Auto-detected field |
 | `updatedAt` | datetime | Auto-detected field |
@@ -84,6 +85,8 @@ GET /api/v1/brands?page[number]=1&page[size]=20
 | `sku` | unknown | Auto-detected field |
 | `search_name` | unknown | Auto-detected field |
 | `search_sku` | unknown | Auto-detected field |
+| `search_description` | unknown | Auto-detected field |
+| `search` | unknown | Auto-detected field |
 | `unit_id` | unknown | Auto-detected field |
 | `category_id` | unknown | Auto-detected field |
 | `brand_id` | unknown | Auto-detected field |
@@ -129,6 +132,8 @@ GET /api/v1/products?page[number]=1&page[size]=20
 | `name` | string | Auto-detected field |
 | `code` | string | Auto-detected field |
 | `unitType` | string | Auto-detected field |
+| `productsCount` | number | Auto-detected field |
+| `products` | relationship[] | Auto-detected field |
 | `createdAt` | datetime | Auto-detected field |
 | `updatedAt` | datetime | Auto-detected field |
 | `name` | unknown | Auto-detected field |

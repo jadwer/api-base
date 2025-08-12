@@ -1,5 +1,5 @@
 {
-    "generated_at": "2025-08-08T23:11:51.390917Z",
+    "generated_at": "2025-08-12T04:58:46.099715Z",
     "base_url": "http:\/\/localhost\/api\/v1",
     "authentication": {
         "type": "Bearer Token",
@@ -4352,6 +4352,14 @@
                         "filterable": false
                     },
                     {
+                        "name": "productsCount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -4368,7 +4376,16 @@
                         "filterable": false
                     }
                 ],
-                "relationships": [],
+                "relationships": [
+                    {
+                        "name": "products",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
                 "validations": {
                     "name": [
                         "required",
@@ -4483,6 +4500,14 @@
                         "filterable": false
                     },
                     {
+                        "name": "productsCount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -4499,7 +4524,16 @@
                         "filterable": false
                     }
                 ],
-                "relationships": [],
+                "relationships": [
+                    {
+                        "name": "products",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
                 "validations": {
                     "name": [
                         "required",
@@ -4611,6 +4645,14 @@
                         "filterable": false
                     },
                     {
+                        "name": "productsCount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -4627,7 +4669,16 @@
                         "filterable": false
                     }
                 ],
-                "relationships": [],
+                "relationships": [
+                    {
+                        "name": "products",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
                 "validations": {
                     "name": [
                         "required",
@@ -4742,6 +4793,14 @@
                         "filterable": false
                     },
                     {
+                        "name": "productsCount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -4758,7 +4817,16 @@
                         "filterable": false
                     }
                 ],
-                "relationships": [],
+                "relationships": [
+                    {
+                        "name": "products",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
                 "validations": {
                     "name": [
                         "required",
@@ -4843,6 +4911,14 @@
                         "filterable": false
                     },
                     {
+                        "name": "productsCount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -4859,7 +4935,16 @@
                         "filterable": false
                     }
                 ],
-                "relationships": [],
+                "relationships": [
+                    {
+                        "name": "products",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
                 "validations": {
                     "name": [
                         "required",
@@ -4921,6 +5006,14 @@
                         "required": true,
                         "readonly": false,
                         "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "productsCount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
                         "filterable": false
                     },
                     {
@@ -5058,6 +5151,14 @@
                         "filterable": false
                     },
                     {
+                        "name": "productsCount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -5186,6 +5287,14 @@
                         "required": true,
                         "readonly": false,
                         "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "productsCount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
                         "filterable": false
                     },
                     {
@@ -5320,6 +5429,14 @@
                         "required": true,
                         "readonly": false,
                         "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "productsCount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
                         "filterable": false
                     },
                     {
@@ -5427,6 +5544,14 @@
                         "filterable": false
                     },
                     {
+                        "name": "productsCount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -5508,6 +5633,14 @@
                         "required": true,
                         "readonly": false,
                         "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "productsCount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
                         "filterable": false
                     },
                     {
@@ -5645,6 +5778,14 @@
                         "filterable": false
                     },
                     {
+                        "name": "productsCount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -5773,6 +5914,14 @@
                         "required": true,
                         "readonly": false,
                         "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "productsCount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
                         "filterable": false
                     },
                     {
@@ -5910,6 +6059,14 @@
                         "filterable": false
                     },
                     {
+                        "name": "productsCount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "createdAt",
                         "type": "datetime",
                         "required": true,
@@ -6011,6 +6168,14 @@
                         "required": true,
                         "readonly": false,
                         "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "productsCount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
                         "filterable": false
                     },
                     {

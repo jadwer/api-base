@@ -12,6 +12,7 @@ use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Filters\WhereIn;
+use LaravelJsonApi\Eloquent\Filters\Scope;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use Modules\Product\Models\Product;
@@ -56,6 +57,10 @@ class ProductSchema extends Schema
             Where::make('search_sku', 'sku')->deserializeUsing(
                 static fn($value) => "%{$value}%"
             )->using('like'),
+            Where::make('search_description', 'description')->deserializeUsing(
+                static fn($value) => "%{$value}%"
+            )->using('like'),
+            Scope::make('search'),
             Where::make('unit_id'),
             Where::make('category_id'),
             Where::make('brand_id'),

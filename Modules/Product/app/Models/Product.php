@@ -65,6 +65,19 @@ class Product extends Model
     }
 
     /**
+     * Scope para búsqueda global en nombre, SKU y descripción
+     */
+    public function scopeSearch($query, $term)
+    {
+        $searchTerm = "%{$term}%";
+        return $query->where(function ($q) use ($searchTerm) {
+            $q->where('name', 'like', $searchTerm)
+              ->orWhere('sku', 'like', $searchTerm)
+              ->orWhere('description', 'like', $searchTerm);
+        });
+    }
+
+    /**
      * Create a new factory instance for the model.
      */
     protected static function newFactory()
