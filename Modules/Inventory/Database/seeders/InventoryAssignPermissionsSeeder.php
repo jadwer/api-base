@@ -19,8 +19,9 @@ class InventoryAssignPermissionsSeeder extends Seeder
             $this->command->warn("Asignando permisos de Inventory al rol {$god->name}, sin sobrescribir los existentes...");
             $permissions = Permission::where('name', 'like', 'warehouses.%')
                 ->orWhere('name', 'like', 'warehouse-locations.%')
-                ->orWhere('name', 'like', 'stock.%')
+                ->orWhere('name', 'like', 'stocks.%')
                 ->orWhere('name', 'like', 'product-batches.%')
+                ->orWhere('name', 'like', 'inventory-movements.%')
                 ->get();
             $god->givePermissionTo($permissions);
         }
@@ -31,35 +32,68 @@ class InventoryAssignPermissionsSeeder extends Seeder
             $admin->givePermissionTo([
                 // Warehouses - Full access (PLURAL)
                 'warehouses.index',
-                'warehouses.view',
+                'warehouses.show',
                 'warehouses.store',
                 'warehouses.update',
                 'warehouses.destroy',
                 
                 // Warehouse Locations - Full access (PLURAL)
                 'warehouse-locations.index',
-                'warehouse-locations.view',
+                'warehouse-locations.show',
                 'warehouse-locations.store',
                 'warehouse-locations.update',
                 'warehouse-locations.destroy',
                 
-                // Stock - Full access
-                'stock.index',
-                'stock.view',
-                'stock.store',
-                'stock.update',
-                'stock.destroy',
+                // Stocks - Full access (PLURAL)
+                'stocks.index',
+                'stocks.show',
+                'stocks.store',
+                'stocks.update',
+                'stocks.destroy',
                 
                 // Product Batches - Full access (PLURAL)
                 'product-batches.index',
-                'product-batches.view',
+                'product-batches.show',
                 'product-batches.store',
                 'product-batches.update',
                 'product-batches.destroy',
+                
+                // Inventory Movements - Full access (PLURAL)
+                'inventory-movements.index',
+                'inventory-movements.show',
+                'inventory-movements.store',
+                'inventory-movements.update',
+                'inventory-movements.destroy',
             ]);
         }
 
-        // Optional: Give limited access to other roles
+        // Tech role - read-only access
+        $tech = Role::where('name', 'tech')->first();
+        if ($tech) {
+            $tech->givePermissionTo([
+                // Warehouses - Read only
+                'warehouses.index',
+                'warehouses.show',
+                
+                // Warehouse Locations - Read only
+                'warehouse-locations.index',
+                'warehouse-locations.show',
+                
+                // Stocks - Read only
+                'stocks.index',
+                'stocks.show',
+                
+                // Product Batches - Read only
+                'product-batches.index',
+                'product-batches.show',
+                
+                // Inventory Movements - Read only
+                'inventory-movements.index',
+                'inventory-movements.show',
+            ]);
+        }
+
+        // Customer role - No inventory access
         $customer = Role::where('name', 'customer')->first();
         if ($customer) {
             $customer->givePermissionTo([

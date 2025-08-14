@@ -1,5 +1,5 @@
 {
-    "generated_at": "2025-08-12T04:58:46.099715Z",
+    "generated_at": "2025-08-14T05:39:11.813731Z",
     "base_url": "http:\/\/localhost\/api\/v1",
     "authentication": {
         "type": "Bearer Token",
@@ -12538,6 +12538,1453 @@
                     ],
                     "metadata": [
                         "sometimes",
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": []
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/inventory-movements",
+            "resource_type": "inventory_movements",
+            "controller": "Modules\\Inventory\\Http\\Controllers\\Api\\V1\\InventoryMovementController",
+            "action": "index",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "InventoryMovementSchema.php",
+                "fields": [
+                    {
+                        "name": "movementType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "referenceType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "referenceId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "movementDate",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "description",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "unitCost",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "totalValue",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "status",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "previousStock",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "newStock",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "batchInfo",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "product",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "warehouse",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "location",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "destinationWarehouse",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "destinationLocation",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "user",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "movementType": [
+                        "required",
+                        "string",
+                        "entry",
+                        "exit",
+                        "transfer",
+                        "adjustment"
+                    ],
+                    "movementDate": [
+                        "required",
+                        "date"
+                    ],
+                    "quantity": [
+                        "required",
+                        "numeric",
+                        "not_in:0"
+                    ],
+                    "unitCost": [
+                        "required",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "referenceType": [
+                        "nullable",
+                        "string",
+                        "purchase",
+                        "sale",
+                        "transfer",
+                        "adjustment",
+                        "manual"
+                    ],
+                    "referenceId": [
+                        "nullable",
+                        "integer",
+                        "min:1"
+                    ],
+                    "description": [
+                        "nullable",
+                        "string",
+                        "max:1000"
+                    ],
+                    "status": [
+                        "sometimes",
+                        "string",
+                        "pending",
+                        "completed",
+                        "cancelled"
+                    ],
+                    "previousStock": [
+                        "nullable",
+                        "numeric"
+                    ],
+                    "newStock": [
+                        "nullable",
+                        "numeric"
+                    ],
+                    "batchInfo": [
+                        "nullable",
+                        "array"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/inventory_movements",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "inventory_movements",
+                                "id": "1",
+                                "attributes": {
+                                    "title": "Ejemplo",
+                                    "status": "published",
+                                    "createdAt": "2025-01-01T00:00:00.000000Z"
+                                },
+                                "relationships": {
+                                    "user": {
+                                        "data": {
+                                            "type": "users",
+                                            "id": "1"
+                                        },
+                                        "links": {
+                                            "self": "\/api\/v1\/inventory_movements\/1\/relationships\/user",
+                                            "related": "\/api\/v1\/inventory_movements\/1\/user"
+                                        }
+                                    }
+                                },
+                                "links": {
+                                    "self": "\/api\/v1\/inventory_movements\/1"
+                                }
+                            }
+                        ],
+                        "meta": {
+                            "pagination": {
+                                "currentPage": 1,
+                                "from": 1,
+                                "lastPage": 1,
+                                "perPage": 15,
+                                "to": 1,
+                                "total": 1
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "POST"
+            ],
+            "uri": "api\/v1\/inventory-movements",
+            "resource_type": "inventory_movements",
+            "controller": "Modules\\Inventory\\Http\\Controllers\\Api\\V1\\InventoryMovementController",
+            "action": "store",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "InventoryMovementSchema.php",
+                "fields": [
+                    {
+                        "name": "movementType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "referenceType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "referenceId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "movementDate",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "description",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "unitCost",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "totalValue",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "status",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "previousStock",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "newStock",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "batchInfo",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "product",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "warehouse",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "location",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "destinationWarehouse",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "destinationLocation",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "user",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "movementType": [
+                        "required",
+                        "string",
+                        "entry",
+                        "exit",
+                        "transfer",
+                        "adjustment"
+                    ],
+                    "movementDate": [
+                        "required",
+                        "date"
+                    ],
+                    "quantity": [
+                        "required",
+                        "numeric",
+                        "not_in:0"
+                    ],
+                    "unitCost": [
+                        "required",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "referenceType": [
+                        "nullable",
+                        "string",
+                        "purchase",
+                        "sale",
+                        "transfer",
+                        "adjustment",
+                        "manual"
+                    ],
+                    "referenceId": [
+                        "nullable",
+                        "integer",
+                        "min:1"
+                    ],
+                    "description": [
+                        "nullable",
+                        "string",
+                        "max:1000"
+                    ],
+                    "status": [
+                        "sometimes",
+                        "string",
+                        "pending",
+                        "completed",
+                        "cancelled"
+                    ],
+                    "previousStock": [
+                        "nullable",
+                        "numeric"
+                    ],
+                    "newStock": [
+                        "nullable",
+                        "numeric"
+                    ],
+                    "batchInfo": [
+                        "nullable",
+                        "array"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "POST",
+                    "url": "\/api\/v1\/inventory_movements",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "inventory_movements",
+                            "attributes": {
+                                "title": "Nueva p\u00e1gina",
+                                "slug": "nueva-pagina",
+                                "html": "<h1>Contenido HTML<\/h1>",
+                                "css": "h1 { color: blue; }",
+                                "json": {
+                                    "component": "header"
+                                },
+                                "status": "draft"
+                            },
+                            "relationships": {
+                                "user": {
+                                    "data": {
+                                        "type": "users",
+                                        "id": "1"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "response": {
+                    "status": 201,
+                    "body": {
+                        "data": {
+                            "type": "inventory_movements",
+                            "id": "2",
+                            "attributes": {
+                                "title": "Nueva p\u00e1gina",
+                                "status": "draft",
+                                "createdAt": "2025-01-01T00:00:00.000000Z"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/inventory-movements\/{inventory_movement}",
+            "resource_type": "inventory_movements",
+            "controller": "Modules\\Inventory\\Http\\Controllers\\Api\\V1\\InventoryMovementController",
+            "action": "show",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "InventoryMovementSchema.php",
+                "fields": [
+                    {
+                        "name": "movementType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "referenceType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "referenceId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "movementDate",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "description",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "unitCost",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "totalValue",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "status",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "previousStock",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "newStock",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "batchInfo",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "product",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "warehouse",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "location",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "destinationWarehouse",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "destinationLocation",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "user",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "movementType": [
+                        "required",
+                        "string",
+                        "entry",
+                        "exit",
+                        "transfer",
+                        "adjustment"
+                    ],
+                    "movementDate": [
+                        "required",
+                        "date"
+                    ],
+                    "quantity": [
+                        "required",
+                        "numeric",
+                        "not_in:0"
+                    ],
+                    "unitCost": [
+                        "required",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "referenceType": [
+                        "nullable",
+                        "string",
+                        "purchase",
+                        "sale",
+                        "transfer",
+                        "adjustment",
+                        "manual"
+                    ],
+                    "referenceId": [
+                        "nullable",
+                        "integer",
+                        "min:1"
+                    ],
+                    "description": [
+                        "nullable",
+                        "string",
+                        "max:1000"
+                    ],
+                    "status": [
+                        "sometimes",
+                        "string",
+                        "pending",
+                        "completed",
+                        "cancelled"
+                    ],
+                    "previousStock": [
+                        "nullable",
+                        "numeric"
+                    ],
+                    "newStock": [
+                        "nullable",
+                        "numeric"
+                    ],
+                    "batchInfo": [
+                        "nullable",
+                        "array"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/inventory_movements",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "inventory_movements",
+                                "id": "1",
+                                "attributes": {
+                                    "title": "Ejemplo",
+                                    "status": "published",
+                                    "createdAt": "2025-01-01T00:00:00.000000Z"
+                                },
+                                "relationships": {
+                                    "user": {
+                                        "data": {
+                                            "type": "users",
+                                            "id": "1"
+                                        },
+                                        "links": {
+                                            "self": "\/api\/v1\/inventory_movements\/1\/relationships\/user",
+                                            "related": "\/api\/v1\/inventory_movements\/1\/user"
+                                        }
+                                    }
+                                },
+                                "links": {
+                                    "self": "\/api\/v1\/inventory_movements\/1"
+                                }
+                            }
+                        ],
+                        "meta": {
+                            "pagination": {
+                                "currentPage": 1,
+                                "from": 1,
+                                "lastPage": 1,
+                                "perPage": 15,
+                                "to": 1,
+                                "total": 1
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "PATCH"
+            ],
+            "uri": "api\/v1\/inventory-movements\/{inventory_movement}",
+            "resource_type": "inventory_movements",
+            "controller": "Modules\\Inventory\\Http\\Controllers\\Api\\V1\\InventoryMovementController",
+            "action": "update",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "InventoryMovementSchema.php",
+                "fields": [
+                    {
+                        "name": "movementType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "referenceType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "referenceId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "movementDate",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "description",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "unitCost",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "totalValue",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "status",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "previousStock",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "newStock",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "batchInfo",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "product",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "warehouse",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "location",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "destinationWarehouse",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "destinationLocation",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "user",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "movementType": [
+                        "required",
+                        "string",
+                        "entry",
+                        "exit",
+                        "transfer",
+                        "adjustment"
+                    ],
+                    "movementDate": [
+                        "required",
+                        "date"
+                    ],
+                    "quantity": [
+                        "required",
+                        "numeric",
+                        "not_in:0"
+                    ],
+                    "unitCost": [
+                        "required",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "referenceType": [
+                        "nullable",
+                        "string",
+                        "purchase",
+                        "sale",
+                        "transfer",
+                        "adjustment",
+                        "manual"
+                    ],
+                    "referenceId": [
+                        "nullable",
+                        "integer",
+                        "min:1"
+                    ],
+                    "description": [
+                        "nullable",
+                        "string",
+                        "max:1000"
+                    ],
+                    "status": [
+                        "sometimes",
+                        "string",
+                        "pending",
+                        "completed",
+                        "cancelled"
+                    ],
+                    "previousStock": [
+                        "nullable",
+                        "numeric"
+                    ],
+                    "newStock": [
+                        "nullable",
+                        "numeric"
+                    ],
+                    "batchInfo": [
+                        "nullable",
+                        "array"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "PATCH",
+                    "url": "\/api\/v1\/inventory_movements\/1",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "inventory_movements",
+                            "id": "1",
+                            "attributes": {
+                                "status": "published",
+                                "title": "T\u00edtulo actualizado"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "DELETE"
+            ],
+            "uri": "api\/v1\/inventory-movements\/{inventory_movement}",
+            "resource_type": "inventory_movements",
+            "controller": "Modules\\Inventory\\Http\\Controllers\\Api\\V1\\InventoryMovementController",
+            "action": "destroy",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "InventoryMovementSchema.php",
+                "fields": [
+                    {
+                        "name": "movementType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "referenceType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "referenceId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "movementDate",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "description",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "quantity",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "unitCost",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "totalValue",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "status",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "previousStock",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "newStock",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "batchInfo",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "product",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "warehouse",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "location",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "destinationWarehouse",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "destinationLocation",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "user",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "movementType": [
+                        "required",
+                        "string",
+                        "entry",
+                        "exit",
+                        "transfer",
+                        "adjustment"
+                    ],
+                    "movementDate": [
+                        "required",
+                        "date"
+                    ],
+                    "quantity": [
+                        "required",
+                        "numeric",
+                        "not_in:0"
+                    ],
+                    "unitCost": [
+                        "required",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "referenceType": [
+                        "nullable",
+                        "string",
+                        "purchase",
+                        "sale",
+                        "transfer",
+                        "adjustment",
+                        "manual"
+                    ],
+                    "referenceId": [
+                        "nullable",
+                        "integer",
+                        "min:1"
+                    ],
+                    "description": [
+                        "nullable",
+                        "string",
+                        "max:1000"
+                    ],
+                    "status": [
+                        "sometimes",
+                        "string",
+                        "pending",
+                        "completed",
+                        "cancelled"
+                    ],
+                    "previousStock": [
+                        "nullable",
+                        "numeric"
+                    ],
+                    "newStock": [
+                        "nullable",
+                        "numeric"
+                    ],
+                    "batchInfo": [
+                        "nullable",
+                        "array"
+                    ],
+                    "metadata": [
                         "nullable",
                         "array"
                     ]

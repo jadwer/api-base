@@ -16,6 +16,9 @@ class InventoryDatabaseSeeder extends Seeder
             InventoryAssignPermissionsSeeder::class,
             WarehouseSeeder::class,
             WarehouseLocationSeeder::class,
+            StockSeeder::class,
+            ProductBatchSeeder::class,
+            InventoryMovementSeeder::class,
         ]);
     }
 }

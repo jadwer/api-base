@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.1.0] - 2025-08-14
+
+### Added
+- **Inventory Movement System**: Complete implementation of inventory movement tracking
+  - `InventoryMovement` entity with 4 movement types (entry, exit, transfer, adjustment)
+  - Comprehensive audit trail with previous/new stock tracking
+  - Advanced validation business rules for transfers and movement types
+  - Support for batch info and metadata JSON fields
+  - Cross-warehouse transfer capabilities with destination tracking
+  - 10+ comprehensive tests covering all CRUD operations and authorization
+- **Enhanced Inventory Module**: Expanded from 4 to 5 entities
+  - Added complete movement history tracking
+  - Factory and seeder with realistic movement data
+  - Granular permissions for tech role (read-only inventory access)
+- **Documentation Updates**: 
+  - Updated README with new entity count (18 entities, 553+ tests)
+  - Added movement system documentation
+
+### Technical Improvements
+- **JSON:API Schema Patterns**: Refined BelongsTo relationship definitions
+- **Permission System**: Enhanced role-based authorization for inventory operations
+- **Test Patterns**: Improved test reliability with better user permission management
+
 ## [1.0.0] - 2025-08-01
 
 ### Added

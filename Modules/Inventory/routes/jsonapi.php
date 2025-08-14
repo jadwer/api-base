@@ -6,6 +6,7 @@ use Modules\Inventory\Http\Controllers\Api\V1\WarehouseController;
 use Modules\Inventory\Http\Controllers\Api\V1\WarehouseLocationController;
 use Modules\Inventory\Http\Controllers\Api\V1\ProductBatchController;
 use Modules\Inventory\Http\Controllers\Api\V1\StockController;
+use Modules\Inventory\Http\Controllers\Api\V1\InventoryMovementController;
 
 JsonApiRoute::server('v1')
     ->prefix('v1')
@@ -15,5 +16,6 @@ JsonApiRoute::server('v1')
         $server->resource('warehouse-locations', WarehouseLocationController::class);
         $server->resource('product-batches', ProductBatchController::class);
         $server->resource('stocks', StockController::class);
+        $server->resource('inventory-movements', InventoryMovementController::class);
     });
 

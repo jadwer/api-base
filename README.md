@@ -6,12 +6,12 @@ Este es un proyecto base en Laravel 12 con una arquitectura totalmente desacopla
 
 **✅ 5 Módulos Completados:**
 - **Product Module**: 4 entidades, 71+ tests ✅
-- **Inventory Module**: 4 entidades, 78+ tests ✅  
+- **Inventory Module**: 5 entidades, 88+ tests ✅ (incluye InventoryMovement)
 - **Purchase Module**: 3 entidades, 141+ tests ✅
 - **Sales Module**: 3 entidades, 148+ tests ✅
 - **Ecommerce Module**: 3 entidades, 105+ tests ✅
 
-**Total: 17 entidades con 543+ tests funcionando**
+**Total: 18 entidades con 553+ tests funcionando**
 
 ## Autor
 

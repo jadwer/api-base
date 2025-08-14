@@ -2,7 +2,73 @@
 
 Auto-generated API documentation.
 
-**Generated:** 2025-08-12 04:58:05
+**Generated:** 2025-08-14 05:38:56
+
+## 📄 InventoryMovement
+
+**Resource Type:** `inventory-movements`
+
+### Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/inventory-movements` | List all InventoryMovements |
+| POST | `/api/v1/inventory-movements` | Create new InventoryMovement |
+| GET | `/api/v1/inventory-movements/{id}` | Show specific InventoryMovement |
+| PATCH | `/api/v1/inventory-movements/{id}` | Update InventoryMovement |
+| DELETE | `/api/v1/inventory-movements/{id}` | Delete InventoryMovement |
+
+### Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `movementType` | string | Auto-detected field |
+| `referenceType` | string | Auto-detected field |
+| `referenceId` | number | Auto-detected field |
+| `movementDate` | datetime | Auto-detected field |
+| `description` | string | Auto-detected field |
+| `quantity` | number | Auto-detected field |
+| `unitCost` | number | Auto-detected field |
+| `totalValue` | number | Auto-detected field |
+| `status` | string | Auto-detected field |
+| `previousStock` | number | Auto-detected field |
+| `newStock` | number | Auto-detected field |
+| `batchInfo` | object | Auto-detected field |
+| `metadata` | object | Auto-detected field |
+| `product` | relationship | Auto-detected field |
+| `warehouse` | relationship | Auto-detected field |
+| `location` | relationship | Auto-detected field |
+| `destinationWarehouse` | relationship | Auto-detected field |
+| `destinationLocation` | relationship | Auto-detected field |
+| `user` | relationship | Auto-detected field |
+| `createdAt` | datetime | Auto-detected field |
+| `updatedAt` | datetime | Auto-detected field |
+| `movementType` | unknown | Auto-detected field |
+| `referenceType` | unknown | Auto-detected field |
+| `referenceId` | unknown | Auto-detected field |
+| `product` | unknown | Auto-detected field |
+| `warehouse` | unknown | Auto-detected field |
+| `destinationWarehouse` | unknown | Auto-detected field |
+| `status` | unknown | Auto-detected field |
+| `user` | unknown | Auto-detected field |
+| `movementDate` | unknown | Auto-detected field |
+
+### Query Parameters
+
+#### Filtering
+```
+GET /api/v1/inventory-movements?filter[field]=value
+```
+
+#### Sorting
+```
+GET /api/v1/inventory-movements?sort=field,-other_field
+```
+
+#### Pagination
+```
+GET /api/v1/inventory-movements?page[number]=1&page[size]=20
+```
 
 ## 📄 Stock
 

@@ -10,6 +10,7 @@ use Modules\Inventory\JsonApi\V1\Warehouses\WarehouseSchema;
 use Modules\Inventory\JsonApi\V1\WarehouseLocations\WarehouseLocationSchema;
 use Modules\Inventory\JsonApi\V1\Stocks\StockSchema;
 use Modules\Inventory\JsonApi\V1\ProductBatches\ProductBatchSchema;
+use Modules\Inventory\JsonApi\V1\InventoryMovements\InventoryMovementSchema;
 use Modules\Purchase\JsonApi\V1\Suppliers\SupplierSchema;
 use Modules\Purchase\JsonApi\V1\PurchaseOrders\PurchaseOrderSchema;
 use Modules\Purchase\JsonApi\V1\PurchaseOrderItems\PurchaseOrderItemSchema;
@@ -72,6 +73,7 @@ class Server extends BaseServer
             WarehouseLocationSchema::class,
             StockSchema::class,
             ProductBatchSchema::class,
+            InventoryMovementSchema::class,
 
             // Purchase Module
             SupplierSchema::class,
@@ -105,6 +107,7 @@ class Server extends BaseServer
             'warehouse-locations' => \Modules\Inventory\JsonApi\V1\WarehouseLocations\WarehouseLocationAuthorizer::class,
             'stocks' => \Modules\Inventory\JsonApi\V1\Stocks\StockAuthorizer::class,
             'product-batches' => \Modules\Inventory\JsonApi\V1\ProductBatches\ProductBatchAuthorizer::class,
+            'inventory-movements' => \Modules\Inventory\JsonApi\V1\InventoryMovements\InventoryMovementAuthorizer::class,
             'suppliers' => \Modules\Purchase\JsonApi\V1\Suppliers\SupplierAuthorizer::class,
             'purchase-orders' => \Modules\Purchase\JsonApi\V1\PurchaseOrders\PurchaseOrderAuthorizer::class,
             'purchase-order-items' => \Modules\Purchase\JsonApi\V1\PurchaseOrderItems\PurchaseOrderItemAuthorizer::class,

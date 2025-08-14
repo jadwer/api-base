@@ -1,6 +1,6 @@
 # API Documentation
 
-**Generado:** 2025-08-12T04:58:46.099715Z
+**Generado:** 2025-08-14T05:39:11.813731Z
 
 **Base URL:** `http://localhost/api/v1`
 
@@ -3231,6 +3231,325 @@
 - `lastMovementType`: sometimes, nullable, string, in:in,out,adjustment,transfer
 - `batchInfo`: sometimes, nullable, array
 - `metadata`: sometimes, nullable, array
+
+---
+
+### 📦 Inventory movements
+
+#### `GET` `api/v1/inventory-movements`
+
+**Campos disponibles:**
+
+- ✅ `movementType` (string) 🔄
+- ✅ `referenceType` (string) 🔄
+- ✅ `referenceId` (number) 
+- ✅ `movementDate` (datetime) 🔄
+- ✅ `description` (string) 
+- ✅ `quantity` (number) 🔄
+- ✅ `unitCost` (number) 🔄
+- ✅ `totalValue` (number) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `previousStock` (number) 
+- ✅ `newStock` (number) 
+- ✅ `batchInfo` (object) 
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `location` (relationship)
+- `destinationWarehouse` (relationship)
+- `destinationLocation` (relationship)
+- `user` (relationship)
+
+**Validaciones:**
+
+- `movementType`: required, string, entry, exit, transfer, adjustment
+- `movementDate`: required, date
+- `quantity`: required, numeric, not_in:0
+- `unitCost`: required, numeric, min:0
+- `referenceType`: nullable, string, purchase, sale, transfer, adjustment, manual
+- `referenceId`: nullable, integer, min:1
+- `description`: nullable, string, max:1000
+- `status`: sometimes, string, pending, completed, cancelled
+- `previousStock`: nullable, numeric
+- `newStock`: nullable, numeric
+- `batchInfo`: nullable, array
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/inventory_movements",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/inventory-movements`
+
+**Campos disponibles:**
+
+- ✅ `movementType` (string) 🔄
+- ✅ `referenceType` (string) 🔄
+- ✅ `referenceId` (number) 
+- ✅ `movementDate` (datetime) 🔄
+- ✅ `description` (string) 
+- ✅ `quantity` (number) 🔄
+- ✅ `unitCost` (number) 🔄
+- ✅ `totalValue` (number) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `previousStock` (number) 
+- ✅ `newStock` (number) 
+- ✅ `batchInfo` (object) 
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `location` (relationship)
+- `destinationWarehouse` (relationship)
+- `destinationLocation` (relationship)
+- `user` (relationship)
+
+**Validaciones:**
+
+- `movementType`: required, string, entry, exit, transfer, adjustment
+- `movementDate`: required, date
+- `quantity`: required, numeric, not_in:0
+- `unitCost`: required, numeric, min:0
+- `referenceType`: nullable, string, purchase, sale, transfer, adjustment, manual
+- `referenceId`: nullable, integer, min:1
+- `description`: nullable, string, max:1000
+- `status`: sometimes, string, pending, completed, cancelled
+- `previousStock`: nullable, numeric
+- `newStock`: nullable, numeric
+- `batchInfo`: nullable, array
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/inventory_movements",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "inventory_movements",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/inventory-movements/{inventory_movement}`
+
+**Campos disponibles:**
+
+- ✅ `movementType` (string) 🔄
+- ✅ `referenceType` (string) 🔄
+- ✅ `referenceId` (number) 
+- ✅ `movementDate` (datetime) 🔄
+- ✅ `description` (string) 
+- ✅ `quantity` (number) 🔄
+- ✅ `unitCost` (number) 🔄
+- ✅ `totalValue` (number) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `previousStock` (number) 
+- ✅ `newStock` (number) 
+- ✅ `batchInfo` (object) 
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `location` (relationship)
+- `destinationWarehouse` (relationship)
+- `destinationLocation` (relationship)
+- `user` (relationship)
+
+**Validaciones:**
+
+- `movementType`: required, string, entry, exit, transfer, adjustment
+- `movementDate`: required, date
+- `quantity`: required, numeric, not_in:0
+- `unitCost`: required, numeric, min:0
+- `referenceType`: nullable, string, purchase, sale, transfer, adjustment, manual
+- `referenceId`: nullable, integer, min:1
+- `description`: nullable, string, max:1000
+- `status`: sometimes, string, pending, completed, cancelled
+- `previousStock`: nullable, numeric
+- `newStock`: nullable, numeric
+- `batchInfo`: nullable, array
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/inventory_movements",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/inventory-movements/{inventory_movement}`
+
+**Campos disponibles:**
+
+- ✅ `movementType` (string) 🔄
+- ✅ `referenceType` (string) 🔄
+- ✅ `referenceId` (number) 
+- ✅ `movementDate` (datetime) 🔄
+- ✅ `description` (string) 
+- ✅ `quantity` (number) 🔄
+- ✅ `unitCost` (number) 🔄
+- ✅ `totalValue` (number) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `previousStock` (number) 
+- ✅ `newStock` (number) 
+- ✅ `batchInfo` (object) 
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `location` (relationship)
+- `destinationWarehouse` (relationship)
+- `destinationLocation` (relationship)
+- `user` (relationship)
+
+**Validaciones:**
+
+- `movementType`: required, string, entry, exit, transfer, adjustment
+- `movementDate`: required, date
+- `quantity`: required, numeric, not_in:0
+- `unitCost`: required, numeric, min:0
+- `referenceType`: nullable, string, purchase, sale, transfer, adjustment, manual
+- `referenceId`: nullable, integer, min:1
+- `description`: nullable, string, max:1000
+- `status`: sometimes, string, pending, completed, cancelled
+- `previousStock`: nullable, numeric
+- `newStock`: nullable, numeric
+- `batchInfo`: nullable, array
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/inventory_movements\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "inventory_movements",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/inventory-movements/{inventory_movement}`
+
+**Campos disponibles:**
+
+- ✅ `movementType` (string) 🔄
+- ✅ `referenceType` (string) 🔄
+- ✅ `referenceId` (number) 
+- ✅ `movementDate` (datetime) 🔄
+- ✅ `description` (string) 
+- ✅ `quantity` (number) 🔄
+- ✅ `unitCost` (number) 🔄
+- ✅ `totalValue` (number) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `previousStock` (number) 
+- ✅ `newStock` (number) 
+- ✅ `batchInfo` (object) 
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `product` (relationship)
+- `warehouse` (relationship)
+- `location` (relationship)
+- `destinationWarehouse` (relationship)
+- `destinationLocation` (relationship)
+- `user` (relationship)
+
+**Validaciones:**
+
+- `movementType`: required, string, entry, exit, transfer, adjustment
+- `movementDate`: required, date
+- `quantity`: required, numeric, not_in:0
+- `unitCost`: required, numeric, min:0
+- `referenceType`: nullable, string, purchase, sale, transfer, adjustment, manual
+- `referenceId`: nullable, integer, min:1
+- `description`: nullable, string, max:1000
+- `status`: sometimes, string, pending, completed, cancelled
+- `previousStock`: nullable, numeric
+- `newStock`: nullable, numeric
+- `batchInfo`: nullable, array
+- `metadata`: nullable, array
 
 ---
 
