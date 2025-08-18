@@ -42,9 +42,12 @@ class SchemaGenerator
     {
         $namespace = "Modules\\{$moduleName}\\JsonApi\\V1\\" . Str::plural($entityName);
         $fieldsCode = $this->generateSchemaFields($fields);
+        $relationshipsCode = $this->generateSchemaRelationships($entityName, $relationships);
+        $includePathsCode = $this->generateIncludePaths($entityName, $relationships);
         $filtersCode = $this->generateSchemaFilters($fields);
         $sortablesCode = $this->generateSchemaSortables($fields);
         $resourceType = Str::kebab(Str::plural($entityName));
+        $metadataCode = $this->shouldAddMetadataField($fields) ? "\n            // Metadata\n            ArrayHash::make('metadata')," : "";
         
         return "<?php
 
@@ -57,8 +60,8 @@ use LaravelJsonApi\\Eloquent\\Fields\\Str;
 use LaravelJsonApi\\Eloquent\\Fields\\Number;
 use LaravelJsonApi\\Eloquent\\Fields\\Boolean;
 use LaravelJsonApi\\Eloquent\\Fields\\ArrayHash;
-use LaravelJsonApi\\Eloquent\\Relations\\BelongsTo;
-use LaravelJsonApi\\Eloquent\\Relations\\HasMany;
+use LaravelJsonApi\\Eloquent\\Fields\\Relations\\BelongsTo;
+use LaravelJsonApi\\Eloquent\\Fields\\Relations\\HasMany;
 use LaravelJsonApi\\Eloquent\\Filters\\WhereIdIn;
 use LaravelJsonApi\\Eloquent\\Pagination\\PagePagination;
 use LaravelJsonApi\\Eloquent\\Schema;
@@ -73,14 +76,12 @@ class {$entityName}Schema extends Schema
         return [
             ID::make(),
             
-{$fieldsCode}
-            
-            // Metadatos
-            ArrayHash::make('metadata'),
+{$fieldsCode}{$metadataCode}
             
             // Timestamps
             DateTime::make('createdAt')->sortable()->readOnly(),
             DateTime::make('updatedAt')->sortable()->readOnly(),
+{$relationshipsCode}
         ];
     }
 
@@ -104,7 +105,7 @@ class {$entityName}Schema extends Schema
     public function includePaths(): array
     {
         return [
-            // Add relationships here when needed
+{$includePathsCode}
         ];
     }
 
@@ -209,6 +210,75 @@ class {$entityName}Schema extends Schema
         }
         
         return implode("\n", $lines);
+    }
+
+    /**
+     * Generate schema relationships
+     */
+    private function generateSchemaRelationships(string $entityName, array $relationships): string
+    {
+        $lines = [];
+        
+        foreach ($relationships as $rel) {
+            // Only generate relationships where current entity is the 'from' (owner)
+            $fromEntity = $rel['from'] ?? $rel['entityA'] ?? null;
+            
+            if ($fromEntity === $entityName) {
+                $relatedEntity = $rel['to'] ?? $rel['entityB'] ?? null;
+                $relationType = $rel['type'];
+                
+                if ($relationType === 'hasMany') {
+                    $methodName = Str::camel(Str::plural($relatedEntity));
+                    $lines[] = "\n            // Relationships\n            HasMany::make('{$methodName}'),";
+                } elseif ($relationType === 'belongsTo') {
+                    $methodName = Str::camel($relatedEntity);
+                    $lines[] = "\n            // Relationships\n            BelongsTo::make('{$methodName}'),";
+                }
+            }
+        }
+        
+        return implode("", array_unique($lines)); // Remove duplicates
+    }
+
+    /**
+     * Generate include paths for relationships
+     */
+    private function generateIncludePaths(string $entityName, array $relationships): string
+    {
+        $paths = [];
+        
+        foreach ($relationships as $rel) {
+            // Only generate paths where current entity is the 'from' (owner)
+            $fromEntity = $rel['from'] ?? $rel['entityA'] ?? null;
+            
+            if ($fromEntity === $entityName) {
+                $relatedEntity = $rel['to'] ?? $rel['entityB'] ?? null;
+                $relationType = $rel['type'];
+                
+                if ($relationType === 'hasMany') {
+                    $methodName = Str::camel(Str::plural($relatedEntity));
+                    $paths[] = "            '{$methodName}',";
+                } elseif ($relationType === 'belongsTo') {
+                    $methodName = Str::camel($relatedEntity);
+                    $paths[] = "            '{$methodName}',";
+                }
+            }
+        }
+        
+        return implode("\n", array_unique($paths));
+    }
+
+    /**
+     * Check if metadata field should be added
+     */
+    private function shouldAddMetadataField(array $fields): bool
+    {
+        foreach ($fields as $field) {
+            if ($field['name'] === 'metadata') {
+                return false; // Don't add duplicate metadata field
+            }
+        }
+        return true; // Add metadata field if not explicitly defined
     }
 
     /**

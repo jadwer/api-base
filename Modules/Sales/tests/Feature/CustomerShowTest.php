@@ -76,7 +76,7 @@ class CustomerShowTest extends TestCase
         $customer = Customer::factory()->create(['name' => 'Customer with Relations']);
         
         // Crear algunos sales orders para probar la relación
-        SalesOrder::factory()->count(2)->create(['customer_id' => $customer->id]);
+        SalesOrder::factory()->count(2)->create(['contact_id' => $customer->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

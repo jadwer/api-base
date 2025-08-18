@@ -3,7 +3,7 @@
 namespace Modules\Sales\Database\Factories;
 
 use Modules\Sales\Models\SalesOrder;
-use Modules\Sales\Models\Customer;
+use Modules\Contacts\Models\Contact;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SalesOrderFactory extends Factory
@@ -31,7 +31,7 @@ class SalesOrderFactory extends Factory
         $discountTotal = $this->faker->randomFloat(2, 0, $totalAmount * 0.2);
         
         return [
-            'customer_id' => Customer::factory(),
+            'contact_id' => Contact::factory()->state(['is_customer' => true]),
             'order_number' => 'SO-' . strtoupper($this->faker->unique()->regexify('[A-Z0-9]{8}')),
             'status' => $status,
             'order_date' => $orderDate->format('Y-m-d'),

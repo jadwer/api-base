@@ -30,7 +30,7 @@ class SalesOrderShowTest extends TestCase
         
         $customer = Customer::factory()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'customer_id' => $customer->id,
+            'contact_id' => $customer->id,
             'order_number' => 'SO-TEST-001',
             'status' => 'confirmed',
             'total_amount' => 1500.00,
@@ -70,7 +70,7 @@ class SalesOrderShowTest extends TestCase
         $admin = $this->getAdminUser();
         
         $customer = Customer::factory()->create(['name' => 'Test Customer Relationship']);
-        $salesOrder = SalesOrder::factory()->create(['customer_id' => $customer->id]);
+        $salesOrder = SalesOrder::factory()->create(['contact_id' => $customer->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -98,7 +98,7 @@ class SalesOrderShowTest extends TestCase
         
         $customer = Customer::factory()->create();
         $salesOrder = SalesOrder::factory()->draft()->create([
-            'customer_id' => $customer->id,
+            'contact_id' => $customer->id,
             'order_number' => 'SO-DRAFT-001'
         ]);
 
@@ -117,7 +117,7 @@ class SalesOrderShowTest extends TestCase
         $tech = $this->getTechUser();
         
         $customer = Customer::factory()->create();
-        $salesOrder = SalesOrder::factory()->create(['customer_id' => $customer->id]);
+        $salesOrder = SalesOrder::factory()->create(['contact_id' => $customer->id]);
 
         $response = $this->actingAs($tech, 'sanctum')
             ->jsonApi()
@@ -132,7 +132,7 @@ class SalesOrderShowTest extends TestCase
         $customer = $this->getCustomerUser();
         
         $customerModel = Customer::factory()->create();
-        $salesOrder = SalesOrder::factory()->create(['customer_id' => $customerModel->id]);
+        $salesOrder = SalesOrder::factory()->create(['contact_id' => $customerModel->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
@@ -152,7 +152,7 @@ class SalesOrderShowTest extends TestCase
     public function test_guest_cannot_view_sales_order(): void
     {
         $customer = Customer::factory()->create();
-        $salesOrder = SalesOrder::factory()->create(['customer_id' => $customer->id]);
+        $salesOrder = SalesOrder::factory()->create(['contact_id' => $customer->id]);
 
         $response = $this->jsonApi()
             ->expects('sales-orders')
@@ -178,7 +178,7 @@ class SalesOrderShowTest extends TestCase
         $admin = $this->getAdminUser();
         
         $customer = Customer::factory()->create();
-        $salesOrder = SalesOrder::factory()->create(['customer_id' => $customer->id]);
+        $salesOrder = SalesOrder::factory()->create(['contact_id' => $customer->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -203,7 +203,7 @@ class SalesOrderShowTest extends TestCase
         
         $customer = Customer::factory()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'customer_id' => $customer->id,
+            'contact_id' => $customer->id,
             'metadata' => $metadata
         ]);
 
@@ -225,7 +225,7 @@ class SalesOrderShowTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Customer::factory()->create(['name' => 'Test Customer']);
         $salesOrder = SalesOrder::factory()->create([
-            'customer_id' => $customer->id,
+            'contact_id' => $customer->id,
             'order_number' => 'SO-ITEMS-001'
         ]);
         
@@ -279,7 +279,7 @@ class SalesOrderShowTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Customer::factory()->create(['name' => 'Nested Customer']);
         $salesOrder = SalesOrder::factory()->create([
-            'customer_id' => $customer->id,
+            'contact_id' => $customer->id,
             'order_number' => 'SO-NESTED-PROD-001'
         ]);
         
@@ -349,7 +349,7 @@ class SalesOrderShowTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Customer::factory()->create(['name' => 'Hybrid Customer']);
         $salesOrder = SalesOrder::factory()->create([
-            'customer_id' => $customer->id,
+            'contact_id' => $customer->id,
             'order_number' => 'SO-HYBRID-001'
         ]);
 

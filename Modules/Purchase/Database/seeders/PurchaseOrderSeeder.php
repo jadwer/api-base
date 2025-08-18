@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Modules\Purchase\Models\PurchaseOrder;
 use Modules\Purchase\Models\PurchaseOrderItem;
 use Modules\Purchase\Models\Supplier;
+use Modules\Contacts\Models\Contact;
 
 class PurchaseOrderSeeder extends Seeder
 {
@@ -14,15 +15,21 @@ class PurchaseOrderSeeder extends Seeder
      */
     public function run(): void
     {
-        // Ensure we have suppliers first
-        if (Supplier::count() === 0) {
-            Supplier::factory()->count(5)->create();
+        // Ensure we have suppliers (from Contacts module)
+        $supplierContacts = Contact::where('is_supplier', true)->get();
+        
+        if ($supplierContacts->isEmpty()) {
+            // Create supplier contacts if none exist
+            $supplierContacts = Contact::factory()
+                ->supplier()
+                ->count(5)
+                ->create();
         }
 
         // Create purchase orders with items
-        Supplier::inRandomOrder()->take(3)->get()->each(function ($supplier) {
+        $supplierContacts->take(3)->each(function ($contact) {
             $purchaseOrder = PurchaseOrder::factory()
-                ->for($supplier)
+                ->for($contact, 'contact')
                 ->create();
 
             // Create 2-5 items per purchase order

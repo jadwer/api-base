@@ -73,7 +73,7 @@ class PurchaseOrderItemUpdateTest extends TestCase
         $supplier = Supplier::factory()->create();
         $product = Product::factory()->create();
         $purchaseOrder = PurchaseOrder::factory()->create([
-            'supplier_id' => $supplier->id
+            'contact_id' => $supplier->id
         ]);
 
         return PurchaseOrderItem::factory()->create([

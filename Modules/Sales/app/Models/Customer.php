@@ -89,7 +89,7 @@ class Customer extends Model
     // Relaciones
     public function salesOrders(): HasMany
     {
-        return $this->hasMany(SalesOrder::class);
+        return $this->hasMany(SalesOrder::class, 'contact_id');
     }
 
     // Factory

@@ -73,7 +73,7 @@ class PurchaseOrderItemDestroyTest extends TestCase
         $supplier = Supplier::factory()->create();
         $product = Product::factory()->create();
         $purchaseOrder = PurchaseOrder::factory()->create([
-            'supplier_id' => $supplier->id
+            'contact_id' => $supplier->id
         ]);
         
         return PurchaseOrderItem::factory()->create([
@@ -181,7 +181,7 @@ class PurchaseOrderItemDestroyTest extends TestCase
         $product1 = Product::factory()->create();
         $product2 = Product::factory()->create();
         $purchaseOrder = PurchaseOrder::factory()->create([
-            'supplier_id' => $supplier->id
+            'contact_id' => $supplier->id
         ]);
         
         $item1 = PurchaseOrderItem::factory()->create([

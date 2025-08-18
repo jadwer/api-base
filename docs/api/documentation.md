@@ -1,6 +1,6 @@
 # API Documentation
 
-**Generado:** 2025-08-14T05:39:11.813731Z
+**Generado:** 2025-08-18T23:48:14.924879Z
 
 **Base URL:** `http://localhost/api/v1`
 
@@ -2228,6 +2228,7 @@
 
 **Campos disponibles:**
 
+- ✅ `warehouseId` (number) 
 - ✅ `name` (string) 🔄
 - ✅ `code` (string) 🔄
 - ✅ `description` (string) 
@@ -2275,6 +2276,7 @@
 - `isReceivable`: sometimes, boolean
 - `priority`: sometimes, integer, min:1, max:10
 - `metadata`: nullable, array
+- `warehouseId`: required, integer, exists:warehouses,id
 
 **Ejemplo de Request:**
 
@@ -2295,6 +2297,7 @@
 
 **Campos disponibles:**
 
+- ✅ `warehouseId` (number) 
 - ✅ `name` (string) 🔄
 - ✅ `code` (string) 🔄
 - ✅ `description` (string) 
@@ -2342,6 +2345,7 @@
 - `isReceivable`: sometimes, boolean
 - `priority`: sometimes, integer, min:1, max:10
 - `metadata`: nullable, array
+- `warehouseId`: required, integer, exists:warehouses,id
 
 **Ejemplo de Request:**
 
@@ -2386,6 +2390,7 @@
 
 **Campos disponibles:**
 
+- ✅ `warehouseId` (number) 
 - ✅ `name` (string) 🔄
 - ✅ `code` (string) 🔄
 - ✅ `description` (string) 
@@ -2433,6 +2438,7 @@
 - `isReceivable`: sometimes, boolean
 - `priority`: sometimes, integer, min:1, max:10
 - `metadata`: nullable, array
+- `warehouseId`: required, integer, exists:warehouses,id
 
 **Ejemplo de Request:**
 
@@ -2453,6 +2459,7 @@
 
 **Campos disponibles:**
 
+- ✅ `warehouseId` (number) 
 - ✅ `name` (string) 🔄
 - ✅ `code` (string) 🔄
 - ✅ `description` (string) 
@@ -2500,6 +2507,7 @@
 - `isReceivable`: sometimes, boolean
 - `priority`: sometimes, integer, min:1, max:10
 - `metadata`: nullable, array
+- `warehouseId`: required, integer, exists:warehouses,id
 
 **Ejemplo de Request:**
 
@@ -2531,6 +2539,7 @@
 
 **Campos disponibles:**
 
+- ✅ `warehouseId` (number) 
 - ✅ `name` (string) 🔄
 - ✅ `code` (string) 🔄
 - ✅ `description` (string) 
@@ -2578,6 +2587,7 @@
 - `isReceivable`: sometimes, boolean
 - `priority`: sometimes, integer, min:1, max:10
 - `metadata`: nullable, array
+- `warehouseId`: required, integer, exists:warehouses,id
 
 ---
 
@@ -2941,6 +2951,9 @@
 
 **Campos disponibles:**
 
+- ✅ `productId` (number) 
+- ✅ `warehouseId` (number) 
+- ✅ `locationId` (number) 
 - ✅ `quantity` (number) 
 - ✅ `reservedQuantity` (number) 
 - ✅ `availableQuantity` (number) 
@@ -2976,6 +2989,9 @@
 - `lastMovementType`: sometimes, nullable, string, in:in,out,adjustment,transfer
 - `batchInfo`: sometimes, nullable, array
 - `metadata`: sometimes, nullable, array
+- `productId`: required, integer, exists:products,id
+- `warehouseId`: required, integer, exists:warehouses,id
+- `locationId`: sometimes, nullable, integer, exists:warehouse_locations,id
 
 **Ejemplo de Request:**
 
@@ -2996,6 +3012,9 @@
 
 **Campos disponibles:**
 
+- ✅ `productId` (number) 
+- ✅ `warehouseId` (number) 
+- ✅ `locationId` (number) 
 - ✅ `quantity` (number) 
 - ✅ `reservedQuantity` (number) 
 - ✅ `availableQuantity` (number) 
@@ -3031,6 +3050,9 @@
 - `lastMovementType`: sometimes, nullable, string, in:in,out,adjustment,transfer
 - `batchInfo`: sometimes, nullable, array
 - `metadata`: sometimes, nullable, array
+- `productId`: required, integer, exists:products,id
+- `warehouseId`: required, integer, exists:warehouses,id
+- `locationId`: sometimes, nullable, integer, exists:warehouse_locations,id
 
 **Ejemplo de Request:**
 
@@ -3075,6 +3097,9 @@
 
 **Campos disponibles:**
 
+- ✅ `productId` (number) 
+- ✅ `warehouseId` (number) 
+- ✅ `locationId` (number) 
 - ✅ `quantity` (number) 
 - ✅ `reservedQuantity` (number) 
 - ✅ `availableQuantity` (number) 
@@ -3110,6 +3135,9 @@
 - `lastMovementType`: sometimes, nullable, string, in:in,out,adjustment,transfer
 - `batchInfo`: sometimes, nullable, array
 - `metadata`: sometimes, nullable, array
+- `productId`: required, integer, exists:products,id
+- `warehouseId`: required, integer, exists:warehouses,id
+- `locationId`: sometimes, nullable, integer, exists:warehouse_locations,id
 
 **Ejemplo de Request:**
 
@@ -3130,6 +3158,9 @@
 
 **Campos disponibles:**
 
+- ✅ `productId` (number) 
+- ✅ `warehouseId` (number) 
+- ✅ `locationId` (number) 
 - ✅ `quantity` (number) 
 - ✅ `reservedQuantity` (number) 
 - ✅ `availableQuantity` (number) 
@@ -3165,6 +3196,9 @@
 - `lastMovementType`: sometimes, nullable, string, in:in,out,adjustment,transfer
 - `batchInfo`: sometimes, nullable, array
 - `metadata`: sometimes, nullable, array
+- `productId`: required, integer, exists:products,id
+- `warehouseId`: required, integer, exists:warehouses,id
+- `locationId`: sometimes, nullable, integer, exists:warehouse_locations,id
 
 **Ejemplo de Request:**
 
@@ -3196,6 +3230,9 @@
 
 **Campos disponibles:**
 
+- ✅ `productId` (number) 
+- ✅ `warehouseId` (number) 
+- ✅ `locationId` (number) 
 - ✅ `quantity` (number) 
 - ✅ `reservedQuantity` (number) 
 - ✅ `availableQuantity` (number) 
@@ -3231,6 +3268,9 @@
 - `lastMovementType`: sometimes, nullable, string, in:in,out,adjustment,transfer
 - `batchInfo`: sometimes, nullable, array
 - `metadata`: sometimes, nullable, array
+- `productId`: required, integer, exists:products,id
+- `warehouseId`: required, integer, exists:warehouses,id
+- `locationId`: sometimes, nullable, integer, exists:warehouse_locations,id
 
 ---
 
@@ -3240,6 +3280,12 @@
 
 **Campos disponibles:**
 
+- ✅ `productId` (number) 
+- ✅ `warehouseId` (number) 
+- ✅ `locationId` (number) 
+- ✅ `destinationWarehouseId` (number) 
+- ✅ `destinationLocationId` (number) 
+- ✅ `userId` (number) 
 - ✅ `movementType` (string) 🔄
 - ✅ `referenceType` (string) 🔄
 - ✅ `referenceId` (number) 
@@ -3279,6 +3325,12 @@
 - `newStock`: nullable, numeric
 - `batchInfo`: nullable, array
 - `metadata`: nullable, array
+- `productId`: required, integer, exists:products,id
+- `warehouseId`: required, integer, exists:warehouses,id
+- `userId`: required, integer, exists:users,id
+- `locationId`: nullable, integer, exists:warehouse_locations,id
+- `destinationWarehouseId`: nullable, integer, exists:warehouses,id
+- `destinationLocationId`: nullable, integer, exists:warehouse_locations,id
 
 **Ejemplo de Request:**
 
@@ -3299,6 +3351,12 @@
 
 **Campos disponibles:**
 
+- ✅ `productId` (number) 
+- ✅ `warehouseId` (number) 
+- ✅ `locationId` (number) 
+- ✅ `destinationWarehouseId` (number) 
+- ✅ `destinationLocationId` (number) 
+- ✅ `userId` (number) 
 - ✅ `movementType` (string) 🔄
 - ✅ `referenceType` (string) 🔄
 - ✅ `referenceId` (number) 
@@ -3338,6 +3396,12 @@
 - `newStock`: nullable, numeric
 - `batchInfo`: nullable, array
 - `metadata`: nullable, array
+- `productId`: required, integer, exists:products,id
+- `warehouseId`: required, integer, exists:warehouses,id
+- `userId`: required, integer, exists:users,id
+- `locationId`: nullable, integer, exists:warehouse_locations,id
+- `destinationWarehouseId`: nullable, integer, exists:warehouses,id
+- `destinationLocationId`: nullable, integer, exists:warehouse_locations,id
 
 **Ejemplo de Request:**
 
@@ -3382,6 +3446,12 @@
 
 **Campos disponibles:**
 
+- ✅ `productId` (number) 
+- ✅ `warehouseId` (number) 
+- ✅ `locationId` (number) 
+- ✅ `destinationWarehouseId` (number) 
+- ✅ `destinationLocationId` (number) 
+- ✅ `userId` (number) 
 - ✅ `movementType` (string) 🔄
 - ✅ `referenceType` (string) 🔄
 - ✅ `referenceId` (number) 
@@ -3421,6 +3491,12 @@
 - `newStock`: nullable, numeric
 - `batchInfo`: nullable, array
 - `metadata`: nullable, array
+- `productId`: required, integer, exists:products,id
+- `warehouseId`: required, integer, exists:warehouses,id
+- `userId`: required, integer, exists:users,id
+- `locationId`: nullable, integer, exists:warehouse_locations,id
+- `destinationWarehouseId`: nullable, integer, exists:warehouses,id
+- `destinationLocationId`: nullable, integer, exists:warehouse_locations,id
 
 **Ejemplo de Request:**
 
@@ -3441,6 +3517,12 @@
 
 **Campos disponibles:**
 
+- ✅ `productId` (number) 
+- ✅ `warehouseId` (number) 
+- ✅ `locationId` (number) 
+- ✅ `destinationWarehouseId` (number) 
+- ✅ `destinationLocationId` (number) 
+- ✅ `userId` (number) 
 - ✅ `movementType` (string) 🔄
 - ✅ `referenceType` (string) 🔄
 - ✅ `referenceId` (number) 
@@ -3480,6 +3562,12 @@
 - `newStock`: nullable, numeric
 - `batchInfo`: nullable, array
 - `metadata`: nullable, array
+- `productId`: required, integer, exists:products,id
+- `warehouseId`: required, integer, exists:warehouses,id
+- `userId`: required, integer, exists:users,id
+- `locationId`: nullable, integer, exists:warehouse_locations,id
+- `destinationWarehouseId`: nullable, integer, exists:warehouses,id
+- `destinationLocationId`: nullable, integer, exists:warehouse_locations,id
 
 **Ejemplo de Request:**
 
@@ -3511,6 +3599,12 @@
 
 **Campos disponibles:**
 
+- ✅ `productId` (number) 
+- ✅ `warehouseId` (number) 
+- ✅ `locationId` (number) 
+- ✅ `destinationWarehouseId` (number) 
+- ✅ `destinationLocationId` (number) 
+- ✅ `userId` (number) 
 - ✅ `movementType` (string) 🔄
 - ✅ `referenceType` (string) 🔄
 - ✅ `referenceId` (number) 
@@ -3550,6 +3644,12 @@
 - `newStock`: nullable, numeric
 - `batchInfo`: nullable, array
 - `metadata`: nullable, array
+- `productId`: required, integer, exists:products,id
+- `warehouseId`: required, integer, exists:warehouses,id
+- `userId`: required, integer, exists:users,id
+- `locationId`: nullable, integer, exists:warehouse_locations,id
+- `destinationWarehouseId`: nullable, integer, exists:warehouses,id
+- `destinationLocationId`: nullable, integer, exists:warehouse_locations,id
 
 ---
 
@@ -3580,6 +3680,1102 @@
     }
 }
 ```
+
+---
+
+### 📦 Contacts
+
+#### `GET` `api/v1/contacts`
+
+**Campos disponibles:**
+
+- ✅ `contactType` (string) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `legalName` (string) 🔄
+- ✅ `taxId` (string) 🔄
+- ✅ `email` (string) 🔄
+- ✅ `phone` (string) 🔄
+- ✅ `website` (string) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `isCustomer` (boolean) 🔄
+- ✅ `isSupplier` (boolean) 🔄
+- ✅ `creditLimit` (number) 🔄
+- ✅ `currentCredit` (number) 🔄
+- ✅ `classification` (string) 🔄
+- ✅ `paymentTerms` (number) 🔄
+- ✅ `notes` (string) 
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contactDocuments` (relationship[])
+- `contactAddresses` (relationship[])
+- `contactPeople` (relationship[])
+
+**Validaciones:**
+
+- `contactType`: required, person, company
+- `name`: required, string, max:255
+- `legalName`: nullable, string, max:255
+- `taxId`: nullable, string, max:13
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/contacts",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/contacts`
+
+**Campos disponibles:**
+
+- ✅ `contactType` (string) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `legalName` (string) 🔄
+- ✅ `taxId` (string) 🔄
+- ✅ `email` (string) 🔄
+- ✅ `phone` (string) 🔄
+- ✅ `website` (string) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `isCustomer` (boolean) 🔄
+- ✅ `isSupplier` (boolean) 🔄
+- ✅ `creditLimit` (number) 🔄
+- ✅ `currentCredit` (number) 🔄
+- ✅ `classification` (string) 🔄
+- ✅ `paymentTerms` (number) 🔄
+- ✅ `notes` (string) 
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contactDocuments` (relationship[])
+- `contactAddresses` (relationship[])
+- `contactPeople` (relationship[])
+
+**Validaciones:**
+
+- `contactType`: required, person, company
+- `name`: required, string, max:255
+- `legalName`: nullable, string, max:255
+- `taxId`: nullable, string, max:13
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/contacts",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "contacts",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/contacts/{contact}`
+
+**Campos disponibles:**
+
+- ✅ `contactType` (string) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `legalName` (string) 🔄
+- ✅ `taxId` (string) 🔄
+- ✅ `email` (string) 🔄
+- ✅ `phone` (string) 🔄
+- ✅ `website` (string) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `isCustomer` (boolean) 🔄
+- ✅ `isSupplier` (boolean) 🔄
+- ✅ `creditLimit` (number) 🔄
+- ✅ `currentCredit` (number) 🔄
+- ✅ `classification` (string) 🔄
+- ✅ `paymentTerms` (number) 🔄
+- ✅ `notes` (string) 
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contactDocuments` (relationship[])
+- `contactAddresses` (relationship[])
+- `contactPeople` (relationship[])
+
+**Validaciones:**
+
+- `contactType`: required, person, company
+- `name`: required, string, max:255
+- `legalName`: nullable, string, max:255
+- `taxId`: nullable, string, max:13
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/contacts",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/contacts/{contact}`
+
+**Campos disponibles:**
+
+- ✅ `contactType` (string) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `legalName` (string) 🔄
+- ✅ `taxId` (string) 🔄
+- ✅ `email` (string) 🔄
+- ✅ `phone` (string) 🔄
+- ✅ `website` (string) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `isCustomer` (boolean) 🔄
+- ✅ `isSupplier` (boolean) 🔄
+- ✅ `creditLimit` (number) 🔄
+- ✅ `currentCredit` (number) 🔄
+- ✅ `classification` (string) 🔄
+- ✅ `paymentTerms` (number) 🔄
+- ✅ `notes` (string) 
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contactDocuments` (relationship[])
+- `contactAddresses` (relationship[])
+- `contactPeople` (relationship[])
+
+**Validaciones:**
+
+- `contactType`: required, person, company
+- `name`: required, string, max:255
+- `legalName`: nullable, string, max:255
+- `taxId`: nullable, string, max:13
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/contacts\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "contacts",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/contacts/{contact}`
+
+**Campos disponibles:**
+
+- ✅ `contactType` (string) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `legalName` (string) 🔄
+- ✅ `taxId` (string) 🔄
+- ✅ `email` (string) 🔄
+- ✅ `phone` (string) 🔄
+- ✅ `website` (string) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `isCustomer` (boolean) 🔄
+- ✅ `isSupplier` (boolean) 🔄
+- ✅ `creditLimit` (number) 🔄
+- ✅ `currentCredit` (number) 🔄
+- ✅ `classification` (string) 🔄
+- ✅ `paymentTerms` (number) 🔄
+- ✅ `notes` (string) 
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contactDocuments` (relationship[])
+- `contactAddresses` (relationship[])
+- `contactPeople` (relationship[])
+
+**Validaciones:**
+
+- `contactType`: required, person, company
+- `name`: required, string, max:255
+- `legalName`: nullable, string, max:255
+- `taxId`: nullable, string, max:13
+
+---
+
+### 📦 Contact documents
+
+#### `GET` `api/v1/contact-documents`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 🔄
+- ✅ `documentType` (string) 🔄
+- ✅ `filePath` (string) 🔄
+- ✅ `originalFilename` (string) 🔄
+- ✅ `mimeType` (string) 🔄
+- ✅ `fileSize` (number) 🔄
+- ✅ `uploadedBy` (number) 🔄
+- ✅ `verifiedAt` (datetime) 🔄
+- ✅ `verifiedBy` (number) 🔄
+- ✅ `expiresAt` (datetime) 🔄
+- ✅ `notes` (string) 
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contact` (relationship)
+
+**Validaciones:**
+
+- `contact_id`: nullable, integer
+- `document_type`: nullable, string, max:255
+- `file_path`: nullable, string, max:255
+- `original_filename`: nullable, string, max:255
+- `mime_type`: nullable, string, max:255
+- `file_size`: nullable, integer
+- `uploaded_by`: nullable, integer
+- `verified_at`: nullable, date
+- `verified_by`: nullable, integer
+- `expires_at`: nullable, date
+- `notes`: nullable, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/contact_documents",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/contact-documents`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 🔄
+- ✅ `documentType` (string) 🔄
+- ✅ `filePath` (string) 🔄
+- ✅ `originalFilename` (string) 🔄
+- ✅ `mimeType` (string) 🔄
+- ✅ `fileSize` (number) 🔄
+- ✅ `uploadedBy` (number) 🔄
+- ✅ `verifiedAt` (datetime) 🔄
+- ✅ `verifiedBy` (number) 🔄
+- ✅ `expiresAt` (datetime) 🔄
+- ✅ `notes` (string) 
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contact` (relationship)
+
+**Validaciones:**
+
+- `contact_id`: nullable, integer
+- `document_type`: nullable, string, max:255
+- `file_path`: nullable, string, max:255
+- `original_filename`: nullable, string, max:255
+- `mime_type`: nullable, string, max:255
+- `file_size`: nullable, integer
+- `uploaded_by`: nullable, integer
+- `verified_at`: nullable, date
+- `verified_by`: nullable, integer
+- `expires_at`: nullable, date
+- `notes`: nullable, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/contact_documents",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "contact_documents",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/contact-documents/{contact_document}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 🔄
+- ✅ `documentType` (string) 🔄
+- ✅ `filePath` (string) 🔄
+- ✅ `originalFilename` (string) 🔄
+- ✅ `mimeType` (string) 🔄
+- ✅ `fileSize` (number) 🔄
+- ✅ `uploadedBy` (number) 🔄
+- ✅ `verifiedAt` (datetime) 🔄
+- ✅ `verifiedBy` (number) 🔄
+- ✅ `expiresAt` (datetime) 🔄
+- ✅ `notes` (string) 
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contact` (relationship)
+
+**Validaciones:**
+
+- `contact_id`: nullable, integer
+- `document_type`: nullable, string, max:255
+- `file_path`: nullable, string, max:255
+- `original_filename`: nullable, string, max:255
+- `mime_type`: nullable, string, max:255
+- `file_size`: nullable, integer
+- `uploaded_by`: nullable, integer
+- `verified_at`: nullable, date
+- `verified_by`: nullable, integer
+- `expires_at`: nullable, date
+- `notes`: nullable, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/contact_documents",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/contact-documents/{contact_document}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 🔄
+- ✅ `documentType` (string) 🔄
+- ✅ `filePath` (string) 🔄
+- ✅ `originalFilename` (string) 🔄
+- ✅ `mimeType` (string) 🔄
+- ✅ `fileSize` (number) 🔄
+- ✅ `uploadedBy` (number) 🔄
+- ✅ `verifiedAt` (datetime) 🔄
+- ✅ `verifiedBy` (number) 🔄
+- ✅ `expiresAt` (datetime) 🔄
+- ✅ `notes` (string) 
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contact` (relationship)
+
+**Validaciones:**
+
+- `contact_id`: nullable, integer
+- `document_type`: nullable, string, max:255
+- `file_path`: nullable, string, max:255
+- `original_filename`: nullable, string, max:255
+- `mime_type`: nullable, string, max:255
+- `file_size`: nullable, integer
+- `uploaded_by`: nullable, integer
+- `verified_at`: nullable, date
+- `verified_by`: nullable, integer
+- `expires_at`: nullable, date
+- `notes`: nullable, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/contact_documents\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "contact_documents",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/contact-documents/{contact_document}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 🔄
+- ✅ `documentType` (string) 🔄
+- ✅ `filePath` (string) 🔄
+- ✅ `originalFilename` (string) 🔄
+- ✅ `mimeType` (string) 🔄
+- ✅ `fileSize` (number) 🔄
+- ✅ `uploadedBy` (number) 🔄
+- ✅ `verifiedAt` (datetime) 🔄
+- ✅ `verifiedBy` (number) 🔄
+- ✅ `expiresAt` (datetime) 🔄
+- ✅ `notes` (string) 
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contact` (relationship)
+
+**Validaciones:**
+
+- `contact_id`: nullable, integer
+- `document_type`: nullable, string, max:255
+- `file_path`: nullable, string, max:255
+- `original_filename`: nullable, string, max:255
+- `mime_type`: nullable, string, max:255
+- `file_size`: nullable, integer
+- `uploaded_by`: nullable, integer
+- `verified_at`: nullable, date
+- `verified_by`: nullable, integer
+- `expires_at`: nullable, date
+- `notes`: nullable, string
+- `metadata`: nullable, array
+
+---
+
+### 📦 Contact addresses
+
+#### `GET` `api/v1/contact-addresses`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 🔄
+- ✅ `addressType` (string) 🔄
+- ✅ `addressLine1` (string) 🔄
+- ✅ `addressLine2` (string) 🔄
+- ✅ `city` (string) 🔄
+- ✅ `state` (string) 🔄
+- ✅ `country` (string) 🔄
+- ✅ `postalCode` (string) 🔄
+- ✅ `isDefault` (boolean) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contact` (relationship)
+
+**Validaciones:**
+
+- `contactId`: required, integer
+- `addressType`: nullable, string, max:255
+- `addressLine1`: nullable, string, max:255
+- `addressLine2`: nullable, string, max:255
+- `city`: nullable, string, max:255
+- `state`: nullable, string, max:255
+- `country`: nullable, string, max:255
+- `postalCode`: nullable, string, max:255
+- `isDefault`: nullable, boolean
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/contact_addresses",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/contact-addresses`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 🔄
+- ✅ `addressType` (string) 🔄
+- ✅ `addressLine1` (string) 🔄
+- ✅ `addressLine2` (string) 🔄
+- ✅ `city` (string) 🔄
+- ✅ `state` (string) 🔄
+- ✅ `country` (string) 🔄
+- ✅ `postalCode` (string) 🔄
+- ✅ `isDefault` (boolean) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contact` (relationship)
+
+**Validaciones:**
+
+- `contactId`: required, integer
+- `addressType`: nullable, string, max:255
+- `addressLine1`: nullable, string, max:255
+- `addressLine2`: nullable, string, max:255
+- `city`: nullable, string, max:255
+- `state`: nullable, string, max:255
+- `country`: nullable, string, max:255
+- `postalCode`: nullable, string, max:255
+- `isDefault`: nullable, boolean
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/contact_addresses",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "contact_addresses",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/contact-addresses/{contact_address}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 🔄
+- ✅ `addressType` (string) 🔄
+- ✅ `addressLine1` (string) 🔄
+- ✅ `addressLine2` (string) 🔄
+- ✅ `city` (string) 🔄
+- ✅ `state` (string) 🔄
+- ✅ `country` (string) 🔄
+- ✅ `postalCode` (string) 🔄
+- ✅ `isDefault` (boolean) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contact` (relationship)
+
+**Validaciones:**
+
+- `contactId`: required, integer
+- `addressType`: nullable, string, max:255
+- `addressLine1`: nullable, string, max:255
+- `addressLine2`: nullable, string, max:255
+- `city`: nullable, string, max:255
+- `state`: nullable, string, max:255
+- `country`: nullable, string, max:255
+- `postalCode`: nullable, string, max:255
+- `isDefault`: nullable, boolean
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/contact_addresses",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/contact-addresses/{contact_address}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 🔄
+- ✅ `addressType` (string) 🔄
+- ✅ `addressLine1` (string) 🔄
+- ✅ `addressLine2` (string) 🔄
+- ✅ `city` (string) 🔄
+- ✅ `state` (string) 🔄
+- ✅ `country` (string) 🔄
+- ✅ `postalCode` (string) 🔄
+- ✅ `isDefault` (boolean) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contact` (relationship)
+
+**Validaciones:**
+
+- `contactId`: required, integer
+- `addressType`: nullable, string, max:255
+- `addressLine1`: nullable, string, max:255
+- `addressLine2`: nullable, string, max:255
+- `city`: nullable, string, max:255
+- `state`: nullable, string, max:255
+- `country`: nullable, string, max:255
+- `postalCode`: nullable, string, max:255
+- `isDefault`: nullable, boolean
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/contact_addresses\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "contact_addresses",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/contact-addresses/{contact_address}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 🔄
+- ✅ `addressType` (string) 🔄
+- ✅ `addressLine1` (string) 🔄
+- ✅ `addressLine2` (string) 🔄
+- ✅ `city` (string) 🔄
+- ✅ `state` (string) 🔄
+- ✅ `country` (string) 🔄
+- ✅ `postalCode` (string) 🔄
+- ✅ `isDefault` (boolean) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contact` (relationship)
+
+**Validaciones:**
+
+- `contactId`: required, integer
+- `addressType`: nullable, string, max:255
+- `addressLine1`: nullable, string, max:255
+- `addressLine2`: nullable, string, max:255
+- `city`: nullable, string, max:255
+- `state`: nullable, string, max:255
+- `country`: nullable, string, max:255
+- `postalCode`: nullable, string, max:255
+- `isDefault`: nullable, boolean
+- `metadata`: nullable, array
+
+---
+
+### 📦 Contact people
+
+#### `GET` `api/v1/contact-people`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `position` (string) 🔄
+- ✅ `department` (string) 🔄
+- ✅ `email` (string) 🔄
+- ✅ `phone` (string) 🔄
+- ✅ `mobile` (string) 🔄
+- ✅ `isPrimary` (boolean) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contact` (relationship)
+
+**Validaciones:**
+
+- `contact_id`: nullable, integer
+- `name`: nullable, string, max:255
+- `position`: nullable, string, max:255
+- `department`: nullable, string, max:255
+- `email`: nullable, string, max:255, email
+- `phone`: nullable, string, max:255
+- `mobile`: nullable, string, max:255
+- `is_primary`: nullable, boolean
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/contact_people",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/contact-people`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `position` (string) 🔄
+- ✅ `department` (string) 🔄
+- ✅ `email` (string) 🔄
+- ✅ `phone` (string) 🔄
+- ✅ `mobile` (string) 🔄
+- ✅ `isPrimary` (boolean) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contact` (relationship)
+
+**Validaciones:**
+
+- `contact_id`: nullable, integer
+- `name`: nullable, string, max:255
+- `position`: nullable, string, max:255
+- `department`: nullable, string, max:255
+- `email`: nullable, string, max:255, email
+- `phone`: nullable, string, max:255
+- `mobile`: nullable, string, max:255
+- `is_primary`: nullable, boolean
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/contact_people",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "contact_people",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/contact-people/{contact_person}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `position` (string) 🔄
+- ✅ `department` (string) 🔄
+- ✅ `email` (string) 🔄
+- ✅ `phone` (string) 🔄
+- ✅ `mobile` (string) 🔄
+- ✅ `isPrimary` (boolean) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contact` (relationship)
+
+**Validaciones:**
+
+- `contact_id`: nullable, integer
+- `name`: nullable, string, max:255
+- `position`: nullable, string, max:255
+- `department`: nullable, string, max:255
+- `email`: nullable, string, max:255, email
+- `phone`: nullable, string, max:255
+- `mobile`: nullable, string, max:255
+- `is_primary`: nullable, boolean
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/contact_people",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/contact-people/{contact_person}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `position` (string) 🔄
+- ✅ `department` (string) 🔄
+- ✅ `email` (string) 🔄
+- ✅ `phone` (string) 🔄
+- ✅ `mobile` (string) 🔄
+- ✅ `isPrimary` (boolean) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contact` (relationship)
+
+**Validaciones:**
+
+- `contact_id`: nullable, integer
+- `name`: nullable, string, max:255
+- `position`: nullable, string, max:255
+- `department`: nullable, string, max:255
+- `email`: nullable, string, max:255, email
+- `phone`: nullable, string, max:255
+- `mobile`: nullable, string, max:255
+- `is_primary`: nullable, boolean
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/contact_people\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "contact_people",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/contact-people/{contact_person}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `position` (string) 🔄
+- ✅ `department` (string) 🔄
+- ✅ `email` (string) 🔄
+- ✅ `phone` (string) 🔄
+- ✅ `mobile` (string) 🔄
+- ✅ `isPrimary` (boolean) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contact` (relationship)
+
+**Validaciones:**
+
+- `contact_id`: nullable, integer
+- `name`: nullable, string, max:255
+- `position`: nullable, string, max:255
+- `department`: nullable, string, max:255
+- `email`: nullable, string, max:255, email
+- `phone`: nullable, string, max:255
+- `mobile`: nullable, string, max:255
+- `is_primary`: nullable, boolean
+- `metadata`: nullable, array
 
 ---
 

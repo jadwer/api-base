@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
- * @property int $customer_id
+ * @property int $contact_id
  * @property string $order_number
  * @property string $status
  * @property \Carbon\Carbon $order_date
@@ -30,7 +30,7 @@ class SalesOrder extends Model
 
     protected $casts = [
         'id' => 'integer',
-        'customer_id' => 'integer',
+        'contact_id' => 'integer',
         'order_date' => 'date',
         'approved_at' => 'datetime',
         'delivered_at' => 'datetime',
@@ -52,15 +52,15 @@ class SalesOrder extends Model
         return $query->where('status', $status);
     }
 
-    public function scopeByCustomer($query, int $customerId)
+    public function scopeByContact($query, int $contactId)
     {
-        return $query->where('customer_id', $customerId);
+        return $query->where('contact_id', $contactId);
     }
 
     // Relaciones
-    public function customer(): BelongsTo
+    public function contact(): BelongsTo
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(\Modules\Contacts\Models\Contact::class);
     }
 
     public function items(): HasMany

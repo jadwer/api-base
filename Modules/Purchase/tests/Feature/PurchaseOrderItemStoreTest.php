@@ -71,7 +71,7 @@ class PurchaseOrderItemStoreTest extends TestCase
     private function createPurchaseOrderAndProduct(): array
     {
         $supplier = Supplier::factory()->create();
-        $purchaseOrder = PurchaseOrder::factory()->create(['supplier_id' => $supplier->id]);
+        $purchaseOrder = PurchaseOrder::factory()->create(['contact_id' => $supplier->id]);
         $product = Product::factory()->create();
 
         return [$purchaseOrder, $product];

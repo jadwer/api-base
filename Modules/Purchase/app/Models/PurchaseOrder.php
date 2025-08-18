@@ -32,7 +32,7 @@ class PurchaseOrder extends Model
     {
         return [
             'id' => 'integer',
-            'supplier_id' => 'integer',
+            'contact_id' => 'integer',
             'order_date' => 'date',
             'total_amount' => 'float',
         ];
@@ -46,7 +46,7 @@ class PurchaseOrder extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['supplier_id', 'order_date', 'status', 'total_amount', 'notes'])
+            ->logOnly(['contact_id', 'order_date', 'status', 'total_amount', 'notes'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
@@ -63,11 +63,11 @@ class PurchaseOrder extends Model
     // ========== RELATIONSHIPS ==========
 
     /**
-     * Get the supplier that owns the purchase order.
+     * Get the contact that owns the purchase order.
      */
-    public function supplier(): BelongsTo
+    public function contact(): BelongsTo
     {
-        return $this->belongsTo(Supplier::class);
+        return $this->belongsTo(\Modules\Contacts\Models\Contact::class);
     }
 
     /**
@@ -86,8 +86,8 @@ class PurchaseOrder extends Model
     public function scopeFilters(Builder $query, Request $request): Builder
     {
         return $query
-            ->when($request->filled('supplier_id'), function ($query) use ($request) {
-                return $query->where('supplier_id', $request->supplier_id);
+            ->when($request->filled('contact_id'), function ($query) use ($request) {
+                return $query->where('contact_id', $request->contact_id);
             })
             ->when($request->filled('status'), function ($query) use ($request) {
                 return $query->where('status', $request->status);

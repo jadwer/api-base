@@ -74,7 +74,7 @@ class PurchaseOrderStoreTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('purchase_orders', [
-            'supplier_id' => $supplier->id,
+            'contact_id' => $supplier->id,
             'status' => 'pending',
             'notes' => 'New purchase order for office supplies',
         ]);
@@ -116,7 +116,7 @@ class PurchaseOrderStoreTest extends TestCase
 
         $response->assertCreated();
         $this->assertDatabaseHas('purchase_orders', [
-            'supplier_id' => $supplier->id,
+            'contact_id' => $supplier->id,
             'order_date' => '2025-01-20',
             'status' => 'pending',
             'total_amount' => '1000.00',

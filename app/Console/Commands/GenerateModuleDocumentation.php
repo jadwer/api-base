@@ -187,7 +187,7 @@ class GenerateModuleDocumentation extends Command
         $this->line("  🧪 Generating test report...");
         
         $moduleName = $module->getName();
-        $testPath = $module->getPath() . '/Tests/Feature';
+        $testPath = $module->getPath() . '/tests/Feature';
         
         if (!File::exists($testPath)) {
             $this->warn("  ⚠️  No tests found");
@@ -324,7 +324,7 @@ class GenerateModuleDocumentation extends Command
         $content = File::get($readmePath);
         
         // Update metrics section
-        $testPath = $module->getPath() . '/Tests/Feature';
+        $testPath = $module->getPath() . '/tests/Feature';
         $testFiles = File::exists($testPath) ? count(File::glob($testPath . '/*Test.php')) : 0;
         
         $metrics = "## 📊 Métricas\n\n";

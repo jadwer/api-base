@@ -19,6 +19,7 @@ use Modules\PageBuilder\JsonApi\V1\Pages\PageSchema;
 use Modules\PermissionManager\JsonApi\V1\Permissions\PermissionSchema;
 use Modules\PermissionManager\JsonApi\V1\Roles\RoleSchema;
 use Modules\Product\JsonApi\V1\Products\ProductSchema;
+use Modules\Product\JsonApi\V1\PublicProducts\PublicProductSchema;
 use Modules\Product\JsonApi\V1\Units\UnitSchema;
 use Modules\Product\JsonApi\V1\Categories\CategorySchema;
 use Modules\Product\JsonApi\V1\Brands\BrandSchema;
@@ -26,6 +27,10 @@ use Modules\Ecommerce\JsonApi\V1\ShoppingCarts\ShoppingCartSchema;
 use Modules\Ecommerce\JsonApi\V1\CartItems\CartItemSchema;
 use Modules\Ecommerce\JsonApi\V1\Coupons\CouponSchema;
 use Modules\VerificationTest\JsonApi\V1\VerificationItems\VerificationItemSchema;
+use Modules\Contacts\JsonApi\V1\Contacts\ContactSchema;
+use Modules\Contacts\JsonApi\V1\ContactDocuments\ContactDocumentSchema;
+use Modules\Contacts\JsonApi\V1\ContactAddresses\ContactAddressSchema;
+use Modules\Contacts\JsonApi\V1\ContactPeople\ContactPersonSchema;
 
 class Server extends BaseServer
 {
@@ -64,6 +69,7 @@ class Server extends BaseServer
 
             // Product Module
             ProductSchema::class,
+            PublicProductSchema::class,
             UnitSchema::class,
             CategorySchema::class,
             BrandSchema::class,
@@ -90,6 +96,13 @@ class Server extends BaseServer
             CartItemSchema::class,
             CouponSchema::class,
 
+
+            // Contacts Module
+            ContactSchema::class,
+            ContactDocumentSchema::class,
+            ContactAddressSchema::class,
+            ContactPersonSchema::class,
+
         ];
         
         return $schemas;
@@ -100,6 +113,7 @@ class Server extends BaseServer
         $authorizers = [
             'audits' => AuditAuthorizer::class,
             'products' => \Modules\Product\JsonApi\V1\Products\ProductAuthorizer::class,
+            'public-products' => \Modules\Product\JsonApi\V1\PublicProducts\PublicProductAuthorizer::class,
             'units' => \Modules\Product\JsonApi\V1\Units\UnitAuthorizer::class,
             'categories' => \Modules\Product\JsonApi\V1\Categories\CategoryAuthorizer::class,
             'brands' => \Modules\Product\JsonApi\V1\Brands\BrandAuthorizer::class,
@@ -120,6 +134,12 @@ class Server extends BaseServer
             'cart-items' => \Modules\Ecommerce\JsonApi\V1\CartItems\CartItemAuthorizer::class,
             'coupons' => \Modules\Ecommerce\JsonApi\V1\Coupons\CouponAuthorizer::class,
 
+            
+            // Contacts Module
+            'contacts' => \Modules\Contacts\JsonApi\V1\Contacts\ContactAuthorizer::class,
+            'contact-documents' => \Modules\Contacts\JsonApi\V1\ContactDocuments\ContactDocumentAuthorizer::class,
+            'contact-addresses' => \Modules\Contacts\JsonApi\V1\ContactAddresses\ContactAddressAuthorizer::class,
+            'contact-people' => \Modules\Contacts\JsonApi\V1\ContactPeople\ContactPersonAuthorizer::class,
         ];
         
         return $authorizers;

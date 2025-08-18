@@ -18,6 +18,7 @@ abstract class TestCase extends BaseTestCase
 
         // Solo seeders esenciales para acelerar tests
         $this->artisan('module:seed', ['module' => 'PermissionManager']);
+        $this->artisan('module:seed', ['module' => 'Contacts']);
         $this->artisan('module:seed', ['module' => 'User']);
         $this->artisan('module:seed', ['module' => 'Product']);
         $this->artisan('module:seed', ['module' => 'Inventory']);

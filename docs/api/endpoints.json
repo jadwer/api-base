@@ -1,5 +1,5 @@
 {
-    "generated_at": "2025-08-14T05:39:11.813731Z",
+    "generated_at": "2025-08-18T23:48:14.924879Z",
     "base_url": "http:\/\/localhost\/api\/v1",
     "authentication": {
         "type": "Bearer Token",
@@ -7906,6 +7906,14 @@
                 "file": "WarehouseLocationSchema.php",
                 "fields": [
                     {
+                        "name": "warehouseId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "name",
                         "type": "string",
                         "required": true,
@@ -8187,6 +8195,11 @@
                     "metadata": [
                         "nullable",
                         "array"
+                    ],
+                    "warehouseId": [
+                        "required",
+                        "integer",
+                        "exists:warehouses,id"
                     ]
                 }
             },
@@ -8259,6 +8272,14 @@
                 "file": "WarehouseLocationSchema.php",
                 "fields": [
                     {
+                        "name": "warehouseId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "name",
                         "type": "string",
                         "required": true,
@@ -8540,6 +8561,11 @@
                     "metadata": [
                         "nullable",
                         "array"
+                    ],
+                    "warehouseId": [
+                        "required",
+                        "integer",
+                        "exists:warehouses,id"
                     ]
                 }
             },
@@ -8609,6 +8635,14 @@
                 "file": "WarehouseLocationSchema.php",
                 "fields": [
                     {
+                        "name": "warehouseId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "name",
                         "type": "string",
                         "required": true,
@@ -8890,6 +8924,11 @@
                     "metadata": [
                         "nullable",
                         "array"
+                    ],
+                    "warehouseId": [
+                        "required",
+                        "integer",
+                        "exists:warehouses,id"
                     ]
                 }
             },
@@ -8962,6 +9001,14 @@
                 "file": "WarehouseLocationSchema.php",
                 "fields": [
                     {
+                        "name": "warehouseId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "name",
                         "type": "string",
                         "required": true,
@@ -9243,6 +9290,11 @@
                     "metadata": [
                         "nullable",
                         "array"
+                    ],
+                    "warehouseId": [
+                        "required",
+                        "integer",
+                        "exists:warehouses,id"
                     ]
                 }
             },
@@ -9285,6 +9337,14 @@
                 "file": "WarehouseLocationSchema.php",
                 "fields": [
                     {
+                        "name": "warehouseId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "name",
                         "type": "string",
                         "required": true,
@@ -9566,6 +9626,11 @@
                     "metadata": [
                         "nullable",
                         "array"
+                    ],
+                    "warehouseId": [
+                        "required",
+                        "integer",
+                        "exists:warehouses,id"
                     ]
                 }
             },
@@ -11255,6 +11320,30 @@
                 "file": "StockSchema.php",
                 "fields": [
                     {
+                        "name": "productId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "warehouseId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "locationId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "quantity",
                         "type": "number",
                         "required": true,
@@ -11461,6 +11550,22 @@
                         "sometimes",
                         "nullable",
                         "array"
+                    ],
+                    "productId": [
+                        "required",
+                        "integer",
+                        "exists:products,id"
+                    ],
+                    "warehouseId": [
+                        "required",
+                        "integer",
+                        "exists:warehouses,id"
+                    ],
+                    "locationId": [
+                        "sometimes",
+                        "nullable",
+                        "integer",
+                        "exists:warehouse_locations,id"
                     ]
                 }
             },
@@ -11533,6 +11638,30 @@
                 "file": "StockSchema.php",
                 "fields": [
                     {
+                        "name": "productId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "warehouseId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "locationId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "quantity",
                         "type": "number",
                         "required": true,
@@ -11739,6 +11868,22 @@
                         "sometimes",
                         "nullable",
                         "array"
+                    ],
+                    "productId": [
+                        "required",
+                        "integer",
+                        "exists:products,id"
+                    ],
+                    "warehouseId": [
+                        "required",
+                        "integer",
+                        "exists:warehouses,id"
+                    ],
+                    "locationId": [
+                        "sometimes",
+                        "nullable",
+                        "integer",
+                        "exists:warehouse_locations,id"
                     ]
                 }
             },
@@ -11808,6 +11953,30 @@
                 "file": "StockSchema.php",
                 "fields": [
                     {
+                        "name": "productId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "warehouseId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "locationId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "quantity",
                         "type": "number",
                         "required": true,
@@ -12014,6 +12183,22 @@
                         "sometimes",
                         "nullable",
                         "array"
+                    ],
+                    "productId": [
+                        "required",
+                        "integer",
+                        "exists:products,id"
+                    ],
+                    "warehouseId": [
+                        "required",
+                        "integer",
+                        "exists:warehouses,id"
+                    ],
+                    "locationId": [
+                        "sometimes",
+                        "nullable",
+                        "integer",
+                        "exists:warehouse_locations,id"
                     ]
                 }
             },
@@ -12086,6 +12271,30 @@
                 "file": "StockSchema.php",
                 "fields": [
                     {
+                        "name": "productId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "warehouseId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "locationId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "quantity",
                         "type": "number",
                         "required": true,
@@ -12292,6 +12501,22 @@
                         "sometimes",
                         "nullable",
                         "array"
+                    ],
+                    "productId": [
+                        "required",
+                        "integer",
+                        "exists:products,id"
+                    ],
+                    "warehouseId": [
+                        "required",
+                        "integer",
+                        "exists:warehouses,id"
+                    ],
+                    "locationId": [
+                        "sometimes",
+                        "nullable",
+                        "integer",
+                        "exists:warehouse_locations,id"
                     ]
                 }
             },
@@ -12334,6 +12559,30 @@
                 "file": "StockSchema.php",
                 "fields": [
                     {
+                        "name": "productId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "warehouseId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "locationId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "quantity",
                         "type": "number",
                         "required": true,
@@ -12540,6 +12789,22 @@
                         "sometimes",
                         "nullable",
                         "array"
+                    ],
+                    "productId": [
+                        "required",
+                        "integer",
+                        "exists:products,id"
+                    ],
+                    "warehouseId": [
+                        "required",
+                        "integer",
+                        "exists:warehouses,id"
+                    ],
+                    "locationId": [
+                        "sometimes",
+                        "nullable",
+                        "integer",
+                        "exists:warehouse_locations,id"
                     ]
                 }
             },
@@ -12561,6 +12826,54 @@
             "schema": {
                 "file": "InventoryMovementSchema.php",
                 "fields": [
+                    {
+                        "name": "productId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "warehouseId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "locationId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "destinationWarehouseId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "destinationLocationId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "userId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
                     {
                         "name": "movementType",
                         "type": "string",
@@ -12796,6 +13109,36 @@
                     "metadata": [
                         "nullable",
                         "array"
+                    ],
+                    "productId": [
+                        "required",
+                        "integer",
+                        "exists:products,id"
+                    ],
+                    "warehouseId": [
+                        "required",
+                        "integer",
+                        "exists:warehouses,id"
+                    ],
+                    "userId": [
+                        "required",
+                        "integer",
+                        "exists:users,id"
+                    ],
+                    "locationId": [
+                        "nullable",
+                        "integer",
+                        "exists:warehouse_locations,id"
+                    ],
+                    "destinationWarehouseId": [
+                        "nullable",
+                        "integer",
+                        "exists:warehouses,id"
+                    ],
+                    "destinationLocationId": [
+                        "nullable",
+                        "integer",
+                        "exists:warehouse_locations,id"
                     ]
                 }
             },
@@ -12868,6 +13211,54 @@
                 "file": "InventoryMovementSchema.php",
                 "fields": [
                     {
+                        "name": "productId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "warehouseId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "locationId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "destinationWarehouseId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "destinationLocationId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "userId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "movementType",
                         "type": "string",
                         "required": true,
@@ -13102,6 +13493,36 @@
                     "metadata": [
                         "nullable",
                         "array"
+                    ],
+                    "productId": [
+                        "required",
+                        "integer",
+                        "exists:products,id"
+                    ],
+                    "warehouseId": [
+                        "required",
+                        "integer",
+                        "exists:warehouses,id"
+                    ],
+                    "userId": [
+                        "required",
+                        "integer",
+                        "exists:users,id"
+                    ],
+                    "locationId": [
+                        "nullable",
+                        "integer",
+                        "exists:warehouse_locations,id"
+                    ],
+                    "destinationWarehouseId": [
+                        "nullable",
+                        "integer",
+                        "exists:warehouses,id"
+                    ],
+                    "destinationLocationId": [
+                        "nullable",
+                        "integer",
+                        "exists:warehouse_locations,id"
                     ]
                 }
             },
@@ -13171,6 +13592,54 @@
                 "file": "InventoryMovementSchema.php",
                 "fields": [
                     {
+                        "name": "productId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "warehouseId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "locationId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "destinationWarehouseId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "destinationLocationId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "userId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "movementType",
                         "type": "string",
                         "required": true,
@@ -13405,6 +13874,36 @@
                     "metadata": [
                         "nullable",
                         "array"
+                    ],
+                    "productId": [
+                        "required",
+                        "integer",
+                        "exists:products,id"
+                    ],
+                    "warehouseId": [
+                        "required",
+                        "integer",
+                        "exists:warehouses,id"
+                    ],
+                    "userId": [
+                        "required",
+                        "integer",
+                        "exists:users,id"
+                    ],
+                    "locationId": [
+                        "nullable",
+                        "integer",
+                        "exists:warehouse_locations,id"
+                    ],
+                    "destinationWarehouseId": [
+                        "nullable",
+                        "integer",
+                        "exists:warehouses,id"
+                    ],
+                    "destinationLocationId": [
+                        "nullable",
+                        "integer",
+                        "exists:warehouse_locations,id"
                     ]
                 }
             },
@@ -13477,6 +13976,54 @@
                 "file": "InventoryMovementSchema.php",
                 "fields": [
                     {
+                        "name": "productId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "warehouseId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "locationId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "destinationWarehouseId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "destinationLocationId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "userId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "movementType",
                         "type": "string",
                         "required": true,
@@ -13711,6 +14258,36 @@
                     "metadata": [
                         "nullable",
                         "array"
+                    ],
+                    "productId": [
+                        "required",
+                        "integer",
+                        "exists:products,id"
+                    ],
+                    "warehouseId": [
+                        "required",
+                        "integer",
+                        "exists:warehouses,id"
+                    ],
+                    "userId": [
+                        "required",
+                        "integer",
+                        "exists:users,id"
+                    ],
+                    "locationId": [
+                        "nullable",
+                        "integer",
+                        "exists:warehouse_locations,id"
+                    ],
+                    "destinationWarehouseId": [
+                        "nullable",
+                        "integer",
+                        "exists:warehouses,id"
+                    ],
+                    "destinationLocationId": [
+                        "nullable",
+                        "integer",
+                        "exists:warehouse_locations,id"
                     ]
                 }
             },
@@ -13753,6 +14330,54 @@
                 "file": "InventoryMovementSchema.php",
                 "fields": [
                     {
+                        "name": "productId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "warehouseId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "locationId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "destinationWarehouseId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "destinationLocationId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "userId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
                         "name": "movementType",
                         "type": "string",
                         "required": true,
@@ -13987,6 +14612,36 @@
                     "metadata": [
                         "nullable",
                         "array"
+                    ],
+                    "productId": [
+                        "required",
+                        "integer",
+                        "exists:products,id"
+                    ],
+                    "warehouseId": [
+                        "required",
+                        "integer",
+                        "exists:warehouses,id"
+                    ],
+                    "userId": [
+                        "required",
+                        "integer",
+                        "exists:users,id"
+                    ],
+                    "locationId": [
+                        "nullable",
+                        "integer",
+                        "exists:warehouse_locations,id"
+                    ],
+                    "destinationWarehouseId": [
+                        "nullable",
+                        "integer",
+                        "exists:warehouses,id"
+                    ],
+                    "destinationLocationId": [
+                        "nullable",
+                        "integer",
+                        "exists:warehouse_locations,id"
                     ]
                 }
             },
@@ -14026,6 +14681,4404 @@
                     }
                 }
             }
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/contacts",
+            "resource_type": "contacts",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactController",
+            "action": "index",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "ContactSchema.php",
+                "fields": [
+                    {
+                        "name": "contactType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "legalName",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "taxId",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "website",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "status",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "isCustomer",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "isSupplier",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "creditLimit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "currentCredit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "paymentTerms",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "notes",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contactDocuments",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "contactAddresses",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "contactPeople",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "contactType": [
+                        "required",
+                        "person",
+                        "company"
+                    ],
+                    "name": [
+                        "required",
+                        "string",
+                        "max:255"
+                    ],
+                    "legalName": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "taxId": [
+                        "nullable",
+                        "string",
+                        "max:13"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/contacts",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "contacts",
+                                "id": "1",
+                                "attributes": {
+                                    "title": "Ejemplo",
+                                    "status": "published",
+                                    "createdAt": "2025-01-01T00:00:00.000000Z"
+                                },
+                                "relationships": {
+                                    "user": {
+                                        "data": {
+                                            "type": "users",
+                                            "id": "1"
+                                        },
+                                        "links": {
+                                            "self": "\/api\/v1\/contacts\/1\/relationships\/user",
+                                            "related": "\/api\/v1\/contacts\/1\/user"
+                                        }
+                                    }
+                                },
+                                "links": {
+                                    "self": "\/api\/v1\/contacts\/1"
+                                }
+                            }
+                        ],
+                        "meta": {
+                            "pagination": {
+                                "currentPage": 1,
+                                "from": 1,
+                                "lastPage": 1,
+                                "perPage": 15,
+                                "to": 1,
+                                "total": 1
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "POST"
+            ],
+            "uri": "api\/v1\/contacts",
+            "resource_type": "contacts",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactController",
+            "action": "store",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "ContactSchema.php",
+                "fields": [
+                    {
+                        "name": "contactType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "legalName",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "taxId",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "website",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "status",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "isCustomer",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "isSupplier",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "creditLimit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "currentCredit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "paymentTerms",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "notes",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contactDocuments",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "contactAddresses",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "contactPeople",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "contactType": [
+                        "required",
+                        "person",
+                        "company"
+                    ],
+                    "name": [
+                        "required",
+                        "string",
+                        "max:255"
+                    ],
+                    "legalName": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "taxId": [
+                        "nullable",
+                        "string",
+                        "max:13"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "POST",
+                    "url": "\/api\/v1\/contacts",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "contacts",
+                            "attributes": {
+                                "title": "Nueva p\u00e1gina",
+                                "slug": "nueva-pagina",
+                                "html": "<h1>Contenido HTML<\/h1>",
+                                "css": "h1 { color: blue; }",
+                                "json": {
+                                    "component": "header"
+                                },
+                                "status": "draft"
+                            },
+                            "relationships": {
+                                "user": {
+                                    "data": {
+                                        "type": "users",
+                                        "id": "1"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "response": {
+                    "status": 201,
+                    "body": {
+                        "data": {
+                            "type": "contacts",
+                            "id": "2",
+                            "attributes": {
+                                "title": "Nueva p\u00e1gina",
+                                "status": "draft",
+                                "createdAt": "2025-01-01T00:00:00.000000Z"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/contacts\/{contact}",
+            "resource_type": "contacts",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactController",
+            "action": "show",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "ContactSchema.php",
+                "fields": [
+                    {
+                        "name": "contactType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "legalName",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "taxId",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "website",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "status",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "isCustomer",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "isSupplier",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "creditLimit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "currentCredit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "paymentTerms",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "notes",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contactDocuments",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "contactAddresses",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "contactPeople",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "contactType": [
+                        "required",
+                        "person",
+                        "company"
+                    ],
+                    "name": [
+                        "required",
+                        "string",
+                        "max:255"
+                    ],
+                    "legalName": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "taxId": [
+                        "nullable",
+                        "string",
+                        "max:13"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/contacts",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "contacts",
+                                "id": "1",
+                                "attributes": {
+                                    "title": "Ejemplo",
+                                    "status": "published",
+                                    "createdAt": "2025-01-01T00:00:00.000000Z"
+                                },
+                                "relationships": {
+                                    "user": {
+                                        "data": {
+                                            "type": "users",
+                                            "id": "1"
+                                        },
+                                        "links": {
+                                            "self": "\/api\/v1\/contacts\/1\/relationships\/user",
+                                            "related": "\/api\/v1\/contacts\/1\/user"
+                                        }
+                                    }
+                                },
+                                "links": {
+                                    "self": "\/api\/v1\/contacts\/1"
+                                }
+                            }
+                        ],
+                        "meta": {
+                            "pagination": {
+                                "currentPage": 1,
+                                "from": 1,
+                                "lastPage": 1,
+                                "perPage": 15,
+                                "to": 1,
+                                "total": 1
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "PATCH"
+            ],
+            "uri": "api\/v1\/contacts\/{contact}",
+            "resource_type": "contacts",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactController",
+            "action": "update",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "ContactSchema.php",
+                "fields": [
+                    {
+                        "name": "contactType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "legalName",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "taxId",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "website",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "status",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "isCustomer",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "isSupplier",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "creditLimit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "currentCredit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "paymentTerms",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "notes",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contactDocuments",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "contactAddresses",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "contactPeople",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "contactType": [
+                        "required",
+                        "person",
+                        "company"
+                    ],
+                    "name": [
+                        "required",
+                        "string",
+                        "max:255"
+                    ],
+                    "legalName": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "taxId": [
+                        "nullable",
+                        "string",
+                        "max:13"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "PATCH",
+                    "url": "\/api\/v1\/contacts\/1",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "contacts",
+                            "id": "1",
+                            "attributes": {
+                                "status": "published",
+                                "title": "T\u00edtulo actualizado"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "DELETE"
+            ],
+            "uri": "api\/v1\/contacts\/{contact}",
+            "resource_type": "contacts",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactController",
+            "action": "destroy",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "ContactSchema.php",
+                "fields": [
+                    {
+                        "name": "contactType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "legalName",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "taxId",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "website",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "status",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "isCustomer",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "isSupplier",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "creditLimit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "currentCredit",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "classification",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "paymentTerms",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "notes",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contactDocuments",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "contactAddresses",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "contactPeople",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "contactType": [
+                        "required",
+                        "person",
+                        "company"
+                    ],
+                    "name": [
+                        "required",
+                        "string",
+                        "max:255"
+                    ],
+                    "legalName": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "taxId": [
+                        "nullable",
+                        "string",
+                        "max:13"
+                    ]
+                }
+            },
+            "examples": []
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/contact-documents",
+            "resource_type": "contact_documents",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactDocumentController",
+            "action": "index",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "ContactDocumentSchema.php",
+                "fields": [
+                    {
+                        "name": "contactId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "documentType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "filePath",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "originalFilename",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "mimeType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "fileSize",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "uploadedBy",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "verifiedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "verifiedBy",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "expiresAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "notes",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contact",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "contact_id": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "document_type": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "file_path": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "original_filename": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "mime_type": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "file_size": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "uploaded_by": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "verified_at": [
+                        "nullable",
+                        "date"
+                    ],
+                    "verified_by": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "expires_at": [
+                        "nullable",
+                        "date"
+                    ],
+                    "notes": [
+                        "nullable",
+                        "string"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/contact_documents",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "contact_documents",
+                                "id": "1",
+                                "attributes": {
+                                    "title": "Ejemplo",
+                                    "status": "published",
+                                    "createdAt": "2025-01-01T00:00:00.000000Z"
+                                },
+                                "relationships": {
+                                    "user": {
+                                        "data": {
+                                            "type": "users",
+                                            "id": "1"
+                                        },
+                                        "links": {
+                                            "self": "\/api\/v1\/contact_documents\/1\/relationships\/user",
+                                            "related": "\/api\/v1\/contact_documents\/1\/user"
+                                        }
+                                    }
+                                },
+                                "links": {
+                                    "self": "\/api\/v1\/contact_documents\/1"
+                                }
+                            }
+                        ],
+                        "meta": {
+                            "pagination": {
+                                "currentPage": 1,
+                                "from": 1,
+                                "lastPage": 1,
+                                "perPage": 15,
+                                "to": 1,
+                                "total": 1
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "POST"
+            ],
+            "uri": "api\/v1\/contact-documents",
+            "resource_type": "contact_documents",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactDocumentController",
+            "action": "store",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "ContactDocumentSchema.php",
+                "fields": [
+                    {
+                        "name": "contactId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "documentType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "filePath",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "originalFilename",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "mimeType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "fileSize",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "uploadedBy",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "verifiedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "verifiedBy",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "expiresAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "notes",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contact",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "contact_id": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "document_type": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "file_path": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "original_filename": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "mime_type": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "file_size": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "uploaded_by": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "verified_at": [
+                        "nullable",
+                        "date"
+                    ],
+                    "verified_by": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "expires_at": [
+                        "nullable",
+                        "date"
+                    ],
+                    "notes": [
+                        "nullable",
+                        "string"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "POST",
+                    "url": "\/api\/v1\/contact_documents",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "contact_documents",
+                            "attributes": {
+                                "title": "Nueva p\u00e1gina",
+                                "slug": "nueva-pagina",
+                                "html": "<h1>Contenido HTML<\/h1>",
+                                "css": "h1 { color: blue; }",
+                                "json": {
+                                    "component": "header"
+                                },
+                                "status": "draft"
+                            },
+                            "relationships": {
+                                "user": {
+                                    "data": {
+                                        "type": "users",
+                                        "id": "1"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "response": {
+                    "status": 201,
+                    "body": {
+                        "data": {
+                            "type": "contact_documents",
+                            "id": "2",
+                            "attributes": {
+                                "title": "Nueva p\u00e1gina",
+                                "status": "draft",
+                                "createdAt": "2025-01-01T00:00:00.000000Z"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/contact-documents\/{contact_document}",
+            "resource_type": "contact_documents",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactDocumentController",
+            "action": "show",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "ContactDocumentSchema.php",
+                "fields": [
+                    {
+                        "name": "contactId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "documentType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "filePath",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "originalFilename",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "mimeType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "fileSize",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "uploadedBy",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "verifiedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "verifiedBy",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "expiresAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "notes",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contact",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "contact_id": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "document_type": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "file_path": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "original_filename": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "mime_type": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "file_size": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "uploaded_by": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "verified_at": [
+                        "nullable",
+                        "date"
+                    ],
+                    "verified_by": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "expires_at": [
+                        "nullable",
+                        "date"
+                    ],
+                    "notes": [
+                        "nullable",
+                        "string"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/contact_documents",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "contact_documents",
+                                "id": "1",
+                                "attributes": {
+                                    "title": "Ejemplo",
+                                    "status": "published",
+                                    "createdAt": "2025-01-01T00:00:00.000000Z"
+                                },
+                                "relationships": {
+                                    "user": {
+                                        "data": {
+                                            "type": "users",
+                                            "id": "1"
+                                        },
+                                        "links": {
+                                            "self": "\/api\/v1\/contact_documents\/1\/relationships\/user",
+                                            "related": "\/api\/v1\/contact_documents\/1\/user"
+                                        }
+                                    }
+                                },
+                                "links": {
+                                    "self": "\/api\/v1\/contact_documents\/1"
+                                }
+                            }
+                        ],
+                        "meta": {
+                            "pagination": {
+                                "currentPage": 1,
+                                "from": 1,
+                                "lastPage": 1,
+                                "perPage": 15,
+                                "to": 1,
+                                "total": 1
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "PATCH"
+            ],
+            "uri": "api\/v1\/contact-documents\/{contact_document}",
+            "resource_type": "contact_documents",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactDocumentController",
+            "action": "update",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "ContactDocumentSchema.php",
+                "fields": [
+                    {
+                        "name": "contactId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "documentType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "filePath",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "originalFilename",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "mimeType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "fileSize",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "uploadedBy",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "verifiedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "verifiedBy",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "expiresAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "notes",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contact",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "contact_id": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "document_type": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "file_path": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "original_filename": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "mime_type": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "file_size": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "uploaded_by": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "verified_at": [
+                        "nullable",
+                        "date"
+                    ],
+                    "verified_by": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "expires_at": [
+                        "nullable",
+                        "date"
+                    ],
+                    "notes": [
+                        "nullable",
+                        "string"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "PATCH",
+                    "url": "\/api\/v1\/contact_documents\/1",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "contact_documents",
+                            "id": "1",
+                            "attributes": {
+                                "status": "published",
+                                "title": "T\u00edtulo actualizado"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "DELETE"
+            ],
+            "uri": "api\/v1\/contact-documents\/{contact_document}",
+            "resource_type": "contact_documents",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactDocumentController",
+            "action": "destroy",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "ContactDocumentSchema.php",
+                "fields": [
+                    {
+                        "name": "contactId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "documentType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "filePath",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "originalFilename",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "mimeType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "fileSize",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "uploadedBy",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "verifiedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "verifiedBy",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "expiresAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "notes",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contact",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "contact_id": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "document_type": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "file_path": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "original_filename": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "mime_type": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "file_size": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "uploaded_by": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "verified_at": [
+                        "nullable",
+                        "date"
+                    ],
+                    "verified_by": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "expires_at": [
+                        "nullable",
+                        "date"
+                    ],
+                    "notes": [
+                        "nullable",
+                        "string"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": []
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/contact-addresses",
+            "resource_type": "contact_addresses",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactAddressController",
+            "action": "index",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "ContactAddressSchema.php",
+                "fields": [
+                    {
+                        "name": "contactId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "addressType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "addressLine1",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "addressLine2",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "city",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "state",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "country",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "postalCode",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "isDefault",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contact",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "contactId": [
+                        "required",
+                        "integer"
+                    ],
+                    "addressType": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "addressLine1": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "addressLine2": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "city": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "state": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "country": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "postalCode": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "isDefault": [
+                        "nullable",
+                        "boolean"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/contact_addresses",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "contact_addresses",
+                                "id": "1",
+                                "attributes": {
+                                    "title": "Ejemplo",
+                                    "status": "published",
+                                    "createdAt": "2025-01-01T00:00:00.000000Z"
+                                },
+                                "relationships": {
+                                    "user": {
+                                        "data": {
+                                            "type": "users",
+                                            "id": "1"
+                                        },
+                                        "links": {
+                                            "self": "\/api\/v1\/contact_addresses\/1\/relationships\/user",
+                                            "related": "\/api\/v1\/contact_addresses\/1\/user"
+                                        }
+                                    }
+                                },
+                                "links": {
+                                    "self": "\/api\/v1\/contact_addresses\/1"
+                                }
+                            }
+                        ],
+                        "meta": {
+                            "pagination": {
+                                "currentPage": 1,
+                                "from": 1,
+                                "lastPage": 1,
+                                "perPage": 15,
+                                "to": 1,
+                                "total": 1
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "POST"
+            ],
+            "uri": "api\/v1\/contact-addresses",
+            "resource_type": "contact_addresses",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactAddressController",
+            "action": "store",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "ContactAddressSchema.php",
+                "fields": [
+                    {
+                        "name": "contactId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "addressType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "addressLine1",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "addressLine2",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "city",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "state",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "country",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "postalCode",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "isDefault",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contact",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "contactId": [
+                        "required",
+                        "integer"
+                    ],
+                    "addressType": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "addressLine1": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "addressLine2": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "city": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "state": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "country": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "postalCode": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "isDefault": [
+                        "nullable",
+                        "boolean"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "POST",
+                    "url": "\/api\/v1\/contact_addresses",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "contact_addresses",
+                            "attributes": {
+                                "title": "Nueva p\u00e1gina",
+                                "slug": "nueva-pagina",
+                                "html": "<h1>Contenido HTML<\/h1>",
+                                "css": "h1 { color: blue; }",
+                                "json": {
+                                    "component": "header"
+                                },
+                                "status": "draft"
+                            },
+                            "relationships": {
+                                "user": {
+                                    "data": {
+                                        "type": "users",
+                                        "id": "1"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "response": {
+                    "status": 201,
+                    "body": {
+                        "data": {
+                            "type": "contact_addresses",
+                            "id": "2",
+                            "attributes": {
+                                "title": "Nueva p\u00e1gina",
+                                "status": "draft",
+                                "createdAt": "2025-01-01T00:00:00.000000Z"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/contact-addresses\/{contact_address}",
+            "resource_type": "contact_addresses",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactAddressController",
+            "action": "show",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "ContactAddressSchema.php",
+                "fields": [
+                    {
+                        "name": "contactId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "addressType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "addressLine1",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "addressLine2",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "city",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "state",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "country",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "postalCode",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "isDefault",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contact",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "contactId": [
+                        "required",
+                        "integer"
+                    ],
+                    "addressType": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "addressLine1": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "addressLine2": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "city": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "state": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "country": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "postalCode": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "isDefault": [
+                        "nullable",
+                        "boolean"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/contact_addresses",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "contact_addresses",
+                                "id": "1",
+                                "attributes": {
+                                    "title": "Ejemplo",
+                                    "status": "published",
+                                    "createdAt": "2025-01-01T00:00:00.000000Z"
+                                },
+                                "relationships": {
+                                    "user": {
+                                        "data": {
+                                            "type": "users",
+                                            "id": "1"
+                                        },
+                                        "links": {
+                                            "self": "\/api\/v1\/contact_addresses\/1\/relationships\/user",
+                                            "related": "\/api\/v1\/contact_addresses\/1\/user"
+                                        }
+                                    }
+                                },
+                                "links": {
+                                    "self": "\/api\/v1\/contact_addresses\/1"
+                                }
+                            }
+                        ],
+                        "meta": {
+                            "pagination": {
+                                "currentPage": 1,
+                                "from": 1,
+                                "lastPage": 1,
+                                "perPage": 15,
+                                "to": 1,
+                                "total": 1
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "PATCH"
+            ],
+            "uri": "api\/v1\/contact-addresses\/{contact_address}",
+            "resource_type": "contact_addresses",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactAddressController",
+            "action": "update",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "ContactAddressSchema.php",
+                "fields": [
+                    {
+                        "name": "contactId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "addressType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "addressLine1",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "addressLine2",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "city",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "state",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "country",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "postalCode",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "isDefault",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contact",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "contactId": [
+                        "required",
+                        "integer"
+                    ],
+                    "addressType": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "addressLine1": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "addressLine2": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "city": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "state": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "country": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "postalCode": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "isDefault": [
+                        "nullable",
+                        "boolean"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "PATCH",
+                    "url": "\/api\/v1\/contact_addresses\/1",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "contact_addresses",
+                            "id": "1",
+                            "attributes": {
+                                "status": "published",
+                                "title": "T\u00edtulo actualizado"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "DELETE"
+            ],
+            "uri": "api\/v1\/contact-addresses\/{contact_address}",
+            "resource_type": "contact_addresses",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactAddressController",
+            "action": "destroy",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "ContactAddressSchema.php",
+                "fields": [
+                    {
+                        "name": "contactId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "addressType",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "addressLine1",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "addressLine2",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "city",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "state",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "country",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "postalCode",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "isDefault",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contact",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "contactId": [
+                        "required",
+                        "integer"
+                    ],
+                    "addressType": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "addressLine1": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "addressLine2": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "city": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "state": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "country": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "postalCode": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "isDefault": [
+                        "nullable",
+                        "boolean"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": []
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/contact-people",
+            "resource_type": "contact_people",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactPersonController",
+            "action": "index",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "ContactPersonSchema.php",
+                "fields": [
+                    {
+                        "name": "contactId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "position",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "department",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "mobile",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "isPrimary",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contact",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "contact_id": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "name": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "position": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "department": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "email": [
+                        "nullable",
+                        "string",
+                        "max:255",
+                        "email"
+                    ],
+                    "phone": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "mobile": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "is_primary": [
+                        "nullable",
+                        "boolean"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/contact_people",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "contact_people",
+                                "id": "1",
+                                "attributes": {
+                                    "title": "Ejemplo",
+                                    "status": "published",
+                                    "createdAt": "2025-01-01T00:00:00.000000Z"
+                                },
+                                "relationships": {
+                                    "user": {
+                                        "data": {
+                                            "type": "users",
+                                            "id": "1"
+                                        },
+                                        "links": {
+                                            "self": "\/api\/v1\/contact_people\/1\/relationships\/user",
+                                            "related": "\/api\/v1\/contact_people\/1\/user"
+                                        }
+                                    }
+                                },
+                                "links": {
+                                    "self": "\/api\/v1\/contact_people\/1"
+                                }
+                            }
+                        ],
+                        "meta": {
+                            "pagination": {
+                                "currentPage": 1,
+                                "from": 1,
+                                "lastPage": 1,
+                                "perPage": 15,
+                                "to": 1,
+                                "total": 1
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "POST"
+            ],
+            "uri": "api\/v1\/contact-people",
+            "resource_type": "contact_people",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactPersonController",
+            "action": "store",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "ContactPersonSchema.php",
+                "fields": [
+                    {
+                        "name": "contactId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "position",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "department",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "mobile",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "isPrimary",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contact",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "contact_id": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "name": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "position": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "department": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "email": [
+                        "nullable",
+                        "string",
+                        "max:255",
+                        "email"
+                    ],
+                    "phone": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "mobile": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "is_primary": [
+                        "nullable",
+                        "boolean"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "POST",
+                    "url": "\/api\/v1\/contact_people",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "contact_people",
+                            "attributes": {
+                                "title": "Nueva p\u00e1gina",
+                                "slug": "nueva-pagina",
+                                "html": "<h1>Contenido HTML<\/h1>",
+                                "css": "h1 { color: blue; }",
+                                "json": {
+                                    "component": "header"
+                                },
+                                "status": "draft"
+                            },
+                            "relationships": {
+                                "user": {
+                                    "data": {
+                                        "type": "users",
+                                        "id": "1"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "response": {
+                    "status": 201,
+                    "body": {
+                        "data": {
+                            "type": "contact_people",
+                            "id": "2",
+                            "attributes": {
+                                "title": "Nueva p\u00e1gina",
+                                "status": "draft",
+                                "createdAt": "2025-01-01T00:00:00.000000Z"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/contact-people\/{contact_person}",
+            "resource_type": "contact_people",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactPersonController",
+            "action": "show",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "ContactPersonSchema.php",
+                "fields": [
+                    {
+                        "name": "contactId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "position",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "department",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "mobile",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "isPrimary",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contact",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "contact_id": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "name": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "position": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "department": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "email": [
+                        "nullable",
+                        "string",
+                        "max:255",
+                        "email"
+                    ],
+                    "phone": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "mobile": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "is_primary": [
+                        "nullable",
+                        "boolean"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/contact_people",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "contact_people",
+                                "id": "1",
+                                "attributes": {
+                                    "title": "Ejemplo",
+                                    "status": "published",
+                                    "createdAt": "2025-01-01T00:00:00.000000Z"
+                                },
+                                "relationships": {
+                                    "user": {
+                                        "data": {
+                                            "type": "users",
+                                            "id": "1"
+                                        },
+                                        "links": {
+                                            "self": "\/api\/v1\/contact_people\/1\/relationships\/user",
+                                            "related": "\/api\/v1\/contact_people\/1\/user"
+                                        }
+                                    }
+                                },
+                                "links": {
+                                    "self": "\/api\/v1\/contact_people\/1"
+                                }
+                            }
+                        ],
+                        "meta": {
+                            "pagination": {
+                                "currentPage": 1,
+                                "from": 1,
+                                "lastPage": 1,
+                                "perPage": 15,
+                                "to": 1,
+                                "total": 1
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "PATCH"
+            ],
+            "uri": "api\/v1\/contact-people\/{contact_person}",
+            "resource_type": "contact_people",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactPersonController",
+            "action": "update",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "ContactPersonSchema.php",
+                "fields": [
+                    {
+                        "name": "contactId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "position",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "department",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "mobile",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "isPrimary",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contact",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "contact_id": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "name": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "position": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "department": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "email": [
+                        "nullable",
+                        "string",
+                        "max:255",
+                        "email"
+                    ],
+                    "phone": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "mobile": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "is_primary": [
+                        "nullable",
+                        "boolean"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "PATCH",
+                    "url": "\/api\/v1\/contact_people\/1",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "contact_people",
+                            "id": "1",
+                            "attributes": {
+                                "status": "published",
+                                "title": "T\u00edtulo actualizado"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "DELETE"
+            ],
+            "uri": "api\/v1\/contact-people\/{contact_person}",
+            "resource_type": "contact_people",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactPersonController",
+            "action": "destroy",
+            "middleware": [
+                "api",
+                "jsonapi:v1",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "ContactPersonSchema.php",
+                "fields": [
+                    {
+                        "name": "contactId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "name",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "position",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "department",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "email",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "mobile",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "isPrimary",
+                        "type": "boolean",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contact",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "contact_id": [
+                        "nullable",
+                        "integer"
+                    ],
+                    "name": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "position": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "department": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "email": [
+                        "nullable",
+                        "string",
+                        "max:255",
+                        "email"
+                    ],
+                    "phone": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "mobile": [
+                        "nullable",
+                        "string",
+                        "max:255"
+                    ],
+                    "is_primary": [
+                        "nullable",
+                        "boolean"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": []
         },
         {
             "methods": [

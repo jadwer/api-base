@@ -8,5 +8,6 @@
     "Inventory": true,
     "Purchase": true,
     "Sales": true,
-    "Ecommerce": true
+    "Ecommerce": true,
+    "Contacts": true
 }

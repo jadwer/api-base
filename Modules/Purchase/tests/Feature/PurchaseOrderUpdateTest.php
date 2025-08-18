@@ -68,7 +68,7 @@ class PurchaseOrderUpdateTest extends TestCase
 
         $this->assertDatabaseHas('purchase_orders', [
             'id' => $purchaseOrder->id,
-            'supplier_id' => $newSupplier->id,
+            'contact_id' => $newSupplier->id,
             'order_date' => '2025-01-20',
             'status' => 'approved',
             'total_amount' => '2000.75',
@@ -116,7 +116,7 @@ class PurchaseOrderUpdateTest extends TestCase
 
         $this->assertDatabaseHas('purchase_orders', [
             'id' => $purchaseOrder->id,
-            'supplier_id' => $supplier->id, // Unchanged
+            'contact_id' => $supplier->id, // Unchanged
             'order_date' => '2025-01-15', // Unchanged
             'status' => 'approved', // Updated
             'total_amount' => '1500.00', // Unchanged

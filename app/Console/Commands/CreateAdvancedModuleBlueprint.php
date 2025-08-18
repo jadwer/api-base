@@ -175,6 +175,9 @@ class CreateAdvancedModuleBlueprint extends Command
             $this->generateEntityFiles($moduleName, $entity, $relationships);
         }
 
+        // Generate main module DatabaseSeeder.php
+        $this->generateMainModuleDatabaseSeeder($moduleName, $entities);
+
         // Update main seeder with all entity seeders
         $this->updateMainSeeder($moduleName, $entities);
 
@@ -192,6 +195,9 @@ class CreateAdvancedModuleBlueprint extends Command
         
         // Update RouteServiceProvider for JSON API
         $this->generateRouteServiceProvider($moduleName);
+        
+        // Update main ServiceProvider for migrations
+        $this->updateMainServiceProvider($moduleName);
 
         // Generate module documentation
         $this->generateModuleDocumentation($moduleName, $entities, $relationships);
@@ -314,33 +320,29 @@ class CreateAdvancedModuleBlueprint extends Command
         $methods = [];
         $imports = [];
         $moduleModels = $this->discoverModuleModels();
+        $processedMethods = []; // Prevent duplicate method names
         
         foreach ($relationships as $rel) {
             // Handle both old format (entityA/entityB) and new format (from/to)
             $fromEntity = $rel['from'] ?? $rel['entityA'] ?? null;
             $toEntity = $rel['to'] ?? $rel['entityB'] ?? null;
             
+            // Only process relationships where current entity is the 'from' (owner of the relationship)
             if ($fromEntity === $entityName) {
                 $relatedEntity = $toEntity;
                 $methodName = $this->getRelationshipMethodName($rel['type'], $relatedEntity, false);
-                $method = $this->generateRelationshipMethod($rel['type'], $relatedEntity, $methodName, false);
-                $methods[] = $method;
                 
-                // Check if we need to import this model
-                $import = $this->getModelImport($relatedEntity, $currentModuleName, $moduleModels);
-                if ($import) {
-                    $imports[] = $import;
-                }
-            } elseif ($toEntity === $entityName) {
-                $relatedEntity = $fromEntity;
-                $methodName = $this->getRelationshipMethodName($rel['type'], $relatedEntity, true);
-                $method = $this->generateRelationshipMethod($rel['type'], $relatedEntity, $methodName, true);
-                $methods[] = $method;
-                
-                // Check if we need to import this model
-                $import = $this->getModelImport($relatedEntity, $currentModuleName, $moduleModels);
-                if ($import) {
-                    $imports[] = $import;
+                // Avoid duplicate methods with same name
+                if (!in_array($methodName, $processedMethods)) {
+                    $method = $this->generateRelationshipMethod($rel['type'], $relatedEntity, $methodName, false);
+                    $methods[] = $method;
+                    $processedMethods[] = $methodName;
+                    
+                    // Check if we need to import this model
+                    $import = $this->getModelImport($relatedEntity, $currentModuleName, $moduleModels);
+                    if ($import) {
+                        $imports[] = $import;
+                    }
                 }
             }
         }
@@ -351,35 +353,20 @@ class CreateAdvancedModuleBlueprint extends Command
         ];
     }
 
-    private function generateRelationshipMethods(string $entityName, array $relationships): string
-    {
-        $methods = [];
-        
-        foreach ($relationships as $rel) {
-            if ($rel['entityA'] === $entityName) {
-                $relatedEntity = $rel['entityB'];
-                $methodName = $this->getRelationshipMethodName($rel['type'], $relatedEntity, false);
-                $method = $this->generateRelationshipMethod($rel['type'], $relatedEntity, $methodName, false);
-                $methods[] = $method;
-            } elseif ($rel['entityB'] === $entityName) {
-                $relatedEntity = $rel['entityA'];
-                $methodName = $this->getRelationshipMethodName($rel['type'], $relatedEntity, true);
-                $method = $this->generateRelationshipMethod($rel['type'], $relatedEntity, $methodName, true);
-                $methods[] = $method;
-            }
-        }
-        
-        return implode("\n\n", $methods);
-    }
 
     private function getRelationshipMethodName(string $type, string $relatedEntity, bool $isReverse): string
     {
         switch ($type) {
             case 'one-to-one':
+            case 'hasOne':
+            case 'belongsTo':
                 return Str::camel($relatedEntity);
             case 'one-to-many':
                 return $isReverse ? Str::camel($relatedEntity) : Str::camel(Str::plural($relatedEntity));
+            case 'hasMany':
+                return Str::camel(Str::plural($relatedEntity));
             case 'many-to-many':
+            case 'belongsToMany':
                 return Str::camel(Str::plural($relatedEntity));
             default:
                 return Str::camel($relatedEntity);
@@ -720,7 +707,7 @@ class CreateAdvancedModuleBlueprint extends Command
     private function generateAdvancedFactory($moduleName, $entity) 
     {
         $entityName = $entity['name'];
-        $factoryDir = "Modules/{$moduleName}/Database/factories";
+        $factoryDir = "Modules/{$moduleName}/Database/Factories";
         
         // Create directory if it doesn't exist
         if (!File::exists($factoryDir)) {
@@ -738,7 +725,7 @@ class CreateAdvancedModuleBlueprint extends Command
     private function generateAdvancedSeeder($moduleName, $entity)
     {
         $entityName = $entity['name'];
-        $seederDir = "Modules/{$moduleName}/Database/seeders";
+        $seederDir = "Modules/{$moduleName}/Database/Seeders";
         
         // Create directory if it doesn't exist
         if (!File::exists($seederDir)) {
@@ -1484,7 +1471,7 @@ class {{modelName}} extends Model
      */
     protected static function newFactory()
     {
-        return {{modelName}}Factory::new();
+        return \Modules\{{moduleName}}\Database\Factories\{{modelName}}Factory::new();
     }
 
     protected $table = "{{tableName}}";
@@ -2291,13 +2278,22 @@ class {{modelName}}DestroyTest extends TestCase
         if (File::exists($composerPath)) {
             $composer = json_decode(File::get($composerPath), true);
             
-            // Add JsonApi PSR-4 mapping
+            // Fix PSR-4 mappings to use capital case paths
             if (isset($composer['autoload']['psr-4'])) {
+                // Add JsonApi PSR-4 mapping
                 $composer['autoload']['psr-4']["Modules\\{$moduleName}\\JsonApi\\"] = "JsonApi/";
+                
+                // Fix Database factory and seeder paths to use capital case
+                if (isset($composer['autoload']['psr-4']["Modules\\{$moduleName}\\Database\\Factories\\"])) {
+                    $composer['autoload']['psr-4']["Modules\\{$moduleName}\\Database\\Factories\\"] = "Database/Factories/";
+                }
+                if (isset($composer['autoload']['psr-4']["Modules\\{$moduleName}\\Database\\Seeders\\"])) {
+                    $composer['autoload']['psr-4']["Modules\\{$moduleName}\\Database\\Seeders\\"] = "Database/Seeders/";
+                }
             }
             
             File::put($composerPath, json_encode($composer, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-            $this->info("📦 Updated composer.json with JsonApi PSR-4 mapping");
+            $this->info("📦 Updated composer.json with JsonApi PSR-4 mapping and fixed paths");
         }
     }
 
@@ -2312,7 +2308,9 @@ class {{modelName}}DestroyTest extends TestCase
         $this->newLine();
         $this->info("🔗 Relationship Details:");
         foreach ($relationships as $rel) {
-            $this->line("{$rel['entityA']} ↔ {$rel['entityB']} ({$rel['type']})");
+            $fromEntity = $rel['from'] ?? $rel['entityA'] ?? 'Unknown';
+            $toEntity = $rel['to'] ?? $rel['entityB'] ?? 'Unknown';
+            $this->line("{$fromEntity} ↔ {$toEntity} ({$rel['type']})");
         }
         
         $this->newLine();
@@ -2504,6 +2502,59 @@ class {$entityName}Factory extends Factory
     }";
         }
         
+        // Special methods for Contact entity
+        if ($entityName === 'Contact') {
+            $hasIsCustomer = collect($entity['fields'] ?? [])->contains('name', 'is_customer');
+            $hasIsSupplier = collect($entity['fields'] ?? [])->contains('name', 'is_supplier');
+            
+            if ($hasIsCustomer) {
+                $methods[] = "
+    /**
+     * Customer Contact
+     */
+    public function customer(): static
+    {
+        return \$this->state(fn (array \$attributes) => [
+            'is_customer' => true,
+            'is_supplier' => false,
+            'credit_limit' => \$this->faker->randomFloat(2, 10000, 200000),
+            'payment_terms' => \$this->faker->randomElement([30, 45, 60]),
+        ]);
+    }";
+            }
+            
+            if ($hasIsSupplier) {
+                $methods[] = "
+    /**
+     * Supplier Contact
+     */
+    public function supplier(): static
+    {
+        return \$this->state(fn (array \$attributes) => [
+            'is_customer' => false,
+            'is_supplier' => true,
+            'credit_limit' => 0.00,
+            'payment_terms' => \$this->faker->randomElement([15, 30, 45]),
+        ]);
+    }";
+            }
+            
+            if ($hasIsCustomer && $hasIsSupplier) {
+                $methods[] = "
+    /**
+     * Mixed Customer and Supplier Contact
+     */
+    public function mixed(): static
+    {
+        return \$this->state(fn (array \$attributes) => [
+            'is_customer' => true,
+            'is_supplier' => true,
+            'credit_limit' => \$this->faker->randomFloat(2, 15000, 100000),
+        ]);
+    }";
+            }
+        }
+        
         return implode("\n", $methods);
     }
 
@@ -2666,9 +2717,54 @@ class {$entityName}Seeder extends Seeder
         return $logic;
     }
 
+    private function generateMainModuleDatabaseSeeder($moduleName, $entities)
+    {
+        $this->info("🌱 Generating main module DatabaseSeeder...");
+        
+        $seederDir = "Modules/{$moduleName}/Database/Seeders";
+        if (!File::exists($seederDir)) {
+            File::makeDirectory($seederDir, 0755, true);
+        }
+        
+        $seederPath = "{$seederDir}/{$moduleName}DatabaseSeeder.php";
+        
+        $template = "<?php
+
+namespace Modules\\{$moduleName}\\Database\\Seeders;
+
+use Illuminate\\Database\\Seeder;
+
+class {$moduleName}DatabaseSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {";
+
+        // Add individual entity seeders
+        foreach ($entities as $entity) {
+            $entityName = $entity['name'];
+            $seederClass = "{$entityName}Seeder";
+            $template .= "\n        \$this->call({$seederClass}::class);";
+        }
+        
+        // Add permissions seeder if configured
+        if ($this->permissionsConfig) {
+            $template .= "\n        \$this->call(PermissionsSeeder::class);";
+        }
+
+        $template .= "
+    }
+}";
+        
+        File::put($seederPath, $template);
+        $this->info("✓ Generated {$moduleName}DatabaseSeeder.php");
+    }
+
     private function updateMainSeeder($moduleName, $entities)
     {
-        $seederPath = "Modules/{$moduleName}/Database/seeders/{$moduleName}DatabaseSeeder.php";
+        $seederPath = "Modules/{$moduleName}/Database/Seeders/{$moduleName}DatabaseSeeder.php";
         
         if (!File::exists($seederPath)) {
             $this->warn("⚠️ Main seeder not found at: {$seederPath}");
@@ -2780,7 +2876,7 @@ class {$moduleName}DatabaseSeeder extends Seeder
 
     private function generatePermissionsSeeder($moduleName, $permissionsConfig)
     {
-        $seederDir = "Modules/{$moduleName}/Database/seeders";
+        $seederDir = "Modules/{$moduleName}/Database/Seeders";
         $seederPath = "{$seederDir}/PermissionsSeeder.php";
         
         $permissionGenerator = new PermissionGenerator($this);
@@ -2898,7 +2994,7 @@ class PermissionsSeeder extends Seeder
 
     private function updateMainSeederWithPermissions($moduleName)
     {
-        $seederPath = "Modules/{$moduleName}/Database/seeders/{$moduleName}DatabaseSeeder.php";
+        $seederPath = "Modules/{$moduleName}/Database/Seeders/{$moduleName}DatabaseSeeder.php";
         
         if (!File::exists($seederPath)) {
             return;
@@ -3840,5 +3936,32 @@ class PermissionsSeeder extends Seeder
         }
 
         return implode("\n", $permissionStatements);
+    }
+    
+    /**
+     * Update main ServiceProvider to use correct Migrations path
+     */
+    private function updateMainServiceProvider(string $moduleName): void
+    {
+        $this->info("🔧 Updating {$moduleName}ServiceProvider for migrations...");
+        
+        $serviceProviderPath = base_path("Modules/{$moduleName}/app/Providers/{$moduleName}ServiceProvider.php");
+        
+        if (!File::exists($serviceProviderPath)) {
+            $this->warn("ServiceProvider not found at: {$serviceProviderPath}");
+            return;
+        }
+        
+        $content = File::get($serviceProviderPath);
+        
+        // Update the migrations path to use capital M
+        $content = str_replace(
+            "module_path(\$this->name, 'Database/migrations')",
+            "module_path(\$this->name, 'Database/Migrations')",
+            $content
+        );
+        
+        File::put($serviceProviderPath, $content);
+        $this->info("✓ Updated {$moduleName}ServiceProvider migrations path");
     }
 }

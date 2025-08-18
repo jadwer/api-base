@@ -51,6 +51,7 @@ class MigrationGenerator
     private function generateMigrationContent(string $className, string $tableName, array $fields): string
     {
         $fieldsCode = $this->generateMigrationFields($fields);
+        $metadataCode = $this->shouldAddMetadata($fields) ? "\n            \$table->json('metadata')->nullable();" : "";
         
         return "<?php
 
@@ -64,8 +65,7 @@ return new class extends Migration
     {
         Schema::create(\"{$tableName}\", function (Blueprint \$table) {
             \$table->id();
-{$fieldsCode}
-            \$table->json('metadata')->nullable();
+{$fieldsCode}{$metadataCode}
             \$table->timestamps();
         });
     }
@@ -99,10 +99,18 @@ return new class extends Migration
      */
     private function generateFieldLine(array $field): string
     {
-        $line = "\$table->{$field['type']}('{$field['name']}')";
+        // Handle decimal type with precision
+        if ($field['type'] === 'decimal') {
+            $line = "\$table->decimal('{$field['name']}', 10, 2)";
+        } else {
+            $line = "\$table->{$field['type']}('{$field['name']}')";
+        }
         
-        // Add nullable constraint
-        if (isset($field['nullable']) && $field['nullable']) {
+        // Add nullable constraint - check both explicit nullable flag and required false
+        $isNullable = (isset($field['nullable']) && $field['nullable']) || 
+                      (isset($field['required']) && !$field['required']);
+        
+        if ($isNullable) {
             $line .= "->nullable()";
         }
         
@@ -126,6 +134,20 @@ return new class extends Migration
         $line .= ";";
         
         return $line;
+    }
+
+    /**
+     * Check if metadata field should be added automatically
+     */
+    private function shouldAddMetadata(array $fields): bool
+    {
+        // Check if metadata field already exists in the field definitions
+        foreach ($fields as $field) {
+            if ($field['name'] === 'metadata') {
+                return false; // Don't add duplicate metadata field
+            }
+        }
+        return true; // Add metadata field if not explicitly defined
     }
 
     /**

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('sales_orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')->constrained('customers');
+            $table->foreignId('contact_id')->constrained('contacts')->onDelete('restrict');
             $table->string('order_number')->unique();
             $table->enum('status', ['draft', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'])->default('draft');
             $table->date('order_date');

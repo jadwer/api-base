@@ -4,7 +4,7 @@ namespace Modules\Purchase\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Purchase\Models\PurchaseOrder;
-use Modules\Purchase\Models\Supplier;
+use Modules\Contacts\Models\Contact;
 
 class PurchaseOrderFactory extends Factory
 {
@@ -19,7 +19,7 @@ class PurchaseOrderFactory extends Factory
     public function definition(): array
     {
         return [
-            'supplier_id' => Supplier::factory(),
+            'contact_id' => Contact::factory()->state(['is_supplier' => true]),
             'order_date' => $this->faker->date(),
             'status' => $this->faker->randomElement(['pending', 'approved', 'received', 'cancelled']),
             'total_amount' => $this->faker->randomFloat(2, 100, 50000),

@@ -161,7 +161,7 @@ class SalesOrderItemShowTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Customer::factory()->create(['name' => 'Test Customer']);
         $salesOrder = SalesOrder::factory()->create([
-            'customer_id' => $customer->id,
+            'contact_id' => $customer->id,
             'order_number' => 'SO-REL-001'
         ]);
         $product = Product::factory()->create(['name' => 'Test Product']);
@@ -211,7 +211,7 @@ class SalesOrderItemShowTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Customer::factory()->create(['name' => 'Nested Customer']);
         $salesOrder = SalesOrder::factory()->create([
-            'customer_id' => $customer->id,
+            'contact_id' => $customer->id,
             'order_number' => 'SO-NESTED-001'
         ]);
         $product = Product::factory()->create(['name' => 'Nested Product']);
