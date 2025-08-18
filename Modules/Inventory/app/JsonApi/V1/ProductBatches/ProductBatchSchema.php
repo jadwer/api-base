@@ -123,7 +123,7 @@ class ProductBatchSchema extends Schema
     /**
      * Get the resource paginator.
      */
-    public function pagination(): ?Paginator
+    public function pagination(): ?PagePagination
     {
         return PagePagination::make();
     }

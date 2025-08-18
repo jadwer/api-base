@@ -39,5 +39,11 @@
              value="array" />
         <env name="TELESCOPE_ENABLED"
              value="false" />
+        <env name="DB_CONNECTION"
+             value="sqlite" />
+        <env name="DB_DATABASE"
+             value=":memory:" />
+        <env name="LOG_LEVEL"
+             value="emergency" />
     </php>
 </phpunit>

@@ -94,7 +94,7 @@ class UnitDestroyTest extends TestCase
         $response = $this->jsonApi()->delete("/api/v1/units/{$unit->id}");
 
         // This should fail due to foreign key constraint
-        $response->assertStatus(500);
+        $response->assertStatus(409);
         
         $this->assertDatabaseHas('units', [
             'id' => $unit->id,

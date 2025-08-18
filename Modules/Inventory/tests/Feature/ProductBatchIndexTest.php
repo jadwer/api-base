@@ -47,7 +47,10 @@ class ProductBatchIndexTest extends TestCase
     {
         $admin = $this->createUserWithPermissions('admin', ['product-batches.index']);
         
-        // Crear datos necesarios
+        // Obtener el conteo actual de batches (incluye datos del seeder)
+        $initialCount = ProductBatch::count();
+        
+        // Crear datos adicionales
         $product = Product::factory()->create();
         $warehouse = Warehouse::factory()->create();
         $location = WarehouseLocation::factory()->create(['warehouse_id' => $warehouse->id]);
@@ -64,7 +67,7 @@ class ProductBatchIndexTest extends TestCase
             ->get('/api/v1/product-batches');
 
         $response->assertStatus(200);
-        $response->assertJsonCount(3, 'data');
+        $response->assertJsonCount($initialCount + 3, 'data');
         
         // Verificar estructura de respuesta
         $response->assertJsonStructure([
@@ -110,28 +113,38 @@ class ProductBatchIndexTest extends TestCase
         $product = Product::factory()->create();
         $warehouse = Warehouse::factory()->create();
         
-        // Crear batches con diferentes estados
-        ProductBatch::factory()->create([
+        // Crear batch con estado 'quarantine' (menos común en seeders)
+        $testBatch = ProductBatch::factory()->create([
             'product_id' => $product->id,
             'warehouse_id' => $warehouse->id,
-            'status' => 'active'
+            'status' => 'quarantine'
         ]);
         
         ProductBatch::factory()->create([
             'product_id' => $product->id,
             'warehouse_id' => $warehouse->id,
-            'status' => 'expired'
+            'status' => 'active'
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('product-batches')
-            ->filter(['status' => 'active'])
+            ->filter(['status' => 'quarantine'])
             ->get('/api/v1/product-batches');
 
         $response->assertStatus(200);
-        $response->assertJsonCount(1, 'data');
-        $this->assertEquals('active', $response->json('data.0.attributes.status'));
+        
+        // Verificar que todos los resultados tienen status 'quarantine'
+        $data = $response->json('data');
+        foreach ($data as $item) {
+            $this->assertEquals('quarantine', $item['attributes']['status']);
+        }
+        
+        // Verificar que nuestro batch está incluido
+        $found = collect($data)->contains(function ($item) use ($testBatch) {
+            return $item['id'] == $testBatch->id;
+        });
+        $this->assertTrue($found, 'El batch de prueba no fue encontrado en los resultados filtrados');
     }
 
     public function test_admin_can_include_relationships()
@@ -178,19 +191,22 @@ class ProductBatchIndexTest extends TestCase
         $product = Product::factory()->create();
         $warehouse = Warehouse::factory()->create();
         
-        // Crear batches con diferentes fechas de vencimiento
+        // Crear batches con fechas muy específicas para el test
+        $uniqueBatchNumber1 = 'TEST_EARLY_' . uniqid();
+        $uniqueBatchNumber2 = 'TEST_LATE_' . uniqid();
+        
         $batch1 = ProductBatch::factory()->create([
             'product_id' => $product->id,
             'warehouse_id' => $warehouse->id,
-            'batch_number' => 'AAA001',
-            'expiration_date' => now()->addDays(10)
+            'batch_number' => $uniqueBatchNumber1,
+            'expiration_date' => now()->addDays(5) // Muy pronto
         ]);
         
         $batch2 = ProductBatch::factory()->create([
             'product_id' => $product->id,
             'warehouse_id' => $warehouse->id,
-            'batch_number' => 'BBB001',
-            'expiration_date' => now()->addDays(30)
+            'batch_number' => $uniqueBatchNumber2,
+            'expiration_date' => now()->addDays(365) // Muy tarde
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -200,9 +216,18 @@ class ProductBatchIndexTest extends TestCase
             ->get('/api/v1/product-batches');
 
         $response->assertStatus(200);
-        $response->assertJsonCount(2, 'data');
-        // El primero debe ser el que vence más pronto
-        $this->assertEquals($batch1->id, $response->json('data.0.id'));
+        
+        // Verificar que los datos están ordenados correctamente
+        $data = $response->json('data');
+        $batch1Position = collect($data)->search(function ($item) use ($batch1) {
+            return $item['id'] == $batch1->id;
+        });
+        $batch2Position = collect($data)->search(function ($item) use ($batch2) {
+            return $item['id'] == $batch2->id;
+        });
+        
+        // batch1 (fecha más temprana) debe estar antes que batch2
+        $this->assertTrue($batch1Position < $batch2Position, 'Los batches no están ordenados correctamente por fecha de vencimiento');
     }
 
     public function test_unauthorized_user_cannot_list_product_batches()
@@ -230,6 +255,7 @@ class ProductBatchIndexTest extends TestCase
     {
         $tech = $this->createUserWithPermissions('tech', ['product-batches.index']);
         
+        $initialCount = ProductBatch::count();
         ProductBatch::factory()->count(2)->create();
 
         $response = $this->actingAs($tech, 'sanctum')
@@ -238,6 +264,6 @@ class ProductBatchIndexTest extends TestCase
             ->get('/api/v1/product-batches');
 
         $response->assertStatus(200);
-        $response->assertJsonCount(2, 'data');
+        $response->assertJsonCount($initialCount + 2, 'data');
     }
 }

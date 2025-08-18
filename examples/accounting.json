@@ -1,0 +1,111 @@
+{
+  "entities": {
+    "Account": {
+      "name": "Account",
+      "tableName": "accounts",
+      "fields": [
+        { "name": "code", "type": "string", "rules": "required|string|max:50", "unique": true },
+        { "name": "name", "type": "string", "rules": "required|string|max:255" },
+        { "name": "type", "type": "string", "rules": "required|string|in:asset,liability,equity,revenue,expense,contra-asset,contra-liability" },
+        { "name": "level", "type": "integer", "rules": "required|integer|min:1" },
+        { "name": "parent_id", "type": "foreignId", "rules": "nullable|integer|exists:accounts,id", "nullable": true },
+        { "name": "currency", "type": "string", "rules": "nullable|string|size:3", "nullable": true },
+        { "name": "is_postable", "type": "boolean", "rules": "boolean", "default": true },
+        { "name": "status", "type": "string", "rules": "required|string|in:active,blocked", "default": "active" },
+        { "name": "metadata", "type": "json", "rules": "nullable" }
+      ]
+    },
+    "FiscalPeriod": {
+      "name": "FiscalPeriod",
+      "tableName": "fiscal_periods",
+      "fields": [
+        { "name": "name", "type": "string", "rules": "required|string|max:50", "unique": true },
+        { "name": "start_date", "type": "date", "rules": "required|date" },
+        { "name": "end_date", "type": "date", "rules": "required|date|after_or_equal:start_date" },
+        { "name": "status", "type": "string", "rules": "required|string|in:open,closed,locked", "default": "open" },
+        { "name": "allow_backpost", "type": "boolean", "rules": "boolean", "default": false }
+      ]
+    },
+    "Journal": {
+      "name": "Journal",
+      "tableName": "journals",
+      "fields": [
+        { "name": "code", "type": "string", "rules": "required|string|max:20", "unique": true },
+        { "name": "name", "type": "string", "rules": "required|string|max:255" },
+        { "name": "auto_numbering", "type": "boolean", "rules": "boolean", "default": true },
+        { "name": "sequence_prefix", "type": "string", "rules": "nullable|string|max:10", "nullable": true },
+        { "name": "sequence_next", "type": "integer", "rules": "integer|min:1", "default": 1 },
+        { "name": "default_currency", "type": "string", "rules": "nullable|string|size:3", "nullable": true },
+        { "name": "post_policy", "type": "string", "rules": "required|string|in:manual,auto_on_approve", "default": "manual" }
+      ]
+    },
+    "JournalEntry": {
+      "name": "JournalEntry",
+      "tableName": "journal_entries",
+      "fields": [
+        { "name": "journal_id", "type": "foreignId", "rules": "required|integer|exists:journals,id" },
+        { "name": "period_id", "type": "foreignId", "rules": "required|integer|exists:fiscal_periods,id" },
+        { "name": "number", "type": "string", "rules": "nullable|string|max:50", "nullable": true, "unique": true },
+        { "name": "date", "type": "date", "rules": "required|date" },
+        { "name": "currency", "type": "string", "rules": "nullable|string|size:3", "nullable": true },
+        { "name": "exchange_rate", "type": "decimal", "rules": "nullable|numeric|min:0", "nullable": true },
+        { "name": "reference", "type": "string", "rules": "nullable|string|max:100", "nullable": true },
+        { "name": "description", "type": "text", "rules": "nullable|string", "nullable": true },
+        { "name": "status", "type": "string", "rules": "required|string|in:draft,approved,posted,void", "default": "draft" },
+        { "name": "approved_by_id", "type": "foreignId", "rules": "nullable|integer|exists:users,id", "nullable": true },
+        { "name": "posted_by_id", "type": "foreignId", "rules": "nullable|integer|exists:users,id", "nullable": true },
+        { "name": "posted_at", "type": "datetime", "rules": "nullable|date", "nullable": true },
+        { "name": "reversal_of_id", "type": "foreignId", "rules": "nullable|integer|exists:journal_entries,id", "nullable": true },
+        { "name": "source_type", "type": "string", "rules": "nullable|string|max:50", "nullable": true },
+        { "name": "source_id", "type": "bigInteger", "rules": "nullable|integer|min:1", "nullable": true }
+      ]
+    },
+    "JournalLine": {
+      "name": "JournalLine",
+      "tableName": "journal_lines",
+      "fields": [
+        { "name": "journal_entry_id", "type": "foreignId", "rules": "required|integer|exists:journal_entries,id" },
+        { "name": "account_id", "type": "foreignId", "rules": "required|integer|exists:accounts,id" },
+        { "name": "debit", "type": "decimal", "rules": "numeric|min:0", "default": 0 },
+        { "name": "credit", "type": "decimal", "rules": "numeric|min:0", "default": 0 },
+        { "name": "base_amount", "type": "decimal", "rules": "nullable|numeric", "nullable": true },
+        { "name": "cost_center_id", "type": "foreignId", "rules": "nullable|integer|exists:cost_centers,id", "nullable": true },
+        { "name": "partner_id", "type": "foreignId", "rules": "nullable|integer|exists:partners,id", "nullable": true },
+        { "name": "memo", "type": "string", "rules": "nullable|string|max:255", "nullable": true }
+      ]
+    },
+    "ExchangeRate": {
+      "name": "ExchangeRate",
+      "tableName": "exchange_rates",
+      "fields": [
+        { "name": "base_currency", "type": "string", "rules": "required|string|size:3" },
+        { "name": "quote_currency", "type": "string", "rules": "required|string|size:3" },
+        { "name": "rate_date", "type": "date", "rules": "required|date" },
+        { "name": "rate", "type": "decimal", "rules": "required|numeric|min:0" }
+      ]
+    }
+  },
+  "relationships": [
+    { "from": "JournalEntry", "to": "JournalLine", "type": "one-to-many" },
+    { "from": "JournalEntry", "to": "Journal", "type": "many-to-one" },
+    { "from": "JournalEntry", "to": "FiscalPeriod", "type": "many-to-one" },
+    { "from": "JournalLine", "to": "Account", "type": "many-to-one" }
+  ],
+  "permissions": {
+    "prefix": "gl",
+    "resources": ["accounts","fiscal-periods","journals","journal-entries","journal-lines","exchange-rates"],
+    "actions": ["index","show","store","update","destroy"],
+    "roles": {
+      "god": ["all"],
+      "admin": [
+        "gl.accounts.index","gl.accounts.show",
+        "gl.fiscal-periods.index","gl.fiscal-periods.show",
+        "gl.journals.index","gl.journals.show",
+        "gl.journal-entries.index","gl.journal-entries.show","gl.journal-entries.store","gl.journal-entries.update",
+        "gl.exchange-rates.index","gl.exchange-rates.show","gl.exchange-rates.store","gl.exchange-rates.update"
+      ],
+      "tech": ["gl.accounts.index","gl.journal-entries.index","gl.journal-entries.show"],
+      "customer": []
+    }
+  }
+}

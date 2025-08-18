@@ -1,0 +1,434 @@
+{
+  "entities": {
+    "Account": {
+      "name": "Account",
+      "tableName": "accounts",
+      "fields": [
+        {
+          "name": "code",
+          "type": "string",
+          "nullable": false,
+          "unique": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "nullable": false,
+          "fillable": true,
+          "filterable": true
+        },
+        {
+          "name": "level",
+          "type": "integer",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "parent_id",
+          "type": "foreignId",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "currency",
+          "type": "string",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "is_postable",
+          "type": "boolean",
+          "nullable": false,
+          "default": true,
+          "fillable": true,
+          "filterable": true
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "nullable": false,
+          "default": "active",
+          "fillable": true,
+          "filterable": true
+        },
+        {
+          "name": "metadata",
+          "type": "json",
+          "nullable": true,
+          "fillable": true
+        }
+      ]
+    },
+    "FiscalPeriod": {
+      "name": "FiscalPeriod",
+      "tableName": "fiscal_periods",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "nullable": false,
+          "unique": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "start_date",
+          "type": "date",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "end_date",
+          "type": "date",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "nullable": false,
+          "default": "open",
+          "fillable": true,
+          "filterable": true
+        },
+        {
+          "name": "allow_backpost",
+          "type": "boolean",
+          "nullable": false,
+          "default": false,
+          "fillable": true
+        }
+      ]
+    },
+    "Journal": {
+      "name": "Journal",
+      "tableName": "journals",
+      "fields": [
+        {
+          "name": "code",
+          "type": "string",
+          "nullable": false,
+          "unique": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "auto_numbering",
+          "type": "boolean",
+          "nullable": false,
+          "default": true,
+          "fillable": true
+        },
+        {
+          "name": "sequence_prefix",
+          "type": "string",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "sequence_next",
+          "type": "integer",
+          "nullable": false,
+          "default": 1,
+          "fillable": true
+        },
+        {
+          "name": "default_currency",
+          "type": "string",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "post_policy",
+          "type": "string",
+          "nullable": false,
+          "default": "manual",
+          "fillable": true
+        }
+      ]
+    },
+    "JournalEntry": {
+      "name": "JournalEntry",
+      "tableName": "journal_entries",
+      "fields": [
+        {
+          "name": "journal_id",
+          "type": "foreignId",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "period_id",
+          "type": "foreignId",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "number",
+          "type": "string",
+          "nullable": true,
+          "unique": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "date",
+          "type": "date",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "currency",
+          "type": "string",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "exchange_rate",
+          "type": "decimal",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "reference",
+          "type": "string",
+          "nullable": true,
+          "fillable": true,
+          "filterable": true
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "nullable": false,
+          "default": "draft",
+          "fillable": true,
+          "filterable": true
+        },
+        {
+          "name": "approved_by_id",
+          "type": "foreignId",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "posted_by_id",
+          "type": "foreignId",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "posted_at",
+          "type": "datetime",
+          "nullable": true,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "reversal_of_id",
+          "type": "foreignId",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "source_type",
+          "type": "string",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "source_id",
+          "type": "bigInteger",
+          "nullable": true,
+          "fillable": true
+        }
+      ]
+    },
+    "JournalLine": {
+      "name": "JournalLine",
+      "tableName": "journal_lines",
+      "fields": [
+        {
+          "name": "journal_entry_id",
+          "type": "foreignId",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "account_id",
+          "type": "foreignId",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "debit",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "credit",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "base_amount",
+          "type": "decimal",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "cost_center_id",
+          "type": "foreignId",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "partner_id",
+          "type": "foreignId",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "memo",
+          "type": "string",
+          "nullable": true,
+          "fillable": true
+        }
+      ]
+    },
+    "ExchangeRate": {
+      "name": "ExchangeRate",
+      "tableName": "exchange_rates",
+      "fields": [
+        {
+          "name": "base_currency",
+          "type": "string",
+          "nullable": false,
+          "fillable": true,
+          "filterable": true
+        },
+        {
+          "name": "quote_currency",
+          "type": "string",
+          "nullable": false,
+          "fillable": true,
+          "filterable": true
+        },
+        {
+          "name": "rate_date",
+          "type": "date",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "rate",
+          "type": "decimal",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true
+        }
+      ]
+    }
+  },
+  "relationships": [
+    {
+      "entityA": "JournalEntry",
+      "entityB": "JournalLine",
+      "type": "one-to-many",
+      "description": "Un asiento contable puede tener múltiples líneas"
+    },
+    {
+      "entityA": "JournalEntry",
+      "entityB": "Journal",
+      "type": "many-to-one",
+      "description": "Cada asiento pertenece a un diario"
+    },
+    {
+      "entityA": "JournalEntry",
+      "entityB": "FiscalPeriod",
+      "type": "many-to-one",
+      "description": "Cada asiento pertenece a un período fiscal"
+    },
+    {
+      "entityA": "JournalLine",
+      "entityB": "Account",
+      "type": "many-to-one",
+      "description": "Cada línea está asociada a una cuenta contable"
+    },
+    {
+      "entityA": "Account",
+      "entityB": "Account",
+      "type": "many-to-one",
+      "description": "Cuentas pueden tener cuenta padre (jerarquía)"
+    }
+  ],
+  "permissions": {
+    "prefix": "accounting",
+    "resources": ["accounts", "fiscal-periods", "journals", "journal-entries", "journal-lines", "exchange-rates"],
+    "actions": ["index", "show", "store", "update", "destroy"],
+    "roles": {
+      "god": ["all"],
+      "admin": ["all"],
+      "accountant": [
+        "accounts.index", "accounts.show", "accounts.store", "accounts.update",
+        "fiscal-periods.index", "fiscal-periods.show",
+        "journals.index", "journals.show", "journals.store", "journals.update",
+        "journal-entries.index", "journal-entries.show", "journal-entries.store", "journal-entries.update",
+        "journal-lines.index", "journal-lines.show", "journal-lines.store", "journal-lines.update",
+        "exchange-rates.index", "exchange-rates.show", "exchange-rates.store", "exchange-rates.update"
+      ],
+      "tech": [
+        "accounts.index", "accounts.show",
+        "journal-entries.index", "journal-entries.show",
+        "journal-lines.index", "journal-lines.show"
+      ],
+      "customer": []
+    }
+  },
+  "seeding": {
+    "accounts": 50,
+    "fiscal_periods": 3,
+    "journals": 10,
+    "journal_entries": 200,
+    "journal_lines": 600,
+    "exchange_rates": 30
+  }
+}

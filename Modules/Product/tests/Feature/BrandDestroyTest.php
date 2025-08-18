@@ -93,7 +93,7 @@ class BrandDestroyTest extends TestCase
         $response = $this->jsonApi()->delete("/api/v1/brands/{$brand->id}");
 
         // This should fail due to foreign key constraint
-        $response->assertStatus(500);
+        $response->assertStatus(409);
         
         $this->assertDatabaseHas('brands', [
             'id' => $brand->id,

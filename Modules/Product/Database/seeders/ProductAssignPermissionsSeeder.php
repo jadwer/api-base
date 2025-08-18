@@ -31,28 +31,28 @@ class ProductAssignPermissionsSeeder extends Seeder
             $admin->givePermissionTo([
                 // Products - Full access
                 'products.index',
-                'products.view',
+                'products.show',
                 'products.store',
                 'products.update',
                 'products.destroy',
                 
                 // Units - Full access
                 'units.index',
-                'units.view',
+                'units.show',
                 'units.store',
                 'units.update',
                 'units.destroy',
                 
                 // Categories - Full access
                 'categories.index',
-                'categories.view',
+                'categories.show',
                 'categories.store',
                 'categories.update',
                 'categories.destroy',
                 
                 // Brands - Full access
                 'brands.index',
-                'brands.view',
+                'brands.show',
                 'brands.store',
                 'brands.update',
                 'brands.destroy',
@@ -64,13 +64,13 @@ class ProductAssignPermissionsSeeder extends Seeder
         if ($customer) {
             $customer->givePermissionTo([
                 'products.index',
-                'products.view',
+                'products.show',
                 'units.index',
-                'units.view',
+                'units.show',
                 'categories.index',
-                'categories.view',
+                'categories.show',
                 'brands.index',
-                'brands.view',
+                'brands.show',
             ]);
         }
     }

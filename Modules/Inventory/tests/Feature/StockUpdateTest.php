@@ -17,7 +17,7 @@ class StockUpdateTest extends TestCase
         $role = \Spatie\Permission\Models\Role::firstOrCreate(['name' => $roleName]);
         
         foreach ($permissions as $permission) {
-            \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $permission]);
+            \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'api']);
             $role->givePermissionTo($permission);
         }
         

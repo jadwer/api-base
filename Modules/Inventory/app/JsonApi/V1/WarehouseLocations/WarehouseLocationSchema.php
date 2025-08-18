@@ -37,6 +37,9 @@ class WarehouseLocationSchema extends Schema
         return [
             ID::make(),
             
+            // Foreign keys
+            Number::make('warehouseId', 'warehouse_id'),
+            
             // Campos básicos
             Str::make('name')->sortable(),
             Str::make('code')->sortable(),
@@ -76,7 +79,13 @@ class WarehouseLocationSchema extends Schema
         return [
             WhereIdIn::make($this),
             Where::make('name'),
+            Where::make('search_name', 'name')->deserializeUsing(
+                static fn($value) => "%{$value}%"
+            )->using('like'),
             Where::make('code'),
+            Where::make('search_code', 'code')->deserializeUsing(
+                static fn($value) => "%{$value}%"
+            )->using('like'),
             Where::make('location_type'),
             Where::make('warehouse_id'),
             Where::make('is_active'),

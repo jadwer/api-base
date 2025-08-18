@@ -20,7 +20,7 @@ class UnitAuthorizer implements Authorizer
 
     public function show(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('units.view') ?? false;
+        return $request->user()?->can('units.show') ?? false;
     }
 
     public function update(Request $request, object $model): bool|Response
@@ -35,12 +35,12 @@ class UnitAuthorizer implements Authorizer
 
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('units.view') ?? false;
+        return $request->user()?->can('units.show') ?? false;
     }
 
     public function showRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('units.view') ?? false;
+        return $request->user()?->can('units.show') ?? false;
     }
 
     public function updateRelationship(Request $request, object $model, string $fieldName): bool|Response

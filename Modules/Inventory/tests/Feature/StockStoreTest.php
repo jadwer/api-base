@@ -21,8 +21,8 @@ class StockStoreTest extends TestCase
         parent::setUp();
         
         // Crear permisos necesarios
-        Permission::firstOrCreate(['name' => 'stocks.store']);
-        Permission::firstOrCreate(['name' => 'stocks.view']);
+        Permission::firstOrCreate(['name' => 'stocks.store', 'guard_name' => 'api']);
+        Permission::firstOrCreate(['name' => 'stocks.show', 'guard_name' => 'api']);
         
         // Crear roles
         Role::firstOrCreate(['name' => 'admin']);
@@ -61,6 +61,9 @@ class StockStoreTest extends TestCase
                 'reorderPoint' => 20.0000,
                 'unitCost' => 25.7500,
                 'status' => 'active',
+                'productId' => $product->id,
+                'warehouseId' => $warehouse->id,
+                'locationId' => $location->id,
                 'batchInfo' => [
                     'batch_number' => 'BAT123456',
                     'expiration_date' => '2026-12-31'
@@ -68,17 +71,6 @@ class StockStoreTest extends TestCase
                 'metadata' => [
                     'supplier' => 'Test Supplier',
                     'quality_grade' => 'A'
-                ]
-            ],
-            'relationships' => [
-                'product' => [
-                    'data' => ['type' => 'products', 'id' => (string) $product->id]
-                ],
-                'warehouse' => [
-                    'data' => ['type' => 'warehouses', 'id' => (string) $warehouse->id]
-                ],
-                'location' => [
-                    'data' => ['type' => 'warehouse-locations', 'id' => (string) $location->id]
                 ]
             ]
         ];

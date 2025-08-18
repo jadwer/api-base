@@ -12,6 +12,7 @@ use LaravelJsonApi\Eloquent\Fields\ArrayHash;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIn;
+use LaravelJsonApi\Eloquent\Filters\Scope;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
 use Modules\Inventory\Models\Stock;
@@ -30,6 +31,11 @@ class StockSchema extends Schema
     {
         return [
             ID::make(),
+            
+            // Foreign keys
+            Number::make('productId', 'product_id'),
+            Number::make('warehouseId', 'warehouse_id'), 
+            Number::make('locationId', 'warehouse_location_id'),
             
             // Cantidades
             Number::make('quantity')
@@ -95,13 +101,14 @@ class StockSchema extends Schema
             Where::make('product_id'),
             Where::make('warehouse_id'),
             Where::make('warehouse_location_id'),
+            Scope::make('search'),
         ];
     }
 
     /**
      * Get the resource paginator.
      */
-    public function pagination(): ?Paginator
+    public function pagination(): ?PagePagination
     {
         return PagePagination::make();
     }

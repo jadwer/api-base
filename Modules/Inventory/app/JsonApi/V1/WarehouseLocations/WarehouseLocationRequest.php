@@ -47,8 +47,8 @@ class WarehouseLocationRequest extends ResourceRequest
             'priority' => ['sometimes', 'integer', 'min:1', 'max:10'],
             'metadata' => ['nullable', 'array'],
             
-            // Relación requerida
-            'warehouse' => JsonApiRule::toOne(),
+            // Foreign key requerido
+            'warehouseId' => ['required', 'integer', 'exists:warehouses,id'],
         ];
     }
 

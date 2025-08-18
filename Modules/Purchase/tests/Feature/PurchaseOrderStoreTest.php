@@ -75,11 +75,17 @@ class PurchaseOrderStoreTest extends TestCase
 
         $this->assertDatabaseHas('purchase_orders', [
             'supplier_id' => $supplier->id,
-            'order_date' => '2025-01-15',
             'status' => 'pending',
-            'total_amount' => '2500.50',
             'notes' => 'New purchase order for office supplies',
         ]);
+        
+        // Verificar campos con formato específico por separado
+        $order = \Modules\Purchase\Models\PurchaseOrder::where('supplier_id', $supplier->id)
+            ->where('notes', 'New purchase order for office supplies')
+            ->first();
+        $this->assertNotNull($order);
+        $this->assertEquals(2500.50, (float) $order->total_amount);
+        $this->assertEquals('2025-01-15', $order->order_date->format('Y-m-d'));
     }
 
     public function test_admin_can_create_purchase_order_with_minimal_data(): void

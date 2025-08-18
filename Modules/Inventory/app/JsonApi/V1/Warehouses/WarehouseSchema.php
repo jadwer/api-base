@@ -76,7 +76,13 @@ class WarehouseSchema extends Schema
         return [
             WhereIdIn::make($this),
             Where::make('name'),
+            Where::make('search_name', 'name')->deserializeUsing(
+                static fn($value) => "%{$value}%"
+            )->using('like'),
             Where::make('code'),
+            Where::make('search_code', 'code')->deserializeUsing(
+                static fn($value) => "%{$value}%"
+            )->using('like'),
             Where::make('warehouse_type'),
             Where::make('is_active'),
             WhereIn::make('warehouse_type'),

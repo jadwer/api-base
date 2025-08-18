@@ -21,8 +21,8 @@ class StockIndexTest extends TestCase
         parent::setUp();
         
         // Crear permisos necesarios
-        Permission::firstOrCreate(['name' => 'stocks.index']);
-        Permission::firstOrCreate(['name' => 'stocks.view']);
+        Permission::firstOrCreate(['name' => 'stocks.index', 'guard_name' => 'api']);
+        Permission::firstOrCreate(['name' => 'stocks.show', 'guard_name' => 'api']);
         
         // Crear roles
         Role::firstOrCreate(['name' => 'admin']);
@@ -46,6 +46,9 @@ class StockIndexTest extends TestCase
     public function test_admin_can_list_stocks()
     {
         $admin = $this->createUserWithPermissions('admin', ['stocks.index']);
+        
+        // Limpiar stocks existentes
+        Stock::truncate();
         
         // Crear stocks de prueba
         $warehouse = Warehouse::factory()->create();
@@ -87,7 +90,9 @@ class StockIndexTest extends TestCase
                         'minimumStock',
                         'unitCost',
                         'totalValue',
-                        'status'
+                        'status',
+                        'createdAt',
+                        'updatedAt'
                     ]
                 ]
             ]
@@ -97,6 +102,9 @@ class StockIndexTest extends TestCase
     public function test_admin_can_sort_stocks_by_quantity()
     {
         $admin = $this->createUserWithPermissions('admin', ['stocks.index']);
+        
+        // Limpiar stocks existentes
+        Stock::truncate();
         
         $warehouse = Warehouse::factory()->create();
         
@@ -131,6 +139,9 @@ class StockIndexTest extends TestCase
     public function test_admin_can_filter_stocks_by_status()
     {
         $admin = $this->createUserWithPermissions('admin', ['stocks.index']);
+        
+        // Limpiar stocks existentes
+        Stock::truncate();
         
         $warehouse = Warehouse::factory()->create();
         
@@ -183,6 +194,9 @@ class StockIndexTest extends TestCase
     public function test_tech_can_list_stocks()
     {
         $tech = $this->createUserWithPermissions('tech', ['stocks.index']);
+        
+        // Limpiar stocks existentes
+        Stock::truncate();
         
         $warehouse = Warehouse::factory()->create();
         Stock::factory()->create(['warehouse_id' => $warehouse->id]);

@@ -31,16 +31,21 @@ class ProductBatchSeeder extends Seeder
                 $manufacturedDate = fake()->dateTimeBetween('-2 years', '-1 month');
                 $expirationDate = fake()->dateTimeBetween('+6 months', '+3 years');
                 
+                $initialQuantity = fake()->numberBetween(100, 1000);
+                $currentQuantity = fake()->numberBetween(10, $initialQuantity);
+                
                 ProductBatch::factory()->create([
                     'product_id' => $product->id,
                     'batch_number' => $this->generateBatchNumber($product->id, $i + 1),
                     'manufacturing_date' => $manufacturedDate,
                     'expiration_date' => $expirationDate,
-                    'quantity' => fake()->numberBetween(50, 1000),
+                    'initial_quantity' => $initialQuantity,
+                    'current_quantity' => $currentQuantity,
+                    'reserved_quantity' => fake()->numberBetween(0, min(10, $currentQuantity)),
                     'unit_cost' => fake()->randomFloat(2, 10, 500),
-                    'supplier_batch_number' => fake()->boolean(70) ? fake()->regexify('[A-Z]{2}[0-9]{6}') : null,
-                    'notes' => fake()->boolean(40) ? fake()->sentence() : null,
-                    'status' => fake()->randomElement(['active', 'expired', 'recalled']),
+                    'supplier_batch' => fake()->boolean(70) ? fake()->regexify('SUP[0-9]{8}') : null,
+                    'quality_notes' => fake()->boolean(40) ? fake()->sentence() : null,
+                    'status' => fake()->randomElement(['active', 'expired', 'quarantine', 'recalled', 'consumed']),
                 ]);
             }
         }

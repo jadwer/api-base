@@ -11,11 +11,6 @@ class BrandIndexTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function test_admin_can_list_brands(): void
     {
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
@@ -35,8 +30,10 @@ class BrandIndexTest extends TestCase
                     'attributes' => [
                         'name',
                         'description',
-                        'created_at',
-                        'updated_at',
+                        'slug',
+                        'productsCount',
+                        'createdAt',
+                        'updatedAt',
                     ],
                 ],
             ],

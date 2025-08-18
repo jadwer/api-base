@@ -19,13 +19,13 @@ class WarehouseLocationStoreTest extends TestCase
             'name' => "Test " . ucfirst($roleName)
         ]);
         
-        $role = \Modules\PermissionManager\Models\Role::firstOrCreate([
+        $role = \Spatie\Permission\Models\Role::firstOrCreate([
             'name' => $roleName,
             'guard_name' => 'api'
         ]);
         
         foreach ($permissions as $permissionName) {
-            $permission = \Modules\PermissionManager\Models\Permission::firstOrCreate([
+            $permission = \Spatie\Permission\Models\Permission::firstOrCreate([
                 'name' => $permissionName,
                 'guard_name' => 'api'
             ]);
@@ -63,17 +63,10 @@ class WarehouseLocationStoreTest extends TestCase
                 'isPickable' => true,
                 'isReceivable' => true,
                 'priority' => 5,
+                'warehouseId' => $warehouse->id,
                 'metadata' => [
                     'zone' => 'Z1',
                     'access_level' => 'public'
-                ]
-            ],
-            'relationships' => [
-                'warehouse' => [
-                    'data' => [
-                        'type' => 'warehouses',
-                        'id' => (string) $warehouse->id
-                    ]
                 ]
             ]
         ];

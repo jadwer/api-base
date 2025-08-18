@@ -20,7 +20,7 @@ class CategoryAuthorizer implements Authorizer
 
     public function show(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('categories.view') ?? false;
+        return $request->user()?->can('categories.show') ?? false;
     }
 
     public function update(Request $request, object $model): bool|Response
@@ -35,12 +35,12 @@ class CategoryAuthorizer implements Authorizer
 
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('categories.view') ?? false;
+        return $request->user()?->can('categories.show') ?? false;
     }
 
     public function showRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('categories.view') ?? false;
+        return $request->user()?->can('categories.show') ?? false;
     }
 
     public function updateRelationship(Request $request, object $model, string $fieldName): bool|Response

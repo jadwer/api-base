@@ -17,7 +17,7 @@ class ProductBatchFactory extends Factory
         $consumedQuantity = round($this->faker->randomFloat(4, 0, $initialQuantity * 0.7), 4);
         $currentQuantity = round($initialQuantity - $consumedQuantity, 4);
         $reservedQuantity = round($this->faker->randomFloat(4, 0, min(20, $currentQuantity)), 4);
-        $unitCost = round($this->faker->randomFloat(4, 5, 200), 4);
+        $unitCost = round($this->faker->randomFloat(2, 5, 200), 2);
         
         $manufacturingDate = $this->faker->dateTimeBetween('-2 years', '-1 month');
         $expirationDate = $this->faker->dateTimeBetween('now', '+3 years');
@@ -26,7 +26,7 @@ class ProductBatchFactory extends Factory
             'product_id' => \Modules\Product\Models\Product::factory(),
             'warehouse_id' => Warehouse::factory(),
             'warehouse_location_id' => $this->faker->boolean(80) ? WarehouseLocation::factory() : null,
-            'batch_number' => $this->faker->regexify('[A-Z]{3}[0-9]{6}'),
+            'batch_number' => 'BATCH-' . date('Ym') . '-' . $this->faker->unique()->numberBetween(1000, 9999),
             'lot_number' => $this->faker->optional()->regexify('LOT[0-9]{8}'),
             'manufacturing_date' => $manufacturingDate,
             'expiration_date' => $expirationDate,

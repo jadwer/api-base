@@ -23,13 +23,13 @@ class WarehouseIndexTest extends TestCase
             'name' => "Test " . ucfirst($roleName)
         ]);
         
-        $role = \Modules\PermissionManager\Models\Role::firstOrCreate([
+        $role = \Spatie\Permission\Models\Role::firstOrCreate([
             'name' => $roleName,
             'guard_name' => 'api'
         ]);
         
         foreach ($permissions as $permissionName) {
-            $permission = \Modules\PermissionManager\Models\Permission::firstOrCreate([
+            $permission = \Spatie\Permission\Models\Permission::firstOrCreate([
                 'name' => $permissionName,
                 'guard_name' => 'api'
             ]);
@@ -83,7 +83,9 @@ class WarehouseIndexTest extends TestCase
         $this->actingAs($admin, 'sanctum');
 
         // Clear all existing warehouses first
-        \Modules\Inventory\Models\Warehouse::query()->delete();
+        \Modules\Inventory\Models\Stock::truncate();
+        \Modules\Inventory\Models\WarehouseLocation::truncate();
+        \Modules\Inventory\Models\Warehouse::truncate();
         
         // Create warehouses with specific names for sorting
         Warehouse::factory()->create(['name' => 'Z Warehouse']);
@@ -103,7 +105,9 @@ class WarehouseIndexTest extends TestCase
         $this->actingAs($admin, 'sanctum');
 
         // Clear all existing warehouses first
-        \Modules\Inventory\Models\Warehouse::query()->delete();
+        \Modules\Inventory\Models\Stock::truncate();
+        \Modules\Inventory\Models\WarehouseLocation::truncate();
+        \Modules\Inventory\Models\Warehouse::truncate();
 
         // Create active and inactive warehouses
         Warehouse::factory()->create(['is_active' => true, 'name' => 'Active Warehouse']);
@@ -123,7 +127,9 @@ class WarehouseIndexTest extends TestCase
         $this->actingAs($tech, 'sanctum');
 
         // Clear all existing warehouses first
-        \Modules\Inventory\Models\Warehouse::query()->delete();
+        \Modules\Inventory\Models\Stock::truncate();
+        \Modules\Inventory\Models\WarehouseLocation::truncate();
+        \Modules\Inventory\Models\Warehouse::truncate();
 
         Warehouse::factory()->count(2)->create();
 
@@ -137,14 +143,14 @@ class WarehouseIndexTest extends TestCase
     {
         // Create customer user WITHOUT warehouse permissions
         $customer = User::factory()->create(['email' => 'test-customer@example.com']);
-        $customerRole = \Modules\PermissionManager\Models\Role::firstOrCreate([
+        $customerRole = \Spatie\Permission\Models\Role::firstOrCreate([
             'name' => 'customer',
             'guard_name' => 'api'
         ]);
         $customer->assignRole($customerRole);
         
         // Revoke warehouse permissions from the customer ROLE (not just user)
-        $warehousePermissions = \Modules\PermissionManager\Models\Permission::where('name', 'like', 'warehouses.%')->get();
+        $warehousePermissions = \Spatie\Permission\Models\Permission::where('name', 'like', 'warehouses.%')->get();
         foreach ($warehousePermissions as $permission) {
             if ($customerRole->hasPermissionTo($permission)) {
                 $customerRole->revokePermissionTo($permission);

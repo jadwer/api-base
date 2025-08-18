@@ -10,8 +10,11 @@
       "Bash(mv:*)",
       "Bash(ls:*)",
       "Bash(grep:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(curl:*)",
+      "Bash(time php artisan test:*)"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "acceptEdits"
   }
 }

@@ -35,6 +35,14 @@ class InventoryMovementSchema extends Schema
         return [
             ID::make(),
             
+            // Foreign keys (requeridos para crear/editar)
+            Number::make('productId', 'product_id'),
+            Number::make('warehouseId', 'warehouse_id'),
+            Number::make('locationId', 'warehouse_location_id'),
+            Number::make('destinationWarehouseId', 'destination_warehouse_id'),
+            Number::make('destinationLocationId', 'destination_location_id'),
+            Number::make('userId', 'user_id'),
+            
             // Campos básicos del movimiento
             Str::make('movementType', 'movement_type')->sortable(),
             Str::make('referenceType', 'reference_type')->sortable(),
@@ -97,6 +105,8 @@ class InventoryMovementSchema extends Schema
             Where::make('status'),
             WhereIn::make('user', 'user_id'),
             Where::make('movementDate', 'movement_date'),
+            Where::make('dateFrom', 'movement_date')->using('>='),
+            Where::make('dateTo', 'movement_date')->using('<='),
         ];
     }
 

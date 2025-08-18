@@ -47,15 +47,15 @@ class InventoryMovementRequest extends ResourceRequest
             'batchInfo' => ['nullable', 'array'],
             'metadata' => ['nullable', 'array'],
             
-            // Relaciones obligatorias
-            'product' => JsonApiRule::toOne()->required(),
-            'warehouse' => JsonApiRule::toOne()->required(),
-            'user' => JsonApiRule::toOne()->required(),
+            // Foreign Keys obligatorios
+            'productId' => ['required', 'integer', 'exists:products,id'],
+            'warehouseId' => ['required', 'integer', 'exists:warehouses,id'],
+            'userId' => ['required', 'integer', 'exists:users,id'],
             
-            // Relaciones opcionales
-            'location' => JsonApiRule::toOne(),
-            'destinationWarehouse' => JsonApiRule::toOne(),
-            'destinationLocation' => JsonApiRule::toOne(),
+            // Foreign Keys opcionales
+            'locationId' => ['nullable', 'integer', 'exists:warehouse_locations,id'],
+            'destinationWarehouseId' => ['nullable', 'integer', 'exists:warehouses,id'],
+            'destinationLocationId' => ['nullable', 'integer', 'exists:warehouse_locations,id'],
         ];
     }
 
@@ -84,9 +84,15 @@ class InventoryMovementRequest extends ResourceRequest
             'newStock.numeric' => 'El nuevo stock debe ser un número.',
             'batchInfo.array' => 'La información de lotes debe ser un objeto.',
             'metadata.array' => 'Los metadatos deben ser un objeto.',
-            'product.required' => 'El producto es obligatorio.',
-            'warehouse.required' => 'El warehouse es obligatorio.',
-            'user.required' => 'El usuario es obligatorio.',
+            'productId.required' => 'El producto es obligatorio.',
+            'productId.exists' => 'El producto seleccionado no existe.',
+            'warehouseId.required' => 'El warehouse es obligatorio.',
+            'warehouseId.exists' => 'El warehouse seleccionado no existe.',
+            'userId.required' => 'El usuario es obligatorio.',
+            'userId.exists' => 'El usuario seleccionado no existe.',
+            'locationId.exists' => 'La ubicación seleccionada no existe.',
+            'destinationWarehouseId.exists' => 'El warehouse de destino seleccionado no existe.',
+            'destinationLocationId.exists' => 'La ubicación de destino seleccionada no existe.',
         ];
     }
 
@@ -113,21 +119,18 @@ class InventoryMovementRequest extends ResourceRequest
             
             // Validar que las transferencias tengan warehouse destino
             if ($data['movementType'] === 'transfer') {
-                if (!$this->hasRelation('destinationWarehouse')) {
+                if (!isset($data['destinationWarehouseId'])) {
                     $validator->errors()->add(
-                        'destinationWarehouse',
+                        'destinationWarehouseId',
                         'Las transferencias requieren un warehouse de destino.'
                     );
                 }
                 
                 // Validar que origen y destino sean diferentes
-                if ($this->hasRelation('warehouse') && $this->hasRelation('destinationWarehouse')) {
-                    $warehouseId = $this->input('data.relationships.warehouse.data.id');
-                    $destinationId = $this->input('data.relationships.destinationWarehouse.data.id');
-                    
-                    if ($warehouseId === $destinationId) {
+                if (isset($data['warehouseId']) && isset($data['destinationWarehouseId'])) {
+                    if ($data['warehouseId'] === $data['destinationWarehouseId']) {
                         $validator->errors()->add(
-                            'destinationWarehouse',
+                            'destinationWarehouseId',
                             'El warehouse de destino debe ser diferente al de origen.'
                         );
                     }

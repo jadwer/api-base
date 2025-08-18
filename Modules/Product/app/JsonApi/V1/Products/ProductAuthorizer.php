@@ -29,7 +29,7 @@ class ProductAuthorizer implements Authorizer
      */
     public function show(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('products.view') ?? false;
+        return $request->user()?->can('products.show') ?? false;
     }
 
     /**
@@ -53,7 +53,7 @@ class ProductAuthorizer implements Authorizer
      */
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('products.view') ?? false;
+        return $request->user()?->can('products.show') ?? false;
     }
 
     /**
@@ -61,7 +61,7 @@ class ProductAuthorizer implements Authorizer
      */
     public function showRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('products.view') ?? false;
+        return $request->user()?->can('products.show') ?? false;
     }
 
     /**

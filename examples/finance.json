@@ -1,0 +1,200 @@
+{
+  "entities": {
+    "BankAccount": {
+      "name": "BankAccount",
+      "tableName": "bank_accounts",
+      "fields": [
+        { "name": "bank_name", "type": "string", "rules": "required|string|max:120" },
+        { "name": "account_number", "type": "string", "rules": "required|string|max:50", "unique": true },
+        { "name": "clabe", "type": "string", "rules": "nullable|string|max:30", "nullable": true },
+        { "name": "currency", "type": "string", "rules": "required|string|size:3" },
+        { "name": "type", "type": "string", "rules": "required|string|in:checking,savings,cash" },
+        { "name": "opening_balance", "type": "decimal", "rules": "numeric|min:0", "default": 0 },
+        { "name": "status", "type": "string", "rules": "required|string|in:active,blocked", "default": "active" }
+      ]
+    },
+    "BankStatement": {
+      "name": "BankStatement",
+      "tableName": "bank_statements",
+      "fields": [
+        { "name": "bank_account_id", "type": "foreignId", "rules": "required|integer|exists:bank_accounts,id" },
+        { "name": "statement_date", "type": "date", "rules": "required|date" },
+        { "name": "import_source", "type": "string", "rules": "nullable|string|max:50", "nullable": true }
+      ]
+    },
+    "BankStatementLine": {
+      "name": "BankStatementLine",
+      "tableName": "bank_statement_lines",
+      "fields": [
+        { "name": "bank_statement_id", "type": "foreignId", "rules": "required|integer|exists:bank_statements,id" },
+        { "name": "txn_date", "type": "date", "rules": "required|date" },
+        { "name": "amount", "type": "decimal", "rules": "required|numeric" },
+        { "name": "counterparty", "type": "string", "rules": "nullable|string|max:120", "nullable": true },
+        { "name": "reference", "type": "string", "rules": "nullable|string|max:120", "nullable": true },
+        { "name": "fitid", "type": "string", "rules": "nullable|string|max:120", "nullable": true },
+        { "name": "status", "type": "string", "rules": "required|string|in:unreconciled,matched,reconciled", "default": "unreconciled" }
+      ]
+    },
+    "Vendor": {
+      "name": "Vendor",
+      "tableName": "vendors",
+      "fields": [
+        { "name": "name", "type": "string", "rules": "required|string|max:255" },
+        { "name": "tax_id", "type": "string", "rules": "nullable|string|max:30", "nullable": true },
+        { "name": "currency", "type": "string", "rules": "nullable|string|size:3", "nullable": true },
+        { "name": "payment_terms", "type": "string", "rules": "nullable|string|max:50", "nullable": true },
+        { "name": "credit_limit", "type": "decimal", "rules": "nullable|numeric|min:0", "nullable": true },
+        { "name": "status", "type": "string", "rules": "required|string|in:active,on_hold", "default": "active" }
+      ]
+    },
+    "APInvoice": {
+      "name": "APInvoice",
+      "tableName": "ap_invoices",
+      "fields": [
+        { "name": "vendor_id", "type": "foreignId", "rules": "required|integer|exists:vendors,id" },
+        { "name": "invoice_number", "type": "string", "rules": "required|string|max:50" },
+        { "name": "invoice_date", "type": "date", "rules": "required|date" },
+        { "name": "due_date", "type": "date", "rules": "required|date|after_or_equal:invoice_date" },
+        { "name": "currency", "type": "string", "rules": "nullable|string|size:3", "nullable": true },
+        { "name": "exchange_rate", "type": "decimal", "rules": "nullable|numeric|min:0", "nullable": true },
+        { "name": "subtotal", "type": "decimal", "rules": "numeric|min:0", "default": 0 },
+        { "name": "tax_total", "type": "decimal", "rules": "numeric|min:0", "default": 0 },
+        { "name": "total", "type": "decimal", "rules": "numeric|min:0", "default": 0 },
+        { "name": "status", "type": "string", "rules": "required|string|in:draft,approved,posted,paid,void", "default": "draft" },
+        { "name": "journal_entry_id", "type": "foreignId", "rules": "nullable|integer|exists:journal_entries,id", "nullable": true }
+      ]
+    },
+    "APInvoiceLine": {
+      "name": "APInvoiceLine",
+      "tableName": "ap_invoice_lines",
+      "fields": [
+        { "name": "ap_invoice_id", "type": "foreignId", "rules": "required|integer|exists:ap_invoices,id" },
+        { "name": "expense_account_id", "type": "foreignId", "rules": "required|integer|exists:accounts,id" },
+        { "name": "quantity", "type": "decimal", "rules": "numeric|min:0.0001", "default": 1 },
+        { "name": "unit_price", "type": "decimal", "rules": "numeric|min:0", "default": 0 },
+        { "name": "discount", "type": "decimal", "rules": "numeric|min:0", "default": 0 },
+        { "name": "line_total", "type": "decimal", "rules": "numeric|min:0", "default": 0 }
+      ]
+    },
+    "APPayment": {
+      "name": "APPayment",
+      "tableName": "ap_payments",
+      "fields": [
+        { "name": "vendor_id", "type": "foreignId", "rules": "required|integer|exists:vendors,id" },
+        { "name": "payment_date", "type": "date", "rules": "required|date" },
+        { "name": "method", "type": "string", "rules": "required|string|in:transfer,cash,check" },
+        { "name": "currency", "type": "string", "rules": "nullable|string|size:3", "nullable": true },
+        { "name": "amount", "type": "decimal", "rules": "required|numeric|min:0" },
+        { "name": "bank_account_id", "type": "foreignId", "rules": "required|integer|exists:bank_accounts,id" },
+        { "name": "status", "type": "string", "rules": "required|string|in:draft,approved,posted,reconciled,void", "default": "draft" },
+        { "name": "journal_entry_id", "type": "foreignId", "rules": "nullable|integer|exists:journal_entries,id", "nullable": true }
+      ]
+    },
+    "APInvoicePayment": {
+      "name": "APInvoicePayment",
+      "tableName": "ap_invoice_payments",
+      "fields": [
+        { "name": "ap_invoice_id", "type": "foreignId", "rules": "required|integer|exists:ap_invoices,id" },
+        { "name": "ap_payment_id", "type": "foreignId", "rules": "required|integer|exists:ap_payments,id" },
+        { "name": "amount_applied", "type": "decimal", "rules": "required|numeric|min:0.01" },
+        { "name": "applied_at", "type": "date", "rules": "required|date" },
+        { "name": "exchange_rate_at_apply", "type": "decimal", "rules": "nullable|numeric|min:0", "nullable": true }
+      ]
+    },
+    "Customer": {
+      "name": "Customer",
+      "tableName": "customers",
+      "fields": [
+        { "name": "name", "type": "string", "rules": "required|string|max:255" },
+        { "name": "tax_id", "type": "string", "rules": "nullable|string|max:30", "nullable": true },
+        { "name": "currency", "type": "string", "rules": "nullable|string|size:3", "nullable": true },
+        { "name": "payment_terms", "type": "string", "rules": "nullable|string|max:50", "nullable": true },
+        { "name": "credit_limit", "type": "decimal", "rules": "nullable|numeric|min:0", "nullable": true },
+        { "name": "status", "type": "string", "rules": "required|string|in:active,on_hold", "default": "active" }
+      ]
+    },
+    "ARInvoice": {
+      "name": "ARInvoice",
+      "tableName": "ar_invoices",
+      "fields": [
+        { "name": "customer_id", "type": "foreignId", "rules": "required|integer|exists:customers,id" },
+        { "name": "invoice_number", "type": "string", "rules": "required|string|max:50" },
+        { "name": "invoice_date", "type": "date", "rules": "required|date" },
+        { "name": "due_date", "type": "date", "rules": "required|date|after_or_equal:invoice_date" },
+        { "name": "currency", "type": "string", "rules": "nullable|string|size:3", "nullable": true },
+        { "name": "exchange_rate", "type": "decimal", "rules": "nullable|numeric|min:0", "nullable": true },
+        { "name": "subtotal", "type": "decimal", "rules": "numeric|min:0", "default": 0 },
+        { "name": "tax_total", "type": "decimal", "rules": "numeric|min:0", "default": 0 },
+        { "name": "total", "type": "decimal", "rules": "numeric|min:0", "default": 0 },
+        { "name": "status", "type": "string", "rules": "required|string|in:draft,approved,posted,partially_paid,paid,void", "default": "draft" },
+        { "name": "journal_entry_id", "type": "foreignId", "rules": "nullable|integer|exists:journal_entries,id", "nullable": true }
+      ]
+    },
+    "ARInvoiceLine": {
+      "name": "ARInvoiceLine",
+      "tableName": "ar_invoice_lines",
+      "fields": [
+        { "name": "ar_invoice_id", "type": "foreignId", "rules": "required|integer|exists:ar_invoices,id" },
+        { "name": "revenue_account_id", "type": "foreignId", "rules": "required|integer|exists:accounts,id" },
+        { "name": "quantity", "type": "decimal", "rules": "numeric|min:0.0001", "default": 1 },
+        { "name": "unit_price", "type": "decimal", "rules": "numeric|min:0", "default": 0 },
+        { "name": "discount", "type": "decimal", "rules": "numeric|min:0", "default": 0 },
+        { "name": "line_total", "type": "decimal", "rules": "numeric|min:0", "default": 0 }
+      ]
+    },
+    "ARReceipt": {
+      "name": "ARReceipt",
+      "tableName": "ar_receipts",
+      "fields": [
+        { "name": "customer_id", "type": "foreignId", "rules": "required|integer|exists:customers,id" },
+        { "name": "receipt_date", "type": "date", "rules": "required|date" },
+        { "name": "method", "type": "string", "rules": "required|string|in:transfer,cash,check" },
+        { "name": "currency", "type": "string", "rules": "nullable|string|size:3", "nullable": true },
+        { "name": "amount", "type": "decimal", "rules": "required|numeric|min:0" },
+        { "name": "bank_account_id", "type": "foreignId", "rules": "required|integer|exists:bank_accounts,id" },
+        { "name": "status", "type": "string", "rules": "required|string|in:draft,approved,posted,reconciled,void", "default": "draft" },
+        { "name": "journal_entry_id", "type": "foreignId", "rules": "nullable|integer|exists:journal_entries,id", "nullable": true }
+      ]
+    },
+    "ARInvoiceReceipt": {
+      "name": "ARInvoiceReceipt",
+      "tableName": "ar_invoice_receipts",
+      "fields": [
+        { "name": "ar_invoice_id", "type": "foreignId", "rules": "required|integer|exists:ar_invoices,id" },
+        { "name": "ar_receipt_id", "type": "foreignId", "rules": "required|integer|exists:ar_receipts,id" },
+        { "name": "amount_applied", "type": "decimal", "rules": "required|numeric|min:0.01" },
+        { "name": "applied_at", "type": "date", "rules": "required|date" },
+        { "name": "exchange_rate_at_apply", "type": "decimal", "rules": "nullable|numeric|min:0", "nullable": true }
+      ]
+    }
+  },
+  "relationships": [
+    { "from": "BankStatement", "to": "BankStatementLine", "type": "one-to-many" },
+    { "from": "APInvoice", "to": "APInvoiceLine", "type": "one-to-many" },
+    { "from": "ARInvoice", "to": "ARInvoiceLine", "type": "one-to-many" },
+    { "from": "APPayment", "to": "APInvoicePayment", "type": "one-to-many" },
+    { "from": "APInvoice", "to": "APInvoicePayment", "type": "one-to-many" },
+    { "from": "ARReceipt", "to": "ARInvoiceReceipt", "type": "one-to-many" },
+    { "from": "ARInvoice", "to": "ARInvoiceReceipt", "type": "one-to-many" }
+  ],
+  "permissions": {
+    "prefix": "finance",
+    "resources": [
+      "bank-accounts","bank-statements","bank-statement-lines",
+      "vendors","ap-invoices","ap-invoice-lines","ap-payments","ap-invoice-payments",
+      "customers","ar-invoices","ar-invoice-lines","ar-receipts","ar-invoice-receipts"
+    ],
+    "actions": ["index","show","store","update","destroy"],
+    "roles": {
+      "god": ["all"],
+      "admin": ["all"],
+      "tech": [
+        "finance.bank-accounts.index","finance.bank-statements.index","finance.bank-statement-lines.index",
+        "finance.vendors.index","finance.ap-invoices.index","finance.ap-invoice-lines.index","finance.ap-payments.index",
+        "finance.ap-invoice-payments.index","finance.customers.index","finance.ar-invoices.index",
+        "finance.ar-invoice-lines.index","finance.ar-receipts.index","finance.ar-invoice-receipts.index"
+      ],
+      "customer": []
+    }
+  }
+}

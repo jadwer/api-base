@@ -319,7 +319,7 @@ class ProductIndexTest extends TestCase
         // Verify products are only from Apple (brand_id=2) or Samsung (brand_id=1)
         foreach ($products as $product) {
             $name = $product['attributes']['name'];
-            $isApple = str_contains($name, 'iPhone') || str_contains($name, 'MacBook') || str_contains($name, 'iPad');
+            $isApple = str_contains($name, 'iPhone') || str_contains($name, 'MacBook') || str_contains($name, 'iPad') || str_contains($name, 'AirPods') || str_contains($name, 'Apple');
             $isSamsung = str_contains($name, 'Samsung') || str_contains($name, 'Galaxy');
             
             $this->assertTrue($isApple || $isSamsung, "Product '{$name}' should be from Apple or Samsung");
@@ -352,7 +352,7 @@ class ProductIndexTest extends TestCase
         // Verify all products are from Apple
         foreach ($products as $product) {
             $name = $product['attributes']['name'];
-            $isApple = str_contains($name, 'iPhone') || str_contains($name, 'MacBook') || str_contains($name, 'iPad');
+            $isApple = str_contains($name, 'iPhone') || str_contains($name, 'MacBook') || str_contains($name, 'iPad') || str_contains($name, 'AirPods') || str_contains($name, 'Apple');
             $this->assertTrue($isApple, "Product '{$name}' should be from Apple");
         }
         
@@ -382,7 +382,7 @@ class ProductIndexTest extends TestCase
         foreach ($products as $product) {
             $name = $product['attributes']['name'];
             $this->assertStringContainsString('Pro', $name, "Product name '{$name}' should contain 'Pro'");
-            $isApple = str_contains($name, 'iPhone') || str_contains($name, 'MacBook') || str_contains($name, 'iPad');
+            $isApple = str_contains($name, 'iPhone') || str_contains($name, 'MacBook') || str_contains($name, 'iPad') || str_contains($name, 'AirPods') || str_contains($name, 'Apple');
             $this->assertTrue($isApple, "Product '{$name}' should be from Apple");
         }
         

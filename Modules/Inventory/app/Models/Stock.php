@@ -94,6 +94,24 @@ class Stock extends Model
     }
 
     /**
+     * Scope para búsqueda general
+     */
+    public function scopeSearch($query, $value)
+    {
+        return $query->whereHas('product', function ($q) use ($value) {
+            $q->where('name', 'like', $value)
+              ->orWhere('sku', 'like', $value)
+              ->orWhere('description', 'like', $value);
+        })->orWhereHas('warehouse', function ($q) use ($value) {
+            $q->where('name', 'like', $value)
+              ->orWhere('code', 'like', $value);
+        })->orWhereHas('location', function ($q) use ($value) {
+            $q->where('name', 'like', $value)
+              ->orWhere('code', 'like', $value);
+        });
+    }
+
+    /**
      * Create a new factory instance for the model.
      */
     protected static function newFactory()

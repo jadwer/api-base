@@ -15,28 +15,28 @@ class ProductPermissionSeeder extends Seeder
         $permissions = [
             // Products
             'products.index',
-            'products.view',
+            'products.show',
             'products.store',
             'products.update',
             'products.destroy',
             
             // Units
             'units.index',
-            'units.view',
+            'units.show',
             'units.store',
             'units.update',
             'units.destroy',
             
             // Categories
             'categories.index',
-            'categories.view',
+            'categories.show',
             'categories.store',
             'categories.update',
             'categories.destroy',
             
             // Brands
             'brands.index',
-            'brands.view',
+            'brands.show',
             'brands.store',
             'brands.update',
             'brands.destroy',

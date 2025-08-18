@@ -75,7 +75,8 @@ class GenerateModuleDocumentation extends Command
 
         foreach ($schemas as $schemaDir) {
             $resourceName = basename($schemaDir);
-            $schemaFile = $schemaDir . '/' . rtrim($resourceName, 's') . 'Schema.php';
+            $modelName = $this->pluralToSingular($resourceName);
+            $schemaFile = $schemaDir . '/' . $modelName . 'Schema.php';
             
             if (File::exists($schemaFile)) {
                 $apiDocs .= $this->parseSchemaFile($schemaFile, $resourceName);
@@ -345,5 +346,29 @@ class GenerateModuleDocumentation extends Command
     private function convertToResourceType(string $resourceName): string
     {
         return strtolower(preg_replace('/([a-z])([A-Z])/', '$1-$2', $resourceName));
+    }
+
+    private function pluralToSingular(string $plural): string
+    {
+        // Handle common English pluralization rules
+        $rules = [
+            '/ies$/' => 'y',         // companies -> company
+            '/ves$/' => 'f',         // wolves -> wolf  
+            '/ches$/' => 'ch',       // batches -> batch
+            '/shes$/' => 'sh',       // dishes -> dish
+            '/xes$/' => 'x',         // boxes -> box
+            '/zes$/' => 'z',         // buzzes -> buzz
+            '/ses$/' => 'se',        // warehouses -> warehouse  
+            '/es$/' => '',           // edges -> edge (fallback for other -es words)
+            '/s$/' => '',            // products -> product
+        ];
+
+        foreach ($rules as $pattern => $replacement) {
+            if (preg_match($pattern, $plural)) {
+                return preg_replace($pattern, $replacement, $plural);
+            }
+        }
+
+        return $plural; // fallback
     }
 }

@@ -16,15 +16,15 @@ abstract class TestCase extends BaseTestCase
 
         app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
 
+        // Solo seeders esenciales para acelerar tests
         $this->artisan('module:seed', ['module' => 'PermissionManager']);
-        $this->artisan('module:seed', ['module' => 'Ecommerce']);
-        $this->artisan('module:seed', ['module' => 'Audit']);
-        $this->artisan('module:seed', ['module' => 'PageBuilder']);
         $this->artisan('module:seed', ['module' => 'User']);
         $this->artisan('module:seed', ['module' => 'Product']);
         $this->artisan('module:seed', ['module' => 'Inventory']);
         $this->artisan('module:seed', ['module' => 'Purchase']);
         $this->artisan('module:seed', ['module' => 'Sales']);
+        $this->artisan('module:seed', ['module' => 'Ecommerce']);
+        $this->artisan('module:seed', ['module' => 'Audit']);
     }
 
 
@@ -41,5 +41,23 @@ abstract class TestCase extends BaseTestCase
                 "Falta el error de validación para: $pointer"
             );
         }
+    }
+
+    /**
+     * Helper para obtener usuarios pre-seeded rápidamente
+     */
+    protected function getSeededAdminUser(): \Modules\User\Models\User
+    {
+        return \Modules\User\Models\User::where('email', 'admin@example.com')->firstOrFail();
+    }
+
+    protected function getSeededTechUser(): \Modules\User\Models\User
+    {
+        return \Modules\User\Models\User::where('email', 'tecnico@example.com')->firstOrFail();
+    }
+
+    protected function getSeededCustomerUser(): \Modules\User\Models\User
+    {
+        return \Modules\User\Models\User::where('email', 'cliente1@example.com')->firstOrFail();
     }
 }

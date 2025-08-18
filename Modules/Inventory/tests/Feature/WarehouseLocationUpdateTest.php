@@ -16,13 +16,13 @@ class WarehouseLocationUpdateTest extends TestCase
     {
         $user = User::factory()->create();
         
-        $role = \Modules\PermissionManager\Models\Role::firstOrCreate([
+        $role = \Spatie\Permission\Models\Role::firstOrCreate([
             'name' => $roleName . '_' . uniqid(),
             'guard_name' => 'api'
         ]);
         
         foreach ($permissions as $permissionName) {
-            $permission = \Modules\PermissionManager\Models\Permission::firstOrCreate([
+            $permission = \Spatie\Permission\Models\Permission::firstOrCreate([
                 'name' => $permissionName,
                 'guard_name' => 'api'
             ]);
