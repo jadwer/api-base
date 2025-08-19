@@ -64,4 +64,9 @@ class CustomerSchema extends Schema
     {
         return PagePagination::make();
     }
+
+    public static function type(): string
+    {
+        return 'customers';
+    }
 }

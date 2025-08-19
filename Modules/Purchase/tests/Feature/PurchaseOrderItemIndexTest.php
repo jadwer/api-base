@@ -6,7 +6,7 @@ use Tests\TestCase;
 use Modules\User\Models\User;
 use Modules\Purchase\Models\PurchaseOrderItem;
 use Modules\Purchase\Models\PurchaseOrder;
-use Modules\Purchase\Models\Supplier;
+use Modules\Contacts\Models\Contact;
 use Modules\Product\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -73,9 +73,9 @@ class PurchaseOrderItemIndexTest extends TestCase
     {
         $admin = $this->createUserWithPermissions("admin", ['purchase-order-items.index']);
 
-        $supplier = Supplier::factory()->create();
-        $purchaseOrder = PurchaseOrder::factory()->for($supplier)->create();
-        PurchaseOrderItem::factory()->for($purchaseOrder)->count(3)->create();
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+        $purchaseOrder = PurchaseOrder::factory()->create(['contact_id' => $contact->id]);
+        PurchaseOrderItem::factory()->count(3)->create(['purchase_order_id' => $purchaseOrder->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -108,12 +108,12 @@ class PurchaseOrderItemIndexTest extends TestCase
     {
         $admin = $this->createUserWithPermissions("admin", ['purchase-order-items.index']);
 
-        $supplier = Supplier::factory()->create();
-        $purchaseOrder1 = PurchaseOrder::factory()->for($supplier)->create();
-        $purchaseOrder2 = PurchaseOrder::factory()->for($supplier)->create();
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+        $purchaseOrder1 = PurchaseOrder::factory()->create(['contact_id' => $contact->id]);
+        $purchaseOrder2 = PurchaseOrder::factory()->create(['contact_id' => $contact->id]);
         
-        PurchaseOrderItem::factory()->for($purchaseOrder1)->count(2)->create();
-        PurchaseOrderItem::factory()->for($purchaseOrder2)->count(1)->create();
+        PurchaseOrderItem::factory()->count(2)->create(['purchase_order_id' => $purchaseOrder1->id]);
+        PurchaseOrderItem::factory()->count(1)->create(['purchase_order_id' => $purchaseOrder2->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -128,9 +128,9 @@ class PurchaseOrderItemIndexTest extends TestCase
     {
         $admin = $this->createUserWithPermissions("admin", ['purchase-order-items.index']);
 
-        $supplier = Supplier::factory()->create();
-        $purchaseOrder = PurchaseOrder::factory()->for($supplier)->create();
-        PurchaseOrderItem::factory()->for($purchaseOrder)->create();
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+        $purchaseOrder = PurchaseOrder::factory()->create(['contact_id' => $contact->id]);
+        PurchaseOrderItem::factory()->create(['purchase_order_id' => $purchaseOrder->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -146,10 +146,10 @@ class PurchaseOrderItemIndexTest extends TestCase
     {
         $admin = $this->createUserWithPermissions("admin", ['purchase-order-items.index']);
 
-        $supplier = Supplier::factory()->create();
-        $purchaseOrder = PurchaseOrder::factory()->for($supplier)->create();
-        $item1 = PurchaseOrderItem::factory()->for($purchaseOrder)->create(['quantity' => 10]);
-        $item2 = PurchaseOrderItem::factory()->for($purchaseOrder)->create(['quantity' => 5]);
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+        $purchaseOrder = PurchaseOrder::factory()->create(['contact_id' => $contact->id]);
+        $item1 = PurchaseOrderItem::factory()->create(['purchase_order_id' => $purchaseOrder->id, 'quantity' => 10]);
+        $item2 = PurchaseOrderItem::factory()->create(['purchase_order_id' => $purchaseOrder->id, 'quantity' => 5]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

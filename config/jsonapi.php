@@ -28,5 +28,6 @@ return [
     */
     'servers' => [
         'v1' => \App\JsonApi\V1\Server::class,
+        'public' => \App\JsonApi\V1\PublicServer::class,
     ],
 ];

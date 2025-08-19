@@ -12,21 +12,35 @@ class WarehouseLocationRequest extends ResourceRequest
     public function rules(): array
     {
         $location = $this->model();
+        $isUpdate = $this->isMethod('patch');
 
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'code' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('warehouse_locations', 'code')->ignore($location),
-            ],
+            'name' => $isUpdate ? ['sometimes', 'string', 'max:255'] : ['required', 'string', 'max:255'],
+            'code' => $isUpdate 
+                ? [
+                    'sometimes',
+                    'string',
+                    'max:255',
+                    Rule::unique('warehouse_locations', 'code')->ignore($location),
+                ]
+                : [
+                    'required',
+                    'string',
+                    'max:255',
+                    Rule::unique('warehouse_locations', 'code')->ignore($location),
+                ],
             'description' => ['nullable', 'string'],
-            'locationType' => [
-                'required',
-                'string',
-                Rule::in(['aisle', 'rack', 'shelf', 'bin', 'zone', 'bay']),
-            ],
+            'locationType' => $isUpdate 
+                ? [
+                    'sometimes',
+                    'string',
+                    Rule::in(['aisle', 'rack', 'shelf', 'bin', 'zone', 'bay']),
+                ]
+                : [
+                    'required',
+                    'string',
+                    Rule::in(['aisle', 'rack', 'shelf', 'bin', 'zone', 'bay']),
+                ],
             'aisle' => ['nullable', 'string', 'max:255'],
             'rack' => ['nullable', 'string', 'max:255'],
             'shelf' => ['nullable', 'string', 'max:255'],
@@ -47,8 +61,10 @@ class WarehouseLocationRequest extends ResourceRequest
             'priority' => ['sometimes', 'integer', 'min:1', 'max:10'],
             'metadata' => ['nullable', 'array'],
             
-            // Foreign key requerido
-            'warehouseId' => ['required', 'integer', 'exists:warehouses,id'],
+            // Foreign key - required only for creation, optional for updates
+            'warehouseId' => $isUpdate 
+                ? ['sometimes', 'integer', 'exists:warehouses,id'] 
+                : ['required', 'integer', 'exists:warehouses,id'],
         ];
     }
 

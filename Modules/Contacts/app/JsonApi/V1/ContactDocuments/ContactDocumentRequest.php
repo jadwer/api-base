@@ -13,7 +13,7 @@ class ContactDocumentRequest extends ResourceRequest
         
         return [
             'contact_id' => ['nullable', 'integer'],
-            'document_type' => ['nullable', 'string', 'max:255'],
+            'document_type' => ['nullable', 'string', 'max:255', Rule::in(['rfc', 'cedula_fiscal', 'ine', 'constancia_sat', 'opinion_sat', 'certificado_sello', 'comprobante_domicilio', 'cotizacion', 'orden_compra', 'factura', 'contrato', 'otros'])],
             'file_path' => ['nullable', 'string', 'max:255'],
             'original_filename' => ['nullable', 'string', 'max:255'],
             'mime_type' => ['nullable', 'string', 'max:255'],

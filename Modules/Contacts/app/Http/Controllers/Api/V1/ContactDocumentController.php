@@ -2,7 +2,7 @@
 
 namespace Modules\Contacts\Http\Controllers\Api\V1;
 
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Controller;
 use LaravelJsonApi\Laravel\Http\Controllers\Actions;
 
 class ContactDocumentController extends Controller

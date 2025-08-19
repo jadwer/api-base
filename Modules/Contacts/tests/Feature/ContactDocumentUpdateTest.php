@@ -32,9 +32,8 @@ class ContactDocumentUpdateTest extends TestCase
             'type' => 'contact-documents',
             'id' => (string) $contactDocument->id,
             'attributes' => [
-                'name' => 'Updated ContactDocument',
-                'description' => 'Updated description',
-                'is_active' => false
+                'documentType' => 'ine',
+                'notes' => 'Updated notes'
             ]
         ];
 
@@ -48,9 +47,8 @@ class ContactDocumentUpdateTest extends TestCase
         
         $this->assertDatabaseHas('contact_documents', [
             'id' => $contactDocument->id,
-            'name' => 'Updated ContactDocument',
-            'description' => 'Updated description',
-            'is_active' => false
+            'document_type' => 'ine',
+            'notes' => 'Updated notes'
         ]);
     }
 
@@ -58,16 +56,16 @@ class ContactDocumentUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $contactDocument = ContactDocument::factory()->create([
-            'name' => 'Original Name',
-            'description' => 'Original Description'
+            'document_type' => 'rfc',
+            'notes' => 'Original Notes'
         ]);
 
         $data = [
             'type' => 'contact-documents',
             'id' => (string) $contactDocument->id,
             'attributes' => [
-                'name' => 'Partially Updated Name'
-                // description should remain unchanged
+                'documentType' => 'ine'
+                // notes should remain unchanged
             ]
         ];
 
@@ -81,8 +79,8 @@ class ContactDocumentUpdateTest extends TestCase
         
         $this->assertDatabaseHas('contact_documents', [
             'id' => $contactDocument->id,
-            'name' => 'Partially Updated Name',
-            'description' => 'Original Description'
+            'document_type' => 'ine',
+            'notes' => 'Original Notes'
         ]);
     }
 
@@ -126,7 +124,7 @@ class ContactDocumentUpdateTest extends TestCase
             'type' => 'contact-documents',
             'id' => (string) $contactDocument->id,
             'attributes' => [
-                'name' => 'Unauthorized Update'
+                'documentType' => 'ine'
             ]
         ];
 
@@ -189,8 +187,8 @@ class ContactDocumentUpdateTest extends TestCase
             'type' => 'contact-documents',
             'id' => (string) $contactDocument->id,
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'invalid_boolean'
+                'documentType' => 'invalid_type', // Invalid document type
+                'fileSize' => 'not_integer' // Invalid integer
             ]
         ];
 

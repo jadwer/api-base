@@ -41,4 +41,19 @@ class ContactPersonFactory extends Factory
         ];
     }
 
+    public function inactive(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_primary' => false,
+            'email' => null,
+            'phone' => null,
+            'mobile' => null,
+            'metadata' => [
+                'notes' => 'Contact person marked as inactive - no longer at company',
+                'preferred_contact_method' => null,
+                'languages' => []
+            ],
+        ]);
+    }
+
 }

@@ -22,8 +22,11 @@ class PurchaseOrderRequest extends ResourceRequest
             'totalAmount' => [$creating ? 'required' : 'sometimes', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string'],
             
-            // Validaciones para relaciones
-            'supplier' => [$creating ? 'required' : 'sometimes', JsonApiRule::toOne()],
+            // Validaciones para relaciones  
+            'contact' => [$creating ? 'required' : 'sometimes', JsonApiRule::toOne()],
+            'contact_id' => $creating 
+                ? ['required', 'exists:contacts,id']
+                : ['sometimes', 'exists:contacts,id'],
         ];
     }
 }

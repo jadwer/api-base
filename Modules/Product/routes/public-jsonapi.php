@@ -15,7 +15,7 @@ use Modules\Product\Http\Controllers\Api\V1\PublicProductController;
 |
 */
 
-JsonApiRoute::server('v1')
+JsonApiRoute::server('public')
     ->prefix('public/v1')
     ->resources(function (ResourceRegistrar $server) {
         $server->resource('public-products', PublicProductController::class)

@@ -80,7 +80,7 @@ class ContactPersonIndexTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('contact-people')
-            ->get('/api/v1/contact-people?filter[isPrimary]=test');
+            ->get('/api/v1/contact-people?filter[is_primary]=1');
 
         $response->assertOk();
     }

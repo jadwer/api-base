@@ -25,14 +25,14 @@ class ContactPersonSchema extends Schema
         return [
             ID::make(),
             
-            Number::make('contactId')->sortable(),
+            Number::make('contactId', 'contact_id')->sortable(),
             Str::make('name')->sortable(),
             Str::make('position')->sortable(),
             Str::make('department')->sortable(),
             Str::make('email')->sortable(),
             Str::make('phone')->sortable(),
             Str::make('mobile')->sortable(),
-            Boolean::make('isPrimary')->sortable(),
+            Boolean::make('isPrimary', 'is_primary')->sortable(),
             // Metadata
             ArrayHash::make('metadata'),
             
@@ -60,21 +60,6 @@ class ContactPersonSchema extends Schema
         ];
     }
 
-    public function sortables(): array
-    {
-        return [
-            'contact_id',
-            'name',
-            'position',
-            'department',
-            'email',
-            'phone',
-            'mobile',
-            'is_primary',
-            'created_at',
-            'updated_at',
-        ];
-    }
 
     public function includePaths(): array
     {

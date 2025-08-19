@@ -6,7 +6,7 @@ use Tests\TestCase;
 use Modules\User\Models\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use Modules\Purchase\Models\Supplier;
+use Modules\Contacts\Models\Contact;
 use Modules\Purchase\Models\PurchaseOrder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -65,8 +65,9 @@ class PurchaseOrderIndexTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
-        $supplier = Supplier::factory()->create();
-        PurchaseOrder::factory()->for($supplier)->count(3)->create();
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+        PurchaseOrder::factory()->create(['contact_id' => $contact->id]);
+        PurchaseOrder::factory()->count(2)->create();
 
         $response = $this->jsonApi()->get('/api/v1/purchase-orders');
 
@@ -97,9 +98,9 @@ class PurchaseOrderIndexTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
-        $supplier = Supplier::factory()->create();
-        PurchaseOrder::factory()->for($supplier)->count(2)->create(['status' => 'pending']);
-        PurchaseOrder::factory()->for($supplier)->count(1)->create(['status' => 'approved']);
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+        PurchaseOrder::factory()->count(2)->create(['contact_id' => $contact->id, 'status' => 'pending']);
+        PurchaseOrder::factory()->count(1)->create(['contact_id' => $contact->id, 'status' => 'approved']);
 
         $response = $this->jsonApi()->get('/api/v1/purchase-orders?filter[status]=pending');
 
@@ -113,11 +114,11 @@ class PurchaseOrderIndexTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
-        $supplier = Supplier::factory()->create();
-        PurchaseOrder::factory()->for($supplier)->create();
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+        PurchaseOrder::factory()->create(['contact_id' => $contact->id]);
 
         $response = $this->jsonApi()
-            ->includePaths('supplier')
+            ->includePaths('contact')
             ->get('/api/v1/purchase-orders');
 
         $response->assertOk();
@@ -129,9 +130,9 @@ class PurchaseOrderIndexTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
-        $supplier = Supplier::factory()->create();
-        $po1 = PurchaseOrder::factory()->for($supplier)->create(['order_date' => '2025-01-01']);
-        $po2 = PurchaseOrder::factory()->for($supplier)->create(['order_date' => '2025-01-02']);
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+        $po1 = PurchaseOrder::factory()->create(['contact_id' => $contact->id, 'order_date' => '2025-01-01']);
+        $po2 = PurchaseOrder::factory()->create(['contact_id' => $contact->id, 'order_date' => '2025-01-02']);
 
         $response = $this->jsonApi()->get('/api/v1/purchase-orders?sort=-orderDate');
 
@@ -154,13 +155,13 @@ class PurchaseOrderIndexTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
-        $supplier1 = Supplier::factory()->create();
-        $supplier2 = Supplier::factory()->create();
+        $contact1 = Contact::factory()->create(['is_supplier' => true]);
+        $contact2 = Contact::factory()->create(['is_supplier' => true]);
 
-        PurchaseOrder::factory()->for($supplier1)->count(2)->create();
-        PurchaseOrder::factory()->for($supplier2)->count(1)->create();
+        PurchaseOrder::factory()->count(2)->create(['contact_id' => $contact1->id]);
+        PurchaseOrder::factory()->count(1)->create(['contact_id' => $contact2->id]);
 
-        $response = $this->jsonApi()->get("/api/v1/purchase-orders?filter[supplier]={$supplier1->id}");
+        $response = $this->jsonApi()->get("/api/v1/purchase-orders?filter[contact]={$contact1->id}");
 
         $response->assertOk();
         // Verificar que al menos tenemos nuestros 2 registros del supplier1

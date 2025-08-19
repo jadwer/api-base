@@ -45,6 +45,9 @@ class PageIndexTest extends TestCase
 
     public function test_unauthenticated_user_can_list_only_published_pages(): void
     {
+        // Clear any existing pages first
+        Page::query()->delete();
+        
         $publishedPages = Page::factory()->published()->count(2)->create();
         Page::factory()->draft()->count(2)->create();
 
@@ -57,7 +60,7 @@ class PageIndexTest extends TestCase
             $response->assertJsonFragment(['id' => (string)$page->id]);
         }
 
-        // Solo 2 nuevas publicadas, además de las del seeder (2 published)
-        $response->assertJsonCount(4, 'data');
+        // Solo 2 páginas publicadas (no dependemos del seeder)
+        $response->assertJsonCount(2, 'data');
     }
 }

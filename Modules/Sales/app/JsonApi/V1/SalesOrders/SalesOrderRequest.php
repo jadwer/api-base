@@ -13,23 +13,26 @@ class SalesOrderRequest extends ResourceRequest
     public function rules(): array
     {
         $order = $this->model();
+        $isCreating = $this->isCreating();
         
         return [
-            'customer_id' => ['required', 'exists:customers,id'],
+            'contact_id' => $isCreating 
+                ? ['required', 'exists:contacts,id']
+                : ['sometimes', 'exists:contacts,id'],
             'order_number' => [
-                'required', 
+                $isCreating ? 'required' : 'sometimes', 
                 'string', 
                 'max:50', 
                 Rule::unique('sales_orders', 'order_number')->ignore($order?->id)
             ],
             'status' => [
-                'required', 
+                $isCreating ? 'required' : 'sometimes', 
                 Rule::in(['draft', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'])
             ],
-            'order_date' => ['required', 'date'],
+            'order_date' => [$isCreating ? 'required' : 'sometimes', 'date'],
             'approved_at' => ['nullable', 'date'],
             'delivered_at' => ['nullable', 'date'],
-            'total_amount' => ['required', 'numeric', 'min:0'],
+            'total_amount' => [$isCreating ? 'required' : 'sometimes', 'numeric', 'min:0'],
             'discount_total' => ['nullable', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string', 'max:1000'],
             'metadata' => ['nullable', 'array'],
@@ -42,8 +45,8 @@ class SalesOrderRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'customer_id.required' => 'Customer is required.',
-            'customer_id.exists' => 'The selected customer does not exist.',
+            'contact_id.required' => 'Contact is required.',
+            'contact_id.exists' => 'The selected contact does not exist.',
             'order_number.required' => 'Order number is required.',
             'order_number.unique' => 'This order number is already taken.',
             'status.required' => 'Order status is required.',

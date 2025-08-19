@@ -61,7 +61,7 @@ class ContactDocumentShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $contactDocument = ContactDocument::factory()->create(['document_type' => 'test string', 'file_path' => 'test string', 'original_filename' => 'Test Name', 'mime_type' => 'test string', 'file_size' => 100, 'uploaded_by' => 100, 'verified_at' => now(), 'verified_by' => 100, 'expires_at' => now(), 'notes' => 'test description']);
+        $contactDocument = ContactDocument::factory()->create(['document_type' => 'rfc', 'file_path' => 'contacts/documents/test.pdf', 'original_filename' => 'Test Name', 'mime_type' => 'application/pdf', 'file_size' => 100, 'uploaded_by' => 100, 'verified_at' => now(), 'verified_by' => 100, 'expires_at' => now()->addYear(), 'notes' => 'test description']);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

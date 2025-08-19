@@ -49,4 +49,17 @@ class ContactDocumentFactory extends Factory
         ];
     }
 
+    /**
+     * Indicate that the contact document is inactive/unverified.
+     */
+    public function inactive(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'expires_at' => null, // No expiration date
+            'verified_at' => null, // Not verified (makes it "inactive")
+            'verified_by' => null,
+            'notes' => 'Document pending verification - inactive status',
+        ]);
+    }
+
 }

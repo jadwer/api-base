@@ -16,7 +16,11 @@ class PurchaseOrderResource extends JsonApiResource
     public function attributes($request): iterable
     {
         return [
-            'supplierId' => $this->supplier_id,
+            // Direct foreign key field - both snake_case and camelCase for compatibility
+            'contact_id' => $this->contact_id,
+            'contactId' => $this->contact_id,
+            
+            // Order fields
             'orderDate' => $this->order_date,
             'status' => $this->status,
             'totalAmount' => $this->total_amount,
@@ -35,8 +39,8 @@ class PurchaseOrderResource extends JsonApiResource
     public function relationships($request): iterable
     {
         return [
-            $this->relation('supplier'),
-            $this->relation('purchaseOrderItems'),
+            'contact' => $this->relation('contact'),
+            'purchaseOrderItems' => $this->relation('purchaseOrderItems'),
         ];
     }
 }

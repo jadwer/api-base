@@ -4,7 +4,7 @@ namespace Modules\Purchase\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\User\Models\User;
-use Modules\Purchase\Models\Supplier;
+use Modules\Contacts\Models\Contact;
 use Modules\Purchase\Models\PurchaseOrder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -22,9 +22,11 @@ class PurchaseOrderUpdateTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
-        $supplier = Supplier::factory()->create();
-        $newSupplier = Supplier::factory()->create(['name' => 'New Supplier']);
-        $purchaseOrder = PurchaseOrder::factory()->for($supplier)->create([
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+        $newContact = Contact::factory()->create(['is_supplier' => true, 'name' => 'New Supplier']);
+        $purchaseOrder = PurchaseOrder::factory()->create([
+            'contact_id' => $contact->id,
+            'contact_id' => $contact->id,
             'order_date' => '2025-01-15',
             'status' => 'pending',
             'total_amount' => 1500.00,
@@ -41,10 +43,10 @@ class PurchaseOrderUpdateTest extends TestCase
                 'notes' => 'Updated purchase order notes',
             ],
             'relationships' => [
-                'supplier' => [
+                'contact' => [
                     'data' => [
-                        'type' => 'suppliers',
-                        'id' => (string) $newSupplier->id,
+                        'type' => 'contacts',
+                        'id' => (string) $newContact->id,
                     ],
                 ],
             ],
@@ -68,12 +70,16 @@ class PurchaseOrderUpdateTest extends TestCase
 
         $this->assertDatabaseHas('purchase_orders', [
             'id' => $purchaseOrder->id,
-            'contact_id' => $newSupplier->id,
-            'order_date' => '2025-01-20',
+            'contact_id' => $newContact->id,
             'status' => 'approved',
-            'total_amount' => '2000.75',
             'notes' => 'Updated purchase order notes',
         ]);
+        
+        // Verificar campos con formato específico por separado
+        $updatedOrder = \Modules\Purchase\Models\PurchaseOrder::find($purchaseOrder->id);
+        $this->assertNotNull($updatedOrder);
+        $this->assertEquals(2000.75, (float) $updatedOrder->total_amount);
+        $this->assertEquals('2025-01-20', $updatedOrder->order_date->format('Y-m-d'));
     }
 
     public function test_admin_can_update_partial_purchase_order_data(): void
@@ -81,8 +87,9 @@ class PurchaseOrderUpdateTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
-        $supplier = Supplier::factory()->create();
-        $purchaseOrder = PurchaseOrder::factory()->for($supplier)->create([
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+        $purchaseOrder = PurchaseOrder::factory()->create([
+            'contact_id' => $contact->id,
             'order_date' => '2025-01-15',
             'status' => 'pending',
             'total_amount' => 1500.00,
@@ -116,12 +123,16 @@ class PurchaseOrderUpdateTest extends TestCase
 
         $this->assertDatabaseHas('purchase_orders', [
             'id' => $purchaseOrder->id,
-            'contact_id' => $supplier->id, // Unchanged
-            'order_date' => '2025-01-15', // Unchanged
+            'contact_id' => $contact->id, // Unchanged
             'status' => 'approved', // Updated
-            'total_amount' => '1500.00', // Unchanged
             'notes' => 'Status updated to approved', // Updated
         ]);
+        
+        // Verificar campos con formato específico por separado
+        $updatedOrder = \Modules\Purchase\Models\PurchaseOrder::find($purchaseOrder->id);
+        $this->assertNotNull($updatedOrder);
+        $this->assertEquals(1500.00, (float) $updatedOrder->total_amount);
+        $this->assertEquals('2025-01-15', $updatedOrder->order_date->format('Y-m-d'));
     }
 
     public function test_update_validates_status_enum(): void
@@ -129,8 +140,8 @@ class PurchaseOrderUpdateTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
-        $supplier = Supplier::factory()->create();
-        $purchaseOrder = PurchaseOrder::factory()->for($supplier)->create();
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+        $purchaseOrder = PurchaseOrder::factory()->create(['contact_id' => $contact->id]);
 
         $data = [
             'type' => 'purchase-orders',
@@ -153,8 +164,8 @@ class PurchaseOrderUpdateTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
-        $supplier = Supplier::factory()->create();
-        $purchaseOrder = PurchaseOrder::factory()->for($supplier)->create();
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+        $purchaseOrder = PurchaseOrder::factory()->create(['contact_id' => $contact->id]);
 
         $data = [
             'type' => 'purchase-orders',
@@ -172,21 +183,21 @@ class PurchaseOrderUpdateTest extends TestCase
         ], $response);
     }
 
-    public function test_update_validates_supplier_exists(): void
+    public function test_update_validates_contact_exists(): void
     {
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
-        $supplier = Supplier::factory()->create();
-        $purchaseOrder = PurchaseOrder::factory()->for($supplier)->create();
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+        $purchaseOrder = PurchaseOrder::factory()->create(['contact_id' => $contact->id]);
 
         $data = [
             'type' => 'purchase-orders',
             'id' => (string) $purchaseOrder->id,
             'relationships' => [
-                'supplier' => [
+                'contact' => [
                     'data' => [
-                        'type' => 'suppliers',
+                        'type' => 'contacts',
                         'id' => '999999', // Non-existent supplier
                     ],
                 ],
@@ -212,8 +223,8 @@ class PurchaseOrderUpdateTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
-        $supplier = Supplier::factory()->create();
-        $purchaseOrder = PurchaseOrder::factory()->for($supplier)->create();
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+        $purchaseOrder = PurchaseOrder::factory()->create(['contact_id' => $contact->id]);
 
         $data = [
             'type' => 'purchase-orders',
@@ -251,8 +262,8 @@ class PurchaseOrderUpdateTest extends TestCase
 
     public function test_unauthorized_user_cannot_update_purchase_order(): void
     {
-        $supplier = Supplier::factory()->create();
-        $purchaseOrder = PurchaseOrder::factory()->for($supplier)->create();
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+        $purchaseOrder = PurchaseOrder::factory()->create(['contact_id' => $contact->id]);
 
         $data = [
             'type' => 'purchase-orders',
@@ -270,8 +281,8 @@ class PurchaseOrderUpdateTest extends TestCase
     public function test_user_without_permission_cannot_update_purchase_order(): void
     {
         $user = User::factory()->create();
-        $supplier = Supplier::factory()->create();
-        $purchaseOrder = PurchaseOrder::factory()->for($supplier)->create();
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+        $purchaseOrder = PurchaseOrder::factory()->create(['contact_id' => $contact->id]);
         $this->actingAs($user, 'sanctum');
 
         $data = [

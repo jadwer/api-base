@@ -69,7 +69,6 @@ class Server extends BaseServer
 
             // Product Module
             ProductSchema::class,
-            PublicProductSchema::class,
             UnitSchema::class,
             CategorySchema::class,
             BrandSchema::class,
@@ -113,7 +112,6 @@ class Server extends BaseServer
         $authorizers = [
             'audits' => AuditAuthorizer::class,
             'products' => \Modules\Product\JsonApi\V1\Products\ProductAuthorizer::class,
-            'public-products' => \Modules\Product\JsonApi\V1\PublicProducts\PublicProductAuthorizer::class,
             'units' => \Modules\Product\JsonApi\V1\Units\UnitAuthorizer::class,
             'categories' => \Modules\Product\JsonApi\V1\Categories\CategoryAuthorizer::class,
             'brands' => \Modules\Product\JsonApi\V1\Brands\BrandAuthorizer::class,
@@ -126,7 +124,7 @@ class Server extends BaseServer
             'purchase-orders' => \Modules\Purchase\JsonApi\V1\PurchaseOrders\PurchaseOrderAuthorizer::class,
             'purchase-order-items' => \Modules\Purchase\JsonApi\V1\PurchaseOrderItems\PurchaseOrderItemAuthorizer::class,
             'sales-orders' => \Modules\Sales\JsonApi\V1\SalesOrders\SalesOrderAuthorizer::class,
-            'customers' => \Modules\Sales\JsonApi\V1\Customers\CustomersAuthorizer::class,
+            'customers' => \Modules\Sales\JsonApi\V1\Customers\CustomerAuthorizer::class,
             'sales-order-items' => \Modules\Sales\JsonApi\V1\SalesOrderItems\SalesOrderItemAuthorizer::class,
             
             // Ecommerce Module

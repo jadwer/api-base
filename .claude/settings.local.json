@@ -12,7 +12,8 @@
       "Bash(grep:*)",
       "Bash(find:*)",
       "Bash(curl:*)",
-      "Bash(time php artisan test:*)"
+      "Bash(time php artisan test:*)",
+      "Bash(sed:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

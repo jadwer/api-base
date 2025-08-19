@@ -24,27 +24,24 @@ class ContactDocumentSchema extends Schema
     {
         return [
             ID::make(),
-            
-            Number::make('contactId')->sortable(),
-            Str::make('documentType')->sortable(),
-            Str::make('filePath')->sortable(),
-            Str::make('originalFilename')->sortable(),
-            Str::make('mimeType')->sortable(),
-            Number::make('fileSize')->sortable(),
-            Number::make('uploadedBy')->sortable(),
-            DateTime::make('verifiedAt')->sortable(),
-            Number::make('verifiedBy')->sortable(),
-            DateTime::make('expiresAt')->sortable(),
+            Number::make('contactId', 'contact_id')->sortable(),
+            Str::make('documentType', 'document_type')->sortable(),
+            Str::make('filePath', 'file_path'),
+            Str::make('originalFilename', 'original_filename'),
+            Str::make('mimeType', 'mime_type'),
+            Number::make('fileSize', 'file_size'),
+            Number::make('uploadedBy', 'uploaded_by'),
+            DateTime::make('verifiedAt', 'verified_at'),
+            Number::make('verifiedBy', 'verified_by'),
+            DateTime::make('expiresAt', 'expires_at'),
             Str::make('notes'),
-            // Metadata
             ArrayHash::make('metadata'),
             
-            // Timestamps
-            DateTime::make('createdAt')->sortable()->readOnly(),
-            DateTime::make('updatedAt')->sortable()->readOnly(),
-
             // Relationships
-            BelongsTo::make('contact'),
+            BelongsTo::make('contact')->type('contacts'),
+            
+            DateTime::make('createdAt', 'created_at')->readOnly()->sortable(),
+            DateTime::make('updatedAt', 'updated_at')->readOnly(),
         ];
     }
 
@@ -63,23 +60,6 @@ class ContactDocumentSchema extends Schema
         ];
     }
 
-    public function sortables(): array
-    {
-        return [
-            'contact_id',
-            'document_type',
-            'file_path',
-            'original_filename',
-            'mime_type',
-            'file_size',
-            'uploaded_by',
-            'verified_at',
-            'verified_by',
-            'expires_at',
-            'created_at',
-            'updated_at',
-        ];
-    }
 
     public function includePaths(): array
     {

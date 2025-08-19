@@ -33,8 +33,8 @@ class ContactPersonUpdateTest extends TestCase
             'id' => (string) $contactPerson->id,
             'attributes' => [
                 'name' => 'Updated ContactPerson',
-                'description' => 'Updated description',
-                'is_active' => false
+                'position' => 'Updated position',
+                'isPrimary' => false
             ]
         ];
 
@@ -49,8 +49,8 @@ class ContactPersonUpdateTest extends TestCase
         $this->assertDatabaseHas('contact_persons', [
             'id' => $contactPerson->id,
             'name' => 'Updated ContactPerson',
-            'description' => 'Updated description',
-            'is_active' => false
+            'position' => 'Updated position',
+            'is_primary' => false
         ]);
     }
 
@@ -59,7 +59,7 @@ class ContactPersonUpdateTest extends TestCase
         $admin = $this->getAdminUser();
         $contactPerson = ContactPerson::factory()->create([
             'name' => 'Original Name',
-            'description' => 'Original Description'
+            'position' => 'Original Position'
         ]);
 
         $data = [
@@ -67,7 +67,7 @@ class ContactPersonUpdateTest extends TestCase
             'id' => (string) $contactPerson->id,
             'attributes' => [
                 'name' => 'Partially Updated Name'
-                // description should remain unchanged
+                // position should remain unchanged
             ]
         ];
 
@@ -82,7 +82,7 @@ class ContactPersonUpdateTest extends TestCase
         $this->assertDatabaseHas('contact_persons', [
             'id' => $contactPerson->id,
             'name' => 'Partially Updated Name',
-            'description' => 'Original Description'
+            'position' => 'Original Position'
         ]);
     }
 
@@ -190,7 +190,7 @@ class ContactPersonUpdateTest extends TestCase
             'id' => (string) $contactPerson->id,
             'attributes' => [
                 'name' => '', // Empty name
-                'is_active' => 'invalid_boolean'
+                'isPrimary' => 'invalid_boolean'
             ]
         ];
 

@@ -29,8 +29,8 @@ class PurchaseOrderSchema extends Schema
     {
         return [
             ID::make(),
-            Number::make('supplierId', 'supplier_id')
-                ->sortable(),
+            Number::make('contact_id'),
+            Number::make('contactId', 'contact_id'),
             DateTime::make('orderDate', 'order_date')
                 ->sortable(),
             Str::make('status')
@@ -41,8 +41,7 @@ class PurchaseOrderSchema extends Schema
             DateTime::make('createdAt')->sortable()->readOnly(),
             DateTime::make('updatedAt')->sortable()->readOnly(),
             
-            BelongsTo::make('supplier')
-                ->type('suppliers'),
+            BelongsTo::make('contact')->type('contacts'),
             HasMany::make('purchaseOrderItems')
                 ->type('purchase-order-items'),
         ];
@@ -56,7 +55,7 @@ class PurchaseOrderSchema extends Schema
         return [
             WhereIdIn::make($this),
             Where::make('status'),
-            Where::make('supplier', 'supplier_id'),
+            Where::make('contact', 'contact_id'),
         ];
     }
 
@@ -74,7 +73,7 @@ class PurchaseOrderSchema extends Schema
     public function includePaths(): array
     {
         return [
-            'supplier',
+            'contact',
             'purchaseOrderItems',
         ];
     }

@@ -100,7 +100,7 @@ class SalesOrderIndexTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('sales-orders')
-            ->get("/api/v1/sales-orders?filter[customer]={$customer1->id}");
+            ->get("/api/v1/sales-orders?filter[contact]={$customer1->id}");
 
         $response->assertOk();
         $response->assertJsonCount(2, 'data');

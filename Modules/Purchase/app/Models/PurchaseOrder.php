@@ -71,6 +71,15 @@ class PurchaseOrder extends Model
     }
 
     /**
+     * Get the supplier for this purchase order.
+     * Note: Supplier is essentially a Contact, so this relationship uses contact_id
+     */
+    public function supplier(): BelongsTo
+    {
+        return $this->belongsTo(Supplier::class, 'contact_id');
+    }
+
+    /**
      * Get the purchase order items for the purchase order.
      */
     public function purchaseOrderItems(): HasMany

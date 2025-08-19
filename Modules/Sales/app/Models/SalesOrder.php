@@ -63,6 +63,11 @@ class SalesOrder extends Model
         return $this->belongsTo(\Modules\Contacts\Models\Contact::class);
     }
 
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class, 'contact_id');
+    }
+
     public function items(): HasMany
     {
         return $this->hasMany(SalesOrderItem::class);

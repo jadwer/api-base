@@ -82,10 +82,12 @@ class WarehouseIndexTest extends TestCase
         $admin = $this->createUserWithWarehousePermissions('admin', ['warehouses.index']);
         $this->actingAs($admin, 'sanctum');
 
-        // Clear all existing warehouses first
-        \Modules\Inventory\Models\Stock::truncate();
-        \Modules\Inventory\Models\WarehouseLocation::truncate();
-        \Modules\Inventory\Models\Warehouse::truncate();
+        // Clear all existing data in correct order to respect foreign key constraints
+        \Modules\Inventory\Models\InventoryMovement::query()->delete();
+        \Modules\Inventory\Models\ProductBatch::query()->delete();
+        \Modules\Inventory\Models\Stock::query()->delete();
+        \Modules\Inventory\Models\WarehouseLocation::query()->delete();
+        \Modules\Inventory\Models\Warehouse::query()->delete();
         
         // Create warehouses with specific names for sorting
         Warehouse::factory()->create(['name' => 'Z Warehouse']);
@@ -104,10 +106,12 @@ class WarehouseIndexTest extends TestCase
         $admin = $this->createUserWithWarehousePermissions('admin', ['warehouses.index']);
         $this->actingAs($admin, 'sanctum');
 
-        // Clear all existing warehouses first
-        \Modules\Inventory\Models\Stock::truncate();
-        \Modules\Inventory\Models\WarehouseLocation::truncate();
-        \Modules\Inventory\Models\Warehouse::truncate();
+        // Clear all existing data in correct order to respect foreign key constraints
+        \Modules\Inventory\Models\InventoryMovement::query()->delete();
+        \Modules\Inventory\Models\ProductBatch::query()->delete();
+        \Modules\Inventory\Models\Stock::query()->delete();
+        \Modules\Inventory\Models\WarehouseLocation::query()->delete();
+        \Modules\Inventory\Models\Warehouse::query()->delete();
 
         // Create active and inactive warehouses
         Warehouse::factory()->create(['is_active' => true, 'name' => 'Active Warehouse']);
@@ -126,10 +130,12 @@ class WarehouseIndexTest extends TestCase
         $tech = $this->createUserWithWarehousePermissions('tech', ['warehouses.index']);
         $this->actingAs($tech, 'sanctum');
 
-        // Clear all existing warehouses first
-        \Modules\Inventory\Models\Stock::truncate();
-        \Modules\Inventory\Models\WarehouseLocation::truncate();
-        \Modules\Inventory\Models\Warehouse::truncate();
+        // Clear all existing data in correct order to respect foreign key constraints
+        \Modules\Inventory\Models\InventoryMovement::query()->delete();
+        \Modules\Inventory\Models\ProductBatch::query()->delete();
+        \Modules\Inventory\Models\Stock::query()->delete();
+        \Modules\Inventory\Models\WarehouseLocation::query()->delete();
+        \Modules\Inventory\Models\Warehouse::query()->delete();
 
         Warehouse::factory()->count(2)->create();
 

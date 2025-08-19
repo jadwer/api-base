@@ -37,9 +37,12 @@ class SalesOrderSchema extends Schema
             ID::make(),
             
             // Foreign key
-            Number::make('customer_id'),
+            Number::make('contact_id'),
             
-            // Relación con Customer
+            // Relación con Contact
+            BelongsTo::make('contact')->type('contacts'),
+            
+            // Relación con Customer (usa contact_id como clave foránea)
             BelongsTo::make('customer')->type('customers'),
             
             // Campos básicos - snake_case consistency
@@ -78,7 +81,7 @@ class SalesOrderSchema extends Schema
             WhereIdIn::make($this),
             Where::make('order_number'),
             Where::make('status'),
-            Where::make('customer', 'customer_id'),  // Cambiar de WhereIn a Where
+            Where::make('contact', 'contact_id'),
             Where::make('order_date'),
         ];
     }
@@ -89,7 +92,8 @@ class SalesOrderSchema extends Schema
     public function includePaths(): array
     {
         return [
-            'customer',
+            'contact',
+            'customer', // Alias para contact en contexto de ventas
             'items',
             'items.product',
         ];

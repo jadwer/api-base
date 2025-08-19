@@ -13,8 +13,8 @@ class SalesOrderResource extends JsonApiResource
     {
         return [
             // Direct foreign key field - both snake_case and camelCase for compatibility
-            'customer_id' => $this->customer_id,
-            'customerId' => $this->customer_id,
+            'contact_id' => $this->contact_id,
+            'contactId' => $this->contact_id,
             
             // Order fields - snake_case for existing compatibility
             'order_number' => $this->order_number,
@@ -45,7 +45,7 @@ class SalesOrderResource extends JsonApiResource
     public function relationships($request): iterable
     {
         return [
-            'customer' => $this->relation('customer'),
+            'contact' => $this->relation('contact'),
             'items' => $this->relation('items'),
         ];
     }

@@ -62,8 +62,8 @@ class ContactDocumentIndexTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        ContactDocument::factory()->create(['document_type' => 'test string']);
-        ContactDocument::factory()->create(['document_type' => 'test string']);
+        ContactDocument::factory()->create(['document_type' => 'rfc']);
+        ContactDocument::factory()->create(['document_type' => 'ine']);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -73,17 +73,17 @@ class ContactDocumentIndexTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_admin_can_filter_ContactDocuments_by_status(): void
+    public function test_admin_can_filter_ContactDocuments_by_document_type(): void
     {
         $admin = $this->getAdminUser();
         
-        ContactDocument::factory()->create([]);
-        ContactDocument::factory()->create([]);
+        ContactDocument::factory()->create(['document_type' => 'rfc']);
+        ContactDocument::factory()->create(['document_type' => 'ine']);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('contact-documents')
-            ->get('/api/v1/contact-documents?filter[status]=test');
+            ->get('/api/v1/contact-documents?filter[document_type]=rfc');
 
         $response->assertOk();
     }

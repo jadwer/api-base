@@ -69,21 +69,21 @@ class SalesOrderShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $customer = Customer::factory()->create(['name' => 'Test Customer Relationship']);
-        $salesOrder = SalesOrder::factory()->create(['contact_id' => $customer->id]);
+        $contact = \Modules\Contacts\Models\Contact::factory()->create(['name' => 'Test Contact Relationship']);
+        $salesOrder = SalesOrder::factory()->create(['contact_id' => $contact->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('sales-orders')
-            ->get("/api/v1/sales-orders/{$salesOrder->id}?include=customer");
+            ->get("/api/v1/sales-orders/{$salesOrder->id}?include=contact");
 
         $response->assertOk();
         
-        // Verificar que incluye la relación customer
+        // Verificar que incluye la relación contact
         $response->assertJsonStructure([
             'data' => [
                 'relationships' => [
-                    'customer' => [
+                    'contact' => [
                         'data'
                     ]
                 ]
@@ -277,9 +277,9 @@ class SalesOrderShowTest extends TestCase
     public function test_admin_can_view_sales_order_with_nested_items_and_products(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create(['name' => 'Nested Customer']);
+        $contact = \Modules\Contacts\Models\Contact::factory()->create(['name' => 'Nested Contact']);
         $salesOrder = SalesOrder::factory()->create([
-            'contact_id' => $customer->id,
+            'contact_id' => $contact->id,
             'order_number' => 'SO-NESTED-PROD-001'
         ]);
         
@@ -307,7 +307,7 @@ class SalesOrderShowTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('sales-orders')
-            ->includePaths('items.product', 'customer')
+            ->includePaths('items.product', 'contact')
             ->get("/api/v1/sales-orders/{$salesOrder->id}");
 
         $response->assertOk();
@@ -317,7 +317,7 @@ class SalesOrderShowTest extends TestCase
             'data' => [
                 'relationships' => [
                     'items' => ['data'],
-                    'customer' => ['data']
+                    'contact' => ['data']
                 ]
             ],
             'included'
@@ -325,16 +325,21 @@ class SalesOrderShowTest extends TestCase
         
         // Verificar que los datos están en included
         $included = $response->json('included');
-        $this->assertCount(5, $included); // 2 items + 2 products + 1 customer
+        
+        // Debug: Ver qué tipos hay en included
+        dump('Included types:', collect($included)->pluck('type')->toArray());
+        dump('Included count:', count($included));
+        
+        $this->assertCount(5, $included); // 2 items + 2 products + 1 contact
         
         // Buscar cada tipo en included
         $itemsIncluded = collect($included)->where('type', 'sales-order-items');
         $productsIncluded = collect($included)->where('type', 'products');
-        $customerIncluded = collect($included)->firstWhere('type', 'customers');
+        $contactIncluded = collect($included)->firstWhere('type', 'contacts');
         
         $this->assertEquals(2, $itemsIncluded->count());
         $this->assertEquals(2, $productsIncluded->count());
-        $this->assertNotNull($customerIncluded);
+        $this->assertNotNull($contactIncluded);
         
         // Verificar que cada item tiene relación con su producto
         foreach ($itemsIncluded as $item) {
@@ -347,16 +352,16 @@ class SalesOrderShowTest extends TestCase
     public function test_admin_can_view_sales_order_with_hybrid_approach(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create(['name' => 'Hybrid Customer']);
+        $contact = \Modules\Contacts\Models\Contact::factory()->create(['name' => 'Hybrid Contact']);
         $salesOrder = SalesOrder::factory()->create([
-            'contact_id' => $customer->id,
+            'contact_id' => $contact->id,
             'order_number' => 'SO-HYBRID-001'
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('sales-orders')
-            ->includePaths('customer')
+            ->includePaths('contact')
             ->get("/api/v1/sales-orders/{$salesOrder->id}");
 
         $response->assertOk();
@@ -364,22 +369,22 @@ class SalesOrderShowTest extends TestCase
         // Verificar que tenemos BOTH el campo directo Y la relación
         $data = $response->json('data');
         
-        // Campo directo customerId (BOTH snake_case AND camelCase)
-        $this->assertArrayHasKey('customer_id', $data['attributes']);
-        $this->assertArrayHasKey('customerId', $data['attributes']);
-        $this->assertEquals($customer->id, $data['attributes']['customer_id']);
-        $this->assertEquals($customer->id, $data['attributes']['customerId']);
+        // Campo directo contactId (BOTH snake_case AND camelCase)
+        $this->assertArrayHasKey('contact_id', $data['attributes']);
+        $this->assertArrayHasKey('contactId', $data['attributes']);
+        $this->assertEquals($contact->id, $data['attributes']['contact_id']);
+        $this->assertEquals($contact->id, $data['attributes']['contactId']);
         
-        // Relación customer en relationships
-        $this->assertArrayHasKey('customer', $data['relationships']);
-        $this->assertEquals((string) $customer->id, $data['relationships']['customer']['data']['id']);
-        $this->assertEquals('customers', $data['relationships']['customer']['data']['type']);
+        // Relación contact en relationships
+        $this->assertArrayHasKey('contact', $data['relationships']);
+        $this->assertEquals((string) $contact->id, $data['relationships']['contact']['data']['id']);
+        $this->assertEquals('contacts', $data['relationships']['contact']['data']['type']);
         
         // Customer en included
         $included = $response->json('included');
-        $customerIncluded = collect($included)->firstWhere('type', 'customers');
-        $this->assertNotNull($customerIncluded);
-        $this->assertEquals((string) $customer->id, $customerIncluded['id']);
+        $contactIncluded = collect($included)->firstWhere('type', 'contacts');
+        $this->assertNotNull($contactIncluded);
+        $this->assertEquals((string) $contact->id, $contactIncluded['id']);
         
         // Verificar que campos están en snake_case (compatibilidad existente)
         $this->assertArrayHasKey('order_number', $data['attributes']);

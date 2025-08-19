@@ -4,7 +4,7 @@ namespace Modules\Purchase\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\User\Models\User;
-use Modules\Purchase\Models\Supplier;
+use Modules\Contacts\Models\Contact;
 use Modules\Purchase\Models\PurchaseOrder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -22,21 +22,22 @@ class PurchaseOrderStoreTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
-        $supplier = Supplier::factory()->create();
+        $contact = Contact::factory()->create(['is_supplier' => true]);
 
         $data = [
             'type' => 'purchase-orders',
             'attributes' => [
+                'contact_id' => $contact->id,
                 'orderDate' => '2025-01-15',
                 'status' => 'pending',
                 'totalAmount' => 2500.50,
                 'notes' => 'New purchase order for office supplies',
             ],
             'relationships' => [
-                'supplier' => [
+                'contact' => [
                     'data' => [
-                        'type' => 'suppliers',
-                        'id' => (string) $supplier->id,
+                        'type' => 'contacts',
+                        'id' => (string) $contact->id,
                     ],
                 ],
             ],
@@ -74,13 +75,13 @@ class PurchaseOrderStoreTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('purchase_orders', [
-            'contact_id' => $supplier->id,
+            'contact_id' => $contact->id,
             'status' => 'pending',
             'notes' => 'New purchase order for office supplies',
         ]);
         
         // Verificar campos con formato específico por separado
-        $order = \Modules\Purchase\Models\PurchaseOrder::where('supplier_id', $supplier->id)
+        $order = \Modules\Purchase\Models\PurchaseOrder::where('contact_id', $contact->id)
             ->where('notes', 'New purchase order for office supplies')
             ->first();
         $this->assertNotNull($order);
@@ -93,20 +94,21 @@ class PurchaseOrderStoreTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
-        $supplier = Supplier::factory()->create();
+        $contact = Contact::factory()->create(['is_supplier' => true]);
 
         $data = [
             'type' => 'purchase-orders',
             'attributes' => [
+                'contact_id' => $contact->id,
                 'orderDate' => '2025-01-20',
                 'status' => 'pending',
                 'totalAmount' => 1000.00,
             ],
             'relationships' => [
-                'supplier' => [
+                'contact' => [
                     'data' => [
-                        'type' => 'suppliers',
-                        'id' => (string) $supplier->id,
+                        'type' => 'contacts',
+                        'id' => (string) $contact->id,
                     ],
                 ],
             ],
@@ -116,12 +118,16 @@ class PurchaseOrderStoreTest extends TestCase
 
         $response->assertCreated();
         $this->assertDatabaseHas('purchase_orders', [
-            'contact_id' => $supplier->id,
-            'order_date' => '2025-01-20',
+            'contact_id' => $contact->id,
             'status' => 'pending',
-            'total_amount' => '1000.00',
             'notes' => null,
         ]);
+        
+        // Verificar campos con formato específico por separado
+        $order = \Modules\Purchase\Models\PurchaseOrder::where('contact_id', $contact->id)->first();
+        $this->assertNotNull($order);
+        $this->assertEquals(1000.00, (float) $order->total_amount);
+        $this->assertEquals('2025-01-20', $order->order_date->format('Y-m-d'));
     }
 
     public function test_store_validates_required_fields(): void
@@ -144,7 +150,8 @@ class PurchaseOrderStoreTest extends TestCase
             '/data/attributes/orderDate',
             '/data/attributes/status', 
             '/data/attributes/totalAmount',
-            '/data/relationships/supplier',
+            '/data/relationships/contact',
+            '/data/attributes/contact_id',
         ], $response);
     }
 
@@ -156,15 +163,16 @@ class PurchaseOrderStoreTest extends TestCase
         $data = [
             'type' => 'purchase-orders',
             'attributes' => [
+                'contact_id' => 999999,
                 'orderDate' => '2025-01-15',
                 'status' => 'pending',
                 'totalAmount' => 1500.00,
             ],
             'relationships' => [
-                'supplier' => [
+                'contact' => [
                     'data' => [
-                        'type' => 'suppliers',
-                        'id' => '999999', // Non-existent supplier
+                        'type' => 'contacts',
+                        'id' => '999999', // Non-existent contact
                     ],
                 ],
             ],
@@ -189,20 +197,21 @@ class PurchaseOrderStoreTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
-        $supplier = Supplier::factory()->create();
+        $contact = Contact::factory()->create(['is_supplier' => true]);
 
         $data = [
             'type' => 'purchase-orders',
             'attributes' => [
+                'contact_id' => $contact->id,
                 'orderDate' => '2025-01-15',
                 'status' => 'invalid_status', // Invalid status
                 'totalAmount' => 1500.00,
             ],
             'relationships' => [
-                'supplier' => [
+                'contact' => [
                     'data' => [
-                        'type' => 'suppliers',
-                        'id' => (string) $supplier->id,
+                        'type' => 'contacts',
+                        'id' => (string) $contact->id,
                     ],
                 ],
             ],
@@ -221,20 +230,21 @@ class PurchaseOrderStoreTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
-        $supplier = Supplier::factory()->create();
+        $contact = Contact::factory()->create(['is_supplier' => true]);
 
         $data = [
             'type' => 'purchase-orders',
             'attributes' => [
+                'contact_id' => $contact->id,
                 'orderDate' => '2025-01-15',
                 'status' => 'pending',
                 'totalAmount' => -100.00, // Negative amount
             ],
             'relationships' => [
-                'supplier' => [
+                'contact' => [
                     'data' => [
-                        'type' => 'suppliers',
-                        'id' => (string) $supplier->id,
+                        'type' => 'contacts',
+                        'id' => (string) $contact->id,
                     ],
                 ],
             ],
@@ -253,20 +263,21 @@ class PurchaseOrderStoreTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
-        $supplier = Supplier::factory()->create();
+        $contact = Contact::factory()->create(['is_supplier' => true]);
 
         $data = [
             'type' => 'purchase-orders',
             'attributes' => [
+                'contact_id' => $contact->id,
                 'orderDate' => 'invalid-date', // Invalid date format
                 'status' => 'pending',
                 'totalAmount' => 1500.00,
             ],
             'relationships' => [
-                'supplier' => [
+                'contact' => [
                     'data' => [
-                        'type' => 'suppliers',
-                        'id' => (string) $supplier->id,
+                        'type' => 'contacts',
+                        'id' => (string) $contact->id,
                     ],
                 ],
             ],
@@ -282,20 +293,21 @@ class PurchaseOrderStoreTest extends TestCase
 
     public function test_unauthorized_user_cannot_create_purchase_order(): void
     {
-        $supplier = Supplier::factory()->create();
+        $contact = Contact::factory()->create(['is_supplier' => true]);
 
         $data = [
             'type' => 'purchase-orders',
             'attributes' => [
+                'contact_id' => $contact->id,
                 'orderDate' => '2025-01-15',
                 'status' => 'pending',
                 'totalAmount' => 1500.00,
             ],
             'relationships' => [
-                'supplier' => [
+                'contact' => [
                     'data' => [
-                        'type' => 'suppliers',
-                        'id' => (string) $supplier->id,
+                        'type' => 'contacts',
+                        'id' => (string) $contact->id,
                     ],
                 ],
             ],
@@ -309,21 +321,22 @@ class PurchaseOrderStoreTest extends TestCase
     public function test_user_without_permission_cannot_create_purchase_order(): void
     {
         $user = User::factory()->create();
-        $supplier = Supplier::factory()->create();
+        $contact = Contact::factory()->create(['is_supplier' => true]);
         $this->actingAs($user, 'sanctum');
 
         $data = [
             'type' => 'purchase-orders',
             'attributes' => [
+                'contact_id' => $contact->id,
                 'orderDate' => '2025-01-15',
                 'status' => 'pending',
                 'totalAmount' => 1500.00,
             ],
             'relationships' => [
-                'supplier' => [
+                'contact' => [
                     'data' => [
-                        'type' => 'suppliers',
-                        'id' => (string) $supplier->id,
+                        'type' => 'contacts',
+                        'id' => (string) $contact->id,
                     ],
                 ],
             ],

@@ -25,6 +25,8 @@ class ContactDocument extends Model
         'metadata' => 'array'
     ];
 
+    protected $appends = ['status'];
+
     // Business Logic Validation
     protected static function boot()
     {
@@ -55,7 +57,7 @@ class ContactDocument extends Model
             'orden_compra', 'factura', 'contrato', 'otros'
         ];
         
-        if (!in_array($this->document_type, $allowedTypes)) {
+        if ($this->document_type && !in_array($this->document_type, $allowedTypes)) {
             throw ValidationException::withMessages([
                 'document_type' => 'Invalid document type.'
             ]);
@@ -182,6 +184,23 @@ class ContactDocument extends Model
         }
         
         return round($bytes, 2) . ' ' . $units[$i];
+    }
+
+    public function getStatusAttribute(): string
+    {
+        if (!$this->isVerified()) {
+            return 'unverified';
+        }
+        
+        if ($this->isExpired()) {
+            return 'expired';
+        }
+        
+        if ($this->isExpiringIn(30)) {
+            return 'expiring_soon';
+        }
+        
+        return 'active';
     }
 
     public function getExpirationStatus(): string

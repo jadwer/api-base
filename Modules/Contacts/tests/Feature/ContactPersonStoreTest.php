@@ -26,10 +26,14 @@ class ContactPersonStoreTest extends TestCase
     public function test_admin_can_create_ContactPerson(): void
     {
         $admin = $this->getAdminUser();
+        
+        // Create a Contact first
+        $contact = \Modules\Contacts\Models\Contact::factory()->create();
 
         $data = [
             'type' => 'contact-people',
             'attributes' => [
+                'contactId' => $contact->id,
                 'name' => 'Test Name',
                 'position' => 'test string',
                 'department' => 'test string',
@@ -48,16 +52,29 @@ class ContactPersonStoreTest extends TestCase
 
         $response->assertCreated();
         
-        $this->assertDatabaseHas('contact_persons', ['name' => 'Test Name', 'position' => 'test string', 'department' => 'test string', 'email' => 'test@example.com', 'phone' => 'test string', 'mobile' => 'test string', 'is_primary' => true]);
+        $this->assertDatabaseHas('contact_persons', [
+            'contact_id' => $contact->id,
+            'name' => 'Test Name', 
+            'position' => 'test string', 
+            'department' => 'test string', 
+            'email' => 'test@example.com', 
+            'phone' => 'test string', 
+            'mobile' => 'test string', 
+            'is_primary' => true
+        ]);
     }
 
     public function test_admin_can_create_ContactPerson_with_minimal_data(): void
     {
         $admin = $this->getAdminUser();
+        
+        // Create a Contact first
+        $contact = \Modules\Contacts\Models\Contact::factory()->create();
 
         $data = [
             'type' => 'contact-people',
             'attributes' => [
+                'contactId' => $contact->id,
                 'name' => 'Test Name',
                 'isPrimary' => true
             ]
@@ -75,12 +92,16 @@ class ContactPersonStoreTest extends TestCase
     public function test_customer_user_cannot_create_ContactPerson(): void
     {
         $customer = $this->getCustomerUser();
+        
+        // Create a Contact first
+        $contact = \Modules\Contacts\Models\Contact::factory()->create();
 
         $data = [
             'type' => 'contact-people',
             'attributes' => [
+                'contactId' => $contact->id,
                 'name' => 'Unauthorized ContactPerson',
-                'is_active' => true
+                'isPrimary' => true
             ]
         ];
 
@@ -95,11 +116,15 @@ class ContactPersonStoreTest extends TestCase
 
     public function test_guest_cannot_create_ContactPerson(): void
     {
+        // Create a Contact first
+        $contact = \Modules\Contacts\Models\Contact::factory()->create();
+        
         $data = [
             'type' => 'contact-people',
             'attributes' => [
+                'contactId' => $contact->id,
                 'name' => 'Guest ContactPerson',
-                'is_active' => true
+                'isPrimary' => true
             ]
         ];
 
@@ -118,7 +143,8 @@ class ContactPersonStoreTest extends TestCase
         $data = [
             'type' => 'contact-people',
             'attributes' => [
-                'description' => 'Missing name'
+                'position' => 'Missing name'
+                // Missing required contactId and name
             ]
         ];
 
@@ -129,18 +155,22 @@ class ContactPersonStoreTest extends TestCase
             ->post('/api/v1/contact-people');
 
         $response->assertStatus(422);
-        $this->assertJsonApiValidationErrors(['/data/attributes/name'], $response);
+        $this->assertJsonApiValidationErrors(['/data/attributes/name', '/data/attributes/contactId'], $response);
     }
 
     public function test_cannot_create_ContactPerson_with_invalid_data(): void
     {
         $admin = $this->getAdminUser();
+        
+        // Create a Contact first
+        $contact = \Modules\Contacts\Models\Contact::factory()->create();
 
         $data = [
             'type' => 'contact-people',
             'attributes' => [
+                'contactId' => $contact->id,
                 'name' => '', // Empty name
-                'is_active' => 'not_boolean' // Invalid boolean
+                'isPrimary' => 'not_boolean' // Invalid boolean
             ]
         ];
 

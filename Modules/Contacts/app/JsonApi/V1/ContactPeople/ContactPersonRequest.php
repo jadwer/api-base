@@ -10,16 +10,17 @@ class ContactPersonRequest extends ResourceRequest
     public function rules(): array
     {
         $contactperson = $this->model();
+        $isUpdate = $this->isMethod('patch');
         
         return [
-            'contact_id' => ['nullable', 'integer'],
-            'name' => ['nullable', 'string', 'max:255'],
+            'contactId' => $isUpdate ? ['sometimes', 'integer', 'exists:contacts,id'] : ['required', 'integer', 'exists:contacts,id'],
+            'name' => $isUpdate ? ['sometimes', 'string', 'max:255'] : ['required', 'string', 'max:255'],
             'position' => ['nullable', 'string', 'max:255'],
             'department' => ['nullable', 'string', 'max:255'],
             'email' => ['nullable', 'string', 'max:255', 'email'],
             'phone' => ['nullable', 'string', 'max:255'],
             'mobile' => ['nullable', 'string', 'max:255'],
-            'is_primary' => ['nullable', 'boolean'],
+            'isPrimary' => ['nullable', 'boolean'],
             'metadata' => ['nullable', 'array'],
         ];
     }

@@ -248,10 +248,10 @@ class SalesOrderStoreTest extends TestCase
         $response->assertStatus(422);
         $errors = $response->json('errors');
         $this->assertNotEmpty($errors);
-        $customerIdError = collect($errors)->first(function ($error) {
-            return str_contains($error['source']['pointer'] ?? '', 'customer_id');
+        $contactIdError = collect($errors)->first(function ($error) {
+            return str_contains($error['source']['pointer'] ?? '', 'contact_id');
         });
-        $this->assertNotNull($customerIdError, 'Expected customer_id validation error');
+        $this->assertNotNull($contactIdError, 'Expected contact_id validation error');
     }
 
     public function test_status_must_be_valid_enum(): void
