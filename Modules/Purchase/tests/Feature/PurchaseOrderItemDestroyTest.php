@@ -6,7 +6,7 @@ use Tests\TestCase;
 use Modules\User\Models\User;
 use Modules\Purchase\Models\PurchaseOrderItem;
 use Modules\Purchase\Models\PurchaseOrder;
-use Modules\Purchase\Models\Supplier;
+use Modules\Contacts\Models\Contact;
 use Modules\Product\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -70,7 +70,7 @@ class PurchaseOrderItemDestroyTest extends TestCase
 
     private function createPurchaseOrderItem(): PurchaseOrderItem
     {
-        $supplier = Supplier::factory()->create();
+        $supplier = Contact::factory()->supplier()->create();
         $product = Product::factory()->create();
         $purchaseOrder = PurchaseOrder::factory()->create([
             'contact_id' => $supplier->id
@@ -177,7 +177,7 @@ class PurchaseOrderItemDestroyTest extends TestCase
         $admin = $this->createUserWithPermissions('test', ['purchase-order-items.destroy']);
         
         // Crear una orden de compra con múltiples items
-        $supplier = Supplier::factory()->create();
+        $supplier = Contact::factory()->supplier()->create();
         $product1 = Product::factory()->create();
         $product2 = Product::factory()->create();
         $purchaseOrder = PurchaseOrder::factory()->create([

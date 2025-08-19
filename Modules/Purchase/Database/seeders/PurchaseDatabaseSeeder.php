@@ -15,7 +15,6 @@ class PurchaseDatabaseSeeder extends Seeder
             PurchasePermissionSeeder::class,
             PurchaseAssignPermissionsSeeder::class,
             PurchaseOrderItemPermissionSeeder::class,
-            SupplierSeeder::class,
             PurchaseOrderSeeder::class,
         ]);
     }

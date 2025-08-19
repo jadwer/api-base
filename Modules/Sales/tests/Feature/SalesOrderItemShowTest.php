@@ -4,7 +4,7 @@ namespace Modules\Sales\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\User\Models\User;
-use Modules\Sales\Models\Customer;
+use Modules\Contacts\Models\Contact;
 use Modules\Sales\Models\SalesOrderItem;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Product\Models\Product;
@@ -159,7 +159,7 @@ class SalesOrderItemShowTest extends TestCase
     public function test_admin_can_view_sales_order_item_with_relationships(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create(['name' => 'Test Customer']);
+        $customer = Contact::factory()->customer()->create(['name' => 'Test Customer']);
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
             'order_number' => 'SO-REL-001'
@@ -216,7 +216,7 @@ class SalesOrderItemShowTest extends TestCase
         ]);
         
         // Create customer with same ID as contact (manually insert to avoid auto-increment)
-        \Illuminate\Support\Facades\DB::table('customers')->insert([
+        \Illuminate\Support\Facades\DB::table('contacts')->insert([
             'id' => $contact->id,
             'name' => 'Nested Customer',
             'email' => 'nested@customer.com',
@@ -228,7 +228,7 @@ class SalesOrderItemShowTest extends TestCase
             'updated_at' => now()
         ]);
         
-        $customer = Customer::find($contact->id);
+        $customer = Contact::find($contact->id);
         
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $contact->id,

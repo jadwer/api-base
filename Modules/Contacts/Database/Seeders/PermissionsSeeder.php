@@ -65,18 +65,26 @@ class PermissionsSeeder extends Seeder
         }
 
         // Assign permissions to roles
+        $godRole = Role::where('name', 'god')->where('guard_name', 'api')->first();
         $adminRole = Role::where('name', 'admin')->where('guard_name', 'api')->first();
         $techRole = Role::where('name', 'tech')->where('guard_name', 'api')->first();
         $customerRole = Role::where('name', 'customer')->where('guard_name', 'api')->first();
 
+        $allPermissions = array_merge(
+            $contactPermissions,
+            $contactAddressPermissions, 
+            $contactDocumentPermissions,
+            $contactPersonPermissions
+        );
+
+        if ($godRole) {
+            // God gets all permissions
+            $godRole->givePermissionTo($allPermissions);
+            $this->command->info("✅ God role assigned all Contacts permissions");
+        }
+
         if ($adminRole) {
             // Admin gets all permissions
-            $allPermissions = array_merge(
-                $contactPermissions,
-                $contactAddressPermissions, 
-                $contactDocumentPermissions,
-                $contactPersonPermissions
-            );
             $adminRole->givePermissionTo($allPermissions);
             $this->command->info("✅ Admin role assigned all Contacts permissions");
         }

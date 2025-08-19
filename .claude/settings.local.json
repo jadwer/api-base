@@ -13,7 +13,12 @@
       "Bash(find:*)",
       "Bash(curl:*)",
       "Bash(time php artisan test:*)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(timeout 60 php artisan test:*)",
+      "Bash(timeout 30 php artisan test Modules/PermissionManager/)",
+      "Bash(for:*)",
+      "Bash(do)",
+      "Bash(done)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

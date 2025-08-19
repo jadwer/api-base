@@ -49,6 +49,7 @@ class ContactDocumentSchema extends Schema
     {
         return [
             WhereIdIn::make($this),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('contactId', 'contact_id'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('contact_id'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('document_type'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('file_path'),

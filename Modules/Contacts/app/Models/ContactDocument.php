@@ -167,7 +167,8 @@ class ContactDocument extends Model
             return null;
         }
 
-        return Storage::url($this->file_path);
+        // Return our secure download URL instead of direct storage URL
+        return route('contact-documents.view', $this->id);
     }
 
     public function getFileSizeFormatted(): string

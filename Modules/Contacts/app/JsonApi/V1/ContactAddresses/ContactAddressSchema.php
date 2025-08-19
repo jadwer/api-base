@@ -50,6 +50,7 @@ class ContactAddressSchema extends Schema
     {
         return [
             WhereIdIn::make($this),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('contactId', 'contact_id'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('contact_id'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('address_type'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('address_line_1'),

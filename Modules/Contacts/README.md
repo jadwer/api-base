@@ -36,3 +36,11 @@ Advanced module with multiple entities and complex relationships.
 ```bash
 php artisan test Modules/Contacts
 ```
+
+
+## 📊 Métricas
+
+- **Test Files**: 20
+- **Generated**: 2025-08-19 17:59:33
+- **Status**: ✅ Documentation up to date
+- **API Version**: JSON:API v1.0

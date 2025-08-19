@@ -4,7 +4,7 @@ namespace Modules\Sales\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\User\Models\User;
-use Modules\Sales\Models\Customer;
+use Modules\Contacts\Models\Contact;
 use Modules\Sales\Models\SalesOrder;
 
 class SalesOrderShowTest extends TestCase
@@ -28,7 +28,7 @@ class SalesOrderShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
             'order_number' => 'SO-TEST-001',
@@ -96,7 +96,7 @@ class SalesOrderShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->draft()->create([
             'contact_id' => $customer->id,
             'order_number' => 'SO-DRAFT-001'
@@ -116,7 +116,7 @@ class SalesOrderShowTest extends TestCase
     {
         $tech = $this->getTechUser();
         
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create(['contact_id' => $customer->id]);
 
         $response = $this->actingAs($tech, 'sanctum')
@@ -131,7 +131,7 @@ class SalesOrderShowTest extends TestCase
     {
         $customer = $this->getCustomerUser();
         
-        $customerModel = Customer::factory()->create();
+        $customerModel = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create(['contact_id' => $customerModel->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -151,7 +151,7 @@ class SalesOrderShowTest extends TestCase
 
     public function test_guest_cannot_view_sales_order(): void
     {
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create(['contact_id' => $customer->id]);
 
         $response = $this->jsonApi()
@@ -177,7 +177,7 @@ class SalesOrderShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create(['contact_id' => $customer->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -201,7 +201,7 @@ class SalesOrderShowTest extends TestCase
             'payment_terms' => '30_days'
         ];
         
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
             'metadata' => $metadata
@@ -223,7 +223,7 @@ class SalesOrderShowTest extends TestCase
     public function test_admin_can_view_sales_order_with_items(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create(['name' => 'Test Customer']);
+        $customer = Contact::factory()->customer()->create(['name' => 'Test Customer']);
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
             'order_number' => 'SO-ITEMS-001'

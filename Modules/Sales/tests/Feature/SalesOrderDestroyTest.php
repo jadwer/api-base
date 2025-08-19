@@ -4,7 +4,7 @@ namespace Modules\Sales\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\User\Models\User;
-use Modules\Sales\Models\Customer;
+use Modules\Contacts\Models\Contact;
 use Modules\Sales\Models\SalesOrder;
 
 class SalesOrderDestroyTest extends TestCase
@@ -27,7 +27,7 @@ class SalesOrderDestroyTest extends TestCase
     public function test_admin_can_delete_sales_order(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
             'order_number' => 'SO-DELETE-001',
@@ -50,7 +50,7 @@ class SalesOrderDestroyTest extends TestCase
     public function test_admin_can_delete_draft_sales_order(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->draft()->create([
             'contact_id' => $customer->id,
             'order_number' => 'SO-DRAFT-DELETE'
@@ -70,7 +70,7 @@ class SalesOrderDestroyTest extends TestCase
     public function test_admin_can_delete_cancelled_sales_order(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
             'status' => 'cancelled'
@@ -90,7 +90,7 @@ class SalesOrderDestroyTest extends TestCase
     public function test_tech_user_can_delete_sales_order(): void
     {
         $tech = $this->getTechUser();
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
             'status' => 'draft'
@@ -110,7 +110,7 @@ class SalesOrderDestroyTest extends TestCase
     public function test_customer_user_cannot_delete_sales_order(): void
     {
         $customer = $this->getCustomerUser();
-        $customerModel = Customer::factory()->create();
+        $customerModel = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customerModel->id
         ]);
@@ -131,7 +131,7 @@ class SalesOrderDestroyTest extends TestCase
 
     public function test_guest_cannot_delete_sales_order(): void
     {
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id
         ]);
@@ -163,7 +163,7 @@ class SalesOrderDestroyTest extends TestCase
     public function test_deleting_sales_order_preserves_customer(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create(['name' => 'Customer Should Remain']);
+        $customer = Contact::factory()->customer()->create(['name' => 'Customer Should Remain']);
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id
         ]);
@@ -181,7 +181,7 @@ class SalesOrderDestroyTest extends TestCase
         ]);
         
         // Customer debe permanecer
-        $this->assertDatabaseHas('customers', [
+        $this->assertDatabaseHas('contacts', [
             'id' => $customer->id,
             'name' => 'Customer Should Remain'
         ]);
@@ -190,7 +190,7 @@ class SalesOrderDestroyTest extends TestCase
     public function test_can_delete_sales_order_with_metadata(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
             'metadata' => [
@@ -214,7 +214,7 @@ class SalesOrderDestroyTest extends TestCase
     public function test_deletion_response_has_no_content(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id
         ]);

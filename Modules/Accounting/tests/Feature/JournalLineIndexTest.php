@@ -1,0 +1,136 @@
+<?php
+
+namespace Modules\Accounting\Tests\Feature;
+
+use Tests\TestCase;
+use Modules\User\Models\User;
+use Modules\Accounting\Models\JournalLine;
+
+class JournalLineIndexTest extends TestCase
+{
+    private function getAdminUser(): User
+    {
+        return User::where('email', 'admin@example.com')->firstOrFail();
+    }
+
+    private function getTechUser(): User
+    {
+        return User::where('email', 'tech@example.com')->firstOrFail();
+    }
+
+    private function getCustomerUser(): User
+    {
+        return User::where('email', 'customer@example.com')->firstOrFail();
+    }
+
+    public function test_admin_can_list_JournalLines(): void
+    {
+        $admin = $this->getAdminUser();
+        
+        JournalLine::factory()->count(3)->create();
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('journal-lines')
+            ->get('/api/v1/journal-lines');
+
+        $response->assertOk();
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'type',
+                    'attributes' => [
+                        'journalEntryId',
+                        'accountId',
+                        'debit',
+                        'credit',
+                        'baseAmount',
+                        'costCenterId',
+                        'partnerId',
+                        'memo',
+                    ]
+                ]
+            ]
+        ]);
+    }
+
+    public function test_admin_can_sort_JournalLines_by_memo(): void
+    {
+        $admin = $this->getAdminUser();
+        
+        JournalLine::factory()->create(['memo' => 'test string']);
+        JournalLine::factory()->create(['memo' => 'test string']);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('journal-lines')
+            ->get('/api/v1/journal-lines?sort=memo');
+
+        $response->assertOk();
+    }
+
+    public function test_admin_can_filter_JournalLines_by_status(): void
+    {
+        $admin = $this->getAdminUser();
+        
+        JournalLine::factory()->create([]);
+        JournalLine::factory()->create([]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('journal-lines')
+            ->get('/api/v1/journal-lines?filter[status]=test');
+
+        $response->assertOk();
+    }
+
+    public function test_tech_user_can_list_JournalLines_with_permission(): void
+    {
+        $tech = $this->getTechUser();
+
+        $response = $this->actingAs($tech, 'sanctum')
+            ->jsonApi()
+            ->expects('journal-lines')
+            ->get('/api/v1/journal-lines');
+
+        $response->assertOk();
+    }
+
+    public function test_customer_user_cannot_list_JournalLines(): void
+    {
+        $customer = $this->getCustomerUser();
+
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
+            ->expects('journal-lines')
+            ->get('/api/v1/journal-lines');
+
+        $response->assertStatus(403);
+    }
+
+    public function test_guest_cannot_list_JournalLines(): void
+    {
+        $response = $this->jsonApi()
+            ->expects('journal-lines')
+            ->get('/api/v1/journal-lines');
+
+        $response->assertStatus(401);
+    }
+
+    public function test_can_paginate_JournalLines(): void
+    {
+        $admin = $this->getAdminUser();
+        
+        JournalLine::factory()->count(25)->create();
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('journal-lines')
+            ->get('/api/v1/journal-lines?page[size]=10');
+
+        $response->assertOk();
+        $this->assertCount(10, $response->json('data'));
+        $response->assertJsonStructure(['links', 'meta']);
+    }
+}

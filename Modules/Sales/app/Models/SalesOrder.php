@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Contacts\Models\Contact;
 
 /**
  * @property int $id
@@ -60,12 +61,13 @@ class SalesOrder extends Model
     // Relaciones
     public function contact(): BelongsTo
     {
-        return $this->belongsTo(\Modules\Contacts\Models\Contact::class);
+        return $this->belongsTo(Contact::class, 'contact_id');
     }
-
+    
+    // Backward compatibility alias
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(Customer::class, 'contact_id');
+        return $this->contact();
     }
 
     public function items(): HasMany

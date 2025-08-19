@@ -1,6 +1,6 @@
 # 🔐 Permissions - Sales
 
-**Generated:** 2025-07-29 14:52:13
+**Generated:** 2025-08-19 17:59:33
 
 ## Default Role Assignments
 

@@ -159,3 +159,10 @@ $page = Page::factory()->create([
 **Module Version**: 1.2.0  
 **Laravel JSON:API**: 5.x  
 **Last Updated**: 2025-08-08
+
+## 📊 Métricas
+
+- **Test Files**: 6
+- **Generated**: 2025-08-19 17:59:33
+- **Status**: ✅ Documentation up to date
+- **API Version**: JSON:API v1.0

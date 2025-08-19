@@ -49,6 +49,7 @@ class ContactPersonSchema extends Schema
     {
         return [
             WhereIdIn::make($this),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('contactId', 'contact_id'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('contact_id'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('name'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('position'),

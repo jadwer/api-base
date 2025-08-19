@@ -18,6 +18,8 @@ abstract class TestCase extends BaseTestCase
 
         // Solo seeders esenciales para acelerar tests
         $this->artisan('module:seed', ['module' => 'PermissionManager']);
+        $this->artisan('module:seed', ['module' => 'Finance']);
+        $this->artisan('module:seed', ['module' => 'Accounting']);
         $this->artisan('module:seed', ['module' => 'Contacts']);
         $this->artisan('module:seed', ['module' => 'User']);
         $this->artisan('module:seed', ['module' => 'Product']);
@@ -54,11 +56,11 @@ abstract class TestCase extends BaseTestCase
 
     protected function getSeededTechUser(): \Modules\User\Models\User
     {
-        return \Modules\User\Models\User::where('email', 'tecnico@example.com')->firstOrFail();
+        return \Modules\User\Models\User::where('email', 'tech@example.com')->firstOrFail();
     }
 
     protected function getSeededCustomerUser(): \Modules\User\Models\User
     {
-        return \Modules\User\Models\User::where('email', 'cliente1@example.com')->firstOrFail();
+        return \Modules\User\Models\User::where('email', 'customer@example.com')->firstOrFail();
     }
 }

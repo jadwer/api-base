@@ -391,7 +391,7 @@ php artisan db:seed --class="Modules\\Product\\Database\\Seeders\\ProductSeeder"
 
 ## 📊 Métricas
 
-- **Test Files**: 0
-- **Generated**: 2025-08-11 23:30:13
+- **Test Files**: 22
+- **Generated**: 2025-08-19 17:59:33
 - **Status**: ✅ Documentation up to date
 - **API Version**: JSON:API v1.0

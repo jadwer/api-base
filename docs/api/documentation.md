@@ -1,6 +1,6 @@
 # API Documentation
 
-**Generado:** 2025-08-18T23:48:14.924879Z
+**Generado:** 2025-08-19T18:02:31.777974Z
 
 **Base URL:** `http://localhost/api/v1`
 
@@ -2258,10 +2258,7 @@
 
 **Validaciones:**
 
-- `name`: required, string, max:255
-- `code`: required, string, max:255, warehouse_locations, code
 - `description`: nullable, string
-- `locationType`: required, string, aisle, rack, shelf, bin, zone, bay
 - `aisle`: nullable, string, max:255
 - `rack`: nullable, string, max:255
 - `shelf`: nullable, string, max:255
@@ -2276,7 +2273,6 @@
 - `isReceivable`: sometimes, boolean
 - `priority`: sometimes, integer, min:1, max:10
 - `metadata`: nullable, array
-- `warehouseId`: required, integer, exists:warehouses,id
 
 **Ejemplo de Request:**
 
@@ -2327,10 +2323,7 @@
 
 **Validaciones:**
 
-- `name`: required, string, max:255
-- `code`: required, string, max:255, warehouse_locations, code
 - `description`: nullable, string
-- `locationType`: required, string, aisle, rack, shelf, bin, zone, bay
 - `aisle`: nullable, string, max:255
 - `rack`: nullable, string, max:255
 - `shelf`: nullable, string, max:255
@@ -2345,7 +2338,6 @@
 - `isReceivable`: sometimes, boolean
 - `priority`: sometimes, integer, min:1, max:10
 - `metadata`: nullable, array
-- `warehouseId`: required, integer, exists:warehouses,id
 
 **Ejemplo de Request:**
 
@@ -2420,10 +2412,7 @@
 
 **Validaciones:**
 
-- `name`: required, string, max:255
-- `code`: required, string, max:255, warehouse_locations, code
 - `description`: nullable, string
-- `locationType`: required, string, aisle, rack, shelf, bin, zone, bay
 - `aisle`: nullable, string, max:255
 - `rack`: nullable, string, max:255
 - `shelf`: nullable, string, max:255
@@ -2438,7 +2427,6 @@
 - `isReceivable`: sometimes, boolean
 - `priority`: sometimes, integer, min:1, max:10
 - `metadata`: nullable, array
-- `warehouseId`: required, integer, exists:warehouses,id
 
 **Ejemplo de Request:**
 
@@ -2489,10 +2477,7 @@
 
 **Validaciones:**
 
-- `name`: required, string, max:255
-- `code`: required, string, max:255, warehouse_locations, code
 - `description`: nullable, string
-- `locationType`: required, string, aisle, rack, shelf, bin, zone, bay
 - `aisle`: nullable, string, max:255
 - `rack`: nullable, string, max:255
 - `shelf`: nullable, string, max:255
@@ -2507,7 +2492,6 @@
 - `isReceivable`: sometimes, boolean
 - `priority`: sometimes, integer, min:1, max:10
 - `metadata`: nullable, array
-- `warehouseId`: required, integer, exists:warehouses,id
 
 **Ejemplo de Request:**
 
@@ -2569,10 +2553,7 @@
 
 **Validaciones:**
 
-- `name`: required, string, max:255
-- `code`: required, string, max:255, warehouse_locations, code
 - `description`: nullable, string
-- `locationType`: required, string, aisle, rack, shelf, bin, zone, bay
 - `aisle`: nullable, string, max:255
 - `rack`: nullable, string, max:255
 - `shelf`: nullable, string, max:255
@@ -2587,7 +2568,6 @@
 - `isReceivable`: sometimes, boolean
 - `priority`: sometimes, integer, min:1, max:10
 - `metadata`: nullable, array
-- `warehouseId`: required, integer, exists:warehouses,id
 
 ---
 
@@ -2978,20 +2958,14 @@
 
 **Validaciones:**
 
-- `quantity`: required, numeric, min:0
 - `reservedQuantity`: sometimes, nullable, numeric, min:0
 - `minimumStock`: sometimes, nullable, numeric, min:0
 - `maximumStock`: sometimes, nullable, numeric, min:0
 - `reorderPoint`: sometimes, nullable, numeric, min:0
-- `unitCost`: required, numeric, min:0
-- `status`: required, string, in:active,inactive,quarantine,damaged
 - `lastMovementDate`: sometimes, nullable, date
 - `lastMovementType`: sometimes, nullable, string, in:in,out,adjustment,transfer
 - `batchInfo`: sometimes, nullable, array
 - `metadata`: sometimes, nullable, array
-- `productId`: required, integer, exists:products,id
-- `warehouseId`: required, integer, exists:warehouses,id
-- `locationId`: sometimes, nullable, integer, exists:warehouse_locations,id
 
 **Ejemplo de Request:**
 
@@ -3039,20 +3013,14 @@
 
 **Validaciones:**
 
-- `quantity`: required, numeric, min:0
 - `reservedQuantity`: sometimes, nullable, numeric, min:0
 - `minimumStock`: sometimes, nullable, numeric, min:0
 - `maximumStock`: sometimes, nullable, numeric, min:0
 - `reorderPoint`: sometimes, nullable, numeric, min:0
-- `unitCost`: required, numeric, min:0
-- `status`: required, string, in:active,inactive,quarantine,damaged
 - `lastMovementDate`: sometimes, nullable, date
 - `lastMovementType`: sometimes, nullable, string, in:in,out,adjustment,transfer
 - `batchInfo`: sometimes, nullable, array
 - `metadata`: sometimes, nullable, array
-- `productId`: required, integer, exists:products,id
-- `warehouseId`: required, integer, exists:warehouses,id
-- `locationId`: sometimes, nullable, integer, exists:warehouse_locations,id
 
 **Ejemplo de Request:**
 
@@ -3124,20 +3092,14 @@
 
 **Validaciones:**
 
-- `quantity`: required, numeric, min:0
 - `reservedQuantity`: sometimes, nullable, numeric, min:0
 - `minimumStock`: sometimes, nullable, numeric, min:0
 - `maximumStock`: sometimes, nullable, numeric, min:0
 - `reorderPoint`: sometimes, nullable, numeric, min:0
-- `unitCost`: required, numeric, min:0
-- `status`: required, string, in:active,inactive,quarantine,damaged
 - `lastMovementDate`: sometimes, nullable, date
 - `lastMovementType`: sometimes, nullable, string, in:in,out,adjustment,transfer
 - `batchInfo`: sometimes, nullable, array
 - `metadata`: sometimes, nullable, array
-- `productId`: required, integer, exists:products,id
-- `warehouseId`: required, integer, exists:warehouses,id
-- `locationId`: sometimes, nullable, integer, exists:warehouse_locations,id
 
 **Ejemplo de Request:**
 
@@ -3185,20 +3147,14 @@
 
 **Validaciones:**
 
-- `quantity`: required, numeric, min:0
 - `reservedQuantity`: sometimes, nullable, numeric, min:0
 - `minimumStock`: sometimes, nullable, numeric, min:0
 - `maximumStock`: sometimes, nullable, numeric, min:0
 - `reorderPoint`: sometimes, nullable, numeric, min:0
-- `unitCost`: required, numeric, min:0
-- `status`: required, string, in:active,inactive,quarantine,damaged
 - `lastMovementDate`: sometimes, nullable, date
 - `lastMovementType`: sometimes, nullable, string, in:in,out,adjustment,transfer
 - `batchInfo`: sometimes, nullable, array
 - `metadata`: sometimes, nullable, array
-- `productId`: required, integer, exists:products,id
-- `warehouseId`: required, integer, exists:warehouses,id
-- `locationId`: sometimes, nullable, integer, exists:warehouse_locations,id
 
 **Ejemplo de Request:**
 
@@ -3257,20 +3213,14 @@
 
 **Validaciones:**
 
-- `quantity`: required, numeric, min:0
 - `reservedQuantity`: sometimes, nullable, numeric, min:0
 - `minimumStock`: sometimes, nullable, numeric, min:0
 - `maximumStock`: sometimes, nullable, numeric, min:0
 - `reorderPoint`: sometimes, nullable, numeric, min:0
-- `unitCost`: required, numeric, min:0
-- `status`: required, string, in:active,inactive,quarantine,damaged
 - `lastMovementDate`: sometimes, nullable, date
 - `lastMovementType`: sometimes, nullable, string, in:in,out,adjustment,transfer
 - `batchInfo`: sometimes, nullable, array
 - `metadata`: sometimes, nullable, array
-- `productId`: required, integer, exists:products,id
-- `warehouseId`: required, integer, exists:warehouses,id
-- `locationId`: sometimes, nullable, integer, exists:warehouse_locations,id
 
 ---
 
@@ -3653,6 +3603,1568 @@
 
 ---
 
+### 📦 Accounts
+
+#### `GET` `api/v1/accounts`
+
+**Campos disponibles:**
+
+- ✅ `code` (string) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `accountType` (string) 🔄
+- ✅ `level` (number) 🔄
+- ✅ `parentId` (number) 
+- ✅ `currency` (string) 🔄
+- ✅ `isPostable` (boolean) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `code`: required, string, max:255, accounts
+- `name`: required, string, max:255
+- `account_type`: required, string, max:255
+- `level`: required, integer
+- `parent_id`: nullable, string
+- `currency`: nullable, string, max:255
+- `is_postable`: required, boolean
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/accounts",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/accounts`
+
+**Campos disponibles:**
+
+- ✅ `code` (string) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `accountType` (string) 🔄
+- ✅ `level` (number) 🔄
+- ✅ `parentId` (number) 
+- ✅ `currency` (string) 🔄
+- ✅ `isPostable` (boolean) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `code`: required, string, max:255, accounts
+- `name`: required, string, max:255
+- `account_type`: required, string, max:255
+- `level`: required, integer
+- `parent_id`: nullable, string
+- `currency`: nullable, string, max:255
+- `is_postable`: required, boolean
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/accounts",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "accounts",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/accounts/{account}`
+
+**Campos disponibles:**
+
+- ✅ `code` (string) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `accountType` (string) 🔄
+- ✅ `level` (number) 🔄
+- ✅ `parentId` (number) 
+- ✅ `currency` (string) 🔄
+- ✅ `isPostable` (boolean) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `code`: required, string, max:255, accounts
+- `name`: required, string, max:255
+- `account_type`: required, string, max:255
+- `level`: required, integer
+- `parent_id`: nullable, string
+- `currency`: nullable, string, max:255
+- `is_postable`: required, boolean
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/accounts",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/accounts/{account}`
+
+**Campos disponibles:**
+
+- ✅ `code` (string) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `accountType` (string) 🔄
+- ✅ `level` (number) 🔄
+- ✅ `parentId` (number) 
+- ✅ `currency` (string) 🔄
+- ✅ `isPostable` (boolean) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `code`: required, string, max:255, accounts
+- `name`: required, string, max:255
+- `account_type`: required, string, max:255
+- `level`: required, integer
+- `parent_id`: nullable, string
+- `currency`: nullable, string, max:255
+- `is_postable`: required, boolean
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/accounts\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "accounts",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/accounts/{account}`
+
+**Campos disponibles:**
+
+- ✅ `code` (string) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `accountType` (string) 🔄
+- ✅ `level` (number) 🔄
+- ✅ `parentId` (number) 
+- ✅ `currency` (string) 🔄
+- ✅ `isPostable` (boolean) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `code`: required, string, max:255, accounts
+- `name`: required, string, max:255
+- `account_type`: required, string, max:255
+- `level`: required, integer
+- `parent_id`: nullable, string
+- `currency`: nullable, string, max:255
+- `is_postable`: required, boolean
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+---
+
+### 📦 Fiscal periods
+
+#### `GET` `api/v1/fiscal-periods`
+
+**Campos disponibles:**
+
+- ✅ `name` (string) 🔄
+- ✅ `startDate` (datetime) 🔄
+- ✅ `endDate` (datetime) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `allowBackpost` (boolean) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `name`: required, string, max:255, fiscal_periods
+- `start_date`: required, date
+- `end_date`: required, date
+- `status`: required, string, max:255
+- `allow_backpost`: required, boolean
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/fiscal_periods",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/fiscal-periods`
+
+**Campos disponibles:**
+
+- ✅ `name` (string) 🔄
+- ✅ `startDate` (datetime) 🔄
+- ✅ `endDate` (datetime) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `allowBackpost` (boolean) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `name`: required, string, max:255, fiscal_periods
+- `start_date`: required, date
+- `end_date`: required, date
+- `status`: required, string, max:255
+- `allow_backpost`: required, boolean
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/fiscal_periods",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "fiscal_periods",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/fiscal-periods/{fiscal_period}`
+
+**Campos disponibles:**
+
+- ✅ `name` (string) 🔄
+- ✅ `startDate` (datetime) 🔄
+- ✅ `endDate` (datetime) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `allowBackpost` (boolean) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `name`: required, string, max:255, fiscal_periods
+- `start_date`: required, date
+- `end_date`: required, date
+- `status`: required, string, max:255
+- `allow_backpost`: required, boolean
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/fiscal_periods",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/fiscal-periods/{fiscal_period}`
+
+**Campos disponibles:**
+
+- ✅ `name` (string) 🔄
+- ✅ `startDate` (datetime) 🔄
+- ✅ `endDate` (datetime) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `allowBackpost` (boolean) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `name`: required, string, max:255, fiscal_periods
+- `start_date`: required, date
+- `end_date`: required, date
+- `status`: required, string, max:255
+- `allow_backpost`: required, boolean
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/fiscal_periods\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "fiscal_periods",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/fiscal-periods/{fiscal_period}`
+
+**Campos disponibles:**
+
+- ✅ `name` (string) 🔄
+- ✅ `startDate` (datetime) 🔄
+- ✅ `endDate` (datetime) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `allowBackpost` (boolean) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `name`: required, string, max:255, fiscal_periods
+- `start_date`: required, date
+- `end_date`: required, date
+- `status`: required, string, max:255
+- `allow_backpost`: required, boolean
+- `metadata`: nullable, array
+
+---
+
+### 📦 Journals
+
+#### `GET` `api/v1/journals`
+
+**Campos disponibles:**
+
+- ✅ `code` (string) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `autoNumbering` (boolean) 🔄
+- ✅ `sequencePrefix` (string) 🔄
+- ✅ `sequenceNext` (number) 🔄
+- ✅ `defaultCurrency` (string) 🔄
+- ✅ `postPolicy` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `code`: required, string, max:255, journals
+- `name`: required, string, max:255
+- `auto_numbering`: required, boolean
+- `sequence_prefix`: nullable, string, max:255
+- `sequence_next`: required, integer
+- `default_currency`: nullable, string, max:255
+- `post_policy`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/journals",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/journals`
+
+**Campos disponibles:**
+
+- ✅ `code` (string) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `autoNumbering` (boolean) 🔄
+- ✅ `sequencePrefix` (string) 🔄
+- ✅ `sequenceNext` (number) 🔄
+- ✅ `defaultCurrency` (string) 🔄
+- ✅ `postPolicy` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `code`: required, string, max:255, journals
+- `name`: required, string, max:255
+- `auto_numbering`: required, boolean
+- `sequence_prefix`: nullable, string, max:255
+- `sequence_next`: required, integer
+- `default_currency`: nullable, string, max:255
+- `post_policy`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/journals",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "journals",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/journals/{journal}`
+
+**Campos disponibles:**
+
+- ✅ `code` (string) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `autoNumbering` (boolean) 🔄
+- ✅ `sequencePrefix` (string) 🔄
+- ✅ `sequenceNext` (number) 🔄
+- ✅ `defaultCurrency` (string) 🔄
+- ✅ `postPolicy` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `code`: required, string, max:255, journals
+- `name`: required, string, max:255
+- `auto_numbering`: required, boolean
+- `sequence_prefix`: nullable, string, max:255
+- `sequence_next`: required, integer
+- `default_currency`: nullable, string, max:255
+- `post_policy`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/journals",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/journals/{journal}`
+
+**Campos disponibles:**
+
+- ✅ `code` (string) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `autoNumbering` (boolean) 🔄
+- ✅ `sequencePrefix` (string) 🔄
+- ✅ `sequenceNext` (number) 🔄
+- ✅ `defaultCurrency` (string) 🔄
+- ✅ `postPolicy` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `code`: required, string, max:255, journals
+- `name`: required, string, max:255
+- `auto_numbering`: required, boolean
+- `sequence_prefix`: nullable, string, max:255
+- `sequence_next`: required, integer
+- `default_currency`: nullable, string, max:255
+- `post_policy`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/journals\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "journals",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/journals/{journal}`
+
+**Campos disponibles:**
+
+- ✅ `code` (string) 🔄
+- ✅ `name` (string) 🔄
+- ✅ `autoNumbering` (boolean) 🔄
+- ✅ `sequencePrefix` (string) 🔄
+- ✅ `sequenceNext` (number) 🔄
+- ✅ `defaultCurrency` (string) 🔄
+- ✅ `postPolicy` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `code`: required, string, max:255, journals
+- `name`: required, string, max:255
+- `auto_numbering`: required, boolean
+- `sequence_prefix`: nullable, string, max:255
+- `sequence_next`: required, integer
+- `default_currency`: nullable, string, max:255
+- `post_policy`: required, string, max:255
+- `metadata`: nullable, array
+
+---
+
+### 📦 Journal entries
+
+#### `GET` `api/v1/journal-entries`
+
+**Campos disponibles:**
+
+- ✅ `journalId` (number) 
+- ✅ `periodId` (number) 
+- ✅ `number` (string) 🔄
+- ✅ `date` (datetime) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `exchangeRate` (number) 🔄
+- ✅ `reference` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `status` (string) 🔄
+- ✅ `approvedById` (number) 
+- ✅ `postedById` (number) 
+- ✅ `postedAt` (datetime) 🔄
+- ✅ `reversalOfId` (number) 
+- ✅ `sourceType` (string) 🔄
+- ✅ `sourceId` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `journal_id`: required, string
+- `period_id`: required, string
+- `number`: nullable, string, max:255, journal_entries
+- `date`: required, date
+- `currency`: nullable, string, max:255
+- `exchange_rate`: nullable, string
+- `reference`: nullable, string, max:255
+- `description`: nullable, string
+- `status`: required, string, max:255
+- `approved_by_id`: nullable, string
+- `posted_by_id`: nullable, string
+- `posted_at`: nullable, string
+- `reversal_of_id`: nullable, string
+- `source_type`: nullable, string, max:255
+- `source_id`: nullable, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/journal_entries",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/journal-entries`
+
+**Campos disponibles:**
+
+- ✅ `journalId` (number) 
+- ✅ `periodId` (number) 
+- ✅ `number` (string) 🔄
+- ✅ `date` (datetime) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `exchangeRate` (number) 🔄
+- ✅ `reference` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `status` (string) 🔄
+- ✅ `approvedById` (number) 
+- ✅ `postedById` (number) 
+- ✅ `postedAt` (datetime) 🔄
+- ✅ `reversalOfId` (number) 
+- ✅ `sourceType` (string) 🔄
+- ✅ `sourceId` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `journal_id`: required, string
+- `period_id`: required, string
+- `number`: nullable, string, max:255, journal_entries
+- `date`: required, date
+- `currency`: nullable, string, max:255
+- `exchange_rate`: nullable, string
+- `reference`: nullable, string, max:255
+- `description`: nullable, string
+- `status`: required, string, max:255
+- `approved_by_id`: nullable, string
+- `posted_by_id`: nullable, string
+- `posted_at`: nullable, string
+- `reversal_of_id`: nullable, string
+- `source_type`: nullable, string, max:255
+- `source_id`: nullable, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/journal_entries",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "journal_entries",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/journal-entries/{journal_entry}`
+
+**Campos disponibles:**
+
+- ✅ `journalId` (number) 
+- ✅ `periodId` (number) 
+- ✅ `number` (string) 🔄
+- ✅ `date` (datetime) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `exchangeRate` (number) 🔄
+- ✅ `reference` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `status` (string) 🔄
+- ✅ `approvedById` (number) 
+- ✅ `postedById` (number) 
+- ✅ `postedAt` (datetime) 🔄
+- ✅ `reversalOfId` (number) 
+- ✅ `sourceType` (string) 🔄
+- ✅ `sourceId` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `journal_id`: required, string
+- `period_id`: required, string
+- `number`: nullable, string, max:255, journal_entries
+- `date`: required, date
+- `currency`: nullable, string, max:255
+- `exchange_rate`: nullable, string
+- `reference`: nullable, string, max:255
+- `description`: nullable, string
+- `status`: required, string, max:255
+- `approved_by_id`: nullable, string
+- `posted_by_id`: nullable, string
+- `posted_at`: nullable, string
+- `reversal_of_id`: nullable, string
+- `source_type`: nullable, string, max:255
+- `source_id`: nullable, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/journal_entries",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/journal-entries/{journal_entry}`
+
+**Campos disponibles:**
+
+- ✅ `journalId` (number) 
+- ✅ `periodId` (number) 
+- ✅ `number` (string) 🔄
+- ✅ `date` (datetime) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `exchangeRate` (number) 🔄
+- ✅ `reference` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `status` (string) 🔄
+- ✅ `approvedById` (number) 
+- ✅ `postedById` (number) 
+- ✅ `postedAt` (datetime) 🔄
+- ✅ `reversalOfId` (number) 
+- ✅ `sourceType` (string) 🔄
+- ✅ `sourceId` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `journal_id`: required, string
+- `period_id`: required, string
+- `number`: nullable, string, max:255, journal_entries
+- `date`: required, date
+- `currency`: nullable, string, max:255
+- `exchange_rate`: nullable, string
+- `reference`: nullable, string, max:255
+- `description`: nullable, string
+- `status`: required, string, max:255
+- `approved_by_id`: nullable, string
+- `posted_by_id`: nullable, string
+- `posted_at`: nullable, string
+- `reversal_of_id`: nullable, string
+- `source_type`: nullable, string, max:255
+- `source_id`: nullable, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/journal_entries\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "journal_entries",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/journal-entries/{journal_entry}`
+
+**Campos disponibles:**
+
+- ✅ `journalId` (number) 
+- ✅ `periodId` (number) 
+- ✅ `number` (string) 🔄
+- ✅ `date` (datetime) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `exchangeRate` (number) 🔄
+- ✅ `reference` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `status` (string) 🔄
+- ✅ `approvedById` (number) 
+- ✅ `postedById` (number) 
+- ✅ `postedAt` (datetime) 🔄
+- ✅ `reversalOfId` (number) 
+- ✅ `sourceType` (string) 🔄
+- ✅ `sourceId` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `journal_id`: required, string
+- `period_id`: required, string
+- `number`: nullable, string, max:255, journal_entries
+- `date`: required, date
+- `currency`: nullable, string, max:255
+- `exchange_rate`: nullable, string
+- `reference`: nullable, string, max:255
+- `description`: nullable, string
+- `status`: required, string, max:255
+- `approved_by_id`: nullable, string
+- `posted_by_id`: nullable, string
+- `posted_at`: nullable, string
+- `reversal_of_id`: nullable, string
+- `source_type`: nullable, string, max:255
+- `source_id`: nullable, string
+- `metadata`: nullable, array
+
+---
+
+#### `POST` `api/v1/journal-entries/{journal_entry}/post`
+
+**Campos disponibles:**
+
+- ✅ `journalId` (number) 
+- ✅ `periodId` (number) 
+- ✅ `number` (string) 🔄
+- ✅ `date` (datetime) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `exchangeRate` (number) 🔄
+- ✅ `reference` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `status` (string) 🔄
+- ✅ `approvedById` (number) 
+- ✅ `postedById` (number) 
+- ✅ `postedAt` (datetime) 🔄
+- ✅ `reversalOfId` (number) 
+- ✅ `sourceType` (string) 🔄
+- ✅ `sourceId` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `journal_id`: required, string
+- `period_id`: required, string
+- `number`: nullable, string, max:255, journal_entries
+- `date`: required, date
+- `currency`: nullable, string, max:255
+- `exchange_rate`: nullable, string
+- `reference`: nullable, string, max:255
+- `description`: nullable, string
+- `status`: required, string, max:255
+- `approved_by_id`: nullable, string
+- `posted_by_id`: nullable, string
+- `posted_at`: nullable, string
+- `reversal_of_id`: nullable, string
+- `source_type`: nullable, string, max:255
+- `source_id`: nullable, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/journal_entries",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "journal_entries",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/journal-entries/{journal_entry}/totals`
+
+**Campos disponibles:**
+
+- ✅ `journalId` (number) 
+- ✅ `periodId` (number) 
+- ✅ `number` (string) 🔄
+- ✅ `date` (datetime) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `exchangeRate` (number) 🔄
+- ✅ `reference` (string) 🔄
+- ✅ `description` (string) 
+- ✅ `status` (string) 🔄
+- ✅ `approvedById` (number) 
+- ✅ `postedById` (number) 
+- ✅ `postedAt` (datetime) 🔄
+- ✅ `reversalOfId` (number) 
+- ✅ `sourceType` (string) 🔄
+- ✅ `sourceId` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `journal_id`: required, string
+- `period_id`: required, string
+- `number`: nullable, string, max:255, journal_entries
+- `date`: required, date
+- `currency`: nullable, string, max:255
+- `exchange_rate`: nullable, string
+- `reference`: nullable, string, max:255
+- `description`: nullable, string
+- `status`: required, string, max:255
+- `approved_by_id`: nullable, string
+- `posted_by_id`: nullable, string
+- `posted_at`: nullable, string
+- `reversal_of_id`: nullable, string
+- `source_type`: nullable, string, max:255
+- `source_id`: nullable, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/journal_entries",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+### 📦 Journal lines
+
+#### `GET` `api/v1/journal-lines`
+
+**Campos disponibles:**
+
+- ✅ `journalEntryId` (number) 
+- ✅ `accountId` (number) 
+- ✅ `debit` (number) 🔄
+- ✅ `credit` (number) 🔄
+- ✅ `baseAmount` (number) 🔄
+- ✅ `costCenterId` (number) 
+- ✅ `partnerId` (number) 
+- ✅ `memo` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `journal_entry_id`: required, string
+- `account_id`: required, string
+- `debit`: required, string
+- `credit`: required, string
+- `base_amount`: nullable, string
+- `cost_center_id`: nullable, string
+- `partner_id`: nullable, string
+- `memo`: nullable, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/journal_lines",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/journal-lines`
+
+**Campos disponibles:**
+
+- ✅ `journalEntryId` (number) 
+- ✅ `accountId` (number) 
+- ✅ `debit` (number) 🔄
+- ✅ `credit` (number) 🔄
+- ✅ `baseAmount` (number) 🔄
+- ✅ `costCenterId` (number) 
+- ✅ `partnerId` (number) 
+- ✅ `memo` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `journal_entry_id`: required, string
+- `account_id`: required, string
+- `debit`: required, string
+- `credit`: required, string
+- `base_amount`: nullable, string
+- `cost_center_id`: nullable, string
+- `partner_id`: nullable, string
+- `memo`: nullable, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/journal_lines",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "journal_lines",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/journal-lines/{journal_line}`
+
+**Campos disponibles:**
+
+- ✅ `journalEntryId` (number) 
+- ✅ `accountId` (number) 
+- ✅ `debit` (number) 🔄
+- ✅ `credit` (number) 🔄
+- ✅ `baseAmount` (number) 🔄
+- ✅ `costCenterId` (number) 
+- ✅ `partnerId` (number) 
+- ✅ `memo` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `journal_entry_id`: required, string
+- `account_id`: required, string
+- `debit`: required, string
+- `credit`: required, string
+- `base_amount`: nullable, string
+- `cost_center_id`: nullable, string
+- `partner_id`: nullable, string
+- `memo`: nullable, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/journal_lines",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/journal-lines/{journal_line}`
+
+**Campos disponibles:**
+
+- ✅ `journalEntryId` (number) 
+- ✅ `accountId` (number) 
+- ✅ `debit` (number) 🔄
+- ✅ `credit` (number) 🔄
+- ✅ `baseAmount` (number) 🔄
+- ✅ `costCenterId` (number) 
+- ✅ `partnerId` (number) 
+- ✅ `memo` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `journal_entry_id`: required, string
+- `account_id`: required, string
+- `debit`: required, string
+- `credit`: required, string
+- `base_amount`: nullable, string
+- `cost_center_id`: nullable, string
+- `partner_id`: nullable, string
+- `memo`: nullable, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/journal_lines\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "journal_lines",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/journal-lines/{journal_line}`
+
+**Campos disponibles:**
+
+- ✅ `journalEntryId` (number) 
+- ✅ `accountId` (number) 
+- ✅ `debit` (number) 🔄
+- ✅ `credit` (number) 🔄
+- ✅ `baseAmount` (number) 🔄
+- ✅ `costCenterId` (number) 
+- ✅ `partnerId` (number) 
+- ✅ `memo` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `journal_entry_id`: required, string
+- `account_id`: required, string
+- `debit`: required, string
+- `credit`: required, string
+- `base_amount`: nullable, string
+- `cost_center_id`: nullable, string
+- `partner_id`: nullable, string
+- `memo`: nullable, string, max:255
+- `metadata`: nullable, array
+
+---
+
+### 📦 Exchange rates
+
+#### `GET` `api/v1/exchange-rates`
+
+**Campos disponibles:**
+
+- ✅ `baseCurrency` (string) 🔄
+- ✅ `quoteCurrency` (string) 🔄
+- ✅ `rateDate` (datetime) 🔄
+- ✅ `rate` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `base_currency`: required, string, max:255
+- `quote_currency`: required, string, max:255
+- `rate_date`: required, date
+- `rate`: required, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/exchange_rates",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/exchange-rates`
+
+**Campos disponibles:**
+
+- ✅ `baseCurrency` (string) 🔄
+- ✅ `quoteCurrency` (string) 🔄
+- ✅ `rateDate` (datetime) 🔄
+- ✅ `rate` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `base_currency`: required, string, max:255
+- `quote_currency`: required, string, max:255
+- `rate_date`: required, date
+- `rate`: required, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/exchange_rates",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "exchange_rates",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/exchange-rates/{exchange_rate}`
+
+**Campos disponibles:**
+
+- ✅ `baseCurrency` (string) 🔄
+- ✅ `quoteCurrency` (string) 🔄
+- ✅ `rateDate` (datetime) 🔄
+- ✅ `rate` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `base_currency`: required, string, max:255
+- `quote_currency`: required, string, max:255
+- `rate_date`: required, date
+- `rate`: required, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/exchange_rates",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/exchange-rates/{exchange_rate}`
+
+**Campos disponibles:**
+
+- ✅ `baseCurrency` (string) 🔄
+- ✅ `quoteCurrency` (string) 🔄
+- ✅ `rateDate` (datetime) 🔄
+- ✅ `rate` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `base_currency`: required, string, max:255
+- `quote_currency`: required, string, max:255
+- `rate_date`: required, date
+- `rate`: required, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/exchange_rates\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "exchange_rates",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/exchange-rates/{exchange_rate}`
+
+**Campos disponibles:**
+
+- ✅ `baseCurrency` (string) 🔄
+- ✅ `quoteCurrency` (string) 🔄
+- ✅ `rateDate` (datetime) 🔄
+- ✅ `rate` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `base_currency`: required, string, max:255
+- `quote_currency`: required, string, max:255
+- `rate_date`: required, date
+- `rate`: required, string
+- `metadata`: nullable, array
+
+---
+
 ### 📦 Profile
 
 #### `PATCH` `api/v1/profile/password`
@@ -3970,18 +5482,18 @@
 
 - ✅ `contactId` (number) 🔄
 - ✅ `documentType` (string) 🔄
-- ✅ `filePath` (string) 🔄
-- ✅ `originalFilename` (string) 🔄
-- ✅ `mimeType` (string) 🔄
-- ✅ `fileSize` (number) 🔄
-- ✅ `uploadedBy` (number) 🔄
-- ✅ `verifiedAt` (datetime) 🔄
-- ✅ `verifiedBy` (number) 🔄
-- ✅ `expiresAt` (datetime) 🔄
+- ✅ `filePath` (string) 
+- ✅ `originalFilename` (string) 
+- ✅ `mimeType` (string) 
+- ✅ `fileSize` (number) 
+- ✅ `uploadedBy` (number) 
+- ✅ `verifiedAt` (datetime) 
+- ✅ `verifiedBy` (number) 
+- ✅ `expiresAt` (datetime) 
 - ✅ `notes` (string) 
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 🔒🔄
-- ✅ `updatedAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Relaciones disponibles:**
 
@@ -3990,7 +5502,7 @@
 **Validaciones:**
 
 - `contact_id`: nullable, integer
-- `document_type`: nullable, string, max:255
+- `document_type`: nullable, string, max:255, rfc, cedula_fiscal, ine, constancia_sat, opinion_sat, certificado_sello, comprobante_domicilio, cotizacion, orden_compra, factura, contrato, otros
 - `file_path`: nullable, string, max:255
 - `original_filename`: nullable, string, max:255
 - `mime_type`: nullable, string, max:255
@@ -4023,18 +5535,18 @@
 
 - ✅ `contactId` (number) 🔄
 - ✅ `documentType` (string) 🔄
-- ✅ `filePath` (string) 🔄
-- ✅ `originalFilename` (string) 🔄
-- ✅ `mimeType` (string) 🔄
-- ✅ `fileSize` (number) 🔄
-- ✅ `uploadedBy` (number) 🔄
-- ✅ `verifiedAt` (datetime) 🔄
-- ✅ `verifiedBy` (number) 🔄
-- ✅ `expiresAt` (datetime) 🔄
+- ✅ `filePath` (string) 
+- ✅ `originalFilename` (string) 
+- ✅ `mimeType` (string) 
+- ✅ `fileSize` (number) 
+- ✅ `uploadedBy` (number) 
+- ✅ `verifiedAt` (datetime) 
+- ✅ `verifiedBy` (number) 
+- ✅ `expiresAt` (datetime) 
 - ✅ `notes` (string) 
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 🔒🔄
-- ✅ `updatedAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Relaciones disponibles:**
 
@@ -4043,7 +5555,7 @@
 **Validaciones:**
 
 - `contact_id`: nullable, integer
-- `document_type`: nullable, string, max:255
+- `document_type`: nullable, string, max:255, rfc, cedula_fiscal, ine, constancia_sat, opinion_sat, certificado_sello, comprobante_domicilio, cotizacion, orden_compra, factura, contrato, otros
 - `file_path`: nullable, string, max:255
 - `original_filename`: nullable, string, max:255
 - `mime_type`: nullable, string, max:255
@@ -4100,18 +5612,18 @@
 
 - ✅ `contactId` (number) 🔄
 - ✅ `documentType` (string) 🔄
-- ✅ `filePath` (string) 🔄
-- ✅ `originalFilename` (string) 🔄
-- ✅ `mimeType` (string) 🔄
-- ✅ `fileSize` (number) 🔄
-- ✅ `uploadedBy` (number) 🔄
-- ✅ `verifiedAt` (datetime) 🔄
-- ✅ `verifiedBy` (number) 🔄
-- ✅ `expiresAt` (datetime) 🔄
+- ✅ `filePath` (string) 
+- ✅ `originalFilename` (string) 
+- ✅ `mimeType` (string) 
+- ✅ `fileSize` (number) 
+- ✅ `uploadedBy` (number) 
+- ✅ `verifiedAt` (datetime) 
+- ✅ `verifiedBy` (number) 
+- ✅ `expiresAt` (datetime) 
 - ✅ `notes` (string) 
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 🔒🔄
-- ✅ `updatedAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Relaciones disponibles:**
 
@@ -4120,7 +5632,7 @@
 **Validaciones:**
 
 - `contact_id`: nullable, integer
-- `document_type`: nullable, string, max:255
+- `document_type`: nullable, string, max:255, rfc, cedula_fiscal, ine, constancia_sat, opinion_sat, certificado_sello, comprobante_domicilio, cotizacion, orden_compra, factura, contrato, otros
 - `file_path`: nullable, string, max:255
 - `original_filename`: nullable, string, max:255
 - `mime_type`: nullable, string, max:255
@@ -4153,18 +5665,18 @@
 
 - ✅ `contactId` (number) 🔄
 - ✅ `documentType` (string) 🔄
-- ✅ `filePath` (string) 🔄
-- ✅ `originalFilename` (string) 🔄
-- ✅ `mimeType` (string) 🔄
-- ✅ `fileSize` (number) 🔄
-- ✅ `uploadedBy` (number) 🔄
-- ✅ `verifiedAt` (datetime) 🔄
-- ✅ `verifiedBy` (number) 🔄
-- ✅ `expiresAt` (datetime) 🔄
+- ✅ `filePath` (string) 
+- ✅ `originalFilename` (string) 
+- ✅ `mimeType` (string) 
+- ✅ `fileSize` (number) 
+- ✅ `uploadedBy` (number) 
+- ✅ `verifiedAt` (datetime) 
+- ✅ `verifiedBy` (number) 
+- ✅ `expiresAt` (datetime) 
 - ✅ `notes` (string) 
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 🔒🔄
-- ✅ `updatedAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Relaciones disponibles:**
 
@@ -4173,7 +5685,7 @@
 **Validaciones:**
 
 - `contact_id`: nullable, integer
-- `document_type`: nullable, string, max:255
+- `document_type`: nullable, string, max:255, rfc, cedula_fiscal, ine, constancia_sat, opinion_sat, certificado_sello, comprobante_domicilio, cotizacion, orden_compra, factura, contrato, otros
 - `file_path`: nullable, string, max:255
 - `original_filename`: nullable, string, max:255
 - `mime_type`: nullable, string, max:255
@@ -4217,18 +5729,18 @@
 
 - ✅ `contactId` (number) 🔄
 - ✅ `documentType` (string) 🔄
-- ✅ `filePath` (string) 🔄
-- ✅ `originalFilename` (string) 🔄
-- ✅ `mimeType` (string) 🔄
-- ✅ `fileSize` (number) 🔄
-- ✅ `uploadedBy` (number) 🔄
-- ✅ `verifiedAt` (datetime) 🔄
-- ✅ `verifiedBy` (number) 🔄
-- ✅ `expiresAt` (datetime) 🔄
+- ✅ `filePath` (string) 
+- ✅ `originalFilename` (string) 
+- ✅ `mimeType` (string) 
+- ✅ `fileSize` (number) 
+- ✅ `uploadedBy` (number) 
+- ✅ `verifiedAt` (datetime) 
+- ✅ `verifiedBy` (number) 
+- ✅ `expiresAt` (datetime) 
 - ✅ `notes` (string) 
 - ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 🔒🔄
-- ✅ `updatedAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒
 
 **Relaciones disponibles:**
 
@@ -4237,7 +5749,7 @@
 **Validaciones:**
 
 - `contact_id`: nullable, integer
-- `document_type`: nullable, string, max:255
+- `document_type`: nullable, string, max:255, rfc, cedula_fiscal, ine, constancia_sat, opinion_sat, certificado_sello, comprobante_domicilio, cotizacion, orden_compra, factura, contrato, otros
 - `file_path`: nullable, string, max:255
 - `original_filename`: nullable, string, max:255
 - `mime_type`: nullable, string, max:255
@@ -4544,14 +6056,12 @@
 
 **Validaciones:**
 
-- `contact_id`: nullable, integer
-- `name`: nullable, string, max:255
 - `position`: nullable, string, max:255
 - `department`: nullable, string, max:255
 - `email`: nullable, string, max:255, email
 - `phone`: nullable, string, max:255
 - `mobile`: nullable, string, max:255
-- `is_primary`: nullable, boolean
+- `isPrimary`: nullable, boolean
 - `metadata`: nullable, array
 
 **Ejemplo de Request:**
@@ -4591,14 +6101,12 @@
 
 **Validaciones:**
 
-- `contact_id`: nullable, integer
-- `name`: nullable, string, max:255
 - `position`: nullable, string, max:255
 - `department`: nullable, string, max:255
 - `email`: nullable, string, max:255, email
 - `phone`: nullable, string, max:255
 - `mobile`: nullable, string, max:255
-- `is_primary`: nullable, boolean
+- `isPrimary`: nullable, boolean
 - `metadata`: nullable, array
 
 **Ejemplo de Request:**
@@ -4662,14 +6170,12 @@
 
 **Validaciones:**
 
-- `contact_id`: nullable, integer
-- `name`: nullable, string, max:255
 - `position`: nullable, string, max:255
 - `department`: nullable, string, max:255
 - `email`: nullable, string, max:255, email
 - `phone`: nullable, string, max:255
 - `mobile`: nullable, string, max:255
-- `is_primary`: nullable, boolean
+- `isPrimary`: nullable, boolean
 - `metadata`: nullable, array
 
 **Ejemplo de Request:**
@@ -4709,14 +6215,12 @@
 
 **Validaciones:**
 
-- `contact_id`: nullable, integer
-- `name`: nullable, string, max:255
 - `position`: nullable, string, max:255
 - `department`: nullable, string, max:255
 - `email`: nullable, string, max:255, email
 - `phone`: nullable, string, max:255
 - `mobile`: nullable, string, max:255
-- `is_primary`: nullable, boolean
+- `isPrimary`: nullable, boolean
 - `metadata`: nullable, array
 
 **Ejemplo de Request:**
@@ -4767,14 +6271,12 @@
 
 **Validaciones:**
 
-- `contact_id`: nullable, integer
-- `name`: nullable, string, max:255
 - `position`: nullable, string, max:255
 - `department`: nullable, string, max:255
 - `email`: nullable, string, max:255, email
 - `phone`: nullable, string, max:255
 - `mobile`: nullable, string, max:255
-- `is_primary`: nullable, boolean
+- `isPrimary`: nullable, boolean
 - `metadata`: nullable, array
 
 ---
@@ -5676,40 +7178,40 @@
 
 ---
 
-### 📦 Suppliers
+### 📦 Bank accounts
 
-#### `GET` `api/v1/suppliers`
+#### `GET` `api/v1/bank-accounts`
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 🔄
-- ✅ `email` (string) 🔄
-- ✅ `phone` (string) 
-- ✅ `address` (string) 
-- ✅ `rfc` (string) 
-- ✅ `isActive` (boolean) 🔄
+- ✅ `bankName` (string) 🔄
+- ✅ `accountNumber` (string) 🔄
+- ✅ `clabe` (string) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `accountType` (string) 🔄
+- ✅ `openingBalance` (number) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
 
-**Relaciones disponibles:**
-
-- `purchaseOrders` (relationship[])
-
 **Validaciones:**
 
-- `name`: required, string, max:255
-- `email`: nullable, email, max:255, suppliers, email
-- `phone`: nullable, string, max:20
-- `address`: nullable, string, max:500
-- `rfc`: nullable, string, max:13, suppliers, rfc
-- `isActive`: sometimes, boolean
+- `bank_name`: required, string, max:255
+- `account_number`: required, string, max:255, bank_accounts
+- `clabe`: nullable, string, max:255
+- `currency`: required, string, max:255
+- `account_type`: required, string, max:255
+- `opening_balance`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
 
 **Ejemplo de Request:**
 
 ```json
 {
     "method": "GET",
-    "url": "\/api\/v1\/suppliers",
+    "url": "\/api\/v1\/bank_accounts",
     "headers": {
         "Accept": "application\/vnd.api+json",
         "Authorization": "Bearer {token}"
@@ -5719,38 +7221,38 @@
 
 ---
 
-#### `POST` `api/v1/suppliers`
+#### `POST` `api/v1/bank-accounts`
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 🔄
-- ✅ `email` (string) 🔄
-- ✅ `phone` (string) 
-- ✅ `address` (string) 
-- ✅ `rfc` (string) 
-- ✅ `isActive` (boolean) 🔄
+- ✅ `bankName` (string) 🔄
+- ✅ `accountNumber` (string) 🔄
+- ✅ `clabe` (string) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `accountType` (string) 🔄
+- ✅ `openingBalance` (number) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
 
-**Relaciones disponibles:**
-
-- `purchaseOrders` (relationship[])
-
 **Validaciones:**
 
-- `name`: required, string, max:255
-- `email`: nullable, email, max:255, suppliers, email
-- `phone`: nullable, string, max:20
-- `address`: nullable, string, max:500
-- `rfc`: nullable, string, max:13, suppliers, rfc
-- `isActive`: sometimes, boolean
+- `bank_name`: required, string, max:255
+- `account_number`: required, string, max:255, bank_accounts
+- `clabe`: nullable, string, max:255
+- `currency`: required, string, max:255
+- `account_type`: required, string, max:255
+- `opening_balance`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
 
 **Ejemplo de Request:**
 
 ```json
 {
     "method": "POST",
-    "url": "\/api\/v1\/suppliers",
+    "url": "\/api\/v1\/bank_accounts",
     "headers": {
         "Content-Type": "application\/vnd.api+json",
         "Accept": "application\/vnd.api+json",
@@ -5758,7 +7260,7 @@
     },
     "body": {
         "data": {
-            "type": "suppliers",
+            "type": "bank_accounts",
             "attributes": {
                 "title": "Nueva p\u00e1gina",
                 "slug": "nueva-pagina",
@@ -5784,38 +7286,38 @@
 
 ---
 
-#### `GET` `api/v1/suppliers/{supplier}`
+#### `GET` `api/v1/bank-accounts/{bank_account}`
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 🔄
-- ✅ `email` (string) 🔄
-- ✅ `phone` (string) 
-- ✅ `address` (string) 
-- ✅ `rfc` (string) 
-- ✅ `isActive` (boolean) 🔄
+- ✅ `bankName` (string) 🔄
+- ✅ `accountNumber` (string) 🔄
+- ✅ `clabe` (string) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `accountType` (string) 🔄
+- ✅ `openingBalance` (number) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
 
-**Relaciones disponibles:**
-
-- `purchaseOrders` (relationship[])
-
 **Validaciones:**
 
-- `name`: required, string, max:255
-- `email`: nullable, email, max:255, suppliers, email
-- `phone`: nullable, string, max:20
-- `address`: nullable, string, max:500
-- `rfc`: nullable, string, max:13, suppliers, rfc
-- `isActive`: sometimes, boolean
+- `bank_name`: required, string, max:255
+- `account_number`: required, string, max:255, bank_accounts
+- `clabe`: nullable, string, max:255
+- `currency`: required, string, max:255
+- `account_type`: required, string, max:255
+- `opening_balance`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
 
 **Ejemplo de Request:**
 
 ```json
 {
     "method": "GET",
-    "url": "\/api\/v1\/suppliers",
+    "url": "\/api\/v1\/bank_accounts",
     "headers": {
         "Accept": "application\/vnd.api+json",
         "Authorization": "Bearer {token}"
@@ -5825,38 +7327,38 @@
 
 ---
 
-#### `PATCH` `api/v1/suppliers/{supplier}`
+#### `PATCH` `api/v1/bank-accounts/{bank_account}`
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 🔄
-- ✅ `email` (string) 🔄
-- ✅ `phone` (string) 
-- ✅ `address` (string) 
-- ✅ `rfc` (string) 
-- ✅ `isActive` (boolean) 🔄
+- ✅ `bankName` (string) 🔄
+- ✅ `accountNumber` (string) 🔄
+- ✅ `clabe` (string) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `accountType` (string) 🔄
+- ✅ `openingBalance` (number) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
 
-**Relaciones disponibles:**
-
-- `purchaseOrders` (relationship[])
-
 **Validaciones:**
 
-- `name`: required, string, max:255
-- `email`: nullable, email, max:255, suppliers, email
-- `phone`: nullable, string, max:20
-- `address`: nullable, string, max:500
-- `rfc`: nullable, string, max:13, suppliers, rfc
-- `isActive`: sometimes, boolean
+- `bank_name`: required, string, max:255
+- `account_number`: required, string, max:255, bank_accounts
+- `clabe`: nullable, string, max:255
+- `currency`: required, string, max:255
+- `account_type`: required, string, max:255
+- `opening_balance`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
 
 **Ejemplo de Request:**
 
 ```json
 {
     "method": "PATCH",
-    "url": "\/api\/v1\/suppliers\/1",
+    "url": "\/api\/v1\/bank_accounts\/1",
     "headers": {
         "Content-Type": "application\/vnd.api+json",
         "Accept": "application\/vnd.api+json",
@@ -5864,7 +7366,7 @@
     },
     "body": {
         "data": {
-            "type": "suppliers",
+            "type": "bank_accounts",
             "id": "1",
             "attributes": {
                 "status": "published",
@@ -5877,31 +7379,2281 @@
 
 ---
 
-#### `DELETE` `api/v1/suppliers/{supplier}`
+#### `DELETE` `api/v1/bank-accounts/{bank_account}`
 
 **Campos disponibles:**
 
-- ✅ `name` (string) 🔄
-- ✅ `email` (string) 🔄
-- ✅ `phone` (string) 
-- ✅ `address` (string) 
-- ✅ `rfc` (string) 
-- ✅ `isActive` (boolean) 🔄
+- ✅ `bankName` (string) 🔄
+- ✅ `accountNumber` (string) 🔄
+- ✅ `clabe` (string) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `accountType` (string) 🔄
+- ✅ `openingBalance` (number) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
 
-**Relaciones disponibles:**
+**Validaciones:**
 
-- `purchaseOrders` (relationship[])
+- `bank_name`: required, string, max:255
+- `account_number`: required, string, max:255, bank_accounts
+- `clabe`: nullable, string, max:255
+- `currency`: required, string, max:255
+- `account_type`: required, string, max:255
+- `opening_balance`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+---
+
+### 📦 Bank statements
+
+#### `GET` `api/v1/bank-statements`
+
+**Campos disponibles:**
+
+- ✅ `bankAccountId` (number) 
+- ✅ `statementDate` (datetime) 🔄
+- ✅ `importSource` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
 
 **Validaciones:**
 
-- `name`: required, string, max:255
-- `email`: nullable, email, max:255, suppliers, email
-- `phone`: nullable, string, max:20
-- `address`: nullable, string, max:500
-- `rfc`: nullable, string, max:13, suppliers, rfc
-- `isActive`: sometimes, boolean
+- `bank_account_id`: required, string
+- `statement_date`: required, date
+- `import_source`: nullable, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/bank_statements",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/bank-statements`
+
+**Campos disponibles:**
+
+- ✅ `bankAccountId` (number) 
+- ✅ `statementDate` (datetime) 🔄
+- ✅ `importSource` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `bank_account_id`: required, string
+- `statement_date`: required, date
+- `import_source`: nullable, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/bank_statements",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "bank_statements",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/bank-statements/{bank_statement}`
+
+**Campos disponibles:**
+
+- ✅ `bankAccountId` (number) 
+- ✅ `statementDate` (datetime) 🔄
+- ✅ `importSource` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `bank_account_id`: required, string
+- `statement_date`: required, date
+- `import_source`: nullable, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/bank_statements",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/bank-statements/{bank_statement}`
+
+**Campos disponibles:**
+
+- ✅ `bankAccountId` (number) 
+- ✅ `statementDate` (datetime) 🔄
+- ✅ `importSource` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `bank_account_id`: required, string
+- `statement_date`: required, date
+- `import_source`: nullable, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/bank_statements\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "bank_statements",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/bank-statements/{bank_statement}`
+
+**Campos disponibles:**
+
+- ✅ `bankAccountId` (number) 
+- ✅ `statementDate` (datetime) 🔄
+- ✅ `importSource` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `bank_account_id`: required, string
+- `statement_date`: required, date
+- `import_source`: nullable, string, max:255
+- `metadata`: nullable, array
+
+---
+
+### 📦 Bank statement lines
+
+#### `GET` `api/v1/bank-statement-lines`
+
+**Campos disponibles:**
+
+- ✅ `bankStatementId` (number) 
+- ✅ `txnDate` (datetime) 🔄
+- ✅ `amount` (number) 🔄
+- ✅ `counterparty` (string) 🔄
+- ✅ `reference` (string) 🔄
+- ✅ `fitid` (string) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `bank_statement_id`: required, string
+- `txn_date`: required, date
+- `amount`: required, string
+- `counterparty`: nullable, string, max:255
+- `reference`: nullable, string, max:255
+- `fitid`: nullable, string, max:255
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/bank_statement_lines",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/bank-statement-lines`
+
+**Campos disponibles:**
+
+- ✅ `bankStatementId` (number) 
+- ✅ `txnDate` (datetime) 🔄
+- ✅ `amount` (number) 🔄
+- ✅ `counterparty` (string) 🔄
+- ✅ `reference` (string) 🔄
+- ✅ `fitid` (string) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `bank_statement_id`: required, string
+- `txn_date`: required, date
+- `amount`: required, string
+- `counterparty`: nullable, string, max:255
+- `reference`: nullable, string, max:255
+- `fitid`: nullable, string, max:255
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/bank_statement_lines",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "bank_statement_lines",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/bank-statement-lines/{bank_statement_line}`
+
+**Campos disponibles:**
+
+- ✅ `bankStatementId` (number) 
+- ✅ `txnDate` (datetime) 🔄
+- ✅ `amount` (number) 🔄
+- ✅ `counterparty` (string) 🔄
+- ✅ `reference` (string) 🔄
+- ✅ `fitid` (string) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `bank_statement_id`: required, string
+- `txn_date`: required, date
+- `amount`: required, string
+- `counterparty`: nullable, string, max:255
+- `reference`: nullable, string, max:255
+- `fitid`: nullable, string, max:255
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/bank_statement_lines",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/bank-statement-lines/{bank_statement_line}`
+
+**Campos disponibles:**
+
+- ✅ `bankStatementId` (number) 
+- ✅ `txnDate` (datetime) 🔄
+- ✅ `amount` (number) 🔄
+- ✅ `counterparty` (string) 🔄
+- ✅ `reference` (string) 🔄
+- ✅ `fitid` (string) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `bank_statement_id`: required, string
+- `txn_date`: required, date
+- `amount`: required, string
+- `counterparty`: nullable, string, max:255
+- `reference`: nullable, string, max:255
+- `fitid`: nullable, string, max:255
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/bank_statement_lines\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "bank_statement_lines",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/bank-statement-lines/{bank_statement_line}`
+
+**Campos disponibles:**
+
+- ✅ `bankStatementId` (number) 
+- ✅ `txnDate` (datetime) 🔄
+- ✅ `amount` (number) 🔄
+- ✅ `counterparty` (string) 🔄
+- ✅ `reference` (string) 🔄
+- ✅ `fitid` (string) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `bank_statement_id`: required, string
+- `txn_date`: required, date
+- `amount`: required, string
+- `counterparty`: nullable, string, max:255
+- `reference`: nullable, string, max:255
+- `fitid`: nullable, string, max:255
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+---
+
+### 📦 A p invoices
+
+#### `GET` `api/v1/a-p-invoices`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 
+- ✅ `invoiceNumber` (string) 🔄
+- ✅ `invoiceDate` (datetime) 🔄
+- ✅ `dueDate` (datetime) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `exchangeRate` (number) 🔄
+- ✅ `subtotal` (number) 🔄
+- ✅ `taxTotal` (number) 🔄
+- ✅ `total` (number) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `contact_id`: required, string
+- `invoice_number`: required, string, max:255
+- `invoice_date`: required, date
+- `due_date`: required, date
+- `currency`: nullable, string, max:255
+- `exchange_rate`: nullable, string
+- `subtotal`: required, string
+- `tax_total`: required, string
+- `total`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/a_p_invoices",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/a-p-invoices`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 
+- ✅ `invoiceNumber` (string) 🔄
+- ✅ `invoiceDate` (datetime) 🔄
+- ✅ `dueDate` (datetime) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `exchangeRate` (number) 🔄
+- ✅ `subtotal` (number) 🔄
+- ✅ `taxTotal` (number) 🔄
+- ✅ `total` (number) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `contact_id`: required, string
+- `invoice_number`: required, string, max:255
+- `invoice_date`: required, date
+- `due_date`: required, date
+- `currency`: nullable, string, max:255
+- `exchange_rate`: nullable, string
+- `subtotal`: required, string
+- `tax_total`: required, string
+- `total`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/a_p_invoices",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "a_p_invoices",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/a-p-invoices/{a_p_invoice}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 
+- ✅ `invoiceNumber` (string) 🔄
+- ✅ `invoiceDate` (datetime) 🔄
+- ✅ `dueDate` (datetime) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `exchangeRate` (number) 🔄
+- ✅ `subtotal` (number) 🔄
+- ✅ `taxTotal` (number) 🔄
+- ✅ `total` (number) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `contact_id`: required, string
+- `invoice_number`: required, string, max:255
+- `invoice_date`: required, date
+- `due_date`: required, date
+- `currency`: nullable, string, max:255
+- `exchange_rate`: nullable, string
+- `subtotal`: required, string
+- `tax_total`: required, string
+- `total`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/a_p_invoices",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/a-p-invoices/{a_p_invoice}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 
+- ✅ `invoiceNumber` (string) 🔄
+- ✅ `invoiceDate` (datetime) 🔄
+- ✅ `dueDate` (datetime) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `exchangeRate` (number) 🔄
+- ✅ `subtotal` (number) 🔄
+- ✅ `taxTotal` (number) 🔄
+- ✅ `total` (number) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `contact_id`: required, string
+- `invoice_number`: required, string, max:255
+- `invoice_date`: required, date
+- `due_date`: required, date
+- `currency`: nullable, string, max:255
+- `exchange_rate`: nullable, string
+- `subtotal`: required, string
+- `tax_total`: required, string
+- `total`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/a_p_invoices\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "a_p_invoices",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/a-p-invoices/{a_p_invoice}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 
+- ✅ `invoiceNumber` (string) 🔄
+- ✅ `invoiceDate` (datetime) 🔄
+- ✅ `dueDate` (datetime) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `exchangeRate` (number) 🔄
+- ✅ `subtotal` (number) 🔄
+- ✅ `taxTotal` (number) 🔄
+- ✅ `total` (number) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `contact_id`: required, string
+- `invoice_number`: required, string, max:255
+- `invoice_date`: required, date
+- `due_date`: required, date
+- `currency`: nullable, string, max:255
+- `exchange_rate`: nullable, string
+- `subtotal`: required, string
+- `tax_total`: required, string
+- `total`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+---
+
+### 📦 A p invoice lines
+
+#### `GET` `api/v1/a-p-invoice-lines`
+
+**Campos disponibles:**
+
+- ✅ `apInvoiceId` (number) 
+- ✅ `description` (string) 🔄
+- ✅ `quantity` (number) 🔄
+- ✅ `unitPrice` (number) 🔄
+- ✅ `discount` (number) 🔄
+- ✅ `lineTotal` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `ap_invoice_id`: required, string
+- `description`: required, string, max:255
+- `quantity`: required, string
+- `unit_price`: required, string
+- `discount`: required, string
+- `line_total`: required, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/a_p_invoice_lines",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/a-p-invoice-lines`
+
+**Campos disponibles:**
+
+- ✅ `apInvoiceId` (number) 
+- ✅ `description` (string) 🔄
+- ✅ `quantity` (number) 🔄
+- ✅ `unitPrice` (number) 🔄
+- ✅ `discount` (number) 🔄
+- ✅ `lineTotal` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `ap_invoice_id`: required, string
+- `description`: required, string, max:255
+- `quantity`: required, string
+- `unit_price`: required, string
+- `discount`: required, string
+- `line_total`: required, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/a_p_invoice_lines",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "a_p_invoice_lines",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/a-p-invoice-lines/{a_p_invoice_line}`
+
+**Campos disponibles:**
+
+- ✅ `apInvoiceId` (number) 
+- ✅ `description` (string) 🔄
+- ✅ `quantity` (number) 🔄
+- ✅ `unitPrice` (number) 🔄
+- ✅ `discount` (number) 🔄
+- ✅ `lineTotal` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `ap_invoice_id`: required, string
+- `description`: required, string, max:255
+- `quantity`: required, string
+- `unit_price`: required, string
+- `discount`: required, string
+- `line_total`: required, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/a_p_invoice_lines",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/a-p-invoice-lines/{a_p_invoice_line}`
+
+**Campos disponibles:**
+
+- ✅ `apInvoiceId` (number) 
+- ✅ `description` (string) 🔄
+- ✅ `quantity` (number) 🔄
+- ✅ `unitPrice` (number) 🔄
+- ✅ `discount` (number) 🔄
+- ✅ `lineTotal` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `ap_invoice_id`: required, string
+- `description`: required, string, max:255
+- `quantity`: required, string
+- `unit_price`: required, string
+- `discount`: required, string
+- `line_total`: required, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/a_p_invoice_lines\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "a_p_invoice_lines",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/a-p-invoice-lines/{a_p_invoice_line}`
+
+**Campos disponibles:**
+
+- ✅ `apInvoiceId` (number) 
+- ✅ `description` (string) 🔄
+- ✅ `quantity` (number) 🔄
+- ✅ `unitPrice` (number) 🔄
+- ✅ `discount` (number) 🔄
+- ✅ `lineTotal` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `ap_invoice_id`: required, string
+- `description`: required, string, max:255
+- `quantity`: required, string
+- `unit_price`: required, string
+- `discount`: required, string
+- `line_total`: required, string
+- `metadata`: nullable, array
+
+---
+
+### 📦 A p payments
+
+#### `GET` `api/v1/a-p-payments`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 
+- ✅ `paymentDate` (datetime) 🔄
+- ✅ `paymentMethod` (string) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `amount` (number) 🔄
+- ✅ `bankAccountId` (number) 
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `contact_id`: required, string
+- `payment_date`: required, date
+- `payment_method`: required, string, max:255
+- `currency`: nullable, string, max:255
+- `amount`: required, string
+- `bank_account_id`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/a_p_payments",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/a-p-payments`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 
+- ✅ `paymentDate` (datetime) 🔄
+- ✅ `paymentMethod` (string) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `amount` (number) 🔄
+- ✅ `bankAccountId` (number) 
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `contact_id`: required, string
+- `payment_date`: required, date
+- `payment_method`: required, string, max:255
+- `currency`: nullable, string, max:255
+- `amount`: required, string
+- `bank_account_id`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/a_p_payments",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "a_p_payments",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/a-p-payments/{a_p_payment}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 
+- ✅ `paymentDate` (datetime) 🔄
+- ✅ `paymentMethod` (string) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `amount` (number) 🔄
+- ✅ `bankAccountId` (number) 
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `contact_id`: required, string
+- `payment_date`: required, date
+- `payment_method`: required, string, max:255
+- `currency`: nullable, string, max:255
+- `amount`: required, string
+- `bank_account_id`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/a_p_payments",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/a-p-payments/{a_p_payment}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 
+- ✅ `paymentDate` (datetime) 🔄
+- ✅ `paymentMethod` (string) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `amount` (number) 🔄
+- ✅ `bankAccountId` (number) 
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `contact_id`: required, string
+- `payment_date`: required, date
+- `payment_method`: required, string, max:255
+- `currency`: nullable, string, max:255
+- `amount`: required, string
+- `bank_account_id`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/a_p_payments\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "a_p_payments",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/a-p-payments/{a_p_payment}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 
+- ✅ `paymentDate` (datetime) 🔄
+- ✅ `paymentMethod` (string) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `amount` (number) 🔄
+- ✅ `bankAccountId` (number) 
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `contact_id`: required, string
+- `payment_date`: required, date
+- `payment_method`: required, string, max:255
+- `currency`: nullable, string, max:255
+- `amount`: required, string
+- `bank_account_id`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+---
+
+### 📦 A p invoice payments
+
+#### `GET` `api/v1/a-p-invoice-payments`
+
+**Campos disponibles:**
+
+- ✅ `apInvoiceId` (number) 
+- ✅ `apPaymentId` (number) 
+- ✅ `amountApplied` (number) 🔄
+- ✅ `appliedAt` (datetime) 🔄
+- ✅ `exchangeRateAtApply` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `ap_invoice_id`: required, string
+- `ap_payment_id`: required, string
+- `amount_applied`: required, string
+- `applied_at`: required, date
+- `exchange_rate_at_apply`: nullable, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/a_p_invoice_payments",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/a-p-invoice-payments`
+
+**Campos disponibles:**
+
+- ✅ `apInvoiceId` (number) 
+- ✅ `apPaymentId` (number) 
+- ✅ `amountApplied` (number) 🔄
+- ✅ `appliedAt` (datetime) 🔄
+- ✅ `exchangeRateAtApply` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `ap_invoice_id`: required, string
+- `ap_payment_id`: required, string
+- `amount_applied`: required, string
+- `applied_at`: required, date
+- `exchange_rate_at_apply`: nullable, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/a_p_invoice_payments",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "a_p_invoice_payments",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/a-p-invoice-payments/{a_p_invoice_payment}`
+
+**Campos disponibles:**
+
+- ✅ `apInvoiceId` (number) 
+- ✅ `apPaymentId` (number) 
+- ✅ `amountApplied` (number) 🔄
+- ✅ `appliedAt` (datetime) 🔄
+- ✅ `exchangeRateAtApply` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `ap_invoice_id`: required, string
+- `ap_payment_id`: required, string
+- `amount_applied`: required, string
+- `applied_at`: required, date
+- `exchange_rate_at_apply`: nullable, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/a_p_invoice_payments",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/a-p-invoice-payments/{a_p_invoice_payment}`
+
+**Campos disponibles:**
+
+- ✅ `apInvoiceId` (number) 
+- ✅ `apPaymentId` (number) 
+- ✅ `amountApplied` (number) 🔄
+- ✅ `appliedAt` (datetime) 🔄
+- ✅ `exchangeRateAtApply` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `ap_invoice_id`: required, string
+- `ap_payment_id`: required, string
+- `amount_applied`: required, string
+- `applied_at`: required, date
+- `exchange_rate_at_apply`: nullable, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/a_p_invoice_payments\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "a_p_invoice_payments",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/a-p-invoice-payments/{a_p_invoice_payment}`
+
+**Campos disponibles:**
+
+- ✅ `apInvoiceId` (number) 
+- ✅ `apPaymentId` (number) 
+- ✅ `amountApplied` (number) 🔄
+- ✅ `appliedAt` (datetime) 🔄
+- ✅ `exchangeRateAtApply` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `ap_invoice_id`: required, string
+- `ap_payment_id`: required, string
+- `amount_applied`: required, string
+- `applied_at`: required, date
+- `exchange_rate_at_apply`: nullable, string
+- `metadata`: nullable, array
+
+---
+
+### 📦 A r invoices
+
+#### `GET` `api/v1/a-r-invoices`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 
+- ✅ `invoiceNumber` (string) 🔄
+- ✅ `invoiceDate` (datetime) 🔄
+- ✅ `dueDate` (datetime) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `exchangeRate` (number) 🔄
+- ✅ `subtotal` (number) 🔄
+- ✅ `taxTotal` (number) 🔄
+- ✅ `total` (number) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `contact_id`: required, string
+- `invoice_number`: required, string, max:255
+- `invoice_date`: required, date
+- `due_date`: required, date
+- `currency`: nullable, string, max:255
+- `exchange_rate`: nullable, string
+- `subtotal`: required, string
+- `tax_total`: required, string
+- `total`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/a_r_invoices",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/a-r-invoices`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 
+- ✅ `invoiceNumber` (string) 🔄
+- ✅ `invoiceDate` (datetime) 🔄
+- ✅ `dueDate` (datetime) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `exchangeRate` (number) 🔄
+- ✅ `subtotal` (number) 🔄
+- ✅ `taxTotal` (number) 🔄
+- ✅ `total` (number) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `contact_id`: required, string
+- `invoice_number`: required, string, max:255
+- `invoice_date`: required, date
+- `due_date`: required, date
+- `currency`: nullable, string, max:255
+- `exchange_rate`: nullable, string
+- `subtotal`: required, string
+- `tax_total`: required, string
+- `total`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/a_r_invoices",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "a_r_invoices",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/a-r-invoices/{a_r_invoice}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 
+- ✅ `invoiceNumber` (string) 🔄
+- ✅ `invoiceDate` (datetime) 🔄
+- ✅ `dueDate` (datetime) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `exchangeRate` (number) 🔄
+- ✅ `subtotal` (number) 🔄
+- ✅ `taxTotal` (number) 🔄
+- ✅ `total` (number) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `contact_id`: required, string
+- `invoice_number`: required, string, max:255
+- `invoice_date`: required, date
+- `due_date`: required, date
+- `currency`: nullable, string, max:255
+- `exchange_rate`: nullable, string
+- `subtotal`: required, string
+- `tax_total`: required, string
+- `total`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/a_r_invoices",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/a-r-invoices/{a_r_invoice}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 
+- ✅ `invoiceNumber` (string) 🔄
+- ✅ `invoiceDate` (datetime) 🔄
+- ✅ `dueDate` (datetime) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `exchangeRate` (number) 🔄
+- ✅ `subtotal` (number) 🔄
+- ✅ `taxTotal` (number) 🔄
+- ✅ `total` (number) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `contact_id`: required, string
+- `invoice_number`: required, string, max:255
+- `invoice_date`: required, date
+- `due_date`: required, date
+- `currency`: nullable, string, max:255
+- `exchange_rate`: nullable, string
+- `subtotal`: required, string
+- `tax_total`: required, string
+- `total`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/a_r_invoices\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "a_r_invoices",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/a-r-invoices/{a_r_invoice}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 
+- ✅ `invoiceNumber` (string) 🔄
+- ✅ `invoiceDate` (datetime) 🔄
+- ✅ `dueDate` (datetime) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `exchangeRate` (number) 🔄
+- ✅ `subtotal` (number) 🔄
+- ✅ `taxTotal` (number) 🔄
+- ✅ `total` (number) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `contact_id`: required, string
+- `invoice_number`: required, string, max:255
+- `invoice_date`: required, date
+- `due_date`: required, date
+- `currency`: nullable, string, max:255
+- `exchange_rate`: nullable, string
+- `subtotal`: required, string
+- `tax_total`: required, string
+- `total`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+---
+
+### 📦 A r invoice lines
+
+#### `GET` `api/v1/a-r-invoice-lines`
+
+**Campos disponibles:**
+
+- ✅ `arInvoiceId` (number) 
+- ✅ `description` (string) 🔄
+- ✅ `quantity` (number) 🔄
+- ✅ `unitPrice` (number) 🔄
+- ✅ `discount` (number) 🔄
+- ✅ `lineTotal` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `ar_invoice_id`: required, string
+- `description`: required, string, max:255
+- `quantity`: required, string
+- `unit_price`: required, string
+- `discount`: required, string
+- `line_total`: required, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/a_r_invoice_lines",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/a-r-invoice-lines`
+
+**Campos disponibles:**
+
+- ✅ `arInvoiceId` (number) 
+- ✅ `description` (string) 🔄
+- ✅ `quantity` (number) 🔄
+- ✅ `unitPrice` (number) 🔄
+- ✅ `discount` (number) 🔄
+- ✅ `lineTotal` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `ar_invoice_id`: required, string
+- `description`: required, string, max:255
+- `quantity`: required, string
+- `unit_price`: required, string
+- `discount`: required, string
+- `line_total`: required, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/a_r_invoice_lines",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "a_r_invoice_lines",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/a-r-invoice-lines/{a_r_invoice_line}`
+
+**Campos disponibles:**
+
+- ✅ `arInvoiceId` (number) 
+- ✅ `description` (string) 🔄
+- ✅ `quantity` (number) 🔄
+- ✅ `unitPrice` (number) 🔄
+- ✅ `discount` (number) 🔄
+- ✅ `lineTotal` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `ar_invoice_id`: required, string
+- `description`: required, string, max:255
+- `quantity`: required, string
+- `unit_price`: required, string
+- `discount`: required, string
+- `line_total`: required, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/a_r_invoice_lines",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/a-r-invoice-lines/{a_r_invoice_line}`
+
+**Campos disponibles:**
+
+- ✅ `arInvoiceId` (number) 
+- ✅ `description` (string) 🔄
+- ✅ `quantity` (number) 🔄
+- ✅ `unitPrice` (number) 🔄
+- ✅ `discount` (number) 🔄
+- ✅ `lineTotal` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `ar_invoice_id`: required, string
+- `description`: required, string, max:255
+- `quantity`: required, string
+- `unit_price`: required, string
+- `discount`: required, string
+- `line_total`: required, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/a_r_invoice_lines\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "a_r_invoice_lines",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/a-r-invoice-lines/{a_r_invoice_line}`
+
+**Campos disponibles:**
+
+- ✅ `arInvoiceId` (number) 
+- ✅ `description` (string) 🔄
+- ✅ `quantity` (number) 🔄
+- ✅ `unitPrice` (number) 🔄
+- ✅ `discount` (number) 🔄
+- ✅ `lineTotal` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `ar_invoice_id`: required, string
+- `description`: required, string, max:255
+- `quantity`: required, string
+- `unit_price`: required, string
+- `discount`: required, string
+- `line_total`: required, string
+- `metadata`: nullable, array
+
+---
+
+### 📦 A r receipts
+
+#### `GET` `api/v1/a-r-receipts`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 
+- ✅ `receiptDate` (datetime) 🔄
+- ✅ `paymentMethod` (string) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `amount` (number) 🔄
+- ✅ `bankAccountId` (number) 
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `contact_id`: required, string
+- `receipt_date`: required, date
+- `payment_method`: required, string, max:255
+- `currency`: nullable, string, max:255
+- `amount`: required, string
+- `bank_account_id`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/a_r_receipts",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/a-r-receipts`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 
+- ✅ `receiptDate` (datetime) 🔄
+- ✅ `paymentMethod` (string) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `amount` (number) 🔄
+- ✅ `bankAccountId` (number) 
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `contact_id`: required, string
+- `receipt_date`: required, date
+- `payment_method`: required, string, max:255
+- `currency`: nullable, string, max:255
+- `amount`: required, string
+- `bank_account_id`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/a_r_receipts",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "a_r_receipts",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/a-r-receipts/{a_r_receipt}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 
+- ✅ `receiptDate` (datetime) 🔄
+- ✅ `paymentMethod` (string) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `amount` (number) 🔄
+- ✅ `bankAccountId` (number) 
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `contact_id`: required, string
+- `receipt_date`: required, date
+- `payment_method`: required, string, max:255
+- `currency`: nullable, string, max:255
+- `amount`: required, string
+- `bank_account_id`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/a_r_receipts",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/a-r-receipts/{a_r_receipt}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 
+- ✅ `receiptDate` (datetime) 🔄
+- ✅ `paymentMethod` (string) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `amount` (number) 🔄
+- ✅ `bankAccountId` (number) 
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `contact_id`: required, string
+- `receipt_date`: required, date
+- `payment_method`: required, string, max:255
+- `currency`: nullable, string, max:255
+- `amount`: required, string
+- `bank_account_id`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/a_r_receipts\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "a_r_receipts",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/a-r-receipts/{a_r_receipt}`
+
+**Campos disponibles:**
+
+- ✅ `contactId` (number) 
+- ✅ `receiptDate` (datetime) 🔄
+- ✅ `paymentMethod` (string) 🔄
+- ✅ `currency` (string) 🔄
+- ✅ `amount` (number) 🔄
+- ✅ `bankAccountId` (number) 
+- ✅ `status` (string) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `contact_id`: required, string
+- `receipt_date`: required, date
+- `payment_method`: required, string, max:255
+- `currency`: nullable, string, max:255
+- `amount`: required, string
+- `bank_account_id`: required, string
+- `status`: required, string, max:255
+- `metadata`: nullable, array
+
+---
+
+### 📦 A r invoice receipts
+
+#### `GET` `api/v1/a-r-invoice-receipts`
+
+**Campos disponibles:**
+
+- ✅ `arInvoiceId` (number) 
+- ✅ `arReceiptId` (number) 
+- ✅ `amountApplied` (number) 🔄
+- ✅ `appliedAt` (datetime) 🔄
+- ✅ `exchangeRateAtApply` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `ar_invoice_id`: required, string
+- `ar_receipt_id`: required, string
+- `amount_applied`: required, string
+- `applied_at`: required, date
+- `exchange_rate_at_apply`: nullable, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/a_r_invoice_receipts",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `POST` `api/v1/a-r-invoice-receipts`
+
+**Campos disponibles:**
+
+- ✅ `arInvoiceId` (number) 
+- ✅ `arReceiptId` (number) 
+- ✅ `amountApplied` (number) 🔄
+- ✅ `appliedAt` (datetime) 🔄
+- ✅ `exchangeRateAtApply` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `ar_invoice_id`: required, string
+- `ar_receipt_id`: required, string
+- `amount_applied`: required, string
+- `applied_at`: required, date
+- `exchange_rate_at_apply`: nullable, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/a_r_invoice_receipts",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "a_r_invoice_receipts",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/a-r-invoice-receipts/{a_r_invoice_receipt}`
+
+**Campos disponibles:**
+
+- ✅ `arInvoiceId` (number) 
+- ✅ `arReceiptId` (number) 
+- ✅ `amountApplied` (number) 🔄
+- ✅ `appliedAt` (datetime) 🔄
+- ✅ `exchangeRateAtApply` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `ar_invoice_id`: required, string
+- `ar_receipt_id`: required, string
+- `amount_applied`: required, string
+- `applied_at`: required, date
+- `exchange_rate_at_apply`: nullable, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/a_r_invoice_receipts",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/a-r-invoice-receipts/{a_r_invoice_receipt}`
+
+**Campos disponibles:**
+
+- ✅ `arInvoiceId` (number) 
+- ✅ `arReceiptId` (number) 
+- ✅ `amountApplied` (number) 🔄
+- ✅ `appliedAt` (datetime) 🔄
+- ✅ `exchangeRateAtApply` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `ar_invoice_id`: required, string
+- `ar_receipt_id`: required, string
+- `amount_applied`: required, string
+- `applied_at`: required, date
+- `exchange_rate_at_apply`: nullable, string
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/a_r_invoice_receipts\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "a_r_invoice_receipts",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `DELETE` `api/v1/a-r-invoice-receipts/{a_r_invoice_receipt}`
+
+**Campos disponibles:**
+
+- ✅ `arInvoiceId` (number) 
+- ✅ `arReceiptId` (number) 
+- ✅ `amountApplied` (number) 🔄
+- ✅ `appliedAt` (datetime) 🔄
+- ✅ `exchangeRateAtApply` (number) 🔄
+- ✅ `metadata` (object) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Validaciones:**
+
+- `ar_invoice_id`: required, string
+- `ar_receipt_id`: required, string
+- `amount_applied`: required, string
+- `applied_at`: required, date
+- `exchange_rate_at_apply`: nullable, string
+- `metadata`: nullable, array
 
 ---
 
@@ -5911,7 +9663,8 @@
 
 **Campos disponibles:**
 
-- ✅ `supplierId` (number) 
+- ✅ `contact_id` (number) 
+- ✅ `contactId` (number) 
 - ✅ `orderDate` (datetime) 
 - ✅ `status` (string) 
 - ✅ `totalAmount` (number) 
@@ -5921,7 +9674,7 @@
 
 **Relaciones disponibles:**
 
-- `supplier` (relationship)
+- `contact` (relationship)
 - `purchaseOrderItems` (relationship[])
 
 **Validaciones:**
@@ -5930,7 +9683,7 @@
 - `status`: required, sometimes, string, in:pending,approved,received,cancelled
 - `totalAmount`: required, sometimes, numeric, min:0
 - `notes`: nullable, string
-- `supplier`: required, sometimes
+- `contact`: required, sometimes
 
 **Ejemplo de Request:**
 
@@ -5951,7 +9704,8 @@
 
 **Campos disponibles:**
 
-- ✅ `supplierId` (number) 
+- ✅ `contact_id` (number) 
+- ✅ `contactId` (number) 
 - ✅ `orderDate` (datetime) 
 - ✅ `status` (string) 
 - ✅ `totalAmount` (number) 
@@ -5961,7 +9715,7 @@
 
 **Relaciones disponibles:**
 
-- `supplier` (relationship)
+- `contact` (relationship)
 - `purchaseOrderItems` (relationship[])
 
 **Validaciones:**
@@ -5970,7 +9724,7 @@
 - `status`: required, sometimes, string, in:pending,approved,received,cancelled
 - `totalAmount`: required, sometimes, numeric, min:0
 - `notes`: nullable, string
-- `supplier`: required, sometimes
+- `contact`: required, sometimes
 
 **Ejemplo de Request:**
 
@@ -6015,7 +9769,8 @@
 
 **Campos disponibles:**
 
-- ✅ `supplierId` (number) 
+- ✅ `contact_id` (number) 
+- ✅ `contactId` (number) 
 - ✅ `orderDate` (datetime) 
 - ✅ `status` (string) 
 - ✅ `totalAmount` (number) 
@@ -6025,7 +9780,7 @@
 
 **Relaciones disponibles:**
 
-- `supplier` (relationship)
+- `contact` (relationship)
 - `purchaseOrderItems` (relationship[])
 
 **Validaciones:**
@@ -6034,7 +9789,7 @@
 - `status`: required, sometimes, string, in:pending,approved,received,cancelled
 - `totalAmount`: required, sometimes, numeric, min:0
 - `notes`: nullable, string
-- `supplier`: required, sometimes
+- `contact`: required, sometimes
 
 **Ejemplo de Request:**
 
@@ -6055,7 +9810,8 @@
 
 **Campos disponibles:**
 
-- ✅ `supplierId` (number) 
+- ✅ `contact_id` (number) 
+- ✅ `contactId` (number) 
 - ✅ `orderDate` (datetime) 
 - ✅ `status` (string) 
 - ✅ `totalAmount` (number) 
@@ -6065,7 +9821,7 @@
 
 **Relaciones disponibles:**
 
-- `supplier` (relationship)
+- `contact` (relationship)
 - `purchaseOrderItems` (relationship[])
 
 **Validaciones:**
@@ -6074,7 +9830,7 @@
 - `status`: required, sometimes, string, in:pending,approved,received,cancelled
 - `totalAmount`: required, sometimes, numeric, min:0
 - `notes`: nullable, string
-- `supplier`: required, sometimes
+- `contact`: required, sometimes
 
 **Ejemplo de Request:**
 
@@ -6106,7 +9862,8 @@
 
 **Campos disponibles:**
 
-- ✅ `supplierId` (number) 
+- ✅ `contact_id` (number) 
+- ✅ `contactId` (number) 
 - ✅ `orderDate` (datetime) 
 - ✅ `status` (string) 
 - ✅ `totalAmount` (number) 
@@ -6116,7 +9873,7 @@
 
 **Relaciones disponibles:**
 
-- `supplier` (relationship)
+- `contact` (relationship)
 - `purchaseOrderItems` (relationship[])
 
 **Validaciones:**
@@ -6125,7 +9882,7 @@
 - `status`: required, sometimes, string, in:pending,approved,received,cancelled
 - `totalAmount`: required, sometimes, numeric, min:0
 - `notes`: nullable, string
-- `supplier`: required, sometimes
+- `contact`: required, sometimes
 
 ---
 
@@ -6328,302 +10085,13 @@
 
 ---
 
-### 📦 Customers
-
-#### `GET` `api/v1/customers`
-
-**Campos disponibles:**
-
-- ✅ `name` (string) 🔄
-- ✅ `email` (string) 🔄
-- ✅ `phone` (string) 
-- ✅ `address` (string) 
-- ✅ `city` (string) 
-- ✅ `state` (string) 
-- ✅ `country` (string) 
-- ✅ `classification` (string) 🔄
-- ✅ `credit_limit` (number) 
-- ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 🔄
-- ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 🔄
-- ✅ `updated_at` (datetime) 🔄
-
-**Relaciones disponibles:**
-
-- `salesOrders` (relationship[])
-
-**Validaciones:**
-
-- `name`: required, string, max:255
-- `email`: required, email, max:255, customers, email
-- `phone`: nullable, string, max:50
-- `address`: nullable, string, max:255
-- `city`: nullable, string, max:100
-- `state`: nullable, string, max:100
-- `country`: nullable, string, max:100
-- `classification`: required, mayorista, minorista, especial
-- `credit_limit`: nullable, numeric, min:0
-- `current_credit`: nullable, numeric, min:0
-- `is_active`: boolean
-- `metadata`: nullable, array
-
-**Ejemplo de Request:**
-
-```json
-{
-    "method": "GET",
-    "url": "\/api\/v1\/customers",
-    "headers": {
-        "Accept": "application\/vnd.api+json",
-        "Authorization": "Bearer {token}"
-    }
-}
-```
-
----
-
-#### `POST` `api/v1/customers`
-
-**Campos disponibles:**
-
-- ✅ `name` (string) 🔄
-- ✅ `email` (string) 🔄
-- ✅ `phone` (string) 
-- ✅ `address` (string) 
-- ✅ `city` (string) 
-- ✅ `state` (string) 
-- ✅ `country` (string) 
-- ✅ `classification` (string) 🔄
-- ✅ `credit_limit` (number) 
-- ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 🔄
-- ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 🔄
-- ✅ `updated_at` (datetime) 🔄
-
-**Relaciones disponibles:**
-
-- `salesOrders` (relationship[])
-
-**Validaciones:**
-
-- `name`: required, string, max:255
-- `email`: required, email, max:255, customers, email
-- `phone`: nullable, string, max:50
-- `address`: nullable, string, max:255
-- `city`: nullable, string, max:100
-- `state`: nullable, string, max:100
-- `country`: nullable, string, max:100
-- `classification`: required, mayorista, minorista, especial
-- `credit_limit`: nullable, numeric, min:0
-- `current_credit`: nullable, numeric, min:0
-- `is_active`: boolean
-- `metadata`: nullable, array
-
-**Ejemplo de Request:**
-
-```json
-{
-    "method": "POST",
-    "url": "\/api\/v1\/customers",
-    "headers": {
-        "Content-Type": "application\/vnd.api+json",
-        "Accept": "application\/vnd.api+json",
-        "Authorization": "Bearer {token}"
-    },
-    "body": {
-        "data": {
-            "type": "customers",
-            "attributes": {
-                "title": "Nueva p\u00e1gina",
-                "slug": "nueva-pagina",
-                "html": "<h1>Contenido HTML<\/h1>",
-                "css": "h1 { color: blue; }",
-                "json": {
-                    "component": "header"
-                },
-                "status": "draft"
-            },
-            "relationships": {
-                "user": {
-                    "data": {
-                        "type": "users",
-                        "id": "1"
-                    }
-                }
-            }
-        }
-    }
-}
-```
-
----
-
-#### `GET` `api/v1/customers/{customer}`
-
-**Campos disponibles:**
-
-- ✅ `name` (string) 🔄
-- ✅ `email` (string) 🔄
-- ✅ `phone` (string) 
-- ✅ `address` (string) 
-- ✅ `city` (string) 
-- ✅ `state` (string) 
-- ✅ `country` (string) 
-- ✅ `classification` (string) 🔄
-- ✅ `credit_limit` (number) 
-- ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 🔄
-- ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 🔄
-- ✅ `updated_at` (datetime) 🔄
-
-**Relaciones disponibles:**
-
-- `salesOrders` (relationship[])
-
-**Validaciones:**
-
-- `name`: required, string, max:255
-- `email`: required, email, max:255, customers, email
-- `phone`: nullable, string, max:50
-- `address`: nullable, string, max:255
-- `city`: nullable, string, max:100
-- `state`: nullable, string, max:100
-- `country`: nullable, string, max:100
-- `classification`: required, mayorista, minorista, especial
-- `credit_limit`: nullable, numeric, min:0
-- `current_credit`: nullable, numeric, min:0
-- `is_active`: boolean
-- `metadata`: nullable, array
-
-**Ejemplo de Request:**
-
-```json
-{
-    "method": "GET",
-    "url": "\/api\/v1\/customers",
-    "headers": {
-        "Accept": "application\/vnd.api+json",
-        "Authorization": "Bearer {token}"
-    }
-}
-```
-
----
-
-#### `PATCH` `api/v1/customers/{customer}`
-
-**Campos disponibles:**
-
-- ✅ `name` (string) 🔄
-- ✅ `email` (string) 🔄
-- ✅ `phone` (string) 
-- ✅ `address` (string) 
-- ✅ `city` (string) 
-- ✅ `state` (string) 
-- ✅ `country` (string) 
-- ✅ `classification` (string) 🔄
-- ✅ `credit_limit` (number) 
-- ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 🔄
-- ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 🔄
-- ✅ `updated_at` (datetime) 🔄
-
-**Relaciones disponibles:**
-
-- `salesOrders` (relationship[])
-
-**Validaciones:**
-
-- `name`: required, string, max:255
-- `email`: required, email, max:255, customers, email
-- `phone`: nullable, string, max:50
-- `address`: nullable, string, max:255
-- `city`: nullable, string, max:100
-- `state`: nullable, string, max:100
-- `country`: nullable, string, max:100
-- `classification`: required, mayorista, minorista, especial
-- `credit_limit`: nullable, numeric, min:0
-- `current_credit`: nullable, numeric, min:0
-- `is_active`: boolean
-- `metadata`: nullable, array
-
-**Ejemplo de Request:**
-
-```json
-{
-    "method": "PATCH",
-    "url": "\/api\/v1\/customers\/1",
-    "headers": {
-        "Content-Type": "application\/vnd.api+json",
-        "Accept": "application\/vnd.api+json",
-        "Authorization": "Bearer {token}"
-    },
-    "body": {
-        "data": {
-            "type": "customers",
-            "id": "1",
-            "attributes": {
-                "status": "published",
-                "title": "T\u00edtulo actualizado"
-            }
-        }
-    }
-}
-```
-
----
-
-#### `DELETE` `api/v1/customers/{customer}`
-
-**Campos disponibles:**
-
-- ✅ `name` (string) 🔄
-- ✅ `email` (string) 🔄
-- ✅ `phone` (string) 
-- ✅ `address` (string) 
-- ✅ `city` (string) 
-- ✅ `state` (string) 
-- ✅ `country` (string) 
-- ✅ `classification` (string) 🔄
-- ✅ `credit_limit` (number) 
-- ✅ `current_credit` (number) 
-- ✅ `is_active` (boolean) 🔄
-- ✅ `metadata` (object) 
-- ✅ `created_at` (datetime) 🔄
-- ✅ `updated_at` (datetime) 🔄
-
-**Relaciones disponibles:**
-
-- `salesOrders` (relationship[])
-
-**Validaciones:**
-
-- `name`: required, string, max:255
-- `email`: required, email, max:255, customers, email
-- `phone`: nullable, string, max:50
-- `address`: nullable, string, max:255
-- `city`: nullable, string, max:100
-- `state`: nullable, string, max:100
-- `country`: nullable, string, max:100
-- `classification`: required, mayorista, minorista, especial
-- `credit_limit`: nullable, numeric, min:0
-- `current_credit`: nullable, numeric, min:0
-- `is_active`: boolean
-- `metadata`: nullable, array
-
----
-
 ### 📦 Sales orders
 
 #### `GET` `api/v1/sales-orders`
 
 **Campos disponibles:**
 
-- ✅ `customer_id` (number) 
+- ✅ `contact_id` (number) 
 - ✅ `order_number` (string) 🔄
 - ✅ `status` (string) 🔄
 - ✅ `order_date` (datetime) 🔄
@@ -6640,18 +10108,18 @@
 
 **Relaciones disponibles:**
 
+- `contact` (relationship)
 - `customer` (relationship)
 - `items` (relationship[])
 
 **Validaciones:**
 
-- `customer_id`: required, exists:customers,id
-- `order_number`: required, string, max:50, sales_orders, order_number
-- `status`: required, draft, confirmed, processing, shipped, delivered, cancelled
-- `order_date`: required, date
+- `order_number`: required, sometimes, string, max:50, sales_orders, order_number
+- `status`: required, sometimes, draft, confirmed, processing, shipped, delivered, cancelled
+- `order_date`: required, sometimes, date
 - `approved_at`: nullable, date
 - `delivered_at`: nullable, date
-- `total_amount`: required, numeric, min:0
+- `total_amount`: required, sometimes, numeric, min:0
 - `discount_total`: nullable, numeric, min:0
 - `notes`: nullable, string, max:1000
 - `metadata`: nullable, array
@@ -6675,7 +10143,7 @@
 
 **Campos disponibles:**
 
-- ✅ `customer_id` (number) 
+- ✅ `contact_id` (number) 
 - ✅ `order_number` (string) 🔄
 - ✅ `status` (string) 🔄
 - ✅ `order_date` (datetime) 🔄
@@ -6692,18 +10160,18 @@
 
 **Relaciones disponibles:**
 
+- `contact` (relationship)
 - `customer` (relationship)
 - `items` (relationship[])
 
 **Validaciones:**
 
-- `customer_id`: required, exists:customers,id
-- `order_number`: required, string, max:50, sales_orders, order_number
-- `status`: required, draft, confirmed, processing, shipped, delivered, cancelled
-- `order_date`: required, date
+- `order_number`: required, sometimes, string, max:50, sales_orders, order_number
+- `status`: required, sometimes, draft, confirmed, processing, shipped, delivered, cancelled
+- `order_date`: required, sometimes, date
 - `approved_at`: nullable, date
 - `delivered_at`: nullable, date
-- `total_amount`: required, numeric, min:0
+- `total_amount`: required, sometimes, numeric, min:0
 - `discount_total`: nullable, numeric, min:0
 - `notes`: nullable, string, max:1000
 - `metadata`: nullable, array
@@ -6751,7 +10219,7 @@
 
 **Campos disponibles:**
 
-- ✅ `customer_id` (number) 
+- ✅ `contact_id` (number) 
 - ✅ `order_number` (string) 🔄
 - ✅ `status` (string) 🔄
 - ✅ `order_date` (datetime) 🔄
@@ -6768,18 +10236,18 @@
 
 **Relaciones disponibles:**
 
+- `contact` (relationship)
 - `customer` (relationship)
 - `items` (relationship[])
 
 **Validaciones:**
 
-- `customer_id`: required, exists:customers,id
-- `order_number`: required, string, max:50, sales_orders, order_number
-- `status`: required, draft, confirmed, processing, shipped, delivered, cancelled
-- `order_date`: required, date
+- `order_number`: required, sometimes, string, max:50, sales_orders, order_number
+- `status`: required, sometimes, draft, confirmed, processing, shipped, delivered, cancelled
+- `order_date`: required, sometimes, date
 - `approved_at`: nullable, date
 - `delivered_at`: nullable, date
-- `total_amount`: required, numeric, min:0
+- `total_amount`: required, sometimes, numeric, min:0
 - `discount_total`: nullable, numeric, min:0
 - `notes`: nullable, string, max:1000
 - `metadata`: nullable, array
@@ -6803,7 +10271,7 @@
 
 **Campos disponibles:**
 
-- ✅ `customer_id` (number) 
+- ✅ `contact_id` (number) 
 - ✅ `order_number` (string) 🔄
 - ✅ `status` (string) 🔄
 - ✅ `order_date` (datetime) 🔄
@@ -6820,18 +10288,18 @@
 
 **Relaciones disponibles:**
 
+- `contact` (relationship)
 - `customer` (relationship)
 - `items` (relationship[])
 
 **Validaciones:**
 
-- `customer_id`: required, exists:customers,id
-- `order_number`: required, string, max:50, sales_orders, order_number
-- `status`: required, draft, confirmed, processing, shipped, delivered, cancelled
-- `order_date`: required, date
+- `order_number`: required, sometimes, string, max:50, sales_orders, order_number
+- `status`: required, sometimes, draft, confirmed, processing, shipped, delivered, cancelled
+- `order_date`: required, sometimes, date
 - `approved_at`: nullable, date
 - `delivered_at`: nullable, date
-- `total_amount`: required, numeric, min:0
+- `total_amount`: required, sometimes, numeric, min:0
 - `discount_total`: nullable, numeric, min:0
 - `notes`: nullable, string, max:1000
 - `metadata`: nullable, array
@@ -6866,7 +10334,7 @@
 
 **Campos disponibles:**
 
-- ✅ `customer_id` (number) 
+- ✅ `contact_id` (number) 
 - ✅ `order_number` (string) 🔄
 - ✅ `status` (string) 🔄
 - ✅ `order_date` (datetime) 🔄
@@ -6883,18 +10351,18 @@
 
 **Relaciones disponibles:**
 
+- `contact` (relationship)
 - `customer` (relationship)
 - `items` (relationship[])
 
 **Validaciones:**
 
-- `customer_id`: required, exists:customers,id
-- `order_number`: required, string, max:50, sales_orders, order_number
-- `status`: required, draft, confirmed, processing, shipped, delivered, cancelled
-- `order_date`: required, date
+- `order_number`: required, sometimes, string, max:50, sales_orders, order_number
+- `status`: required, sometimes, draft, confirmed, processing, shipped, delivered, cancelled
+- `order_date`: required, sometimes, date
 - `approved_at`: nullable, date
 - `delivered_at`: nullable, date
-- `total_amount`: required, numeric, min:0
+- `total_amount`: required, sometimes, numeric, min:0
 - `discount_total`: nullable, numeric, min:0
 - `notes`: nullable, string, max:1000
 - `metadata`: nullable, array

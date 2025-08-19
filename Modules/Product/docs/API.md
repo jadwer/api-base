@@ -2,7 +2,7 @@
 
 Auto-generated API documentation.
 
-**Generated:** 2025-08-11 23:30:13
+**Generated:** 2025-08-19 17:59:33
 
 ## 📄 Brand
 
@@ -22,6 +22,7 @@ Auto-generated API documentation.
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `id` | id | Auto-detected field |
 | `name` | string | Auto-detected field |
 | `description` | string | Auto-detected field |
 | `slug` | string | Auto-detected field |
@@ -29,8 +30,6 @@ Auto-generated API documentation.
 | `products` | relationship[] | Auto-detected field |
 | `createdAt` | datetime | Auto-detected field |
 | `updatedAt` | datetime | Auto-detected field |
-| `name` | unknown | Auto-detected field |
-| `slug` | unknown | Auto-detected field |
 
 ### Query Parameters
 
@@ -47,6 +46,50 @@ GET /api/v1/brands?sort=field,-other_field
 #### Pagination
 ```
 GET /api/v1/brands?page[number]=1&page[size]=20
+```
+
+## 📄 Category
+
+**Resource Type:** `categories`
+
+### Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/categories` | List all Categories |
+| POST | `/api/v1/categories` | Create new Category |
+| GET | `/api/v1/categories/{id}` | Show specific Category |
+| PATCH | `/api/v1/categories/{id}` | Update Category |
+| DELETE | `/api/v1/categories/{id}` | Delete Category |
+
+### Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | id | Auto-detected field |
+| `name` | string | Auto-detected field |
+| `description` | string | Auto-detected field |
+| `slug` | string | Auto-detected field |
+| `productsCount` | number | Auto-detected field |
+| `products` | relationship[] | Auto-detected field |
+| `createdAt` | datetime | Auto-detected field |
+| `updatedAt` | datetime | Auto-detected field |
+
+### Query Parameters
+
+#### Filtering
+```
+GET /api/v1/categories?filter[field]=value
+```
+
+#### Sorting
+```
+GET /api/v1/categories?sort=field,-other_field
+```
+
+#### Pagination
+```
+GET /api/v1/categories?page[number]=1&page[size]=20
 ```
 
 ## 📄 Product
@@ -67,6 +110,7 @@ GET /api/v1/brands?page[number]=1&page[size]=20
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `id` | id | Auto-detected field |
 | `name` | string | Auto-detected field |
 | `sku` | string | Auto-detected field |
 | `description` | string | Auto-detected field |
@@ -81,18 +125,6 @@ GET /api/v1/brands?page[number]=1&page[size]=20
 | `brand` | relationship | Auto-detected field |
 | `createdAt` | datetime | Auto-detected field |
 | `updatedAt` | datetime | Auto-detected field |
-| `name` | unknown | Auto-detected field |
-| `sku` | unknown | Auto-detected field |
-| `search_name` | unknown | Auto-detected field |
-| `search_sku` | unknown | Auto-detected field |
-| `search_description` | unknown | Auto-detected field |
-| `search` | unknown | Auto-detected field |
-| `unit_id` | unknown | Auto-detected field |
-| `category_id` | unknown | Auto-detected field |
-| `brand_id` | unknown | Auto-detected field |
-| `brands` | unknown | Auto-detected field |
-| `categories` | unknown | Auto-detected field |
-| `units` | unknown | Auto-detected field |
 
 ### Query Parameters
 
@@ -109,6 +141,57 @@ GET /api/v1/products?sort=field,-other_field
 #### Pagination
 ```
 GET /api/v1/products?page[number]=1&page[size]=20
+```
+
+## 📄 PublicProduct
+
+**Resource Type:** `public-products`
+
+### Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/public-products` | List all PublicProducts |
+| POST | `/api/v1/public-products` | Create new PublicProduct |
+| GET | `/api/v1/public-products/{id}` | Show specific PublicProduct |
+| PATCH | `/api/v1/public-products/{id}` | Update PublicProduct |
+| DELETE | `/api/v1/public-products/{id}` | Delete PublicProduct |
+
+### Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | id | Auto-detected field |
+| `name` | string | Auto-detected field |
+| `sku` | string | Auto-detected field |
+| `description` | string | Auto-detected field |
+| `fullDescription` | string | Auto-detected field |
+| `price` | number | Auto-detected field |
+| `cost` | number | Auto-detected field |
+| `iva` | boolean | Auto-detected field |
+| `imgPath` | string | Auto-detected field |
+| `datasheetPath` | string | Auto-detected field |
+| `unit` | relationship | Auto-detected field |
+| `category` | relationship | Auto-detected field |
+| `brand` | relationship | Auto-detected field |
+| `createdAt` | datetime | Auto-detected field |
+| `updatedAt` | datetime | Auto-detected field |
+
+### Query Parameters
+
+#### Filtering
+```
+GET /api/v1/public-products?filter[field]=value
+```
+
+#### Sorting
+```
+GET /api/v1/public-products?sort=field,-other_field
+```
+
+#### Pagination
+```
+GET /api/v1/public-products?page[number]=1&page[size]=20
 ```
 
 ## 📄 Unit
@@ -129,6 +212,7 @@ GET /api/v1/products?page[number]=1&page[size]=20
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `id` | id | Auto-detected field |
 | `name` | string | Auto-detected field |
 | `code` | string | Auto-detected field |
 | `unitType` | string | Auto-detected field |
@@ -136,9 +220,6 @@ GET /api/v1/products?page[number]=1&page[size]=20
 | `products` | relationship[] | Auto-detected field |
 | `createdAt` | datetime | Auto-detected field |
 | `updatedAt` | datetime | Auto-detected field |
-| `name` | unknown | Auto-detected field |
-| `code` | unknown | Auto-detected field |
-| `unit_type` | unknown | Auto-detected field |
 
 ### Query Parameters
 

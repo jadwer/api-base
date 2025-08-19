@@ -1,6 +1,6 @@
 # 🔐 Permissions - Auth
 
-**Generated:** 2025-08-14 17:32:30
+**Generated:** 2025-08-19 17:59:33
 
 ## Default Role Assignments
 

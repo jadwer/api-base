@@ -4,7 +4,7 @@ namespace Modules\Sales\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\User\Models\User;
-use Modules\Sales\Models\Customer;
+use Modules\Contacts\Models\Contact;
 use Modules\Sales\Models\SalesOrder;
 
 class SalesOrderStoreTest extends TestCase
@@ -27,7 +27,7 @@ class SalesOrderStoreTest extends TestCase
     public function test_admin_can_create_sales_order(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
 
         $data = [
             'type' => 'sales-orders',
@@ -89,7 +89,7 @@ class SalesOrderStoreTest extends TestCase
     public function test_admin_can_create_confirmed_sales_order(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
 
         $data = [
             'type' => 'sales-orders',
@@ -119,7 +119,7 @@ class SalesOrderStoreTest extends TestCase
     public function test_tech_user_can_create_sales_order(): void
     {
         $tech = $this->getTechUser();
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
 
         $data = [
             'type' => 'sales-orders',
@@ -147,7 +147,7 @@ class SalesOrderStoreTest extends TestCase
     public function test_customer_user_cannot_create_sales_order(): void
     {
         $customer = $this->getCustomerUser();
-        $customerModel = Customer::factory()->create();
+        $customerModel = Contact::factory()->customer()->create();
 
         $data = [
             'type' => 'sales-orders',
@@ -172,7 +172,7 @@ class SalesOrderStoreTest extends TestCase
 
     public function test_guest_cannot_create_sales_order(): void
     {
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
 
         $data = [
             'type' => 'sales-orders',
@@ -195,7 +195,7 @@ class SalesOrderStoreTest extends TestCase
     public function test_order_number_is_required(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
 
         $data = [
             'type' => 'sales-orders',
@@ -257,7 +257,7 @@ class SalesOrderStoreTest extends TestCase
     public function test_status_must_be_valid_enum(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
 
         $data = [
             'type' => 'sales-orders',
@@ -288,7 +288,7 @@ class SalesOrderStoreTest extends TestCase
     public function test_total_amount_must_be_numeric(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
 
         $data = [
             'type' => 'sales-orders',
@@ -319,7 +319,7 @@ class SalesOrderStoreTest extends TestCase
     public function test_metadata_is_stored_correctly(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
 
         $metadata = [
             'priority' => 'high',

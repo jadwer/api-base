@@ -1,6 +1,6 @@
 # 🔐 Permissions - Inventory
 
-**Generated:** 2025-08-18 10:51:02
+**Generated:** 2025-08-19 17:59:33
 
 ## Default Role Assignments
 

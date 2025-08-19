@@ -1,70 +1,6 @@
 # 🧪 Test Report - Sales
 
-**Generated:** 2025-07-29 14:52:13
-
-## CustomerDestroyTest
-
-- ✅ Admin can delete customer without orders
-- ✅ Tech user can delete customer with permission
-- ✅ Customer user cannot delete other customers
-- ✅ Guest cannot delete customer
-- ✅ Cannot delete nonexistent customer
-- ✅ Delete response is empty
-- ✅ Can delete inactive customer
-- ✅ Can delete customer with high credit limit
-- ✅ Can delete customer with metadata
-- ✅ Multiple deletes are idempotent
-
-## CustomerIndexTest
-
-- ✅ Admin can list customers
-- ✅ Admin can sort customers by name
-- ✅ Admin can filter customers by classification
-- ✅ Admin can filter customers by active status
-- ✅ Tech user can list customers with permission
-- ✅ User without permission cannot list customers
-- ✅ Guest cannot list customers
-- ✅ Can paginate customers
-- ✅ Can search customers by name
-
-## CustomerShowTest
-
-- ✅ Admin can view customer
-- ✅ Admin can view customer with relationships
-- ✅ Admin can view inactive customer
-- ✅ Tech user can view customer with permission
-- ✅ Customer user cannot view other customers
-- ✅ Guest cannot view customer
-- ✅ Cannot view nonexistent customer
-- ✅ Response includes timestamps
-- ✅ Metadata is properly formatted
-
-## CustomerStoreTest
-
-- ✅ Admin can create customer
-- ✅ Admin can create customer with minimal data
-- ✅ Tech user can create customer with permission
-- ✅ Customer user cannot create customer
-- ✅ Guest cannot create customer
-- ✅ Cannot create customer without required fields
-- ✅ Cannot create customer with duplicate email
-- ✅ Cannot create customer with invalid email
-- ✅ Cannot create customer with invalid classification
-- ✅ Cannot create customer with negative credit limit
-
-## CustomerUpdateTest
-
-- ✅ Admin can update customer
-- ✅ Admin can partially update customer
-- ✅ Tech user can update customer with permission
-- ✅ Customer user cannot update other customers
-- ✅ Guest cannot update customer
-- ✅ Cannot update customer with duplicate email
-- ✅ Can update customer with same email
-- ✅ Cannot update customer with invalid classification
-- ✅ Cannot update customer with negative credit limit
-- ✅ Cannot update customer with invalid email
-- ✅ Cannot update nonexistent customer
+**Generated:** 2025-08-19 17:59:33
 
 ## SalesOrderDestroyTest
 
@@ -199,8 +135,8 @@
 
 ## 📊 Summary
 
-- **Test Files:** 15
-- **Test Methods:** 150
+- **Test Files:** 10
+- **Test Methods:** 101
 - **Status:** All tests should pass
 - **Coverage:** High coverage expected
 

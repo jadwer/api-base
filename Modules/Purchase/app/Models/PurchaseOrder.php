@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Modules\Purchase\Database\Factories\PurchaseOrderFactory;
+use Modules\Contacts\Models\Contact;
 
 class PurchaseOrder extends Model
 {
@@ -63,20 +64,19 @@ class PurchaseOrder extends Model
     // ========== RELATIONSHIPS ==========
 
     /**
-     * Get the contact that owns the purchase order.
+     * Get the contact for this purchase order.
      */
     public function contact(): BelongsTo
     {
-        return $this->belongsTo(\Modules\Contacts\Models\Contact::class);
+        return $this->belongsTo(Contact::class, 'contact_id');
     }
-
+    
     /**
-     * Get the supplier for this purchase order.
-     * Note: Supplier is essentially a Contact, so this relationship uses contact_id
+     * Backward compatibility alias for supplier
      */
     public function supplier(): BelongsTo
     {
-        return $this->belongsTo(Supplier::class, 'contact_id');
+        return $this->contact();
     }
 
     /**

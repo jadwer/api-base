@@ -4,7 +4,7 @@ namespace Modules\Sales\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\User\Models\User;
-use Modules\Sales\Models\Customer;
+use Modules\Contacts\Models\Contact;
 use Modules\Sales\Models\SalesOrder;
 
 class SalesOrderIndexTest extends TestCase
@@ -28,7 +28,7 @@ class SalesOrderIndexTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         SalesOrder::factory()->count(3)->create(['contact_id' => $customer->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -44,7 +44,7 @@ class SalesOrderIndexTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         SalesOrder::factory()->create([
             'contact_id' => $customer->id,
             'order_number' => 'SO-2024-002'
@@ -68,7 +68,7 @@ class SalesOrderIndexTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         SalesOrder::factory()->count(2)->create([
             'contact_id' => $customer->id,
             'status' => 'confirmed'
@@ -91,8 +91,8 @@ class SalesOrderIndexTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $customer1 = Customer::factory()->create();
-        $customer2 = Customer::factory()->create();
+        $customer1 = Contact::factory()->customer()->create();
+        $customer2 = Contact::factory()->customer()->create();
         
         SalesOrder::factory()->count(2)->create(['contact_id' => $customer1->id]);
         SalesOrder::factory()->count(1)->create(['contact_id' => $customer2->id]);
@@ -110,7 +110,7 @@ class SalesOrderIndexTest extends TestCase
     {
         $tech = $this->getTechUser();
         
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         SalesOrder::factory()->count(2)->create(['contact_id' => $customer->id]);
 
         $response = $this->actingAs($tech, 'sanctum')
@@ -126,7 +126,7 @@ class SalesOrderIndexTest extends TestCase
     {
         $customer = $this->getCustomerUser();
         
-        $customerModel = Customer::factory()->create();
+        $customerModel = Contact::factory()->customer()->create();
         SalesOrder::factory()->count(2)->create(['contact_id' => $customerModel->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -151,7 +151,7 @@ class SalesOrderIndexTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         SalesOrder::factory()->count(25)->create(['contact_id' => $customer->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -177,7 +177,7 @@ class SalesOrderIndexTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         SalesOrder::factory()->create([
             'contact_id' => $customer->id,
             'order_number' => 'SO-SEARCH-001'

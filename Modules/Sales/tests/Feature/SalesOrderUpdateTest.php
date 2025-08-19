@@ -4,7 +4,7 @@ namespace Modules\Sales\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\User\Models\User;
-use Modules\Sales\Models\Customer;
+use Modules\Contacts\Models\Contact;
 use Modules\Sales\Models\SalesOrder;
 
 class SalesOrderUpdateTest extends TestCase
@@ -27,7 +27,7 @@ class SalesOrderUpdateTest extends TestCase
     public function test_admin_can_update_sales_order(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
             'order_number' => 'SO-UPDATE-001',
@@ -72,7 +72,7 @@ class SalesOrderUpdateTest extends TestCase
     public function test_admin_can_update_sales_order_status(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
             'status' => 'draft'
@@ -104,7 +104,7 @@ class SalesOrderUpdateTest extends TestCase
     public function test_admin_can_update_sales_order_metadata(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
             'metadata' => ['priority' => 'low']
@@ -141,7 +141,7 @@ class SalesOrderUpdateTest extends TestCase
     public function test_tech_user_can_update_sales_order(): void
     {
         $tech = $this->getTechUser();
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
             'order_number' => 'SO-TECH-UPDATE'
@@ -168,7 +168,7 @@ class SalesOrderUpdateTest extends TestCase
     public function test_customer_user_cannot_update_sales_order(): void
     {
         $customer = $this->getCustomerUser();
-        $customerModel = Customer::factory()->create();
+        $customerModel = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customerModel->id
         ]);
@@ -193,7 +193,7 @@ class SalesOrderUpdateTest extends TestCase
 
     public function test_guest_cannot_update_sales_order(): void
     {
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id
         ]);
@@ -238,7 +238,7 @@ class SalesOrderUpdateTest extends TestCase
     public function test_cannot_update_with_invalid_status(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id
         ]);
@@ -269,7 +269,7 @@ class SalesOrderUpdateTest extends TestCase
     public function test_cannot_update_order_number_to_duplicate(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         
         // Crear dos sales orders
         $salesOrder1 = SalesOrder::factory()->create([
@@ -308,7 +308,7 @@ class SalesOrderUpdateTest extends TestCase
     public function test_can_update_order_number_to_same_value(): void
     {
         $admin = $this->getAdminUser();
-        $customer = Customer::factory()->create();
+        $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
             'order_number' => 'SO-SAME-001'

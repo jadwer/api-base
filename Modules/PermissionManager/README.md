@@ -87,3 +87,11 @@ Tests: 105 passed (1318 assertions)
 Este módulo se encuentra estable, probado, desacoplado y listo para integrarse a cualquier backend modular. Compatible con `nwidart/laravel-modules`.
 
 ---
+
+
+## 📊 Métricas
+
+- **Test Files**: 13
+- **Generated**: 2025-08-19 17:59:33
+- **Status**: ✅ Documentation up to date
+- **API Version**: JSON:API v1.0

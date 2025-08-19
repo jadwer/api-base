@@ -2,7 +2,7 @@
 
 Auto-generated API documentation.
 
-**Generated:** 2025-08-18 10:51:02
+**Generated:** 2025-08-19 17:59:33
 
 ## 📄 InventoryMovement
 
@@ -22,6 +22,7 @@ Auto-generated API documentation.
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `id` | id | Auto-detected field |
 | `productId` | number | Auto-detected field |
 | `warehouseId` | number | Auto-detected field |
 | `locationId` | number | Auto-detected field |
@@ -49,17 +50,6 @@ Auto-generated API documentation.
 | `user` | relationship | Auto-detected field |
 | `createdAt` | datetime | Auto-detected field |
 | `updatedAt` | datetime | Auto-detected field |
-| `movementType` | unknown | Auto-detected field |
-| `referenceType` | unknown | Auto-detected field |
-| `referenceId` | unknown | Auto-detected field |
-| `product` | unknown | Auto-detected field |
-| `warehouse` | unknown | Auto-detected field |
-| `destinationWarehouse` | unknown | Auto-detected field |
-| `status` | unknown | Auto-detected field |
-| `user` | unknown | Auto-detected field |
-| `movementDate` | unknown | Auto-detected field |
-| `dateFrom` | unknown | Auto-detected field |
-| `dateTo` | unknown | Auto-detected field |
 
 ### Query Parameters
 
@@ -78,7 +68,7 @@ GET /api/v1/inventory-movements?sort=field,-other_field
 GET /api/v1/inventory-movements?page[number]=1&page[size]=20
 ```
 
-## 📄 ProductBatche
+## 📄 ProductBatch
 
 **Resource Type:** `product-batches`
 
@@ -87,15 +77,16 @@ GET /api/v1/inventory-movements?page[number]=1&page[size]=20
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/v1/product-batches` | List all ProductBatches |
-| POST | `/api/v1/product-batches` | Create new ProductBatche |
-| GET | `/api/v1/product-batches/{id}` | Show specific ProductBatche |
-| PATCH | `/api/v1/product-batches/{id}` | Update ProductBatche |
-| DELETE | `/api/v1/product-batches/{id}` | Delete ProductBatche |
+| POST | `/api/v1/product-batches` | Create new ProductBatch |
+| GET | `/api/v1/product-batches/{id}` | Show specific ProductBatch |
+| PATCH | `/api/v1/product-batches/{id}` | Update ProductBatch |
+| DELETE | `/api/v1/product-batches/{id}` | Delete ProductBatch |
 
 ### Fields
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `id` | id | Auto-detected field |
 | `batchNumber` | string | Auto-detected field |
 | `lotNumber` | string | Auto-detected field |
 | `manufacturingDate` | datetime | Auto-detected field |
@@ -119,12 +110,6 @@ GET /api/v1/inventory-movements?page[number]=1&page[size]=20
 | `product` | relationship | Auto-detected field |
 | `warehouse` | relationship | Auto-detected field |
 | `warehouseLocation` | relationship | Auto-detected field |
-| `status` | unknown | Auto-detected field |
-| `batch_number` | unknown | Auto-detected field |
-| `lot_number` | unknown | Auto-detected field |
-| `product_id` | unknown | Auto-detected field |
-| `warehouse_id` | unknown | Auto-detected field |
-| `warehouse_location_id` | unknown | Auto-detected field |
 
 ### Query Parameters
 
@@ -161,6 +146,7 @@ GET /api/v1/product-batches?page[number]=1&page[size]=20
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `id` | id | Auto-detected field |
 | `productId` | number | Auto-detected field |
 | `warehouseId` | number | Auto-detected field |
 | `locationId` | number | Auto-detected field |
@@ -182,11 +168,6 @@ GET /api/v1/product-batches?page[number]=1&page[size]=20
 | `product` | relationship | Auto-detected field |
 | `warehouse` | relationship | Auto-detected field |
 | `location` | relationship | Auto-detected field |
-| `status` | unknown | Auto-detected field |
-| `product_id` | unknown | Auto-detected field |
-| `warehouse_id` | unknown | Auto-detected field |
-| `warehouse_location_id` | unknown | Auto-detected field |
-| `search` | unknown | Auto-detected field |
 
 ### Query Parameters
 
@@ -223,6 +204,7 @@ GET /api/v1/stocks?page[number]=1&page[size]=20
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `id` | id | Auto-detected field |
 | `warehouseId` | number | Auto-detected field |
 | `name` | string | Auto-detected field |
 | `code` | string | Auto-detected field |
@@ -247,16 +229,6 @@ GET /api/v1/stocks?page[number]=1&page[size]=20
 | `warehouse` | relationship | Auto-detected field |
 | `stock` | relationship[] | Auto-detected field |
 | `productBatches` | relationship[] | Auto-detected field |
-| `name` | unknown | Auto-detected field |
-| `search_name` | unknown | Auto-detected field |
-| `code` | unknown | Auto-detected field |
-| `search_code` | unknown | Auto-detected field |
-| `location_type` | unknown | Auto-detected field |
-| `warehouse_id` | unknown | Auto-detected field |
-| `is_active` | unknown | Auto-detected field |
-| `is_pickable` | unknown | Auto-detected field |
-| `is_receivable` | unknown | Auto-detected field |
-| `location_type` | unknown | Auto-detected field |
 
 ### Query Parameters
 
@@ -293,6 +265,7 @@ GET /api/v1/warehouse-locations?page[number]=1&page[size]=20
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `id` | id | Auto-detected field |
 | `name` | string | Auto-detected field |
 | `slug` | string | Auto-detected field |
 | `description` | string | Auto-detected field |
@@ -316,13 +289,6 @@ GET /api/v1/warehouse-locations?page[number]=1&page[size]=20
 | `locations` | relationship[] | Auto-detected field |
 | `stock` | relationship[] | Auto-detected field |
 | `productBatches` | relationship[] | Auto-detected field |
-| `name` | unknown | Auto-detected field |
-| `search_name` | unknown | Auto-detected field |
-| `code` | unknown | Auto-detected field |
-| `search_code` | unknown | Auto-detected field |
-| `warehouse_type` | unknown | Auto-detected field |
-| `is_active` | unknown | Auto-detected field |
-| `warehouse_type` | unknown | Auto-detected field |
 
 ### Query Parameters
 

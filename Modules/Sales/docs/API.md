@@ -2,62 +2,7 @@
 
 Auto-generated API documentation.
 
-**Generated:** 2025-07-29 14:52:13
-
-## 📄 Customer
-
-**Resource Type:** `customers`
-
-### Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/v1/customers` | List all Customers |
-| POST | `/api/v1/customers` | Create new Customer |
-| GET | `/api/v1/customers/{id}` | Show specific Customer |
-| PATCH | `/api/v1/customers/{id}` | Update Customer |
-| DELETE | `/api/v1/customers/{id}` | Delete Customer |
-
-### Fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `name` | string | Auto-detected field |
-| `email` | string | Auto-detected field |
-| `phone` | string | Auto-detected field |
-| `address` | string | Auto-detected field |
-| `city` | string | Auto-detected field |
-| `state` | string | Auto-detected field |
-| `country` | string | Auto-detected field |
-| `classification` | string | Auto-detected field |
-| `credit_limit` | number | Auto-detected field |
-| `current_credit` | number | Auto-detected field |
-| `is_active` | boolean | Auto-detected field |
-| `metadata` | object | Auto-detected field |
-| `created_at` | datetime | Auto-detected field |
-| `updated_at` | datetime | Auto-detected field |
-| `salesOrders` | relationship[] | Auto-detected field |
-| `name` | unknown | Auto-detected field |
-| `email` | unknown | Auto-detected field |
-| `classification` | unknown | Auto-detected field |
-| `is_active` | unknown | Auto-detected field |
-
-### Query Parameters
-
-#### Filtering
-```
-GET /api/v1/customers?filter[field]=value
-```
-
-#### Sorting
-```
-GET /api/v1/customers?sort=field,-other_field
-```
-
-#### Pagination
-```
-GET /api/v1/customers?page[number]=1&page[size]=20
-```
+**Generated:** 2025-08-19 17:59:33
 
 ## 📄 SalesOrderItem
 
@@ -77,6 +22,7 @@ GET /api/v1/customers?page[number]=1&page[size]=20
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `id` | id | Auto-detected field |
 | `salesOrderId` | number | Auto-detected field |
 | `productId` | number | Auto-detected field |
 | `salesOrder` | relationship | Auto-detected field |
@@ -88,11 +34,6 @@ GET /api/v1/customers?page[number]=1&page[size]=20
 | `metadata` | object | Auto-detected field |
 | `createdAt` | datetime | Auto-detected field |
 | `updatedAt` | datetime | Auto-detected field |
-| `salesOrderId` | unknown | Auto-detected field |
-| `productId` | unknown | Auto-detected field |
-| `quantity` | unknown | Auto-detected field |
-| `unitPrice` | unknown | Auto-detected field |
-| `total` | unknown | Auto-detected field |
 
 ### Query Parameters
 
@@ -129,7 +70,9 @@ GET /api/v1/sales-order-items?page[number]=1&page[size]=20
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `customer_id` | number | Auto-detected field |
+| `id` | id | Auto-detected field |
+| `contact_id` | number | Auto-detected field |
+| `contact` | relationship | Auto-detected field |
 | `customer` | relationship | Auto-detected field |
 | `order_number` | string | Auto-detected field |
 | `status` | string | Auto-detected field |
@@ -145,10 +88,6 @@ GET /api/v1/sales-order-items?page[number]=1&page[size]=20
 | `items` | relationship[] | Auto-detected field |
 | `created_at` | datetime | Auto-detected field |
 | `updated_at` | datetime | Auto-detected field |
-| `order_number` | unknown | Auto-detected field |
-| `status` | unknown | Auto-detected field |
-| `customer` | unknown | Auto-detected field |
-| `order_date` | unknown | Auto-detected field |
 
 ### Query Parameters
 

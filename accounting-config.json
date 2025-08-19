@@ -1,0 +1,327 @@
+{
+  "entities": {
+    "JournalEntry": {
+      "name": "JournalEntry",
+      "tableName": "journal_entries",
+      "fields": [
+        {
+          "name": "entry_date",
+          "type": "date",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "reference",
+          "type": "string",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "required": true,
+          "fillable": true,
+          "sortable": false,
+          "filterable": true
+        },
+        {
+          "name": "total_debit",
+          "type": "decimal",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": false,
+          "default": "0.00"
+        },
+        {
+          "name": "total_credit",
+          "type": "decimal",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": false,
+          "default": "0.00"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true,
+          "default": "draft"
+        },
+        {
+          "name": "posted_at",
+          "type": "datetime",
+          "required": false,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "source_type",
+          "type": "string",
+          "required": false,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "source_id",
+          "type": "integer",
+          "required": false,
+          "fillable": true,
+          "sortable": false,
+          "filterable": true
+        }
+      ]
+    },
+    "APInvoice": {
+      "name": "APInvoice",
+      "tableName": "ap_invoices",
+      "fields": [
+        {
+          "name": "contact_id",
+          "type": "integer",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "invoice_number",
+          "type": "string",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "invoice_date",
+          "type": "date",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "due_date",
+          "type": "date",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "subtotal",
+          "type": "decimal",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": false,
+          "default": "0.00"
+        },
+        {
+          "name": "tax_total",
+          "type": "decimal",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": false,
+          "default": "0.00"
+        },
+        {
+          "name": "total",
+          "type": "decimal",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": false,
+          "default": "0.00"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true,
+          "default": "draft"
+        },
+        {
+          "name": "currency",
+          "type": "string",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true,
+          "default": "MXN"
+        },
+        {
+          "name": "exchange_rate",
+          "type": "decimal",
+          "required": false,
+          "fillable": true,
+          "sortable": false,
+          "filterable": false,
+          "default": "1.00"
+        },
+        {
+          "name": "purchase_order_id",
+          "type": "integer",
+          "required": false,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "notes",
+          "type": "text",
+          "required": false,
+          "fillable": true,
+          "sortable": false,
+          "filterable": false
+        }
+      ]
+    },
+    "ARInvoice": {
+      "name": "ARInvoice",
+      "tableName": "ar_invoices",
+      "fields": [
+        {
+          "name": "contact_id",
+          "type": "integer",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "invoice_number",
+          "type": "string",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "invoice_date",
+          "type": "date",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "due_date",
+          "type": "date",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "subtotal",
+          "type": "decimal",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": false,
+          "default": "0.00"
+        },
+        {
+          "name": "tax_total",
+          "type": "decimal",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": false,
+          "default": "0.00"
+        },
+        {
+          "name": "total",
+          "type": "decimal",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": false,
+          "default": "0.00"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true,
+          "default": "draft"
+        },
+        {
+          "name": "currency",
+          "type": "string",
+          "required": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true,
+          "default": "MXN"
+        },
+        {
+          "name": "exchange_rate",
+          "type": "decimal",
+          "required": false,
+          "fillable": true,
+          "sortable": false,
+          "filterable": false,
+          "default": "1.00"
+        },
+        {
+          "name": "sales_order_id",
+          "type": "integer",
+          "required": false,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "notes",
+          "type": "text",
+          "required": false,
+          "fillable": true,
+          "sortable": false,
+          "filterable": false
+        }
+      ]
+    }
+  },
+  "relationships": [
+    {
+      "from": "APInvoice",
+      "to": "Contact",
+      "type": "belongsTo",
+      "foreignKey": "contact_id"
+    },
+    {
+      "from": "ARInvoice", 
+      "to": "Contact",
+      "type": "belongsTo",
+      "foreignKey": "contact_id"
+    },
+    {
+      "from": "APInvoice",
+      "to": "PurchaseOrder",
+      "type": "belongsTo",
+      "foreignKey": "purchase_order_id"
+    },
+    {
+      "from": "ARInvoice",
+      "to": "SalesOrder", 
+      "type": "belongsTo",
+      "foreignKey": "sales_order_id"
+    }
+  ]
+}

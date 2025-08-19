@@ -9,5 +9,7 @@
     "Purchase": true,
     "Sales": true,
     "Ecommerce": true,
-    "Contacts": true
+    "Contacts": true,
+    "Finance": true,
+    "Accounting": true
 }

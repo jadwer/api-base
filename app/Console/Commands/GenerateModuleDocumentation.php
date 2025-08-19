@@ -68,19 +68,16 @@ class GenerateModuleDocumentation extends Command
             return;
         }
 
-        $schemas = File::directories($schemaPath);
+        // Find all Schema files directly instead of relying on directory structure
+        $schemaFiles = File::glob($schemaPath . '/*/*Schema.php');
         $apiDocs = "# 📋 API Documentation - {$moduleName}\n\n";
         $apiDocs .= "Auto-generated API documentation.\n\n";
         $apiDocs .= "**Generated:** " . now()->format('Y-m-d H:i:s') . "\n\n";
 
-        foreach ($schemas as $schemaDir) {
+        foreach ($schemaFiles as $schemaFile) {
+            $schemaDir = dirname($schemaFile);
             $resourceName = basename($schemaDir);
-            $modelName = $this->pluralToSingular($resourceName);
-            $schemaFile = $schemaDir . '/' . $modelName . 'Schema.php';
-            
-            if (File::exists($schemaFile)) {
-                $apiDocs .= $this->parseSchemaFile($schemaFile, $resourceName);
-            }
+            $apiDocs .= $this->parseSchemaFile($schemaFile, $resourceName);
         }
 
         $apiDocs .= "\n## 🔐 Authentication\n\n";
@@ -97,7 +94,9 @@ class GenerateModuleDocumentation extends Command
     private function parseSchemaFile(string $schemaFile, string $resourceName): string
     {
         $resourceType = $this->convertToResourceType($resourceName);
-        $modelName = rtrim($resourceName, 's');
+        // Extract model name from the actual schema file name instead of guessing
+        $fileName = basename($schemaFile, '.php');
+        $modelName = str_replace('Schema', '', $fileName);
         
         $doc = "## 📄 {$modelName}\n\n";
         $doc .= "**Resource Type:** `{$resourceType}`\n\n";
@@ -149,18 +148,44 @@ class GenerateModuleDocumentation extends Command
     private function extractFieldsFromSchema(string $content): array
     {
         $fields = [];
-        $lines = explode("\n", $content);
         
-        foreach ($lines as $line) {
-            if (preg_match('/(\w+)::make\([\'"]([^\'"]+)[\'"].*/', $line, $matches)) {
-                $type = $matches[1];
-                $name = $matches[2];
+        // Extract only the fields() method content
+        if (preg_match('/public function fields\(\): array\s*\{(.*?)\n\s*\}/s', $content, $methodMatch)) {
+            $fieldsContent = $methodMatch[1];
+            $lines = explode("\n", $fieldsContent);
+            
+            foreach ($lines as $line) {
+                $line = trim($line);
                 
-                $fields[] = [
-                    'name' => $name,
-                    'type' => $this->convertFieldType($type),
-                    'description' => 'Auto-detected field'
-                ];
+                // Skip return statement and array brackets
+                if (strpos($line, 'return [') !== false || strpos($line, '];') !== false) {
+                    continue;
+                }
+                
+                // Match various field patterns:
+                // Str::make('fieldName') or Str::make('fieldName', 'column_name')
+                // ID::make(), DateTime::make('createdAt'), etc.
+                if (preg_match('/(\w+)::make\(\)/', $line, $matches)) {
+                    // ID::make() case
+                    $type = $matches[1];
+                    $name = strtolower($type); // ID becomes 'id'
+                    
+                    $fields[] = [
+                        'name' => $name,
+                        'type' => $this->convertFieldType($type),
+                        'description' => 'Auto-detected field'
+                    ];
+                } elseif (preg_match('/(\w+)::make\([\'"]([^\'"]+)[\'"](?:\s*,\s*[\'"][^\'"]*[\'"])?.*/', $line, $matches)) {
+                    // Field with name (and optional column mapping)
+                    $type = $matches[1];
+                    $name = $matches[2];
+                    
+                    $fields[] = [
+                        'name' => $name,
+                        'type' => $this->convertFieldType($type),
+                        'description' => 'Auto-detected field'
+                    ];
+                }
             }
         }
         
@@ -170,13 +195,16 @@ class GenerateModuleDocumentation extends Command
     private function convertFieldType(string $type): string
     {
         $mapping = [
+            'ID' => 'id',
             'Str' => 'string',
             'Number' => 'number',
             'Boolean' => 'boolean',
             'DateTime' => 'datetime',
             'ArrayHash' => 'object',
             'BelongsTo' => 'relationship',
-            'HasMany' => 'relationship[]'
+            'HasMany' => 'relationship[]',
+            'HasOne' => 'relationship',
+            'BelongsToMany' => 'relationship[]'
         ];
         
         return $mapping[$type] ?? 'unknown';
