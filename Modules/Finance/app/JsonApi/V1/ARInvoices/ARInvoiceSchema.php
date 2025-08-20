@@ -25,14 +25,18 @@ class ARInvoiceSchema extends Schema
         return [
             ID::make(),
             
-            Number::make('contactId'),
-            Str::make('invoiceNumber')->sortable(),
-            DateTime::make('invoiceDate')->sortable(),
-            DateTime::make('dueDate')->sortable(),
+            Number::make('contactId', 'contact_id'),
+            
+            // Relationship to Contact
+            BelongsTo::make('contact')->type('contacts'),
+            
+            Str::make('invoiceNumber', 'invoice_number')->sortable(),
+            DateTime::make('invoiceDate', 'invoice_date')->sortable(),
+            DateTime::make('dueDate', 'due_date')->sortable(),
             Str::make('currency')->sortable(),
-            Number::make('exchangeRate')->sortable(),
+            Number::make('exchangeRate', 'exchange_rate')->sortable(),
             Number::make('subtotal')->sortable(),
-            Number::make('taxTotal')->sortable(),
+            Number::make('taxTotal', 'tax_total')->sortable(),
             Number::make('total')->sortable(),
             Str::make('status')->sortable(),
             
@@ -43,10 +47,13 @@ class ARInvoiceSchema extends Schema
             // Metadata
             ArrayHash::make('metadata'),
             
+            // Relationships
+            HasMany::make('aRInvoiceLines')->type('a-r-invoice-lines'),
+            HasMany::make('aRInvoiceReceipts')->type('a-r-invoice-receipts'),
+            
             // Timestamps
-            DateTime::make('createdAt')->sortable()->readOnly(),
-            DateTime::make('updatedAt')->sortable()->readOnly(),
-
+            DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
+            DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
         ];
     }
 
@@ -64,7 +71,9 @@ class ARInvoiceSchema extends Schema
     public function includePaths(): array
     {
         return [
-
+            'contact',
+            'aRInvoiceLines',
+            'aRInvoiceReceipts',
         ];
     }
 

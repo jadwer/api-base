@@ -43,6 +43,11 @@ class JournalEntrySchema extends Schema
             // Metadata
             ArrayHash::make('metadata'),
             
+            // Relationships
+            HasMany::make('journalLines')->type('journal-lines'),
+            BelongsTo::make('journal')->type('journals'),
+            BelongsTo::make('fiscalPeriod')->type('fiscal-periods'),
+            
             // Timestamps
             DateTime::make('createdAt')->sortable()->readOnly(),
             DateTime::make('updatedAt')->sortable()->readOnly(),
@@ -67,7 +72,10 @@ class JournalEntrySchema extends Schema
     public function includePaths(): array
     {
         return [
-
+            'journalLines',
+            'journalLines.account',
+            'journal',
+            'fiscalPeriod',
         ];
     }
 

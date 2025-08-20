@@ -25,19 +25,31 @@ class ARReceiptSchema extends Schema
         return [
             ID::make(),
             
-            Number::make('contactId'),
-            DateTime::make('receiptDate')->sortable(),
-            Str::make('paymentMethod')->sortable(),
+            // Foreign keys
+            Number::make('contact_id'),
+            Number::make('ar_invoice_id'),
+            Number::make('bank_account_id'),
+            
+            // Relationships
+            BelongsTo::make('contact')->type('contacts'),
+            BelongsTo::make('arInvoice')->type('a-r-invoices'),
+            BelongsTo::make('bankAccount')->type('bank-accounts'),
+            
+            // Basic fields
+            DateTime::make('receipt_date')->sortable(),
+            Str::make('payment_method')->sortable(),
             Str::make('currency')->sortable(),
             Number::make('amount')->sortable(),
-            Number::make('bankAccountId'),
             Str::make('status')->sortable(),
+            
+            HasMany::make('aRInvoiceReceipts')->type('a-r-invoice-receipts'),
+            
             // Metadata
             ArrayHash::make('metadata'),
             
             // Timestamps
-            DateTime::make('createdAt')->sortable()->readOnly(),
-            DateTime::make('updatedAt')->sortable()->readOnly(),
+            DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
+            DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
 
         ];
     }
@@ -52,23 +64,14 @@ class ARReceiptSchema extends Schema
         ];
     }
 
-    public function sortables(): array
-    {
-        return [
-            'receipt_date',
-            'payment_method',
-            'currency',
-            'amount',
-            'status',
-            'created_at',
-            'updated_at',
-        ];
-    }
 
     public function includePaths(): array
     {
         return [
-
+            'contact',
+            'arInvoice', 
+            'bankAccount',
+            'aRInvoiceReceipts',
         ];
     }
 

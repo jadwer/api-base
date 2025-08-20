@@ -33,6 +33,11 @@ class JournalLineSchema extends Schema
             Number::make('costCenterId'),
             Number::make('partnerId'),
             Str::make('memo')->sortable(),
+            
+            // Relationships
+            BelongsTo::make('account')->type('accounts'),
+            BelongsTo::make('journalEntry')->type('journal-entries'),
+            
             // Metadata
             ArrayHash::make('metadata'),
             
@@ -66,7 +71,8 @@ class JournalLineSchema extends Schema
     public function includePaths(): array
     {
         return [
-
+            'account',
+            'journalEntry',
         ];
     }
 

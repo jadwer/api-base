@@ -25,13 +25,24 @@ class APPaymentSchema extends Schema
         return [
             ID::make(),
             
-            Number::make('contactId'),
-            DateTime::make('paymentDate')->sortable(),
-            Str::make('paymentMethod')->sortable(),
+            // Foreign keys
+            Number::make('contact_id'),
+            Number::make('ap_invoice_id'),
+            Number::make('bank_account_id'),
+            
+            // Relationships
+            BelongsTo::make('contact')->type('contacts'),
+            BelongsTo::make('apInvoice')->type('a-p-invoices'),
+            BelongsTo::make('bankAccount')->type('bank-accounts'),
+            
+            // Basic fields
+            DateTime::make('payment_date')->sortable(),
+            Str::make('payment_method')->sortable(),
             Str::make('currency')->sortable(),
             Number::make('amount')->sortable(),
-            Number::make('bankAccountId'),
             Str::make('status')->sortable(),
+            HasMany::make('aPInvoicePayments')->type('a-p-invoice-payments'),
+            
             // Metadata
             ArrayHash::make('metadata'),
             
@@ -52,23 +63,14 @@ class APPaymentSchema extends Schema
         ];
     }
 
-    public function sortables(): array
-    {
-        return [
-            'payment_date',
-            'payment_method',
-            'currency',
-            'amount',
-            'status',
-            'created_at',
-            'updated_at',
-        ];
-    }
 
     public function includePaths(): array
     {
         return [
-
+            'contact',
+            'apInvoice',
+            'bankAccount', 
+            'aPInvoicePayments',
         ];
     }
 

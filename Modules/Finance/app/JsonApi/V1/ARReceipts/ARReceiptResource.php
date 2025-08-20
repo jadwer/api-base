@@ -10,6 +10,7 @@ class ARReceiptResource extends JsonApiResource
     {
         return [
             'contactId' => $this->contact_id,
+            'arInvoiceId' => $this->ar_invoice_id,
             'receiptDate' => $this->receipt_date,
             'paymentMethod' => $this->payment_method,
             'currency' => $this->currency,
@@ -24,6 +25,8 @@ class ARReceiptResource extends JsonApiResource
     public function relationships($request): iterable
     {
         return [
+            'contact' => $this->relation('contact'),
+            'arInvoice' => $this->relation('arInvoice'),
             'aRInvoiceReceipts' => $this->relation('aRInvoiceReceipts'),
             'bankAccount' => $this->relation('bankAccount'),
         ];
