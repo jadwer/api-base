@@ -13,7 +13,7 @@ class APInvoiceLineFactory extends Factory
     {
         return [
             'ap_invoice_id' => \Modules\Finance\Models\APInvoice::factory(),
-            'description' => $this->faker->optional(0.7)->paragraph(),
+            'description' => $this->faker->sentence(8),
             'quantity' => $this->faker->numberBetween(1, 10),
             'unit_price' => $this->faker->randomFloat(2, 1, 1000),
             'discount' => $this->faker->randomFloat(2, 1, 1000),

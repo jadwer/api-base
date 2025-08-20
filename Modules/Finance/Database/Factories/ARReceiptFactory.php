@@ -12,12 +12,12 @@ class ARReceiptFactory extends Factory
     public function definition(): array
     {
         return [
-            'contact_id' => $this->faker->numberBetween(1, 100),
+            'contact_id' => \Modules\Contacts\Models\Contact::factory(),
             'receipt_date' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
             'payment_method' => $this->faker->sentence(3),
             'currency' => $this->faker->randomElement(['USD', 'EUR', 'MXN']),
             'amount' => $this->faker->randomFloat(2, 1, 1000),
-            'bank_account_id' => $this->faker->numberBetween(1, 100),
+            'bank_account_id' => \Modules\Finance\Models\BankAccount::factory(),
             'status' => $this->faker->randomElement(['active', 'inactive', 'pending']),
         ];
     }

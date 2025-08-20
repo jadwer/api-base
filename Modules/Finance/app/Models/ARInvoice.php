@@ -27,6 +27,11 @@ class ARInvoice extends Model
         'total' => 'decimal:2'
     ];
 
+    protected $appends = [
+        'paidAmount',
+        'remainingBalance'
+    ];
+
     protected $attributes = [
         'status' => 'draft',
         'currency' => 'MXN',
@@ -79,6 +84,18 @@ class ARInvoice extends Model
         return $this->status === self::STATUS_PAID;
     }
 
+    // Calculated Fields for Phase 1
+    public function getPaidAmountAttribute(): float
+    {
+        // F1 Simple model: Sum all receipts through direct relationship
+        return $this->aRReceipts()->sum('applied_amount') ?? 0.00;
+    }
+
+    public function getRemainingBalanceAttribute(): float
+    {
+        return $this->total - $this->getPaidAmountAttribute();
+    }
+
     // Scopes
     public function scopeActive($query)
     {
@@ -113,6 +130,12 @@ class ARInvoice extends Model
     public function aRInvoiceReceipts()
     {
         return $this->hasMany(ARInvoiceReceipt::class);
+    }
+
+    // F1 Simple model: Direct relationship for receipts
+    public function aRReceipts()
+    {
+        return $this->hasMany(ARReceipt::class, 'ar_invoice_id');
     }
 
     // Factory

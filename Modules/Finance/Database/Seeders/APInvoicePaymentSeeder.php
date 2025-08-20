@@ -14,9 +14,19 @@ class APInvoicePaymentSeeder extends Seeder
     {
         $this->command->info('🌱 Seeding APInvoicePayment...');
         
-        // Create sample APInvoicePayment records
-        APInvoicePayment::factory()->count(10)->create();
-
+        // Get existing invoices and payments
+        $invoices = \Modules\Finance\Models\APInvoice::all();
+        $payments = \Modules\Finance\Models\APPayment::all();
+        
+        if ($invoices->count() > 0 && $payments->count() > 0) {
+            // Create sample APInvoicePayment records using existing data
+            for ($i = 0; $i < min(10, $invoices->count(), $payments->count()); $i++) {
+                APInvoicePayment::factory()->create([
+                    'ap_invoice_id' => $invoices->random()->id,
+                    'ap_payment_id' => $payments->random()->id,
+                ]);
+            }
+        }
         
         $this->command->info('✅ APInvoicePayment seeded successfully!');
     }

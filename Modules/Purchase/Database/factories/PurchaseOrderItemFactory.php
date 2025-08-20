@@ -21,13 +21,23 @@ class PurchaseOrderItemFactory extends Factory
         $quantity = $this->faker->numberBetween(1, 50);
         $unitPrice = $this->faker->randomFloat(2, 10, 1000);
         $subtotal = $quantity * $unitPrice;
+        $discount = $this->faker->randomFloat(2, 0, $subtotal * 0.2); // Descuento hasta 20%
+        $total = $subtotal - $discount;
 
         return [
             'purchase_order_id' => PurchaseOrder::factory(),
-            'product_id' => 1, // Usar ID fijo por ahora hasta que Products esté configurado
+            'product_id' => \Modules\Product\Models\Product::factory(),
             'quantity' => $quantity,
             'unit_price' => $unitPrice,
+            'discount' => $discount,
             'subtotal' => $subtotal,
+            'total' => $total,
+            'metadata' => [
+                'notes' => $this->faker->optional(0.3)->sentence(),
+                'category' => $this->faker->optional(0.5)->randomElement(['supplies', 'equipment', 'materials']),
+                'urgency' => $this->faker->optional(0.4)->randomElement(['low', 'medium', 'high']),
+                'tags' => $this->faker->optional(0.3)->words(3),
+            ],
         ];
     }
 

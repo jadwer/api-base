@@ -19,6 +19,11 @@ class ARInvoiceResource extends JsonApiResource
             'taxTotal' => $this->tax_total,
             'total' => $this->total,
             'status' => $this->status,
+            
+            // F1 Calculated fields
+            'paidAmount' => $this->paidAmount,
+            'remainingBalance' => $this->remainingBalance,
+            
             "createdAt" => $this->created_at,
             "updatedAt" => $this->updated_at,
         ];

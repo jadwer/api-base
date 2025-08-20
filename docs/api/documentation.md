@@ -1,6 +1,6 @@
 # API Documentation
 
-**Generado:** 2025-08-20T00:26:05.057525Z
+**Generado:** 2025-08-20T11:01:56.241297Z
 
 **Base URL:** `http://localhost/api/v1`
 
@@ -10017,15 +10017,102 @@
 
 ---
 
+#### `GET` `api/v1/purchase-orders/reports`
+
+**Campos disponibles:**
+
+- ✅ `contact_id` (number) 
+- ✅ `contactId` (number) 
+- ✅ `orderDate` (datetime) 
+- ✅ `status` (string) 
+- ✅ `totalAmount` (number) 
+- ✅ `notes` (string) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contact` (relationship)
+- `purchaseOrderItems` (relationship[])
+
+**Validaciones:**
+
+- `orderDate`: required, sometimes, date
+- `status`: required, sometimes, string, in:pending,approved,received,cancelled
+- `totalAmount`: required, sometimes, numeric, min:0
+- `notes`: nullable, string
+- `contact`: required, sometimes
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/purchase_orders",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/purchase-orders/suppliers`
+
+**Campos disponibles:**
+
+- ✅ `contact_id` (number) 
+- ✅ `contactId` (number) 
+- ✅ `orderDate` (datetime) 
+- ✅ `status` (string) 
+- ✅ `totalAmount` (number) 
+- ✅ `notes` (string) 
+- ✅ `createdAt` (datetime) 🔒🔄
+- ✅ `updatedAt` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contact` (relationship)
+- `purchaseOrderItems` (relationship[])
+
+**Validaciones:**
+
+- `orderDate`: required, sometimes, date
+- `status`: required, sometimes, string, in:pending,approved,received,cancelled
+- `totalAmount`: required, sometimes, numeric, min:0
+- `notes`: nullable, string
+- `contact`: required, sometimes
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/purchase_orders",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
 ### 📦 Purchase order items
 
 #### `GET` `api/v1/purchase-order-items`
 
 **Campos disponibles:**
 
-- ✅ `quantity` (number) 
-- ✅ `unitPrice` (number) 
-- ✅ `subtotal` (number) 
+- ✅ `purchaseOrderId` (number) 🔄
+- ✅ `productId` (number) 🔄
+- ✅ `quantity` (number) 🔄
+- ✅ `unitPrice` (number) 🔄
+- ✅ `discount` (number) 🔄
+- ✅ `subtotal` (number) 🔄
+- ✅ `total` (number) 🔄
+- ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
 
@@ -10036,8 +10123,14 @@
 
 **Validaciones:**
 
+- `purchaseOrderId`: required, sometimes, exists:purchase_orders,id
+- `productId`: required, sometimes, exists:products,id
 - `quantity`: required, numeric, min:0.01
 - `unitPrice`: required, numeric, min:0
+- `discount`: sometimes, numeric, min:0
+- `subtotal`: sometimes, numeric, min:0
+- `total`: sometimes, numeric, min:0
+- `metadata`: sometimes, array
 
 **Ejemplo de Request:**
 
@@ -10058,9 +10151,14 @@
 
 **Campos disponibles:**
 
-- ✅ `quantity` (number) 
-- ✅ `unitPrice` (number) 
-- ✅ `subtotal` (number) 
+- ✅ `purchaseOrderId` (number) 🔄
+- ✅ `productId` (number) 🔄
+- ✅ `quantity` (number) 🔄
+- ✅ `unitPrice` (number) 🔄
+- ✅ `discount` (number) 🔄
+- ✅ `subtotal` (number) 🔄
+- ✅ `total` (number) 🔄
+- ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
 
@@ -10071,8 +10169,14 @@
 
 **Validaciones:**
 
+- `purchaseOrderId`: required, sometimes, exists:purchase_orders,id
+- `productId`: required, sometimes, exists:products,id
 - `quantity`: required, numeric, min:0.01
 - `unitPrice`: required, numeric, min:0
+- `discount`: sometimes, numeric, min:0
+- `subtotal`: sometimes, numeric, min:0
+- `total`: sometimes, numeric, min:0
+- `metadata`: sometimes, array
 
 **Ejemplo de Request:**
 
@@ -10117,9 +10221,14 @@
 
 **Campos disponibles:**
 
-- ✅ `quantity` (number) 
-- ✅ `unitPrice` (number) 
-- ✅ `subtotal` (number) 
+- ✅ `purchaseOrderId` (number) 🔄
+- ✅ `productId` (number) 🔄
+- ✅ `quantity` (number) 🔄
+- ✅ `unitPrice` (number) 🔄
+- ✅ `discount` (number) 🔄
+- ✅ `subtotal` (number) 🔄
+- ✅ `total` (number) 🔄
+- ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
 
@@ -10130,8 +10239,14 @@
 
 **Validaciones:**
 
+- `purchaseOrderId`: required, sometimes, exists:purchase_orders,id
+- `productId`: required, sometimes, exists:products,id
 - `quantity`: required, numeric, min:0.01
 - `unitPrice`: required, numeric, min:0
+- `discount`: sometimes, numeric, min:0
+- `subtotal`: sometimes, numeric, min:0
+- `total`: sometimes, numeric, min:0
+- `metadata`: sometimes, array
 
 **Ejemplo de Request:**
 
@@ -10152,9 +10267,14 @@
 
 **Campos disponibles:**
 
-- ✅ `quantity` (number) 
-- ✅ `unitPrice` (number) 
-- ✅ `subtotal` (number) 
+- ✅ `purchaseOrderId` (number) 🔄
+- ✅ `productId` (number) 🔄
+- ✅ `quantity` (number) 🔄
+- ✅ `unitPrice` (number) 🔄
+- ✅ `discount` (number) 🔄
+- ✅ `subtotal` (number) 🔄
+- ✅ `total` (number) 🔄
+- ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
 
@@ -10165,8 +10285,14 @@
 
 **Validaciones:**
 
+- `purchaseOrderId`: required, sometimes, exists:purchase_orders,id
+- `productId`: required, sometimes, exists:products,id
 - `quantity`: required, numeric, min:0.01
 - `unitPrice`: required, numeric, min:0
+- `discount`: sometimes, numeric, min:0
+- `subtotal`: sometimes, numeric, min:0
+- `total`: sometimes, numeric, min:0
+- `metadata`: sometimes, array
 
 **Ejemplo de Request:**
 
@@ -10198,9 +10324,14 @@
 
 **Campos disponibles:**
 
-- ✅ `quantity` (number) 
-- ✅ `unitPrice` (number) 
-- ✅ `subtotal` (number) 
+- ✅ `purchaseOrderId` (number) 🔄
+- ✅ `productId` (number) 🔄
+- ✅ `quantity` (number) 🔄
+- ✅ `unitPrice` (number) 🔄
+- ✅ `discount` (number) 🔄
+- ✅ `subtotal` (number) 🔄
+- ✅ `total` (number) 🔄
+- ✅ `metadata` (object) 
 - ✅ `createdAt` (datetime) 🔒🔄
 - ✅ `updatedAt` (datetime) 🔒🔄
 
@@ -10211,8 +10342,14 @@
 
 **Validaciones:**
 
+- `purchaseOrderId`: required, sometimes, exists:purchase_orders,id
+- `productId`: required, sometimes, exists:products,id
 - `quantity`: required, numeric, min:0.01
 - `unitPrice`: required, numeric, min:0
+- `discount`: sometimes, numeric, min:0
+- `subtotal`: sometimes, numeric, min:0
+- `total`: sometimes, numeric, min:0
+- `metadata`: sometimes, array
 
 ---
 
@@ -10497,6 +10634,110 @@
 - `discount_total`: nullable, numeric, min:0
 - `notes`: nullable, string, max:1000
 - `metadata`: nullable, array
+
+---
+
+#### `GET` `api/v1/sales-orders/reports`
+
+**Campos disponibles:**
+
+- ✅ `contact_id` (number) 
+- ✅ `order_number` (string) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `order_date` (datetime) 🔄
+- ✅ `approved_at` (datetime) 🔄
+- ✅ `delivered_at` (datetime) 🔄
+- ✅ `subtotal_amount` (number) 🔄
+- ✅ `tax_amount` (number) 
+- ✅ `discount_total` (number) 
+- ✅ `total_amount` (number) 🔄
+- ✅ `notes` (string) 
+- ✅ `metadata` (object) 
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contact` (relationship)
+- `customer` (relationship)
+- `items` (relationship[])
+
+**Validaciones:**
+
+- `order_number`: required, sometimes, string, max:50, sales_orders, order_number
+- `status`: required, sometimes, draft, confirmed, processing, shipped, delivered, cancelled
+- `order_date`: required, sometimes, date
+- `approved_at`: nullable, date
+- `delivered_at`: nullable, date
+- `total_amount`: required, sometimes, numeric, min:0
+- `discount_total`: nullable, numeric, min:0
+- `notes`: nullable, string, max:1000
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/sales_orders",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/sales-orders/customers`
+
+**Campos disponibles:**
+
+- ✅ `contact_id` (number) 
+- ✅ `order_number` (string) 🔄
+- ✅ `status` (string) 🔄
+- ✅ `order_date` (datetime) 🔄
+- ✅ `approved_at` (datetime) 🔄
+- ✅ `delivered_at` (datetime) 🔄
+- ✅ `subtotal_amount` (number) 🔄
+- ✅ `tax_amount` (number) 
+- ✅ `discount_total` (number) 
+- ✅ `total_amount` (number) 🔄
+- ✅ `notes` (string) 
+- ✅ `metadata` (object) 
+- ✅ `created_at` (datetime) 🔒🔄
+- ✅ `updated_at` (datetime) 🔒🔄
+
+**Relaciones disponibles:**
+
+- `contact` (relationship)
+- `customer` (relationship)
+- `items` (relationship[])
+
+**Validaciones:**
+
+- `order_number`: required, sometimes, string, max:50, sales_orders, order_number
+- `status`: required, sometimes, draft, confirmed, processing, shipped, delivered, cancelled
+- `order_date`: required, sometimes, date
+- `approved_at`: nullable, date
+- `delivered_at`: nullable, date
+- `total_amount`: required, sometimes, numeric, min:0
+- `discount_total`: nullable, numeric, min:0
+- `notes`: nullable, string, max:1000
+- `metadata`: nullable, array
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/sales_orders",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
 
 ---
 

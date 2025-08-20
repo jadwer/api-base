@@ -233,86 +233,6 @@ class PermissionsSeeder extends Seeder
             'name' => 'finance.ar-invoice-receipts.destroy',
             'guard_name' => 'api',
         ]);
-        Permission::firstOrCreate([
-            'name' => 'bank-accounts.index',
-            'guard_name' => 'api',
-        ]);
-        Permission::firstOrCreate([
-            'name' => 'bank-accounts.show',
-            'guard_name' => 'api',
-        ]);
-        Permission::firstOrCreate([
-            'name' => 'bank-accounts.store',
-            'guard_name' => 'api',
-        ]);
-        Permission::firstOrCreate([
-            'name' => 'bank-accounts.update',
-            'guard_name' => 'api',
-        ]);
-        Permission::firstOrCreate([
-            'name' => 'ap-invoices.index',
-            'guard_name' => 'api',
-        ]);
-        Permission::firstOrCreate([
-            'name' => 'ap-invoices.show',
-            'guard_name' => 'api',
-        ]);
-        Permission::firstOrCreate([
-            'name' => 'ap-invoices.store',
-            'guard_name' => 'api',
-        ]);
-        Permission::firstOrCreate([
-            'name' => 'ap-invoices.update',
-            'guard_name' => 'api',
-        ]);
-        Permission::firstOrCreate([
-            'name' => 'ar-invoices.index',
-            'guard_name' => 'api',
-        ]);
-        Permission::firstOrCreate([
-            'name' => 'ar-invoices.show',
-            'guard_name' => 'api',
-        ]);
-        Permission::firstOrCreate([
-            'name' => 'ar-invoices.store',
-            'guard_name' => 'api',
-        ]);
-        Permission::firstOrCreate([
-            'name' => 'ar-invoices.update',
-            'guard_name' => 'api',
-        ]);
-        Permission::firstOrCreate([
-            'name' => 'ap-payments.index',
-            'guard_name' => 'api',
-        ]);
-        Permission::firstOrCreate([
-            'name' => 'ap-payments.show',
-            'guard_name' => 'api',
-        ]);
-        Permission::firstOrCreate([
-            'name' => 'ap-payments.store',
-            'guard_name' => 'api',
-        ]);
-        Permission::firstOrCreate([
-            'name' => 'ap-payments.update',
-            'guard_name' => 'api',
-        ]);
-        Permission::firstOrCreate([
-            'name' => 'ar-receipts.index',
-            'guard_name' => 'api',
-        ]);
-        Permission::firstOrCreate([
-            'name' => 'ar-receipts.show',
-            'guard_name' => 'api',
-        ]);
-        Permission::firstOrCreate([
-            'name' => 'ar-receipts.store',
-            'guard_name' => 'api',
-        ]);
-        Permission::firstOrCreate([
-            'name' => 'ar-receipts.update',
-            'guard_name' => 'api',
-        ]);
         
         // Assign permissions to roles
 
@@ -439,37 +359,53 @@ class PermissionsSeeder extends Seeder
         // finance_manager role permissions
         $rolefinance_manager = Role::where('name', 'finance_manager')->where('guard_name', 'api')->first();
         if ($rolefinance_manager) {
-            $rolefinance_manager->givePermissionTo('bank-accounts.index');
-            $rolefinance_manager->givePermissionTo('bank-accounts.show');
-            $rolefinance_manager->givePermissionTo('bank-accounts.store');
-            $rolefinance_manager->givePermissionTo('bank-accounts.update');
-            $rolefinance_manager->givePermissionTo('ap-invoices.index');
-            $rolefinance_manager->givePermissionTo('ap-invoices.show');
-            $rolefinance_manager->givePermissionTo('ap-invoices.store');
-            $rolefinance_manager->givePermissionTo('ap-invoices.update');
-            $rolefinance_manager->givePermissionTo('ar-invoices.index');
-            $rolefinance_manager->givePermissionTo('ar-invoices.show');
-            $rolefinance_manager->givePermissionTo('ar-invoices.store');
-            $rolefinance_manager->givePermissionTo('ar-invoices.update');
-            $rolefinance_manager->givePermissionTo('ap-payments.index');
-            $rolefinance_manager->givePermissionTo('ap-payments.show');
-            $rolefinance_manager->givePermissionTo('ap-payments.store');
-            $rolefinance_manager->givePermissionTo('ap-payments.update');
-            $rolefinance_manager->givePermissionTo('ar-receipts.index');
-            $rolefinance_manager->givePermissionTo('ar-receipts.show');
-            $rolefinance_manager->givePermissionTo('ar-receipts.store');
-            $rolefinance_manager->givePermissionTo('ar-receipts.update');
+            $rolefinance_manager->givePermissionTo('finance.bank-accounts.index');
+            $rolefinance_manager->givePermissionTo('finance.bank-accounts.show');
+            $rolefinance_manager->givePermissionTo('finance.bank-accounts.store');
+            $rolefinance_manager->givePermissionTo('finance.bank-accounts.update');
+            $rolefinance_manager->givePermissionTo('finance.ap-invoices.index');
+            $rolefinance_manager->givePermissionTo('finance.ap-invoices.show');
+            $rolefinance_manager->givePermissionTo('finance.ap-invoices.store');
+            $rolefinance_manager->givePermissionTo('finance.ap-invoices.update');
+            $rolefinance_manager->givePermissionTo('finance.ar-invoices.index');
+            $rolefinance_manager->givePermissionTo('finance.ar-invoices.show');
+            $rolefinance_manager->givePermissionTo('finance.ar-invoices.store');
+            $rolefinance_manager->givePermissionTo('finance.ar-invoices.update');
+            $rolefinance_manager->givePermissionTo('finance.ap-payments.index');
+            $rolefinance_manager->givePermissionTo('finance.ap-payments.show');
+            $rolefinance_manager->givePermissionTo('finance.ap-payments.store');
+            $rolefinance_manager->givePermissionTo('finance.ap-payments.update');
+            $rolefinance_manager->givePermissionTo('finance.ar-receipts.index');
+            $rolefinance_manager->givePermissionTo('finance.ar-receipts.show');
+            $rolefinance_manager->givePermissionTo('finance.ar-receipts.store');
+            $rolefinance_manager->givePermissionTo('finance.ar-receipts.update');
         }
 
         // tech role permissions
         $roletech = Role::where('name', 'tech')->where('guard_name', 'api')->first();
         if ($roletech) {
-            $roletech->givePermissionTo('bank-accounts.index');
-            $roletech->givePermissionTo('bank-accounts.show');
-            $roletech->givePermissionTo('ap-invoices.index');
-            $roletech->givePermissionTo('ap-invoices.show');
-            $roletech->givePermissionTo('ar-invoices.index');
-            $roletech->givePermissionTo('ar-invoices.show');
+            $roletech->givePermissionTo('finance.bank-accounts.index');
+            $roletech->givePermissionTo('finance.bank-accounts.show');
+            $roletech->givePermissionTo('finance.bank-statements.index');
+            $roletech->givePermissionTo('finance.bank-statements.show');
+            $roletech->givePermissionTo('finance.bank-statement-lines.index');
+            $roletech->givePermissionTo('finance.bank-statement-lines.show');
+            $roletech->givePermissionTo('finance.ap-invoices.index');
+            $roletech->givePermissionTo('finance.ap-invoices.show');
+            $roletech->givePermissionTo('finance.ap-invoice-lines.index');
+            $roletech->givePermissionTo('finance.ap-invoice-lines.show');
+            $roletech->givePermissionTo('finance.ap-payments.index');
+            $roletech->givePermissionTo('finance.ap-payments.show');
+            $roletech->givePermissionTo('finance.ap-invoice-payments.index');
+            $roletech->givePermissionTo('finance.ap-invoice-payments.show');
+            $roletech->givePermissionTo('finance.ar-invoices.index');
+            $roletech->givePermissionTo('finance.ar-invoices.show');
+            $roletech->givePermissionTo('finance.ar-invoice-lines.index');
+            $roletech->givePermissionTo('finance.ar-invoice-lines.show');
+            $roletech->givePermissionTo('finance.ar-receipts.index');
+            $roletech->givePermissionTo('finance.ar-receipts.show');
+            $roletech->givePermissionTo('finance.ar-invoice-receipts.index');
+            $roletech->givePermissionTo('finance.ar-invoice-receipts.show');
         }
 
         // customer role permissions

@@ -1,6 +1,6 @@
 # 🧪 Test Report - Inventory
 
-**Generated:** 2025-08-19 17:59:33
+**Generated:** 2025-08-20 11:03:43
 
 ## InventoryMovementIndexTest
 

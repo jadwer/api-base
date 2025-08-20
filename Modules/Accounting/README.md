@@ -48,6 +48,6 @@ php artisan test Modules/Accounting
 ## 📊 Métricas
 
 - **Test Files**: 30
-- **Generated**: 2025-08-19 17:59:33
+- **Generated**: 2025-08-20 11:02:18
 - **Status**: ✅ Documentation up to date
 - **API Version**: JSON:API v1.0

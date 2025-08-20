@@ -15,7 +15,7 @@ class AccountingDatabaseSeeder extends Seeder
         
         $this->call([
             PermissionsSeeder::class,
-            AccountSeeder::class,
+            BasicAccountsSeeder::class,
             FiscalPeriodSeeder::class,
             JournalSeeder::class,
             JournalEntrySeeder::class,

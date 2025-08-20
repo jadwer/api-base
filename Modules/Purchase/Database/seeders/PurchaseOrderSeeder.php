@@ -26,11 +26,20 @@ class PurchaseOrderSeeder extends Seeder
                 ->create();
         }
 
-        // Create purchase orders with items
-        $supplierContacts->take(3)->each(function ($contact) {
+        // Create purchase orders with recent dates
+        $supplierContacts->take(3)->each(function ($contact, $index) {
+            $orderDate = match($index) {
+                0 => now()->subDays(2),   // 2 días atrás
+                1 => now()->subDays(25),  // 25 días atrás  
+                2 => now()->subDays(60),  // 60 días atrás
+            };
+
             $purchaseOrder = PurchaseOrder::factory()
                 ->for($contact, 'contact')
-                ->create();
+                ->create([
+                    'order_date' => $orderDate,
+                    'status' => $index < 2 ? 'pending' : 'received'
+                ]);
 
             // Create 2-5 items per purchase order
             PurchaseOrderItem::factory()

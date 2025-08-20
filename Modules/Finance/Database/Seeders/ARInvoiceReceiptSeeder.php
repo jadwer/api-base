@@ -14,9 +14,19 @@ class ARInvoiceReceiptSeeder extends Seeder
     {
         $this->command->info('🌱 Seeding ARInvoiceReceipt...');
         
-        // Create sample ARInvoiceReceipt records
-        ARInvoiceReceipt::factory()->count(10)->create();
-
+        // Get existing invoices and receipts
+        $invoices = \Modules\Finance\Models\ARInvoice::all();
+        $receipts = \Modules\Finance\Models\ARReceipt::all();
+        
+        if ($invoices->count() > 0 && $receipts->count() > 0) {
+            // Create sample ARInvoiceReceipt records using existing data
+            for ($i = 0; $i < min(10, $invoices->count(), $receipts->count()); $i++) {
+                ARInvoiceReceipt::factory()->create([
+                    'ar_invoice_id' => $invoices->random()->id,
+                    'ar_receipt_id' => $receipts->random()->id,
+                ]);
+            }
+        }
         
         $this->command->info('✅ ARInvoiceReceipt seeded successfully!');
     }

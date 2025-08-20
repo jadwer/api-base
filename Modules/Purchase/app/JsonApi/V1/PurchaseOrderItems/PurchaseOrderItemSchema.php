@@ -2,14 +2,16 @@
 
 namespace Modules\Purchase\JsonApi\V1\PurchaseOrderItems;
 
-use LaravelJsonApi\Eloquent\Contracts\Paginator;
-use LaravelJsonApi\Eloquent\Fields\DateTime;
+use LaravelJsonApi\Eloquent\Schema;
 use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Number;
-use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
-use LaravelJsonApi\Eloquent\Pagination\PagePagination;
-use LaravelJsonApi\Eloquent\Schema;
+use LaravelJsonApi\Eloquent\Fields\DateTime;
+use LaravelJsonApi\Eloquent\Fields\ArrayHash;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
+use LaravelJsonApi\Eloquent\Filters\Where;
+use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
+use LaravelJsonApi\Eloquent\Filters\WhereIn;
+use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use Modules\Purchase\Models\PurchaseOrderItem;
 
 class PurchaseOrderItemSchema extends Schema
@@ -20,27 +22,39 @@ class PurchaseOrderItemSchema extends Schema
     public static string $model = PurchaseOrderItem::class;
 
     /**
+     * The maximum depth of include paths.
+     */
+    protected int $maxDepth = 3;
+
+    /**
      * Get the resource fields.
      */
     public function fields(): array
     {
         return [
             ID::make(),
-            Number::make('quantity')
-                ->sortable(),
-            Number::make('unitPrice', 'unit_price')
-                ->sortable(),
-            Number::make('subtotal')
-                ->sortable(),
             
-            DateTime::make('createdAt')->sortable()->readOnly(),
-            DateTime::make('updatedAt')->sortable()->readOnly(),
+            // Direct foreign key fields (for direct access)
+            Number::make('purchaseOrderId', 'purchase_order_id')->sortable(),
+            Number::make('productId', 'product_id')->sortable(),
             
-            // Relaciones
-            BelongsTo::make('purchaseOrder')
-                     ->type('purchase-orders'),
-            BelongsTo::make('product')
-                     ->type('products'),
+            // BelongsTo relationships (for JSON API includes)
+            BelongsTo::make('purchaseOrder')->type('purchase-orders'),
+            BelongsTo::make('product')->type('products'),
+            
+            // Numeric fields
+            Number::make('quantity')->sortable(),
+            Number::make('unitPrice', 'unit_price')->sortable(),
+            Number::make('discount')->sortable(),
+            Number::make('subtotal')->sortable(),
+            Number::make('total')->sortable(),
+            
+            // JSON fields
+            ArrayHash::make('metadata'),
+            
+            // Timestamps
+            DateTime::make('createdAt', 'created_at')->readOnly()->sortable(),
+            DateTime::make('updatedAt', 'updated_at')->readOnly()->sortable(),
         ];
     }
 
@@ -51,9 +65,13 @@ class PurchaseOrderItemSchema extends Schema
     {
         return [
             WhereIdIn::make($this),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('purchaseOrder', 'purchase_order_id'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('productId', 'product_id'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('quantity'),
+            Where::make('purchaseOrderId', 'purchase_order_id'),
+            Where::make('productId', 'product_id'),
+            Where::make('quantity'),
+            Where::make('unitPrice', 'unit_price'),
+            Where::make('discount'),
+            Where::make('subtotal'),
+            Where::make('total'),
         ];
     }
 
@@ -64,6 +82,7 @@ class PurchaseOrderItemSchema extends Schema
     {
         return [
             'purchaseOrder',
+            'purchaseOrder.supplier',
             'product',
         ];
     }
@@ -71,7 +90,7 @@ class PurchaseOrderItemSchema extends Schema
     /**
      * Get the resource paginator.
      */
-    public function pagination(): ?Paginator
+    public function pagination(): ?PagePagination
     {
         return PagePagination::make();
     }
@@ -82,5 +101,15 @@ class PurchaseOrderItemSchema extends Schema
     public static function type(): string
     {
         return 'purchase-order-items';
+    }
+
+    /**
+     * Get the resource relationships.
+     */
+    public function relationships(): array
+    {
+        return [
+            //
+        ];
     }
 }

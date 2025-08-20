@@ -32,16 +32,25 @@ class SalesOrderSeeder extends Seeder
             $products = Product::factory()->count(15)->create();
         }
 
-        // Create sales orders with items - more variety than purchases
-        $customerContacts->take(6)->each(function ($contact) use ($products) {
-            // Create 1-3 sales orders per customer
-            $ordersCount = fake()->numberBetween(1, 3);
+        // Create sales orders with recent dates for better filtering demos
+        $customerContacts->take(6)->each(function ($contact, $customerIndex) use ($products) {
+            // Create 2-3 sales orders per customer with specific date ranges
+            $ordersCount = fake()->numberBetween(2, 3);
             
             for ($i = 0; $i < $ordersCount; $i++) {
+                // Distribute orders across different time periods
+                $orderDate = match(($customerIndex * $ordersCount + $i) % 5) {
+                    0 => now()->subDays(5),   // 5 días atrás
+                    1 => now()->subDays(15),  // 15 días atrás
+                    2 => now()->subDays(30),  // 30 días atrás
+                    3 => now()->subDays(45),  // 45 días atrás
+                    4 => now()->subDays(80),  // 80 días atrás
+                };
+
                 $salesOrder = SalesOrder::factory()
                     ->for($contact, 'contact')
                     ->create([
-                        'order_date' => fake()->dateTimeBetween('-6 months', 'now'),
+                        'order_date' => $orderDate,
                         'status' => fake()->randomElement(['draft', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled']),
                         'metadata' => [
                             'priority' => fake()->randomElement(['low', 'normal', 'high', 'urgent']),
@@ -75,12 +84,12 @@ class SalesOrderSeeder extends Seeder
 
         // Create some additional high-value orders for reporting demos
         $vipCustomers = $customerContacts->take(2);
-        foreach ($vipCustomers as $customer) {
+        foreach ($vipCustomers as $index => $customer) {
             $bigOrder = SalesOrder::factory()
                 ->for($customer, 'contact')
                 ->create([
                     'status' => 'delivered',
-                    'order_date' => fake()->dateTimeBetween('-3 months', '-1 month'),
+                    'order_date' => $index === 0 ? now()->subDays(7) : now()->subDays(20), // 7 y 20 días atrás
                     'metadata' => [
                         'priority' => 'high',
                         'delivery_date' => fake()->dateTimeBetween('-2 months', 'now')->format('Y-m-d'),

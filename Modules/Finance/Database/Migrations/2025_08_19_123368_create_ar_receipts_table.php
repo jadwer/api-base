@@ -10,11 +10,14 @@ return new class extends Migration
     {
         Schema::create("ar_receipts", function (Blueprint $table) {
             $table->id();
+            $table->string('receipt_number')->nullable();
             $table->foreignId('contact_id')->constrained('contacts')->onDelete('restrict');
+            $table->foreignId('ar_invoice_id')->nullable()->constrained('ar_invoices')->onDelete('restrict');
             $table->date('receipt_date');
             $table->string('payment_method');
             $table->string('currency')->nullable();
             $table->decimal('amount', 10, 2);
+            $table->decimal('applied_amount', 10, 2)->nullable();
             $table->foreignId('bank_account_id')->constrained('bank_accounts')->onDelete('restrict');
             $table->string('status')->default('draft');
             $table->json('metadata')->nullable();

@@ -35,6 +35,11 @@ class APInvoiceSchema extends Schema
             Number::make('taxTotal')->sortable(),
             Number::make('total')->sortable(),
             Str::make('status')->sortable(),
+            
+            // F1 Calculated fields (explicit appends)
+            Number::make('paidAmount')->readOnly(),
+            Number::make('remainingBalance')->readOnly(),
+            
             // Metadata
             ArrayHash::make('metadata'),
             
@@ -55,22 +60,6 @@ class APInvoiceSchema extends Schema
         ];
     }
 
-    public function sortables(): array
-    {
-        return [
-            'invoice_number',
-            'invoice_date',
-            'due_date',
-            'currency',
-            'exchange_rate',
-            'subtotal',
-            'tax_total',
-            'total',
-            'status',
-            'created_at',
-            'updated_at',
-        ];
-    }
 
     public function includePaths(): array
     {

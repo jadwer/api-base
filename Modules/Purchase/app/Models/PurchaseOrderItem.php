@@ -34,7 +34,10 @@ class PurchaseOrderItem extends Model
             'purchase_order_id' => 'integer',
             'product_id' => 'integer',
             'unit_price' => 'float',
+            'discount' => 'float',
             'subtotal' => 'float',
+            'total' => 'float',
+            'metadata' => 'array',
         ];
     }
 
@@ -45,10 +48,11 @@ class PurchaseOrderItem extends Model
     {
         parent::boot();
         
-        // Calcular subtotal automáticamente antes de guardar
+        // Calcular subtotal y total automáticamente antes de guardar
         static::saving(function ($item) {
             if ($item->quantity && $item->unit_price) {
                 $item->subtotal = $item->quantity * $item->unit_price;
+                $item->total = $item->subtotal - ($item->discount ?? 0);
             }
         });
     }

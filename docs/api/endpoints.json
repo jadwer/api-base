@@ -1,5 +1,5 @@
 {
-    "generated_at": "2025-08-20T00:26:05.057525Z",
+    "generated_at": "2025-08-20T11:01:56.241297Z",
     "base_url": "http:\/\/localhost\/api\/v1",
     "authentication": {
         "type": "Bearer Token",
@@ -38905,11 +38905,27 @@
                 "file": "PurchaseOrderItemSchema.php",
                 "fields": [
                     {
+                        "name": "purchaseOrderId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "productId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
                         "name": "quantity",
                         "type": "number",
                         "required": true,
                         "readonly": false,
-                        "sortable": false,
+                        "sortable": true,
                         "filterable": false
                     },
                     {
@@ -38917,12 +38933,36 @@
                         "type": "number",
                         "required": true,
                         "readonly": false,
-                        "sortable": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "discount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
                         "filterable": false
                     },
                     {
                         "name": "subtotal",
                         "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
                         "required": true,
                         "readonly": false,
                         "sortable": false,
@@ -38964,6 +39004,16 @@
                     }
                 ],
                 "validations": {
+                    "purchaseOrderId": [
+                        "required",
+                        "sometimes",
+                        "exists:purchase_orders,id"
+                    ],
+                    "productId": [
+                        "required",
+                        "sometimes",
+                        "exists:products,id"
+                    ],
                     "quantity": [
                         "required",
                         "numeric",
@@ -38973,6 +39023,25 @@
                         "required",
                         "numeric",
                         "min:0"
+                    ],
+                    "discount": [
+                        "sometimes",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "subtotal": [
+                        "sometimes",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "total": [
+                        "sometimes",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "metadata": [
+                        "sometimes",
+                        "array"
                     ]
                 }
             },
@@ -39045,11 +39114,27 @@
                 "file": "PurchaseOrderItemSchema.php",
                 "fields": [
                     {
+                        "name": "purchaseOrderId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "productId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
                         "name": "quantity",
                         "type": "number",
                         "required": true,
                         "readonly": false,
-                        "sortable": false,
+                        "sortable": true,
                         "filterable": false
                     },
                     {
@@ -39057,12 +39142,36 @@
                         "type": "number",
                         "required": true,
                         "readonly": false,
-                        "sortable": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "discount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
                         "filterable": false
                     },
                     {
                         "name": "subtotal",
                         "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
                         "required": true,
                         "readonly": false,
                         "sortable": false,
@@ -39104,6 +39213,16 @@
                     }
                 ],
                 "validations": {
+                    "purchaseOrderId": [
+                        "required",
+                        "sometimes",
+                        "exists:purchase_orders,id"
+                    ],
+                    "productId": [
+                        "required",
+                        "sometimes",
+                        "exists:products,id"
+                    ],
                     "quantity": [
                         "required",
                         "numeric",
@@ -39113,6 +39232,25 @@
                         "required",
                         "numeric",
                         "min:0"
+                    ],
+                    "discount": [
+                        "sometimes",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "subtotal": [
+                        "sometimes",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "total": [
+                        "sometimes",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "metadata": [
+                        "sometimes",
+                        "array"
                     ]
                 }
             },
@@ -39182,11 +39320,27 @@
                 "file": "PurchaseOrderItemSchema.php",
                 "fields": [
                     {
+                        "name": "purchaseOrderId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "productId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
                         "name": "quantity",
                         "type": "number",
                         "required": true,
                         "readonly": false,
-                        "sortable": false,
+                        "sortable": true,
                         "filterable": false
                     },
                     {
@@ -39194,12 +39348,36 @@
                         "type": "number",
                         "required": true,
                         "readonly": false,
-                        "sortable": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "discount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
                         "filterable": false
                     },
                     {
                         "name": "subtotal",
                         "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
                         "required": true,
                         "readonly": false,
                         "sortable": false,
@@ -39241,6 +39419,16 @@
                     }
                 ],
                 "validations": {
+                    "purchaseOrderId": [
+                        "required",
+                        "sometimes",
+                        "exists:purchase_orders,id"
+                    ],
+                    "productId": [
+                        "required",
+                        "sometimes",
+                        "exists:products,id"
+                    ],
                     "quantity": [
                         "required",
                         "numeric",
@@ -39250,6 +39438,25 @@
                         "required",
                         "numeric",
                         "min:0"
+                    ],
+                    "discount": [
+                        "sometimes",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "subtotal": [
+                        "sometimes",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "total": [
+                        "sometimes",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "metadata": [
+                        "sometimes",
+                        "array"
                     ]
                 }
             },
@@ -39322,11 +39529,27 @@
                 "file": "PurchaseOrderItemSchema.php",
                 "fields": [
                     {
+                        "name": "purchaseOrderId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "productId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
                         "name": "quantity",
                         "type": "number",
                         "required": true,
                         "readonly": false,
-                        "sortable": false,
+                        "sortable": true,
                         "filterable": false
                     },
                     {
@@ -39334,12 +39557,36 @@
                         "type": "number",
                         "required": true,
                         "readonly": false,
-                        "sortable": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "discount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
                         "filterable": false
                     },
                     {
                         "name": "subtotal",
                         "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
                         "required": true,
                         "readonly": false,
                         "sortable": false,
@@ -39381,6 +39628,16 @@
                     }
                 ],
                 "validations": {
+                    "purchaseOrderId": [
+                        "required",
+                        "sometimes",
+                        "exists:purchase_orders,id"
+                    ],
+                    "productId": [
+                        "required",
+                        "sometimes",
+                        "exists:products,id"
+                    ],
                     "quantity": [
                         "required",
                         "numeric",
@@ -39390,6 +39647,25 @@
                         "required",
                         "numeric",
                         "min:0"
+                    ],
+                    "discount": [
+                        "sometimes",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "subtotal": [
+                        "sometimes",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "total": [
+                        "sometimes",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "metadata": [
+                        "sometimes",
+                        "array"
                     ]
                 }
             },
@@ -39432,11 +39708,27 @@
                 "file": "PurchaseOrderItemSchema.php",
                 "fields": [
                     {
+                        "name": "purchaseOrderId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "productId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
                         "name": "quantity",
                         "type": "number",
                         "required": true,
                         "readonly": false,
-                        "sortable": false,
+                        "sortable": true,
                         "filterable": false
                     },
                     {
@@ -39444,12 +39736,36 @@
                         "type": "number",
                         "required": true,
                         "readonly": false,
-                        "sortable": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "discount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
                         "filterable": false
                     },
                     {
                         "name": "subtotal",
                         "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
                         "required": true,
                         "readonly": false,
                         "sortable": false,
@@ -39491,6 +39807,16 @@
                     }
                 ],
                 "validations": {
+                    "purchaseOrderId": [
+                        "required",
+                        "sometimes",
+                        "exists:purchase_orders,id"
+                    ],
+                    "productId": [
+                        "required",
+                        "sometimes",
+                        "exists:products,id"
+                    ],
                     "quantity": [
                         "required",
                         "numeric",
@@ -39500,10 +39826,385 @@
                         "required",
                         "numeric",
                         "min:0"
+                    ],
+                    "discount": [
+                        "sometimes",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "subtotal": [
+                        "sometimes",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "total": [
+                        "sometimes",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "metadata": [
+                        "sometimes",
+                        "array"
                     ]
                 }
             },
             "examples": []
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/purchase-orders\/reports",
+            "resource_type": "purchase_orders",
+            "controller": "Modules\\Purchase\\Http\\Controllers\\Api\\V1\\PurchaseOrderController",
+            "action": "reports",
+            "middleware": [
+                "api",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "PurchaseOrderSchema.php",
+                "fields": [
+                    {
+                        "name": "contact_id",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "contactId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "orderDate",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "status",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "totalAmount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "notes",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contact",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "purchaseOrderItems",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "orderDate": [
+                        "required",
+                        "sometimes",
+                        "date"
+                    ],
+                    "status": [
+                        "required",
+                        "sometimes",
+                        "string",
+                        "in:pending,approved,received,cancelled"
+                    ],
+                    "totalAmount": [
+                        "required",
+                        "sometimes",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "notes": [
+                        "nullable",
+                        "string"
+                    ],
+                    "contact": [
+                        "required",
+                        "sometimes"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/purchase_orders",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "purchase_orders",
+                                "id": "1",
+                                "attributes": {
+                                    "title": "Ejemplo",
+                                    "status": "published",
+                                    "createdAt": "2025-01-01T00:00:00.000000Z"
+                                },
+                                "relationships": {
+                                    "user": {
+                                        "data": {
+                                            "type": "users",
+                                            "id": "1"
+                                        },
+                                        "links": {
+                                            "self": "\/api\/v1\/purchase_orders\/1\/relationships\/user",
+                                            "related": "\/api\/v1\/purchase_orders\/1\/user"
+                                        }
+                                    }
+                                },
+                                "links": {
+                                    "self": "\/api\/v1\/purchase_orders\/1"
+                                }
+                            }
+                        ],
+                        "meta": {
+                            "pagination": {
+                                "currentPage": 1,
+                                "from": 1,
+                                "lastPage": 1,
+                                "perPage": 15,
+                                "to": 1,
+                                "total": 1
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/purchase-orders\/suppliers",
+            "resource_type": "purchase_orders",
+            "controller": "Modules\\Purchase\\Http\\Controllers\\Api\\V1\\PurchaseOrderController",
+            "action": "suppliers",
+            "middleware": [
+                "api",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "PurchaseOrderSchema.php",
+                "fields": [
+                    {
+                        "name": "contact_id",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "contactId",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "orderDate",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "status",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "totalAmount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "notes",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updatedAt",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contact",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "purchaseOrderItems",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "orderDate": [
+                        "required",
+                        "sometimes",
+                        "date"
+                    ],
+                    "status": [
+                        "required",
+                        "sometimes",
+                        "string",
+                        "in:pending,approved,received,cancelled"
+                    ],
+                    "totalAmount": [
+                        "required",
+                        "sometimes",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "notes": [
+                        "nullable",
+                        "string"
+                    ],
+                    "contact": [
+                        "required",
+                        "sometimes"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/purchase_orders",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "purchase_orders",
+                                "id": "1",
+                                "attributes": {
+                                    "title": "Ejemplo",
+                                    "status": "published",
+                                    "createdAt": "2025-01-01T00:00:00.000000Z"
+                                },
+                                "relationships": {
+                                    "user": {
+                                        "data": {
+                                            "type": "users",
+                                            "id": "1"
+                                        },
+                                        "links": {
+                                            "self": "\/api\/v1\/purchase_orders\/1\/relationships\/user",
+                                            "related": "\/api\/v1\/purchase_orders\/1\/user"
+                                        }
+                                    }
+                                },
+                                "links": {
+                                    "self": "\/api\/v1\/purchase_orders\/1"
+                                }
+                            }
+                        ],
+                        "meta": {
+                            "pagination": {
+                                "currentPage": 1,
+                                "from": 1,
+                                "lastPage": 1,
+                                "perPage": 15,
+                                "to": 1,
+                                "total": 1
+                            }
+                        }
+                    }
+                }
+            }
         },
         {
             "methods": [
@@ -41623,6 +42324,526 @@
                 }
             },
             "examples": []
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/sales-orders\/reports",
+            "resource_type": "sales_orders",
+            "controller": "Modules\\Sales\\Http\\Controllers\\Api\\V1\\SalesOrderController",
+            "action": "reports",
+            "middleware": [
+                "api",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "SalesOrderSchema.php",
+                "fields": [
+                    {
+                        "name": "contact_id",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "order_number",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "status",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "order_date",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "approved_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "delivered_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "subtotal_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "tax_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "discount_total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "total_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "notes",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updated_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contact",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "customer",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "items",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "order_number": [
+                        "required",
+                        "sometimes",
+                        "string",
+                        "max:50",
+                        "sales_orders",
+                        "order_number"
+                    ],
+                    "status": [
+                        "required",
+                        "sometimes",
+                        "draft",
+                        "confirmed",
+                        "processing",
+                        "shipped",
+                        "delivered",
+                        "cancelled"
+                    ],
+                    "order_date": [
+                        "required",
+                        "sometimes",
+                        "date"
+                    ],
+                    "approved_at": [
+                        "nullable",
+                        "date"
+                    ],
+                    "delivered_at": [
+                        "nullable",
+                        "date"
+                    ],
+                    "total_amount": [
+                        "required",
+                        "sometimes",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "discount_total": [
+                        "nullable",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "notes": [
+                        "nullable",
+                        "string",
+                        "max:1000"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/sales_orders",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "sales_orders",
+                                "id": "1",
+                                "attributes": {
+                                    "title": "Ejemplo",
+                                    "status": "published",
+                                    "createdAt": "2025-01-01T00:00:00.000000Z"
+                                },
+                                "relationships": {
+                                    "user": {
+                                        "data": {
+                                            "type": "users",
+                                            "id": "1"
+                                        },
+                                        "links": {
+                                            "self": "\/api\/v1\/sales_orders\/1\/relationships\/user",
+                                            "related": "\/api\/v1\/sales_orders\/1\/user"
+                                        }
+                                    }
+                                },
+                                "links": {
+                                    "self": "\/api\/v1\/sales_orders\/1"
+                                }
+                            }
+                        ],
+                        "meta": {
+                            "pagination": {
+                                "currentPage": 1,
+                                "from": 1,
+                                "lastPage": 1,
+                                "perPage": 15,
+                                "to": 1,
+                                "total": 1
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/sales-orders\/customers",
+            "resource_type": "sales_orders",
+            "controller": "Modules\\Sales\\Http\\Controllers\\Api\\V1\\SalesOrderController",
+            "action": "customers",
+            "middleware": [
+                "api",
+                "auth:sanctum"
+            ],
+            "schema": {
+                "file": "SalesOrderSchema.php",
+                "fields": [
+                    {
+                        "name": "contact_id",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "order_number",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "status",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "order_date",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "approved_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "delivered_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "subtotal_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "tax_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "discount_total",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "total_amount",
+                        "type": "number",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "notes",
+                        "type": "string",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "metadata",
+                        "type": "object",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "created_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    },
+                    {
+                        "name": "updated_at",
+                        "type": "datetime",
+                        "required": true,
+                        "readonly": true,
+                        "sortable": true,
+                        "filterable": false
+                    }
+                ],
+                "relationships": [
+                    {
+                        "name": "contact",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "customer",
+                        "type": "relationship",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    },
+                    {
+                        "name": "items",
+                        "type": "relationship[]",
+                        "required": true,
+                        "readonly": false,
+                        "sortable": false,
+                        "filterable": false
+                    }
+                ],
+                "validations": {
+                    "order_number": [
+                        "required",
+                        "sometimes",
+                        "string",
+                        "max:50",
+                        "sales_orders",
+                        "order_number"
+                    ],
+                    "status": [
+                        "required",
+                        "sometimes",
+                        "draft",
+                        "confirmed",
+                        "processing",
+                        "shipped",
+                        "delivered",
+                        "cancelled"
+                    ],
+                    "order_date": [
+                        "required",
+                        "sometimes",
+                        "date"
+                    ],
+                    "approved_at": [
+                        "nullable",
+                        "date"
+                    ],
+                    "delivered_at": [
+                        "nullable",
+                        "date"
+                    ],
+                    "total_amount": [
+                        "required",
+                        "sometimes",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "discount_total": [
+                        "nullable",
+                        "numeric",
+                        "min:0"
+                    ],
+                    "notes": [
+                        "nullable",
+                        "string",
+                        "max:1000"
+                    ],
+                    "metadata": [
+                        "nullable",
+                        "array"
+                    ]
+                }
+            },
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/sales_orders",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "sales_orders",
+                                "id": "1",
+                                "attributes": {
+                                    "title": "Ejemplo",
+                                    "status": "published",
+                                    "createdAt": "2025-01-01T00:00:00.000000Z"
+                                },
+                                "relationships": {
+                                    "user": {
+                                        "data": {
+                                            "type": "users",
+                                            "id": "1"
+                                        },
+                                        "links": {
+                                            "self": "\/api\/v1\/sales_orders\/1\/relationships\/user",
+                                            "related": "\/api\/v1\/sales_orders\/1\/user"
+                                        }
+                                    }
+                                },
+                                "links": {
+                                    "self": "\/api\/v1\/sales_orders\/1"
+                                }
+                            }
+                        ],
+                        "meta": {
+                            "pagination": {
+                                "currentPage": 1,
+                                "from": 1,
+                                "lastPage": 1,
+                                "perPage": 15,
+                                "to": 1,
+                                "total": 1
+                            }
+                        }
+                    }
+                }
+            }
         }
     ]
 }

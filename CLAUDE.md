@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a **modular Laravel 12 API** built with **JSON:API 5.x** specification, designed as a scalable base for enterprise applications like ERPs and CRMs. The project uses `nwidart/laravel-modules` for modular architecture with complete module isolation.
 
-**Current Status:** 5 complete modules (Product, Inventory, Purchase, Sales, Ecommerce) with 543+ tests and JSON:API compliance.
+**Current Status:** 7 complete modules including Finance & Accounting Phase 1 with 32 entities and comprehensive JSON:API compliance.
 
 ## Architecture
 
@@ -172,16 +172,24 @@ Content-Type: application/vnd.api+json
 
 ### Completed Modules
 - **Product:** Products, Units, Categories, Brands (20 routes, 71+ tests)
-- **Inventory:** Warehouses, Locations, Stock, Batches (20 routes, 78+ tests)  
+- **Inventory:** Warehouses, Locations, Stock, Batches, Movements (25 routes, 88+ tests)  
 - **Purchase:** Suppliers, Orders, Items (15 routes, 141+ tests)
 - **Sales:** Customers, Orders, Items (15 routes, 148+ tests)
 - **Ecommerce:** Shopping Carts, Cart Items, Coupons (15 routes, 105+ tests)
+- **🆕 Finance:** AP/AR Invoices, Payments, Receipts, Bank Accounts (40+ routes) ✅
+- **🆕 Accounting:** Accounts, Journal Entries, Fiscal Periods, Exchange Rates (30+ routes) ✅
+
+### Finance & Accounting Phase 1 Features
+- **Calculated Fields:** `paidAmount` and `remainingBalance` in invoice responses
+- **5 Basic Accounts:** Pre-seeded chart of accounts (Banco, Clientes, Proveedores, Ingresos, Gastos)
+- **Spanish Validation:** Localized error messages for better UX
+- **Complete Documentation:** `FINANCE_ACCOUNTING_PHASE1_FRONTEND_REPORT.md` for frontend integration
 
 ### Core Configuration
 - `app/JsonApi/V1/Server.php` - Central JSON:API server configuration
 - `config/modules.php` - Module system configuration
 - `phpunit.xml` - Test suite configuration with module support
-- Database seeders create admin user: `admin@example.com` / `password`
+- Database seeders create admin user: `admin@example.com` / `secureadmin`
 
 ## Documentation
 

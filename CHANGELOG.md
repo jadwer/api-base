@@ -1,5 +1,48 @@
 # Changelog
 
+## [1.2.0] - 2025-08-20
+
+### Added - Finance & Accounting Phase 1
+- **🏦 Finance Module**: Complete financial management system
+  - **AP Invoices** (Accounts Payable) with calculated fields (`paidAmount`, `remainingBalance`)
+  - **AR Invoices** (Accounts Receivable) with calculated fields (`paidAmount`, `remainingBalance`)
+  - **AP/AR Payments & Receipts**: Direct payment/receipt tracking (Phase 1 simple model)
+  - **Bank Accounts & Statements**: Banking integration framework
+  - JSON:API compliant with full CRUD operations, filtering, sorting, and pagination
+- **🧮 Accounting Module**: Chart of accounts and journal entry system
+  - **Chart of Accounts** with hierarchical structure and account types
+  - **Journal Entries & Lines**: Double-entry bookkeeping foundation
+  - **Fiscal Periods**: Accounting period management
+  - **Exchange Rates**: Multi-currency support framework
+  - **5 Basic Accounts** pre-seeded: Banco, Clientes, Proveedores, Ingresos, Gastos
+- **📋 Frontend Documentation**: Complete API specification
+  - `FINANCE_ACCOUNTING_PHASE1_FRONTEND_REPORT.md` with endpoint documentation
+  - Request/response examples with JSON:API format
+  - Field validation rules and error handling
+  - Authentication flow and testing examples
+
+### Enhanced
+- **Calculated Fields Implementation**: Real-time calculation of invoice balances
+  - `paidAmount`: Sum of applied payments/receipts per invoice
+  - `remainingBalance`: Automatic calculation (total - paidAmount)
+  - Fields appear automatically in all JSON:API responses
+- **JSON:API Compliance**: Full standard implementation across new modules
+  - Pagination with `meta.page` and `links` structure
+  - Advanced filtering by any field (`filter[field]=value`)
+  - Sorting support (`sort=field,-other_field`)
+  - Relationship inclusion (`?include=related`)
+- **Spanish Validation Messages**: Localized error messages for better UX
+- **Permission System**: Granular role-based access control
+  - Finance permissions for god, admin, tech, and customer roles
+  - Accounting permissions with appropriate restrictions
+
+### Technical Improvements  
+- **Database Integration**: Clean migration structure with foreign key constraints
+- **Seeders Architecture**: Comprehensive data seeding with realistic test data
+- **Model Relationships**: Proper Eloquent relationships with Phase 1 simplicity
+- **Authorization**: Spatie permissions integration across all finance endpoints
+- **Testing Ready**: All endpoints verified with curl and returning 200 OK
+
 ## [1.1.0] - 2025-08-14
 
 ### Added

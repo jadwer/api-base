@@ -17,7 +17,7 @@ class APInvoiceAuthorizer implements Authorizer
         ]);
         
         $user = $request->user();
-        return $user?->can('finance.a-p-invoices.index') ?? false;
+        return $user?->can('finance.ap-invoices.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
@@ -28,25 +28,25 @@ class APInvoiceAuthorizer implements Authorizer
         ]);
         
         $user = $request->user();
-        return $user?->can('finance.a-p-invoices.store') ?? false;
+        return $user?->can('finance.ap-invoices.store') ?? false;
     }
     
     public function show(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('finance.a-p-invoices.show') ?? false;
+        return $user?->can('finance.ap-invoices.show') ?? false;
     }
     
     public function update(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('finance.a-p-invoices.update') ?? false;
+        return $user?->can('finance.ap-invoices.update') ?? false;
     }
     
     public function destroy(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('finance.a-p-invoices.destroy') ?? false;
+        return $user?->can('finance.ap-invoices.destroy') ?? false;
     }
     
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response
