@@ -1,5 +1,5 @@
 {
-    "generated_at": "2025-08-19T18:02:31.777974Z",
+    "generated_at": "2025-08-20T00:26:05.057525Z",
     "base_url": "http:\/\/localhost\/api\/v1",
     "authentication": {
         "type": "Bearer Token",
@@ -14475,7 +14475,7 @@
                         "string",
                         "max:255"
                     ],
-                    "account_type": [
+                    "accountType": [
                         "required",
                         "string",
                         "max:255"
@@ -14484,7 +14484,7 @@
                         "required",
                         "integer"
                     ],
-                    "parent_id": [
+                    "parentId": [
                         "nullable",
                         "string"
                     ],
@@ -14493,7 +14493,7 @@
                         "string",
                         "max:255"
                     ],
-                    "is_postable": [
+                    "isPostable": [
                         "required",
                         "boolean"
                     ],
@@ -14678,7 +14678,7 @@
                         "string",
                         "max:255"
                     ],
-                    "account_type": [
+                    "accountType": [
                         "required",
                         "string",
                         "max:255"
@@ -14687,7 +14687,7 @@
                         "required",
                         "integer"
                     ],
-                    "parent_id": [
+                    "parentId": [
                         "nullable",
                         "string"
                     ],
@@ -14696,7 +14696,7 @@
                         "string",
                         "max:255"
                     ],
-                    "is_postable": [
+                    "isPostable": [
                         "required",
                         "boolean"
                     ],
@@ -14878,7 +14878,7 @@
                         "string",
                         "max:255"
                     ],
-                    "account_type": [
+                    "accountType": [
                         "required",
                         "string",
                         "max:255"
@@ -14887,7 +14887,7 @@
                         "required",
                         "integer"
                     ],
-                    "parent_id": [
+                    "parentId": [
                         "nullable",
                         "string"
                     ],
@@ -14896,7 +14896,7 @@
                         "string",
                         "max:255"
                     ],
-                    "is_postable": [
+                    "isPostable": [
                         "required",
                         "boolean"
                     ],
@@ -15081,7 +15081,7 @@
                         "string",
                         "max:255"
                     ],
-                    "account_type": [
+                    "accountType": [
                         "required",
                         "string",
                         "max:255"
@@ -15090,7 +15090,7 @@
                         "required",
                         "integer"
                     ],
-                    "parent_id": [
+                    "parentId": [
                         "nullable",
                         "string"
                     ],
@@ -15099,7 +15099,7 @@
                         "string",
                         "max:255"
                     ],
-                    "is_postable": [
+                    "isPostable": [
                         "required",
                         "boolean"
                     ],
@@ -15254,7 +15254,7 @@
                         "string",
                         "max:255"
                     ],
-                    "account_type": [
+                    "accountType": [
                         "required",
                         "string",
                         "max:255"
@@ -15263,7 +15263,7 @@
                         "required",
                         "integer"
                     ],
-                    "parent_id": [
+                    "parentId": [
                         "nullable",
                         "string"
                     ],
@@ -15272,7 +15272,7 @@
                         "string",
                         "max:255"
                     ],
-                    "is_postable": [
+                    "isPostable": [
                         "required",
                         "boolean"
                     ],
@@ -24848,6 +24848,263 @@
         },
         {
             "methods": [
+                "POST"
+            ],
+            "uri": "api\/v1\/contact-documents\/upload",
+            "resource_type": "contact_documents",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactDocumentUploadController",
+            "action": "store",
+            "middleware": [
+                "api"
+            ],
+            "schema": null,
+            "examples": {
+                "request": {
+                    "method": "POST",
+                    "url": "\/api\/v1\/contact_documents",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "contact_documents",
+                            "attributes": {
+                                "title": "Nueva p\u00e1gina",
+                                "slug": "nueva-pagina",
+                                "html": "<h1>Contenido HTML<\/h1>",
+                                "css": "h1 { color: blue; }",
+                                "json": {
+                                    "component": "header"
+                                },
+                                "status": "draft"
+                            },
+                            "relationships": {
+                                "user": {
+                                    "data": {
+                                        "type": "users",
+                                        "id": "1"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "response": {
+                    "status": 201,
+                    "body": {
+                        "data": {
+                            "type": "contact_documents",
+                            "id": "2",
+                            "attributes": {
+                                "title": "Nueva p\u00e1gina",
+                                "status": "draft",
+                                "createdAt": "2025-01-01T00:00:00.000000Z"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/contact-documents\/{document}\/download",
+            "resource_type": "contact_documents",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactDocumentUploadController",
+            "action": "download",
+            "middleware": [
+                "api"
+            ],
+            "schema": null,
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/contact_documents",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "contact_documents",
+                                "id": "1",
+                                "attributes": {
+                                    "title": "Ejemplo",
+                                    "status": "published",
+                                    "createdAt": "2025-01-01T00:00:00.000000Z"
+                                },
+                                "relationships": {
+                                    "user": {
+                                        "data": {
+                                            "type": "users",
+                                            "id": "1"
+                                        },
+                                        "links": {
+                                            "self": "\/api\/v1\/contact_documents\/1\/relationships\/user",
+                                            "related": "\/api\/v1\/contact_documents\/1\/user"
+                                        }
+                                    }
+                                },
+                                "links": {
+                                    "self": "\/api\/v1\/contact_documents\/1"
+                                }
+                            }
+                        ],
+                        "meta": {
+                            "pagination": {
+                                "currentPage": 1,
+                                "from": 1,
+                                "lastPage": 1,
+                                "perPage": 15,
+                                "to": 1,
+                                "total": 1
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "GET"
+            ],
+            "uri": "api\/v1\/contact-documents\/{document}\/view",
+            "resource_type": "contact_documents",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactDocumentUploadController",
+            "action": "view",
+            "middleware": [
+                "api"
+            ],
+            "schema": null,
+            "examples": {
+                "request": {
+                    "method": "GET",
+                    "url": "\/api\/v1\/contact_documents",
+                    "headers": {
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    }
+                },
+                "response": {
+                    "status": 200,
+                    "body": {
+                        "data": [
+                            {
+                                "type": "contact_documents",
+                                "id": "1",
+                                "attributes": {
+                                    "title": "Ejemplo",
+                                    "status": "published",
+                                    "createdAt": "2025-01-01T00:00:00.000000Z"
+                                },
+                                "relationships": {
+                                    "user": {
+                                        "data": {
+                                            "type": "users",
+                                            "id": "1"
+                                        },
+                                        "links": {
+                                            "self": "\/api\/v1\/contact_documents\/1\/relationships\/user",
+                                            "related": "\/api\/v1\/contact_documents\/1\/user"
+                                        }
+                                    }
+                                },
+                                "links": {
+                                    "self": "\/api\/v1\/contact_documents\/1"
+                                }
+                            }
+                        ],
+                        "meta": {
+                            "pagination": {
+                                "currentPage": 1,
+                                "from": 1,
+                                "lastPage": 1,
+                                "perPage": 15,
+                                "to": 1,
+                                "total": 1
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "PATCH"
+            ],
+            "uri": "api\/v1\/contact-documents\/{document}\/verify",
+            "resource_type": "contact_documents",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactDocumentUploadController",
+            "action": "verify",
+            "middleware": [
+                "api"
+            ],
+            "schema": null,
+            "examples": {
+                "request": {
+                    "method": "PATCH",
+                    "url": "\/api\/v1\/contact_documents\/1",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "contact_documents",
+                            "id": "1",
+                            "attributes": {
+                                "status": "published",
+                                "title": "T\u00edtulo actualizado"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
+                "PATCH"
+            ],
+            "uri": "api\/v1\/contact-documents\/{document}\/unverify",
+            "resource_type": "contact_documents",
+            "controller": "Modules\\Contacts\\Http\\Controllers\\Api\\V1\\ContactDocumentUploadController",
+            "action": "unverify",
+            "middleware": [
+                "api"
+            ],
+            "schema": null,
+            "examples": {
+                "request": {
+                    "method": "PATCH",
+                    "url": "\/api\/v1\/contact_documents\/1",
+                    "headers": {
+                        "Content-Type": "application\/vnd.api+json",
+                        "Accept": "application\/vnd.api+json",
+                        "Authorization": "Bearer {token}"
+                    },
+                    "body": {
+                        "data": {
+                            "type": "contact_documents",
+                            "id": "1",
+                            "attributes": {
+                                "status": "published",
+                                "title": "T\u00edtulo actualizado"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "methods": [
                 "GET"
             ],
             "uri": "api\/v1\/shopping-carts",
@@ -28761,16 +29018,17 @@
                 ],
                 "relationships": [],
                 "validations": {
-                    "bank_name": [
+                    "bankName": [
                         "required",
                         "string",
                         "max:255"
                     ],
-                    "account_number": [
+                    "accountNumber": [
                         "required",
                         "string",
                         "max:255",
-                        "bank_accounts"
+                        "bank_accounts",
+                        "account_number"
                     ],
                     "clabe": [
                         "nullable",
@@ -28782,14 +29040,14 @@
                         "string",
                         "max:255"
                     ],
-                    "account_type": [
+                    "accountType": [
                         "required",
                         "string",
                         "max:255"
                     ],
-                    "opening_balance": [
+                    "openingBalance": [
                         "required",
-                        "string"
+                        "numeric"
                     ],
                     "status": [
                         "required",
@@ -28953,16 +29211,17 @@
                 ],
                 "relationships": [],
                 "validations": {
-                    "bank_name": [
+                    "bankName": [
                         "required",
                         "string",
                         "max:255"
                     ],
-                    "account_number": [
+                    "accountNumber": [
                         "required",
                         "string",
                         "max:255",
-                        "bank_accounts"
+                        "bank_accounts",
+                        "account_number"
                     ],
                     "clabe": [
                         "nullable",
@@ -28974,14 +29233,14 @@
                         "string",
                         "max:255"
                     ],
-                    "account_type": [
+                    "accountType": [
                         "required",
                         "string",
                         "max:255"
                     ],
-                    "opening_balance": [
+                    "openingBalance": [
                         "required",
-                        "string"
+                        "numeric"
                     ],
                     "status": [
                         "required",
@@ -29142,16 +29401,17 @@
                 ],
                 "relationships": [],
                 "validations": {
-                    "bank_name": [
+                    "bankName": [
                         "required",
                         "string",
                         "max:255"
                     ],
-                    "account_number": [
+                    "accountNumber": [
                         "required",
                         "string",
                         "max:255",
-                        "bank_accounts"
+                        "bank_accounts",
+                        "account_number"
                     ],
                     "clabe": [
                         "nullable",
@@ -29163,14 +29423,14 @@
                         "string",
                         "max:255"
                     ],
-                    "account_type": [
+                    "accountType": [
                         "required",
                         "string",
                         "max:255"
                     ],
-                    "opening_balance": [
+                    "openingBalance": [
                         "required",
-                        "string"
+                        "numeric"
                     ],
                     "status": [
                         "required",
@@ -29334,16 +29594,17 @@
                 ],
                 "relationships": [],
                 "validations": {
-                    "bank_name": [
+                    "bankName": [
                         "required",
                         "string",
                         "max:255"
                     ],
-                    "account_number": [
+                    "accountNumber": [
                         "required",
                         "string",
                         "max:255",
-                        "bank_accounts"
+                        "bank_accounts",
+                        "account_number"
                     ],
                     "clabe": [
                         "nullable",
@@ -29355,14 +29616,14 @@
                         "string",
                         "max:255"
                     ],
-                    "account_type": [
+                    "accountType": [
                         "required",
                         "string",
                         "max:255"
                     ],
-                    "opening_balance": [
+                    "openingBalance": [
                         "required",
-                        "string"
+                        "numeric"
                     ],
                     "status": [
                         "required",
@@ -29496,16 +29757,17 @@
                 ],
                 "relationships": [],
                 "validations": {
-                    "bank_name": [
+                    "bankName": [
                         "required",
                         "string",
                         "max:255"
                     ],
-                    "account_number": [
+                    "accountNumber": [
                         "required",
                         "string",
                         "max:255",
-                        "bank_accounts"
+                        "bank_accounts",
+                        "account_number"
                     ],
                     "clabe": [
                         "nullable",
@@ -29517,14 +29779,14 @@
                         "string",
                         "max:255"
                     ],
-                    "account_type": [
+                    "accountType": [
                         "required",
                         "string",
                         "max:255"
                     ],
-                    "opening_balance": [
+                    "openingBalance": [
                         "required",
-                        "string"
+                        "numeric"
                     ],
                     "status": [
                         "required",

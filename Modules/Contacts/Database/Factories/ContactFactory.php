@@ -66,12 +66,16 @@ class ContactFactory extends Factory
      */
     public function customer(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'is_customer' => true,
-            'is_supplier' => false,
-            'credit_limit' => $this->faker->randomFloat(2, 10000, 200000),
-            'payment_terms' => $this->faker->randomElement([30, 45, 60]),
-        ]);
+        return $this->state(function (array $attributes) {
+            $creditLimit = $this->faker->randomFloat(2, 10000, 200000);
+            return [
+                'is_customer' => true,
+                'is_supplier' => false,
+                'credit_limit' => $creditLimit,
+                'current_credit' => $this->faker->randomFloat(2, 0, $creditLimit * 0.8),
+                'payment_terms' => $this->faker->randomElement([30, 45, 60]),
+            ];
+        });
     }
 
     /**
@@ -92,10 +96,14 @@ class ContactFactory extends Factory
      */
     public function mixed(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'is_customer' => true,
-            'is_supplier' => true,
-            'credit_limit' => $this->faker->randomFloat(2, 15000, 100000),
-        ]);
+        return $this->state(function (array $attributes) {
+            $creditLimit = $this->faker->randomFloat(2, 15000, 100000);
+            return [
+                'is_customer' => true,
+                'is_supplier' => true,
+                'credit_limit' => $creditLimit,
+                'current_credit' => $this->faker->randomFloat(2, 0, $creditLimit * 0.8),
+            ];
+        });
     }
 }

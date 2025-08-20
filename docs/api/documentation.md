@@ -1,6 +1,6 @@
 # API Documentation
 
-**Generado:** 2025-08-19T18:02:31.777974Z
+**Generado:** 2025-08-20T00:26:05.057525Z
 
 **Base URL:** `http://localhost/api/v1`
 
@@ -3625,11 +3625,11 @@
 
 - `code`: required, string, max:255, accounts
 - `name`: required, string, max:255
-- `account_type`: required, string, max:255
+- `accountType`: required, string, max:255
 - `level`: required, integer
-- `parent_id`: nullable, string
+- `parentId`: nullable, string
 - `currency`: nullable, string, max:255
-- `is_postable`: required, boolean
+- `isPostable`: required, boolean
 - `status`: required, string, max:255
 - `metadata`: nullable, array
 
@@ -3668,11 +3668,11 @@
 
 - `code`: required, string, max:255, accounts
 - `name`: required, string, max:255
-- `account_type`: required, string, max:255
+- `accountType`: required, string, max:255
 - `level`: required, integer
-- `parent_id`: nullable, string
+- `parentId`: nullable, string
 - `currency`: nullable, string, max:255
-- `is_postable`: required, boolean
+- `isPostable`: required, boolean
 - `status`: required, string, max:255
 - `metadata`: nullable, array
 
@@ -3735,11 +3735,11 @@
 
 - `code`: required, string, max:255, accounts
 - `name`: required, string, max:255
-- `account_type`: required, string, max:255
+- `accountType`: required, string, max:255
 - `level`: required, integer
-- `parent_id`: nullable, string
+- `parentId`: nullable, string
 - `currency`: nullable, string, max:255
-- `is_postable`: required, boolean
+- `isPostable`: required, boolean
 - `status`: required, string, max:255
 - `metadata`: nullable, array
 
@@ -3778,11 +3778,11 @@
 
 - `code`: required, string, max:255, accounts
 - `name`: required, string, max:255
-- `account_type`: required, string, max:255
+- `accountType`: required, string, max:255
 - `level`: required, integer
-- `parent_id`: nullable, string
+- `parentId`: nullable, string
 - `currency`: nullable, string, max:255
-- `is_postable`: required, boolean
+- `isPostable`: required, boolean
 - `status`: required, string, max:255
 - `metadata`: nullable, array
 
@@ -3832,11 +3832,11 @@
 
 - `code`: required, string, max:255, accounts
 - `name`: required, string, max:255
-- `account_type`: required, string, max:255
+- `accountType`: required, string, max:255
 - `level`: required, integer
-- `parent_id`: nullable, string
+- `parentId`: nullable, string
 - `currency`: nullable, string, max:255
-- `is_postable`: required, boolean
+- `isPostable`: required, boolean
 - `status`: required, string, max:255
 - `metadata`: nullable, array
 
@@ -5763,6 +5763,137 @@
 
 ---
 
+#### `POST` `api/v1/contact-documents/upload`
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "POST",
+    "url": "\/api\/v1\/contact_documents",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "contact_documents",
+            "attributes": {
+                "title": "Nueva p\u00e1gina",
+                "slug": "nueva-pagina",
+                "html": "<h1>Contenido HTML<\/h1>",
+                "css": "h1 { color: blue; }",
+                "json": {
+                    "component": "header"
+                },
+                "status": "draft"
+            },
+            "relationships": {
+                "user": {
+                    "data": {
+                        "type": "users",
+                        "id": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/contact-documents/{document}/download`
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/contact_documents",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `GET` `api/v1/contact-documents/{document}/view`
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "GET",
+    "url": "\/api\/v1\/contact_documents",
+    "headers": {
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/contact-documents/{document}/verify`
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/contact_documents\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "contact_documents",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
+#### `PATCH` `api/v1/contact-documents/{document}/unverify`
+
+**Ejemplo de Request:**
+
+```json
+{
+    "method": "PATCH",
+    "url": "\/api\/v1\/contact_documents\/1",
+    "headers": {
+        "Content-Type": "application\/vnd.api+json",
+        "Accept": "application\/vnd.api+json",
+        "Authorization": "Bearer {token}"
+    },
+    "body": {
+        "data": {
+            "type": "contact_documents",
+            "id": "1",
+            "attributes": {
+                "status": "published",
+                "title": "T\u00edtulo actualizado"
+            }
+        }
+    }
+}
+```
+
+---
+
 ### 📦 Contact addresses
 
 #### `GET` `api/v1/contact-addresses`
@@ -7197,12 +7328,12 @@
 
 **Validaciones:**
 
-- `bank_name`: required, string, max:255
-- `account_number`: required, string, max:255, bank_accounts
+- `bankName`: required, string, max:255
+- `accountNumber`: required, string, max:255, bank_accounts, account_number
 - `clabe`: nullable, string, max:255
 - `currency`: required, string, max:255
-- `account_type`: required, string, max:255
-- `opening_balance`: required, string
+- `accountType`: required, string, max:255
+- `openingBalance`: required, numeric
 - `status`: required, string, max:255
 - `metadata`: nullable, array
 
@@ -7238,12 +7369,12 @@
 
 **Validaciones:**
 
-- `bank_name`: required, string, max:255
-- `account_number`: required, string, max:255, bank_accounts
+- `bankName`: required, string, max:255
+- `accountNumber`: required, string, max:255, bank_accounts, account_number
 - `clabe`: nullable, string, max:255
 - `currency`: required, string, max:255
-- `account_type`: required, string, max:255
-- `opening_balance`: required, string
+- `accountType`: required, string, max:255
+- `openingBalance`: required, numeric
 - `status`: required, string, max:255
 - `metadata`: nullable, array
 
@@ -7303,12 +7434,12 @@
 
 **Validaciones:**
 
-- `bank_name`: required, string, max:255
-- `account_number`: required, string, max:255, bank_accounts
+- `bankName`: required, string, max:255
+- `accountNumber`: required, string, max:255, bank_accounts, account_number
 - `clabe`: nullable, string, max:255
 - `currency`: required, string, max:255
-- `account_type`: required, string, max:255
-- `opening_balance`: required, string
+- `accountType`: required, string, max:255
+- `openingBalance`: required, numeric
 - `status`: required, string, max:255
 - `metadata`: nullable, array
 
@@ -7344,12 +7475,12 @@
 
 **Validaciones:**
 
-- `bank_name`: required, string, max:255
-- `account_number`: required, string, max:255, bank_accounts
+- `bankName`: required, string, max:255
+- `accountNumber`: required, string, max:255, bank_accounts, account_number
 - `clabe`: nullable, string, max:255
 - `currency`: required, string, max:255
-- `account_type`: required, string, max:255
-- `opening_balance`: required, string
+- `accountType`: required, string, max:255
+- `openingBalance`: required, numeric
 - `status`: required, string, max:255
 - `metadata`: nullable, array
 
@@ -7396,12 +7527,12 @@
 
 **Validaciones:**
 
-- `bank_name`: required, string, max:255
-- `account_number`: required, string, max:255, bank_accounts
+- `bankName`: required, string, max:255
+- `accountNumber`: required, string, max:255, bank_accounts, account_number
 - `clabe`: nullable, string, max:255
 - `currency`: required, string, max:255
-- `account_type`: required, string, max:255
-- `opening_balance`: required, string
+- `accountType`: required, string, max:255
+- `openingBalance`: required, numeric
 - `status`: required, string, max:255
 - `metadata`: nullable, array
 

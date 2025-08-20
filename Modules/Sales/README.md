@@ -169,6 +169,6 @@ php artisan api:generate-docs
 ## 📊 Métricas
 
 - **Test Files**: 10
-- **Generated**: 2025-08-19 17:59:33
+- **Generated**: 2025-08-20 00:30:33
 - **Status**: ✅ Documentation up to date
 - **API Version**: JSON:API v1.0

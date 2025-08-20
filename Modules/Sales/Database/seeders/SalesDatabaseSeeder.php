@@ -18,8 +18,7 @@ class SalesDatabaseSeeder extends Seeder
         $this->call([
             SalesPermissionSeeder::class,
             SalesAssignPermissionsSeeder::class,
-            // CustomerSeeder::class, // Se puede agregar después
-            // SalesOrderSeeder::class, // Se puede agregar después
+            SalesOrderSeeder::class, // Ahora incluimos el seeder de datos
         ]);
     }
 }

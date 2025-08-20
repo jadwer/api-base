@@ -210,28 +210,21 @@ class SalesOrderItemShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        // Create contact first (required by foreign key constraint)
-        $contact = \Modules\Contacts\Models\Contact::factory()->create([
-            'name' => 'Nested Customer Contact'
-        ]);
-        
-        // Create customer with same ID as contact (manually insert to avoid auto-increment)
-        \Illuminate\Support\Facades\DB::table('contacts')->insert([
-            'id' => $contact->id,
+        // Create customer contact for the test
+        $customer = \Modules\Contacts\Models\Contact::factory()->create([
             'name' => 'Nested Customer',
             'email' => 'nested@customer.com',
             'classification' => 'minorista',
             'credit_limit' => 10000.00,
             'current_credit' => 0.00,
-            'is_active' => true,
-            'created_at' => now(),
-            'updated_at' => now()
+            'is_customer' => true,
+            'is_supplier' => false,
+            'status' => 'active',
+            'type' => 'company'
         ]);
         
-        $customer = Contact::find($contact->id);
-        
         $salesOrder = SalesOrder::factory()->create([
-            'contact_id' => $contact->id,
+            'contact_id' => $customer->id,
             'order_number' => 'SO-NESTED-001'
         ]);
         $product = Product::factory()->create(['name' => 'Nested Product']);
