@@ -1,6 +1,6 @@
 # 🔐 Permissions - Accounting
 
-**Generated:** 2025-08-20 11:02:18
+**Generated:** 2025-08-20 17:33:44
 
 ## Available Permissions
 
@@ -36,6 +36,11 @@
 | `accounting.exchange-rates.store` | Create new exchange-rates |
 | `accounting.exchange-rates.update` | Update existing exchange-rates |
 | `accounting.exchange-rates.destroy` | Delete exchange-rates |
+| `accounting.reports.balance-general` | Perform balance-general on reports |
+| `accounting.reports.income-statement` | Perform income-statement on reports |
+| `accounting.reports.trial-balance` | Perform trial-balance on reports |
+| `accounting.reports.general-journal` | Perform general-journal on reports |
+| `accounting.reports.general-ledger` | Perform general-ledger on reports |
 
 ## Default Role Assignments
 

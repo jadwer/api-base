@@ -28,15 +28,22 @@ class ShoppingCartSchema extends Schema
             Str::make('sessionId'),
             Str::make('userId'),
             Str::make('status')->sortable(),
-            DateTime::make('expiresAt'),
-            Number::make('totalAmount'),
-            Str::make('currency'),
+            DateTime::make('expiresAt')->sortable(),
+            Number::make('totalAmount')->sortable(),
+            Str::make('currency')->sortable(),
             Str::make('couponCode'),
-            Number::make('discountAmount'),
-            Number::make('taxAmount'),
-            Number::make('shippingAmount'),
+            Number::make('discountAmount')->sortable(),
+            Number::make('taxAmount')->sortable(),
+            Number::make('shippingAmount')->sortable(),
             Str::make('notes'),
             ArrayHash::make('metadata'),
+
+            // ✅ CAMPOS CALCULADOS (NUEVOS - similar a Finance)
+            Number::make('itemsCount')->readOnly(),
+            Number::make('subtotalAmount')->readOnly(),
+            Number::make('finalTotal')->readOnly(),
+            Boolean::make('isExpired')->readOnly(),
+            Boolean::make('canApplyCoupon')->readOnly(),
 
             // Relationships
             HasMany::make('cartItems'),
@@ -51,6 +58,10 @@ class ShoppingCartSchema extends Schema
         return [
             WhereIdIn::make($this),
             Where::make('status'),
+            Where::make('session_id'),
+            Where::make('user_id'),
+            Where::make('currency'),
+            Where::make('coupon_code'),
         ];
     }
 

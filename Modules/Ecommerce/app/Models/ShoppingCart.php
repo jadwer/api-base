@@ -19,19 +19,85 @@ class ShoppingCart extends Model
 
     protected $casts = [
         'expires_at' => 'datetime',
-        'total_amount' => 'decimal:2',
-        'discount_amount' => 'decimal:2',
-        'tax_amount' => 'decimal:2',
-        'shipping_amount' => 'decimal:2',
+        'total_amount' => 'float',
+        'discount_amount' => 'float',
+        'tax_amount' => 'float',
+        'shipping_amount' => 'float',
         'metadata' => 'array'
     ];
+
+    protected $appends = [
+        'itemsCount',
+        'subtotalAmount', 
+        'finalTotal',
+        'isExpired',
+        'canApplyCoupon'
+    ];
+
+    // Campos Calculados (similar a Finance module)
+    public function getItemsCountAttribute(): int
+    {
+        return $this->cartItems()->count();
+    }
+
+    public function getSubtotalAmountAttribute(): float
+    {
+        return $this->cartItems()->sum('total') ?? 0.00;
+    }
+
+    public function getFinalTotalAttribute(): float
+    {
+        $subtotal = $this->getSubtotalAmountAttribute();
+        $discount = $this->discount_amount ?? 0.00;
+        $tax = $this->tax_amount ?? 0.00;
+        $shipping = $this->shipping_amount ?? 0.00;
+        
+        return $subtotal - $discount + $tax + $shipping;
+    }
+
+    public function getIsExpiredAttribute(): bool
+    {
+        return $this->expires_at && $this->expires_at->isPast();
+    }
+
+    public function getCanApplyCouponAttribute(): bool
+    {
+        return !$this->coupon_code && $this->status === 'active' && !$this->getIsExpiredAttribute();
+    }
+
+    // Business Logic Methods
+    public function isEmpty(): bool
+    {
+        return $this->getItemsCountAttribute() === 0;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === 'active' && !$this->getIsExpiredAttribute();
+    }
+
+    public function canAddItems(): bool
+    {
+        return $this->isActive() && !$this->isEmpty();
+    }
 
     // Scopes
     public function scopeActive($query)
     {
-        return $query->where('is_active', true);
+        return $query->where('status', 'active');
     }
 
+    public function scopeExpired($query)
+    {
+        return $query->where('expires_at', '<', now());
+    }
+
+    public function scopeNotExpired($query)
+    {
+        return $query->where('expires_at', '>=', now())->orWhereNull('expires_at');
+    }
+
+    // Relationships
     public function cartItems()
     {
         return $this->hasMany(CartItem::class);

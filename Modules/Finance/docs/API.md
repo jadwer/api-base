@@ -2,7 +2,7 @@
 
 Auto-generated API documentation.
 
-**Generated:** 2025-08-20 11:02:24
+**Generated:** 2025-08-20 17:33:38
 
 ## 📄 APInvoiceLine
 
@@ -115,6 +115,7 @@ GET /api/v1/apinvoice-payments?page[number]=1&page[size]=20
 |-------|------|-------------|
 | `id` | id | Auto-detected field |
 | `contactId` | number | Auto-detected field |
+| `contact` | relationship | Auto-detected field |
 | `invoiceNumber` | string | Auto-detected field |
 | `invoiceDate` | datetime | Auto-detected field |
 | `dueDate` | datetime | Auto-detected field |
@@ -124,7 +125,11 @@ GET /api/v1/apinvoice-payments?page[number]=1&page[size]=20
 | `taxTotal` | number | Auto-detected field |
 | `total` | number | Auto-detected field |
 | `status` | string | Auto-detected field |
+| `paidAmount` | number | Auto-detected field |
+| `remainingBalance` | number | Auto-detected field |
 | `metadata` | object | Auto-detected field |
+| `aPInvoiceLines` | relationship[] | Auto-detected field |
+| `aPInvoicePayments` | relationship[] | Auto-detected field |
 | `createdAt` | datetime | Auto-detected field |
 | `updatedAt` | datetime | Auto-detected field |
 
@@ -164,13 +169,18 @@ GET /api/v1/apinvoices?page[number]=1&page[size]=20
 | Field | Type | Description |
 |-------|------|-------------|
 | `id` | id | Auto-detected field |
-| `contactId` | number | Auto-detected field |
-| `paymentDate` | datetime | Auto-detected field |
-| `paymentMethod` | string | Auto-detected field |
+| `contact_id` | number | Auto-detected field |
+| `ap_invoice_id` | number | Auto-detected field |
+| `bank_account_id` | number | Auto-detected field |
+| `contact` | relationship | Auto-detected field |
+| `apInvoice` | relationship | Auto-detected field |
+| `bankAccount` | relationship | Auto-detected field |
+| `payment_date` | datetime | Auto-detected field |
+| `payment_method` | string | Auto-detected field |
 | `currency` | string | Auto-detected field |
 | `amount` | number | Auto-detected field |
-| `bankAccountId` | number | Auto-detected field |
 | `status` | string | Auto-detected field |
+| `aPInvoicePayments` | relationship[] | Auto-detected field |
 | `metadata` | object | Auto-detected field |
 | `createdAt` | datetime | Auto-detected field |
 | `updatedAt` | datetime | Auto-detected field |
@@ -303,6 +313,7 @@ GET /api/v1/arinvoice-receipts?page[number]=1&page[size]=20
 |-------|------|-------------|
 | `id` | id | Auto-detected field |
 | `contactId` | number | Auto-detected field |
+| `contact` | relationship | Auto-detected field |
 | `invoiceNumber` | string | Auto-detected field |
 | `invoiceDate` | datetime | Auto-detected field |
 | `dueDate` | datetime | Auto-detected field |
@@ -312,7 +323,11 @@ GET /api/v1/arinvoice-receipts?page[number]=1&page[size]=20
 | `taxTotal` | number | Auto-detected field |
 | `total` | number | Auto-detected field |
 | `status` | string | Auto-detected field |
+| `paidAmount` | number | Auto-detected field |
+| `remainingBalance` | number | Auto-detected field |
 | `metadata` | object | Auto-detected field |
+| `aRInvoiceLines` | relationship[] | Auto-detected field |
+| `aRInvoiceReceipts` | relationship[] | Auto-detected field |
 | `createdAt` | datetime | Auto-detected field |
 | `updatedAt` | datetime | Auto-detected field |
 
@@ -352,13 +367,18 @@ GET /api/v1/arinvoices?page[number]=1&page[size]=20
 | Field | Type | Description |
 |-------|------|-------------|
 | `id` | id | Auto-detected field |
-| `contactId` | number | Auto-detected field |
-| `receiptDate` | datetime | Auto-detected field |
-| `paymentMethod` | string | Auto-detected field |
+| `contact_id` | number | Auto-detected field |
+| `ar_invoice_id` | number | Auto-detected field |
+| `bank_account_id` | number | Auto-detected field |
+| `contact` | relationship | Auto-detected field |
+| `arInvoice` | relationship | Auto-detected field |
+| `bankAccount` | relationship | Auto-detected field |
+| `receipt_date` | datetime | Auto-detected field |
+| `payment_method` | string | Auto-detected field |
 | `currency` | string | Auto-detected field |
 | `amount` | number | Auto-detected field |
-| `bankAccountId` | number | Auto-detected field |
 | `status` | string | Auto-detected field |
+| `aRInvoiceReceipts` | relationship[] | Auto-detected field |
 | `metadata` | object | Auto-detected field |
 | `createdAt` | datetime | Auto-detected field |
 | `updatedAt` | datetime | Auto-detected field |

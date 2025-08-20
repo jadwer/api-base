@@ -28,6 +28,7 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapApiRoutes();
         $this->mapWebRoutes();
         $this->mapJsonApiRoutes();
+        $this->mapReportsRoutes();
     }
 
     /**
@@ -57,6 +58,16 @@ class RouteServiceProvider extends ServiceProvider
     {
         if (file_exists(module_path($this->name, '/routes/jsonapi.php'))) {
             Route::middleware('api')->prefix('api')->group(module_path($this->name, '/routes/jsonapi.php'));
+        }
+    }
+
+    /**
+     * Define the "Reports" routes for the application.
+     */
+    protected function mapReportsRoutes(): void
+    {
+        if (file_exists(module_path($this->name, '/routes/reports.php'))) {
+            require module_path($this->name, '/routes/reports.php');
         }
     }
 }

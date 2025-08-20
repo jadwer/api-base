@@ -17,7 +17,7 @@ class ARReceiptAuthorizer implements Authorizer
         ]);
         
         $user = $request->user();
-        return $user?->can('finance.a-r-receipts.index') ?? false;
+        return $user?->can('finance.ar-receipts.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
@@ -28,25 +28,25 @@ class ARReceiptAuthorizer implements Authorizer
         ]);
         
         $user = $request->user();
-        return $user?->can('finance.a-r-receipts.store') ?? false;
+        return $user?->can('finance.ar-receipts.store') ?? false;
     }
     
     public function show(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('finance.a-r-receipts.show') ?? false;
+        return $user?->can('finance.ar-receipts.show') ?? false;
     }
     
     public function update(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('finance.a-r-receipts.update') ?? false;
+        return $user?->can('finance.ar-receipts.update') ?? false;
     }
     
     public function destroy(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('finance.a-r-receipts.destroy') ?? false;
+        return $user?->can('finance.ar-receipts.destroy') ?? false;
     }
     
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response

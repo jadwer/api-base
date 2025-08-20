@@ -1,6 +1,6 @@
 # 🧪 Test Report - Accounting
 
-**Generated:** 2025-08-20 11:02:18
+**Generated:** 2025-08-20 17:33:44
 
 ## AccountDestroyTest
 

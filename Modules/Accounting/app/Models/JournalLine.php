@@ -34,6 +34,11 @@ class JournalLine extends Model
         return $this->belongsTo(Account::class);
     }
 
+    public function journalEntry()
+    {
+        return $this->belongsTo(JournalEntry::class);
+    }
+
     // Factory
     protected static function newFactory()
     {

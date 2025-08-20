@@ -19,7 +19,8 @@
       "Bash(for:*)",
       "Bash(do)",
       "Bash(done)",
-      "Bash(timeout 30 php artisan test Modules/Sales/tests/Feature/)"
+      "Bash(timeout 30 php artisan test Modules/Sales/tests/Feature/)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

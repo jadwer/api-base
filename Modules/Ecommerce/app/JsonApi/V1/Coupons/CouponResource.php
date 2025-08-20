@@ -24,6 +24,12 @@ class CouponResource extends JsonApiResource
             'customerIds' => $this->customer_ids,
             'productIds' => $this->product_ids,
             'categoryIds' => $this->category_ids,
+            
+            // ✅ CAMPOS CALCULADOS (NUEVOS - similar a Finance)
+            'isValid' => $this->isValid,
+            'remainingUses' => $this->remainingUses,
+            'isExpired' => $this->isExpired,
+            
             "createdAt" => $this->created_at,
             "updatedAt" => $this->updated_at,
         ];

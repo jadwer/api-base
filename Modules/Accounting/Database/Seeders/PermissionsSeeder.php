@@ -221,6 +221,28 @@ class PermissionsSeeder extends Seeder
             'name' => 'exchange-rates.update',
             'guard_name' => 'api',
         ]);
+
+        // Reports permissions
+        Permission::firstOrCreate([
+            'name' => 'accounting.reports.balance-general',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'accounting.reports.income-statement',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'accounting.reports.trial-balance',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'accounting.reports.general-journal',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'accounting.reports.general-ledger',
+            'guard_name' => 'api',
+        ]);
         
         // Assign permissions to roles
 
@@ -257,6 +279,11 @@ class PermissionsSeeder extends Seeder
             $rolegod->givePermissionTo('accounting.exchange-rates.store');
             $rolegod->givePermissionTo('accounting.exchange-rates.update');
             $rolegod->givePermissionTo('accounting.exchange-rates.destroy');
+            $rolegod->givePermissionTo('accounting.reports.balance-general');
+            $rolegod->givePermissionTo('accounting.reports.income-statement');
+            $rolegod->givePermissionTo('accounting.reports.trial-balance');
+            $rolegod->givePermissionTo('accounting.reports.general-journal');
+            $rolegod->givePermissionTo('accounting.reports.general-ledger');
         }
 
         // admin role permissions
@@ -292,6 +319,11 @@ class PermissionsSeeder extends Seeder
             $roleadmin->givePermissionTo('accounting.exchange-rates.store');
             $roleadmin->givePermissionTo('accounting.exchange-rates.update');
             $roleadmin->givePermissionTo('accounting.exchange-rates.destroy');
+            $roleadmin->givePermissionTo('accounting.reports.balance-general');
+            $roleadmin->givePermissionTo('accounting.reports.income-statement');
+            $roleadmin->givePermissionTo('accounting.reports.trial-balance');
+            $roleadmin->givePermissionTo('accounting.reports.general-journal');
+            $roleadmin->givePermissionTo('accounting.reports.general-ledger');
         }
 
         // accountant role permissions
@@ -330,6 +362,11 @@ class PermissionsSeeder extends Seeder
             $roletech->givePermissionTo('accounting.journal-entries.show');
             $roletech->givePermissionTo('accounting.journal-lines.index');
             $roletech->givePermissionTo('accounting.journal-lines.show');
+            $roletech->givePermissionTo('accounting.reports.balance-general');
+            $roletech->givePermissionTo('accounting.reports.income-statement');
+            $roletech->givePermissionTo('accounting.reports.trial-balance');
+            $roletech->givePermissionTo('accounting.reports.general-journal');
+            $roletech->givePermissionTo('accounting.reports.general-ledger');
         }
 
         // customer role permissions

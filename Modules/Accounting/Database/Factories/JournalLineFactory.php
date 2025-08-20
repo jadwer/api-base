@@ -13,7 +13,7 @@ class JournalLineFactory extends Factory
     {
         return [
             'journal_entry_id' => \Modules\Accounting\Models\JournalEntry::factory(),
-            'account_id' => \Modules\Accounting\Models\Account::factory(),
+            'account_id' => \Modules\Accounting\Models\Account::inRandomOrder()->first()?->id ?? 1,
             'debit' => $this->faker->randomFloat(2, 1, 100),
             'credit' => $this->faker->randomFloat(2, 1, 100),
             'base_amount' => $this->faker->randomFloat(2, 1, 1000),

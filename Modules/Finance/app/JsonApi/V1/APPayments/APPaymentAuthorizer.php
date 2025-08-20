@@ -17,7 +17,7 @@ class APPaymentAuthorizer implements Authorizer
         ]);
         
         $user = $request->user();
-        return $user?->can('finance.a-p-payments.index') ?? false;
+        return $user?->can('finance.ap-payments.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
@@ -28,25 +28,25 @@ class APPaymentAuthorizer implements Authorizer
         ]);
         
         $user = $request->user();
-        return $user?->can('finance.a-p-payments.store') ?? false;
+        return $user?->can('finance.ap-payments.store') ?? false;
     }
     
     public function show(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('finance.a-p-payments.show') ?? false;
+        return $user?->can('finance.ap-payments.show') ?? false;
     }
     
     public function update(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('finance.a-p-payments.update') ?? false;
+        return $user?->can('finance.ap-payments.update') ?? false;
     }
     
     public function destroy(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('finance.a-p-payments.destroy') ?? false;
+        return $user?->can('finance.ap-payments.destroy') ?? false;
     }
     
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response

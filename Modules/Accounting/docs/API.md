@@ -2,7 +2,7 @@
 
 Auto-generated API documentation.
 
-**Generated:** 2025-08-20 11:02:18
+**Generated:** 2025-08-20 17:33:44
 
 ## 📄 Account
 
@@ -176,6 +176,9 @@ GET /api/v1/fiscal-periods?page[number]=1&page[size]=20
 | `sourceType` | string | Auto-detected field |
 | `sourceId` | number | Auto-detected field |
 | `metadata` | object | Auto-detected field |
+| `journalLines` | relationship[] | Auto-detected field |
+| `journal` | relationship | Auto-detected field |
+| `fiscalPeriod` | relationship | Auto-detected field |
 | `createdAt` | datetime | Auto-detected field |
 | `updatedAt` | datetime | Auto-detected field |
 
@@ -223,6 +226,8 @@ GET /api/v1/journal-entries?page[number]=1&page[size]=20
 | `costCenterId` | number | Auto-detected field |
 | `partnerId` | number | Auto-detected field |
 | `memo` | string | Auto-detected field |
+| `account` | relationship | Auto-detected field |
+| `journalEntry` | relationship | Auto-detected field |
 | `metadata` | object | Auto-detected field |
 | `createdAt` | datetime | Auto-detected field |
 | `updatedAt` | datetime | Auto-detected field |

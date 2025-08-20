@@ -1,6 +1,6 @@
 # 🔐 Permissions - Finance
 
-**Generated:** 2025-08-20 11:02:24
+**Generated:** 2025-08-20 17:33:38
 
 ## Available Permissions
 

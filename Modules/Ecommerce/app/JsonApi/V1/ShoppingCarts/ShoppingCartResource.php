@@ -20,6 +20,14 @@ class ShoppingCartResource extends JsonApiResource
             'taxAmount' => $this->tax_amount,
             'shippingAmount' => $this->shipping_amount,
             'notes' => $this->notes,
+            
+            // ✅ CAMPOS CALCULADOS (NUEVOS - similar a Finance)
+            'itemsCount' => $this->itemsCount,
+            'subtotalAmount' => $this->subtotalAmount,
+            'finalTotal' => $this->finalTotal,
+            'isExpired' => $this->isExpired,
+            'canApplyCoupon' => $this->canApplyCoupon,
+            
             "createdAt" => $this->created_at,
             "updatedAt" => $this->updated_at,
         ];
