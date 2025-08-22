@@ -2,6 +2,12 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## ⚠️ CRITICAL DEVELOPMENT RULE - NO AUTOMATIC COMMITS
+
+**NEVER MAKE COMMITS AUTOMATICALLY** ⚠️
+
+Claude Code MUST NEVER execute git commit commands automatically. Always provide only the commit message text for the user to execute manually. This prevents loss of work and maintains user control over the git repository.
+
 ## Project Overview
 
 This is a **modular Laravel 12 API** built with **JSON:API 5.x** specification, designed as a scalable base for enterprise applications like ERPs and CRMs. The project uses `nwidart/laravel-modules` for modular architecture with complete module isolation.
