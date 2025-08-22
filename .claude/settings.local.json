@@ -20,7 +20,8 @@
       "Bash(do)",
       "Bash(done)",
       "Bash(timeout 30 php artisan test Modules/Sales/tests/Feature/)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
