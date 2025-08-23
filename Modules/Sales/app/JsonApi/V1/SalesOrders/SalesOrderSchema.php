@@ -60,6 +60,11 @@ class SalesOrderSchema extends Schema
             
             Str::make('notes'),
             
+            // Finance Integration Fields
+            Number::make('ar_invoice_id'),
+            Str::make('invoicing_status')->sortable(),
+            Str::make('invoicing_notes'),
+            
             // Metadata JSON
             ArrayHash::make('metadata'),
             
@@ -83,6 +88,8 @@ class SalesOrderSchema extends Schema
             Where::make('status'),
             Where::make('contact', 'contact_id'),
             Where::make('order_date'),
+            Where::make('invoicing_status'),
+            Where::make('ar_invoice_id'),
         ];
     }
 

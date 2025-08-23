@@ -48,6 +48,11 @@ class SalesOrderItemSchema extends Schema
             Number::make('discount')->sortable(),
             Number::make('total')->sortable(),
             
+            // Finance Integration Fields
+            Number::make('arInvoiceLineId', 'ar_invoice_line_id'),
+            Number::make('invoicedQuantity', 'invoiced_quantity')->sortable(),
+            Number::make('invoicedAmount', 'invoiced_amount')->sortable(),
+            
             // JSON fields
             ArrayHash::make('metadata'),
             

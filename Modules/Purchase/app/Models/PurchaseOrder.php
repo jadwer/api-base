@@ -36,6 +36,8 @@ class PurchaseOrder extends Model
             'contact_id' => 'integer',
             'order_date' => 'date',
             'total_amount' => 'float',
+            'ap_invoice_id' => 'integer',
+            'invoicing_status' => 'string',
         ];
     }
 

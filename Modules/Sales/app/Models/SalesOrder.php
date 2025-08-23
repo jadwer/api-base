@@ -20,6 +20,9 @@ use Modules\Contacts\Models\Contact;
  * @property float|null $discount_total
  * @property string|null $notes
  * @property array|null $metadata
+ * @property int|null $ar_invoice_id
+ * @property string $invoicing_status
+ * @property string|null $invoicing_notes
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -38,6 +41,8 @@ class SalesOrder extends Model
         'total_amount' => 'float',
         'discount_total' => 'float',
         'metadata' => 'array',
+        'ar_invoice_id' => 'integer',
+        'invoicing_status' => 'string',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
