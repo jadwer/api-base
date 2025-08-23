@@ -52,6 +52,11 @@ class PurchaseOrderItemSchema extends Schema
             // JSON fields
             ArrayHash::make('metadata'),
             
+            // Finance integration fields
+            Number::make('apInvoiceLineId', 'ap_invoice_line_id')->sortable(),
+            Number::make('invoicedQuantity', 'invoiced_quantity')->sortable(),
+            Number::make('invoicedAmount', 'invoiced_amount')->sortable(),
+            
             // Timestamps
             DateTime::make('createdAt', 'created_at')->readOnly()->sortable(),
             DateTime::make('updatedAt', 'updated_at')->readOnly()->sortable(),

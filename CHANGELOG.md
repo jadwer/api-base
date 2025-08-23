@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.3.0] - 2025-08-23
+
+### Added - Cross-Module Finance Integration (PRE-PHASE)
+- **Sales Module Integration Fields**:
+  - `ar_invoice_id` and `ar_invoice_status` in SalesOrder model
+  - `gl_account_id`, `tax_account_id`, and `gl_posted` in SalesOrderItem model  
+  - JSON:API schemas updated with new finance integration fields
+- **Purchase Module Integration Fields**:
+  - `ap_invoice_id` and `ap_invoice_status` in PurchaseOrder model
+- **Inventory Module Integration Fields**:
+  - Migration prepared for GL posting fields in inventory movements
+- **Database Migrations**:
+  - `2025_08_22_230213` - Finance integration fields for Sales tables
+  - `2025_08_22_230243` - Finance integration fields for Purchase tables
+  - `2025_08_22_230257` - GL integration fields for Inventory movements
+
+### Changed
+- **Module Architecture**: Prepared cross-module integration for automatic AR/AP invoice generation
+- **Database Schema**: Added foreign key placeholders for future Finance/Accounting relationships
+
+### Technical Preparation
+- Foundation laid for Order-to-Cash workflow (Sales → AR Invoice → GL Posting)
+- Foundation laid for Procure-to-Pay workflow (Purchase → AP Invoice → GL Posting)
+- Foundation laid for Inventory Costing workflow (Movements → GL Adjustments)
+
 ## [1.2.0] - 2025-08-20
 
 ### Added - Finance & Accounting Phase 1

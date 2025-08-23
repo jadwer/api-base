@@ -2,11 +2,13 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## ⚠️ CRITICAL DEVELOPMENT RULE - NO AUTOMATIC COMMITS
+## ⚠️ CRITICAL DEVELOPMENT RULES
 
-**NEVER MAKE COMMITS AUTOMATICALLY** ⚠️
-
+### **NEVER MAKE COMMITS AUTOMATICALLY** ⚠️
 Claude Code MUST NEVER execute git commit commands automatically. Always provide only the commit message text for the user to execute manually. This prevents loss of work and maintains user control over the git repository.
+
+### **MODULE REGENERATION POLICY** ⚠️
+**Modules should NOT be regenerated unless explicitly specified.** Always ask the user whether to regenerate or modify existing modules when considering structural changes. Prefer modification over regeneration for working modules.
 
 ## Project Overview
 

@@ -64,6 +64,13 @@ class InventoryMovementSchema extends Schema
             ArrayHash::make('batchInfo', 'batch_info'),
             ArrayHash::make('metadata'),
             
+            // GL Integration fields
+            Number::make('glJournalEntryId', 'gl_journal_entry_id')->sortable(),
+            Str::make('glPostingStatus', 'gl_posting_status')->sortable(),
+            Number::make('costPerUnit', 'cost_per_unit')->sortable(),
+            Number::make('totalCost', 'total_cost')->sortable(),
+            Str::make('glPostingNotes', 'gl_posting_notes'),
+            
             // Relaciones BelongsTo
             BelongsTo::make('product')
                      ->type('products'),

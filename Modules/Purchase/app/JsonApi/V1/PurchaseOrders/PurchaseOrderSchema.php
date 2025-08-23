@@ -38,6 +38,12 @@ class PurchaseOrderSchema extends Schema
             Number::make('totalAmount', 'total_amount')
                 ->sortable(),
             Str::make('notes'),
+            
+            // Finance integration fields
+            Number::make('apInvoiceId', 'ap_invoice_id')->sortable(),
+            Str::make('invoicingStatus', 'invoicing_status')->sortable(),
+            Str::make('invoicingNotes', 'invoicing_notes'),
+            
             DateTime::make('createdAt')->sortable()->readOnly(),
             DateTime::make('updatedAt')->sortable()->readOnly(),
             

@@ -38,6 +38,9 @@ class PurchaseOrderItem extends Model
             'subtotal' => 'float',
             'total' => 'float',
             'metadata' => 'array',
+            'ap_invoice_line_id' => 'integer',
+            'invoiced_quantity' => 'float',
+            'invoiced_amount' => 'float',
         ];
     }
 

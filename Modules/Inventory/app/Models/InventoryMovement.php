@@ -76,6 +76,10 @@ class InventoryMovement extends Model
         'new_stock' => 'float',
         'batch_info' => 'array',
         'metadata' => 'array',
+        'gl_journal_entry_id' => 'integer',
+        'gl_posting_status' => 'string',
+        'cost_per_unit' => 'float',
+        'total_cost' => 'float',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
