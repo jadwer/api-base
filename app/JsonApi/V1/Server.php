@@ -31,23 +31,6 @@ use Modules\Contacts\JsonApi\V1\Contacts\ContactSchema;
 use Modules\Contacts\JsonApi\V1\ContactDocuments\ContactDocumentSchema;
 use Modules\Contacts\JsonApi\V1\ContactAddresses\ContactAddressSchema;
 use Modules\Contacts\JsonApi\V1\ContactPeople\ContactPersonSchema;
-use Modules\Accounting\JsonApi\V1\Accounts\AccountSchema;
-use Modules\Accounting\JsonApi\V1\FiscalPeriods\FiscalPeriodSchema;
-use Modules\Accounting\JsonApi\V1\Journals\JournalSchema;
-use Modules\Accounting\JsonApi\V1\JournalEntries\JournalEntrySchema;
-use Modules\Accounting\JsonApi\V1\JournalLines\JournalLineSchema;
-use Modules\Accounting\JsonApi\V1\ExchangeRates\ExchangeRateSchema;
-use Modules\Finance\JsonApi\V1\BankAccounts\BankAccountSchema;
-use Modules\Finance\JsonApi\V1\BankStatements\BankStatementSchema;
-use Modules\Finance\JsonApi\V1\BankStatementLines\BankStatementLineSchema;
-use Modules\Finance\JsonApi\V1\APInvoices\APInvoiceSchema;
-use Modules\Finance\JsonApi\V1\APInvoiceLines\APInvoiceLineSchema;
-use Modules\Finance\JsonApi\V1\APPayments\APPaymentSchema;
-use Modules\Finance\JsonApi\V1\APInvoicePayments\APInvoicePaymentSchema;
-use Modules\Finance\JsonApi\V1\ARInvoices\ARInvoiceSchema;
-use Modules\Finance\JsonApi\V1\ARInvoiceLines\ARInvoiceLineSchema;
-use Modules\Finance\JsonApi\V1\ARReceipts\ARReceiptSchema;
-use Modules\Finance\JsonApi\V1\ARInvoiceReceipts\ARInvoiceReceiptSchema;
 
 class Server extends BaseServer
 {
@@ -116,30 +99,6 @@ class Server extends BaseServer
             ContactAddressSchema::class,
             ContactPersonSchema::class,
 
-
-
-            // Accounting Module
-            AccountSchema::class,
-            FiscalPeriodSchema::class,
-            JournalSchema::class,
-            JournalEntrySchema::class,
-            JournalLineSchema::class,
-            ExchangeRateSchema::class,
-
-
-            // Finance Module
-            BankAccountSchema::class,
-            BankStatementSchema::class,
-            BankStatementLineSchema::class,
-            APInvoiceSchema::class,
-            APInvoiceLineSchema::class,
-            APPaymentSchema::class,
-            APInvoicePaymentSchema::class,
-            ARInvoiceSchema::class,
-            ARInvoiceLineSchema::class,
-            ARReceiptSchema::class,
-            ARInvoiceReceiptSchema::class,
-
         ];
         
         return $schemas;
@@ -174,27 +133,6 @@ class Server extends BaseServer
             'contact-addresses' => \Modules\Contacts\JsonApi\V1\ContactAddresses\ContactAddressAuthorizer::class,
             'contact-people' => \Modules\Contacts\JsonApi\V1\ContactPeople\ContactPersonAuthorizer::class,
 
-            
-            // Accounting Module
-            'accounts' => \Modules\Accounting\JsonApi\V1\Accounts\AccountAuthorizer::class,
-            'fiscal-periods' => \Modules\Accounting\JsonApi\V1\FiscalPeriods\FiscalPeriodAuthorizer::class,
-            'journals' => \Modules\Accounting\JsonApi\V1\Journals\JournalAuthorizer::class,
-            'journal-entries' => \Modules\Accounting\JsonApi\V1\JournalEntries\JournalEntryAuthorizer::class,
-            'journal-lines' => \Modules\Accounting\JsonApi\V1\JournalLines\JournalLineAuthorizer::class,
-            'exchange-rates' => \Modules\Accounting\JsonApi\V1\ExchangeRates\ExchangeRateAuthorizer::class,
-            
-            // Finance Module
-            'bank-accounts' => \Modules\Finance\JsonApi\V1\BankAccounts\BankAccountAuthorizer::class,
-            'bank-statements' => \Modules\Finance\JsonApi\V1\BankStatements\BankStatementAuthorizer::class,
-            'bank-statement-lines' => \Modules\Finance\JsonApi\V1\BankStatementLines\BankStatementLineAuthorizer::class,
-            'a-p-invoices' => \Modules\Finance\JsonApi\V1\APInvoices\APInvoiceAuthorizer::class,
-            'a-p-invoice-lines' => \Modules\Finance\JsonApi\V1\APInvoiceLines\APInvoiceLineAuthorizer::class,
-            'a-p-payments' => \Modules\Finance\JsonApi\V1\APPayments\APPaymentAuthorizer::class,
-            'a-p-invoice-payments' => \Modules\Finance\JsonApi\V1\APInvoicePayments\APInvoicePaymentAuthorizer::class,
-            'a-r-invoices' => \Modules\Finance\JsonApi\V1\ARInvoices\ARInvoiceAuthorizer::class,
-            'a-r-invoice-lines' => \Modules\Finance\JsonApi\V1\ARInvoiceLines\ARInvoiceLineAuthorizer::class,
-            'a-r-receipts' => \Modules\Finance\JsonApi\V1\ARReceipts\ARReceiptAuthorizer::class,
-            'a-r-invoice-receipts' => \Modules\Finance\JsonApi\V1\ARInvoiceReceipts\ARInvoiceReceiptAuthorizer::class,
         ];
         
         return $authorizers;
