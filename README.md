@@ -4,23 +4,19 @@ Este es un proyecto base en Laravel 12 con una arquitectura totalmente desacopla
 
 ## 🎯 Estado del Proyecto
 
-**✅ 7 Módulos Completados:**
+**✅ 5 Módulos en Producción:**
 - **Product Module**: 4 entidades, 71+ tests ✅
-- **Inventory Module**: 5 entidades, 88+ tests ✅ (incluye InventoryMovement)
-- **Purchase Module**: 3 entidades, 141+ tests ✅
-- **Sales Module**: 3 entidades, 148+ tests ✅
+- **Inventory Module**: 5 entidades, 88+ tests ✅ (incluye InventoryMovement con GL integration fields)
+- **Purchase Module**: 3 entidades, 141+ tests ✅ (con AP invoice integration fields)
+- **Sales Module**: 3 entidades, 148+ tests ✅ (con AR invoice integration fields)
 - **Ecommerce Module**: 3 entidades, 105+ tests ✅
-- **🆕 Finance Module**: 8 entidades (AP/AR Invoices, Payments, Bank Management) ✅
-- **🆕 Accounting Module**: 6 entidades (Chart of Accounts, Journal Entries) ✅
 
-**Total: 32 entidades con Finance & Accounting Phase 1 completado**
+**Total: 18 entidades operativas**
 
-### 🏦 Finance & Accounting Phase 1
-- **AP Invoices** (Facturas por Pagar) con campos calculados
-- **AR Invoices** (Facturas por Cobrar) con campos calculados  
-- **Chart of Accounts** (Plan Contable) con 5 cuentas básicas pre-creadas
-- **JSON:API completo** con paginación, filtros y validaciones en español
-- **Documentación completa** para frontend → `FINANCE_ACCOUNTING_PHASE1_FRONTEND_REPORT.md`
+### 🔄 En Regeneración (Roadmap Fase 1-3)
+- **Finance Module**: Eliminado para regeneración con estructura empresarial
+- **Accounting Module**: Eliminado para regeneración con GL empresarial completo
+- **Status**: Cross-module integration fields agregados, listos para Fase 1
 
 ## Autor
 

@@ -53,11 +53,6 @@ abstract class FastTestCase extends BaseTestCase
             $this->artisan('module:seed', ['module' => 'Audit']);
         } elseif (str_contains($testClass, 'Contact')) {
             $this->artisan('module:seed', ['module' => 'Contacts']);
-        } elseif (str_contains($testClass, 'Accounting')) {
-            $this->artisan('module:seed', ['module' => 'Accounting']);
-        } elseif (str_contains($testClass, 'Finance')) {
-            $this->artisan('module:seed', ['module' => 'Contacts']); // Dependency
-            $this->artisan('module:seed', ['module' => 'Finance']);
         }
     }
 
