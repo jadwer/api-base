@@ -1,0 +1,1229 @@
+{
+  "entities": {
+    "BankAccount": {
+      "name": "BankAccount",
+      "tableName": "bank_accounts",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "bank_name",
+          "type": "string",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "account_number",
+          "type": "string",
+          "nullable": false,
+          "unique": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "clabe",
+          "type": "string",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "currency",
+          "type": "string",
+          "nullable": false,
+          "default": "MXN",
+          "fillable": true,
+          "filterable": true
+        },
+        {
+          "name": "account_type",
+          "type": "string",
+          "nullable": false,
+          "fillable": true,
+          "filterable": true,
+          "comment": "checking|savings|credit_line|investment"
+        },
+        {
+          "name": "opening_balance",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "current_balance",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": false,
+          "sortable": true
+        },
+        {
+          "name": "gl_account_id",
+          "type": "foreignId",
+          "nullable": true,
+          "fillable": true,
+          "comment": "Link to GL account for posting"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "nullable": false,
+          "default": "active",
+          "fillable": true,
+          "filterable": true
+        }
+      ]
+    },
+    "BankStatement": {
+      "name": "BankStatement",
+      "tableName": "bank_statements",
+      "fields": [
+        {
+          "name": "bank_account_id",
+          "type": "foreignId",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "statement_date",
+          "type": "date",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "opening_balance",
+          "type": "decimal",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "closing_balance",
+          "type": "decimal",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "import_source",
+          "type": "string",
+          "nullable": true,
+          "fillable": true,
+          "comment": "csv|ofx|mt940|api|manual"
+        },
+        {
+          "name": "import_filename",
+          "type": "string",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "nullable": false,
+          "default": "draft",
+          "fillable": true,
+          "comment": "draft|imported|reconciled"
+        }
+      ]
+    },
+    "BankStatementLine": {
+      "name": "BankStatementLine",
+      "tableName": "bank_statement_lines",
+      "fields": [
+        {
+          "name": "bank_statement_id",
+          "type": "foreignId",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "line_number",
+          "type": "integer",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "txn_date",
+          "type": "date",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "amount",
+          "type": "decimal",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "running_balance",
+          "type": "decimal",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "counterparty",
+          "type": "string",
+          "nullable": true,
+          "fillable": true,
+          "filterable": true
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "reference",
+          "type": "string",
+          "nullable": true,
+          "fillable": true,
+          "filterable": true
+        },
+        {
+          "name": "fitid",
+          "type": "string",
+          "nullable": true,
+          "unique": true,
+          "fillable": true,
+          "comment": "Financial Institution Transaction ID"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "nullable": false,
+          "default": "unreconciled",
+          "fillable": true,
+          "filterable": true,
+          "comment": "unreconciled|matched|reconciled"
+        },
+        {
+          "name": "matched_document_type",
+          "type": "string",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "matched_document_id",
+          "type": "bigInteger",
+          "nullable": true,
+          "fillable": true
+        }
+      ]
+    },
+    "APInvoice": {
+      "name": "APInvoice",
+      "tableName": "ap_invoices",
+      "fields": [
+        {
+          "name": "contact_id",
+          "type": "foreignId",
+          "nullable": false,
+          "fillable": true,
+          "comment": "References contact with is_supplier=true"
+        },
+        {
+          "name": "purchase_order_id",
+          "type": "foreignId",
+          "nullable": true,
+          "fillable": true,
+          "comment": "Source purchase order (if applicable)"
+        },
+        {
+          "name": "invoice_number",
+          "type": "string",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "invoice_date",
+          "type": "date",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "due_date",
+          "type": "date",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "currency",
+          "type": "string",
+          "nullable": false,
+          "default": "MXN",
+          "fillable": true
+        },
+        {
+          "name": "exchange_rate",
+          "type": "decimal",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "subtotal",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "tax_total",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true
+        },
+        {
+          "name": "discount_total",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true
+        },
+        {
+          "name": "total",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "payment_terms",
+          "type": "string",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "reference",
+          "type": "string",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "notes",
+          "type": "text",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "nullable": false,
+          "default": "draft",
+          "fillable": false,
+          "filterable": true,
+          "comment": "draft|approved|posted|partially_paid|paid|void"
+        },
+        {
+          "name": "posted_at",
+          "type": "datetime",
+          "nullable": true,
+          "fillable": false
+        },
+        {
+          "name": "posted_by_id",
+          "type": "foreignId",
+          "nullable": true,
+          "fillable": false
+        }
+      ]
+    },
+    "APInvoiceLine": {
+      "name": "APInvoiceLine",
+      "tableName": "ap_invoice_lines",
+      "fields": [
+        {
+          "name": "ap_invoice_id",
+          "type": "foreignId",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "line_number",
+          "type": "integer",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "product_id",
+          "type": "foreignId",
+          "nullable": true,
+          "fillable": true,
+          "comment": "Optional reference to product"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "quantity",
+          "type": "decimal",
+          "nullable": false,
+          "default": 1,
+          "fillable": true
+        },
+        {
+          "name": "unit_price",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true
+        },
+        {
+          "name": "discount_percent",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true
+        },
+        {
+          "name": "discount_amount",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true
+        },
+        {
+          "name": "tax_percent",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true
+        },
+        {
+          "name": "tax_amount",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true
+        },
+        {
+          "name": "line_total",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true
+        },
+        {
+          "name": "gl_account_id",
+          "type": "foreignId",
+          "nullable": true,
+          "fillable": true,
+          "comment": "Override default expense account"
+        },
+        {
+          "name": "memo",
+          "type": "string",
+          "nullable": true,
+          "fillable": true
+        }
+      ]
+    },
+    "APPayment": {
+      "name": "APPayment",
+      "tableName": "ap_payments",
+      "fields": [
+        {
+          "name": "contact_id",
+          "type": "foreignId",
+          "nullable": false,
+          "fillable": true,
+          "comment": "References contact with is_supplier=true"
+        },
+        {
+          "name": "payment_number",
+          "type": "string",
+          "nullable": true,
+          "unique": true,
+          "fillable": false,
+          "sortable": true
+        },
+        {
+          "name": "payment_date",
+          "type": "date",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "payment_method",
+          "type": "string",
+          "nullable": false,
+          "fillable": true,
+          "filterable": true,
+          "comment": "transfer|check|cash|card|other"
+        },
+        {
+          "name": "currency",
+          "type": "string",
+          "nullable": false,
+          "default": "MXN",
+          "fillable": true
+        },
+        {
+          "name": "exchange_rate",
+          "type": "decimal",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "amount",
+          "type": "decimal",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "bank_account_id",
+          "type": "foreignId",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "reference",
+          "type": "string",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "check_number",
+          "type": "string",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "memo",
+          "type": "text",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "nullable": false,
+          "default": "draft",
+          "fillable": false,
+          "filterable": true,
+          "comment": "draft|approved|posted|reconciled|cancelled"
+        },
+        {
+          "name": "posted_at",
+          "type": "datetime",
+          "nullable": true,
+          "fillable": false
+        },
+        {
+          "name": "posted_by_id",
+          "type": "foreignId",
+          "nullable": true,
+          "fillable": false
+        }
+      ]
+    },
+    "APInvoicePayment": {
+      "name": "APInvoicePayment",
+      "tableName": "ap_invoice_payments",
+      "fields": [
+        {
+          "name": "ap_invoice_id",
+          "type": "foreignId",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "ap_payment_id",
+          "type": "foreignId",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "amount_applied",
+          "type": "decimal",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "discount_taken",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true
+        },
+        {
+          "name": "applied_at",
+          "type": "date",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "exchange_rate_at_apply",
+          "type": "decimal",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "fx_gain_loss",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": false
+        },
+        {
+          "name": "applied_by_id",
+          "type": "foreignId",
+          "nullable": true,
+          "fillable": false
+        }
+      ]
+    },
+    "ARInvoice": {
+      "name": "ARInvoice",
+      "tableName": "ar_invoices",
+      "fields": [
+        {
+          "name": "contact_id",
+          "type": "foreignId",
+          "nullable": false,
+          "fillable": true,
+          "comment": "References contact with is_customer=true"
+        },
+        {
+          "name": "sales_order_id",
+          "type": "foreignId",
+          "nullable": true,
+          "fillable": true,
+          "comment": "Source sales order (if applicable)"
+        },
+        {
+          "name": "invoice_number",
+          "type": "string",
+          "nullable": false,
+          "unique": true,
+          "fillable": true,
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "invoice_date",
+          "type": "date",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "due_date",
+          "type": "date",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "currency",
+          "type": "string",
+          "nullable": false,
+          "default": "MXN",
+          "fillable": true
+        },
+        {
+          "name": "exchange_rate",
+          "type": "decimal",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "subtotal",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "tax_total",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true
+        },
+        {
+          "name": "discount_total",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true
+        },
+        {
+          "name": "total",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "payment_terms",
+          "type": "string",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "reference",
+          "type": "string",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "notes",
+          "type": "text",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "nullable": false,
+          "default": "draft",
+          "fillable": false,
+          "filterable": true,
+          "comment": "draft|approved|posted|partially_paid|paid|void"
+        },
+        {
+          "name": "posted_at",
+          "type": "datetime",
+          "nullable": true,
+          "fillable": false
+        },
+        {
+          "name": "posted_by_id",
+          "type": "foreignId",
+          "nullable": true,
+          "fillable": false
+        },
+        {
+          "name": "fiscal_regime",
+          "type": "string",
+          "nullable": true,
+          "fillable": true,
+          "comment": "Regimen fiscal del emisor para CFDI"
+        },
+        {
+          "name": "cfdi_use",
+          "type": "string",
+          "nullable": true,
+          "fillable": true,
+          "comment": "Uso que se dara al CFDI (c_UsoCFDI)"
+        },
+        {
+          "name": "payment_method_code",
+          "type": "string",
+          "nullable": true,
+          "fillable": true,
+          "comment": "Clave forma de pago SAT (c_FormaPago)"
+        },
+        {
+          "name": "payment_way_code",
+          "type": "string",
+          "nullable": true,
+          "fillable": true,
+          "comment": "Clave metodo de pago SAT (c_MetodoPago)"
+        },
+        {
+          "name": "cfdi_uuid",
+          "type": "string",
+          "nullable": true,
+          "fillable": false,
+          "unique": true,
+          "comment": "UUID del CFDI timbrado"
+        },
+        {
+          "name": "cfdi_status",
+          "type": "string",
+          "nullable": false,
+          "default": "pending",
+          "fillable": false,
+          "filterable": true,
+          "comment": "pending|processing|stamped|cancelled|error"
+        },
+        {
+          "name": "xml_content",
+          "type": "text",
+          "nullable": true,
+          "fillable": false,
+          "comment": "XML del CFDI timbrado"
+        },
+        {
+          "name": "digital_stamp",
+          "type": "text",
+          "nullable": true,
+          "fillable": false,
+          "comment": "Sello digital del CFDI"
+        },
+        {
+          "name": "pac_name",
+          "type": "string",
+          "nullable": true,
+          "fillable": false,
+          "comment": "Nombre del PAC que timbro"
+        },
+        {
+          "name": "stamped_at",
+          "type": "datetime",
+          "nullable": true,
+          "fillable": false,
+          "comment": "Fecha y hora de timbrado"
+        },
+        {
+          "name": "cancelled_at",
+          "type": "datetime",
+          "nullable": true,
+          "fillable": false,
+          "comment": "Fecha y hora de cancelacion"
+        },
+        {
+          "name": "cfdi_error_message",
+          "type": "text",
+          "nullable": true,
+          "fillable": false,
+          "comment": "Mensaje de error de timbrado"
+        }
+      ]
+    },
+    "ARInvoiceLine": {
+      "name": "ARInvoiceLine",
+      "tableName": "ar_invoice_lines",
+      "fields": [
+        {
+          "name": "ar_invoice_id",
+          "type": "foreignId",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "line_number",
+          "type": "integer",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "product_id",
+          "type": "foreignId",
+          "nullable": true,
+          "fillable": true,
+          "comment": "Optional reference to product"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "quantity",
+          "type": "decimal",
+          "nullable": false,
+          "default": 1,
+          "fillable": true
+        },
+        {
+          "name": "unit_price",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true
+        },
+        {
+          "name": "discount_percent",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true
+        },
+        {
+          "name": "discount_amount",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true
+        },
+        {
+          "name": "tax_percent",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true
+        },
+        {
+          "name": "tax_amount",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true
+        },
+        {
+          "name": "line_total",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true
+        },
+        {
+          "name": "gl_account_id",
+          "type": "foreignId",
+          "nullable": true,
+          "fillable": true,
+          "comment": "Override default revenue account"
+        },
+        {
+          "name": "memo",
+          "type": "string",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "sat_product_code",
+          "type": "string",
+          "nullable": true,
+          "fillable": true,
+          "comment": "Clave de producto SAT (c_ClaveProdServ)"
+        },
+        {
+          "name": "sat_unit_code",
+          "type": "string",
+          "nullable": true,
+          "fillable": true,
+          "comment": "Clave de unidad SAT (c_ClaveUnidad)"
+        }
+      ]
+    },
+    "ARReceipt": {
+      "name": "ARReceipt",
+      "tableName": "ar_receipts",
+      "fields": [
+        {
+          "name": "contact_id",
+          "type": "foreignId",
+          "nullable": false,
+          "fillable": true,
+          "comment": "References contact with is_customer=true"
+        },
+        {
+          "name": "receipt_number",
+          "type": "string",
+          "nullable": true,
+          "unique": true,
+          "fillable": false,
+          "sortable": true
+        },
+        {
+          "name": "receipt_date",
+          "type": "date",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "payment_method",
+          "type": "string",
+          "nullable": false,
+          "fillable": true,
+          "filterable": true,
+          "comment": "transfer|check|cash|card|other"
+        },
+        {
+          "name": "currency",
+          "type": "string",
+          "nullable": false,
+          "default": "MXN",
+          "fillable": true
+        },
+        {
+          "name": "exchange_rate",
+          "type": "decimal",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "amount",
+          "type": "decimal",
+          "nullable": false,
+          "fillable": true,
+          "sortable": true
+        },
+        {
+          "name": "bank_account_id",
+          "type": "foreignId",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "reference",
+          "type": "string",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "check_number",
+          "type": "string",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "memo",
+          "type": "text",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "nullable": false,
+          "default": "draft",
+          "fillable": false,
+          "filterable": true,
+          "comment": "draft|approved|posted|reconciled|cancelled"
+        },
+        {
+          "name": "posted_at",
+          "type": "datetime",
+          "nullable": true,
+          "fillable": false
+        },
+        {
+          "name": "posted_by_id",
+          "type": "foreignId",
+          "nullable": true,
+          "fillable": false
+        }
+      ]
+    },
+    "ARInvoiceReceipt": {
+      "name": "ARInvoiceReceipt",
+      "tableName": "ar_invoice_receipts",
+      "fields": [
+        {
+          "name": "ar_invoice_id",
+          "type": "foreignId",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "ar_receipt_id",
+          "type": "foreignId",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "amount_applied",
+          "type": "decimal",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "discount_taken",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": true
+        },
+        {
+          "name": "applied_at",
+          "type": "date",
+          "nullable": false,
+          "fillable": true
+        },
+        {
+          "name": "exchange_rate_at_apply",
+          "type": "decimal",
+          "nullable": true,
+          "fillable": true
+        },
+        {
+          "name": "fx_gain_loss",
+          "type": "decimal",
+          "nullable": false,
+          "default": 0,
+          "fillable": false
+        },
+        {
+          "name": "applied_by_id",
+          "type": "foreignId",
+          "nullable": true,
+          "fillable": false
+        }
+      ]
+    }
+  },
+  "relationships": [
+    {
+      "entityA": "BankStatement",
+      "entityB": "BankStatementLine",
+      "type": "one-to-many",
+      "description": "Un estado de cuenta tiene múltiples líneas"
+    },
+    {
+      "entityA": "BankStatement",
+      "entityB": "BankAccount",
+      "type": "many-to-one",
+      "description": "Cada estado pertenece a una cuenta bancaria"
+    },
+    {
+      "entityA": "APInvoice",
+      "entityB": "APInvoiceLine",
+      "type": "one-to-many",
+      "description": "Una factura AP tiene múltiples líneas"
+    },
+    {
+      "entityA": "ARInvoice",
+      "entityB": "ARInvoiceLine",
+      "type": "one-to-many",
+      "description": "Una factura AR tiene múltiples líneas"
+    },
+    {
+      "entityA": "APPayment",
+      "entityB": "APInvoicePayment",
+      "type": "one-to-many",
+      "description": "Un pago puede aplicarse a múltiples facturas"
+    },
+    {
+      "entityA": "APInvoice",
+      "entityB": "APInvoicePayment",
+      "type": "one-to-many",
+      "description": "Una factura puede tener múltiples pagos aplicados"
+    },
+    {
+      "entityA": "ARReceipt",
+      "entityB": "ARInvoiceReceipt",
+      "type": "one-to-many",
+      "description": "Un recibo puede aplicarse a múltiples facturas"
+    },
+    {
+      "entityA": "ARInvoice",
+      "entityB": "ARInvoiceReceipt",
+      "type": "one-to-many",
+      "description": "Una factura puede tener múltiples recibos aplicados"
+    },
+    {
+      "entityA": "APPayment",
+      "entityB": "BankAccount",
+      "type": "many-to-one",
+      "description": "Cada pago AP se realiza desde una cuenta bancaria"
+    },
+    {
+      "entityA": "ARReceipt",
+      "entityB": "BankAccount",
+      "type": "many-to-one",
+      "description": "Cada recibo AR se deposita en una cuenta bancaria"
+    },
+    {
+      "entityA": "APInvoice",
+      "entityB": "Contact",
+      "type": "many-to-one",
+      "description": "Cada factura AP pertenece a un proveedor (contact)",
+      "foreignKey": "contact_id"
+    },
+    {
+      "entityA": "ARInvoice",
+      "entityB": "Contact",
+      "type": "many-to-one",
+      "description": "Cada factura AR pertenece a un cliente (contact)",
+      "foreignKey": "contact_id"
+    },
+    {
+      "entityA": "APPayment",
+      "entityB": "Contact",
+      "type": "many-to-one",
+      "description": "Cada pago AP es para un proveedor (contact)",
+      "foreignKey": "contact_id"
+    },
+    {
+      "entityA": "ARReceipt",
+      "entityB": "Contact",
+      "type": "many-to-one",
+      "description": "Cada recibo AR es de un cliente (contact)",
+      "foreignKey": "contact_id"
+    },
+    {
+      "entityA": "APInvoice",
+      "entityB": "PurchaseOrder",
+      "type": "many-to-one",
+      "description": "Factura AP puede originarse de una orden de compra",
+      "foreignKey": "purchase_order_id"
+    },
+    {
+      "entityA": "ARInvoice",
+      "entityB": "SalesOrder",
+      "type": "many-to-one",
+      "description": "Factura AR puede originarse de una orden de venta",
+      "foreignKey": "sales_order_id"
+    }
+  ],
+  "permissions": {
+    "prefix": "finance",
+    "resources": [
+      "bank-accounts", "bank-statements", "bank-statement-lines",
+      "ap-invoices", "ap-invoice-lines", "ap-payments", "ap-invoice-payments",
+      "ar-invoices", "ar-invoice-lines", "ar-receipts", "ar-invoice-receipts"
+    ],
+    "actions": ["index", "show", "store", "update", "destroy", "approve", "post", "void", "apply", "reconcile", "stamp", "cancel"],
+    "roles": {
+      "god": ["all"],
+      "admin": ["all"],
+      "finance_manager": [
+        "bank-accounts.*",
+        "bank-statements.*",
+        "ap-invoices.*", "ap-payments.*", "ap-invoice-payments.*",
+        "ar-invoices.*", "ar-receipts.*", "ar-invoice-receipts.*"
+      ],
+      "accountant": [
+        "bank-accounts.index", "bank-accounts.show",
+        "ap-invoices.index", "ap-invoices.show", "ap-invoices.store", "ap-invoices.update",
+        "ar-invoices.index", "ar-invoices.show", "ar-invoices.store", "ar-invoices.update", "ar-invoices.stamp",
+        "ap-payments.index", "ap-payments.show",
+        "ar-receipts.index", "ar-receipts.show"
+      ],
+      "tech": [
+        "bank-accounts.index", "bank-accounts.show",
+        "ap-invoices.index", "ap-invoices.show",
+        "ar-invoices.index", "ar-invoices.show"
+      ],
+      "customer": []
+    }
+  },
+  "seeding": {
+    "bank_accounts": 5,
+    "bank_statements": 20,
+    "bank_statement_lines": 200,
+    "ap_invoices": 150,
+    "ap_invoice_lines": 450,
+    "ap_payments": 100,
+    "ap_invoice_payments": 120,
+    "ar_invoices": 200,
+    "ar_invoice_lines": 600,
+    "ar_receipts": 150,
+    "ar_invoice_receipts": 180
+  }
+}
