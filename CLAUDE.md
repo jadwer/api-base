@@ -10,6 +10,20 @@ Claude Code MUST NEVER execute git commit commands automatically. Always provide
 ### **MODULE REGENERATION POLICY** ⚠️
 **Modules should NOT be regenerated unless explicitly specified.** Always ask the user whether to regenerate or modify existing modules when considering structural changes. Prefer modification over regeneration for working modules.
 
+### **PHASE PROGRESSION GATE** ⚠️
+**DO NOT ADVANCE TO PHASE 3 UNTIL PHASE 1 AND PHASE 2 HAVE 100% TESTS PASSING.**
+
+**Current Phase Status:**
+- **Phase 1 (Accounting):** 90% complete - 154 test failures remaining
+- **Phase 2 (Finance Integration):** Not started
+- **Phase 3:** BLOCKED until Phase 1 + Phase 2 = 100% passing
+
+**Critical Documents:**
+- Phase 1 pending fixes: `docs/development/PHASE1_PENDING_FIXES.md`
+- Phase 2 action plan: `docs/development/PHASE2_ACTION_PLAN.md`
+
+**ALWAYS** consult these documents before continuing work on Accounting or Finance modules.
+
 ## Project Overview
 
 This is a **modular Laravel 12 API** built with **JSON:API 5.x** specification, designed as a scalable base for enterprise applications like ERPs and CRMs. The project uses `nwidart/laravel-modules` for modular architecture with complete module isolation.
