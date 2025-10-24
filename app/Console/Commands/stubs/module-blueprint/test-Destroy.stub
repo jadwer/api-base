@@ -62,23 +62,7 @@ class {{modelName}}DestroyTest extends TestCase
         ]);
     }
 
-    public function test_can_delete_inactive_{{modelName}}(): void
-    {
-        $admin = $this->getAdminUser();
-        ${{modelNameLower}} = {{modelName}}::factory()->inactive()->create();
-
-        $response = $this->actingAs($admin, 'sanctum')
-            ->jsonApi()
-            ->expects('{{resourceType}}')
-            ->delete("/api/v1/{{resourceType}}/{${{modelNameLower}}->id}");
-
-        $response->assertNoContent();
-        
-        $this->assertDatabaseMissing('{{tableName}}', [
-            'id' => ${{modelNameLower}}->id
-        ]);
-    }
-
+{{statusTest}}
     public function test_customer_user_cannot_delete_{{modelName}}(): void
     {
         $customer = $this->getCustomerUser();

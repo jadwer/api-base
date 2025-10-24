@@ -278,6 +278,9 @@ class CreateAdvancedModuleBlueprint extends Command
         $relationshipMethods = $relationshipData['methods'];
         $requiredImports = $relationshipData['imports'];
 
+        // Generate scope based on available fields
+        $scopesCode = $this->generateModelScopes($entity['fields']);
+
         $modelTemplate = $this->getStub('model');
         
         // Prepare imports string
@@ -293,6 +296,7 @@ class CreateAdvancedModuleBlueprint extends Command
             '{{fillable}}',
             '{{casts}}',
             '{{additionalImports}}',
+            '{{scopes}}',
             '{{relationships}}'
         ], [
             $moduleName,
@@ -301,6 +305,7 @@ class CreateAdvancedModuleBlueprint extends Command
             "'" . implode("', '", $fillable) . "'",
             $this->arrayToString($casts),
             $importsString,
+            $scopesCode,
             $relationshipMethods
         ], $modelTemplate);
 
@@ -779,12 +784,14 @@ class CreateAdvancedModuleBlueprint extends Command
         $authorizerTemplate = $this->getStub('authorizer');
         
         // Generate permission prefix - module.resource format
+        // Always use kebab-case for consistency with permissions seeder
+        $resourceName = Str::kebab(Str::plural($entityName)); // e.g., 'account-balances'
+
         if ($this->permissionsConfig && isset($this->permissionsConfig['prefix'])) {
             $modulePrefix = $this->permissionsConfig['prefix']; // e.g., 'ecommerce'
-            $resourceName = Str::kebab(Str::plural($entityName)); // e.g., 'coupons'
             $permissionPrefix = $modulePrefix . '.' . $resourceName; // e.g., 'ecommerce.coupons'
         } else {
-            $permissionPrefix = Str::lower(Str::plural($entityName)); // fallback
+            $permissionPrefix = $resourceName; // e.g., 'account-balances'
         }
         
         $authorizerContent = str_replace([
@@ -886,6 +893,13 @@ class CreateAdvancedModuleBlueprint extends Command
         
         foreach ($testTypes as $testType) {
             $testTemplate = $this->getStub("test-{$testType}");
+
+            // Generate status test for Destroy tests only if entity has status/is_active
+            $statusTest = '';
+            if ($testType === 'Destroy') {
+                $statusTest = $this->generateStatusTest($entity);
+            }
+
             $testContent = str_replace([
                 '{{moduleName}}',
                 '{{modelName}}',
@@ -901,7 +915,8 @@ class CreateAdvancedModuleBlueprint extends Command
                 '{{filterableField}}',
                 '{{sortTestData}}',
                 '{{filterTestData}}',
-                '{{tableName}}'
+                '{{tableName}}',
+                '{{statusTest}}'
             ], [
                 $moduleName,
                 $entityName,
@@ -917,7 +932,8 @@ class CreateAdvancedModuleBlueprint extends Command
                 $this->getFilterableField($entity),
                 $this->getSortTestData($entity),
                 $this->getFilterTestData($entity),
-                $entity['tableName'] ?? Str::snake(Str::plural($entityName))
+                $entity['tableName'] ?? Str::snake(Str::plural($entityName)),
+                $statusTest
             ], $testTemplate);
 
             $testDir = base_path("Modules/{$moduleName}/tests/Feature");
@@ -1434,13 +1450,93 @@ class CreateAdvancedModuleBlueprint extends Command
     private function arrayToString(array $array): string
     {
         if (empty($array)) return '';
-        
+
         $items = [];
         foreach ($array as $key => $value) {
             $items[] = "        '{$key}' => '{$value}'";
         }
-        
+
         return implode(",\n", $items);
+    }
+
+    /**
+     * Generate model scopes based on available fields
+     * Generates scopeActive() only if status or is_active field exists
+     */
+    private function generateModelScopes(array $fields): string
+    {
+        $hasStatusField = false;
+        $hasIsActiveField = false;
+        $statusFieldName = '';
+        $statusDefaultValue = '';
+
+        // Check what fields are available
+        foreach ($fields as $field) {
+            if ($field['name'] === 'status') {
+                $hasStatusField = true;
+                $statusFieldName = 'status';
+                // Determine appropriate status value based on common patterns
+                $statusDefaultValue = "'active'"; // Most common default
+            } elseif ($field['name'] === 'is_active') {
+                $hasIsActiveField = true;
+                $statusFieldName = 'is_active';
+                $statusDefaultValue = 'true';
+            }
+        }
+
+        // If no status or is_active field, don't generate scope
+        if (!$hasStatusField && !$hasIsActiveField) {
+            return '';
+        }
+
+        // Generate appropriate scope
+        $scopeCode = "    // Scopes\n";
+        $scopeCode .= "    public function scopeActive(\$query)\n";
+        $scopeCode .= "    {\n";
+        $scopeCode .= "        return \$query->where('{$statusFieldName}', {$statusDefaultValue});\n";
+        $scopeCode .= "    }\n\n";
+
+        return $scopeCode;
+    }
+
+    /**
+     * Generate status test for Destroy tests
+     * Only if entity has status or is_active field
+     */
+    private function generateStatusTest($entity): string
+    {
+        $entityName = $entity['name'];
+        $modelNameLower = Str::lcfirst($entityName);
+        $resourceType = Str::kebab(Str::plural($entityName));
+        $tableName = $entity['tableName'] ?? Str::snake(Str::plural($entityName));
+
+        $hasStatus = collect($entity['fields'] ?? [])->contains('name', 'status');
+        $hasIsActive = collect($entity['fields'] ?? [])->contains('name', 'is_active');
+
+        // No test if no status/is_active field
+        if (!$hasStatus && !$hasIsActive) {
+            return '';
+        }
+
+        // Generate test with inactive()
+        return "    public function test_can_delete_inactive_{$entityName}(): void
+    {
+        \$admin = \$this->getAdminUser();
+        \${$modelNameLower} = {$entityName}::factory()->inactive()->create();
+
+        \$response = \$this->actingAs(\$admin, 'sanctum')
+            ->jsonApi()
+            ->expects('{$resourceType}')
+            ->delete(\"/api/v1/{$resourceType}/{\${$modelNameLower}->id}\");
+
+        \$response->assertNoContent();
+
+        \$this->assertDatabaseMissing('{$tableName}', [
+            'id' => \${$modelNameLower}->id
+        ]);
+    }
+
+";
     }
 
     private function getStub(string $name): string
@@ -2473,8 +2569,10 @@ class {$entityName}Factory extends Factory
         $entityName = $entity['name'];
         $methods = [];
         
-        // Active state for entities with status
+        // Active/Inactive state for entities with status or is_active field
         $hasStatus = collect($entity['fields'] ?? [])->contains('name', 'status');
+        $hasIsActive = collect($entity['fields'] ?? [])->contains('name', 'is_active');
+
         if ($hasStatus) {
             $methods[] = "
     /**
@@ -2486,10 +2584,7 @@ class {$entityName}Factory extends Factory
             'status' => 'active',
         ]);
     }";
-        }
-        
-        // Inactive state
-        if ($hasStatus) {
+
             $methods[] = "
     /**
      * Inactive {$entityName}
@@ -2498,6 +2593,28 @@ class {$entityName}Factory extends Factory
     {
         return \$this->state(fn (array \$attributes) => [
             'status' => 'inactive',
+        ]);
+    }";
+        } elseif ($hasIsActive) {
+            $methods[] = "
+    /**
+     * Active {$entityName}
+     */
+    public function active(): static
+    {
+        return \$this->state(fn (array \$attributes) => [
+            'is_active' => true,
+        ]);
+    }";
+
+            $methods[] = "
+    /**
+     * Inactive {$entityName}
+     */
+    public function inactive(): static
+    {
+        return \$this->state(fn (array \$attributes) => [
+            'is_active' => false,
         ]);
     }";
         }
@@ -2602,6 +2719,7 @@ class {$entityName}Seeder extends Seeder
     {
         $entityName = $entity['name'];
         $hasStatus = collect($entity['fields'] ?? [])->contains('name', 'status');
+        $hasIsActive = collect($entity['fields'] ?? [])->contains('name', 'is_active');
         
         // Detect external dependencies (foreign keys to other modules)
         $externalDependencies = $this->detectExternalDependencies($entity);
@@ -2623,14 +2741,14 @@ class {$entityName}Seeder extends Seeder
             $logic .= "        {$entityName}::factory()->count(10)->create();\n";
         }
         
-        if ($hasStatus) {
+        if ($hasStatus || $hasIsActive) {
             $logic .= "\n        // Create some active records\n";
             $logic .= "        {$entityName}::factory()->active()->count(5)->create();\n";
-            
+
             $logic .= "\n        // Create some inactive records\n";
             $logic .= "        {$entityName}::factory()->inactive()->count(2)->create();\n";
         }
-        
+
         return $logic;
     }
 

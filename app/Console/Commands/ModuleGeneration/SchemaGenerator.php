@@ -45,7 +45,6 @@ class SchemaGenerator
         $relationshipsCode = $this->generateSchemaRelationships($entityName, $relationships);
         $includePathsCode = $this->generateIncludePaths($entityName, $relationships);
         $filtersCode = $this->generateSchemaFilters($fields);
-        $sortablesCode = $this->generateSchemaSortables($fields);
         $resourceType = Str::kebab(Str::plural($entityName));
         $metadataCode = $this->shouldAddMetadataField($fields) ? "\n            // Metadata\n            ArrayHash::make('metadata')," : "";
         
@@ -90,15 +89,6 @@ class {$entityName}Schema extends Schema
         return [
             WhereIdIn::make(\$this),
 {$filtersCode}
-        ];
-    }
-
-    public function sortables(): array
-    {
-        return [
-{$sortablesCode}
-            'created_at',
-            'updated_at',
         ];
     }
 
@@ -186,29 +176,13 @@ class {$entityName}Schema extends Schema
     private function generateSchemaFilters(array $fields): string
     {
         $lines = [];
-        
+
         foreach ($fields as $field) {
             if (in_array($field['type'], ['string', 'boolean', 'integer', 'bigInteger'])) {
                 $lines[] = "            \\LaravelJsonApi\\Eloquent\\Filters\\Where::make('{$field['name']}'),";
             }
         }
-        
-        return implode("\n", $lines);
-    }
 
-    /**
-     * Generate schema sortables
-     */
-    private function generateSchemaSortables(array $fields): string
-    {
-        $lines = [];
-        
-        foreach ($fields as $field) {
-            if (in_array($field['type'], ['string', 'integer', 'bigInteger', 'decimal', 'boolean', 'date', 'datetime'])) {
-                $lines[] = "            '{$field['name']}',";
-            }
-        }
-        
         return implode("\n", $lines);
     }
 
