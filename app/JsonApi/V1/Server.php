@@ -191,8 +191,8 @@ class Server extends BaseServer
             'exchange-rates' => \Modules\Accounting\JsonApi\V1\ExchangeRates\ExchangeRateAuthorizer::class,
             
             // Finance Module
-            'a-r-invoices' => \Modules\Finance\JsonApi\V1\ARInvoices\ARInvoiceAuthorizer::class,
-            'a-p-invoices' => \Modules\Finance\JsonApi\V1\APInvoices\APInvoiceAuthorizer::class,
+            'ar-invoices' => \Modules\Finance\JsonApi\V1\ARInvoices\ARInvoiceAuthorizer::class,
+            'ap-invoices' => \Modules\Finance\JsonApi\V1\APInvoices\APInvoiceAuthorizer::class,
             'payments' => \Modules\Finance\JsonApi\V1\Payments\PaymentAuthorizer::class,
             'payment-applications' => \Modules\Finance\JsonApi\V1\PaymentApplications\PaymentApplicationAuthorizer::class,
             'bank-accounts' => \Modules\Finance\JsonApi\V1\BankAccounts\BankAccountAuthorizer::class,

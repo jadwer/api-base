@@ -82,6 +82,6 @@ class ARInvoiceSchema extends Schema
 
     public static function type(): string
     {
-        return "a-r-invoices";
+        return "ar-invoices";
     }
 }

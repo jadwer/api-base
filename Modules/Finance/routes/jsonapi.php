@@ -13,8 +13,8 @@ JsonApiRoute::server('v1')
     ->prefix('v1')
     ->middleware('auth:sanctum')
     ->resources(function (ResourceRegistrar $server) {
-        $server->resource('a-r-invoices', ARInvoiceController::class);
-        $server->resource('a-p-invoices', APInvoiceController::class);
+        $server->resource('ar-invoices', ARInvoiceController::class);
+        $server->resource('ap-invoices', APInvoiceController::class);
         $server->resource('payments', PaymentController::class);
         $server->resource('payment-applications', PaymentApplicationController::class);
         $server->resource('bank-accounts', BankAccountController::class);

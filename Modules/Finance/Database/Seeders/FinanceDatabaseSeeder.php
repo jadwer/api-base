@@ -14,7 +14,10 @@ class FinanceDatabaseSeeder extends Seeder
         $this->command->info('🏪 Seeding Finance module...');
 
         $this->call([
-            // Primero: Configuración básica (GL Accounts y Payment Methods)
+            // Primero: Permisos
+            FinanceAssignPermissionsSeeder::class,
+
+            // Luego: Configuración básica (GL Accounts y Payment Methods)
             GLAccountsSeeder::class,
             PaymentMethodsSeeder::class,
 

@@ -79,6 +79,6 @@ class APInvoiceSchema extends Schema
 
     public static function type(): string
     {
-        return "a-p-invoices";
+        return "ap-invoices";
     }
 }
