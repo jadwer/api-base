@@ -29,7 +29,7 @@ class APInvoiceUpdateTest extends TestCase
         $aPInvoice = APInvoice::factory()->create();
 
         $data = [
-            'type' => 'a-p-invoices',
+            'type' => 'ap-invoices',
             'id' => (string) $aPInvoice->id,
             'attributes' => [
                 'name' => 'Updated APInvoice',
@@ -40,9 +40,9 @@ class APInvoiceUpdateTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-p-invoices')
+            ->expects('ap-invoices')
             ->withData($data)
-            ->patch("/api/v1/a-p-invoices/{$aPInvoice->id}");
+            ->patch("/api/v1/ap-invoices/{$aPInvoice->id}");
 
         $response->assertOk();
         
@@ -63,7 +63,7 @@ class APInvoiceUpdateTest extends TestCase
         ]);
 
         $data = [
-            'type' => 'a-p-invoices',
+            'type' => 'ap-invoices',
             'id' => (string) $aPInvoice->id,
             'attributes' => [
                 'name' => 'Partially Updated Name'
@@ -73,9 +73,9 @@ class APInvoiceUpdateTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-p-invoices')
+            ->expects('ap-invoices')
             ->withData($data)
-            ->patch("/api/v1/a-p-invoices/{$aPInvoice->id}");
+            ->patch("/api/v1/ap-invoices/{$aPInvoice->id}");
 
         $response->assertOk();
         
@@ -98,7 +98,7 @@ class APInvoiceUpdateTest extends TestCase
         ];
 
         $data = [
-            'type' => 'a-p-invoices',
+            'type' => 'ap-invoices',
             'id' => (string) $aPInvoice->id,
             'attributes' => [
                 'metadata' => $metadata
@@ -107,9 +107,9 @@ class APInvoiceUpdateTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-p-invoices')
+            ->expects('ap-invoices')
             ->withData($data)
-            ->patch("/api/v1/a-p-invoices/{$aPInvoice->id}");
+            ->patch("/api/v1/ap-invoices/{$aPInvoice->id}");
 
         $response->assertOk();
         
@@ -123,7 +123,7 @@ class APInvoiceUpdateTest extends TestCase
         $aPInvoice = APInvoice::factory()->create();
 
         $data = [
-            'type' => 'a-p-invoices',
+            'type' => 'ap-invoices',
             'id' => (string) $aPInvoice->id,
             'attributes' => [
                 'name' => 'Unauthorized Update'
@@ -132,9 +132,9 @@ class APInvoiceUpdateTest extends TestCase
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
-            ->expects('a-p-invoices')
+            ->expects('ap-invoices')
             ->withData($data)
-            ->patch("/api/v1/a-p-invoices/{$aPInvoice->id}");
+            ->patch("/api/v1/ap-invoices/{$aPInvoice->id}");
 
         $response->assertStatus(403);
     }
@@ -144,7 +144,7 @@ class APInvoiceUpdateTest extends TestCase
         $aPInvoice = APInvoice::factory()->create();
 
         $data = [
-            'type' => 'a-p-invoices',
+            'type' => 'ap-invoices',
             'id' => (string) $aPInvoice->id,
             'attributes' => [
                 'name' => 'Guest Update'
@@ -152,9 +152,9 @@ class APInvoiceUpdateTest extends TestCase
         ];
 
         $response = $this->jsonApi()
-            ->expects('a-p-invoices')
+            ->expects('ap-invoices')
             ->withData($data)
-            ->patch("/api/v1/a-p-invoices/{$aPInvoice->id}");
+            ->patch("/api/v1/ap-invoices/{$aPInvoice->id}");
 
         $response->assertStatus(401);
     }
@@ -164,7 +164,7 @@ class APInvoiceUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $data = [
-            'type' => 'a-p-invoices',
+            'type' => 'ap-invoices',
             'id' => '999999',
             'attributes' => [
                 'name' => 'Nonexistent Update'
@@ -173,9 +173,9 @@ class APInvoiceUpdateTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-p-invoices')
+            ->expects('ap-invoices')
             ->withData($data)
-            ->patch('/api/v1/a-p-invoices/999999');
+            ->patch('/api/v1/ap-invoices/999999');
 
         $response->assertStatus(404);
     }
@@ -186,7 +186,7 @@ class APInvoiceUpdateTest extends TestCase
         $aPInvoice = APInvoice::factory()->create();
 
         $data = [
-            'type' => 'a-p-invoices',
+            'type' => 'ap-invoices',
             'id' => (string) $aPInvoice->id,
             'attributes' => [
                 'name' => '', // Empty name
@@ -196,9 +196,9 @@ class APInvoiceUpdateTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-p-invoices')
+            ->expects('ap-invoices')
             ->withData($data)
-            ->patch("/api/v1/a-p-invoices/{$aPInvoice->id}");
+            ->patch("/api/v1/ap-invoices/{$aPInvoice->id}");
 
         $response->assertStatus(422);
     }

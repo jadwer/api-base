@@ -31,8 +31,8 @@ class APInvoiceIndexTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-p-invoices')
-            ->get('/api/v1/a-p-invoices');
+            ->expects('ap-invoices')
+            ->get('/api/v1/ap-invoices');
 
         $response->assertOk();
         $response->assertJsonStructure([
@@ -70,8 +70,8 @@ class APInvoiceIndexTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-p-invoices')
-            ->get('/api/v1/a-p-invoices?sort=status');
+            ->expects('ap-invoices')
+            ->get('/api/v1/ap-invoices?sort=status');
 
         $response->assertOk();
     }
@@ -85,8 +85,8 @@ class APInvoiceIndexTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-p-invoices')
-            ->get('/api/v1/a-p-invoices?filter[status]=test');
+            ->expects('ap-invoices')
+            ->get('/api/v1/ap-invoices?filter[status]=test');
 
         $response->assertOk();
     }
@@ -97,8 +97,8 @@ class APInvoiceIndexTest extends TestCase
 
         $response = $this->actingAs($tech, 'sanctum')
             ->jsonApi()
-            ->expects('a-p-invoices')
-            ->get('/api/v1/a-p-invoices');
+            ->expects('ap-invoices')
+            ->get('/api/v1/ap-invoices');
 
         $response->assertOk();
     }
@@ -109,8 +109,8 @@ class APInvoiceIndexTest extends TestCase
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
-            ->expects('a-p-invoices')
-            ->get('/api/v1/a-p-invoices');
+            ->expects('ap-invoices')
+            ->get('/api/v1/ap-invoices');
 
         $response->assertStatus(403);
     }
@@ -118,8 +118,8 @@ class APInvoiceIndexTest extends TestCase
     public function test_guest_cannot_list_APInvoices(): void
     {
         $response = $this->jsonApi()
-            ->expects('a-p-invoices')
-            ->get('/api/v1/a-p-invoices');
+            ->expects('ap-invoices')
+            ->get('/api/v1/ap-invoices');
 
         $response->assertStatus(401);
     }
@@ -132,8 +132,8 @@ class APInvoiceIndexTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-p-invoices')
-            ->get('/api/v1/a-p-invoices?page[size]=10');
+            ->expects('ap-invoices')
+            ->get('/api/v1/ap-invoices?page[size]=10');
 
         $response->assertOk();
         $this->assertCount(10, $response->json('data'));

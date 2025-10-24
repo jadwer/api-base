@@ -30,8 +30,8 @@ class ARInvoiceShowTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-r-invoices')
-            ->get("/api/v1/a-r-invoices/{$aRInvoice->id}");
+            ->expects('ar-invoices')
+            ->get("/api/v1/ar-invoices/{$aRInvoice->id}");
 
         $response->assertOk();
         $response->assertJsonStructure([
@@ -68,8 +68,8 @@ class ARInvoiceShowTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-r-invoices')
-            ->get("/api/v1/a-r-invoices/{$aRInvoice->id}");
+            ->expects('ar-invoices')
+            ->get("/api/v1/ar-invoices/{$aRInvoice->id}");
 
         $response->assertOk();
         $response->assertJsonStructure([
@@ -105,8 +105,8 @@ class ARInvoiceShowTest extends TestCase
 
         $response = $this->actingAs($tech, 'sanctum')
             ->jsonApi()
-            ->expects('a-r-invoices')
-            ->get("/api/v1/a-r-invoices/{$aRInvoice->id}");
+            ->expects('ar-invoices')
+            ->get("/api/v1/ar-invoices/{$aRInvoice->id}");
 
         $response->assertOk();
     }
@@ -118,8 +118,8 @@ class ARInvoiceShowTest extends TestCase
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
-            ->expects('a-r-invoices')
-            ->get("/api/v1/a-r-invoices/{$aRInvoice->id}");
+            ->expects('ar-invoices')
+            ->get("/api/v1/ar-invoices/{$aRInvoice->id}");
 
         $response->assertStatus(403);
     }
@@ -129,8 +129,8 @@ class ARInvoiceShowTest extends TestCase
         $aRInvoice = ARInvoice::factory()->create();
 
         $response = $this->jsonApi()
-            ->expects('a-r-invoices')
-            ->get("/api/v1/a-r-invoices/{$aRInvoice->id}");
+            ->expects('ar-invoices')
+            ->get("/api/v1/ar-invoices/{$aRInvoice->id}");
 
         $response->assertStatus(401);
     }
@@ -141,8 +141,8 @@ class ARInvoiceShowTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-r-invoices')
-            ->get('/api/v1/a-r-invoices/999999');
+            ->expects('ar-invoices')
+            ->get('/api/v1/ar-invoices/999999');
 
         $response->assertStatus(404);
     }
@@ -154,8 +154,8 @@ class ARInvoiceShowTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-r-invoices')
-            ->get("/api/v1/a-r-invoices/{$aRInvoice->id}");
+            ->expects('ar-invoices')
+            ->get("/api/v1/ar-invoices/{$aRInvoice->id}");
 
         $response->assertOk();
         

@@ -28,7 +28,7 @@ class APInvoiceStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $data = [
-            'type' => 'a-p-invoices',
+            'type' => 'ap-invoices',
             'attributes' => [
                 'invoiceNumber' => 'test string',
                 'invoiceDate' => '2024-01-01',
@@ -47,9 +47,9 @@ class APInvoiceStoreTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-p-invoices')
+            ->expects('ap-invoices')
             ->withData($data)
-            ->post('/api/v1/a-p-invoices');
+            ->post('/api/v1/ap-invoices');
 
         $response->assertCreated();
         
@@ -61,7 +61,7 @@ class APInvoiceStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $data = [
-            'type' => 'a-p-invoices',
+            'type' => 'ap-invoices',
             'attributes' => [
                 'isActive' => true
             ]
@@ -69,9 +69,9 @@ class APInvoiceStoreTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-p-invoices')
+            ->expects('ap-invoices')
             ->withData($data)
-            ->post('/api/v1/a-p-invoices');
+            ->post('/api/v1/ap-invoices');
 
         $response->assertCreated();
     }
@@ -81,7 +81,7 @@ class APInvoiceStoreTest extends TestCase
         $customer = $this->getCustomerUser();
 
         $data = [
-            'type' => 'a-p-invoices',
+            'type' => 'ap-invoices',
             'attributes' => [
                 'name' => 'Unauthorized APInvoice',
                 'is_active' => true
@@ -90,9 +90,9 @@ class APInvoiceStoreTest extends TestCase
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
-            ->expects('a-p-invoices')
+            ->expects('ap-invoices')
             ->withData($data)
-            ->post('/api/v1/a-p-invoices');
+            ->post('/api/v1/ap-invoices');
 
         $response->assertStatus(403);
     }
@@ -100,7 +100,7 @@ class APInvoiceStoreTest extends TestCase
     public function test_guest_cannot_create_APInvoice(): void
     {
         $data = [
-            'type' => 'a-p-invoices',
+            'type' => 'ap-invoices',
             'attributes' => [
                 'name' => 'Guest APInvoice',
                 'is_active' => true
@@ -108,9 +108,9 @@ class APInvoiceStoreTest extends TestCase
         ];
 
         $response = $this->jsonApi()
-            ->expects('a-p-invoices')
+            ->expects('ap-invoices')
             ->withData($data)
-            ->post('/api/v1/a-p-invoices');
+            ->post('/api/v1/ap-invoices');
 
         $response->assertStatus(401);
     }
@@ -120,7 +120,7 @@ class APInvoiceStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $data = [
-            'type' => 'a-p-invoices',
+            'type' => 'ap-invoices',
             'attributes' => [
                 'description' => 'Missing name'
             ]
@@ -128,9 +128,9 @@ class APInvoiceStoreTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-p-invoices')
+            ->expects('ap-invoices')
             ->withData($data)
-            ->post('/api/v1/a-p-invoices');
+            ->post('/api/v1/ap-invoices');
 
         $response->assertStatus(422);
         $this->assertJsonApiValidationErrors(['/data/attributes/name'], $response);
@@ -141,7 +141,7 @@ class APInvoiceStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $data = [
-            'type' => 'a-p-invoices',
+            'type' => 'ap-invoices',
             'attributes' => [
                 'name' => '', // Empty name
                 'is_active' => 'not_boolean' // Invalid boolean
@@ -150,9 +150,9 @@ class APInvoiceStoreTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-p-invoices')
+            ->expects('ap-invoices')
             ->withData($data)
-            ->post('/api/v1/a-p-invoices');
+            ->post('/api/v1/ap-invoices');
 
         $response->assertStatus(422);
     }

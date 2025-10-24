@@ -30,8 +30,8 @@ class ARInvoiceDestroyTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-r-invoices')
-            ->delete("/api/v1/a-r-invoices/{$aRInvoice->id}");
+            ->expects('ar-invoices')
+            ->delete("/api/v1/ar-invoices/{$aRInvoice->id}");
 
         $response->assertNoContent();
         
@@ -52,8 +52,8 @@ class ARInvoiceDestroyTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-r-invoices')
-            ->delete("/api/v1/a-r-invoices/{$aRInvoice->id}");
+            ->expects('ar-invoices')
+            ->delete("/api/v1/ar-invoices/{$aRInvoice->id}");
 
         $response->assertNoContent();
         
@@ -69,8 +69,8 @@ class ARInvoiceDestroyTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-r-invoices')
-            ->delete("/api/v1/a-r-invoices/{$aRInvoice->id}");
+            ->expects('ar-invoices')
+            ->delete("/api/v1/ar-invoices/{$aRInvoice->id}");
 
         $response->assertNoContent();
 
@@ -87,8 +87,8 @@ class ARInvoiceDestroyTest extends TestCase
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
-            ->expects('a-r-invoices')
-            ->delete("/api/v1/a-r-invoices/{$aRInvoice->id}");
+            ->expects('ar-invoices')
+            ->delete("/api/v1/ar-invoices/{$aRInvoice->id}");
 
         $response->assertStatus(403);
         
@@ -102,8 +102,8 @@ class ARInvoiceDestroyTest extends TestCase
         $aRInvoice = ARInvoice::factory()->create();
 
         $response = $this->jsonApi()
-            ->expects('a-r-invoices')
-            ->delete("/api/v1/a-r-invoices/{$aRInvoice->id}");
+            ->expects('ar-invoices')
+            ->delete("/api/v1/ar-invoices/{$aRInvoice->id}");
 
         $response->assertStatus(401);
         
@@ -118,8 +118,8 @@ class ARInvoiceDestroyTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-r-invoices')
-            ->delete('/api/v1/a-r-invoices/999999');
+            ->expects('ar-invoices')
+            ->delete('/api/v1/ar-invoices/999999');
 
         $response->assertStatus(404);
     }
@@ -131,8 +131,8 @@ class ARInvoiceDestroyTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-r-invoices')
-            ->delete("/api/v1/a-r-invoices/{$aRInvoice->id}");
+            ->expects('ar-invoices')
+            ->delete("/api/v1/ar-invoices/{$aRInvoice->id}");
 
         $response->assertNoContent();
         $this->assertEmpty($response->getContent());
@@ -146,16 +146,16 @@ class ARInvoiceDestroyTest extends TestCase
         // First delete
         $response1 = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-r-invoices')
-            ->delete("/api/v1/a-r-invoices/{$aRInvoice->id}");
+            ->expects('ar-invoices')
+            ->delete("/api/v1/ar-invoices/{$aRInvoice->id}");
 
         $response1->assertNoContent();
 
         // Second delete (should return 404)
         $response2 = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('a-r-invoices')
-            ->delete("/api/v1/a-r-invoices/{$aRInvoice->id}");
+            ->expects('ar-invoices')
+            ->delete("/api/v1/ar-invoices/{$aRInvoice->id}");
 
         $response2->assertStatus(404);
     }
