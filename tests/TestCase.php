@@ -36,6 +36,7 @@ abstract class TestCase extends BaseTestCase
         // Seeders de todos los módulos (mantener performance con --quiet)
         $this->artisan('module:seed', ['module' => 'PermissionManager', '--quiet' => true]);
         $this->artisan('module:seed', ['module' => 'User', '--quiet' => true]);
+        $this->artisan('module:seed', ['module' => 'Finance', '--quiet' => true]);
         $this->artisan('module:seed', ['module' => 'Accounting', '--quiet' => true]);
         $this->artisan('module:seed', ['module' => 'Contacts', '--quiet' => true]);
         $this->artisan('module:seed', ['module' => 'Product', '--quiet' => true]);

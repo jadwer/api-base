@@ -43,6 +43,12 @@ use Modules\Accounting\JsonApi\V1\JournalSequences\JournalSequenceSchema;
 use Modules\Accounting\JsonApi\V1\JournalEntries\JournalEntrySchema;
 use Modules\Accounting\JsonApi\V1\JournalLines\JournalLineSchema;
 use Modules\Accounting\JsonApi\V1\ExchangeRates\ExchangeRateSchema;
+use Modules\Finance\JsonApi\V1\ARInvoices\ARInvoiceSchema;
+use Modules\Finance\JsonApi\V1\APInvoices\APInvoiceSchema;
+use Modules\Finance\JsonApi\V1\Payments\PaymentSchema;
+use Modules\Finance\JsonApi\V1\PaymentApplications\PaymentApplicationSchema;
+use Modules\Finance\JsonApi\V1\BankAccounts\BankAccountSchema;
+use Modules\Finance\JsonApi\V1\PaymentMethods\PaymentMethodSchema;
 
 class Server extends BaseServer
 {
@@ -126,6 +132,15 @@ class Server extends BaseServer
             JournalLineSchema::class,
             ExchangeRateSchema::class,
 
+
+            // Finance Module
+            ARInvoiceSchema::class,
+            APInvoiceSchema::class,
+            PaymentSchema::class,
+            PaymentApplicationSchema::class,
+            BankAccountSchema::class,
+            PaymentMethodSchema::class,
+
         ];
         
         return $schemas;
@@ -174,6 +189,14 @@ class Server extends BaseServer
             'journal-entries' => \Modules\Accounting\JsonApi\V1\JournalEntries\JournalEntryAuthorizer::class,
             'journal-lines' => \Modules\Accounting\JsonApi\V1\JournalLines\JournalLineAuthorizer::class,
             'exchange-rates' => \Modules\Accounting\JsonApi\V1\ExchangeRates\ExchangeRateAuthorizer::class,
+            
+            // Finance Module
+            'a-r-invoices' => \Modules\Finance\JsonApi\V1\ARInvoices\ARInvoiceAuthorizer::class,
+            'a-p-invoices' => \Modules\Finance\JsonApi\V1\APInvoices\APInvoiceAuthorizer::class,
+            'payments' => \Modules\Finance\JsonApi\V1\Payments\PaymentAuthorizer::class,
+            'payment-applications' => \Modules\Finance\JsonApi\V1\PaymentApplications\PaymentApplicationAuthorizer::class,
+            'bank-accounts' => \Modules\Finance\JsonApi\V1\BankAccounts\BankAccountAuthorizer::class,
+            'payment-methods' => \Modules\Finance\JsonApi\V1\PaymentMethods\PaymentMethodAuthorizer::class,
         ];
         
         return $authorizers;
