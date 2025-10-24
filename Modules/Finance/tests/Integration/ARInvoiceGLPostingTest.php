@@ -187,8 +187,8 @@ class ARInvoiceGLPostingTest extends TestCase
         ]);
 
         $invoice2 = $this->arInvoiceService->createInvoice([
-            'invoiceDate' => now()->addDay()->format('Y-m-d'),
-            'dueDate' => now()->addDays(31)->format('Y-m-d'),
+            'invoiceDate' => now()->addMonth()->format('Y-m-d'),
+            'dueDate' => now()->addMonth()->addDays(30)->format('Y-m-d'),
             'customerId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 2000.00,
@@ -197,8 +197,8 @@ class ARInvoiceGLPostingTest extends TestCase
         ]);
 
         $invoice3 = $this->arInvoiceService->createInvoice([
-            'invoiceDate' => now()->addDays(2)->format('Y-m-d'),
-            'dueDate' => now()->addDays(32)->format('Y-m-d'),
+            'invoiceDate' => now()->addMonths(2)->format('Y-m-d'),
+            'dueDate' => now()->addMonths(2)->addDays(30)->format('Y-m-d'),
             'customerId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 500.00,

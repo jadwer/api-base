@@ -73,7 +73,7 @@ class PaymentApplicationService
 
             // 5. Crear GL entry para el payment (si aún no tiene)
             // Solo crear GL entry en el primer application del payment
-            if ($payment->paymentApplications()->count() === 1 && !$payment->journal_entry_id) {
+            if (!$payment->journal_entry_id) {
                 $this->createPaymentGLEntry($payment);
                 $payment->refresh(); // Reload payment with journal_entry_id
             }

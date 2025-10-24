@@ -34,10 +34,11 @@ abstract class TestCase extends BaseTestCase
         app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
 
         // Seeders de todos los módulos (mantener performance con --quiet)
+        // IMPORTANT: Accounting must be seeded before Finance (FiscalPeriods, Journals)
         $this->artisan('module:seed', ['module' => 'PermissionManager', '--quiet' => true]);
         $this->artisan('module:seed', ['module' => 'User', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Finance', '--quiet' => true]);
         $this->artisan('module:seed', ['module' => 'Accounting', '--quiet' => true]);
+        $this->artisan('module:seed', ['module' => 'Finance', '--quiet' => true]);
         $this->artisan('module:seed', ['module' => 'Contacts', '--quiet' => true]);
         $this->artisan('module:seed', ['module' => 'Product', '--quiet' => true]);
         $this->artisan('module:seed', ['module' => 'Inventory', '--quiet' => true]);

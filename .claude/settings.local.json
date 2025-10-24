@@ -28,7 +28,8 @@
       "Bash(do orig=\"$f%.bak\" echo \"Restoring: $orig\" cp \"$f\" \"$orig\" done)",
       "Bash(git checkout:*)",
       "Bash(timeout 30 php artisan test:*)",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(timeout 90 php artisan test:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
