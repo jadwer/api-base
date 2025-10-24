@@ -39,8 +39,8 @@ class PaymentApplicationIntegrationTest extends TestCase
         $paymentMethod = PaymentMethod::factory()->create();
 
         $invoice = $this->arInvoiceService->createInvoice([
-            'invoiceDate' => '2025-01-15',
-            'dueDate' => '2025-02-15',
+            'invoiceDate' => now()->format('Y-m-d'),
+            'dueDate' => now()->addDays(30)->format('Y-m-d'),
             'customerId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
@@ -85,8 +85,8 @@ class PaymentApplicationIntegrationTest extends TestCase
         $paymentMethod = PaymentMethod::factory()->create();
 
         $invoice = $this->arInvoiceService->createInvoice([
-            'invoiceDate' => '2025-01-15',
-            'dueDate' => '2025-02-15',
+            'invoiceDate' => now()->format('Y-m-d'),
+            'dueDate' => now()->addDays(30)->format('Y-m-d'),
             'customerId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
@@ -130,8 +130,8 @@ class PaymentApplicationIntegrationTest extends TestCase
         $paymentMethod = PaymentMethod::factory()->create();
 
         $invoice = $this->arInvoiceService->createInvoice([
-            'invoiceDate' => '2025-01-15',
-            'dueDate' => '2025-02-15',
+            'invoiceDate' => now()->format('Y-m-d'),
+            'dueDate' => now()->addDays(30)->format('Y-m-d'),
             'customerId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
@@ -158,10 +158,10 @@ class PaymentApplicationIntegrationTest extends TestCase
 
         // Assert: Journal entry debe balancear
         $journalEntry = $payment->journalEntry;
-        $this->assertCount(2, $journalEntry->lines);
+        $this->assertCount(2, $journalEntry->journalLines);
 
-        $totalDebit = $journalEntry->lines->sum('debit_amount');
-        $totalCredit = $journalEntry->lines->sum('credit_amount');
+        $totalDebit = $journalEntry->journalLines->sum('debit');
+        $totalCredit = $journalEntry->journalLines->sum('credit');
         $this->assertEquals($totalDebit, $totalCredit);
         $this->assertEquals(1160.00, $totalDebit);
     }
@@ -177,8 +177,8 @@ class PaymentApplicationIntegrationTest extends TestCase
         $customerGLAccount = Account::where('code', '1100')->first();
 
         $invoice = $this->arInvoiceService->createInvoice([
-            'invoiceDate' => '2025-01-15',
-            'dueDate' => '2025-02-15',
+            'invoiceDate' => now()->format('Y-m-d'),
+            'dueDate' => now()->addDays(30)->format('Y-m-d'),
             'customerId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
@@ -203,10 +203,10 @@ class PaymentApplicationIntegrationTest extends TestCase
         $payment->refresh();
         $journalEntry = $payment->journalEntry;
 
-        $debitLine = $journalEntry->lines->where('debit_amount', '>', 0)->first();
+        $debitLine = $journalEntry->journalLines->where('debit', '>', 0)->first();
         $this->assertEquals($bankGLAccount->id, $debitLine->account_id);
 
-        $creditLine = $journalEntry->lines->where('credit_amount', '>', 0)->first();
+        $creditLine = $journalEntry->journalLines->where('credit', '>', 0)->first();
         $this->assertEquals($customerGLAccount->id, $creditLine->account_id);
     }
 
@@ -218,8 +218,8 @@ class PaymentApplicationIntegrationTest extends TestCase
         $paymentMethod = PaymentMethod::factory()->create();
 
         $invoice = $this->arInvoiceService->createInvoice([
-            'invoiceDate' => '2025-01-15',
-            'dueDate' => '2025-02-15',
+            'invoiceDate' => now()->format('Y-m-d'),
+            'dueDate' => now()->addDays(30)->format('Y-m-d'),
             'customerId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
@@ -252,8 +252,8 @@ class PaymentApplicationIntegrationTest extends TestCase
         $paymentMethod = PaymentMethod::factory()->create();
 
         $invoice = $this->arInvoiceService->createInvoice([
-            'invoiceDate' => '2025-01-15',
-            'dueDate' => '2025-02-15',
+            'invoiceDate' => now()->format('Y-m-d'),
+            'dueDate' => now()->addDays(30)->format('Y-m-d'),
             'customerId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
@@ -287,8 +287,8 @@ class PaymentApplicationIntegrationTest extends TestCase
         $paymentMethod = PaymentMethod::factory()->create();
 
         $invoice = $this->arInvoiceService->createInvoice([
-            'invoiceDate' => '2025-01-15',
-            'dueDate' => '2025-02-15',
+            'invoiceDate' => now()->format('Y-m-d'),
+            'dueDate' => now()->addDays(30)->format('Y-m-d'),
             'customerId' => $customer1->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
@@ -321,8 +321,8 @@ class PaymentApplicationIntegrationTest extends TestCase
         $paymentMethod = PaymentMethod::factory()->create();
 
         $invoice = $this->arInvoiceService->createInvoice([
-            'invoiceDate' => '2025-01-15',
-            'dueDate' => '2025-02-15',
+            'invoiceDate' => now()->format('Y-m-d'),
+            'dueDate' => now()->addDays(30)->format('Y-m-d'),
             'customerId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,

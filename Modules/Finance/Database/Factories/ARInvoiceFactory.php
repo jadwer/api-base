@@ -25,7 +25,7 @@ class ARInvoiceFactory extends Factory
             'journal_entry_id' => $this->faker->numberBetween(1, 100),
             'notes' => $this->faker->optional(0.7)->paragraph(),
             'metadata' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
-            'is_active' => $this->faker->boolean(70),
+            'is_active' => true,
         ];
     }
 

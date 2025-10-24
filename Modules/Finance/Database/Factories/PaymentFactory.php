@@ -26,7 +26,7 @@ class PaymentFactory extends Factory
             'reference' => $this->faker->sentence(3),
             'notes' => $this->faker->optional(0.7)->paragraph(),
             'metadata' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
-            'is_active' => $this->faker->boolean(70),
+            'is_active' => true,
         ];
     }
 

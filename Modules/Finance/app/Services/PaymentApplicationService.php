@@ -101,7 +101,7 @@ class PaymentApplicationService
     {
         return DB::transaction(function () use ($application) {
             $payment = $application->payment;
-            $invoice = $application->arInvoice;
+            $invoice = $application->aRInvoice;
             $amount = $application->amount;
 
             // 1. Revertir invoice paid_amount

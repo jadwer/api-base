@@ -32,8 +32,8 @@ class ARInvoiceGLPostingTest extends TestCase
 
         // Act: Crear AR Invoice usando el service
         $invoice = $this->arInvoiceService->createInvoice([
-            'invoiceDate' => '2025-01-15',
-            'dueDate' => '2025-02-15',
+            'invoiceDate' => now()->format('Y-m-d'),
+            'dueDate' => now()->addDays(30)->format('Y-m-d'),
             'customerId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
@@ -63,8 +63,8 @@ class ARInvoiceGLPostingTest extends TestCase
 
         // Act: Crear AR Invoice
         $invoice = $this->arInvoiceService->createInvoice([
-            'invoiceDate' => '2025-01-15',
-            'dueDate' => '2025-02-15',
+            'invoiceDate' => now()->format('Y-m-d'),
+            'dueDate' => now()->addDays(30)->format('Y-m-d'),
             'customerId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
@@ -75,11 +75,11 @@ class ARInvoiceGLPostingTest extends TestCase
         $journalEntry = $invoice->journalEntry;
 
         // Assert: Verificar que tiene exactamente 2 líneas (DR y CR)
-        $this->assertCount(2, $journalEntry->lines);
+        $this->assertCount(2, $journalEntry->journalLines);
 
         // Assert: Verificar que balancea (total debit = total credit)
-        $totalDebit = $journalEntry->lines->sum('debit_amount');
-        $totalCredit = $journalEntry->lines->sum('credit_amount');
+        $totalDebit = $journalEntry->journalLines->sum('debit');
+        $totalCredit = $journalEntry->journalLines->sum('credit');
 
         $this->assertEquals($totalDebit, $totalCredit, 'Journal entry debe balancear');
         $this->assertEquals(1160.00, $totalDebit, 'Debit debe ser igual al total de la invoice');
@@ -95,8 +95,8 @@ class ARInvoiceGLPostingTest extends TestCase
 
         // Act
         $invoice = $this->arInvoiceService->createInvoice([
-            'invoiceDate' => '2025-01-15',
-            'dueDate' => '2025-02-15',
+            'invoiceDate' => now()->format('Y-m-d'),
+            'dueDate' => now()->addDays(30)->format('Y-m-d'),
             'customerId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
@@ -107,16 +107,16 @@ class ARInvoiceGLPostingTest extends TestCase
         $journalEntry = $invoice->journalEntry;
 
         // Assert: Verificar que usa la cuenta correcta de Clientes (DR)
-        $debitLine = $journalEntry->lines->where('debit_amount', '>', 0)->first();
+        $debitLine = $journalEntry->journalLines->where('debit', '>', 0)->first();
         $this->assertEquals($customerAccount->id, $debitLine->account_id);
-        $this->assertEquals(1160.00, $debitLine->debit_amount);
-        $this->assertEquals(0, $debitLine->credit_amount);
+        $this->assertEquals(1160.00, $debitLine->debit);
+        $this->assertEquals(0, $debitLine->credit);
 
         // Assert: Verificar que usa la cuenta correcta de Ingresos (CR)
-        $creditLine = $journalEntry->lines->where('credit_amount', '>', 0)->first();
+        $creditLine = $journalEntry->journalLines->where('credit', '>', 0)->first();
         $this->assertEquals($revenueAccount->id, $creditLine->account_id);
-        $this->assertEquals(0, $creditLine->debit_amount);
-        $this->assertEquals(1160.00, $creditLine->credit_amount);
+        $this->assertEquals(0, $creditLine->debit);
+        $this->assertEquals(1160.00, $creditLine->credit);
     }
 
     public function test_journal_entry_has_correct_metadata(): void
@@ -126,8 +126,8 @@ class ARInvoiceGLPostingTest extends TestCase
 
         // Act
         $invoice = $this->arInvoiceService->createInvoice([
-            'invoiceDate' => '2025-01-15',
-            'dueDate' => '2025-02-15',
+            'invoiceDate' => now()->format('Y-m-d'),
+            'dueDate' => now()->addDays(30)->format('Y-m-d'),
             'customerId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
@@ -138,7 +138,7 @@ class ARInvoiceGLPostingTest extends TestCase
         $journalEntry = $invoice->journalEntry;
 
         // Assert: Verificar que el journal entry tiene la fecha correcta
-        $this->assertEquals('2025-01-15', $journalEntry->entry_date->format('Y-m-d'));
+        $this->assertEquals(now()->format('Y-m-d'), $journalEntry->date->format('Y-m-d'));
 
         // Assert: Verificar que tiene la referencia al invoice number
         $this->assertEquals($invoice->invoice_number, $journalEntry->reference);
@@ -160,8 +160,8 @@ class ARInvoiceGLPostingTest extends TestCase
         $this->expectExceptionMessage('GL Account for Customers (1100) not found');
 
         $this->arInvoiceService->createInvoice([
-            'invoiceDate' => '2025-01-15',
-            'dueDate' => '2025-02-15',
+            'invoiceDate' => now()->format('Y-m-d'),
+            'dueDate' => now()->addDays(30)->format('Y-m-d'),
             'customerId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
@@ -177,8 +177,8 @@ class ARInvoiceGLPostingTest extends TestCase
 
         // Act: Crear 3 invoices
         $invoice1 = $this->arInvoiceService->createInvoice([
-            'invoiceDate' => '2025-01-15',
-            'dueDate' => '2025-02-15',
+            'invoiceDate' => now()->format('Y-m-d'),
+            'dueDate' => now()->addDays(30)->format('Y-m-d'),
             'customerId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
@@ -224,8 +224,8 @@ class ARInvoiceGLPostingTest extends TestCase
 
         // Act
         $invoice = $this->arInvoiceService->createInvoice([
-            'invoiceDate' => '2025-01-15',
-            'dueDate' => '2025-02-15',
+            'invoiceDate' => now()->format('Y-m-d'),
+            'dueDate' => now()->addDays(30)->format('Y-m-d'),
             'customerId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
