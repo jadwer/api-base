@@ -31,6 +31,18 @@ use Modules\Contacts\JsonApi\V1\Contacts\ContactSchema;
 use Modules\Contacts\JsonApi\V1\ContactDocuments\ContactDocumentSchema;
 use Modules\Contacts\JsonApi\V1\ContactAddresses\ContactAddressSchema;
 use Modules\Contacts\JsonApi\V1\ContactPeople\ContactPersonSchema;
+use Modules\Accounting\JsonApi\V1\IdempotencyKeys\IdempotencyKeySchema;
+use Modules\Accounting\JsonApi\V1\AccountMappings\AccountMappingSchema;
+use Modules\Accounting\JsonApi\V1\AccountBalances\AccountBalanceSchema;
+use Modules\Accounting\JsonApi\V1\ExchangeRatePolicies\ExchangeRatePolicySchema;
+use Modules\Accounting\JsonApi\V1\AuditLogs\AuditLogSchema;
+use Modules\Accounting\JsonApi\V1\Accounts\AccountSchema;
+use Modules\Accounting\JsonApi\V1\FiscalPeriods\FiscalPeriodSchema;
+use Modules\Accounting\JsonApi\V1\Journals\JournalSchema;
+use Modules\Accounting\JsonApi\V1\JournalSequences\JournalSequenceSchema;
+use Modules\Accounting\JsonApi\V1\JournalEntries\JournalEntrySchema;
+use Modules\Accounting\JsonApi\V1\JournalLines\JournalLineSchema;
+use Modules\Accounting\JsonApi\V1\ExchangeRates\ExchangeRateSchema;
 
 class Server extends BaseServer
 {
@@ -99,6 +111,21 @@ class Server extends BaseServer
             ContactAddressSchema::class,
             ContactPersonSchema::class,
 
+
+            // Accounting Module
+            IdempotencyKeySchema::class,
+            AccountMappingSchema::class,
+            AccountBalanceSchema::class,
+            ExchangeRatePolicySchema::class,
+            AuditLogSchema::class,
+            AccountSchema::class,
+            FiscalPeriodSchema::class,
+            JournalSchema::class,
+            JournalSequenceSchema::class,
+            JournalEntrySchema::class,
+            JournalLineSchema::class,
+            ExchangeRateSchema::class,
+
         ];
         
         return $schemas;
@@ -133,6 +160,20 @@ class Server extends BaseServer
             'contact-addresses' => \Modules\Contacts\JsonApi\V1\ContactAddresses\ContactAddressAuthorizer::class,
             'contact-people' => \Modules\Contacts\JsonApi\V1\ContactPeople\ContactPersonAuthorizer::class,
 
+            
+            // Accounting Module
+            'idempotency-keys' => \Modules\Accounting\JsonApi\V1\IdempotencyKeys\IdempotencyKeyAuthorizer::class,
+            'account-mappings' => \Modules\Accounting\JsonApi\V1\AccountMappings\AccountMappingAuthorizer::class,
+            'account-balances' => \Modules\Accounting\JsonApi\V1\AccountBalances\AccountBalanceAuthorizer::class,
+            'exchange-rate-policies' => \Modules\Accounting\JsonApi\V1\ExchangeRatePolicies\ExchangeRatePolicyAuthorizer::class,
+            'audit-logs' => \Modules\Accounting\JsonApi\V1\AuditLogs\AuditLogAuthorizer::class,
+            'accounts' => \Modules\Accounting\JsonApi\V1\Accounts\AccountAuthorizer::class,
+            'fiscal-periods' => \Modules\Accounting\JsonApi\V1\FiscalPeriods\FiscalPeriodAuthorizer::class,
+            'journals' => \Modules\Accounting\JsonApi\V1\Journals\JournalAuthorizer::class,
+            'journal-sequences' => \Modules\Accounting\JsonApi\V1\JournalSequences\JournalSequenceAuthorizer::class,
+            'journal-entries' => \Modules\Accounting\JsonApi\V1\JournalEntries\JournalEntryAuthorizer::class,
+            'journal-lines' => \Modules\Accounting\JsonApi\V1\JournalLines\JournalLineAuthorizer::class,
+            'exchange-rates' => \Modules\Accounting\JsonApi\V1\ExchangeRates\ExchangeRateAuthorizer::class,
         ];
         
         return $authorizers;

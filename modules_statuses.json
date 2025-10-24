@@ -9,5 +9,6 @@
     "Purchase": true,
     "Sales": true,
     "Ecommerce": true,
-    "Contacts": true
+    "Contacts": true,
+    "Accounting": true
 }
