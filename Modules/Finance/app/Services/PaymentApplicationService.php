@@ -75,6 +75,7 @@ class PaymentApplicationService
             // Solo crear GL entry en el primer application del payment
             if ($payment->paymentApplications()->count() === 1 && !$payment->journal_entry_id) {
                 $this->createPaymentGLEntry($payment);
+                $payment->refresh(); // Reload payment with journal_entry_id
             }
 
             Log::info("Payment applied to AR Invoice", [
@@ -86,7 +87,7 @@ class PaymentApplicationService
                 'application_id' => $application->id,
             ]);
 
-            return $application->fresh(['payment', 'arInvoice']);
+            return $application->fresh(['payment', 'aRInvoice']);
         });
     }
 
@@ -100,6 +101,9 @@ class PaymentApplicationService
     public function unapplyPayment(PaymentApplication $application): bool
     {
         return DB::transaction(function () use ($application) {
+            // Load relationships if not already loaded
+            $application->load(['payment', 'aRInvoice']);
+
             $payment = $application->payment;
             $invoice = $application->aRInvoice;
             $amount = $application->amount;
@@ -211,8 +215,8 @@ class PaymentApplicationService
 
         try {
             $journalEntry = $this->accountingService->createJournalEntry(
-                journalCode: 'CR', // Cash Receipts
-                entryDate: $payment->payment_date,
+                journalCode: 'AR', // Use AR journal for consistency
+                entryDate: $payment->payment_date->format('Y-m-d'),
                 description: "Payment #{$payment->payment_number} - Customer #{$payment->customer_id}",
                 reference: $payment->payment_number,
                 lines: [

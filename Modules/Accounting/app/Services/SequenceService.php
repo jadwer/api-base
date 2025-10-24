@@ -41,8 +41,9 @@ class SequenceService
             $sequence->increment('current_number');
 
             // Formato unificado: {prefix}-{YYYY}-{MM}-{#####}
+            // Use journal prefix directly to avoid null prefix issues
             return sprintf('%s-%04d-%02d-%05d',
-                $sequence->prefix,
+                $journal->prefix ?? $sequence->prefix,
                 $date->year,
                 $date->month,
                 $sequence->current_number
