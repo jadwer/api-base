@@ -45,5 +45,12 @@
              value=":memory:" />
         <env name="LOG_LEVEL"
              value="emergency" />
+        <!-- Performance optimizations -->
+        <env name="CACHE_PREFIX"
+             value="test_cache" />
+        <env name="APP_DEBUG"
+             value="false" />
+        <env name="DEBUGBAR_ENABLED"
+             value="false" />
     </php>
 </phpunit>

@@ -9,20 +9,8 @@ use Modules\Sales\Models\SalesOrder;
 
 class SalesOrderIndexTest extends TestCase
 {
-    private function getAdminUser(): User
-    {
-        return User::where('email', 'admin@example.com')->firstOrFail();
-    }
 
-    private function getTechUser(): User
-    {
-        return User::where('email', 'tech@example.com')->firstOrFail();
-    }
 
-    private function getCustomerUser(): User
-    {
-        return User::where('email', 'customer@example.com')->firstOrFail();
-    }
 
     public function test_admin_can_list_sales_orders(): void
     {

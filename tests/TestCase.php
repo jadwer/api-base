@@ -5,30 +5,52 @@ namespace Tests;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use LaravelJsonApi\Testing\MakesJsonApiRequests;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\User\Models\User;
 
 abstract class TestCase extends BaseTestCase
 {
     use MakesJsonApiRequests, RefreshDatabase;
 
+    /**
+     * Cache de usuarios en memoria
+     */
+    protected static ?User $cachedAdminUser = null;
+    protected static ?User $cachedTechUser = null;
+    protected static ?User $cachedCustomerUser = null;
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
-
-        // Solo seeders esenciales para acelerar tests
-        $this->artisan('module:seed', ['module' => 'PermissionManager']);
-        $this->artisan('module:seed', ['module' => 'Accounting']);
-        $this->artisan('module:seed', ['module' => 'Contacts']);
-        $this->artisan('module:seed', ['module' => 'User']);
-        $this->artisan('module:seed', ['module' => 'Product']);
-        $this->artisan('module:seed', ['module' => 'Inventory']);
-        $this->artisan('module:seed', ['module' => 'Purchase']);
-        $this->artisan('module:seed', ['module' => 'Sales']);
-        $this->artisan('module:seed', ['module' => 'Ecommerce']);
-        $this->artisan('module:seed', ['module' => 'Audit']);
+        // Seed mínimo + Accounting (usado por mayoría de tests)
+        $this->seedBasicData();
     }
 
+    /**
+     * Seed de datos básicos - Permisos, usuarios y Accounting
+     */
+    protected function seedBasicData(): void
+    {
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+
+        // Seeders mínimos necesarios
+        $this->artisan('module:seed', ['module' => 'PermissionManager', '--quiet' => true]);
+        $this->artisan('module:seed', ['module' => 'User', '--quiet' => true]);
+        $this->artisan('module:seed', ['module' => 'Accounting', '--quiet' => true]);
+
+        // Cachear usuarios
+        static::$cachedAdminUser = User::where('email', 'admin@example.com')->first();
+        static::$cachedTechUser = User::where('email', 'tech@example.com')->first();
+        static::$cachedCustomerUser = User::where('email', 'customer@example.com')->first();
+    }
+
+    /**
+     * Seed de módulo específico (usar solo cuando el test lo necesite)
+     */
+    protected function seedModule(string $moduleName): void
+    {
+        $this->artisan('module:seed', ['module' => $moduleName, '--quiet' => true]);
+    }
 
     /**
      * Asserta que el response contenga errores JSON:API para los punteros dados.
@@ -46,20 +68,38 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
-     * Helper para obtener usuarios pre-seeded rápidamente
+     * Helpers con cache
      */
-    protected function getSeededAdminUser(): \Modules\User\Models\User
+    protected function getAdminUser(): User
     {
-        return \Modules\User\Models\User::where('email', 'admin@example.com')->firstOrFail();
+        return static::$cachedAdminUser ?? User::where('email', 'admin@example.com')->firstOrFail();
     }
 
-    protected function getSeededTechUser(): \Modules\User\Models\User
+    protected function getTechUser(): User
     {
-        return \Modules\User\Models\User::where('email', 'tech@example.com')->firstOrFail();
+        return static::$cachedTechUser ?? User::where('email', 'tech@example.com')->firstOrFail();
     }
 
-    protected function getSeededCustomerUser(): \Modules\User\Models\User
+    protected function getCustomerUser(): User
     {
-        return \Modules\User\Models\User::where('email', 'customer@example.com')->firstOrFail();
+        return static::$cachedCustomerUser ?? User::where('email', 'customer@example.com')->firstOrFail();
+    }
+
+    /**
+     * Legacy aliases
+     */
+    protected function getSeededAdminUser(): User
+    {
+        return $this->getAdminUser();
+    }
+
+    protected function getSeededTechUser(): User
+    {
+        return $this->getTechUser();
+    }
+
+    protected function getSeededCustomerUser(): User
+    {
+        return $this->getCustomerUser();
     }
 }

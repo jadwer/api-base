@@ -21,7 +21,13 @@
       "Bash(done)",
       "Bash(timeout 30 php artisan test Modules/Sales/tests/Feature/)",
       "Bash(git add:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(do echo \"=== $model ===\")",
+      "Bash(timeout 120 php artisan test:*)",
+      "Bash(while read f)",
+      "Bash(do orig=\"$f%.bak\" echo \"Restoring: $orig\" cp \"$f\" \"$orig\" done)",
+      "Bash(git checkout:*)",
+      "Bash(timeout 30 php artisan test:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

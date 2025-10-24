@@ -28,15 +28,7 @@ class InventoryMovementStoreTest extends TestCase
         return $user;
     }
 
-    private function getAdminUser(): User
-    {
-        return User::where('email', 'admin@example.com')->firstOrFail();
-    }
 
-    private function getCustomerUser(): User
-    {
-        return User::where('email', 'customer@example.com')->firstOrFail();
-    }
 
     public function test_admin_can_create_entry_movement(): void
     {
