@@ -4,6 +4,7 @@ namespace Modules\Finance\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Accounting\Models\Account;
+use Modules\Accounting\Models\Journal;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -22,7 +23,34 @@ class GLAccountsSeeder extends Seeder
 {
     public function run(): void
     {
-        echo "🏦 Seeding GL Accounts for Finance module...\n";
+        echo "🏦 Seeding GL Accounts and Journals for Finance module...\n";
+
+        // First, create required journals (AR, AP)
+        $arJournal = Journal::firstOrCreate(
+            ['code' => 'AR'],
+            [
+                'name' => 'Accounts Receivable',
+                'description' => 'Journal for customer invoices and payments',
+                'prefix' => 'AR',
+                'type' => 'sales',
+                'status' => 'active',
+                'metadata' => ['created_by' => 'GLAccountsSeeder', 'module' => 'Finance'],
+            ]
+        );
+
+        $apJournal = Journal::firstOrCreate(
+            ['code' => 'AP'],
+            [
+                'name' => 'Accounts Payable',
+                'description' => 'Journal for supplier invoices and payments',
+                'prefix' => 'AP',
+                'type' => 'purchases',
+                'status' => 'active',
+                'metadata' => ['created_by' => 'GLAccountsSeeder', 'module' => 'Finance'],
+            ]
+        );
+
+        echo "  ✅ Journals created: AR, AP\n";
 
         // 1. Banco (1020)
         $bankAccount = Account::firstOrCreate(

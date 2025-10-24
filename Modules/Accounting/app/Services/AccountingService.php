@@ -7,6 +7,7 @@ use Modules\Accounting\Models\JournalEntry;
 use Modules\Accounting\Models\JournalLine;
 use Modules\Accounting\Models\FiscalPeriod;
 use Modules\Accounting\Models\Account;
+use Modules\Accounting\Models\Journal;
 use Exception;
 
 class AccountingService
@@ -16,6 +17,75 @@ class AccountingService
     public function __construct(SequenceService $sequenceService)
     {
         $this->sequenceService = $sequenceService;
+    }
+
+    /**
+     * Create and post a journal entry with lines
+     *
+     * @param string $journalCode Journal code (AR, AP, GL, etc.)
+     * @param string $entryDate Entry date (Y-m-d format)
+     * @param string $description Entry description
+     * @param string|null $reference External reference
+     * @param array $lines Array of lines with account_id, debit_amount, credit_amount, description
+     * @return JournalEntry
+     * @throws Exception
+     */
+    public function createJournalEntry(
+        string $journalCode,
+        string $entryDate,
+        string $description,
+        ?string $reference,
+        array $lines
+    ): JournalEntry {
+        return DB::transaction(function () use ($journalCode, $entryDate, $description, $reference, $lines) {
+            // Find journal by code
+            $journal = Journal::where('code', $journalCode)->where('status', 'active')->first();
+
+            if (!$journal) {
+                throw new Exception("Journal with code '{$journalCode}' not found or not active");
+            }
+
+            // Find fiscal period for this date
+            $fiscalPeriod = FiscalPeriod::where('start_date', '<=', $entryDate)
+                ->where('end_date', '>=', $entryDate)
+                ->where('status', 'open')
+                ->first();
+
+            if (!$fiscalPeriod) {
+                throw new Exception("No open fiscal period found for date {$entryDate}");
+            }
+
+            // Create journal entry
+            $entry = JournalEntry::create([
+                'fiscal_period_id' => $fiscalPeriod->id,
+                'journal_id' => $journal->id,
+                'date' => $entryDate,
+                'description' => $description,
+                'reference' => $reference,
+                'status' => 'draft',
+                'total_debit' => 0,
+                'total_credit' => 0,
+            ]);
+
+            // Create journal lines
+            foreach ($lines as $lineData) {
+                JournalLine::create([
+                    'journal_entry_id' => $entry->id,
+                    'account_id' => $lineData['account_id'],
+                    'debit' => $lineData['debit_amount'] ?? 0,
+                    'credit' => $lineData['credit_amount'] ?? 0,
+                    'description' => $lineData['description'] ?? $description,
+                ]);
+            }
+
+            // Reload with lines
+            $entry->refresh();
+
+            // Post the entry
+            $this->postJournalEntry($entry);
+
+            return $entry->fresh(['journalLines']);
+        });
     }
 
     /**
@@ -68,7 +138,7 @@ class AccountingService
         $totalDebit = $entry->journalLines()->sum('debit');
         $totalCredit = $entry->journalLines()->sum('credit');
 
-        if (bccomp((string)$totalDebit, (string)$totalCredit, 2) !== 0) {
+        if (abs($totalDebit - $totalCredit) > 0.01) {
             throw new Exception(
                 "Journal entry is not balanced. Debit: {$totalDebit}, Credit: {$totalCredit}"
             );

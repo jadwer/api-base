@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Permission\Traits\HasPermissions;
 use Modules\Accounting\Models\JournalEntry;
-use Modules\Sales\Models\Customer;
+use Modules\Contacts\Models\Contact;
 
 class ARInvoice extends Model
 {
@@ -38,7 +38,7 @@ class ARInvoice extends Model
 
     public function customer()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Contact::class, 'customer_id');
     }
 
     public function journalEntry()
