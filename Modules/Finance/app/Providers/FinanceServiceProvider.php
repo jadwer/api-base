@@ -36,6 +36,11 @@ class FinanceServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+
+        // Register Finance Services
+        $this->app->singleton(\Modules\Finance\Services\ARInvoiceService::class);
+        $this->app->singleton(\Modules\Finance\Services\APInvoiceService::class);
+        $this->app->singleton(\Modules\Finance\Services\PaymentApplicationService::class);
     }
 
     /**

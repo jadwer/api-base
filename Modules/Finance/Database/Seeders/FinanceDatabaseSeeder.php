@@ -12,16 +12,20 @@ class FinanceDatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->command->info('🏪 Seeding Finance module...');
-        
+
         $this->call([
-            ARInvoiceSeeder::class,
-            APInvoiceSeeder::class,
-            PaymentSeeder::class,
-            PaymentApplicationSeeder::class,
-            BankAccountSeeder::class,
-            PaymentMethodSeeder::class,
+            // Primero: Configuración básica (GL Accounts y Payment Methods)
+            GLAccountsSeeder::class,
+            PaymentMethodsSeeder::class,
+
+            // Luego: Datos de prueba (solo si es necesario)
+            // ARInvoiceSeeder::class,
+            // APInvoiceSeeder::class,
+            // PaymentSeeder::class,
+            // PaymentApplicationSeeder::class,
+            // BankAccountSeeder::class,
         ]);
-        
+
         $this->command->info('🎉 Finance module seeded successfully!');
     }
 }
