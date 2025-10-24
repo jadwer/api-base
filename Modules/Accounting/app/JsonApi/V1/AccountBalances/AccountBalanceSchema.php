@@ -55,12 +55,12 @@ class AccountBalanceSchema extends Schema
     public function sortables(): array
     {
         return [
-            'fiscal_year',
-            'fiscal_month',
-            'opening_balance',
-            'period_debits',
-            'period_credits',
-            'closing_balance',
+            'fiscalYear',
+            'fiscalMonth',
+            'openingBalance',
+            'periodDebits',
+            'periodCredits',
+            'closingBalance',
             'created_at',
             'updated_at',
         ];

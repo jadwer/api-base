@@ -11,14 +11,25 @@ class JournalFactory extends Factory
 
     public function definition(): array
     {
+        $types = ['general', 'sales', 'purchases', 'cash_receipts', 'cash_disbursements', 'payroll'];
+        $type = $this->faker->randomElement($types);
+        $prefixes = [
+            'general' => 'GJ',
+            'sales' => 'SJ',
+            'purchases' => 'PJ',
+            'cash_receipts' => 'CR',
+            'cash_disbursements' => 'CD',
+            'payroll' => 'PR'
+        ];
+
         return [
-            'code' => $this->faker->lexify('????##'),
-            'name' => $this->faker->words(2, true),
-            'description' => $this->faker->optional(0.7)->paragraph(),
-            'prefix' => $this->faker->sentence(3),
-            'type' => $this->faker->sentence(3),
-            'status' => $this->faker->randomElement(['active', 'inactive', 'pending']),
-            'metadata' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
+            'code' => $this->faker->unique()->bothify('??##'),
+            'name' => ucfirst(str_replace('_', ' ', $type)) . ' Journal',
+            'description' => $this->faker->optional(0.6)->sentence(10),
+            'prefix' => $prefixes[$type],
+            'type' => $type,
+            'status' => $this->faker->randomElement(['active', 'inactive']),
+            'metadata' => [],
         ];
     }
 

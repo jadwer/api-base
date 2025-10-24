@@ -17,11 +17,11 @@ class JournalEntrySeeder extends Seeder
         // Create sample JournalEntry records
         JournalEntry::factory()->count(10)->create();
 
-        // Create some active records
-        JournalEntry::factory()->active()->count(5)->create();
+        // Create some draft records
+        JournalEntry::factory()->draft()->count(5)->create();
 
-        // Create some inactive records
-        JournalEntry::factory()->inactive()->count(2)->create();
+        // Create some posted records
+        JournalEntry::factory()->posted()->count(2)->create();
 
         
         $this->command->info('✅ JournalEntry seeded successfully!');

@@ -14,13 +14,14 @@ class ExchangeRatePolicy extends Model
     protected $table = 'exchange_rate_policies';
     
     protected $fillable = [
-        'company_id', 'currency', 'source', 'scope', 'max_age_days', 'tolerance_percentage', 'require_approval_over', 'is_active'
+        'company_id', 'currency', 'source', 'scope', 'max_age_days', 'tolerance_percentage', 'require_approval_over', 'is_active', 'metadata'
     ];
 
     protected $casts = [
                 'tolerance_percentage' => 'decimal:2',
         'require_approval_over' => 'decimal:2',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
+        'metadata' => 'array'
     ];
 
     // Scopes

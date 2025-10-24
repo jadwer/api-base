@@ -54,10 +54,10 @@ class ExchangeRateSchema extends Schema
     public function sortables(): array
     {
         return [
-            'from_currency',
-            'to_currency',
+            'fromCurrency',
+            'toCurrency',
             'rate',
-            'effective_date',
+            'effectiveDate',
             'source',
             'status',
             'created_at',

@@ -11,15 +11,21 @@ class AccountBalanceFactory extends Factory
 
     public function definition(): array
     {
+        $openingBalance = $this->faker->randomFloat(2, -50000, 50000);
+        $periodDebits = $this->faker->randomFloat(2, 0, 10000);
+        $periodCredits = $this->faker->randomFloat(2, 0, 10000);
+        $closingBalance = $openingBalance + $periodDebits - $periodCredits;
+
         return [
-            'company_id' => $this->faker->numberBetween(1, 100),
-            'account_id' => $this->faker->numberBetween(1, 100),
-            'fiscal_year' => $this->faker->numberBetween(1, 100),
-            'fiscal_month' => $this->faker->numberBetween(1, 100),
-            'opening_balance' => $this->faker->randomFloat(2, 1, 100),
-            'period_debits' => $this->faker->randomFloat(2, 1, 100),
-            'period_credits' => $this->faker->randomFloat(2, 1, 100),
-            'closing_balance' => $this->faker->randomFloat(2, 1, 100),
+            'company_id' => null,
+            'account_id' => \Modules\Accounting\Models\Account::factory(),
+            'fiscal_year' => $this->faker->numberBetween(2020, 2025),
+            'fiscal_month' => $this->faker->numberBetween(1, 12),
+            'opening_balance' => $openingBalance,
+            'period_debits' => $periodDebits,
+            'period_credits' => $periodCredits,
+            'closing_balance' => $closingBalance,
+            'metadata' => [],
         ];
     }
 

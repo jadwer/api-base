@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create("audit_logs", function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained('companies')->onDelete('restrict');
+            $table->unsignedBigInteger('company_id')->nullable()->comment('Future multi-tenancy support');
             $table->string('model_type');
             $table->bigInteger('model_id');
             $table->string('action');
@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('user_agent')->nullable();
             $table->string('session_id')->nullable();
             $table->string('payload_hash');
-            $table->boolean('requires_retention')->default();
+            $table->boolean('requires_retention')->default(false);
             $table->datetime('retention_until')->nullable();
             $table->json('metadata')->nullable();
             $table->timestamps();

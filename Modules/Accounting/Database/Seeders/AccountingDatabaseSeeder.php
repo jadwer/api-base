@@ -12,8 +12,9 @@ class AccountingDatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->command->info('🏪 Seeding Accounting module...');
-        
+
         $this->call([
+            PermissionsSeeder::class,
             IdempotencyKeySeeder::class,
             AccountMappingSeeder::class,
             AccountBalanceSeeder::class,

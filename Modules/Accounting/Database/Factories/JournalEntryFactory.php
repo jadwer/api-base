@@ -11,44 +11,57 @@ class JournalEntryFactory extends Factory
 
     public function definition(): array
     {
+        $totalAmount = $this->faker->randomFloat(2, 100, 10000);
+
         return [
-            'journal_id' => $this->faker->numberBetween(1, 100),
-            'fiscal_period_id' => $this->faker->numberBetween(1, 100),
-            'number' => $this->faker->sentence(3),
-            'date' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
-            'reference' => $this->faker->sentence(3),
-            'description' => $this->faker->optional(0.7)->paragraph(),
-            'total_debit' => $this->faker->randomFloat(2, 1, 1000),
-            'total_credit' => $this->faker->randomFloat(2, 1, 1000),
-            'company_id' => $this->faker->numberBetween(1, 100),
-            'status' => $this->faker->randomElement(['active', 'inactive', 'pending']),
-            'approved_at' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
-            'approved_by_id' => $this->faker->numberBetween(1, 100),
-            'posted_at' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
-            'posted_by_id' => $this->faker->numberBetween(1, 100),
-            'reversal_of_id' => $this->faker->numberBetween(1, 100),
-            'reversal_reason' => $this->faker->optional(0.7)->paragraph(),
-            'metadata' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
+            'journal_id' => \Modules\Accounting\Models\Journal::factory(),
+            'fiscal_period_id' => \Modules\Accounting\Models\FiscalPeriod::factory(),
+            'number' => $this->faker->optional(0.8)->bothify('JE-####'),
+            'date' => $this->faker->dateTimeBetween('-6 months', 'now')->format('Y-m-d'),
+            'reference' => $this->faker->optional(0.6)->bothify('REF-###'),
+            'description' => $this->faker->optional(0.7)->sentence(10),
+            'total_debit' => $totalAmount,
+            'total_credit' => $totalAmount,
+            'company_id' => null,
+            'status' => $this->faker->randomElement(['draft', 'approved', 'posted', 'reversed']),
+            'approved_at' => null,
+            'approved_by_id' => null,
+            'posted_at' => null,
+            'posted_by_id' => null,
+            'reversal_of_id' => null,
+            'reversal_reason' => null,
+            'metadata' => [],
         ];
     }
 
     /**
-     * Active JournalEntry
+     * Draft JournalEntry
      */
-    public function active(): static
+    public function draft(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => 'active',
+            'status' => 'draft',
+            'approved_at' => null,
+            'approved_by_id' => null,
+            'posted_at' => null,
+            'posted_by_id' => null,
         ]);
     }
 
     /**
-     * Inactive JournalEntry
+     * Posted JournalEntry
      */
-    public function inactive(): static
+    public function posted(): static
     {
+        $approvedAt = $this->faker->dateTimeBetween('-30 days', 'now');
+        $postedAt = $this->faker->dateTimeBetween($approvedAt, 'now');
+
         return $this->state(fn (array $attributes) => [
-            'status' => 'inactive',
+            'status' => 'posted',
+            'approved_at' => $approvedAt,
+            'approved_by_id' => 1,
+            'posted_at' => $postedAt,
+            'posted_by_id' => 1,
         ]);
     }
 }

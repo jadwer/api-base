@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create("idempotency_keys", function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained('companies')->onDelete('restrict');
+            $table->unsignedBigInteger('company_id')->nullable()->comment('Future multi-tenancy support');
             $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
             $table->string('endpoint');
             $table->string('idempotency_key');

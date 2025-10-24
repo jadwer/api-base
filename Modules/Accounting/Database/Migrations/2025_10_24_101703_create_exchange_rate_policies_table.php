@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create("exchange_rate_policies", function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained('companies')->onDelete('restrict');
+            $table->unsignedBigInteger('company_id')->nullable()->comment('Future multi-tenancy support');
             $table->string('currency');
             $table->string('source')->default('manual');
             $table->string('scope')->default('company');

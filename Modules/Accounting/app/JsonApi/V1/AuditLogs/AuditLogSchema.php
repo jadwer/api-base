@@ -64,14 +64,14 @@ class AuditLogSchema extends Schema
     public function sortables(): array
     {
         return [
-            'model_type',
-            'model_id',
+            'modelType',
+            'modelId',
             'action',
-            'ip_address',
-            'session_id',
-            'payload_hash',
-            'requires_retention',
-            'retention_until',
+            'ipAddress',
+            'sessionId',
+            'payloadHash',
+            'requiresRetention',
+            'retentionUntil',
             'created_at',
             'updated_at',
         ];

@@ -9,39 +9,60 @@ class FiscalPeriodFactory extends Factory
 {
     protected $model = FiscalPeriod::class;
 
+    private static $currentYear = 2020;
+    private static $currentMonth = 1;
+
     public function definition(): array
     {
+        // Use sequential periods to avoid duplicates
+        $year = self::$currentYear;
+        $month = self::$currentMonth;
+
+        // Increment for next call
+        self::$currentMonth++;
+        if (self::$currentMonth > 12) {
+            self::$currentMonth = 1;
+            self::$currentYear++;
+        }
+
+        $startDate = \Carbon\Carbon::create($year, $month, 1);
+        $endDate = $startDate->copy()->endOfMonth();
+
         return [
-            'name' => $this->faker->words(2, true),
-            'year' => $this->faker->numberBetween(1, 100),
-            'month' => $this->faker->numberBetween(1, 100),
-            'start_date' => $this->faker->dateTimeBetween('-30 days', 'now'),
-            'end_date' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
-            'status' => $this->faker->randomElement(['active', 'inactive', 'pending']),
-            'closed_at' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
-            'closed_by_id' => $this->faker->numberBetween(1, 100),
-            'closing_entry_id' => $this->faker->numberBetween(1, 100),
-            'metadata' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
+            'name' => sprintf('%04d-%02d', $year, $month),
+            'year' => $year,
+            'month' => $month,
+            'start_date' => $startDate->format('Y-m-d'),
+            'end_date' => $endDate->format('Y-m-d'),
+            'status' => $this->faker->randomElement(['open', 'closed', 'locked']),
+            'closed_at' => null,
+            'closed_by_id' => null,
+            'closing_entry_id' => null,
+            'metadata' => [],
         ];
     }
 
     /**
-     * Active FiscalPeriod
+     * Open FiscalPeriod
      */
-    public function active(): static
+    public function open(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => 'active',
+            'status' => 'open',
+            'closed_at' => null,
+            'closed_by_id' => null,
         ]);
     }
 
     /**
-     * Inactive FiscalPeriod
+     * Closed FiscalPeriod
      */
-    public function inactive(): static
+    public function closed(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => 'inactive',
+            'status' => 'closed',
+            'closed_at' => $this->faker->dateTimeBetween('-30 days', 'now'),
+            'closed_by_id' => 1,
         ]);
     }
 }

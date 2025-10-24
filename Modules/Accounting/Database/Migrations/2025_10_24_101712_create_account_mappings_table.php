@@ -10,14 +10,14 @@ return new class extends Migration
     {
         Schema::create("account_mappings", function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained('companies')->onDelete('restrict');
+            $table->unsignedBigInteger('company_id')->nullable()->comment('Future multi-tenancy support');
             $table->string('mapping_type');
             $table->foreignId('account_id')->constrained('accounts')->onDelete('restrict');
             $table->integer('version')->default(1);
             $table->date('effective_from');
             $table->date('effective_to')->nullable();
             $table->boolean('is_active')->default(1);
-            $table->foreignId('created_by_id')->constrained('created_bies')->onDelete('restrict');
+            $table->foreignId('created_by_id')->constrained('users')->onDelete('restrict');
             $table->text('notes')->nullable();
             $table->json('metadata')->nullable();
             $table->timestamps();

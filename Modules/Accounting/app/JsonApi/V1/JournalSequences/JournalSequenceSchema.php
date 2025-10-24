@@ -51,8 +51,8 @@ class JournalSequenceSchema extends Schema
     public function sortables(): array
     {
         return [
-            'fiscal_year',
-            'current_number',
+            'fiscalYear',
+            'currentNumber',
             'created_at',
             'updated_at',
         ];

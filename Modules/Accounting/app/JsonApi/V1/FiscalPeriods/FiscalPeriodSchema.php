@@ -62,10 +62,10 @@ class FiscalPeriodSchema extends Schema
             'name',
             'year',
             'month',
-            'start_date',
-            'end_date',
+            'startDate',
+            'endDate',
             'status',
-            'closed_at',
+            'closedAt',
             'created_at',
             'updated_at',
         ];

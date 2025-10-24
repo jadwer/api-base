@@ -17,11 +17,11 @@ class FiscalPeriodSeeder extends Seeder
         // Create sample FiscalPeriod records
         FiscalPeriod::factory()->count(10)->create();
 
-        // Create some active records
-        FiscalPeriod::factory()->active()->count(5)->create();
+        // Create some open records
+        FiscalPeriod::factory()->open()->count(5)->create();
 
-        // Create some inactive records
-        FiscalPeriod::factory()->inactive()->count(2)->create();
+        // Create some closed records
+        FiscalPeriod::factory()->closed()->count(2)->create();
 
         
         $this->command->info('✅ FiscalPeriod seeded successfully!');

@@ -57,11 +57,11 @@ class AccountMappingSchema extends Schema
     public function sortables(): array
     {
         return [
-            'mapping_type',
+            'mappingType',
             'version',
-            'effective_from',
-            'effective_to',
-            'is_active',
+            'effectiveFrom',
+            'effectiveTo',
+            'isActive',
             'created_at',
             'updated_at',
         ];

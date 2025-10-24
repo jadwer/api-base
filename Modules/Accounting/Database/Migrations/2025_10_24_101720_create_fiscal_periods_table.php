@@ -17,8 +17,8 @@ return new class extends Migration
             $table->date('end_date');
             $table->string('status')->default('open');
             $table->datetime('closed_at')->nullable();
-            $table->foreignId('closed_by_id')->nullable()->constrained('closed_bies')->onDelete('restrict');
-            $table->foreignId('closing_entry_id')->nullable()->constrained('closing_entries')->onDelete('restrict');
+            $table->foreignId('closed_by_id')->nullable()->constrained('users')->onDelete('restrict');
+            $table->unsignedBigInteger('closing_entry_id')->nullable()->comment('Circular dependency - reference to journal_entries');
             $table->json('metadata')->nullable();
             $table->timestamps();
         });

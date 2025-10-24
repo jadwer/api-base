@@ -31,11 +31,11 @@ class IdempotencyKeySeeder extends Seeder
                 ->create(['user_id' => $parent->id]);
         });
 
-        // Create some active records
-        IdempotencyKey::factory()->active()->count(5)->create();
+        // Create some processing records
+        IdempotencyKey::factory()->processing()->count(5)->create();
 
-        // Create some inactive records
-        IdempotencyKey::factory()->inactive()->count(2)->create();
+        // Create some completed records
+        IdempotencyKey::factory()->completed()->count(2)->create();
 
         
         $this->command->info('✅ IdempotencyKey seeded successfully!');

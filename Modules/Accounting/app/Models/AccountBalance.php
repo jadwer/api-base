@@ -14,14 +14,15 @@ class AccountBalance extends Model
     protected $table = 'account_balances';
     
     protected $fillable = [
-        'company_id', 'account_id', 'fiscal_year', 'fiscal_month', 'opening_balance', 'period_debits', 'period_credits', 'closing_balance'
+        'company_id', 'account_id', 'fiscal_year', 'fiscal_month', 'opening_balance', 'period_debits', 'period_credits', 'closing_balance', 'metadata'
     ];
 
     protected $casts = [
                 'opening_balance' => 'decimal:2',
         'period_debits' => 'decimal:2',
         'period_credits' => 'decimal:2',
-        'closing_balance' => 'decimal:2'
+        'closing_balance' => 'decimal:2',
+        'metadata' => 'array'
     ];
 
     // Scopes

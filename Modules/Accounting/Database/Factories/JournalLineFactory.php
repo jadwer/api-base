@@ -11,15 +11,18 @@ class JournalLineFactory extends Factory
 
     public function definition(): array
     {
+        $amount = $this->faker->randomFloat(2, 100, 5000);
+        $isDebit = $this->faker->boolean();
+
         return [
-            'journal_entry_id' => $this->faker->numberBetween(1, 100),
-            'account_id' => $this->faker->numberBetween(1, 100),
-            'contact_id' => $this->faker->numberBetween(1, 100),
-            'debit' => $this->faker->randomFloat(2, 1, 100),
-            'credit' => $this->faker->randomFloat(2, 1, 100),
-            'description' => $this->faker->optional(0.7)->paragraph(),
-            'reference' => $this->faker->sentence(3),
-            'metadata' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
+            'journal_entry_id' => \Modules\Accounting\Models\JournalEntry::factory(),
+            'account_id' => \Modules\Accounting\Models\Account::factory(),
+            'contact_id' => null,
+            'debit' => $isDebit ? $amount : 0,
+            'credit' => $isDebit ? 0 : $amount,
+            'description' => $this->faker->optional(0.6)->sentence(8),
+            'reference' => $this->faker->optional(0.4)->bothify('REF-###'),
+            'metadata' => [],
         ];
     }
 

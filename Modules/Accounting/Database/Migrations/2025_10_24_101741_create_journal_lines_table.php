@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('journal_entry_id')->constrained('journal_entries')->onDelete('restrict');
             $table->foreignId('account_id')->constrained('accounts')->onDelete('restrict');
-            $table->foreignId('contact_id')->nullable()->constrained('contacts')->onDelete('restrict');
+            $table->unsignedBigInteger('contact_id')->nullable()->comment('Cross-module reference to Contacts module');
             $table->decimal('debit', 10, 2)->default(0);
             $table->decimal('credit', 10, 2)->default(0);
             $table->text('description')->nullable();

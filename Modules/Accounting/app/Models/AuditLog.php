@@ -14,13 +14,14 @@ class AuditLog extends Model
     protected $table = 'audit_logs';
     
     protected $fillable = [
-        'company_id', 'model_type', 'model_id', 'action', 'user_id', 'changes', 'ip_address', 'user_agent', 'session_id', 'payload_hash', 'requires_retention', 'retention_until'
+        'company_id', 'model_type', 'model_id', 'action', 'user_id', 'changes', 'ip_address', 'user_agent', 'session_id', 'payload_hash', 'requires_retention', 'retention_until', 'metadata'
     ];
 
     protected $casts = [
                 'changes' => 'array',
         'requires_retention' => 'boolean',
-        'retention_until' => 'datetime'
+        'retention_until' => 'datetime',
+        'metadata' => 'array'
     ];
 
     // Scopes

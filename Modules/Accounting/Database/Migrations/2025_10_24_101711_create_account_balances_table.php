@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create("account_balances", function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained('companies')->onDelete('restrict');
+            $table->unsignedBigInteger('company_id')->nullable()->comment('Future multi-tenancy support');
             $table->foreignId('account_id')->constrained('accounts')->onDelete('restrict');
             $table->integer('fiscal_year');
             $table->integer('fiscal_month');

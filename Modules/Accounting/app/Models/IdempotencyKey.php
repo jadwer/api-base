@@ -14,12 +14,13 @@ class IdempotencyKey extends Model
     protected $table = 'idempotency_keys';
     
     protected $fillable = [
-        'company_id', 'user_id', 'endpoint', 'idempotency_key', 'request_hash', 'response_data', 'status', 'expires_at'
+        'company_id', 'user_id', 'endpoint', 'idempotency_key', 'request_hash', 'response_data', 'status', 'expires_at', 'metadata'
     ];
 
     protected $casts = [
-                'response_data' => 'array',
-        'expires_at' => 'datetime'
+        'response_data' => 'array',
+        'expires_at' => 'datetime',
+        'metadata' => 'array'
     ];
 
     // Scopes

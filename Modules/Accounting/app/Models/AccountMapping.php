@@ -14,13 +14,14 @@ class AccountMapping extends Model
     protected $table = 'account_mappings';
     
     protected $fillable = [
-        'company_id', 'mapping_type', 'account_id', 'version', 'effective_from', 'effective_to', 'is_active', 'created_by_id', 'notes'
+        'company_id', 'mapping_type', 'account_id', 'version', 'effective_from', 'effective_to', 'is_active', 'created_by_id', 'notes', 'metadata'
     ];
 
     protected $casts = [
                 'effective_from' => 'date',
         'effective_to' => 'date',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
+        'metadata' => 'array'
     ];
 
     // Scopes

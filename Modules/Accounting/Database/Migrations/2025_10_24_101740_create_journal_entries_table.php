@@ -18,13 +18,13 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->decimal('total_debit', 10, 2)->default(0);
             $table->decimal('total_credit', 10, 2)->default(0);
-            $table->foreignId('company_id')->constrained('companies')->onDelete('restrict');
+            $table->unsignedBigInteger('company_id')->nullable()->comment('Future multi-tenancy support');
             $table->string('status')->default('draft');
             $table->datetime('approved_at')->nullable();
-            $table->foreignId('approved_by_id')->nullable()->constrained('approved_bies')->onDelete('restrict');
+            $table->foreignId('approved_by_id')->nullable()->constrained('users')->onDelete('restrict');
             $table->datetime('posted_at')->nullable();
-            $table->foreignId('posted_by_id')->nullable()->constrained('posted_bies')->onDelete('restrict');
-            $table->foreignId('reversal_of_id')->nullable()->constrained('reversal_ofs')->onDelete('restrict');
+            $table->foreignId('posted_by_id')->nullable()->constrained('users')->onDelete('restrict');
+            $table->foreignId('reversal_of_id')->nullable()->constrained('journal_entries')->onDelete('restrict');
             $table->text('reversal_reason')->nullable();
             $table->json('metadata')->nullable();
             $table->timestamps();

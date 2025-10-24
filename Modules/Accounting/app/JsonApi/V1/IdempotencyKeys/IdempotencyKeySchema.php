@@ -58,10 +58,10 @@ class IdempotencyKeySchema extends Schema
     {
         return [
             'endpoint',
-            'idempotency_key',
-            'request_hash',
+            'idempotencyKey',
+            'requestHash',
             'status',
-            'expires_at',
+            'expiresAt',
             'created_at',
             'updated_at',
         ];

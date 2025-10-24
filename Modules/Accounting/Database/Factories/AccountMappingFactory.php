@@ -11,16 +11,19 @@ class AccountMappingFactory extends Factory
 
     public function definition(): array
     {
+        $effectiveFrom = $this->faker->dateTimeBetween('-1 year', 'now');
+
         return [
-            'company_id' => $this->faker->numberBetween(1, 100),
-            'mapping_type' => $this->faker->sentence(3),
-            'account_id' => $this->faker->numberBetween(1, 100),
-            'version' => $this->faker->numberBetween(1, 100),
-            'effective_from' => $this->faker->sentence(),
-            'effective_to' => $this->faker->sentence(),
-            'is_active' => $this->faker->boolean(70),
-            'created_by_id' => $this->faker->numberBetween(1, 100),
-            'notes' => $this->faker->optional(0.7)->paragraph(),
+            'company_id' => null,
+            'mapping_type' => $this->faker->randomElement(['customer', 'supplier', 'tax', 'inventory', 'payroll', 'fixed_asset']),
+            'account_id' => \Modules\Accounting\Models\Account::factory(),
+            'version' => $this->faker->numberBetween(1, 5),
+            'effective_from' => $effectiveFrom->format('Y-m-d'),
+            'effective_to' => $this->faker->optional(0.3)->dateTimeBetween($effectiveFrom, '+1 year')?->format('Y-m-d'),
+            'is_active' => $this->faker->boolean(80),
+            'created_by_id' => 1,
+            'notes' => $this->faker->optional(0.5)->sentence(10),
+            'metadata' => [],
         ];
     }
 

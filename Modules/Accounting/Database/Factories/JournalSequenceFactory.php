@@ -12,10 +12,10 @@ class JournalSequenceFactory extends Factory
     public function definition(): array
     {
         return [
-            'journal_id' => $this->faker->numberBetween(1, 100),
-            'fiscal_year' => $this->faker->numberBetween(1, 100),
-            'current_number' => $this->faker->numberBetween(1, 100),
-            'metadata' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
+            'journal_id' => \Modules\Accounting\Models\Journal::factory(),
+            'fiscal_year' => $this->faker->numberBetween(2020, 2025),
+            'current_number' => $this->faker->numberBetween(0, 500),
+            'metadata' => [],
         ];
     }
 
