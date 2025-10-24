@@ -12,14 +12,14 @@ class AuditLogRequest extends ResourceRequest
         $auditlog = $this->model();
         
         return [
-            'company_id' => ['required', 'string'],
+            'companyId' => ['required', 'string'],
             'model_type' => ['required', 'string', 'max:255'],
             'model_id' => ['required', 'string'],
             'action' => ['required', 'string', 'max:255'],
-            'user_id' => ['required', 'string'],
+            'userId' => ['required', 'string'],
             'changes' => ['nullable', 'array'],
-            'ip_address' => ['nullable', 'string', 'max:255'],
-            'user_agent' => ['nullable', 'string'],
+            'ipAddress' => ['nullable', 'string', 'max:255'],
+            'userAgent' => ['nullable', 'string'],
             'session_id' => ['nullable', 'string', 'max:255'],
             'payload_hash' => ['required', 'string', 'max:255'],
             'requires_retention' => ['required', 'boolean'],
@@ -31,7 +31,7 @@ class AuditLogRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'company_id.required' => 'El campo Company id es obligatorio.',
+            'companyId.required' => 'El campo Company id es obligatorio.',
             'model_type.required' => 'El campo Model type es obligatorio.',
             'model_type.string' => 'El campo Model type debe ser texto.',
             'model_type.max' => 'El campo Model type no puede tener más de 255 caracteres.',
@@ -39,11 +39,11 @@ class AuditLogRequest extends ResourceRequest
             'action.required' => 'El campo Action es obligatorio.',
             'action.string' => 'El campo Action debe ser texto.',
             'action.max' => 'El campo Action no puede tener más de 255 caracteres.',
-            'user_id.required' => 'El campo User id es obligatorio.',
+            'userId.required' => 'El campo User id es obligatorio.',
             'changes.array' => 'El campo Changes debe ser un arreglo.',
-            'ip_address.string' => 'El campo Ip address debe ser texto.',
-            'ip_address.max' => 'El campo Ip address no puede tener más de 255 caracteres.',
-            'user_agent.string' => 'El campo User agent debe ser texto.',
+            'ipAddress.string' => 'El campo Ip address debe ser texto.',
+            'ipAddress.max' => 'El campo Ip address no puede tener más de 255 caracteres.',
+            'userAgent.string' => 'El campo User agent debe ser texto.',
             'session_id.string' => 'El campo Session id debe ser texto.',
             'session_id.max' => 'El campo Session id no puede tener más de 255 caracteres.',
             'payload_hash.required' => 'El campo Payload hash es obligatorio.',

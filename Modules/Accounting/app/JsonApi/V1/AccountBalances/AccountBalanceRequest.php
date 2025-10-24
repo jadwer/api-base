@@ -12,14 +12,14 @@ class AccountBalanceRequest extends ResourceRequest
         $accountbalance = $this->model();
         
         return [
-            'company_id' => ['required', 'string'],
-            'account_id' => ['required', 'string'],
-            'fiscal_year' => ['required', 'integer'],
-            'fiscal_month' => ['required', 'integer'],
-            'opening_balance' => ['required', 'string'],
+            'companyId' => ['required', 'string'],
+            'accountId' => ['required', 'string'],
+            'fiscalYear' => ['required', 'integer'],
+            'fiscalMonth' => ['required', 'integer'],
+            'openingBalance' => ['required', 'string'],
             'period_debits' => ['required', 'string'],
             'period_credits' => ['required', 'string'],
-            'closing_balance' => ['required', 'string'],
+            'closingBalance' => ['required', 'string'],
             'metadata' => ['nullable', 'array'],
         ];
     }
@@ -27,16 +27,16 @@ class AccountBalanceRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'company_id.required' => 'El campo Company id es obligatorio.',
-            'account_id.required' => 'El campo Account id es obligatorio.',
-            'fiscal_year.required' => 'El campo Fiscal year es obligatorio.',
-            'fiscal_year.integer' => 'El campo Fiscal year debe ser un número entero.',
-            'fiscal_month.required' => 'El campo Fiscal month es obligatorio.',
-            'fiscal_month.integer' => 'El campo Fiscal month debe ser un número entero.',
-            'opening_balance.required' => 'El campo Opening balance es obligatorio.',
+            'companyId.required' => 'El campo Company id es obligatorio.',
+            'accountId.required' => 'El campo Account id es obligatorio.',
+            'fiscalYear.required' => 'El campo Fiscal year es obligatorio.',
+            'fiscalYear.integer' => 'El campo Fiscal year debe ser un número entero.',
+            'fiscalMonth.required' => 'El campo Fiscal month es obligatorio.',
+            'fiscalMonth.integer' => 'El campo Fiscal month debe ser un número entero.',
+            'openingBalance.required' => 'El campo Opening balance es obligatorio.',
             'period_debits.required' => 'El campo Period debits es obligatorio.',
             'period_credits.required' => 'El campo Period credits es obligatorio.',
-            'closing_balance.required' => 'El campo Closing balance es obligatorio.',
+            'closingBalance.required' => 'El campo Closing balance es obligatorio.',
         ];
     }
 }

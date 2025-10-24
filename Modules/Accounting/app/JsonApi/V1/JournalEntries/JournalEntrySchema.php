@@ -25,27 +25,27 @@ class JournalEntrySchema extends Schema
         return [
             ID::make(),
             
-            Number::make('journalId'),
-            Number::make('fiscalPeriodId'),
+            Number::make('journalId', 'journal_id'),
+            Number::make('fiscalPeriodId', 'fiscal_period_id'),
             Str::make('number')->sortable(),
             DateTime::make('date')->sortable(),
             Str::make('reference')->sortable(),
             Str::make('description'),
-            Number::make('totalDebit')->sortable(),
-            Number::make('totalCredit')->sortable(),
-            Number::make('companyId'),
+            Number::make('totalDebit', 'total_debit')->sortable(),
+            Number::make('totalCredit', 'total_credit')->sortable(),
+            Number::make('companyId', 'company_id'),
             Str::make('status')->sortable(),
             DateTime::make('approvedAt')->sortable(),
             Number::make('approvedById'),
-            DateTime::make('postedAt')->sortable(),
-            Number::make('postedById'),
+            DateTime::make('postedAt', 'posted_at')->sortable(),
+            Number::make('postedById', 'posted_by_id'),
             Number::make('reversalOfId'),
             Str::make('reversalReason'),
             ArrayHash::make('metadata'),
             
             // Timestamps
-            DateTime::make('createdAt')->sortable()->readOnly(),
-            DateTime::make('updatedAt')->sortable()->readOnly(),
+            DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
+            DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
 
             // Relationships
             BelongsTo::make('journal'),

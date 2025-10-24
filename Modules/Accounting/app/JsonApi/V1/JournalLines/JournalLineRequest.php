@@ -12,8 +12,8 @@ class JournalLineRequest extends ResourceRequest
         $journalline = $this->model();
         
         return [
-            'journal_entry_id' => ['required', 'string'],
-            'account_id' => ['required', 'string'],
+            'journalEntryId' => ['required', 'string'],
+            'accountId' => ['required', 'string'],
             'contact_id' => ['nullable', 'string'],
             'debit' => ['required', 'string'],
             'credit' => ['required', 'string'],
@@ -27,8 +27,8 @@ class JournalLineRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'journal_entry_id.required' => 'El campo Journal entry id es obligatorio.',
-            'account_id.required' => 'El campo Account id es obligatorio.',
+            'journalEntryId.required' => 'El campo Journal entry id es obligatorio.',
+            'accountId.required' => 'El campo Account id es obligatorio.',
             'debit.required' => 'El campo Debit es obligatorio.',
             'credit.required' => 'El campo Credit es obligatorio.',
             'description.string' => 'El campo Description debe ser texto.',

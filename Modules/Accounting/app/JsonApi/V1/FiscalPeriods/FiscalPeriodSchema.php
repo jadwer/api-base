@@ -28,17 +28,17 @@ class FiscalPeriodSchema extends Schema
             Str::make('name')->sortable(),
             Number::make('year')->sortable(),
             Number::make('month')->sortable(),
-            DateTime::make('startDate')->sortable(),
-            DateTime::make('endDate')->sortable(),
+            DateTime::make('startDate', 'start_date')->sortable(),
+            DateTime::make('endDate', 'end_date')->sortable(),
             Str::make('status')->sortable(),
-            DateTime::make('closedAt')->sortable(),
-            Number::make('closedById'),
-            Number::make('closingEntryId'),
+            DateTime::make('closedAt', 'closed_at')->sortable(),
+            Number::make('closedById', 'closed_by_id'),
+            Number::make('closingEntryId', 'closing_entry_id'),
             ArrayHash::make('metadata'),
             
             // Timestamps
-            DateTime::make('createdAt')->sortable()->readOnly(),
-            DateTime::make('updatedAt')->sortable()->readOnly(),
+            DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
+            DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
 
             // Relationships
             HasMany::make('journalEntries'),

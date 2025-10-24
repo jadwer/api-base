@@ -25,21 +25,21 @@ class AccountMappingSchema extends Schema
         return [
             ID::make(),
             
-            Number::make('companyId'),
-            Str::make('mappingType')->sortable(),
-            Number::make('accountId'),
+            Number::make('companyId', 'company_id'),
+            Str::make('mappingType', 'mapping_type')->sortable(),
+            Number::make('accountId', 'account_id'),
             Number::make('version')->sortable(),
-            DateTime::make('effectiveFrom')->sortable(),
-            DateTime::make('effectiveTo')->sortable(),
-            Boolean::make('isActive')->sortable(),
-            Number::make('createdById'),
+            DateTime::make('effectiveFrom', 'effective_from')->sortable(),
+            DateTime::make('effectiveTo', 'effective_to')->sortable(),
+            Boolean::make('isActive', 'is_active')->sortable(),
+            Number::make('createdById', 'created_by_id'),
             Str::make('notes'),
             // Metadata
             ArrayHash::make('metadata'),
             
             // Timestamps
-            DateTime::make('createdAt')->sortable()->readOnly(),
-            DateTime::make('updatedAt')->sortable()->readOnly(),
+            DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
+            DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
 
         ];
     }
@@ -48,9 +48,9 @@ class AccountMappingSchema extends Schema
     {
         return [
             WhereIdIn::make($this),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('mapping_type'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('mappingType', 'mapping_type'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('version'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('is_active'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('isActive', 'is_active'),
         ];
     }
 

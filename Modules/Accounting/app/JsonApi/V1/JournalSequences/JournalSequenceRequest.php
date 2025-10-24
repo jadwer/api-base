@@ -12,9 +12,9 @@ class JournalSequenceRequest extends ResourceRequest
         $journalsequence = $this->model();
         
         return [
-            'journal_id' => ['required', 'string'],
-            'fiscal_year' => ['required', 'integer'],
-            'current_number' => ['required', 'integer'],
+            'journalId' => ['required', 'string'],
+            'fiscalYear' => ['required', 'integer'],
+            'currentNumber' => ['required', 'integer'],
             'metadata' => ['nullable', 'array'],
             'metadata' => ['nullable', 'array'],
         ];
@@ -23,11 +23,11 @@ class JournalSequenceRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'journal_id.required' => 'El campo Journal id es obligatorio.',
-            'fiscal_year.required' => 'El campo Fiscal year es obligatorio.',
-            'fiscal_year.integer' => 'El campo Fiscal year debe ser un número entero.',
-            'current_number.required' => 'El campo Current number es obligatorio.',
-            'current_number.integer' => 'El campo Current number debe ser un número entero.',
+            'journalId.required' => 'El campo Journal id es obligatorio.',
+            'fiscalYear.required' => 'El campo Fiscal year es obligatorio.',
+            'fiscalYear.integer' => 'El campo Fiscal year debe ser un número entero.',
+            'currentNumber.required' => 'El campo Current number es obligatorio.',
+            'currentNumber.integer' => 'El campo Current number debe ser un número entero.',
             'metadata.array' => 'El campo Metadata debe ser un arreglo.',
         ];
     }

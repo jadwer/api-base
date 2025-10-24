@@ -25,14 +25,14 @@ class AuditLogSchema extends Schema
         return [
             ID::make(),
             
-            Number::make('companyId'),
+            Number::make('companyId', 'company_id'),
             Str::make('modelType')->sortable(),
             Number::make('modelId')->sortable(),
             Str::make('action')->sortable(),
-            Number::make('userId'),
+            Number::make('userId', 'user_id'),
             ArrayHash::make('changes'),
-            Str::make('ipAddress')->sortable(),
-            Str::make('userAgent'),
+            Str::make('ipAddress', 'ip_address')->sortable(),
+            Str::make('userAgent', 'user_agent'),
             Str::make('sessionId')->sortable(),
             Str::make('payloadHash')->sortable(),
             Boolean::make('requiresRetention')->sortable(),
@@ -41,8 +41,8 @@ class AuditLogSchema extends Schema
             ArrayHash::make('metadata'),
             
             // Timestamps
-            DateTime::make('createdAt')->sortable()->readOnly(),
-            DateTime::make('updatedAt')->sortable()->readOnly(),
+            DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
+            DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
 
         ];
     }
@@ -54,7 +54,7 @@ class AuditLogSchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('model_type'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('model_id'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('action'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('ip_address'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('ipAddress', 'ip_address'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('session_id'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('payload_hash'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('requires_retention'),

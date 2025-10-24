@@ -25,20 +25,20 @@ class ExchangeRatePolicySchema extends Schema
         return [
             ID::make(),
             
-            Number::make('companyId'),
+            Number::make('companyId', 'company_id'),
             Str::make('currency')->sortable(),
             Str::make('source')->sortable(),
             Str::make('scope')->sortable(),
             Number::make('maxAgeDays')->sortable(),
             Number::make('tolerancePercentage')->sortable(),
             Number::make('requireApprovalOver')->sortable(),
-            Boolean::make('isActive')->sortable(),
+            Boolean::make('isActive', 'is_active')->sortable(),
             // Metadata
             ArrayHash::make('metadata'),
             
             // Timestamps
-            DateTime::make('createdAt')->sortable()->readOnly(),
-            DateTime::make('updatedAt')->sortable()->readOnly(),
+            DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
+            DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
 
         ];
     }
@@ -51,7 +51,7 @@ class ExchangeRatePolicySchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('source'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('scope'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('max_age_days'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('is_active'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('isActive', 'is_active'),
         ];
     }
 

@@ -25,17 +25,17 @@ class ExchangeRateSchema extends Schema
         return [
             ID::make(),
             
-            Str::make('fromCurrency')->sortable(),
-            Str::make('toCurrency')->sortable(),
+            Str::make('fromCurrency', 'from_currency')->sortable(),
+            Str::make('toCurrency', 'to_currency')->sortable(),
             Number::make('rate')->sortable(),
-            DateTime::make('effectiveDate')->sortable(),
+            DateTime::make('effectiveDate', 'effective_date')->sortable(),
             Str::make('source')->sortable(),
             Str::make('status')->sortable(),
             ArrayHash::make('metadata'),
             
             // Timestamps
-            DateTime::make('createdAt')->sortable()->readOnly(),
-            DateTime::make('updatedAt')->sortable()->readOnly(),
+            DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
+            DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
 
         ];
     }
@@ -44,8 +44,8 @@ class ExchangeRateSchema extends Schema
     {
         return [
             WhereIdIn::make($this),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('from_currency'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('to_currency'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('fromCurrency', 'from_currency'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('toCurrency', 'to_currency'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('source'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('status'),
         ];

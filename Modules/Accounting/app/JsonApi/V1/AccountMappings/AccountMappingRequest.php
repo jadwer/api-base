@@ -12,14 +12,14 @@ class AccountMappingRequest extends ResourceRequest
         $accountmapping = $this->model();
         
         return [
-            'company_id' => ['required', 'string'],
-            'mapping_type' => ['required', 'string', 'max:255'],
-            'account_id' => ['required', 'string'],
+            'companyId' => ['required', 'string'],
+            'mappingType' => ['required', 'string', 'max:255'],
+            'accountId' => ['required', 'string'],
             'version' => ['required', 'integer'],
-            'effective_from' => ['required', 'date'],
-            'effective_to' => ['nullable', 'date'],
-            'is_active' => ['required', 'boolean'],
-            'created_by_id' => ['required', 'string'],
+            'effectiveFrom' => ['required', 'date'],
+            'effectiveTo' => ['nullable', 'date'],
+            'isActive' => ['required', 'boolean'],
+            'createdById' => ['required', 'string'],
             'notes' => ['nullable', 'string'],
             'metadata' => ['nullable', 'array'],
         ];
@@ -28,19 +28,19 @@ class AccountMappingRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'company_id.required' => 'El campo Company id es obligatorio.',
-            'mapping_type.required' => 'El campo Mapping type es obligatorio.',
-            'mapping_type.string' => 'El campo Mapping type debe ser texto.',
-            'mapping_type.max' => 'El campo Mapping type no puede tener más de 255 caracteres.',
-            'account_id.required' => 'El campo Account id es obligatorio.',
+            'companyId.required' => 'El campo Company id es obligatorio.',
+            'mappingType.required' => 'El campo Mapping type es obligatorio.',
+            'mappingType.string' => 'El campo Mapping type debe ser texto.',
+            'mappingType.max' => 'El campo Mapping type no puede tener más de 255 caracteres.',
+            'accountId.required' => 'El campo Account id es obligatorio.',
             'version.required' => 'El campo Version es obligatorio.',
             'version.integer' => 'El campo Version debe ser un número entero.',
-            'effective_from.required' => 'El campo Effective from es obligatorio.',
-            'effective_from.date' => 'El campo Effective from debe ser una fecha válida.',
-            'effective_to.date' => 'El campo Effective to debe ser una fecha válida.',
-            'is_active.required' => 'El campo Is active es obligatorio.',
-            'is_active.boolean' => 'El campo Is active debe ser verdadero o falso.',
-            'created_by_id.required' => 'El campo Created by id es obligatorio.',
+            'effectiveFrom.required' => 'El campo Effective from es obligatorio.',
+            'effectiveFrom.date' => 'El campo Effective from debe ser una fecha válida.',
+            'effectiveTo.date' => 'El campo Effective to debe ser una fecha válida.',
+            'isActive.required' => 'El campo Is active es obligatorio.',
+            'isActive.boolean' => 'El campo Is active debe ser verdadero o falso.',
+            'createdById.required' => 'El campo Created by id es obligatorio.',
             'notes.string' => 'El campo Notes debe ser texto.',
         ];
     }

@@ -24,21 +24,21 @@ class IdempotencyKeySchema extends Schema
     {
         return [
             ID::make(),
-            
-            Number::make('companyId'),
-            Number::make('userId'),
+
+            Number::make('companyId', 'company_id'),
+            Number::make('userId', 'user_id'),
             Str::make('endpoint')->sortable(),
-            Str::make('idempotencyKey')->sortable(),
-            Str::make('requestHash')->sortable(),
-            ArrayHash::make('responseData'),
+            Str::make('idempotencyKey', 'idempotency_key')->sortable(),
+            Str::make('requestHash', 'request_hash')->sortable(),
+            ArrayHash::make('responseData', 'response_data'),
             Str::make('status')->sortable(),
-            DateTime::make('expiresAt')->sortable(),
+            DateTime::make('expiresAt', 'expires_at')->sortable(),
             // Metadata
             ArrayHash::make('metadata'),
-            
+
             // Timestamps
-            DateTime::make('createdAt')->sortable()->readOnly(),
-            DateTime::make('updatedAt')->sortable()->readOnly(),
+            DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
+            DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
 
         ];
     }
@@ -48,8 +48,8 @@ class IdempotencyKeySchema extends Schema
         return [
             WhereIdIn::make($this),
             \LaravelJsonApi\Eloquent\Filters\Where::make('endpoint'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('idempotency_key'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('request_hash'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('idempotencyKey', 'idempotency_key'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('requestHash', 'request_hash'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('status'),
         ];
     }

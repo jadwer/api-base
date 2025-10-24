@@ -25,8 +25,8 @@ class JournalLineSchema extends Schema
         return [
             ID::make(),
             
-            Number::make('journalEntryId'),
-            Number::make('accountId'),
+            Number::make('journalEntryId', 'journal_entry_id'),
+            Number::make('accountId', 'account_id'),
             Number::make('contactId'),
             Number::make('debit')->sortable(),
             Number::make('credit')->sortable(),
@@ -35,8 +35,8 @@ class JournalLineSchema extends Schema
             ArrayHash::make('metadata'),
             
             // Timestamps
-            DateTime::make('createdAt')->sortable()->readOnly(),
-            DateTime::make('updatedAt')->sortable()->readOnly(),
+            DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
+            DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
 
             // Relationships
             BelongsTo::make('journalEntry'),

@@ -12,14 +12,14 @@ class IdempotencyKeyRequest extends ResourceRequest
         $idempotencykey = $this->model();
         
         return [
-            'company_id' => ['required', 'string'],
-            'user_id' => ['required', 'string'],
+            'companyId' => ['required', 'string'],
+            'userId' => ['required', 'string'],
             'endpoint' => ['required', 'string', 'max:255'],
-            'idempotency_key' => ['required', 'string', 'max:255'],
-            'request_hash' => ['required', 'string', 'max:255'],
-            'response_data' => ['nullable', 'array'],
+            'idempotencyKey' => ['required', 'string', 'max:255'],
+            'requestHash' => ['required', 'string', 'max:255'],
+            'responseData' => ['nullable', 'array'],
             'status' => ['required', 'string', 'max:255'],
-            'expires_at' => ['required', 'string'],
+            'expiresAt' => ['required', 'string'],
             'metadata' => ['nullable', 'array'],
         ];
     }
@@ -27,22 +27,22 @@ class IdempotencyKeyRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'company_id.required' => 'El campo Company id es obligatorio.',
-            'user_id.required' => 'El campo User id es obligatorio.',
+            'companyId.required' => 'El campo Company id es obligatorio.',
+            'userId.required' => 'El campo User id es obligatorio.',
             'endpoint.required' => 'El campo Endpoint es obligatorio.',
             'endpoint.string' => 'El campo Endpoint debe ser texto.',
             'endpoint.max' => 'El campo Endpoint no puede tener más de 255 caracteres.',
-            'idempotency_key.required' => 'El campo Idempotency key es obligatorio.',
-            'idempotency_key.string' => 'El campo Idempotency key debe ser texto.',
-            'idempotency_key.max' => 'El campo Idempotency key no puede tener más de 255 caracteres.',
-            'request_hash.required' => 'El campo Request hash es obligatorio.',
-            'request_hash.string' => 'El campo Request hash debe ser texto.',
-            'request_hash.max' => 'El campo Request hash no puede tener más de 255 caracteres.',
-            'response_data.array' => 'El campo Response data debe ser un arreglo.',
+            'idempotencyKey.required' => 'El campo Idempotency key es obligatorio.',
+            'idempotencyKey.string' => 'El campo Idempotency key debe ser texto.',
+            'idempotencyKey.max' => 'El campo Idempotency key no puede tener más de 255 caracteres.',
+            'requestHash.required' => 'El campo Request hash es obligatorio.',
+            'requestHash.string' => 'El campo Request hash debe ser texto.',
+            'requestHash.max' => 'El campo Request hash no puede tener más de 255 caracteres.',
+            'responseData.array' => 'El campo Response data debe ser un arreglo.',
             'status.required' => 'El campo Status es obligatorio.',
             'status.string' => 'El campo Status debe ser texto.',
             'status.max' => 'El campo Status no puede tener más de 255 caracteres.',
-            'expires_at.required' => 'El campo Expires at es obligatorio.',
+            'expiresAt.required' => 'El campo Expires at es obligatorio.',
         ];
     }
 }

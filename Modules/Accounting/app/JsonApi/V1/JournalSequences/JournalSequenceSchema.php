@@ -25,14 +25,14 @@ class JournalSequenceSchema extends Schema
         return [
             ID::make(),
             
-            Number::make('journalId'),
+            Number::make('journalId', 'journal_id'),
             Number::make('fiscalYear')->sortable(),
-            Number::make('currentNumber')->sortable(),
+            Number::make('currentNumber', 'current_number')->sortable(),
             ArrayHash::make('metadata'),
             
             // Timestamps
-            DateTime::make('createdAt')->sortable()->readOnly(),
-            DateTime::make('updatedAt')->sortable()->readOnly(),
+            DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
+            DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
 
             // Relationships
             BelongsTo::make('journal'),
@@ -44,7 +44,7 @@ class JournalSequenceSchema extends Schema
         return [
             WhereIdIn::make($this),
             \LaravelJsonApi\Eloquent\Filters\Where::make('fiscal_year'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('current_number'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('currentNumber', 'current_number'),
         ];
     }
 

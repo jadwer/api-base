@@ -25,22 +25,22 @@ class AccountSchema extends Schema
         return [
             ID::make(),
             
-            Number::make('companyId'),
+            Number::make('companyId', 'company_id'),
             Str::make('code')->sortable(),
             Str::make('name')->sortable(),
-            Str::make('accountType')->sortable(),
+            Str::make('accountType', 'account_type')->sortable(),
             Str::make('nature')->sortable(),
             Number::make('level')->sortable(),
-            Number::make('parentId'),
+            Number::make('parentId', 'parent_id'),
             Str::make('currency')->sortable(),
-            Boolean::make('isPostable')->sortable(),
-            Boolean::make('isCashFlow')->sortable(),
+            Boolean::make('isPostable', 'is_postable')->sortable(),
+            Boolean::make('isCashFlow', 'is_cash_flow')->sortable(),
             Str::make('status')->sortable(),
             ArrayHash::make('metadata'),
             
             // Timestamps
-            DateTime::make('createdAt')->sortable()->readOnly(),
-            DateTime::make('updatedAt')->sortable()->readOnly(),
+            DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
+            DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
 
             // Relationships
             HasMany::make('accounts'),
@@ -57,12 +57,12 @@ class AccountSchema extends Schema
             WhereIdIn::make($this),
             \LaravelJsonApi\Eloquent\Filters\Where::make('code'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('name'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('account_type'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('accountType', 'account_type'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('nature'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('level'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('currency'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('is_postable'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('is_cash_flow'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('isPostable', 'is_postable'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('isCashFlow', 'is_cash_flow'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('status'),
         ];
     }

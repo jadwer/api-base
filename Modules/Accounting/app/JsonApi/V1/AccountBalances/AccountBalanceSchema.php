@@ -25,20 +25,20 @@ class AccountBalanceSchema extends Schema
         return [
             ID::make(),
             
-            Number::make('companyId'),
-            Number::make('accountId'),
+            Number::make('companyId', 'company_id'),
+            Number::make('accountId', 'account_id'),
             Number::make('fiscalYear')->sortable(),
             Number::make('fiscalMonth')->sortable(),
-            Number::make('openingBalance')->sortable(),
+            Number::make('openingBalance', 'opening_balance')->sortable(),
             Number::make('periodDebits')->sortable(),
             Number::make('periodCredits')->sortable(),
-            Number::make('closingBalance')->sortable(),
+            Number::make('closingBalance', 'closing_balance')->sortable(),
             // Metadata
             ArrayHash::make('metadata'),
             
             // Timestamps
-            DateTime::make('createdAt')->sortable()->readOnly(),
-            DateTime::make('updatedAt')->sortable()->readOnly(),
+            DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
+            DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
 
         ];
     }
@@ -49,6 +49,7 @@ class AccountBalanceSchema extends Schema
             WhereIdIn::make($this),
             \LaravelJsonApi\Eloquent\Filters\Where::make('fiscal_year'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('fiscal_month'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('status'),
         ];
     }
 
