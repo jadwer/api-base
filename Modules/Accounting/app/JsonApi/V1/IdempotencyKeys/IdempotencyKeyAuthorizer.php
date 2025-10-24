@@ -17,7 +17,7 @@ class IdempotencyKeyAuthorizer implements Authorizer
         ]);
         
         $user = $request->user();
-        return $user?->can('idempotencykeys.index') ?? false;
+        return $user?->can('idempotency-keys.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
@@ -28,25 +28,25 @@ class IdempotencyKeyAuthorizer implements Authorizer
         ]);
         
         $user = $request->user();
-        return $user?->can('idempotencykeys.store') ?? false;
+        return $user?->can('idempotency-keys.store') ?? false;
     }
     
     public function show(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('idempotencykeys.show') ?? false;
+        return $user?->can('idempotency-keys.show') ?? false;
     }
     
     public function update(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('idempotencykeys.update') ?? false;
+        return $user?->can('idempotency-keys.update') ?? false;
     }
     
     public function destroy(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('idempotencykeys.destroy') ?? false;
+        return $user?->can('idempotency-keys.destroy') ?? false;
     }
     
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response

@@ -17,7 +17,7 @@ class JournalSequenceAuthorizer implements Authorizer
         ]);
         
         $user = $request->user();
-        return $user?->can('journalsequences.index') ?? false;
+        return $user?->can('journal-sequences.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
@@ -28,25 +28,25 @@ class JournalSequenceAuthorizer implements Authorizer
         ]);
         
         $user = $request->user();
-        return $user?->can('journalsequences.store') ?? false;
+        return $user?->can('journal-sequences.store') ?? false;
     }
     
     public function show(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('journalsequences.show') ?? false;
+        return $user?->can('journal-sequences.show') ?? false;
     }
     
     public function update(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('journalsequences.update') ?? false;
+        return $user?->can('journal-sequences.update') ?? false;
     }
     
     public function destroy(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('journalsequences.destroy') ?? false;
+        return $user?->can('journal-sequences.destroy') ?? false;
     }
     
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response

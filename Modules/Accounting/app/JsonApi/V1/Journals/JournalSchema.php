@@ -56,19 +56,6 @@ class JournalSchema extends Schema
         ];
     }
 
-    public function sortables(): array
-    {
-        return [
-            'code',
-            'name',
-            'prefix',
-            'type',
-            'status',
-            'created_at',
-            'updated_at',
-        ];
-    }
-
     public function includePaths(): array
     {
         return [

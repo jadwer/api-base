@@ -56,21 +56,6 @@ class FiscalPeriodSchema extends Schema
         ];
     }
 
-    public function sortables(): array
-    {
-        return [
-            'name',
-            'year',
-            'month',
-            'startDate',
-            'endDate',
-            'status',
-            'closedAt',
-            'created_at',
-            'updated_at',
-        ];
-    }
-
     public function includePaths(): array
     {
         return [

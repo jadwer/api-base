@@ -18,14 +18,8 @@ class JournalSequence extends Model
     ];
 
     protected $casts = [
-                'metadata' => 'array'
+        'metadata' => 'array'
     ];
-
-    // Scopes
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
-    }
 
     public function journal()
     {

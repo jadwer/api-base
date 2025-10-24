@@ -54,19 +54,6 @@ class IdempotencyKeySchema extends Schema
         ];
     }
 
-    public function sortables(): array
-    {
-        return [
-            'endpoint',
-            'idempotencyKey',
-            'requestHash',
-            'status',
-            'expiresAt',
-            'created_at',
-            'updated_at',
-        ];
-    }
-
     public function includePaths(): array
     {
         return [

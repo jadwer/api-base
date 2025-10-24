@@ -17,7 +17,7 @@ class AccountMappingAuthorizer implements Authorizer
         ]);
         
         $user = $request->user();
-        return $user?->can('accountmappings.index') ?? false;
+        return $user?->can('account-mappings.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
@@ -28,25 +28,25 @@ class AccountMappingAuthorizer implements Authorizer
         ]);
         
         $user = $request->user();
-        return $user?->can('accountmappings.store') ?? false;
+        return $user?->can('account-mappings.store') ?? false;
     }
     
     public function show(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('accountmappings.show') ?? false;
+        return $user?->can('account-mappings.show') ?? false;
     }
     
     public function update(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('accountmappings.update') ?? false;
+        return $user?->can('account-mappings.update') ?? false;
     }
     
     public function destroy(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('accountmappings.destroy') ?? false;
+        return $user?->can('account-mappings.destroy') ?? false;
     }
     
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response

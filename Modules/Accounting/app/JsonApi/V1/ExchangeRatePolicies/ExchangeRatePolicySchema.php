@@ -55,21 +55,6 @@ class ExchangeRatePolicySchema extends Schema
         ];
     }
 
-    public function sortables(): array
-    {
-        return [
-            'currency',
-            'source',
-            'scope',
-            'maxAgeDays',
-            'tolerancePercentage',
-            'requireApprovalOver',
-            'isActive',
-            'created_at',
-            'updated_at',
-        ];
-    }
-
     public function includePaths(): array
     {
         return [

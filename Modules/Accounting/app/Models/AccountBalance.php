@@ -18,20 +18,12 @@ class AccountBalance extends Model
     ];
 
     protected $casts = [
-                'opening_balance' => 'decimal:2',
+        'opening_balance' => 'decimal:2',
         'period_debits' => 'decimal:2',
         'period_credits' => 'decimal:2',
         'closing_balance' => 'decimal:2',
         'metadata' => 'array'
     ];
-
-    // Scopes
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
-    }
-
-
 
     // Factory
     protected static function newFactory()

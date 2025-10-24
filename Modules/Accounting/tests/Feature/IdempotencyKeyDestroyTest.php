@@ -62,10 +62,10 @@ class IdempotencyKeyDestroyTest extends TestCase
         ]);
     }
 
-    public function test_can_delete_inactive_IdempotencyKey(): void
+    public function test_can_delete_completed_IdempotencyKey(): void
     {
         $admin = $this->getAdminUser();
-        $idempotencyKey = IdempotencyKey::factory()->inactive()->create();
+        $idempotencyKey = IdempotencyKey::factory()->completed()->create();
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

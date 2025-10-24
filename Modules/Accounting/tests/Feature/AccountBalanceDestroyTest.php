@@ -62,10 +62,13 @@ class AccountBalanceDestroyTest extends TestCase
         ]);
     }
 
-    public function test_can_delete_inactive_AccountBalance(): void
+    public function test_can_delete_AccountBalance_with_custom_fiscal_period(): void
     {
         $admin = $this->getAdminUser();
-        $accountBalance = AccountBalance::factory()->inactive()->create();
+        $accountBalance = AccountBalance::factory()->create([
+            'fiscal_year' => 2024,
+            'fiscal_month' => 12
+        ]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -73,7 +76,7 @@ class AccountBalanceDestroyTest extends TestCase
             ->delete("/api/v1/account-balances/{$accountBalance->id}");
 
         $response->assertNoContent();
-        
+
         $this->assertDatabaseMissing('account_balances', [
             'id' => $accountBalance->id
         ]);

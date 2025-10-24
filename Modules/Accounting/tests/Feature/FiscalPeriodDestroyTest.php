@@ -62,10 +62,10 @@ class FiscalPeriodDestroyTest extends TestCase
         ]);
     }
 
-    public function test_can_delete_inactive_FiscalPeriod(): void
+    public function test_can_delete_closed_FiscalPeriod(): void
     {
         $admin = $this->getAdminUser();
-        $fiscalPeriod = FiscalPeriod::factory()->inactive()->create();
+        $fiscalPeriod = FiscalPeriod::factory()->closed()->create();
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

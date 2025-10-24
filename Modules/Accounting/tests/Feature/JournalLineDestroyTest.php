@@ -62,10 +62,13 @@ class JournalLineDestroyTest extends TestCase
         ]);
     }
 
-    public function test_can_delete_inactive_JournalLine(): void
+    public function test_can_delete_JournalLine_with_reference(): void
     {
         $admin = $this->getAdminUser();
-        $journalLine = JournalLine::factory()->inactive()->create();
+        $journalLine = JournalLine::factory()->create([
+            'reference' => 'INV-2024-001',
+            'description' => 'Test journal line'
+        ]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

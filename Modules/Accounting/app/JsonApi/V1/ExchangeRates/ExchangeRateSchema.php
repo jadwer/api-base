@@ -51,20 +51,6 @@ class ExchangeRateSchema extends Schema
         ];
     }
 
-    public function sortables(): array
-    {
-        return [
-            'fromCurrency',
-            'toCurrency',
-            'rate',
-            'effectiveDate',
-            'source',
-            'status',
-            'created_at',
-            'updated_at',
-        ];
-    }
-
     public function includePaths(): array
     {
         return [

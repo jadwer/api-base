@@ -52,20 +52,6 @@ class AccountBalanceSchema extends Schema
         ];
     }
 
-    public function sortables(): array
-    {
-        return [
-            'fiscalYear',
-            'fiscalMonth',
-            'openingBalance',
-            'periodDebits',
-            'periodCredits',
-            'closingBalance',
-            'created_at',
-            'updated_at',
-        ];
-    }
-
     public function includePaths(): array
     {
         return [

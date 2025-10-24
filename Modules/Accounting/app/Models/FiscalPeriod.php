@@ -27,7 +27,7 @@ class FiscalPeriod extends Model
     // Scopes
     public function scopeActive($query)
     {
-        return $query->where('is_active', true);
+        return $query->where('status', 'open');
     }
 
     public function journalEntries()

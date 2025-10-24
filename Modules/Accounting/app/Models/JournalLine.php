@@ -18,16 +18,10 @@ class JournalLine extends Model
     ];
 
     protected $casts = [
-                'debit' => 'decimal:2',
+        'debit' => 'decimal:2',
         'credit' => 'decimal:2',
         'metadata' => 'array'
     ];
-
-    // Scopes
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
-    }
 
     public function journalEntry()
     {

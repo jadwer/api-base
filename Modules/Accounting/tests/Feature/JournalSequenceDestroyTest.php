@@ -62,10 +62,13 @@ class JournalSequenceDestroyTest extends TestCase
         ]);
     }
 
-    public function test_can_delete_inactive_JournalSequence(): void
+    public function test_can_delete_JournalSequence_with_custom_year(): void
     {
         $admin = $this->getAdminUser();
-        $journalSequence = JournalSequence::factory()->inactive()->create();
+        $journalSequence = JournalSequence::factory()->create([
+            'fiscal_year' => 2024,
+            'current_number' => 100
+        ]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

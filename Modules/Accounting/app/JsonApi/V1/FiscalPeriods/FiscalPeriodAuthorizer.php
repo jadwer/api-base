@@ -17,7 +17,7 @@ class FiscalPeriodAuthorizer implements Authorizer
         ]);
         
         $user = $request->user();
-        return $user?->can('fiscalperiods.index') ?? false;
+        return $user?->can('fiscal-periods.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
@@ -28,25 +28,25 @@ class FiscalPeriodAuthorizer implements Authorizer
         ]);
         
         $user = $request->user();
-        return $user?->can('fiscalperiods.store') ?? false;
+        return $user?->can('fiscal-periods.store') ?? false;
     }
     
     public function show(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('fiscalperiods.show') ?? false;
+        return $user?->can('fiscal-periods.show') ?? false;
     }
     
     public function update(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('fiscalperiods.update') ?? false;
+        return $user?->can('fiscal-periods.update') ?? false;
     }
     
     public function destroy(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('fiscalperiods.destroy') ?? false;
+        return $user?->can('fiscal-periods.destroy') ?? false;
     }
     
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response

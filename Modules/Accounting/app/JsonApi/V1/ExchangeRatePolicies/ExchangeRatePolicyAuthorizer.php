@@ -17,7 +17,7 @@ class ExchangeRatePolicyAuthorizer implements Authorizer
         ]);
         
         $user = $request->user();
-        return $user?->can('exchangeratepolicies.index') ?? false;
+        return $user?->can('exchange-rate-policies.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
@@ -28,25 +28,25 @@ class ExchangeRatePolicyAuthorizer implements Authorizer
         ]);
         
         $user = $request->user();
-        return $user?->can('exchangeratepolicies.store') ?? false;
+        return $user?->can('exchange-rate-policies.store') ?? false;
     }
     
     public function show(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('exchangeratepolicies.show') ?? false;
+        return $user?->can('exchange-rate-policies.show') ?? false;
     }
     
     public function update(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('exchangeratepolicies.update') ?? false;
+        return $user?->can('exchange-rate-policies.update') ?? false;
     }
     
     public function destroy(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('exchangeratepolicies.destroy') ?? false;
+        return $user?->can('exchange-rate-policies.destroy') ?? false;
     }
     
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response

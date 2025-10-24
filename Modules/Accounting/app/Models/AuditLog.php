@@ -18,19 +18,11 @@ class AuditLog extends Model
     ];
 
     protected $casts = [
-                'changes' => 'array',
+        'changes' => 'array',
         'requires_retention' => 'boolean',
         'retention_until' => 'datetime',
         'metadata' => 'array'
     ];
-
-    // Scopes
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
-    }
-
-
 
     // Factory
     protected static function newFactory()

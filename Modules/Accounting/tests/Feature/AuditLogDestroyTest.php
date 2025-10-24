@@ -62,10 +62,13 @@ class AuditLogDestroyTest extends TestCase
         ]);
     }
 
-    public function test_can_delete_inactive_AuditLog(): void
+    public function test_can_delete_AuditLog_with_retention(): void
     {
         $admin = $this->getAdminUser();
-        $auditLog = AuditLog::factory()->inactive()->create();
+        $auditLog = AuditLog::factory()->create([
+            'requires_retention' => true,
+            'retention_until' => now()->addYear()
+        ]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

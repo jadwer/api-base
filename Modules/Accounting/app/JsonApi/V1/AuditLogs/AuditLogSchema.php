@@ -61,22 +61,6 @@ class AuditLogSchema extends Schema
         ];
     }
 
-    public function sortables(): array
-    {
-        return [
-            'modelType',
-            'modelId',
-            'action',
-            'ipAddress',
-            'sessionId',
-            'payloadHash',
-            'requiresRetention',
-            'retentionUntil',
-            'created_at',
-            'updated_at',
-        ];
-    }
-
     public function includePaths(): array
     {
         return [

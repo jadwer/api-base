@@ -53,17 +53,6 @@ class JournalLineSchema extends Schema
         ];
     }
 
-    public function sortables(): array
-    {
-        return [
-            'debit',
-            'credit',
-            'reference',
-            'created_at',
-            'updated_at',
-        ];
-    }
-
     public function includePaths(): array
     {
         return [

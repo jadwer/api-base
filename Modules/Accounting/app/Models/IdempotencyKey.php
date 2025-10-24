@@ -23,14 +23,6 @@ class IdempotencyKey extends Model
         'metadata' => 'array'
     ];
 
-    // Scopes
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
-    }
-
-
-
     // Factory
     protected static function newFactory()
     {

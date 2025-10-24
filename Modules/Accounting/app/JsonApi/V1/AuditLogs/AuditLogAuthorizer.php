@@ -17,7 +17,7 @@ class AuditLogAuthorizer implements Authorizer
         ]);
         
         $user = $request->user();
-        return $user?->can('auditlogs.index') ?? false;
+        return $user?->can('audit-logs.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
@@ -28,25 +28,25 @@ class AuditLogAuthorizer implements Authorizer
         ]);
         
         $user = $request->user();
-        return $user?->can('auditlogs.store') ?? false;
+        return $user?->can('audit-logs.store') ?? false;
     }
     
     public function show(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('auditlogs.show') ?? false;
+        return $user?->can('audit-logs.show') ?? false;
     }
     
     public function update(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('auditlogs.update') ?? false;
+        return $user?->can('audit-logs.update') ?? false;
     }
     
     public function destroy(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('auditlogs.destroy') ?? false;
+        return $user?->can('audit-logs.destroy') ?? false;
     }
     
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response

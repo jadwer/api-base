@@ -27,4 +27,13 @@ class AccountMappingFactory extends Factory
         ];
     }
 
+    /**
+     * Inactive AccountMapping
+     */
+    public function inactive(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_active' => false,
+        ]);
+    }
 }

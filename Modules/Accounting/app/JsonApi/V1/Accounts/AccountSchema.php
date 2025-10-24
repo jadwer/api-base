@@ -67,23 +67,6 @@ class AccountSchema extends Schema
         ];
     }
 
-    public function sortables(): array
-    {
-        return [
-            'code',
-            'name',
-            'accountType',
-            'nature',
-            'level',
-            'currency',
-            'isPostable',
-            'isCashFlow',
-            'status',
-            'created_at',
-            'updated_at',
-        ];
-    }
-
     public function includePaths(): array
     {
         return [

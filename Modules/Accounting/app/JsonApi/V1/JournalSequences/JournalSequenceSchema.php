@@ -48,16 +48,6 @@ class JournalSequenceSchema extends Schema
         ];
     }
 
-    public function sortables(): array
-    {
-        return [
-            'fiscalYear',
-            'currentNumber',
-            'created_at',
-            'updated_at',
-        ];
-    }
-
     public function includePaths(): array
     {
         return [

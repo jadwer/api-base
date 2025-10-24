@@ -62,10 +62,10 @@ class JournalEntryDestroyTest extends TestCase
         ]);
     }
 
-    public function test_can_delete_inactive_JournalEntry(): void
+    public function test_can_delete_posted_JournalEntry(): void
     {
         $admin = $this->getAdminUser();
-        $journalEntry = JournalEntry::factory()->inactive()->create();
+        $journalEntry = JournalEntry::factory()->posted()->create();
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

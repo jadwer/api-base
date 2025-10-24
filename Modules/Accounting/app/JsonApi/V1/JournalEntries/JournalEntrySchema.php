@@ -68,22 +68,6 @@ class JournalEntrySchema extends Schema
         ];
     }
 
-    public function sortables(): array
-    {
-        return [
-            'number',
-            'date',
-            'reference',
-            'totalDebit',
-            'totalCredit',
-            'status',
-            'approvedAt',
-            'postedAt',
-            'created_at',
-            'updated_at',
-        ];
-    }
-
     public function includePaths(): array
     {
         return [

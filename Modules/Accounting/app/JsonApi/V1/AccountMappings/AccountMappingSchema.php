@@ -54,19 +54,6 @@ class AccountMappingSchema extends Schema
         ];
     }
 
-    public function sortables(): array
-    {
-        return [
-            'mappingType',
-            'version',
-            'effectiveFrom',
-            'effectiveTo',
-            'isActive',
-            'created_at',
-            'updated_at',
-        ];
-    }
-
     public function includePaths(): array
     {
         return [

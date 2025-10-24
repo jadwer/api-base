@@ -15,9 +15,9 @@ class AccountBalanceAuthorizer implements Authorizer
             'user_id' => $request->user()?->id,
             'model_class' => $modelClass,
         ]);
-        
+
         $user = $request->user();
-        return $user?->can('accountbalances.index') ?? false;
+        return $user?->can('account-balances.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
@@ -26,27 +26,27 @@ class AccountBalanceAuthorizer implements Authorizer
             'user_id' => $request->user()?->id,
             'model_class' => $modelClass,
         ]);
-        
+
         $user = $request->user();
-        return $user?->can('accountbalances.store') ?? false;
+        return $user?->can('account-balances.store') ?? false;
     }
-    
+
     public function show(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('accountbalances.show') ?? false;
+        return $user?->can('account-balances.show') ?? false;
     }
-    
+
     public function update(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('accountbalances.update') ?? false;
+        return $user?->can('account-balances.update') ?? false;
     }
-    
+
     public function destroy(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('accountbalances.destroy') ?? false;
+        return $user?->can('account-balances.destroy') ?? false;
     }
     
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response
