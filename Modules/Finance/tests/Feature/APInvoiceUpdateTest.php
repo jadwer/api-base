@@ -8,17 +8,17 @@ use Modules\Finance\Models\APInvoice;
 
 class APInvoiceUpdateTest extends TestCase
 {
-    private function getAdminUser(): User
+    protected function getAdminUser(): User
     {
         return User::where('email', 'admin@example.com')->firstOrFail();
     }
 
-    private function getTechUser(): User
+    protected function getTechUser(): User
     {
         return User::where('email', 'tech@example.com')->firstOrFail();
     }
 
-    private function getCustomerUser(): User
+    protected function getCustomerUser(): User
     {
         return User::where('email', 'customer@example.com')->firstOrFail();
     }
