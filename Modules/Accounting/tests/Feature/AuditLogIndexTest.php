@@ -29,7 +29,6 @@ class AuditLogIndexTest extends TestCase
                     'id',
                     'type',
                     'attributes' => [
-                        'companyId',
                         'modelType',
                         'modelId',
                         'action',

@@ -16,7 +16,6 @@ class AccountUpdateTest extends TestCase
             'type' => 'accounts',
             'id' => (string) $entity->id,
             'attributes' => [
-                'name' => 'Updated Account',
                 'status' => 'inactive'
 ]
         ];
@@ -136,7 +135,7 @@ class AccountUpdateTest extends TestCase
             'type' => 'accounts',
             'id' => (string) $entity->id,
             'attributes' => [
-                'name' => 'Updated Account'
+                'status' => 'inactive'
             ]
         ];
 
@@ -156,7 +155,7 @@ class AccountUpdateTest extends TestCase
             'type' => 'accounts',
             'id' => '999999',
             'attributes' => [
-                'name' => 'Updated Account'
+                'status' => 'inactive'
             ]
         ];
 
@@ -178,7 +177,7 @@ class AccountUpdateTest extends TestCase
             'type' => 'accounts',
             'id' => (string) $entity->id,
             'attributes' => [
-                'name' => 'invalid_data_type_here'
+                'status' => 'inactive'
             ]
         ];
 

@@ -136,7 +136,7 @@ class AccountMappingUpdateTest extends TestCase
             'type' => 'account-mappings',
             'id' => (string) $entity->id,
             'attributes' => [
-                'name' => 'Updated Mapping'
+                'isActive' => false
             ]
         ];
 
@@ -156,7 +156,7 @@ class AccountMappingUpdateTest extends TestCase
             'type' => 'account-mappings',
             'id' => '999999',
             'attributes' => [
-                'name' => 'Updated Mapping'
+                'isActive' => false
             ]
         ];
 
@@ -178,7 +178,7 @@ class AccountMappingUpdateTest extends TestCase
             'type' => 'account-mappings',
             'id' => (string) $entity->id,
             'attributes' => [
-                'name' => 'invalid_data_type_here'
+                'isActive' => false
             ]
         ];
 

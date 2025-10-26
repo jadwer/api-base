@@ -14,12 +14,12 @@ class IdempotencyKeyDestroyTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('idempotency-keies')
-            ->delete("/api/v1/idempotency-keies/{$entity->id}");
+            ->expects('idempotency-keys')
+            ->delete("/api/v1/idempotency-keys/{$entity->id}");
 
         $response->assertNoContent();
 
-        $this->assertDatabaseMissing('idempotency_keies', [
+        $this->assertDatabaseMissing('idempotency_keys', [
             'id' => $entity->id
         ]);
     }
@@ -31,8 +31,8 @@ class IdempotencyKeyDestroyTest extends TestCase
 
         $response = $this->actingAs($tech, 'sanctum')
             ->jsonApi()
-            ->expects('idempotency-keies')
-            ->delete("/api/v1/idempotency-keies/{$entity->id}");
+            ->expects('idempotency-keys')
+            ->delete("/api/v1/idempotency-keys/{$entity->id}");
 
         $response->assertStatus(403); // Tech is read-only
     }
@@ -44,8 +44,8 @@ class IdempotencyKeyDestroyTest extends TestCase
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
-            ->expects('idempotency-keies')
-            ->delete("/api/v1/idempotency-keies/{$entity->id}");
+            ->expects('idempotency-keys')
+            ->delete("/api/v1/idempotency-keys/{$entity->id}");
 
         $response->assertStatus(403);
     }
@@ -55,8 +55,8 @@ class IdempotencyKeyDestroyTest extends TestCase
         $entity = IdempotencyKey::factory()->create();
 
         $response = $this->jsonApi()
-            ->expects('idempotency-keies')
-            ->delete("/api/v1/idempotency-keies/{$entity->id}");
+            ->expects('idempotency-keys')
+            ->delete("/api/v1/idempotency-keys/{$entity->id}");
 
         $response->assertStatus(401);
     }
@@ -67,8 +67,8 @@ class IdempotencyKeyDestroyTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('idempotency-keies')
-            ->delete('/api/v1/idempotency-keies/999999');
+            ->expects('idempotency-keys')
+            ->delete('/api/v1/idempotency-keys/999999');
 
         $response->assertStatus(404);
     }
@@ -80,8 +80,8 @@ class IdempotencyKeyDestroyTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('idempotency-keies')
-            ->delete("/api/v1/idempotency-keies/{$entity->id}");
+            ->expects('idempotency-keys')
+            ->delete("/api/v1/idempotency-keys/{$entity->id}");
 
         $response->assertNoContent();
         $this->assertEmpty($response->content());
@@ -95,16 +95,16 @@ class IdempotencyKeyDestroyTest extends TestCase
         // First delete
         $response1 = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('idempotency-keies')
-            ->delete("/api/v1/idempotency-keies/{$entity->id}");
+            ->expects('idempotency-keys')
+            ->delete("/api/v1/idempotency-keys/{$entity->id}");
 
         $response1->assertNoContent();
 
         // Second delete (should return 404)
         $response2 = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('idempotency-keies')
-            ->delete("/api/v1/idempotency-keies/{$entity->id}");
+            ->expects('idempotency-keys')
+            ->delete("/api/v1/idempotency-keys/{$entity->id}");
 
         $response2->assertStatus(404);
     }

@@ -27,7 +27,6 @@ class AccountShowTest extends TestCase
                 'id',
                 'type',
                 'attributes' => [
-                        'companyId',
                         'code',
                         'name',
                         'accountType',
@@ -63,7 +62,6 @@ class AccountShowTest extends TestCase
                 'id',
                 'type',
                 'attributes' => [
-                        'companyId',
                         'code',
                         'name',
                         'accountType',

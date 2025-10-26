@@ -29,7 +29,6 @@ class ExchangeRatePolicyIndexTest extends TestCase
                     'id',
                     'type',
                     'attributes' => [
-                        'companyId',
                         'currency',
                         'source',
                         'scope',

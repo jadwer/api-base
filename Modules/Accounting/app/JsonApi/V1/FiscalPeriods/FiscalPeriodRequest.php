@@ -10,7 +10,7 @@ class FiscalPeriodRequest extends ResourceRequest
     public function rules(): array
     {
         $fiscalperiod = $this->model();
-        $isUpdate = $FiscalPeriod && $FiscalPeriod->exists;
+        $isUpdate = $fiscalperiod && $fiscalperiod->exists;
 
         
         return [

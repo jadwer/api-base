@@ -29,7 +29,7 @@ class FiscalPeriodFactory extends Factory
         $endDate = $startDate->copy()->endOfMonth();
 
         return [
-            'name' => sprintf('%04d-%02d', $year, $month),
+            'name' => sprintf('%04d-%02d-%s', $year, $month, substr(uniqid(), -6)),
             'year' => $year,
             'month' => $month,
             'start_date' => $startDate->format('Y-m-d'),

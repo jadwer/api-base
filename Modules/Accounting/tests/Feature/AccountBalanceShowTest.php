@@ -27,7 +27,6 @@ class AccountBalanceShowTest extends TestCase
                 'id',
                 'type',
                 'attributes' => [
-                        'companyId',
                         'accountId',
                         'fiscalYear',
                         'fiscalMonth',
@@ -59,7 +58,6 @@ class AccountBalanceShowTest extends TestCase
                 'id',
                 'type',
                 'attributes' => [
-                        'companyId',
                         'accountId',
                         'fiscalYear',
                         'fiscalMonth',

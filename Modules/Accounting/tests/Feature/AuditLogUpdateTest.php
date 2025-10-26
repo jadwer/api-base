@@ -16,7 +16,6 @@ class AuditLogUpdateTest extends TestCase
             'type' => 'audit-logs',
             'id' => (string) $entity->id,
             'attributes' => [
-                'notes' => 'Updated audit log',
                 'requiresRetention' => true
 ]
         ];

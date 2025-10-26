@@ -27,7 +27,6 @@ class ExchangeRatePolicyShowTest extends TestCase
                 'id',
                 'type',
                 'attributes' => [
-                        'companyId',
                         'currency',
                         'source',
                         'scope',
@@ -59,7 +58,6 @@ class ExchangeRatePolicyShowTest extends TestCase
                 'id',
                 'type',
                 'attributes' => [
-                        'companyId',
                         'currency',
                         'source',
                         'scope',

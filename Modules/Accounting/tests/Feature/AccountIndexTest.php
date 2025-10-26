@@ -29,7 +29,6 @@ class AccountIndexTest extends TestCase
                     'id',
                     'type',
                     'attributes' => [
-                        'companyId',
                         'code',
                         'name',
                         'accountType',

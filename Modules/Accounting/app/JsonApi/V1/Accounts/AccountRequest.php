@@ -10,7 +10,7 @@ class AccountRequest extends ResourceRequest
     public function rules(): array
     {
         $account = $this->model();
-        $isUpdate = $Account && $Account->exists;
+        $isUpdate = $account && $account->exists;
 
         
         return [            'code' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255', Rule::unique('accounts')->ignore($account?->id)],

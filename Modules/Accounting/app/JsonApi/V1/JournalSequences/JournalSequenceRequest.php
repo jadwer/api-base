@@ -10,7 +10,7 @@ class JournalSequenceRequest extends ResourceRequest
     public function rules(): array
     {
         $journalsequence = $this->model();
-        $isUpdate = $JournalSequence && $JournalSequence->exists;
+        $isUpdate = $journalsequence && $journalsequence->exists;
 
         
         return [

@@ -10,30 +10,31 @@ class AuditLogRequest extends ResourceRequest
     public function rules(): array
     {
         $auditlog = $this->model();
-        $isUpdate = $AuditLog && $AuditLog->exists;
+        $isUpdate = $auditlog && $auditlog->exists;
 
         
-        return [            'model_type' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
-            'model_id' => [$isUpdate ? 'sometimes' : 'required', 'string'],
+        return [            'modelType' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'modelId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
             'action' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'userId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
             'changes' => ['nullable', 'array'],
             'ipAddress' => ['nullable', 'string', 'max:255'],
             'userAgent' => ['nullable', 'string'],
-            'session_id' => ['nullable', 'string', 'max:255'],
-            'payload_hash' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
-            'requires_retention' => [$isUpdate ? 'sometimes' : 'required', 'boolean'],
-            'retention_until' => ['nullable', 'string'],
+            'sessionId' => ['nullable', 'string', 'max:255'],
+            'payloadHash' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'requiresRetention' => [$isUpdate ? 'sometimes' : 'required', 'boolean'],
+            'retentionUntil' => ['nullable', 'string'],
             'metadata' => ['nullable', 'array'],
         ];
     }
 
     public function messages(): array
     {
-        return [            'model_type.required' => 'El campo Model type es obligatorio.',
-            'model_type.string' => 'El campo Model type debe ser texto.',
-            'model_type.max' => 'El campo Model type no puede tener más de 255 caracteres.',
-            'model_id.required' => 'El campo Model id es obligatorio.',
+        return [            'modelType.required' => 'El campo Model type es obligatorio.',
+            'modelType.string' => 'El campo Model type debe ser texto.',
+            'modelType.max' => 'El campo Model type no puede tener más de 255 caracteres.',
+            'modelId.required' => 'El campo Model id es obligatorio.',
+            'modelId.integer' => 'El campo Model id debe ser un número entero.',
             'action.required' => 'El campo Action es obligatorio.',
             'action.string' => 'El campo Action debe ser texto.',
             'action.max' => 'El campo Action no puede tener más de 255 caracteres.',
@@ -42,13 +43,13 @@ class AuditLogRequest extends ResourceRequest
             'ipAddress.string' => 'El campo Ip address debe ser texto.',
             'ipAddress.max' => 'El campo Ip address no puede tener más de 255 caracteres.',
             'userAgent.string' => 'El campo User agent debe ser texto.',
-            'session_id.string' => 'El campo Session id debe ser texto.',
-            'session_id.max' => 'El campo Session id no puede tener más de 255 caracteres.',
-            'payload_hash.required' => 'El campo Payload hash es obligatorio.',
-            'payload_hash.string' => 'El campo Payload hash debe ser texto.',
-            'payload_hash.max' => 'El campo Payload hash no puede tener más de 255 caracteres.',
-            'requires_retention.required' => 'El campo Requires retention es obligatorio.',
-            'requires_retention.boolean' => 'El campo Requires retention debe ser verdadero o falso.',
+            'sessionId.string' => 'El campo Session id debe ser texto.',
+            'sessionId.max' => 'El campo Session id no puede tener más de 255 caracteres.',
+            'payloadHash.required' => 'El campo Payload hash es obligatorio.',
+            'payloadHash.string' => 'El campo Payload hash debe ser texto.',
+            'payloadHash.max' => 'El campo Payload hash no puede tener más de 255 caracteres.',
+            'requiresRetention.required' => 'El campo Requires retention es obligatorio.',
+            'requiresRetention.boolean' => 'El campo Requires retention debe ser verdadero o falso.',
         ];
     }
 }

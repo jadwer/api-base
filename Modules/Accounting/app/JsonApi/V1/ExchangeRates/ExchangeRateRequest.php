@@ -10,7 +10,7 @@ class ExchangeRateRequest extends ResourceRequest
     public function rules(): array
     {
         $exchangerate = $this->model();
-        $isUpdate = $ExchangeRate && $ExchangeRate->exists;
+        $isUpdate = $exchangerate && $exchangerate->exists;
 
         
         return [

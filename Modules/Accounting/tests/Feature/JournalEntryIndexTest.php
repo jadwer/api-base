@@ -37,7 +37,6 @@ class JournalEntryIndexTest extends TestCase
                         'description',
                         'totalDebit',
                         'totalCredit',
-                        'companyId',
                         'status',
                         'approvedAt',
                         'approvedById',

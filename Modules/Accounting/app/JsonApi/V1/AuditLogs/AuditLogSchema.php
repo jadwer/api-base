@@ -54,7 +54,7 @@ class AuditLogSchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('ipAddress', 'ip_address'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('session_id'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('payload_hash'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('requires_retention'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('requiresRetention', 'requires_retention'),
         ];
     }
 

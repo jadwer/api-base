@@ -14,10 +14,11 @@ class ExchangeRatePolicyStoreTest extends TestCase
         $data = [
             'type' => 'exchange-rate-policies',
             'attributes' => [
-                'name' => 'Test Policy',
                 'currency' => 'USD',
-                'updateFrequency' => 'daily',
                 'source' => 'manual',
+                'scope' => 'global',
+                'maxAgeDays' => 30,
+                'tolerancePercentage' => 5.0,
                 'isActive' => true
 ]
         ];
@@ -38,10 +39,11 @@ class ExchangeRatePolicyStoreTest extends TestCase
         $data = [
             'type' => 'exchange-rate-policies',
             'attributes' => [
-                'name' => 'Test Policy',
                 'currency' => 'USD',
-                'updateFrequency' => 'daily',
                 'source' => 'manual',
+                'scope' => 'global',
+                'maxAgeDays' => 30,
+                'tolerancePercentage' => 5.0,
                 'isActive' => true
 ]
         ];
@@ -62,7 +64,7 @@ class ExchangeRatePolicyStoreTest extends TestCase
         $data = [
             'type' => 'exchange-rate-policies',
             'attributes' => [
-                'name' => 'New Policy'
+                'currency' => 'USD'
             ]
         ];
 
@@ -82,7 +84,7 @@ class ExchangeRatePolicyStoreTest extends TestCase
         $data = [
             'type' => 'exchange-rate-policies',
             'attributes' => [
-                'name' => 'New Policy'
+                'currency' => 'USD'
             ]
         ];
 
@@ -100,7 +102,7 @@ class ExchangeRatePolicyStoreTest extends TestCase
         $data = [
             'type' => 'exchange-rate-policies',
             'attributes' => [
-                'name' => 'New Policy'
+                'currency' => 'USD'
             ]
         ];
 
@@ -119,7 +121,7 @@ class ExchangeRatePolicyStoreTest extends TestCase
         $data = [
             'type' => 'exchange-rate-policies',
             'attributes' => [
-                'name' => 'Test'
+                'currency' => 'USD'
             ]
         ];
 
@@ -139,7 +141,7 @@ class ExchangeRatePolicyStoreTest extends TestCase
         $data = [
             'type' => 'exchange-rate-policies',
             'attributes' => [
-                'name' => 'invalid_data_type'
+                'currency' => 'USD'
             ]
         ];
 

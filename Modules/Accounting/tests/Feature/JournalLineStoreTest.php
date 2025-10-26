@@ -4,6 +4,8 @@ namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\Accounting\Models\JournalLine;
+use Modules\Accounting\Models\JournalEntry;
+use Modules\Accounting\Models\Account;
 
 class JournalLineStoreTest extends TestCase
 {
@@ -11,15 +13,18 @@ class JournalLineStoreTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
+        $journalEntry = JournalEntry::factory()->create();
+        $account = Account::factory()->create();
+
         $data = [
             'type' => 'journal-lines',
             'attributes' => [
-                'journalEntryId' => 1,
-                'accountId' => 1,
-                'lineType' => 'debit',
-                'amount' => 100,
-                'lineNumber' => 1
-]
+                'journalEntryId' => $journalEntry->id,
+                'accountId' => $account->id,
+                'debit' => 100.00,
+                'credit' => 0,
+                'description' => 'Test journal line'
+            ]
         ];
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -35,15 +40,18 @@ class JournalLineStoreTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
+        $journalEntry = JournalEntry::factory()->create();
+        $account = Account::factory()->create();
+
         $data = [
             'type' => 'journal-lines',
             'attributes' => [
-                'journalEntryId' => 1,
-                'accountId' => 1,
-                'lineType' => 'debit',
-                'amount' => 100,
-                'lineNumber' => 1
-]
+                'journalEntryId' => $journalEntry->id,
+                'accountId' => $account->id,
+                'debit' => 100.00,
+                'credit' => 0,
+                'description' => 'Test journal line'
+            ]
         ];
 
         $response = $this->actingAs($admin, 'sanctum')

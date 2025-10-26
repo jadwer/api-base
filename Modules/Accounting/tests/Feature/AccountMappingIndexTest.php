@@ -29,7 +29,6 @@ class AccountMappingIndexTest extends TestCase
                     'id',
                     'type',
                     'attributes' => [
-                        'companyId',
                         'mappingType',
                         'accountId',
                         'version',

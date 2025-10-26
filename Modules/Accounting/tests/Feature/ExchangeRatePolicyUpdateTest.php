@@ -17,7 +17,6 @@ class ExchangeRatePolicyUpdateTest extends TestCase
             'id' => (string) $entity->id,
             'attributes' => [
                 'isActive' => false,
-                'updateFrequency' => 'weekly'
 ]
         ];
 
@@ -136,7 +135,6 @@ class ExchangeRatePolicyUpdateTest extends TestCase
             'type' => 'exchange-rate-policies',
             'id' => (string) $entity->id,
             'attributes' => [
-                'name' => 'Updated Policy'
             ]
         ];
 
@@ -156,7 +154,6 @@ class ExchangeRatePolicyUpdateTest extends TestCase
             'type' => 'exchange-rate-policies',
             'id' => '999999',
             'attributes' => [
-                'name' => 'Updated Policy'
             ]
         ];
 
@@ -178,7 +175,7 @@ class ExchangeRatePolicyUpdateTest extends TestCase
             'type' => 'exchange-rate-policies',
             'id' => (string) $entity->id,
             'attributes' => [
-                'name' => 'invalid_data_type_here'
+                'maxAgeDays' => 'invalid-string'  // Should be integer
             ]
         ];
 

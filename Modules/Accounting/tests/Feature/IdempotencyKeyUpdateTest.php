@@ -13,7 +13,7 @@ class IdempotencyKeyUpdateTest extends TestCase
         $entity = IdempotencyKey::factory()->create();
 
         $data = [
-            'type' => 'idempotency-keies',
+            'type' => 'idempotency-keys',
             'id' => (string) $entity->id,
             'attributes' => [
                 'status' => 'processed'
@@ -22,9 +22,9 @@ class IdempotencyKeyUpdateTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('idempotency-keies')
+            ->expects('idempotency-keys')
             ->withData($data)
-            ->patch("/api/v1/idempotency-keies/{$entity->id}");
+            ->patch("/api/v1/idempotency-keys/{$entity->id}");
 
         $response->assertOk(); // assertOk is sufficient
     }
@@ -35,7 +35,7 @@ class IdempotencyKeyUpdateTest extends TestCase
         $entity = IdempotencyKey::factory()->create();
 
         $data = [
-            'type' => 'idempotency-keies',
+            'type' => 'idempotency-keys',
             'id' => (string) $entity->id,
             'attributes' => [
                 'status' => 'processed'
@@ -44,9 +44,9 @@ class IdempotencyKeyUpdateTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('idempotency-keies')
+            ->expects('idempotency-keys')
             ->withData($data)
-            ->patch("/api/v1/idempotency-keies/{$entity->id}");
+            ->patch("/api/v1/idempotency-keys/{$entity->id}");
 
         $response->assertOk();
     }
@@ -63,7 +63,7 @@ class IdempotencyKeyUpdateTest extends TestCase
         ];
 
         $data = [
-            'type' => 'idempotency-keies',
+            'type' => 'idempotency-keys',
             'id' => (string) $entity->id,
             'attributes' => [
                 'metadata' => $metadata
@@ -72,9 +72,9 @@ class IdempotencyKeyUpdateTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('idempotency-keies')
+            ->expects('idempotency-keys')
             ->withData($data)
-            ->patch("/api/v1/idempotency-keies/{$entity->id}");
+            ->patch("/api/v1/idempotency-keys/{$entity->id}");
 
         $response->assertOk();
 
@@ -87,7 +87,7 @@ class IdempotencyKeyUpdateTest extends TestCase
         $entity = IdempotencyKey::factory()->create();
 
         $data = [
-            'type' => 'idempotency-keies',
+            'type' => 'idempotency-keys',
             'id' => (string) $entity->id,
             'attributes' => [
                 'status' => 'processed'
@@ -96,9 +96,9 @@ class IdempotencyKeyUpdateTest extends TestCase
 
         $response = $this->actingAs($tech, 'sanctum')
             ->jsonApi()
-            ->expects('idempotency-keies')
+            ->expects('idempotency-keys')
             ->withData($data)
-            ->patch("/api/v1/idempotency-keies/{$entity->id}");
+            ->patch("/api/v1/idempotency-keys/{$entity->id}");
 
         $response->assertStatus(403); // Tech is read-only
     }
@@ -109,7 +109,7 @@ class IdempotencyKeyUpdateTest extends TestCase
         $entity = IdempotencyKey::factory()->create();
 
         $data = [
-            'type' => 'idempotency-keies',
+            'type' => 'idempotency-keys',
             'id' => (string) $entity->id,
             'attributes' => [
                 'status' => 'processed'
@@ -118,9 +118,9 @@ class IdempotencyKeyUpdateTest extends TestCase
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
-            ->expects('idempotency-keies')
+            ->expects('idempotency-keys')
             ->withData($data)
-            ->patch("/api/v1/idempotency-keies/{$entity->id}");
+            ->patch("/api/v1/idempotency-keys/{$entity->id}");
 
         $response->assertStatus(403);
     }
@@ -130,7 +130,7 @@ class IdempotencyKeyUpdateTest extends TestCase
         $entity = IdempotencyKey::factory()->create();
 
         $data = [
-            'type' => 'idempotency-keies',
+            'type' => 'idempotency-keys',
             'id' => (string) $entity->id,
             'attributes' => [
                 'status' => 'processed'
@@ -138,9 +138,9 @@ class IdempotencyKeyUpdateTest extends TestCase
         ];
 
         $response = $this->jsonApi()
-            ->expects('idempotency-keies')
+            ->expects('idempotency-keys')
             ->withData($data)
-            ->patch("/api/v1/idempotency-keies/{$entity->id}");
+            ->patch("/api/v1/idempotency-keys/{$entity->id}");
 
         $response->assertStatus(401);
     }
@@ -150,7 +150,7 @@ class IdempotencyKeyUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $data = [
-            'type' => 'idempotency-keies',
+            'type' => 'idempotency-keys',
             'id' => '999999',
             'attributes' => [
                 'status' => 'processed'
@@ -159,9 +159,9 @@ class IdempotencyKeyUpdateTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('idempotency-keies')
+            ->expects('idempotency-keys')
             ->withData($data)
-            ->patch('/api/v1/idempotency-keies/999999');
+            ->patch('/api/v1/idempotency-keys/999999');
 
         $response->assertStatus(404);
     }
@@ -172,7 +172,7 @@ class IdempotencyKeyUpdateTest extends TestCase
         $entity = IdempotencyKey::factory()->create();
 
         $data = [
-            'type' => 'idempotency-keies',
+            'type' => 'idempotency-keys',
             'id' => (string) $entity->id,
             'attributes' => [
                 'status' => 'invalid_data_type_here'
@@ -181,9 +181,9 @@ class IdempotencyKeyUpdateTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('idempotency-keies')
+            ->expects('idempotency-keys')
             ->withData($data)
-            ->patch("/api/v1/idempotency-keies/{$entity->id}");
+            ->patch("/api/v1/idempotency-keys/{$entity->id}");
 
         // May be 422 (validation error) or 200 (if nullable/convertible)
         $this->assertTrue(in_array($response->status(), [200, 422]));

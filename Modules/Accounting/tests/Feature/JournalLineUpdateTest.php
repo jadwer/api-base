@@ -16,7 +16,6 @@ class JournalLineUpdateTest extends TestCase
             'type' => 'journal-lines',
             'id' => (string) $entity->id,
             'attributes' => [
-                'amount' => 250,
                 'description' => 'Updated line'
 ]
         ];
@@ -39,8 +38,8 @@ class JournalLineUpdateTest extends TestCase
             'type' => 'journal-lines',
             'id' => (string) $entity->id,
             'attributes' => [
-                'amount' => 300
-]
+                'description' => 'Updated'
+            ]
         ];
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -93,8 +92,8 @@ class JournalLineUpdateTest extends TestCase
             'type' => 'journal-lines',
             'id' => (string) $entity->id,
             'attributes' => [
-                'amount' => 200.00
-]
+                'description' => 'Updated'
+            ]
         ];
 
         $response = $this->actingAs($tech, 'sanctum')
@@ -115,8 +114,8 @@ class JournalLineUpdateTest extends TestCase
             'type' => 'journal-lines',
             'id' => (string) $entity->id,
             'attributes' => [
-                'amount' => 200.00
-]
+                'description' => 'Updated'
+            ]
         ];
 
         $response = $this->actingAs($customer, 'sanctum')

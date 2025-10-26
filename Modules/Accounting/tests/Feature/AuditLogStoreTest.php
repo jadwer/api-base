@@ -17,7 +17,8 @@ class AuditLogStoreTest extends TestCase
                 'modelType' => 'Account',
                 'modelId' => 1,
                 'userId' => 1,
-                'actionType' => 'created',
+                'action' => 'created',
+                'payloadHash' => 'abc123',
                 'requiresRetention' => false
 ]
         ];
@@ -41,7 +42,8 @@ class AuditLogStoreTest extends TestCase
                 'modelType' => 'Account',
                 'modelId' => 1,
                 'userId' => 1,
-                'actionType' => 'created',
+                'action' => 'created',
+                'payloadHash' => 'abc123',
                 'requiresRetention' => false
 ]
         ];

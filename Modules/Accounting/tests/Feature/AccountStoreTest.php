@@ -127,7 +127,7 @@ class AccountStoreTest extends TestCase
         $data = [
             'type' => 'accounts',
             'attributes' => [
-                'name' => 'Test'
+                'code' => 'TEST'
             ]
         ];
 

@@ -17,7 +17,6 @@ class FiscalPeriodUpdateTest extends TestCase
             'id' => (string) $entity->id,
             'attributes' => [
                 'status' => 'closed',
-                'notes' => 'Period closed'
 ]
         ];
 

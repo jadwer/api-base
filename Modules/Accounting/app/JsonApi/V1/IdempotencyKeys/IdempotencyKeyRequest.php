@@ -10,7 +10,7 @@ class IdempotencyKeyRequest extends ResourceRequest
     public function rules(): array
     {
         $idempotencykey = $this->model();
-        $isUpdate = $IdempotencyKey && $IdempotencyKey->exists;
+        $isUpdate = $idempotencykey && $idempotencykey->exists;
 
         
         return [            'userId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],

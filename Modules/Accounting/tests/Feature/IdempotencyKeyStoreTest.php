@@ -12,20 +12,22 @@ class IdempotencyKeyStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $data = [
-            'type' => 'idempotency-keies',
+            'type' => 'idempotency-keys',
             'attributes' => [
                 'userId' => 1,
                 'endpoint' => 'test_endpoint',
                 'idempotencyKey' => 'test-key-123',
-                'requestHash' => 'abc123'
+                'requestHash' => 'abc123',
+                'status' => 'pending',
+                'expiresAt' => '2025-12-31 23:59:59'
             ]
         ];
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('idempotency-keies')
+            ->expects('idempotency-keys')
             ->withData($data)
-            ->post('/api/v1/idempotency-keies');
+            ->post('/api/v1/idempotency-keys');
 
         $response->assertCreated(); // Database check removed - assertCreated is sufficient
     }
@@ -35,17 +37,22 @@ class IdempotencyKeyStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $data = [
-            'type' => 'idempotency-keies',
+            'type' => 'idempotency-keys',
             'attributes' => [
-                'userId' => 1
+                'userId' => 1,
+                'endpoint' => 'test',
+                'idempotencyKey' => 'test-key',
+                'requestHash' => 'hash',
+                'status' => 'pending',
+                'expiresAt' => '2025-12-31 23:59:59'
             ]
         ];
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('idempotency-keies')
+            ->expects('idempotency-keys')
             ->withData($data)
-            ->post('/api/v1/idempotency-keies');
+            ->post('/api/v1/idempotency-keys');
 
         $response->assertCreated();
     }
@@ -55,17 +62,22 @@ class IdempotencyKeyStoreTest extends TestCase
         $tech = $this->getTechUser();
 
         $data = [
-            'type' => 'idempotency-keies',
+            'type' => 'idempotency-keys',
             'attributes' => [
-                'userId' => 1
+                'userId' => 1,
+                'endpoint' => 'test',
+                'idempotencyKey' => 'test-key',
+                'requestHash' => 'hash',
+                'status' => 'pending',
+                'expiresAt' => '2025-12-31 23:59:59'
             ]
         ];
 
         $response = $this->actingAs($tech, 'sanctum')
             ->jsonApi()
-            ->expects('idempotency-keies')
+            ->expects('idempotency-keys')
             ->withData($data)
-            ->post('/api/v1/idempotency-keies');
+            ->post('/api/v1/idempotency-keys');
 
         $response->assertStatus(403); // Tech is read-only
     }
@@ -75,17 +87,22 @@ class IdempotencyKeyStoreTest extends TestCase
         $customer = $this->getCustomerUser();
 
         $data = [
-            'type' => 'idempotency-keies',
+            'type' => 'idempotency-keys',
             'attributes' => [
-                'userId' => 1
+                'userId' => 1,
+                'endpoint' => 'test',
+                'idempotencyKey' => 'test-key',
+                'requestHash' => 'hash',
+                'status' => 'pending',
+                'expiresAt' => '2025-12-31 23:59:59'
             ]
         ];
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
-            ->expects('idempotency-keies')
+            ->expects('idempotency-keys')
             ->withData($data)
-            ->post('/api/v1/idempotency-keies');
+            ->post('/api/v1/idempotency-keys');
 
         $response->assertStatus(403);
     }
@@ -93,16 +110,21 @@ class IdempotencyKeyStoreTest extends TestCase
     public function test_guest_cannot_create_idempotency_keies(): void
     {
         $data = [
-            'type' => 'idempotency-keies',
+            'type' => 'idempotency-keys',
             'attributes' => [
-                'userId' => 1
+                'userId' => 1,
+                'endpoint' => 'test',
+                'idempotencyKey' => 'test-key',
+                'requestHash' => 'hash',
+                'status' => 'pending',
+                'expiresAt' => '2025-12-31 23:59:59'
             ]
         ];
 
         $response = $this->jsonApi()
-            ->expects('idempotency-keies')
+            ->expects('idempotency-keys')
             ->withData($data)
-            ->post('/api/v1/idempotency-keies');
+            ->post('/api/v1/idempotency-keys');
 
         $response->assertStatus(401);
     }
@@ -112,15 +134,17 @@ class IdempotencyKeyStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $data = [
-            'type' => 'idempotency-keies',
-            'attributes' => []
+            'type' => 'idempotency-keys',
+            'attributes' => [
+                'userId' => 1
+            ]
         ];
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('idempotency-keies')
+            ->expects('idempotency-keys')
             ->withData($data)
-            ->post('/api/v1/idempotency-keies');
+            ->post('/api/v1/idempotency-keys');
 
         $response->assertStatus(422);
     }
@@ -130,7 +154,7 @@ class IdempotencyKeyStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $data = [
-            'type' => 'idempotency-keies',
+            'type' => 'idempotency-keys',
             'attributes' => [
                 'userId' => 'invalid_data_type'
             ]
@@ -138,9 +162,9 @@ class IdempotencyKeyStoreTest extends TestCase
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
-            ->expects('idempotency-keies')
+            ->expects('idempotency-keys')
             ->withData($data)
-            ->post('/api/v1/idempotency-keies');
+            ->post('/api/v1/idempotency-keys');
 
         $this->assertContains($response->status(), [200, 422]);
     }

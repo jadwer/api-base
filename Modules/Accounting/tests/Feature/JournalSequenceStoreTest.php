@@ -14,6 +14,7 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
+                'name' => 'Test Sequence',
                 'journalId' => 1,
                 'fiscalYear' => 2024,
                 'currentSequence' => 1,
@@ -37,6 +38,7 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
+                'name' => 'Test Sequence',
                 'journalId' => 1,
                 'fiscalYear' => 2024,
                 'currentSequence' => 1,
@@ -60,6 +62,7 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
+                'name' => 'Test Sequence',
                 'journalId' => 1
             ]
         ];
@@ -80,6 +83,7 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
+                'name' => 'Test Sequence',
                 'journalId' => 1
             ]
         ];
@@ -98,6 +102,7 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
+                'name' => 'Test Sequence',
                 'journalId' => 1
             ]
         ];
@@ -117,6 +122,7 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
+                'name' => 'Test Sequence',
                 'journalId' => 1
             ]
         ];
@@ -137,6 +143,7 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
+                'name' => 'Test Sequence',
                 'journalId' => 'invalid_data_type'
             ]
         ];

@@ -27,7 +27,6 @@ class AuditLogShowTest extends TestCase
                 'id',
                 'type',
                 'attributes' => [
-                        'companyId',
                         'modelType',
                         'modelId',
                         'action',
@@ -63,7 +62,6 @@ class AuditLogShowTest extends TestCase
                 'id',
                 'type',
                 'attributes' => [
-                        'companyId',
                         'modelType',
                         'modelId',
                         'action',

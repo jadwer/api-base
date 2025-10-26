@@ -49,8 +49,8 @@ class FiscalPeriodIndexTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        FiscalPeriod::factory()->create(['name' => 'Test Name']);
-        FiscalPeriod::factory()->create(['name' => 'Test Name']);
+        FiscalPeriod::factory()->create(['name' => 'Period A']);
+        FiscalPeriod::factory()->create(['name' => 'Period B']);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

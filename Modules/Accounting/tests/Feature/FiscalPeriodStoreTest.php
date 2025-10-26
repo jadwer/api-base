@@ -14,6 +14,7 @@ class FiscalPeriodStoreTest extends TestCase
         $data = [
             'type' => 'fiscal-periods',
             'attributes' => [
+                'name' => '2024-01',
                 'year' => 2024,
                 'month' => 1,
                 'startDate' => '2024-01-01',
@@ -38,10 +39,11 @@ class FiscalPeriodStoreTest extends TestCase
         $data = [
             'type' => 'fiscal-periods',
             'attributes' => [
+                'name' => '2024-02',
                 'year' => 2024,
-                'month' => 1,
-                'startDate' => '2024-01-01',
-                'endDate' => '2024-01-31',
+                'month' => 2,
+                'startDate' => '2024-02-01',
+                'endDate' => '2024-02-29',
                 'status' => 'open'
 ]
         ];

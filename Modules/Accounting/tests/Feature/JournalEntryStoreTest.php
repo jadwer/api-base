@@ -4,20 +4,25 @@ namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\Accounting\Models\JournalEntry;
+use Modules\Accounting\Models\Journal;
+use Modules\Accounting\Models\FiscalPeriod;
 
 class JournalEntryStoreTest extends TestCase
 {
     public function test_admin_can_create_journal_entries(): void
     {
         $admin = $this->getAdminUser();
+        $journal = Journal::factory()->create();
+        $fiscalPeriod = FiscalPeriod::factory()->create();
 
         $data = [
             'type' => 'journal-entries',
             'attributes' => [
-                'journalId' => 1,
-                'fiscalPeriodId' => 1,
-                'entryDate' => '2024-01-01',
-                'entryType' => 'standard',
+                'journalId' => $journal->id,
+                'fiscalPeriodId' => $fiscalPeriod->id,
+                'date' => '2024-01-01',
+                'totalDebit' => 100.00,
+                'totalCredit' => 100.00,
                 'status' => 'draft'
 ]
         ];
@@ -34,14 +39,17 @@ class JournalEntryStoreTest extends TestCase
     public function test_admin_can_create_journal_entries_with_minimal_data(): void
     {
         $admin = $this->getAdminUser();
+        $journal = Journal::factory()->create();
+        $fiscalPeriod = FiscalPeriod::factory()->create();
 
         $data = [
             'type' => 'journal-entries',
             'attributes' => [
-                'journalId' => 1,
-                'fiscalPeriodId' => 1,
-                'entryDate' => '2024-01-01',
-                'entryType' => 'standard',
+                'journalId' => $journal->id,
+                'fiscalPeriodId' => $fiscalPeriod->id,
+                'date' => '2024-01-01',
+                'totalDebit' => 100.00,
+                'totalCredit' => 100.00,
                 'status' => 'draft'
 ]
         ];

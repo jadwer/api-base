@@ -18,6 +18,7 @@ class ExchangeRateStoreTest extends TestCase
                 'toCurrency' => 'EUR',
                 'rate' => 0.85,
                 'effectiveDate' => '2024-01-01',
+                'status' => 'active',
                 'source' => 'manual'
 ]
         ];
@@ -42,6 +43,7 @@ class ExchangeRateStoreTest extends TestCase
                 'toCurrency' => 'EUR',
                 'rate' => 0.85,
                 'effectiveDate' => '2024-01-01',
+                'status' => 'active',
                 'source' => 'manual'
 ]
         ];

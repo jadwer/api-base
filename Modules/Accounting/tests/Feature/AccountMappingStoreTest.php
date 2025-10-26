@@ -64,7 +64,7 @@ class AccountMappingStoreTest extends TestCase
         $data = [
             'type' => 'account-mappings',
             'attributes' => [
-                'name' => 'New Mapping'
+                'mappingType' => 'test'
             ]
         ];
 
@@ -84,7 +84,7 @@ class AccountMappingStoreTest extends TestCase
         $data = [
             'type' => 'account-mappings',
             'attributes' => [
-                'name' => 'New Mapping'
+                'mappingType' => 'test'
             ]
         ];
 
@@ -102,7 +102,7 @@ class AccountMappingStoreTest extends TestCase
         $data = [
             'type' => 'account-mappings',
             'attributes' => [
-                'name' => 'New Mapping'
+                'mappingType' => 'test'
             ]
         ];
 
@@ -141,7 +141,7 @@ class AccountMappingStoreTest extends TestCase
         $data = [
             'type' => 'account-mappings',
             'attributes' => [
-                'name' => 'invalid_data_type'
+                'mappingType' => 'test'
             ]
         ];
 
