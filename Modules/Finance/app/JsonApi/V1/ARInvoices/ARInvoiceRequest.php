@@ -12,41 +12,44 @@ class ARInvoiceRequest extends ResourceRequest
         $arinvoice = $this->model();
         
         return [
-            'invoice_number' => ['nullable', 'string', 'max:255', Rule::unique('ar_invoices')->ignore($arinvoice?->id)],
-            'invoice_date' => ['nullable', 'date'],
-            'due_date' => ['nullable', 'date'],
-            'customer_id' => ['nullable', 'integer'],
+            'invoiceNumber' => ['nullable', 'string', 'max:255', Rule::unique('ar_invoices', 'invoice_number')->ignore($arinvoice?->id)],
+            'invoiceDate' => ['nullable', 'date'],
+            'dueDate' => ['nullable', 'date'],
+            'customerId' => ['nullable', 'integer'],
             'currency' => ['nullable', 'string', 'max:255'],
-            'subtotal' => ['nullable', 'string'],
-            'tax_amount' => ['nullable', 'string'],
-            'total_amount' => ['nullable', 'string'],
-            'paid_amount' => ['nullable', 'string'],
+            'subtotal' => ['nullable', 'numeric'],
+            'taxAmount' => ['nullable', 'numeric'],
+            'totalAmount' => ['nullable', 'numeric'],
+            'paidAmount' => ['nullable', 'numeric'],
             'status' => ['nullable', 'string', 'max:255'],
-            'journal_entry_id' => ['nullable', 'integer'],
+            'journalEntryId' => ['nullable', 'integer'],
             'notes' => ['nullable', 'string'],
             'metadata' => ['nullable', 'array'],
-            'is_active' => ['nullable', 'boolean'],
-            'metadata' => ['nullable', 'array'],
+            'isActive' => ['nullable', 'boolean'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'invoice_number.string' => 'El campo Invoice number debe ser texto.',
-            'invoice_number.max' => 'El campo Invoice number no puede tener más de 255 caracteres.',
-            'invoice_number.unique' => 'Este Invoice number ya está en uso.',
-            'invoice_date.date' => 'El campo Invoice date debe ser una fecha válida.',
-            'due_date.date' => 'El campo Due date debe ser una fecha válida.',
-            'customer_id.integer' => 'El campo Customer id debe ser un número entero.',
+            'invoiceNumber.string' => 'El campo Invoice number debe ser texto.',
+            'invoiceNumber.max' => 'El campo Invoice number no puede tener más de 255 caracteres.',
+            'invoiceNumber.unique' => 'Este Invoice number ya está en uso.',
+            'invoiceDate.date' => 'El campo Invoice date debe ser una fecha válida.',
+            'dueDate.date' => 'El campo Due date debe ser una fecha válida.',
+            'customerId.integer' => 'El campo Customer id debe ser un número entero.',
             'currency.string' => 'El campo Currency debe ser texto.',
             'currency.max' => 'El campo Currency no puede tener más de 255 caracteres.',
+            'subtotal.numeric' => 'El campo Subtotal debe ser un número.',
+            'taxAmount.numeric' => 'El campo Tax amount debe ser un número.',
+            'totalAmount.numeric' => 'El campo Total amount debe ser un número.',
+            'paidAmount.numeric' => 'El campo Paid amount debe ser un número.',
             'status.string' => 'El campo Status debe ser texto.',
             'status.max' => 'El campo Status no puede tener más de 255 caracteres.',
-            'journal_entry_id.integer' => 'El campo Journal entry id debe ser un número entero.',
+            'journalEntryId.integer' => 'El campo Journal entry id debe ser un número entero.',
             'notes.string' => 'El campo Notes debe ser texto.',
             'metadata.array' => 'El campo Metadata debe ser un arreglo.',
-            'is_active.boolean' => 'El campo Is active debe ser verdadero o falso.',
+            'isActive.boolean' => 'El campo Is active debe ser verdadero o falso.',
         ];
     }
 }

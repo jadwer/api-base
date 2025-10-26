@@ -16,9 +16,10 @@ class JournalStoreTest extends TestCase
             'attributes' => [
                 'code' => 'TEST-J001',
                 'name' => 'Test Journal',
-                'type' => 'general',
+                'prefix' => 'TJ',
+                'status' => 'active',
                 'description' => 'Test journal description'
-]
+            ]
         ];
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -37,11 +38,12 @@ class JournalStoreTest extends TestCase
         $data = [
             'type' => 'journals',
             'attributes' => [
-                'code' => 'TEST-J001',
-                'name' => 'Test Journal',
-                'type' => 'general',
+                'code' => 'TEST-J002',
+                'name' => 'Test Journal 2',
+                'prefix' => 'TJ2',
+                'status' => 'active',
                 'description' => 'Test journal description'
-]
+            ]
         ];
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -147,6 +149,6 @@ class JournalStoreTest extends TestCase
             ->withData($data)
             ->post('/api/v1/journals');
 
-        $this->assertContains($response->status(), [200, 422]);
+        $this->assertContains($response->status(), [400, 422]);
     }
 }

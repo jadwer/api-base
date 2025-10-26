@@ -15,8 +15,8 @@ class PaymentMethodRequest extends ResourceRequest
             'code' => ['nullable', 'string', 'max:255', Rule::unique('payment_methods')->ignore($paymentmethod?->id)],
             'name' => ['nullable', 'string', 'max:255'],
             'type' => ['nullable', 'string', 'max:255'],
-            'requires_reference' => ['nullable', 'boolean'],
-            'is_active' => ['nullable', 'boolean'],
+            'requiresReference' => ['nullable', 'boolean'],
+            'isActive' => ['nullable', 'boolean'],
             'metadata' => ['nullable', 'array'],
         ];
     }
@@ -31,8 +31,8 @@ class PaymentMethodRequest extends ResourceRequest
             'name.max' => 'El campo Name no puede tener más de 255 caracteres.',
             'type.string' => 'El campo Type debe ser texto.',
             'type.max' => 'El campo Type no puede tener más de 255 caracteres.',
-            'requires_reference.boolean' => 'El campo Requires reference debe ser verdadero o falso.',
-            'is_active.boolean' => 'El campo Is active debe ser verdadero o falso.',
+            'requiresReference.boolean' => 'El campo Requires reference debe ser verdadero o falso.',
+            'isActive.boolean' => 'El campo Is active debe ser verdadero o falso.',
         ];
     }
 }

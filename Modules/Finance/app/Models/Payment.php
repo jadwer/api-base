@@ -20,9 +20,9 @@ class Payment extends Model
 
     protected $casts = [
                 'payment_date' => 'date',
-        'amount' => 'decimal:2',
-        'applied_amount' => 'decimal:2',
-        'unapplied_amount' => 'decimal:2',
+        'amount' => 'float',
+        'applied_amount' => 'float',
+        'unapplied_amount' => 'float',
         'metadata' => 'array',
         'is_active' => 'boolean'
     ];

@@ -12,12 +12,12 @@ class PaymentApplicationRequest extends ResourceRequest
         $paymentapplication = $this->model();
         
         return [
-            'payment_id' => ['nullable', 'integer'],
-            'ar_invoice_id' => ['nullable', 'integer'],
-            'amount' => ['nullable', 'string'],
-            'application_date' => ['nullable', 'date'],
+            'paymentId' => ['nullable', 'integer'],
+            'arInvoiceId' => ['nullable', 'integer'],
+            'amount' => ['nullable', 'numeric'],
+            'applicationDate' => ['nullable', 'date'],
             'notes' => ['nullable', 'string'],
-            'is_active' => ['nullable', 'boolean'],
+            'isActive' => ['nullable', 'boolean'],
             'metadata' => ['nullable', 'array'],
         ];
     }
@@ -25,11 +25,12 @@ class PaymentApplicationRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'payment_id.integer' => 'El campo Payment id debe ser un número entero.',
-            'ar_invoice_id.integer' => 'El campo Ar invoice id debe ser un número entero.',
-            'application_date.date' => 'El campo Application date debe ser una fecha válida.',
+            'paymentId.integer' => 'El campo Payment id debe ser un número entero.',
+            'arInvoiceId.integer' => 'El campo Ar invoice id debe ser un número entero.',
+            'amount.numeric' => 'El campo Amount debe ser un número.',
+            'applicationDate.date' => 'El campo Application date debe ser una fecha válida.',
             'notes.string' => 'El campo Notes debe ser texto.',
-            'is_active.boolean' => 'El campo Is active debe ser verdadero o falso.',
+            'isActive.boolean' => 'El campo Is active debe ser verdadero o falso.',
         ];
     }
 }

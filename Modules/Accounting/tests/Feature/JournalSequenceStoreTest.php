@@ -4,6 +4,7 @@ namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\Accounting\Models\JournalSequence;
+use Modules\Accounting\Models\Journal;
 
 class JournalSequenceStoreTest extends TestCase
 {
@@ -11,15 +12,15 @@ class JournalSequenceStoreTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
+        $journal = Journal::factory()->create();
+
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
-                'name' => 'Test Sequence',
-                'journalId' => 1,
+                'journalId' => $journal->id,
                 'fiscalYear' => 2024,
-                'currentSequence' => 1,
-                'prefix' => 'TEST'
-]
+                'currentNumber' => 1
+            ]
         ];
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -35,15 +36,15 @@ class JournalSequenceStoreTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
+        $journal = Journal::factory()->create();
+
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
-                'name' => 'Test Sequence',
-                'journalId' => 1,
+                'journalId' => $journal->id,
                 'fiscalYear' => 2024,
-                'currentSequence' => 1,
-                'prefix' => 'TEST'
-]
+                'currentNumber' => 1
+            ]
         ];
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -62,8 +63,8 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
-                'name' => 'Test Sequence',
-                'journalId' => 1
+                'journalId' => 1,
+                'fiscalYear' => 2024
             ]
         ];
 
@@ -83,8 +84,8 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
-                'name' => 'Test Sequence',
-                'journalId' => 1
+                'journalId' => 1,
+                'fiscalYear' => 2024
             ]
         ];
 
@@ -102,8 +103,8 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
-                'name' => 'Test Sequence',
-                'journalId' => 1
+                'journalId' => 1,
+                'fiscalYear' => 2024
             ]
         ];
 
@@ -122,8 +123,8 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
-                'name' => 'Test Sequence',
-                'journalId' => 1
+                'journalId' => 1,
+                'fiscalYear' => 2024
             ]
         ];
 
@@ -154,6 +155,6 @@ class JournalSequenceStoreTest extends TestCase
             ->withData($data)
             ->post('/api/v1/journal-sequences');
 
-        $this->assertContains($response->status(), [200, 422]);
+        $this->assertContains($response->status(), [400, 422]);
     }
 }

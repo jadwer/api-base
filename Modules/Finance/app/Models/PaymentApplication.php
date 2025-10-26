@@ -14,12 +14,13 @@ class PaymentApplication extends Model
     protected $table = 'payment_applications';
     
     protected $fillable = [
-        'payment_id', 'ar_invoice_id', 'amount', 'application_date', 'notes', 'is_active'
+        'payment_id', 'ar_invoice_id', 'amount', 'application_date', 'notes', 'metadata', 'is_active'
     ];
 
     protected $casts = [
-                'amount' => 'decimal:2',
+        'amount' => 'float',
         'application_date' => 'date',
+        'metadata' => 'array',
         'is_active' => 'boolean'
     ];
 

@@ -21,10 +21,10 @@ class APInvoice extends Model
     protected $casts = [
                 'invoice_date' => 'date',
         'due_date' => 'date',
-        'subtotal' => 'decimal:2',
-        'tax_amount' => 'decimal:2',
-        'total_amount' => 'decimal:2',
-        'paid_amount' => 'decimal:2',
+        'subtotal' => 'float',
+        'tax_amount' => 'float',
+        'total_amount' => 'float',
+        'paid_amount' => 'float',
         'metadata' => 'array',
         'is_active' => 'boolean'
     ];

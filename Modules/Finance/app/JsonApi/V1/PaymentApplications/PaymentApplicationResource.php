@@ -14,6 +14,7 @@ class PaymentApplicationResource extends JsonApiResource
             'amount' => $this->amount,
             'applicationDate' => $this->application_date,
             'notes' => $this->notes,
+            'metadata' => $this->metadata,
             'isActive' => $this->is_active,
             "createdAt" => $this->created_at,
             "updatedAt" => $this->updated_at,

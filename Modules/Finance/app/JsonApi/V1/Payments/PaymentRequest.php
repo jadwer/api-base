@@ -12,45 +12,47 @@ class PaymentRequest extends ResourceRequest
         $payment = $this->model();
         
         return [
-            'payment_number' => ['nullable', 'string', 'max:255', Rule::unique('payments')->ignore($payment?->id)],
-            'payment_date' => ['nullable', 'date'],
-            'customer_id' => ['nullable', 'integer'],
-            'bank_account_id' => ['nullable', 'integer'],
-            'payment_method_id' => ['nullable', 'integer'],
-            'amount' => ['nullable', 'string'],
+            'paymentNumber' => ['nullable', 'string', 'max:255', Rule::unique('payments', 'payment_number')->ignore($payment?->id)],
+            'paymentDate' => ['nullable', 'date'],
+            'customerId' => ['nullable', 'integer'],
+            'bankAccountId' => ['nullable', 'integer'],
+            'paymentMethodId' => ['nullable', 'integer'],
+            'amount' => ['nullable', 'numeric'],
             'currency' => ['nullable', 'string', 'max:255'],
-            'applied_amount' => ['nullable', 'string'],
-            'unapplied_amount' => ['nullable', 'string'],
+            'appliedAmount' => ['nullable', 'numeric'],
+            'unappliedAmount' => ['nullable', 'numeric'],
             'status' => ['nullable', 'string', 'max:255'],
-            'journal_entry_id' => ['nullable', 'integer'],
+            'journalEntryId' => ['nullable', 'integer'],
             'reference' => ['nullable', 'string', 'max:255'],
             'notes' => ['nullable', 'string'],
             'metadata' => ['nullable', 'array'],
-            'is_active' => ['nullable', 'boolean'],
-            'metadata' => ['nullable', 'array'],
+            'isActive' => ['nullable', 'boolean'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'payment_number.string' => 'El campo Payment number debe ser texto.',
-            'payment_number.max' => 'El campo Payment number no puede tener más de 255 caracteres.',
-            'payment_number.unique' => 'Este Payment number ya está en uso.',
-            'payment_date.date' => 'El campo Payment date debe ser una fecha válida.',
-            'customer_id.integer' => 'El campo Customer id debe ser un número entero.',
-            'bank_account_id.integer' => 'El campo Bank account id debe ser un número entero.',
-            'payment_method_id.integer' => 'El campo Payment method id debe ser un número entero.',
+            'paymentNumber.string' => 'El campo Payment number debe ser texto.',
+            'paymentNumber.max' => 'El campo Payment number no puede tener más de 255 caracteres.',
+            'paymentNumber.unique' => 'Este Payment number ya está en uso.',
+            'paymentDate.date' => 'El campo Payment date debe ser una fecha válida.',
+            'customerId.integer' => 'El campo Customer id debe ser un número entero.',
+            'bankAccountId.integer' => 'El campo Bank account id debe ser un número entero.',
+            'paymentMethodId.integer' => 'El campo Payment method id debe ser un número entero.',
+            'amount.numeric' => 'El campo Amount debe ser un número.',
             'currency.string' => 'El campo Currency debe ser texto.',
             'currency.max' => 'El campo Currency no puede tener más de 255 caracteres.',
+            'appliedAmount.numeric' => 'El campo Applied amount debe ser un número.',
+            'unappliedAmount.numeric' => 'El campo Unapplied amount debe ser un número.',
             'status.string' => 'El campo Status debe ser texto.',
             'status.max' => 'El campo Status no puede tener más de 255 caracteres.',
-            'journal_entry_id.integer' => 'El campo Journal entry id debe ser un número entero.',
+            'journalEntryId.integer' => 'El campo Journal entry id debe ser un número entero.',
             'reference.string' => 'El campo Reference debe ser texto.',
             'reference.max' => 'El campo Reference no puede tener más de 255 caracteres.',
             'notes.string' => 'El campo Notes debe ser texto.',
             'metadata.array' => 'El campo Metadata debe ser un arreglo.',
-            'is_active.boolean' => 'El campo Is active debe ser verdadero o falso.',
+            'isActive.boolean' => 'El campo Is active debe ser verdadero o falso.',
         ];
     }
 }

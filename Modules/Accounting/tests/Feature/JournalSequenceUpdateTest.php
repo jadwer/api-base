@@ -16,8 +16,7 @@ class JournalSequenceUpdateTest extends TestCase
             'type' => 'journal-sequences',
             'id' => (string) $entity->id,
             'attributes' => [
-                'currentSequence' => 100,
-                'suffix' => 'UPD'
+                'currentNumber' => 100
 ]
         ];
 
@@ -39,7 +38,7 @@ class JournalSequenceUpdateTest extends TestCase
             'type' => 'journal-sequences',
             'id' => (string) $entity->id,
             'attributes' => [
-                'currentSequence' => 150
+                'currentNumber' => 150
 ]
         ];
 
@@ -93,7 +92,7 @@ class JournalSequenceUpdateTest extends TestCase
             'type' => 'journal-sequences',
             'id' => (string) $entity->id,
             'attributes' => [
-                'currentSequence' => 50
+                'currentNumber' => 50
 ]
         ];
 
@@ -115,7 +114,7 @@ class JournalSequenceUpdateTest extends TestCase
             'type' => 'journal-sequences',
             'id' => (string) $entity->id,
             'attributes' => [
-                'currentSequence' => 50
+                'currentNumber' => 50
 ]
         ];
 
@@ -188,7 +187,7 @@ class JournalSequenceUpdateTest extends TestCase
             ->withData($data)
             ->patch("/api/v1/journal-sequences/{$entity->id}");
 
-        // May be 422 (validation error) or 200 (if nullable/convertible)
-        $this->assertTrue(in_array($response->status(), [200, 422]));
+        // May be 422 (validation error) or 400 (bad request)
+        $this->assertTrue(in_array($response->status(), [400, 422]));
     }
 }
