@@ -10,22 +10,24 @@ class JournalEntryRequest extends ResourceRequest
     public function rules(): array
     {
         $journalentry = $this->model();
+        $isUpdate = $JournalEntry && $JournalEntry->exists;
+
         
         return [
-            'journalId' => ['required', 'string'],
-            'fiscalPeriodId' => ['required', 'string'],
+            'journalId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
+            'fiscalPeriodId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
             'number' => ['nullable', 'string', 'max:255', Rule::unique('journal_entries')->ignore($journalentry?->id)],
-            'date' => ['required', 'date'],
+            'date' => [$isUpdate ? 'sometimes' : 'required', 'date'],
             'reference' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'totalDebit' => ['required', 'string'],
-            'totalCredit' => ['required', 'string'],
-            'companyId' => ['required', 'string'],
-            'status' => ['required', 'string', 'max:255'],
+            'totalDebit' => [$isUpdate ? 'sometimes' : 'required', 'numeric'],
+            'totalCredit' => [$isUpdate ? 'sometimes' : 'required', 'numeric'],
+            'companyId' => ['nullable', 'integer'],
+            'status' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'approved_at' => ['nullable', 'string'],
             'approved_by_id' => ['nullable', 'string'],
             'postedAt' => ['nullable', 'string'],
-            'postedById' => ['nullable', 'string'],
+            'postedById' => ['nullable', 'integer'],
             'reversal_of_id' => ['nullable', 'string'],
             'reversal_reason' => ['nullable', 'string'],
             'metadata' => ['nullable', 'array'],

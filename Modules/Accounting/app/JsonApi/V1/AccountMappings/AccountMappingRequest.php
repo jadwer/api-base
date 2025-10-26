@@ -10,16 +10,18 @@ class AccountMappingRequest extends ResourceRequest
     public function rules(): array
     {
         $accountmapping = $this->model();
+        $isUpdate = $AccountMapping && $AccountMapping->exists;
+
         
         return [
-            'companyId' => ['required', 'string'],
-            'mappingType' => ['required', 'string', 'max:255'],
-            'accountId' => ['required', 'string'],
-            'version' => ['required', 'integer'],
-            'effectiveFrom' => ['required', 'date'],
+            'companyId' => ['nullable', 'integer'],
+            'mappingType' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'accountId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
+            'version' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
+            'effectiveFrom' => [$isUpdate ? 'sometimes' : 'required', 'date'],
             'effectiveTo' => ['nullable', 'date'],
-            'isActive' => ['required', 'boolean'],
-            'createdById' => ['required', 'string'],
+            'isActive' => [$isUpdate ? 'sometimes' : 'required', 'boolean'],
+            'createdById' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
             'notes' => ['nullable', 'string'],
             'metadata' => ['nullable', 'array'],
         ];

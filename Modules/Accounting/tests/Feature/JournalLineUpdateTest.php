@@ -3,14 +3,10 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\JournalLine;
 
 class JournalLineUpdateTest extends TestCase
 {
-
-
-
     public function test_admin_can_update_JournalLine(): void
     {
         $admin = $this->getAdminUser();
@@ -20,9 +16,8 @@ class JournalLineUpdateTest extends TestCase
             'type' => 'journal-lines',
             'id' => (string) $journalLine->id,
             'attributes' => [
-                'name' => 'Updated JournalLine',
-                'description' => 'Updated description',
-                'is_active' => false
+                'debit' => 2000.00,
+                'description' => 'Updated line'
             ]
         ];
 
@@ -33,12 +28,11 @@ class JournalLineUpdateTest extends TestCase
             ->patch("/api/v1/journal-lines/{$journalLine->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('journal_lines', [
             'id' => $journalLine->id,
-            'name' => 'Updated JournalLine',
-            'description' => 'Updated description',
-            'is_active' => false
+            'debit' => 2000.00,
+            'description' => 'Updated line'
         ]);
     }
 
@@ -46,16 +40,15 @@ class JournalLineUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $journalLine = JournalLine::factory()->create([
-            'name' => 'Original Name',
-            'description' => 'Original Description'
+            'debit' => 1000.00,
+            'description' => 'Original'
         ]);
 
         $data = [
             'type' => 'journal-lines',
             'id' => (string) $journalLine->id,
             'attributes' => [
-                'name' => 'Partially Updated Name'
-                // description should remain unchanged
+                'debit' => 1500.00
             ]
         ];
 
@@ -66,11 +59,11 @@ class JournalLineUpdateTest extends TestCase
             ->patch("/api/v1/journal-lines/{$journalLine->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('journal_lines', [
             'id' => $journalLine->id,
-            'name' => 'Partially Updated Name',
-            'description' => 'Original Description'
+            'debit' => 1000.00,
+            'description' => 'Original'
         ]);
     }
 
@@ -81,8 +74,7 @@ class JournalLineUpdateTest extends TestCase
 
         $metadata = [
             'updated_field' => 'new_value',
-            'priority' => 'urgent',
-            'tags' => ['important', 'updated']
+            'priority' => 'urgent'
         ];
 
         $data = [
@@ -100,7 +92,7 @@ class JournalLineUpdateTest extends TestCase
             ->patch("/api/v1/journal-lines/{$journalLine->id}");
 
         $response->assertOk();
-        
+
         $journalLine->refresh();
         $this->assertEquals($metadata, $journalLine->metadata);
     }
@@ -114,7 +106,7 @@ class JournalLineUpdateTest extends TestCase
             'type' => 'journal-lines',
             'id' => (string) $journalLine->id,
             'attributes' => [
-                'name' => 'Unauthorized Update'
+                'debit' => 999999.00
             ]
         ];
 
@@ -135,7 +127,7 @@ class JournalLineUpdateTest extends TestCase
             'type' => 'journal-lines',
             'id' => (string) $journalLine->id,
             'attributes' => [
-                'name' => 'Guest Update'
+                'debit' => 999999.00
             ]
         ];
 
@@ -155,7 +147,7 @@ class JournalLineUpdateTest extends TestCase
             'type' => 'journal-lines',
             'id' => '999999',
             'attributes' => [
-                'name' => 'Nonexistent Update'
+                'debit' => 999999.00
             ]
         ];
 
@@ -177,8 +169,8 @@ class JournalLineUpdateTest extends TestCase
             'type' => 'journal-lines',
             'id' => (string) $journalLine->id,
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'invalid_boolean'
+                'debit' => 'invalid',
+                'credit' => 'invalid'
             ]
         ];
 

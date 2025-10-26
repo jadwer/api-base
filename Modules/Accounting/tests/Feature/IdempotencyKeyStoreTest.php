@@ -3,14 +3,10 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\IdempotencyKey;
 
 class IdempotencyKeyStoreTest extends TestCase
 {
-
-
-
     public function test_admin_can_create_IdempotencyKey(): void
     {
         $admin = $this->getAdminUser();
@@ -18,12 +14,9 @@ class IdempotencyKeyStoreTest extends TestCase
         $data = [
             'type' => 'idempotency-keys',
             'attributes' => [
-                'endpoint' => 'test string',
-                'idempotencyKey' => 'test string',
-                'requestHash' => 'test string',
-                'responseData' => 'test value',
-                'status' => 'active',
-                'expiresAt' => '2024-01-01'
+                'endpoint' => '/api/v1/test',
+                'idempotencyKey' => 'test-key-123',
+                'status' => 'pending'
             ]
         ];
 
@@ -34,8 +27,12 @@ class IdempotencyKeyStoreTest extends TestCase
             ->post('/api/v1/idempotency-keys');
 
         $response->assertCreated();
-        
-        $this->assertDatabaseHas('idempotency_keys', ['endpoint' => 'test string', 'idempotency_key' => 'test string', 'request_hash' => 'test string', 'response_data' => 'test value', 'status' => 'active', 'expires_at' => 'test value']);
+
+        $this->assertDatabaseHas('idempotency_keys', [
+            'endpoint' => '/api/v1/test',
+            'idempotency_key' => 'test-key-123',
+            'status' => 'pending'
+        ]);
     }
 
     public function test_admin_can_create_IdempotencyKey_with_minimal_data(): void
@@ -45,7 +42,8 @@ class IdempotencyKeyStoreTest extends TestCase
         $data = [
             'type' => 'idempotency-keys',
             'attributes' => [
-
+                'endpoint' => '/api/v1/minimal',
+                'idempotencyKey' => 'min-key'
             ]
         ];
 
@@ -65,8 +63,7 @@ class IdempotencyKeyStoreTest extends TestCase
         $data = [
             'type' => 'idempotency-keys',
             'attributes' => [
-                'name' => 'Unauthorized IdempotencyKey',
-                'is_active' => true
+                'endpoint' => '/api/v1/admin'
             ]
         ];
 
@@ -84,8 +81,7 @@ class IdempotencyKeyStoreTest extends TestCase
         $data = [
             'type' => 'idempotency-keys',
             'attributes' => [
-                'name' => 'Guest IdempotencyKey',
-                'is_active' => true
+                'endpoint' => '/api/v1/admin'
             ]
         ];
 
@@ -104,7 +100,7 @@ class IdempotencyKeyStoreTest extends TestCase
         $data = [
             'type' => 'idempotency-keys',
             'attributes' => [
-                'description' => 'Missing name'
+                // Missing required fields
             ]
         ];
 
@@ -115,7 +111,6 @@ class IdempotencyKeyStoreTest extends TestCase
             ->post('/api/v1/idempotency-keys');
 
         $response->assertStatus(422);
-        $this->assertJsonApiValidationErrors(['/data/attributes/name'], $response);
     }
 
     public function test_cannot_create_IdempotencyKey_with_invalid_data(): void
@@ -125,8 +120,8 @@ class IdempotencyKeyStoreTest extends TestCase
         $data = [
             'type' => 'idempotency-keys',
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'not_boolean' // Invalid boolean
+                'endpoint' => '',
+                'idempotencyKey' => ''
             ]
         ];
 

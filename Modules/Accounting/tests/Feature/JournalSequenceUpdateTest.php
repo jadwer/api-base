@@ -3,14 +3,10 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\JournalSequence;
 
 class JournalSequenceUpdateTest extends TestCase
 {
-
-
-
     public function test_admin_can_update_JournalSequence(): void
     {
         $admin = $this->getAdminUser();
@@ -20,9 +16,8 @@ class JournalSequenceUpdateTest extends TestCase
             'type' => 'journal-sequences',
             'id' => (string) $journalSequence->id,
             'attributes' => [
-                'name' => 'Updated JournalSequence',
-                'description' => 'Updated description',
-                'is_active' => false
+                'fiscalYear' => 2026,
+                'currentNumber' => 100
             ]
         ];
 
@@ -33,12 +28,11 @@ class JournalSequenceUpdateTest extends TestCase
             ->patch("/api/v1/journal-sequences/{$journalSequence->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('journal_sequences', [
             'id' => $journalSequence->id,
-            'name' => 'Updated JournalSequence',
-            'description' => 'Updated description',
-            'is_active' => false
+            'fiscal_year' => 2026,
+            'current_number' => 100
         ]);
     }
 
@@ -46,16 +40,15 @@ class JournalSequenceUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $journalSequence = JournalSequence::factory()->create([
-            'name' => 'Original Name',
-            'description' => 'Original Description'
+            'fiscal_year' => 2025,
+            'current_number' => 1
         ]);
 
         $data = [
             'type' => 'journal-sequences',
             'id' => (string) $journalSequence->id,
             'attributes' => [
-                'name' => 'Partially Updated Name'
-                // description should remain unchanged
+                'currentNumber' => 50
             ]
         ];
 
@@ -66,11 +59,11 @@ class JournalSequenceUpdateTest extends TestCase
             ->patch("/api/v1/journal-sequences/{$journalSequence->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('journal_sequences', [
             'id' => $journalSequence->id,
-            'name' => 'Partially Updated Name',
-            'description' => 'Original Description'
+            'fiscal_year' => 2025,
+            'current_number' => 1
         ]);
     }
 
@@ -81,8 +74,7 @@ class JournalSequenceUpdateTest extends TestCase
 
         $metadata = [
             'updated_field' => 'new_value',
-            'priority' => 'urgent',
-            'tags' => ['important', 'updated']
+            'priority' => 'urgent'
         ];
 
         $data = [
@@ -100,7 +92,7 @@ class JournalSequenceUpdateTest extends TestCase
             ->patch("/api/v1/journal-sequences/{$journalSequence->id}");
 
         $response->assertOk();
-        
+
         $journalSequence->refresh();
         $this->assertEquals($metadata, $journalSequence->metadata);
     }
@@ -114,7 +106,7 @@ class JournalSequenceUpdateTest extends TestCase
             'type' => 'journal-sequences',
             'id' => (string) $journalSequence->id,
             'attributes' => [
-                'name' => 'Unauthorized Update'
+                'fiscalYear' => 2099
             ]
         ];
 
@@ -135,7 +127,7 @@ class JournalSequenceUpdateTest extends TestCase
             'type' => 'journal-sequences',
             'id' => (string) $journalSequence->id,
             'attributes' => [
-                'name' => 'Guest Update'
+                'fiscalYear' => 2099
             ]
         ];
 
@@ -155,7 +147,7 @@ class JournalSequenceUpdateTest extends TestCase
             'type' => 'journal-sequences',
             'id' => '999999',
             'attributes' => [
-                'name' => 'Nonexistent Update'
+                'fiscalYear' => 2099
             ]
         ];
 
@@ -177,8 +169,8 @@ class JournalSequenceUpdateTest extends TestCase
             'type' => 'journal-sequences',
             'id' => (string) $journalSequence->id,
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'invalid_boolean'
+                'fiscalYear' => 'invalid',
+                'currentNumber' => 'invalid'
             ]
         ];
 

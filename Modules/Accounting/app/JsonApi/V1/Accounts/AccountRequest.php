@@ -10,19 +10,21 @@ class AccountRequest extends ResourceRequest
     public function rules(): array
     {
         $account = $this->model();
+        $isUpdate = $Account && $Account->exists;
+
         
         return [
-            'companyId' => ['required', 'string'],
-            'code' => ['required', 'string', 'max:255', Rule::unique('accounts')->ignore($account?->id)],
-            'name' => ['required', 'string', 'max:255'],
-            'accountType' => ['required', 'string', 'max:255'],
-            'nature' => ['required', 'string', 'max:255'],
-            'level' => ['required', 'integer'],
-            'parentId' => ['nullable', 'string'],
-            'currency' => ['required', 'string', 'max:255'],
-            'isPostable' => ['required', 'boolean'],
-            'isCashFlow' => ['required', 'boolean'],
-            'status' => ['required', 'string', 'max:255'],
+            'companyId' => ['nullable', 'integer'],
+            'code' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255', Rule::unique('accounts')->ignore($account?->id)],
+            'name' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'accountType' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'nature' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'level' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
+            'parentId' => ['nullable', 'integer'],
+            'currency' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'isPostable' => [$isUpdate ? 'sometimes' : 'required', 'boolean'],
+            'isCashFlow' => [$isUpdate ? 'sometimes' : 'required', 'boolean'],
+            'status' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'metadata' => ['nullable', 'array'],
             'metadata' => ['nullable', 'array'],
         ];

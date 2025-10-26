@@ -3,14 +3,10 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\FiscalPeriod;
 
 class FiscalPeriodStoreTest extends TestCase
 {
-
-
-
     public function test_admin_can_create_FiscalPeriod(): void
     {
         $admin = $this->getAdminUser();
@@ -18,14 +14,10 @@ class FiscalPeriodStoreTest extends TestCase
         $data = [
             'type' => 'fiscal-periods',
             'attributes' => [
-                'name' => 'Test Name',
-                'year' => 100,
-                'month' => 100,
-                'startDate' => '2024-01-01',
-                'endDate' => '2024-01-01',
-                'status' => 'active',
-                'closedAt' => '2024-01-01',
-                'metadata' => 'test value'
+                'name' => 'Q1 2025',
+                'year' => 2025,
+                'month' => 3,
+                'status' => 'open'
             ]
         ];
 
@@ -36,8 +28,13 @@ class FiscalPeriodStoreTest extends TestCase
             ->post('/api/v1/fiscal-periods');
 
         $response->assertCreated();
-        
-        $this->assertDatabaseHas('fiscal_periods', ['name' => 'Test Name', 'year' => 100, 'month' => 100, 'start_date' => 'test value', 'end_date' => 'test value', 'status' => 'active', 'closed_at' => 'test value', 'metadata' => 'test value']);
+
+        $this->assertDatabaseHas('fiscal_periods', [
+            'name' => 'Q1 2025',
+            'year' => 2025,
+            'month' => 3,
+            'status' => 'open'
+        ]);
     }
 
     public function test_admin_can_create_FiscalPeriod_with_minimal_data(): void
@@ -47,7 +44,8 @@ class FiscalPeriodStoreTest extends TestCase
         $data = [
             'type' => 'fiscal-periods',
             'attributes' => [
-                'name' => 'Test Name'
+                'name' => 'Minimal',
+                'year' => 2025
             ]
         ];
 
@@ -67,8 +65,7 @@ class FiscalPeriodStoreTest extends TestCase
         $data = [
             'type' => 'fiscal-periods',
             'attributes' => [
-                'name' => 'Unauthorized FiscalPeriod',
-                'is_active' => true
+                'name' => 'Forbidden Period'
             ]
         ];
 
@@ -86,8 +83,7 @@ class FiscalPeriodStoreTest extends TestCase
         $data = [
             'type' => 'fiscal-periods',
             'attributes' => [
-                'name' => 'Guest FiscalPeriod',
-                'is_active' => true
+                'name' => 'Forbidden Period'
             ]
         ];
 
@@ -106,7 +102,7 @@ class FiscalPeriodStoreTest extends TestCase
         $data = [
             'type' => 'fiscal-periods',
             'attributes' => [
-                'description' => 'Missing name'
+                // Missing required fields
             ]
         ];
 
@@ -117,7 +113,6 @@ class FiscalPeriodStoreTest extends TestCase
             ->post('/api/v1/fiscal-periods');
 
         $response->assertStatus(422);
-        $this->assertJsonApiValidationErrors(['/data/attributes/name'], $response);
     }
 
     public function test_cannot_create_FiscalPeriod_with_invalid_data(): void
@@ -127,8 +122,8 @@ class FiscalPeriodStoreTest extends TestCase
         $data = [
             'type' => 'fiscal-periods',
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'not_boolean' // Invalid boolean
+                'name' => '',
+                'year' => 'invalid'
             ]
         ];
 

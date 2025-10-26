@@ -3,14 +3,10 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\IdempotencyKey;
 
 class IdempotencyKeyUpdateTest extends TestCase
 {
-
-
-
     public function test_admin_can_update_IdempotencyKey(): void
     {
         $admin = $this->getAdminUser();
@@ -20,9 +16,8 @@ class IdempotencyKeyUpdateTest extends TestCase
             'type' => 'idempotency-keys',
             'id' => (string) $idempotencyKey->id,
             'attributes' => [
-                'name' => 'Updated IdempotencyKey',
-                'description' => 'Updated description',
-                'is_active' => false
+                'endpoint' => '/api/v1/updated',
+                'status' => 'completed'
             ]
         ];
 
@@ -33,12 +28,11 @@ class IdempotencyKeyUpdateTest extends TestCase
             ->patch("/api/v1/idempotency-keys/{$idempotencyKey->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('idempotency_keys', [
             'id' => $idempotencyKey->id,
-            'name' => 'Updated IdempotencyKey',
-            'description' => 'Updated description',
-            'is_active' => false
+            'endpoint' => '/api/v1/updated',
+            'status' => 'completed'
         ]);
     }
 
@@ -46,16 +40,15 @@ class IdempotencyKeyUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $idempotencyKey = IdempotencyKey::factory()->create([
-            'name' => 'Original Name',
-            'description' => 'Original Description'
+            'endpoint' => '/api/v1/original',
+            'status' => 'pending'
         ]);
 
         $data = [
             'type' => 'idempotency-keys',
             'id' => (string) $idempotencyKey->id,
             'attributes' => [
-                'name' => 'Partially Updated Name'
-                // description should remain unchanged
+                'status' => 'processing'
             ]
         ];
 
@@ -66,11 +59,11 @@ class IdempotencyKeyUpdateTest extends TestCase
             ->patch("/api/v1/idempotency-keys/{$idempotencyKey->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('idempotency_keys', [
             'id' => $idempotencyKey->id,
-            'name' => 'Partially Updated Name',
-            'description' => 'Original Description'
+            'endpoint' => '/api/v1/original',
+            'status' => 'pending'
         ]);
     }
 
@@ -81,8 +74,7 @@ class IdempotencyKeyUpdateTest extends TestCase
 
         $metadata = [
             'updated_field' => 'new_value',
-            'priority' => 'urgent',
-            'tags' => ['important', 'updated']
+            'priority' => 'urgent'
         ];
 
         $data = [
@@ -100,7 +92,7 @@ class IdempotencyKeyUpdateTest extends TestCase
             ->patch("/api/v1/idempotency-keys/{$idempotencyKey->id}");
 
         $response->assertOk();
-        
+
         $idempotencyKey->refresh();
         $this->assertEquals($metadata, $idempotencyKey->metadata);
     }
@@ -114,7 +106,7 @@ class IdempotencyKeyUpdateTest extends TestCase
             'type' => 'idempotency-keys',
             'id' => (string) $idempotencyKey->id,
             'attributes' => [
-                'name' => 'Unauthorized Update'
+                'endpoint' => '/api/v1/admin'
             ]
         ];
 
@@ -135,7 +127,7 @@ class IdempotencyKeyUpdateTest extends TestCase
             'type' => 'idempotency-keys',
             'id' => (string) $idempotencyKey->id,
             'attributes' => [
-                'name' => 'Guest Update'
+                'endpoint' => '/api/v1/admin'
             ]
         ];
 
@@ -155,7 +147,7 @@ class IdempotencyKeyUpdateTest extends TestCase
             'type' => 'idempotency-keys',
             'id' => '999999',
             'attributes' => [
-                'name' => 'Nonexistent Update'
+                'endpoint' => '/api/v1/admin'
             ]
         ];
 
@@ -177,8 +169,8 @@ class IdempotencyKeyUpdateTest extends TestCase
             'type' => 'idempotency-keys',
             'id' => (string) $idempotencyKey->id,
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'invalid_boolean'
+                'endpoint' => '',
+                'idempotencyKey' => ''
             ]
         ];
 

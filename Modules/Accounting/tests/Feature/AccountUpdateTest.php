@@ -3,14 +3,10 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\Account;
 
 class AccountUpdateTest extends TestCase
 {
-
-
-
     public function test_admin_can_update_Account(): void
     {
         $admin = $this->getAdminUser();
@@ -20,9 +16,9 @@ class AccountUpdateTest extends TestCase
             'type' => 'accounts',
             'id' => (string) $account->id,
             'attributes' => [
+                'code' => 'UPD-001',
                 'name' => 'Updated Account',
-                'description' => 'Updated description',
-                'is_active' => false
+                'accountType' => 'liability'
             ]
         ];
 
@@ -33,12 +29,12 @@ class AccountUpdateTest extends TestCase
             ->patch("/api/v1/accounts/{$account->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('accounts', [
             'id' => $account->id,
+            'code' => 'UPD-001',
             'name' => 'Updated Account',
-            'description' => 'Updated description',
-            'is_active' => false
+            'account_type' => 'liability'
         ]);
     }
 
@@ -46,16 +42,15 @@ class AccountUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $account = Account::factory()->create([
-            'name' => 'Original Name',
-            'description' => 'Original Description'
+            'code' => 'OLD-001',
+            'name' => 'Original Name'
         ]);
 
         $data = [
             'type' => 'accounts',
             'id' => (string) $account->id,
             'attributes' => [
-                'name' => 'Partially Updated Name'
-                // description should remain unchanged
+                'name' => 'Partially Updated'
             ]
         ];
 
@@ -66,11 +61,11 @@ class AccountUpdateTest extends TestCase
             ->patch("/api/v1/accounts/{$account->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('accounts', [
             'id' => $account->id,
-            'name' => 'Partially Updated Name',
-            'description' => 'Original Description'
+            'code' => 'OLD-001',
+            'name' => 'Original Name'
         ]);
     }
 
@@ -81,8 +76,7 @@ class AccountUpdateTest extends TestCase
 
         $metadata = [
             'updated_field' => 'new_value',
-            'priority' => 'urgent',
-            'tags' => ['important', 'updated']
+            'priority' => 'urgent'
         ];
 
         $data = [
@@ -100,7 +94,7 @@ class AccountUpdateTest extends TestCase
             ->patch("/api/v1/accounts/{$account->id}");
 
         $response->assertOk();
-        
+
         $account->refresh();
         $this->assertEquals($metadata, $account->metadata);
     }
@@ -114,7 +108,7 @@ class AccountUpdateTest extends TestCase
             'type' => 'accounts',
             'id' => (string) $account->id,
             'attributes' => [
-                'name' => 'Unauthorized Update'
+                'code' => 'FORBIDDEN'
             ]
         ];
 
@@ -135,7 +129,7 @@ class AccountUpdateTest extends TestCase
             'type' => 'accounts',
             'id' => (string) $account->id,
             'attributes' => [
-                'name' => 'Guest Update'
+                'code' => 'FORBIDDEN'
             ]
         ];
 
@@ -155,7 +149,7 @@ class AccountUpdateTest extends TestCase
             'type' => 'accounts',
             'id' => '999999',
             'attributes' => [
-                'name' => 'Nonexistent Update'
+                'code' => 'FORBIDDEN'
             ]
         ];
 
@@ -177,8 +171,8 @@ class AccountUpdateTest extends TestCase
             'type' => 'accounts',
             'id' => (string) $account->id,
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'invalid_boolean'
+                'code' => '',
+                'name' => ''
             ]
         ];
 

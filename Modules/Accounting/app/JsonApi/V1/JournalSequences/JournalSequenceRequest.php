@@ -10,11 +10,13 @@ class JournalSequenceRequest extends ResourceRequest
     public function rules(): array
     {
         $journalsequence = $this->model();
+        $isUpdate = $JournalSequence && $JournalSequence->exists;
+
         
         return [
-            'journalId' => ['required', 'string'],
-            'fiscalYear' => ['required', 'integer'],
-            'currentNumber' => ['required', 'integer'],
+            'journalId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
+            'fiscalYear' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
+            'currentNumber' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
             'metadata' => ['nullable', 'array'],
             'metadata' => ['nullable', 'array'],
         ];

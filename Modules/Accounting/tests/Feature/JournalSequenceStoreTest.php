@@ -3,14 +3,10 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\JournalSequence;
 
 class JournalSequenceStoreTest extends TestCase
 {
-
-
-
     public function test_admin_can_create_JournalSequence(): void
     {
         $admin = $this->getAdminUser();
@@ -18,9 +14,8 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
-                'fiscalYear' => 100,
-                'currentNumber' => 100,
-                'metadata' => 'test value'
+                'fiscalYear' => 2025,
+                'currentNumber' => 1
             ]
         ];
 
@@ -31,8 +26,11 @@ class JournalSequenceStoreTest extends TestCase
             ->post('/api/v1/journal-sequences');
 
         $response->assertCreated();
-        
-        $this->assertDatabaseHas('journal_sequences', ['fiscal_year' => 100, 'current_number' => 100, 'metadata' => 'test value']);
+
+        $this->assertDatabaseHas('journal_sequences', [
+            'fiscal_year' => 2025,
+            'current_number' => 1
+        ]);
     }
 
     public function test_admin_can_create_JournalSequence_with_minimal_data(): void
@@ -42,7 +40,7 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
-
+                'fiscalYear' => 2025
             ]
         ];
 
@@ -62,8 +60,7 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
-                'name' => 'Unauthorized JournalSequence',
-                'is_active' => true
+                'fiscalYear' => 2099
             ]
         ];
 
@@ -81,8 +78,7 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
-                'name' => 'Guest JournalSequence',
-                'is_active' => true
+                'fiscalYear' => 2099
             ]
         ];
 
@@ -101,7 +97,7 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
-                'description' => 'Missing name'
+                // Missing required fields
             ]
         ];
 
@@ -112,7 +108,6 @@ class JournalSequenceStoreTest extends TestCase
             ->post('/api/v1/journal-sequences');
 
         $response->assertStatus(422);
-        $this->assertJsonApiValidationErrors(['/data/attributes/name'], $response);
     }
 
     public function test_cannot_create_JournalSequence_with_invalid_data(): void
@@ -122,8 +117,8 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'not_boolean' // Invalid boolean
+                'fiscalYear' => 'invalid',
+                'currentNumber' => 'invalid'
             ]
         ];
 

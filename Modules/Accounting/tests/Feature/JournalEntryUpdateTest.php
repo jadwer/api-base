@@ -3,14 +3,10 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\JournalEntry;
 
 class JournalEntryUpdateTest extends TestCase
 {
-
-
-
     public function test_admin_can_update_JournalEntry(): void
     {
         $admin = $this->getAdminUser();
@@ -20,9 +16,8 @@ class JournalEntryUpdateTest extends TestCase
             'type' => 'journal-entries',
             'id' => (string) $journalEntry->id,
             'attributes' => [
-                'name' => 'Updated JournalEntry',
-                'description' => 'Updated description',
-                'is_active' => false
+                'number' => 'JE-UPD',
+                'date' => '2025-06-01'
             ]
         ];
 
@@ -33,12 +28,11 @@ class JournalEntryUpdateTest extends TestCase
             ->patch("/api/v1/journal-entries/{$journalEntry->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('journal_entries', [
             'id' => $journalEntry->id,
-            'name' => 'Updated JournalEntry',
-            'description' => 'Updated description',
-            'is_active' => false
+            'number' => 'JE-UPD',
+            'date' => '2025-06-01'
         ]);
     }
 
@@ -46,16 +40,15 @@ class JournalEntryUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $journalEntry = JournalEntry::factory()->create([
-            'name' => 'Original Name',
-            'description' => 'Original Description'
+            'number' => 'JE-OLD',
+            'date' => '2025-01-01'
         ]);
 
         $data = [
             'type' => 'journal-entries',
             'id' => (string) $journalEntry->id,
             'attributes' => [
-                'name' => 'Partially Updated Name'
-                // description should remain unchanged
+                'number' => 'JE-PART'
             ]
         ];
 
@@ -66,11 +59,11 @@ class JournalEntryUpdateTest extends TestCase
             ->patch("/api/v1/journal-entries/{$journalEntry->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('journal_entries', [
             'id' => $journalEntry->id,
-            'name' => 'Partially Updated Name',
-            'description' => 'Original Description'
+            'number' => 'JE-OLD',
+            'date' => '2025-01-01'
         ]);
     }
 
@@ -81,8 +74,7 @@ class JournalEntryUpdateTest extends TestCase
 
         $metadata = [
             'updated_field' => 'new_value',
-            'priority' => 'urgent',
-            'tags' => ['important', 'updated']
+            'priority' => 'urgent'
         ];
 
         $data = [
@@ -100,7 +92,7 @@ class JournalEntryUpdateTest extends TestCase
             ->patch("/api/v1/journal-entries/{$journalEntry->id}");
 
         $response->assertOk();
-        
+
         $journalEntry->refresh();
         $this->assertEquals($metadata, $journalEntry->metadata);
     }
@@ -114,7 +106,7 @@ class JournalEntryUpdateTest extends TestCase
             'type' => 'journal-entries',
             'id' => (string) $journalEntry->id,
             'attributes' => [
-                'name' => 'Unauthorized Update'
+                'number' => 'JE-FORBIDDEN'
             ]
         ];
 
@@ -135,7 +127,7 @@ class JournalEntryUpdateTest extends TestCase
             'type' => 'journal-entries',
             'id' => (string) $journalEntry->id,
             'attributes' => [
-                'name' => 'Guest Update'
+                'number' => 'JE-FORBIDDEN'
             ]
         ];
 
@@ -155,7 +147,7 @@ class JournalEntryUpdateTest extends TestCase
             'type' => 'journal-entries',
             'id' => '999999',
             'attributes' => [
-                'name' => 'Nonexistent Update'
+                'number' => 'JE-FORBIDDEN'
             ]
         ];
 
@@ -177,8 +169,8 @@ class JournalEntryUpdateTest extends TestCase
             'type' => 'journal-entries',
             'id' => (string) $journalEntry->id,
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'invalid_boolean'
+                'number' => '',
+                'date' => 'invalid-date'
             ]
         ];
 

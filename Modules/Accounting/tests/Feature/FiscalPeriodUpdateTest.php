@@ -3,14 +3,10 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\FiscalPeriod;
 
 class FiscalPeriodUpdateTest extends TestCase
 {
-
-
-
     public function test_admin_can_update_FiscalPeriod(): void
     {
         $admin = $this->getAdminUser();
@@ -20,9 +16,9 @@ class FiscalPeriodUpdateTest extends TestCase
             'type' => 'fiscal-periods',
             'id' => (string) $fiscalPeriod->id,
             'attributes' => [
-                'name' => 'Updated FiscalPeriod',
-                'description' => 'Updated description',
-                'is_active' => false
+                'name' => 'Q2 2025',
+                'year' => 2025,
+                'month' => 6
             ]
         ];
 
@@ -33,12 +29,12 @@ class FiscalPeriodUpdateTest extends TestCase
             ->patch("/api/v1/fiscal-periods/{$fiscalPeriod->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('fiscal_periods', [
             'id' => $fiscalPeriod->id,
-            'name' => 'Updated FiscalPeriod',
-            'description' => 'Updated description',
-            'is_active' => false
+            'name' => 'Q2 2025',
+            'year' => 2025,
+            'month' => 6
         ]);
     }
 
@@ -46,16 +42,15 @@ class FiscalPeriodUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $fiscalPeriod = FiscalPeriod::factory()->create([
-            'name' => 'Original Name',
-            'description' => 'Original Description'
+            'name' => 'Original Q1',
+            'year' => 2025
         ]);
 
         $data = [
             'type' => 'fiscal-periods',
             'id' => (string) $fiscalPeriod->id,
             'attributes' => [
-                'name' => 'Partially Updated Name'
-                // description should remain unchanged
+                'name' => 'Updated Q1'
             ]
         ];
 
@@ -66,11 +61,11 @@ class FiscalPeriodUpdateTest extends TestCase
             ->patch("/api/v1/fiscal-periods/{$fiscalPeriod->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('fiscal_periods', [
             'id' => $fiscalPeriod->id,
-            'name' => 'Partially Updated Name',
-            'description' => 'Original Description'
+            'name' => 'Original Q1',
+            'year' => 2025
         ]);
     }
 
@@ -81,8 +76,7 @@ class FiscalPeriodUpdateTest extends TestCase
 
         $metadata = [
             'updated_field' => 'new_value',
-            'priority' => 'urgent',
-            'tags' => ['important', 'updated']
+            'priority' => 'urgent'
         ];
 
         $data = [
@@ -100,7 +94,7 @@ class FiscalPeriodUpdateTest extends TestCase
             ->patch("/api/v1/fiscal-periods/{$fiscalPeriod->id}");
 
         $response->assertOk();
-        
+
         $fiscalPeriod->refresh();
         $this->assertEquals($metadata, $fiscalPeriod->metadata);
     }
@@ -114,7 +108,7 @@ class FiscalPeriodUpdateTest extends TestCase
             'type' => 'fiscal-periods',
             'id' => (string) $fiscalPeriod->id,
             'attributes' => [
-                'name' => 'Unauthorized Update'
+                'name' => 'Forbidden Period'
             ]
         ];
 
@@ -135,7 +129,7 @@ class FiscalPeriodUpdateTest extends TestCase
             'type' => 'fiscal-periods',
             'id' => (string) $fiscalPeriod->id,
             'attributes' => [
-                'name' => 'Guest Update'
+                'name' => 'Forbidden Period'
             ]
         ];
 
@@ -155,7 +149,7 @@ class FiscalPeriodUpdateTest extends TestCase
             'type' => 'fiscal-periods',
             'id' => '999999',
             'attributes' => [
-                'name' => 'Nonexistent Update'
+                'name' => 'Forbidden Period'
             ]
         ];
 
@@ -177,8 +171,8 @@ class FiscalPeriodUpdateTest extends TestCase
             'type' => 'fiscal-periods',
             'id' => (string) $fiscalPeriod->id,
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'invalid_boolean'
+                'name' => '',
+                'year' => 'invalid'
             ]
         ];
 

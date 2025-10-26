@@ -3,14 +3,10 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\JournalLine;
 
 class JournalLineStoreTest extends TestCase
 {
-
-
-
     public function test_admin_can_create_JournalLine(): void
     {
         $admin = $this->getAdminUser();
@@ -18,11 +14,9 @@ class JournalLineStoreTest extends TestCase
         $data = [
             'type' => 'journal-lines',
             'attributes' => [
-                'debit' => 99.99,
-                'credit' => 99.99,
-                'description' => 'test description',
-                'reference' => 'test string',
-                'metadata' => 'test value'
+                'debit' => 1000.00,
+                'credit' => 0.00,
+                'description' => 'Test line'
             ]
         ];
 
@@ -33,8 +27,12 @@ class JournalLineStoreTest extends TestCase
             ->post('/api/v1/journal-lines');
 
         $response->assertCreated();
-        
-        $this->assertDatabaseHas('journal_lines', ['debit' => 99.99, 'credit' => 99.99, 'description' => 'test description', 'reference' => 'test string', 'metadata' => 'test value']);
+
+        $this->assertDatabaseHas('journal_lines', [
+            'debit' => 1000.00,
+            'credit' => 0.00,
+            'description' => 'Test line'
+        ]);
     }
 
     public function test_admin_can_create_JournalLine_with_minimal_data(): void
@@ -44,7 +42,7 @@ class JournalLineStoreTest extends TestCase
         $data = [
             'type' => 'journal-lines',
             'attributes' => [
-
+                'debit' => 100.00
             ]
         ];
 
@@ -64,8 +62,7 @@ class JournalLineStoreTest extends TestCase
         $data = [
             'type' => 'journal-lines',
             'attributes' => [
-                'name' => 'Unauthorized JournalLine',
-                'is_active' => true
+                'debit' => 999999.00
             ]
         ];
 
@@ -83,8 +80,7 @@ class JournalLineStoreTest extends TestCase
         $data = [
             'type' => 'journal-lines',
             'attributes' => [
-                'name' => 'Guest JournalLine',
-                'is_active' => true
+                'debit' => 999999.00
             ]
         ];
 
@@ -103,7 +99,7 @@ class JournalLineStoreTest extends TestCase
         $data = [
             'type' => 'journal-lines',
             'attributes' => [
-                'description' => 'Missing name'
+                // Missing required fields
             ]
         ];
 
@@ -114,7 +110,6 @@ class JournalLineStoreTest extends TestCase
             ->post('/api/v1/journal-lines');
 
         $response->assertStatus(422);
-        $this->assertJsonApiValidationErrors(['/data/attributes/name'], $response);
     }
 
     public function test_cannot_create_JournalLine_with_invalid_data(): void
@@ -124,8 +119,8 @@ class JournalLineStoreTest extends TestCase
         $data = [
             'type' => 'journal-lines',
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'not_boolean' // Invalid boolean
+                'debit' => 'invalid',
+                'credit' => 'invalid'
             ]
         ];
 

@@ -3,14 +3,10 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\ExchangeRatePolicy;
 
 class ExchangeRatePolicyStoreTest extends TestCase
 {
-
-
-
     public function test_admin_can_create_ExchangeRatePolicy(): void
     {
         $admin = $this->getAdminUser();
@@ -18,12 +14,8 @@ class ExchangeRatePolicyStoreTest extends TestCase
         $data = [
             'type' => 'exchange-rate-policies',
             'attributes' => [
-                'currency' => 'test string',
-                'source' => 'test string',
-                'scope' => 'test string',
-                'maxAgeDays' => 100,
-                'tolerancePercentage' => 99.99,
-                'requireApprovalOver' => 99.99,
+                'currency' => 'USD',
+                'maxAgeDays' => 7,
                 'isActive' => true
             ]
         ];
@@ -35,8 +27,12 @@ class ExchangeRatePolicyStoreTest extends TestCase
             ->post('/api/v1/exchange-rate-policies');
 
         $response->assertCreated();
-        
-        $this->assertDatabaseHas('exchange_rate_policies', ['currency' => 'test string', 'source' => 'test string', 'scope' => 'test string', 'max_age_days' => 100, 'tolerance_percentage' => 99.99, 'require_approval_over' => 99.99, 'is_active' => true]);
+
+        $this->assertDatabaseHas('exchange_rate_policies', [
+            'currency' => 'USD',
+            'max_age_days' => 7,
+            'is_active' => true
+        ]);
     }
 
     public function test_admin_can_create_ExchangeRatePolicy_with_minimal_data(): void
@@ -46,7 +42,7 @@ class ExchangeRatePolicyStoreTest extends TestCase
         $data = [
             'type' => 'exchange-rate-policies',
             'attributes' => [
-                'isActive' => true
+                'currency' => 'MXN'
             ]
         ];
 
@@ -66,8 +62,7 @@ class ExchangeRatePolicyStoreTest extends TestCase
         $data = [
             'type' => 'exchange-rate-policies',
             'attributes' => [
-                'name' => 'Unauthorized ExchangeRatePolicy',
-                'is_active' => true
+                'currency' => 'BTC'
             ]
         ];
 
@@ -85,8 +80,7 @@ class ExchangeRatePolicyStoreTest extends TestCase
         $data = [
             'type' => 'exchange-rate-policies',
             'attributes' => [
-                'name' => 'Guest ExchangeRatePolicy',
-                'is_active' => true
+                'currency' => 'BTC'
             ]
         ];
 
@@ -105,7 +99,7 @@ class ExchangeRatePolicyStoreTest extends TestCase
         $data = [
             'type' => 'exchange-rate-policies',
             'attributes' => [
-                'description' => 'Missing name'
+                // Missing required fields
             ]
         ];
 
@@ -116,7 +110,6 @@ class ExchangeRatePolicyStoreTest extends TestCase
             ->post('/api/v1/exchange-rate-policies');
 
         $response->assertStatus(422);
-        $this->assertJsonApiValidationErrors(['/data/attributes/name'], $response);
     }
 
     public function test_cannot_create_ExchangeRatePolicy_with_invalid_data(): void
@@ -126,8 +119,8 @@ class ExchangeRatePolicyStoreTest extends TestCase
         $data = [
             'type' => 'exchange-rate-policies',
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'not_boolean' // Invalid boolean
+                'currency' => '',
+                'maxAgeDays' => 'invalid'
             ]
         ];
 

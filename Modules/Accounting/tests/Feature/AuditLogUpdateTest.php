@@ -3,14 +3,10 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\AuditLog;
 
 class AuditLogUpdateTest extends TestCase
 {
-
-
-
     public function test_admin_can_update_AuditLog(): void
     {
         $admin = $this->getAdminUser();
@@ -20,9 +16,8 @@ class AuditLogUpdateTest extends TestCase
             'type' => 'audit-logs',
             'id' => (string) $auditLog->id,
             'attributes' => [
-                'name' => 'Updated AuditLog',
-                'description' => 'Updated description',
-                'is_active' => false
+                'modelType' => 'UpdatedModel',
+                'action' => 'update'
             ]
         ];
 
@@ -33,12 +28,11 @@ class AuditLogUpdateTest extends TestCase
             ->patch("/api/v1/audit-logs/{$auditLog->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('audit_logs', [
             'id' => $auditLog->id,
-            'name' => 'Updated AuditLog',
-            'description' => 'Updated description',
-            'is_active' => false
+            'model_type' => 'UpdatedModel',
+            'action' => 'update'
         ]);
     }
 
@@ -46,16 +40,15 @@ class AuditLogUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $auditLog = AuditLog::factory()->create([
-            'name' => 'Original Name',
-            'description' => 'Original Description'
+            'model_type' => 'Original',
+            'action' => 'create'
         ]);
 
         $data = [
             'type' => 'audit-logs',
             'id' => (string) $auditLog->id,
             'attributes' => [
-                'name' => 'Partially Updated Name'
-                // description should remain unchanged
+                'action' => 'delete'
             ]
         ];
 
@@ -66,11 +59,11 @@ class AuditLogUpdateTest extends TestCase
             ->patch("/api/v1/audit-logs/{$auditLog->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('audit_logs', [
             'id' => $auditLog->id,
-            'name' => 'Partially Updated Name',
-            'description' => 'Original Description'
+            'model_type' => 'Original',
+            'action' => 'create'
         ]);
     }
 
@@ -81,8 +74,7 @@ class AuditLogUpdateTest extends TestCase
 
         $metadata = [
             'updated_field' => 'new_value',
-            'priority' => 'urgent',
-            'tags' => ['important', 'updated']
+            'priority' => 'urgent'
         ];
 
         $data = [
@@ -100,7 +92,7 @@ class AuditLogUpdateTest extends TestCase
             ->patch("/api/v1/audit-logs/{$auditLog->id}");
 
         $response->assertOk();
-        
+
         $auditLog->refresh();
         $this->assertEquals($metadata, $auditLog->metadata);
     }
@@ -114,7 +106,7 @@ class AuditLogUpdateTest extends TestCase
             'type' => 'audit-logs',
             'id' => (string) $auditLog->id,
             'attributes' => [
-                'name' => 'Unauthorized Update'
+                'modelType' => 'Forbidden'
             ]
         ];
 
@@ -135,7 +127,7 @@ class AuditLogUpdateTest extends TestCase
             'type' => 'audit-logs',
             'id' => (string) $auditLog->id,
             'attributes' => [
-                'name' => 'Guest Update'
+                'modelType' => 'Forbidden'
             ]
         ];
 
@@ -155,7 +147,7 @@ class AuditLogUpdateTest extends TestCase
             'type' => 'audit-logs',
             'id' => '999999',
             'attributes' => [
-                'name' => 'Nonexistent Update'
+                'modelType' => 'Forbidden'
             ]
         ];
 
@@ -177,8 +169,8 @@ class AuditLogUpdateTest extends TestCase
             'type' => 'audit-logs',
             'id' => (string) $auditLog->id,
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'invalid_boolean'
+                'modelType' => '',
+                'action' => ''
             ]
         ];
 

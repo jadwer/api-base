@@ -3,14 +3,10 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\ExchangeRate;
 
 class ExchangeRateUpdateTest extends TestCase
 {
-
-
-
     public function test_admin_can_update_ExchangeRate(): void
     {
         $admin = $this->getAdminUser();
@@ -20,9 +16,9 @@ class ExchangeRateUpdateTest extends TestCase
             'type' => 'exchange-rates',
             'id' => (string) $exchangeRate->id,
             'attributes' => [
-                'name' => 'Updated ExchangeRate',
-                'description' => 'Updated description',
-                'is_active' => false
+                'fromCurrency' => 'EUR',
+                'toCurrency' => 'MXN',
+                'rate' => 21.00
             ]
         ];
 
@@ -33,12 +29,12 @@ class ExchangeRateUpdateTest extends TestCase
             ->patch("/api/v1/exchange-rates/{$exchangeRate->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('exchange_rates', [
             'id' => $exchangeRate->id,
-            'name' => 'Updated ExchangeRate',
-            'description' => 'Updated description',
-            'is_active' => false
+            'from_currency' => 'EUR',
+            'to_currency' => 'MXN',
+            'rate' => 21.00
         ]);
     }
 
@@ -46,16 +42,16 @@ class ExchangeRateUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $exchangeRate = ExchangeRate::factory()->create([
-            'name' => 'Original Name',
-            'description' => 'Original Description'
+            'from_currency' => 'USD',
+            'to_currency' => 'MXN',
+            'rate' => 18.50
         ]);
 
         $data = [
             'type' => 'exchange-rates',
             'id' => (string) $exchangeRate->id,
             'attributes' => [
-                'name' => 'Partially Updated Name'
-                // description should remain unchanged
+                'rate' => 19.00
             ]
         ];
 
@@ -66,11 +62,12 @@ class ExchangeRateUpdateTest extends TestCase
             ->patch("/api/v1/exchange-rates/{$exchangeRate->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('exchange_rates', [
             'id' => $exchangeRate->id,
-            'name' => 'Partially Updated Name',
-            'description' => 'Original Description'
+            'from_currency' => 'USD',
+            'to_currency' => 'MXN',
+            'rate' => 18.50
         ]);
     }
 
@@ -81,8 +78,7 @@ class ExchangeRateUpdateTest extends TestCase
 
         $metadata = [
             'updated_field' => 'new_value',
-            'priority' => 'urgent',
-            'tags' => ['important', 'updated']
+            'priority' => 'urgent'
         ];
 
         $data = [
@@ -100,7 +96,7 @@ class ExchangeRateUpdateTest extends TestCase
             ->patch("/api/v1/exchange-rates/{$exchangeRate->id}");
 
         $response->assertOk();
-        
+
         $exchangeRate->refresh();
         $this->assertEquals($metadata, $exchangeRate->metadata);
     }
@@ -114,7 +110,7 @@ class ExchangeRateUpdateTest extends TestCase
             'type' => 'exchange-rates',
             'id' => (string) $exchangeRate->id,
             'attributes' => [
-                'name' => 'Unauthorized Update'
+                'fromCurrency' => 'USD'
             ]
         ];
 
@@ -135,7 +131,7 @@ class ExchangeRateUpdateTest extends TestCase
             'type' => 'exchange-rates',
             'id' => (string) $exchangeRate->id,
             'attributes' => [
-                'name' => 'Guest Update'
+                'fromCurrency' => 'USD'
             ]
         ];
 
@@ -155,7 +151,7 @@ class ExchangeRateUpdateTest extends TestCase
             'type' => 'exchange-rates',
             'id' => '999999',
             'attributes' => [
-                'name' => 'Nonexistent Update'
+                'fromCurrency' => 'USD'
             ]
         ];
 
@@ -177,8 +173,8 @@ class ExchangeRateUpdateTest extends TestCase
             'type' => 'exchange-rates',
             'id' => (string) $exchangeRate->id,
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'invalid_boolean'
+                'fromCurrency' => '',
+                'rate' => 'invalid'
             ]
         ];
 

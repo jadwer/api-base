@@ -10,17 +10,19 @@ class FiscalPeriodRequest extends ResourceRequest
     public function rules(): array
     {
         $fiscalperiod = $this->model();
+        $isUpdate = $FiscalPeriod && $FiscalPeriod->exists;
+
         
         return [
-            'name' => ['required', 'string', 'max:255', Rule::unique('fiscal_periods')->ignore($fiscalperiod?->id)],
-            'year' => ['required', 'integer'],
-            'month' => ['required', 'integer'],
-            'startDate' => ['required', 'date'],
-            'endDate' => ['required', 'date'],
-            'status' => ['required', 'string', 'max:255'],
+            'name' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255', Rule::unique('fiscal_periods')->ignore($fiscalperiod?->id)],
+            'year' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
+            'month' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
+            'startDate' => [$isUpdate ? 'sometimes' : 'required', 'date'],
+            'endDate' => [$isUpdate ? 'sometimes' : 'required', 'date'],
+            'status' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'closedAt' => ['nullable', 'string'],
-            'closedById' => ['nullable', 'string'],
-            'closingEntryId' => ['nullable', 'string'],
+            'closedById' => ['nullable', 'integer'],
+            'closingEntryId' => ['nullable', 'integer'],
             'metadata' => ['nullable', 'array'],
             'metadata' => ['nullable', 'array'],
         ];

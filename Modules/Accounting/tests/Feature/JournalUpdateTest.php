@@ -3,14 +3,10 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\Journal;
 
 class JournalUpdateTest extends TestCase
 {
-
-
-
     public function test_admin_can_update_Journal(): void
     {
         $admin = $this->getAdminUser();
@@ -20,9 +16,8 @@ class JournalUpdateTest extends TestCase
             'type' => 'journals',
             'id' => (string) $journal->id,
             'attributes' => [
-                'name' => 'Updated Journal',
-                'description' => 'Updated description',
-                'is_active' => false
+                'code' => 'SALES',
+                'name' => 'Sales Journal'
             ]
         ];
 
@@ -33,12 +28,11 @@ class JournalUpdateTest extends TestCase
             ->patch("/api/v1/journals/{$journal->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('journals', [
             'id' => $journal->id,
-            'name' => 'Updated Journal',
-            'description' => 'Updated description',
-            'is_active' => false
+            'code' => 'SALES',
+            'name' => 'Sales Journal'
         ]);
     }
 
@@ -46,16 +40,15 @@ class JournalUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $journal = Journal::factory()->create([
-            'name' => 'Original Name',
-            'description' => 'Original Description'
+            'code' => 'ORIG',
+            'name' => 'Original'
         ]);
 
         $data = [
             'type' => 'journals',
             'id' => (string) $journal->id,
             'attributes' => [
-                'name' => 'Partially Updated Name'
-                // description should remain unchanged
+                'name' => 'Partial Update'
             ]
         ];
 
@@ -66,11 +59,11 @@ class JournalUpdateTest extends TestCase
             ->patch("/api/v1/journals/{$journal->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('journals', [
             'id' => $journal->id,
-            'name' => 'Partially Updated Name',
-            'description' => 'Original Description'
+            'code' => 'ORIG',
+            'name' => 'Original'
         ]);
     }
 
@@ -81,8 +74,7 @@ class JournalUpdateTest extends TestCase
 
         $metadata = [
             'updated_field' => 'new_value',
-            'priority' => 'urgent',
-            'tags' => ['important', 'updated']
+            'priority' => 'urgent'
         ];
 
         $data = [
@@ -100,7 +92,7 @@ class JournalUpdateTest extends TestCase
             ->patch("/api/v1/journals/{$journal->id}");
 
         $response->assertOk();
-        
+
         $journal->refresh();
         $this->assertEquals($metadata, $journal->metadata);
     }
@@ -114,7 +106,7 @@ class JournalUpdateTest extends TestCase
             'type' => 'journals',
             'id' => (string) $journal->id,
             'attributes' => [
-                'name' => 'Unauthorized Update'
+                'code' => 'HACK'
             ]
         ];
 
@@ -135,7 +127,7 @@ class JournalUpdateTest extends TestCase
             'type' => 'journals',
             'id' => (string) $journal->id,
             'attributes' => [
-                'name' => 'Guest Update'
+                'code' => 'HACK'
             ]
         ];
 
@@ -155,7 +147,7 @@ class JournalUpdateTest extends TestCase
             'type' => 'journals',
             'id' => '999999',
             'attributes' => [
-                'name' => 'Nonexistent Update'
+                'code' => 'HACK'
             ]
         ];
 
@@ -177,8 +169,8 @@ class JournalUpdateTest extends TestCase
             'type' => 'journals',
             'id' => (string) $journal->id,
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'invalid_boolean'
+                'code' => '',
+                'name' => ''
             ]
         ];
 

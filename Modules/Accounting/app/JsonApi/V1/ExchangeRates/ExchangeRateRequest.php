@@ -10,14 +10,16 @@ class ExchangeRateRequest extends ResourceRequest
     public function rules(): array
     {
         $exchangerate = $this->model();
+        $isUpdate = $ExchangeRate && $ExchangeRate->exists;
+
         
         return [
-            'fromCurrency' => ['required', 'string', 'max:255'],
-            'toCurrency' => ['required', 'string', 'max:255'],
-            'rate' => ['required', 'string'],
-            'effectiveDate' => ['required', 'date'],
+            'fromCurrency' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'toCurrency' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'rate' => [$isUpdate ? 'sometimes' : 'required', 'numeric'],
+            'effectiveDate' => [$isUpdate ? 'sometimes' : 'required', 'date'],
             'source' => ['nullable', 'string', 'max:255'],
-            'status' => ['required', 'string', 'max:255'],
+            'status' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'metadata' => ['nullable', 'array'],
             'metadata' => ['nullable', 'array'],
         ];

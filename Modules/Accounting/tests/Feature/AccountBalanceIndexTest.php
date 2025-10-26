@@ -58,17 +58,17 @@ class AccountBalanceIndexTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_admin_can_filter_AccountBalances_by_status(): void
+    public function test_admin_can_filter_AccountBalances_by_fiscal_year(): void
     {
         $admin = $this->getAdminUser();
-        
-        AccountBalance::factory()->create([]);
-        AccountBalance::factory()->create([]);
+
+        AccountBalance::factory()->create(['fiscal_year' => 2024]);
+        AccountBalance::factory()->create(['fiscal_year' => 2025]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('account-balances')
-            ->get('/api/v1/account-balances?filter[status]=test');
+            ->get('/api/v1/account-balances?filter[fiscal_year]=2025');
 
         $response->assertOk();
     }

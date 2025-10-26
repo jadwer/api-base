@@ -58,17 +58,17 @@ class JournalLineIndexTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_admin_can_filter_JournalLines_by_status(): void
+    public function test_admin_can_filter_JournalLines_by_reference(): void
     {
         $admin = $this->getAdminUser();
-        
-        JournalLine::factory()->create([]);
-        JournalLine::factory()->create([]);
+
+        JournalLine::factory()->create(['reference' => 'REF-001']);
+        JournalLine::factory()->create(['reference' => 'REF-002']);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('journal-lines')
-            ->get('/api/v1/journal-lines?filter[status]=test');
+            ->get('/api/v1/journal-lines?filter[reference]=REF-001');
 
         $response->assertOk();
     }

@@ -3,14 +3,10 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\ExchangeRatePolicy;
 
 class ExchangeRatePolicyUpdateTest extends TestCase
 {
-
-
-
     public function test_admin_can_update_ExchangeRatePolicy(): void
     {
         $admin = $this->getAdminUser();
@@ -20,9 +16,8 @@ class ExchangeRatePolicyUpdateTest extends TestCase
             'type' => 'exchange-rate-policies',
             'id' => (string) $exchangeRatePolicy->id,
             'attributes' => [
-                'name' => 'Updated ExchangeRatePolicy',
-                'description' => 'Updated description',
-                'is_active' => false
+                'currency' => 'EUR',
+                'maxAgeDays' => 14
             ]
         ];
 
@@ -33,12 +28,11 @@ class ExchangeRatePolicyUpdateTest extends TestCase
             ->patch("/api/v1/exchange-rate-policies/{$exchangeRatePolicy->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('exchange_rate_policies', [
             'id' => $exchangeRatePolicy->id,
-            'name' => 'Updated ExchangeRatePolicy',
-            'description' => 'Updated description',
-            'is_active' => false
+            'currency' => 'EUR',
+            'max_age_days' => 14
         ]);
     }
 
@@ -46,16 +40,15 @@ class ExchangeRatePolicyUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $exchangeRatePolicy = ExchangeRatePolicy::factory()->create([
-            'name' => 'Original Name',
-            'description' => 'Original Description'
+            'currency' => 'USD',
+            'max_age_days' => 7
         ]);
 
         $data = [
             'type' => 'exchange-rate-policies',
             'id' => (string) $exchangeRatePolicy->id,
             'attributes' => [
-                'name' => 'Partially Updated Name'
-                // description should remain unchanged
+                'maxAgeDays' => 30
             ]
         ];
 
@@ -66,11 +59,11 @@ class ExchangeRatePolicyUpdateTest extends TestCase
             ->patch("/api/v1/exchange-rate-policies/{$exchangeRatePolicy->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('exchange_rate_policies', [
             'id' => $exchangeRatePolicy->id,
-            'name' => 'Partially Updated Name',
-            'description' => 'Original Description'
+            'currency' => 'USD',
+            'max_age_days' => 7
         ]);
     }
 
@@ -81,8 +74,7 @@ class ExchangeRatePolicyUpdateTest extends TestCase
 
         $metadata = [
             'updated_field' => 'new_value',
-            'priority' => 'urgent',
-            'tags' => ['important', 'updated']
+            'priority' => 'urgent'
         ];
 
         $data = [
@@ -100,7 +92,7 @@ class ExchangeRatePolicyUpdateTest extends TestCase
             ->patch("/api/v1/exchange-rate-policies/{$exchangeRatePolicy->id}");
 
         $response->assertOk();
-        
+
         $exchangeRatePolicy->refresh();
         $this->assertEquals($metadata, $exchangeRatePolicy->metadata);
     }
@@ -114,7 +106,7 @@ class ExchangeRatePolicyUpdateTest extends TestCase
             'type' => 'exchange-rate-policies',
             'id' => (string) $exchangeRatePolicy->id,
             'attributes' => [
-                'name' => 'Unauthorized Update'
+                'currency' => 'BTC'
             ]
         ];
 
@@ -135,7 +127,7 @@ class ExchangeRatePolicyUpdateTest extends TestCase
             'type' => 'exchange-rate-policies',
             'id' => (string) $exchangeRatePolicy->id,
             'attributes' => [
-                'name' => 'Guest Update'
+                'currency' => 'BTC'
             ]
         ];
 
@@ -155,7 +147,7 @@ class ExchangeRatePolicyUpdateTest extends TestCase
             'type' => 'exchange-rate-policies',
             'id' => '999999',
             'attributes' => [
-                'name' => 'Nonexistent Update'
+                'currency' => 'BTC'
             ]
         ];
 
@@ -177,8 +169,8 @@ class ExchangeRatePolicyUpdateTest extends TestCase
             'type' => 'exchange-rate-policies',
             'id' => (string) $exchangeRatePolicy->id,
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'invalid_boolean'
+                'currency' => '',
+                'maxAgeDays' => 'invalid'
             ]
         ];
 

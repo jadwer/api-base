@@ -54,17 +54,17 @@ class JournalSequenceIndexTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_admin_can_filter_JournalSequences_by_status(): void
+    public function test_admin_can_filter_JournalSequences_by_fiscal_year(): void
     {
         $admin = $this->getAdminUser();
-        
-        JournalSequence::factory()->create([]);
-        JournalSequence::factory()->create([]);
+
+        JournalSequence::factory()->create(['fiscal_year' => 2024]);
+        JournalSequence::factory()->create(['fiscal_year' => 2025]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('journal-sequences')
-            ->get('/api/v1/journal-sequences?filter[status]=test');
+            ->get('/api/v1/journal-sequences?filter[fiscal_year]=2025');
 
         $response->assertOk();
     }

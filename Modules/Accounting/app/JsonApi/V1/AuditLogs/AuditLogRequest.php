@@ -10,19 +10,21 @@ class AuditLogRequest extends ResourceRequest
     public function rules(): array
     {
         $auditlog = $this->model();
+        $isUpdate = $AuditLog && $AuditLog->exists;
+
         
         return [
-            'companyId' => ['required', 'string'],
-            'model_type' => ['required', 'string', 'max:255'],
-            'model_id' => ['required', 'string'],
-            'action' => ['required', 'string', 'max:255'],
-            'userId' => ['required', 'string'],
+            'companyId' => ['nullable', 'integer'],
+            'model_type' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'model_id' => [$isUpdate ? 'sometimes' : 'required', 'string'],
+            'action' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'userId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
             'changes' => ['nullable', 'array'],
             'ipAddress' => ['nullable', 'string', 'max:255'],
             'userAgent' => ['nullable', 'string'],
             'session_id' => ['nullable', 'string', 'max:255'],
-            'payload_hash' => ['required', 'string', 'max:255'],
-            'requires_retention' => ['required', 'boolean'],
+            'payload_hash' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'requires_retention' => [$isUpdate ? 'sometimes' : 'required', 'boolean'],
             'retention_until' => ['nullable', 'string'],
             'metadata' => ['nullable', 'array'],
         ];

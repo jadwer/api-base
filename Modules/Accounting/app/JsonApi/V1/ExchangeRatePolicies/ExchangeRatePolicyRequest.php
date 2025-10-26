@@ -10,16 +10,17 @@ class ExchangeRatePolicyRequest extends ResourceRequest
     public function rules(): array
     {
         $exchangeratepolicy = $this->model();
-        
+        $isUpdate = $exchangeratepolicy && $exchangeratepolicy->exists;
+
         return [
-            'companyId' => ['required', 'string'],
-            'currency' => ['required', 'string', 'max:255'],
-            'source' => ['required', 'string', 'max:255'],
-            'scope' => ['required', 'string', 'max:255'],
-            'max_age_days' => ['required', 'integer'],
-            'tolerance_percentage' => ['required', 'string'],
+            'companyId' => ['nullable', 'integer'],
+            'currency' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'source' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'scope' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'max_age_days' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
+            'tolerance_percentage' => [$isUpdate ? 'sometimes' : 'required', 'string'],
             'require_approval_over' => ['nullable', 'string'],
-            'isActive' => ['required', 'boolean'],
+            'isActive' => [$isUpdate ? 'sometimes' : 'required', 'boolean'],
             'metadata' => ['nullable', 'array'],
         ];
     }

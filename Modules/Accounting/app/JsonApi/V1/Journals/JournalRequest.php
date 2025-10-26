@@ -10,14 +10,16 @@ class JournalRequest extends ResourceRequest
     public function rules(): array
     {
         $journal = $this->model();
+        $isUpdate = $Journal && $Journal->exists;
+
         
         return [
-            'code' => ['required', 'string', 'max:255', Rule::unique('journals')->ignore($journal?->id)],
-            'name' => ['required', 'string', 'max:255'],
+            'code' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255', Rule::unique('journals')->ignore($journal?->id)],
+            'name' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'prefix' => ['required', 'string', 'max:255'],
-            'type' => ['required', 'string', 'max:255'],
-            'status' => ['required', 'string', 'max:255'],
+            'prefix' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'type' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'status' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'metadata' => ['nullable', 'array'],
             'metadata' => ['nullable', 'array'],
         ];

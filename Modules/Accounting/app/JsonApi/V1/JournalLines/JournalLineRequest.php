@@ -10,13 +10,15 @@ class JournalLineRequest extends ResourceRequest
     public function rules(): array
     {
         $journalline = $this->model();
+        $isUpdate = $JournalLine && $JournalLine->exists;
+
         
         return [
-            'journalEntryId' => ['required', 'string'],
-            'accountId' => ['required', 'string'],
+            'journalEntryId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
+            'accountId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
             'contact_id' => ['nullable', 'string'],
-            'debit' => ['required', 'string'],
-            'credit' => ['required', 'string'],
+            'debit' => [$isUpdate ? 'sometimes' : 'required', 'numeric'],
+            'credit' => [$isUpdate ? 'sometimes' : 'required', 'numeric'],
             'description' => ['nullable', 'string'],
             'reference' => ['nullable', 'string', 'max:255'],
             'metadata' => ['nullable', 'array'],

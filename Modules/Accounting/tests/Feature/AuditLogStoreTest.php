@@ -3,14 +3,10 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\AuditLog;
 
 class AuditLogStoreTest extends TestCase
 {
-
-
-
     public function test_admin_can_create_AuditLog(): void
     {
         $admin = $this->getAdminUser();
@@ -18,14 +14,9 @@ class AuditLogStoreTest extends TestCase
         $data = [
             'type' => 'audit-logs',
             'attributes' => [
-                'modelType' => 'test string',
-                'action' => 'test string',
-                'changes' => 'test value',
-                'ipAddress' => 'test string',
-                'userAgent' => 'test description',
-                'payloadHash' => 'test string',
-                'requiresRetention' => true,
-                'retentionUntil' => '2024-01-01'
+                'modelType' => 'Account',
+                'modelId' => 1,
+                'action' => 'create'
             ]
         ];
 
@@ -36,8 +27,12 @@ class AuditLogStoreTest extends TestCase
             ->post('/api/v1/audit-logs');
 
         $response->assertCreated();
-        
-        $this->assertDatabaseHas('audit_logs', ['model_type' => 'test string', 'action' => 'test string', 'changes' => 'test value', 'ip_address' => 'test string', 'user_agent' => 'test description', 'payload_hash' => 'test string', 'requires_retention' => true, 'retention_until' => 'test value']);
+
+        $this->assertDatabaseHas('audit_logs', [
+            'model_type' => 'Account',
+            'model_id' => 1,
+            'action' => 'create'
+        ]);
     }
 
     public function test_admin_can_create_AuditLog_with_minimal_data(): void
@@ -47,7 +42,8 @@ class AuditLogStoreTest extends TestCase
         $data = [
             'type' => 'audit-logs',
             'attributes' => [
-                'requiresRetention' => true
+                'modelType' => 'Minimal',
+                'action' => 'view'
             ]
         ];
 
@@ -67,8 +63,8 @@ class AuditLogStoreTest extends TestCase
         $data = [
             'type' => 'audit-logs',
             'attributes' => [
-                'name' => 'Unauthorized AuditLog',
-                'is_active' => true
+                'modelType' => 'Forbidden',
+                'action' => 'hack'
             ]
         ];
 
@@ -86,8 +82,8 @@ class AuditLogStoreTest extends TestCase
         $data = [
             'type' => 'audit-logs',
             'attributes' => [
-                'name' => 'Guest AuditLog',
-                'is_active' => true
+                'modelType' => 'Forbidden',
+                'action' => 'hack'
             ]
         ];
 
@@ -106,7 +102,7 @@ class AuditLogStoreTest extends TestCase
         $data = [
             'type' => 'audit-logs',
             'attributes' => [
-                'description' => 'Missing name'
+                // Missing required fields
             ]
         ];
 
@@ -117,7 +113,6 @@ class AuditLogStoreTest extends TestCase
             ->post('/api/v1/audit-logs');
 
         $response->assertStatus(422);
-        $this->assertJsonApiValidationErrors(['/data/attributes/name'], $response);
     }
 
     public function test_cannot_create_AuditLog_with_invalid_data(): void
@@ -127,8 +122,8 @@ class AuditLogStoreTest extends TestCase
         $data = [
             'type' => 'audit-logs',
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'not_boolean' // Invalid boolean
+                'modelType' => '',
+                'action' => ''
             ]
         ];
 

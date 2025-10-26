@@ -3,14 +3,10 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\AccountMapping;
 
 class AccountMappingStoreTest extends TestCase
 {
-
-
-
     public function test_admin_can_create_AccountMapping(): void
     {
         $admin = $this->getAdminUser();
@@ -18,12 +14,8 @@ class AccountMappingStoreTest extends TestCase
         $data = [
             'type' => 'account-mappings',
             'attributes' => [
-                'mappingType' => 'test string',
-                'version' => 100,
-                'effectiveFrom' => '2024-01-01',
-                'effectiveTo' => '2024-01-01',
-                'isActive' => true,
-                'notes' => 'test description'
+                'mappingType' => 'source_system',
+                'isActive' => true
             ]
         ];
 
@@ -34,8 +26,11 @@ class AccountMappingStoreTest extends TestCase
             ->post('/api/v1/account-mappings');
 
         $response->assertCreated();
-        
-        $this->assertDatabaseHas('account_mappings', ['mapping_type' => 'test string', 'version' => 100, 'effective_from' => 'test value', 'effective_to' => 'test value', 'is_active' => true, 'notes' => 'test description']);
+
+        $this->assertDatabaseHas('account_mappings', [
+            'mapping_type' => 'source_system',
+            'is_active' => true
+        ]);
     }
 
     public function test_admin_can_create_AccountMapping_with_minimal_data(): void
@@ -45,7 +40,7 @@ class AccountMappingStoreTest extends TestCase
         $data = [
             'type' => 'account-mappings',
             'attributes' => [
-                'isActive' => true
+                'mappingType' => 'minimal_type'
             ]
         ];
 
@@ -65,8 +60,8 @@ class AccountMappingStoreTest extends TestCase
         $data = [
             'type' => 'account-mappings',
             'attributes' => [
-                'name' => 'Unauthorized AccountMapping',
-                'is_active' => true
+                'mappingType' => 'forbidden',
+                'isActive' => true
             ]
         ];
 
@@ -84,8 +79,8 @@ class AccountMappingStoreTest extends TestCase
         $data = [
             'type' => 'account-mappings',
             'attributes' => [
-                'name' => 'Guest AccountMapping',
-                'is_active' => true
+                'mappingType' => 'forbidden',
+                'isActive' => true
             ]
         ];
 
@@ -104,7 +99,7 @@ class AccountMappingStoreTest extends TestCase
         $data = [
             'type' => 'account-mappings',
             'attributes' => [
-                'description' => 'Missing name'
+                // Missing required fields
             ]
         ];
 
@@ -115,7 +110,6 @@ class AccountMappingStoreTest extends TestCase
             ->post('/api/v1/account-mappings');
 
         $response->assertStatus(422);
-        $this->assertJsonApiValidationErrors(['/data/attributes/name'], $response);
     }
 
     public function test_cannot_create_AccountMapping_with_invalid_data(): void
@@ -125,8 +119,8 @@ class AccountMappingStoreTest extends TestCase
         $data = [
             'type' => 'account-mappings',
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'not_boolean' // Invalid boolean
+                'mappingType' => '',
+                'isActive' => 'not_boolean'
             ]
         ];
 

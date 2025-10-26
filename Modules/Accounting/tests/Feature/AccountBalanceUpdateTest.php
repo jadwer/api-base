@@ -3,14 +3,11 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\AccountBalance;
+use Modules\Accounting\Models\Account;
 
 class AccountBalanceUpdateTest extends TestCase
 {
-
-
-
     public function test_admin_can_update_AccountBalance(): void
     {
         $admin = $this->getAdminUser();
@@ -20,9 +17,9 @@ class AccountBalanceUpdateTest extends TestCase
             'type' => 'account-balances',
             'id' => (string) $accountBalance->id,
             'attributes' => [
-                'name' => 'Updated AccountBalance',
-                'description' => 'Updated description',
-                'is_active' => false
+                'fiscalYear' => 2026,
+                'fiscalMonth' => 6,
+                'openingBalance' => 5000.00
             ]
         ];
 
@@ -33,12 +30,12 @@ class AccountBalanceUpdateTest extends TestCase
             ->patch("/api/v1/account-balances/{$accountBalance->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('account_balances', [
             'id' => $accountBalance->id,
-            'name' => 'Updated AccountBalance',
-            'description' => 'Updated description',
-            'is_active' => false
+            'fiscal_year' => 2026,
+            'fiscal_month' => 6,
+            'opening_balance' => 5000.00
         ]);
     }
 
@@ -46,16 +43,17 @@ class AccountBalanceUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $accountBalance = AccountBalance::factory()->create([
-            'name' => 'Original Name',
-            'description' => 'Original Description'
+            'fiscal_year' => 2025,
+            'fiscal_month' => 3,
+            'opening_balance' => 1000.00
         ]);
 
         $data = [
             'type' => 'account-balances',
             'id' => (string) $accountBalance->id,
             'attributes' => [
-                'name' => 'Partially Updated Name'
-                // description should remain unchanged
+                'openingBalance' => 2000.00
+                // fiscal_year and fiscal_month should remain unchanged
             ]
         ];
 
@@ -66,11 +64,12 @@ class AccountBalanceUpdateTest extends TestCase
             ->patch("/api/v1/account-balances/{$accountBalance->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('account_balances', [
             'id' => $accountBalance->id,
-            'name' => 'Partially Updated Name',
-            'description' => 'Original Description'
+            'fiscal_year' => 2025,
+            'fiscal_month' => 3,
+            'opening_balance' => 2000.00
         ]);
     }
 
@@ -100,7 +99,7 @@ class AccountBalanceUpdateTest extends TestCase
             ->patch("/api/v1/account-balances/{$accountBalance->id}");
 
         $response->assertOk();
-        
+
         $accountBalance->refresh();
         $this->assertEquals($metadata, $accountBalance->metadata);
     }
@@ -114,7 +113,7 @@ class AccountBalanceUpdateTest extends TestCase
             'type' => 'account-balances',
             'id' => (string) $accountBalance->id,
             'attributes' => [
-                'name' => 'Unauthorized Update'
+                'openingBalance' => 9999.00
             ]
         ];
 
@@ -135,7 +134,7 @@ class AccountBalanceUpdateTest extends TestCase
             'type' => 'account-balances',
             'id' => (string) $accountBalance->id,
             'attributes' => [
-                'name' => 'Guest Update'
+                'openingBalance' => 9999.00
             ]
         ];
 
@@ -155,7 +154,7 @@ class AccountBalanceUpdateTest extends TestCase
             'type' => 'account-balances',
             'id' => '999999',
             'attributes' => [
-                'name' => 'Nonexistent Update'
+                'openingBalance' => 1000.00
             ]
         ];
 
@@ -177,8 +176,8 @@ class AccountBalanceUpdateTest extends TestCase
             'type' => 'account-balances',
             'id' => (string) $accountBalance->id,
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'invalid_boolean'
+                'fiscalYear' => 'invalid_year', // Should be integer
+                'openingBalance' => 'not_a_number' // Should be numeric
             ]
         ];
 

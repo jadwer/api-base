@@ -3,14 +3,10 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\AccountMapping;
 
 class AccountMappingUpdateTest extends TestCase
 {
-
-
-
     public function test_admin_can_update_AccountMapping(): void
     {
         $admin = $this->getAdminUser();
@@ -20,9 +16,8 @@ class AccountMappingUpdateTest extends TestCase
             'type' => 'account-mappings',
             'id' => (string) $accountMapping->id,
             'attributes' => [
-                'name' => 'Updated AccountMapping',
-                'description' => 'Updated description',
-                'is_active' => false
+                'mappingType' => 'updated_type',
+                'isActive' => false
             ]
         ];
 
@@ -33,11 +28,10 @@ class AccountMappingUpdateTest extends TestCase
             ->patch("/api/v1/account-mappings/{$accountMapping->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('account_mappings', [
             'id' => $accountMapping->id,
-            'name' => 'Updated AccountMapping',
-            'description' => 'Updated description',
+            'mapping_type' => 'updated_type',
             'is_active' => false
         ]);
     }
@@ -46,16 +40,15 @@ class AccountMappingUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $accountMapping = AccountMapping::factory()->create([
-            'name' => 'Original Name',
-            'description' => 'Original Description'
+            'mapping_type' => 'original_type',
+            'is_active' => true
         ]);
 
         $data = [
             'type' => 'account-mappings',
             'id' => (string) $accountMapping->id,
             'attributes' => [
-                'name' => 'Partially Updated Name'
-                // description should remain unchanged
+                'mappingType' => 'partial_type'
             ]
         ];
 
@@ -66,11 +59,11 @@ class AccountMappingUpdateTest extends TestCase
             ->patch("/api/v1/account-mappings/{$accountMapping->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('account_mappings', [
             'id' => $accountMapping->id,
-            'name' => 'Partially Updated Name',
-            'description' => 'Original Description'
+            'mapping_type' => 'original_type',
+            'is_active' => true
         ]);
     }
 
@@ -81,8 +74,7 @@ class AccountMappingUpdateTest extends TestCase
 
         $metadata = [
             'updated_field' => 'new_value',
-            'priority' => 'urgent',
-            'tags' => ['important', 'updated']
+            'priority' => 'urgent'
         ];
 
         $data = [
@@ -100,7 +92,7 @@ class AccountMappingUpdateTest extends TestCase
             ->patch("/api/v1/account-mappings/{$accountMapping->id}");
 
         $response->assertOk();
-        
+
         $accountMapping->refresh();
         $this->assertEquals($metadata, $accountMapping->metadata);
     }
@@ -114,7 +106,7 @@ class AccountMappingUpdateTest extends TestCase
             'type' => 'account-mappings',
             'id' => (string) $accountMapping->id,
             'attributes' => [
-                'name' => 'Unauthorized Update'
+                'mappingType' => 'forbidden'
             ]
         ];
 
@@ -135,7 +127,7 @@ class AccountMappingUpdateTest extends TestCase
             'type' => 'account-mappings',
             'id' => (string) $accountMapping->id,
             'attributes' => [
-                'name' => 'Guest Update'
+                'mappingType' => 'forbidden'
             ]
         ];
 
@@ -155,7 +147,7 @@ class AccountMappingUpdateTest extends TestCase
             'type' => 'account-mappings',
             'id' => '999999',
             'attributes' => [
-                'name' => 'Nonexistent Update'
+                'mappingType' => 'forbidden'
             ]
         ];
 
@@ -177,8 +169,8 @@ class AccountMappingUpdateTest extends TestCase
             'type' => 'account-mappings',
             'id' => (string) $accountMapping->id,
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'invalid_boolean'
+                'mappingType' => '',
+                'isActive' => 'not_boolean'
             ]
         ];
 

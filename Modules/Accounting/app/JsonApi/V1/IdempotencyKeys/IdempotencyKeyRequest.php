@@ -10,16 +10,18 @@ class IdempotencyKeyRequest extends ResourceRequest
     public function rules(): array
     {
         $idempotencykey = $this->model();
+        $isUpdate = $IdempotencyKey && $IdempotencyKey->exists;
+
         
         return [
-            'companyId' => ['required', 'string'],
-            'userId' => ['required', 'string'],
-            'endpoint' => ['required', 'string', 'max:255'],
-            'idempotencyKey' => ['required', 'string', 'max:255'],
-            'requestHash' => ['required', 'string', 'max:255'],
+            'companyId' => ['nullable', 'integer'],
+            'userId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
+            'endpoint' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'idempotencyKey' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'requestHash' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'responseData' => ['nullable', 'array'],
-            'status' => ['required', 'string', 'max:255'],
-            'expiresAt' => ['required', 'string'],
+            'status' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'expiresAt' => [$isUpdate ? 'sometimes' : 'required', 'string'],
             'metadata' => ['nullable', 'array'],
         ];
     }
