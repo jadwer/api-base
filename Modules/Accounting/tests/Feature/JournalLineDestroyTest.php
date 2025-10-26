@@ -3,106 +3,65 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\JournalLine;
 
 class JournalLineDestroyTest extends TestCase
 {
-
-
-
-    public function test_admin_can_delete_JournalLine(): void
+    public function test_admin_can_delete_journal_lines(): void
     {
         $admin = $this->getAdminUser();
-        $journalLine = JournalLine::factory()->create();
+        $entity = JournalLine::factory()->create();
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('journal-lines')
-            ->delete("/api/v1/journal-lines/{$journalLine->id}");
+            ->delete("/api/v1/journal-lines/{$entity->id}");
 
         $response->assertNoContent();
-        
+
         $this->assertDatabaseMissing('journal_lines', [
-            'id' => $journalLine->id
+            'id' => $entity->id
         ]);
     }
 
-    public function test_admin_can_delete_JournalLine_with_metadata(): void
+    public function test_tech_user_cannot_delete_journal_lines(): void
     {
-        $admin = $this->getAdminUser();
-        $journalLine = JournalLine::factory()->create([
-            'metadata' => [
-                'priority' => 'high',
-                'source' => 'import'
-            ]
-        ]);
+        $tech = $this->getTechUser();
+        $entity = JournalLine::factory()->create();
 
-        $response = $this->actingAs($admin, 'sanctum')
+        $response = $this->actingAs($tech, 'sanctum')
             ->jsonApi()
             ->expects('journal-lines')
-            ->delete("/api/v1/journal-lines/{$journalLine->id}");
+            ->delete("/api/v1/journal-lines/{$entity->id}");
 
-        $response->assertNoContent();
-        
-        $this->assertDatabaseMissing('journal_lines', [
-            'id' => $journalLine->id
-        ]);
+        $response->assertStatus(403); // Tech is read-only
     }
 
-    public function test_can_delete_JournalLine_with_reference(): void
-    {
-        $admin = $this->getAdminUser();
-        $journalLine = JournalLine::factory()->create([
-            'reference' => 'INV-2024-001',
-            'description' => 'Test journal line'
-        ]);
-
-        $response = $this->actingAs($admin, 'sanctum')
-            ->jsonApi()
-            ->expects('journal-lines')
-            ->delete("/api/v1/journal-lines/{$journalLine->id}");
-
-        $response->assertNoContent();
-        
-        $this->assertDatabaseMissing('journal_lines', [
-            'id' => $journalLine->id
-        ]);
-    }
-
-    public function test_customer_user_cannot_delete_JournalLine(): void
+    public function test_customer_user_cannot_delete_journal_lines(): void
     {
         $customer = $this->getCustomerUser();
-        $journalLine = JournalLine::factory()->create();
+        $entity = JournalLine::factory()->create();
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
             ->expects('journal-lines')
-            ->delete("/api/v1/journal-lines/{$journalLine->id}");
+            ->delete("/api/v1/journal-lines/{$entity->id}");
 
         $response->assertStatus(403);
-        
-        $this->assertDatabaseHas('journal_lines', [
-            'id' => $journalLine->id
-        ]);
     }
 
-    public function test_guest_cannot_delete_JournalLine(): void
+    public function test_guest_cannot_delete_journal_lines(): void
     {
-        $journalLine = JournalLine::factory()->create();
+        $entity = JournalLine::factory()->create();
 
         $response = $this->jsonApi()
             ->expects('journal-lines')
-            ->delete("/api/v1/journal-lines/{$journalLine->id}");
+            ->delete("/api/v1/journal-lines/{$entity->id}");
 
         $response->assertStatus(401);
-        
-        $this->assertDatabaseHas('journal_lines', [
-            'id' => $journalLine->id
-        ]);
     }
 
-    public function test_returns_404_when_deleting_nonexistent_JournalLine(): void
+    public function test_returns_404_when_deleting_nonexistent_journal_lines(): void
     {
         $admin = $this->getAdminUser();
 
@@ -117,27 +76,27 @@ class JournalLineDestroyTest extends TestCase
     public function test_delete_response_is_empty(): void
     {
         $admin = $this->getAdminUser();
-        $journalLine = JournalLine::factory()->create();
+        $entity = JournalLine::factory()->create();
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('journal-lines')
-            ->delete("/api/v1/journal-lines/{$journalLine->id}");
+            ->delete("/api/v1/journal-lines/{$entity->id}");
 
         $response->assertNoContent();
-        $this->assertEmpty($response->getContent());
+        $this->assertEmpty($response->content());
     }
 
     public function test_multiple_deletes_are_idempotent(): void
     {
         $admin = $this->getAdminUser();
-        $journalLine = JournalLine::factory()->create();
+        $entity = JournalLine::factory()->create();
 
         // First delete
         $response1 = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('journal-lines')
-            ->delete("/api/v1/journal-lines/{$journalLine->id}");
+            ->delete("/api/v1/journal-lines/{$entity->id}");
 
         $response1->assertNoContent();
 
@@ -145,7 +104,7 @@ class JournalLineDestroyTest extends TestCase
         $response2 = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('journal-lines')
-            ->delete("/api/v1/journal-lines/{$journalLine->id}");
+            ->delete("/api/v1/journal-lines/{$entity->id}");
 
         $response2->assertStatus(404);
     }

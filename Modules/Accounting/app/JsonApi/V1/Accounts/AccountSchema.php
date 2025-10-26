@@ -23,10 +23,7 @@ class AccountSchema extends Schema
     public function fields(): array
     {
         return [
-            ID::make(),
-            
-            Number::make('companyId', 'company_id'),
-            Str::make('code')->sortable(),
+            ID::make(),            Str::make('code')->sortable(),
             Str::make('name')->sortable(),
             Str::make('accountType', 'account_type')->sortable(),
             Str::make('nature')->sortable(),

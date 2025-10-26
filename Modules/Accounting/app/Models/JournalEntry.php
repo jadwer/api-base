@@ -19,8 +19,8 @@ class JournalEntry extends Model
 
     protected $casts = [
                 'date' => 'date',
-        'total_debit' => 'decimal:2',
-        'total_credit' => 'decimal:2',
+        'total_debit' => 'float',
+        'total_credit' => 'float',
         'approved_at' => 'datetime',
         'posted_at' => 'datetime',
         'metadata' => 'array'

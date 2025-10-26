@@ -13,9 +13,7 @@ class AccountRequest extends ResourceRequest
         $isUpdate = $Account && $Account->exists;
 
         
-        return [
-            'companyId' => ['nullable', 'integer'],
-            'code' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255', Rule::unique('accounts')->ignore($account?->id)],
+        return [            'code' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255', Rule::unique('accounts')->ignore($account?->id)],
             'name' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'accountType' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'nature' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
@@ -32,9 +30,7 @@ class AccountRequest extends ResourceRequest
 
     public function messages(): array
     {
-        return [
-            'companyId.required' => 'El campo Company id es obligatorio.',
-            'code.required' => 'El campo Code es obligatorio.',
+        return [            'code.required' => 'El campo Code es obligatorio.',
             'code.string' => 'El campo Code debe ser texto.',
             'code.max' => 'El campo Code no puede tener más de 255 caracteres.',
             'code.unique' => 'Este Code ya está en uso.',

@@ -23,10 +23,7 @@ class IdempotencyKeySchema extends Schema
     public function fields(): array
     {
         return [
-            ID::make(),
-
-            Number::make('companyId', 'company_id'),
-            Number::make('userId', 'user_id'),
+            ID::make(),            Number::make('userId', 'user_id'),
             Str::make('endpoint')->sortable(),
             Str::make('idempotencyKey', 'idempotency_key')->sortable(),
             Str::make('requestHash', 'request_hash')->sortable(),

@@ -23,10 +23,7 @@ class AccountMappingSchema extends Schema
     public function fields(): array
     {
         return [
-            ID::make(),
-            
-            Number::make('companyId', 'company_id'),
-            Str::make('mappingType', 'mapping_type')->sortable(),
+            ID::make(),            Str::make('mappingType', 'mapping_type')->sortable(),
             Number::make('accountId', 'account_id'),
             Number::make('version')->sortable(),
             DateTime::make('effectiveFrom', 'effective_from')->sortable(),

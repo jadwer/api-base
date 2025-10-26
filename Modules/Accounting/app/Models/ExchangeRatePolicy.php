@@ -18,8 +18,8 @@ class ExchangeRatePolicy extends Model
     ];
 
     protected $casts = [
-                'tolerance_percentage' => 'decimal:2',
-        'require_approval_over' => 'decimal:2',
+                'tolerance_percentage' => 'float',
+        'require_approval_over' => 'float',
         'is_active' => 'boolean',
         'metadata' => 'array'
     ];

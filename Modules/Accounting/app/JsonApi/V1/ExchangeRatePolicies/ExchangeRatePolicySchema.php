@@ -23,10 +23,7 @@ class ExchangeRatePolicySchema extends Schema
     public function fields(): array
     {
         return [
-            ID::make(),
-            
-            Number::make('companyId', 'company_id'),
-            Str::make('currency')->sortable(),
+            ID::make(),            Str::make('currency')->sortable(),
             Str::make('source')->sortable(),
             Str::make('scope')->sortable(),
             Number::make('maxAgeDays')->sortable(),

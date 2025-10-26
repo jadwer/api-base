@@ -12,9 +12,7 @@ class AccountBalanceRequest extends ResourceRequest
         $accountbalance = $this->model();
         $isUpdate = $accountbalance && $accountbalance->exists;
 
-        return [
-            'companyId' => ['nullable', 'integer'],
-            'accountId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
+        return [            'accountId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
             'fiscalYear' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
             'fiscalMonth' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
             'openingBalance' => ['nullable', 'numeric'],
@@ -27,9 +25,7 @@ class AccountBalanceRequest extends ResourceRequest
 
     public function messages(): array
     {
-        return [
-            'companyId.integer' => 'El campo Company id debe ser un número entero.',
-            'accountId.required' => 'El campo Account id es obligatorio.',
+        return [            'accountId.required' => 'El campo Account id es obligatorio.',
             'accountId.integer' => 'El campo Account id debe ser un número entero.',
             'fiscalYear.required' => 'El campo Fiscal year es obligatorio.',
             'fiscalYear.integer' => 'El campo Fiscal year debe ser un número entero.',

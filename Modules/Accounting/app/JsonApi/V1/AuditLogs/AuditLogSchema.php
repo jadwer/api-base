@@ -23,10 +23,7 @@ class AuditLogSchema extends Schema
     public function fields(): array
     {
         return [
-            ID::make(),
-            
-            Number::make('companyId', 'company_id'),
-            Str::make('modelType')->sortable(),
+            ID::make(),            Str::make('modelType')->sortable(),
             Number::make('modelId')->sortable(),
             Str::make('action')->sortable(),
             Number::make('userId', 'user_id'),

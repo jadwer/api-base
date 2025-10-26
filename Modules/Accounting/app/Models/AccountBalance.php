@@ -18,10 +18,10 @@ class AccountBalance extends Model
     ];
 
     protected $casts = [
-        'opening_balance' => 'decimal:2',
-        'period_debits' => 'decimal:2',
-        'period_credits' => 'decimal:2',
-        'closing_balance' => 'decimal:2',
+        'opening_balance' => 'float',
+        'period_debits' => 'float',
+        'period_credits' => 'float',
+        'closing_balance' => 'float',
         'metadata' => 'array'
     ];
 

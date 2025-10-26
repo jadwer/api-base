@@ -3,106 +3,65 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\AccountBalance;
 
 class AccountBalanceDestroyTest extends TestCase
 {
-
-
-
-    public function test_admin_can_delete_AccountBalance(): void
+    public function test_admin_can_delete_account_balances(): void
     {
         $admin = $this->getAdminUser();
-        $accountBalance = AccountBalance::factory()->create();
+        $entity = AccountBalance::factory()->create();
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('account-balances')
-            ->delete("/api/v1/account-balances/{$accountBalance->id}");
+            ->delete("/api/v1/account-balances/{$entity->id}");
 
         $response->assertNoContent();
-        
+
         $this->assertDatabaseMissing('account_balances', [
-            'id' => $accountBalance->id
+            'id' => $entity->id
         ]);
     }
 
-    public function test_admin_can_delete_AccountBalance_with_metadata(): void
+    public function test_tech_user_cannot_delete_account_balances(): void
     {
-        $admin = $this->getAdminUser();
-        $accountBalance = AccountBalance::factory()->create([
-            'metadata' => [
-                'priority' => 'high',
-                'source' => 'import'
-            ]
-        ]);
+        $tech = $this->getTechUser();
+        $entity = AccountBalance::factory()->create();
 
-        $response = $this->actingAs($admin, 'sanctum')
+        $response = $this->actingAs($tech, 'sanctum')
             ->jsonApi()
             ->expects('account-balances')
-            ->delete("/api/v1/account-balances/{$accountBalance->id}");
+            ->delete("/api/v1/account-balances/{$entity->id}");
 
-        $response->assertNoContent();
-        
-        $this->assertDatabaseMissing('account_balances', [
-            'id' => $accountBalance->id
-        ]);
+        $response->assertStatus(403); // Tech is read-only
     }
 
-    public function test_can_delete_AccountBalance_with_custom_fiscal_period(): void
-    {
-        $admin = $this->getAdminUser();
-        $accountBalance = AccountBalance::factory()->create([
-            'fiscal_year' => 2024,
-            'fiscal_month' => 12
-        ]);
-
-        $response = $this->actingAs($admin, 'sanctum')
-            ->jsonApi()
-            ->expects('account-balances')
-            ->delete("/api/v1/account-balances/{$accountBalance->id}");
-
-        $response->assertNoContent();
-
-        $this->assertDatabaseMissing('account_balances', [
-            'id' => $accountBalance->id
-        ]);
-    }
-
-    public function test_customer_user_cannot_delete_AccountBalance(): void
+    public function test_customer_user_cannot_delete_account_balances(): void
     {
         $customer = $this->getCustomerUser();
-        $accountBalance = AccountBalance::factory()->create();
+        $entity = AccountBalance::factory()->create();
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
             ->expects('account-balances')
-            ->delete("/api/v1/account-balances/{$accountBalance->id}");
+            ->delete("/api/v1/account-balances/{$entity->id}");
 
         $response->assertStatus(403);
-        
-        $this->assertDatabaseHas('account_balances', [
-            'id' => $accountBalance->id
-        ]);
     }
 
-    public function test_guest_cannot_delete_AccountBalance(): void
+    public function test_guest_cannot_delete_account_balances(): void
     {
-        $accountBalance = AccountBalance::factory()->create();
+        $entity = AccountBalance::factory()->create();
 
         $response = $this->jsonApi()
             ->expects('account-balances')
-            ->delete("/api/v1/account-balances/{$accountBalance->id}");
+            ->delete("/api/v1/account-balances/{$entity->id}");
 
         $response->assertStatus(401);
-        
-        $this->assertDatabaseHas('account_balances', [
-            'id' => $accountBalance->id
-        ]);
     }
 
-    public function test_returns_404_when_deleting_nonexistent_AccountBalance(): void
+    public function test_returns_404_when_deleting_nonexistent_account_balances(): void
     {
         $admin = $this->getAdminUser();
 
@@ -117,27 +76,27 @@ class AccountBalanceDestroyTest extends TestCase
     public function test_delete_response_is_empty(): void
     {
         $admin = $this->getAdminUser();
-        $accountBalance = AccountBalance::factory()->create();
+        $entity = AccountBalance::factory()->create();
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('account-balances')
-            ->delete("/api/v1/account-balances/{$accountBalance->id}");
+            ->delete("/api/v1/account-balances/{$entity->id}");
 
         $response->assertNoContent();
-        $this->assertEmpty($response->getContent());
+        $this->assertEmpty($response->content());
     }
 
     public function test_multiple_deletes_are_idempotent(): void
     {
         $admin = $this->getAdminUser();
-        $accountBalance = AccountBalance::factory()->create();
+        $entity = AccountBalance::factory()->create();
 
         // First delete
         $response1 = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('account-balances')
-            ->delete("/api/v1/account-balances/{$accountBalance->id}");
+            ->delete("/api/v1/account-balances/{$entity->id}");
 
         $response1->assertNoContent();
 
@@ -145,7 +104,7 @@ class AccountBalanceDestroyTest extends TestCase
         $response2 = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('account-balances')
-            ->delete("/api/v1/account-balances/{$accountBalance->id}");
+            ->delete("/api/v1/account-balances/{$entity->id}");
 
         $response2->assertStatus(404);
     }

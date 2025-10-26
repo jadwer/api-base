@@ -11,18 +11,28 @@ class AccountFactory extends Factory
 
     public function definition(): array
     {
+        // Generate valid account_type and matching nature
+        $accountType = $this->faker->randomElement(['asset', 'liability', 'equity', 'revenue', 'expense', 'contra']);
+
+        // Determine correct nature based on account type (accounting rules)
+        $nature = match($accountType) {
+            'asset', 'expense', 'contra' => 'debit',
+            'liability', 'equity', 'revenue' => 'credit',
+            default => 'debit'
+        };
+
         return [
             'company_id' => null,
-            'code' => $this->faker->unique()->numerify('####'),
+            'code' => $this->faker->unique()->numerify('####.###'),
             'name' => $this->faker->words(3, true),
-            'account_type' => $this->faker->randomElement(['asset', 'liability', 'equity', 'income', 'expense']),
-            'nature' => $this->faker->randomElement(['debit', 'credit']),
+            'account_type' => $accountType,
+            'nature' => $nature,
             'level' => $this->faker->numberBetween(1, 4),
             'parent_id' => null,
-            'currency' => $this->faker->randomElement(['USD', 'EUR', 'MXN']),
+            'currency' => 'MXN', // Always MXN for consistency
             'is_postable' => $this->faker->boolean(80),
             'is_cash_flow' => $this->faker->boolean(30),
-            'status' => $this->faker->randomElement(['active', 'inactive']),
+            'status' => 'active',
             'metadata' => [],
         ];
     }

@@ -23,10 +23,7 @@ class AccountBalanceSchema extends Schema
     public function fields(): array
     {
         return [
-            ID::make(),
-            
-            Number::make('companyId', 'company_id'),
-            Number::make('accountId', 'account_id'),
+            ID::make(),            Number::make('accountId', 'account_id'),
             Number::make('fiscalYear', 'fiscal_year')->sortable(),
             Number::make('fiscalMonth', 'fiscal_month')->sortable(),
             Number::make('openingBalance', 'opening_balance')->sortable(),

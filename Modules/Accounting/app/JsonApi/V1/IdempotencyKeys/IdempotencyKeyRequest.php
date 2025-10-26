@@ -13,9 +13,7 @@ class IdempotencyKeyRequest extends ResourceRequest
         $isUpdate = $IdempotencyKey && $IdempotencyKey->exists;
 
         
-        return [
-            'companyId' => ['nullable', 'integer'],
-            'userId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
+        return [            'userId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
             'endpoint' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'idempotencyKey' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'requestHash' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
@@ -28,9 +26,7 @@ class IdempotencyKeyRequest extends ResourceRequest
 
     public function messages(): array
     {
-        return [
-            'companyId.required' => 'El campo Company id es obligatorio.',
-            'userId.required' => 'El campo User id es obligatorio.',
+        return [            'userId.required' => 'El campo User id es obligatorio.',
             'endpoint.required' => 'El campo Endpoint es obligatorio.',
             'endpoint.string' => 'El campo Endpoint debe ser texto.',
             'endpoint.max' => 'El campo Endpoint no puede tener más de 255 caracteres.',

@@ -13,9 +13,7 @@ class AuditLogRequest extends ResourceRequest
         $isUpdate = $AuditLog && $AuditLog->exists;
 
         
-        return [
-            'companyId' => ['nullable', 'integer'],
-            'model_type' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+        return [            'model_type' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'model_id' => [$isUpdate ? 'sometimes' : 'required', 'string'],
             'action' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'userId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
@@ -32,9 +30,7 @@ class AuditLogRequest extends ResourceRequest
 
     public function messages(): array
     {
-        return [
-            'companyId.required' => 'El campo Company id es obligatorio.',
-            'model_type.required' => 'El campo Model type es obligatorio.',
+        return [            'model_type.required' => 'El campo Model type es obligatorio.',
             'model_type.string' => 'El campo Model type debe ser texto.',
             'model_type.max' => 'El campo Model type no puede tener más de 255 caracteres.',
             'model_id.required' => 'El campo Model id es obligatorio.',

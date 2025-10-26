@@ -10,12 +10,10 @@ class AccountMappingRequest extends ResourceRequest
     public function rules(): array
     {
         $accountmapping = $this->model();
-        $isUpdate = $AccountMapping && $AccountMapping->exists;
+        $isUpdate = $accountmapping && $accountmapping->exists;
 
         
-        return [
-            'companyId' => ['nullable', 'integer'],
-            'mappingType' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+        return [            'mappingType' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'accountId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
             'version' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
             'effectiveFrom' => [$isUpdate ? 'sometimes' : 'required', 'date'],
@@ -29,9 +27,7 @@ class AccountMappingRequest extends ResourceRequest
 
     public function messages(): array
     {
-        return [
-            'companyId.required' => 'El campo Company id es obligatorio.',
-            'mappingType.required' => 'El campo Mapping type es obligatorio.',
+        return [            'mappingType.required' => 'El campo Mapping type es obligatorio.',
             'mappingType.string' => 'El campo Mapping type debe ser texto.',
             'mappingType.max' => 'El campo Mapping type no puede tener más de 255 caracteres.',
             'accountId.required' => 'El campo Account id es obligatorio.',

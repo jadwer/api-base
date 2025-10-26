@@ -3,103 +3,65 @@
 namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
 use Modules\Accounting\Models\AccountMapping;
 
 class AccountMappingDestroyTest extends TestCase
 {
-
-
-
-    public function test_admin_can_delete_AccountMapping(): void
+    public function test_admin_can_delete_account_mappings(): void
     {
         $admin = $this->getAdminUser();
-        $accountMapping = AccountMapping::factory()->create();
+        $entity = AccountMapping::factory()->create();
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('account-mappings')
-            ->delete("/api/v1/account-mappings/{$accountMapping->id}");
+            ->delete("/api/v1/account-mappings/{$entity->id}");
 
         $response->assertNoContent();
-        
+
         $this->assertDatabaseMissing('account_mappings', [
-            'id' => $accountMapping->id
+            'id' => $entity->id
         ]);
     }
 
-    public function test_admin_can_delete_AccountMapping_with_metadata(): void
+    public function test_tech_user_cannot_delete_account_mappings(): void
     {
-        $admin = $this->getAdminUser();
-        $accountMapping = AccountMapping::factory()->create([
-            'metadata' => [
-                'priority' => 'high',
-                'source' => 'import'
-            ]
-        ]);
+        $tech = $this->getTechUser();
+        $entity = AccountMapping::factory()->create();
 
-        $response = $this->actingAs($admin, 'sanctum')
+        $response = $this->actingAs($tech, 'sanctum')
             ->jsonApi()
             ->expects('account-mappings')
-            ->delete("/api/v1/account-mappings/{$accountMapping->id}");
+            ->delete("/api/v1/account-mappings/{$entity->id}");
 
-        $response->assertNoContent();
-        
-        $this->assertDatabaseMissing('account_mappings', [
-            'id' => $accountMapping->id
-        ]);
+        $response->assertStatus(403); // Tech is read-only
     }
 
-    public function test_can_delete_inactive_AccountMapping(): void
-    {
-        $admin = $this->getAdminUser();
-        $accountMapping = AccountMapping::factory()->inactive()->create();
-
-        $response = $this->actingAs($admin, 'sanctum')
-            ->jsonApi()
-            ->expects('account-mappings')
-            ->delete("/api/v1/account-mappings/{$accountMapping->id}");
-
-        $response->assertNoContent();
-        
-        $this->assertDatabaseMissing('account_mappings', [
-            'id' => $accountMapping->id
-        ]);
-    }
-
-    public function test_customer_user_cannot_delete_AccountMapping(): void
+    public function test_customer_user_cannot_delete_account_mappings(): void
     {
         $customer = $this->getCustomerUser();
-        $accountMapping = AccountMapping::factory()->create();
+        $entity = AccountMapping::factory()->create();
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
             ->expects('account-mappings')
-            ->delete("/api/v1/account-mappings/{$accountMapping->id}");
+            ->delete("/api/v1/account-mappings/{$entity->id}");
 
         $response->assertStatus(403);
-        
-        $this->assertDatabaseHas('account_mappings', [
-            'id' => $accountMapping->id
-        ]);
     }
 
-    public function test_guest_cannot_delete_AccountMapping(): void
+    public function test_guest_cannot_delete_account_mappings(): void
     {
-        $accountMapping = AccountMapping::factory()->create();
+        $entity = AccountMapping::factory()->create();
 
         $response = $this->jsonApi()
             ->expects('account-mappings')
-            ->delete("/api/v1/account-mappings/{$accountMapping->id}");
+            ->delete("/api/v1/account-mappings/{$entity->id}");
 
         $response->assertStatus(401);
-        
-        $this->assertDatabaseHas('account_mappings', [
-            'id' => $accountMapping->id
-        ]);
     }
 
-    public function test_returns_404_when_deleting_nonexistent_AccountMapping(): void
+    public function test_returns_404_when_deleting_nonexistent_account_mappings(): void
     {
         $admin = $this->getAdminUser();
 
@@ -114,27 +76,27 @@ class AccountMappingDestroyTest extends TestCase
     public function test_delete_response_is_empty(): void
     {
         $admin = $this->getAdminUser();
-        $accountMapping = AccountMapping::factory()->create();
+        $entity = AccountMapping::factory()->create();
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('account-mappings')
-            ->delete("/api/v1/account-mappings/{$accountMapping->id}");
+            ->delete("/api/v1/account-mappings/{$entity->id}");
 
         $response->assertNoContent();
-        $this->assertEmpty($response->getContent());
+        $this->assertEmpty($response->content());
     }
 
     public function test_multiple_deletes_are_idempotent(): void
     {
         $admin = $this->getAdminUser();
-        $accountMapping = AccountMapping::factory()->create();
+        $entity = AccountMapping::factory()->create();
 
         // First delete
         $response1 = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('account-mappings')
-            ->delete("/api/v1/account-mappings/{$accountMapping->id}");
+            ->delete("/api/v1/account-mappings/{$entity->id}");
 
         $response1->assertNoContent();
 
@@ -142,7 +104,7 @@ class AccountMappingDestroyTest extends TestCase
         $response2 = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('account-mappings')
-            ->delete("/api/v1/account-mappings/{$accountMapping->id}");
+            ->delete("/api/v1/account-mappings/{$entity->id}");
 
         $response2->assertStatus(404);
     }

@@ -12,9 +12,7 @@ class ExchangeRatePolicyRequest extends ResourceRequest
         $exchangeratepolicy = $this->model();
         $isUpdate = $exchangeratepolicy && $exchangeratepolicy->exists;
 
-        return [
-            'companyId' => ['nullable', 'integer'],
-            'currency' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+        return [            'currency' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'source' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'scope' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'max_age_days' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
@@ -27,9 +25,7 @@ class ExchangeRatePolicyRequest extends ResourceRequest
 
     public function messages(): array
     {
-        return [
-            'companyId.required' => 'El campo Company id es obligatorio.',
-            'currency.required' => 'El campo Currency es obligatorio.',
+        return [            'currency.required' => 'El campo Currency es obligatorio.',
             'currency.string' => 'El campo Currency debe ser texto.',
             'currency.max' => 'El campo Currency no puede tener más de 255 caracteres.',
             'source.required' => 'El campo Source es obligatorio.',
