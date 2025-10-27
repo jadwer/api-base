@@ -38,7 +38,9 @@ class SequenceService
                 ->lockForUpdate()
                 ->first();
 
-            $sequence->increment('current_number');
+            // Increment and get new value manually to avoid refresh() issues in nested transactions
+            $newNumber = $sequence->current_number + 1;
+            $sequence->update(['current_number' => $newNumber]);
 
             // Formato unificado: {prefix}-{YYYY}-{MM}-{#####}
             // Use journal prefix directly to avoid null prefix issues
@@ -46,7 +48,7 @@ class SequenceService
                 $journal->prefix ?? $sequence->prefix,
                 $date->year,
                 $date->month,
-                $sequence->current_number
+                $newNumber
             );
         });
     }

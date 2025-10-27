@@ -57,7 +57,7 @@ class ARInvoiceService
                 'invoice_number' => $invoiceNumber,
                 'invoice_date' => $data['invoiceDate'],
                 'due_date' => $data['dueDate'],
-                'customer_id' => $data['customerId'],
+                'contact_id' => $data['contactId'],
                 'currency' => $data['currency'] ?? 'MXN',
                 'subtotal' => $data['subtotal'],
                 'tax_amount' => $data['taxAmount'],
@@ -74,7 +74,7 @@ class ARInvoiceService
                 $journalEntry = $this->accountingService->createJournalEntry(
                     journalCode: 'AR',
                     entryDate: $data['invoiceDate'],
-                    description: "AR Invoice #{$invoiceNumber} - Customer #{$data['customerId']}",
+                    description: "AR Invoice #{$invoiceNumber} - Contact #{$data['contactId']}",
                     reference: $invoiceNumber,
                     lines: [
                         [
@@ -112,7 +112,7 @@ class ARInvoiceService
             }
 
             // 6. Retornar invoice con relaciones cargadas
-            return $invoice->fresh(['journalEntry', 'customer']);
+            return $invoice->fresh(['journalEntry', 'contact']);
         });
     }
 

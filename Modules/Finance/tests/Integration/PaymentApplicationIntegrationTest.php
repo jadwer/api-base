@@ -49,6 +49,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         ]);
 
         $payment = Payment::factory()->create([
+            'payment_date' => now(),
             'contact_id' => $customer->id,
             'bank_account_id' => $bankAccount->id,
             'payment_method_id' => $paymentMethod->id,
@@ -95,6 +96,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         ]);
 
         $payment = Payment::factory()->create([
+            'payment_date' => now(),
             'contact_id' => $customer->id,
             'bank_account_id' => $bankAccount->id,
             'payment_method_id' => $paymentMethod->id,
@@ -140,6 +142,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         ]);
 
         $payment = Payment::factory()->create([
+            'payment_date' => now(),
             'contact_id' => $customer->id,
             'bank_account_id' => $bankAccount->id,
             'payment_method_id' => $paymentMethod->id,
@@ -187,6 +190,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         ]);
 
         $payment = Payment::factory()->create([
+            'payment_date' => now(),
             'contact_id' => $customer->id,
             'bank_account_id' => $bankAccount->id,
             'payment_method_id' => $paymentMethod->id,
@@ -228,6 +232,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         ]);
 
         $payment = Payment::factory()->create([
+            'payment_date' => now(),
             'contact_id' => $customer->id,
             'bank_account_id' => $bankAccount->id,
             'payment_method_id' => $paymentMethod->id,
@@ -262,6 +267,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         ]);
 
         $payment = Payment::factory()->create([
+            'payment_date' => now(),
             'contact_id' => $customer->id,
             'bank_account_id' => $bankAccount->id,
             'payment_method_id' => $paymentMethod->id,
@@ -297,6 +303,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         ]);
 
         $payment = Payment::factory()->create([
+            'payment_date' => now(),
             'contact_id' => $customer2->id,
             'bank_account_id' => $bankAccount->id,
             'payment_method_id' => $paymentMethod->id,
@@ -308,7 +315,7 @@ class PaymentApplicationIntegrationTest extends TestCase
 
         // Act & Assert
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('does not match invoice customer');
+        $this->expectExceptionMessage('does not match invoice contact');
 
         $this->paymentApplicationService->applyPayment($payment, $invoice, 1160.00);
     }
@@ -331,6 +338,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         ]);
 
         $payment = Payment::factory()->create([
+            'payment_date' => now(),
             'contact_id' => $customer->id,
             'bank_account_id' => $bankAccount->id,
             'payment_method_id' => $paymentMethod->id,

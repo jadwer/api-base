@@ -172,10 +172,10 @@ class PaymentApplicationService
             );
         }
 
-        // 4. Validar que el customer del payment coincida con el de la invoice
-        if ($payment->customer_id !== $invoice->customer_id) {
+        // 4. Validar que el contact del payment coincida con el de la invoice
+        if ($payment->contact_id !== $invoice->contact_id) {
             throw new \Exception(
-                "Payment customer ({$payment->customer_id}) does not match invoice customer ({$invoice->customer_id})"
+                "Payment contact ({$payment->contact_id}) does not match invoice contact ({$invoice->contact_id})"
             );
         }
 
@@ -217,7 +217,7 @@ class PaymentApplicationService
             $journalEntry = $this->accountingService->createJournalEntry(
                 journalCode: 'AR', // Use AR journal for consistency
                 entryDate: $payment->payment_date->format('Y-m-d'),
-                description: "Payment #{$payment->payment_number} - Customer #{$payment->customer_id}",
+                description: "Payment #{$payment->payment_number} - Contact #{$payment->contact_id}",
                 reference: $payment->payment_number,
                 lines: [
                     [

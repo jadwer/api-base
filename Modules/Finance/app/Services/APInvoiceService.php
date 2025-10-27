@@ -55,7 +55,7 @@ class APInvoiceService
                 'invoice_number' => $invoiceNumber,
                 'invoice_date' => $data['invoiceDate'],
                 'due_date' => $data['dueDate'],
-                'supplier_id' => $data['supplierId'],
+                'contact_id' => $data['contactId'],
                 'currency' => $data['currency'] ?? 'MXN',
                 'subtotal' => $data['subtotal'],
                 'tax_amount' => $data['taxAmount'],
@@ -72,7 +72,7 @@ class APInvoiceService
                 $journalEntry = $this->accountingService->createJournalEntry(
                     journalCode: 'AP',
                     entryDate: $data['invoiceDate'],
-                    description: "AP Invoice #{$invoiceNumber} - Supplier #{$data['supplierId']}",
+                    description: "AP Invoice #{$invoiceNumber} - Contact #{$data['contactId']}",
                     reference: $invoiceNumber,
                     lines: [
                         [
@@ -109,7 +109,7 @@ class APInvoiceService
             }
 
             // 6. Retornar invoice con relaciones cargadas
-            return $invoice->fresh(['journalEntry', 'supplier']);
+            return $invoice->fresh(['journalEntry', 'contact']);
         });
     }
 
