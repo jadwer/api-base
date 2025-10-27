@@ -12,20 +12,20 @@ class APInvoiceFactory extends Factory
     public function definition(): array
     {
         return [
-            'invoice_number' => $this->faker->sentence(3),
+            'invoice_number' => 'AP-' . $this->faker->unique()->numerify('####'),
             'invoice_date' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
             'due_date' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
-            'supplier_id' => 1, // TODO: Use existing Supplier ID - \Modules\Purchase\Models\Supplier::inRandomOrder()->first()?->id ?? 1,
+            'supplier_id' => 1, // Temporary - Supplier model doesn't exist yet, using dummy ID
             'currency' => $this->faker->randomElement(['USD', 'EUR', 'MXN']),
-            'subtotal' => $this->faker->randomFloat(2, 1, 1000),
-            'tax_amount' => $this->faker->randomFloat(2, 1, 1000),
-            'total_amount' => $this->faker->randomFloat(2, 1, 1000),
-            'paid_amount' => $this->faker->randomFloat(2, 1, 1000),
-            'status' => $this->faker->randomElement(['active', 'inactive', 'pending']),
-            'journal_entry_id' => $this->faker->numberBetween(1, 100),
+            'subtotal' => $this->faker->randomFloat(2, 100, 1000),
+            'tax_amount' => $this->faker->randomFloat(2, 10, 100),
+            'total_amount' => $this->faker->randomFloat(2, 110, 1100),
+            'paid_amount' => $this->faker->randomFloat(2, 0, 500),
+            'status' => $this->faker->randomElement(['pending', 'paid', 'overdue']),
+            'journal_entry_id' => null, // Nullable - will be set when needed
             'notes' => $this->faker->optional(0.7)->paragraph(),
-            'metadata' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
-            'is_active' => $this->faker->boolean(70),
+            'metadata' => $this->faker->optional(0.5)->passthrough(['department' => $this->faker->word, 'ref' => $this->faker->uuid]),
+            'is_active' => true,
         ];
     }
 

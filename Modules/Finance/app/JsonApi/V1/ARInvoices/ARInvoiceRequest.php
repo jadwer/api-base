@@ -12,14 +12,14 @@ class ARInvoiceRequest extends ResourceRequest
         $arinvoice = $this->model();
         
         return [
-            'invoiceNumber' => ['nullable', 'string', 'max:255', Rule::unique('ar_invoices', 'invoice_number')->ignore($arinvoice?->id)],
-            'invoiceDate' => ['nullable', 'date'],
-            'dueDate' => ['nullable', 'date'],
-            'customerId' => ['nullable', 'integer'],
+            'invoiceNumber' => ['required', 'string', 'max:255', Rule::unique('ar_invoices', 'invoice_number')->ignore($arinvoice?->id)],
+            'invoiceDate' => ['required', 'date'],
+            'dueDate' => ['required', 'date'],
+            'customerId' => ['required', 'integer'],
             'currency' => ['nullable', 'string', 'max:255'],
-            'subtotal' => ['nullable', 'numeric'],
-            'taxAmount' => ['nullable', 'numeric'],
-            'totalAmount' => ['nullable', 'numeric'],
+            'subtotal' => ['required', 'numeric'],
+            'taxAmount' => ['required', 'numeric'],
+            'totalAmount' => ['required', 'numeric'],
             'paidAmount' => ['nullable', 'numeric'],
             'status' => ['nullable', 'string', 'max:255'],
             'journalEntryId' => ['nullable', 'integer'],

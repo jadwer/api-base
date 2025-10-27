@@ -17,7 +17,6 @@ class PaymentMethodRequest extends ResourceRequest
             'type' => ['nullable', 'string', 'max:255'],
             'requiresReference' => ['nullable', 'boolean'],
             'isActive' => ['nullable', 'boolean'],
-            'metadata' => ['nullable', 'array'],
         ];
     }
 

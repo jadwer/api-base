@@ -31,7 +31,7 @@ class APInvoiceResource extends JsonApiResource
     public function relationships($request): iterable
     {
         return [
-            'supplier' => $this->relation('supplier'),
+            // 'supplier' => $this->relation('supplier'), // TODO: Uncomment when Supplier model is implemented
             'journalEntry' => $this->relation('journalEntry'),
         ];
     }

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Permission\Traits\HasPermissions;
 use Modules\Accounting\Models\JournalEntry;
-use Modules\Purchase\Models\Supplier;
+// use Modules\Purchase\Models\Supplier; // TODO: Uncomment when Supplier model is implemented
 
 class APInvoice extends Model
 {
@@ -35,11 +35,11 @@ class APInvoice extends Model
         return $query->where('is_active', true);
     }
 
-
-    public function supplier()
-    {
-        return $this->belongsTo(Supplier::class);
-    }
+    // TODO: Uncomment when Supplier model is implemented
+    // public function supplier()
+    // {
+    //     return $this->belongsTo(Supplier::class);
+    // }
 
     public function journalEntry()
     {

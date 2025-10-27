@@ -32,9 +32,8 @@ class BankAccountUpdateTest extends TestCase
             'type' => 'bank-accounts',
             'id' => (string) $bankAccount->id,
             'attributes' => [
-                'name' => 'Updated BankAccount',
-                'description' => 'Updated description',
-                'is_active' => false
+                'accountName' => 'Updated BankAccount',
+                'isActive' => false
             ]
         ];
 
@@ -48,8 +47,7 @@ class BankAccountUpdateTest extends TestCase
         
         $this->assertDatabaseHas('bank_accounts', [
             'id' => $bankAccount->id,
-            'name' => 'Updated BankAccount',
-            'description' => 'Updated description',
+            'account_name' => 'Updated BankAccount',
             'is_active' => false
         ]);
     }
@@ -58,16 +56,16 @@ class BankAccountUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $bankAccount = BankAccount::factory()->create([
-            'name' => 'Original Name',
-            'description' => 'Original Description'
+            'account_name' => 'Original Name',
+            'bank_name' => 'Original Bank'
         ]);
 
         $data = [
             'type' => 'bank-accounts',
             'id' => (string) $bankAccount->id,
             'attributes' => [
-                'name' => 'Partially Updated Name'
-                // description should remain unchanged
+                'accountName' => 'Partially Updated Name'
+                // bankName should remain unchanged
             ]
         ];
 
@@ -78,11 +76,11 @@ class BankAccountUpdateTest extends TestCase
             ->patch("/api/v1/bank-accounts/{$bankAccount->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('bank_accounts', [
             'id' => $bankAccount->id,
-            'name' => 'Partially Updated Name',
-            'description' => 'Original Description'
+            'account_name' => 'Partially Updated Name',
+            'bank_name' => 'Original Bank'
         ]);
     }
 
@@ -126,7 +124,7 @@ class BankAccountUpdateTest extends TestCase
             'type' => 'bank-accounts',
             'id' => (string) $bankAccount->id,
             'attributes' => [
-                'name' => 'Unauthorized Update'
+                'accountName' => 'Unauthorized Update'
             ]
         ];
 
@@ -147,7 +145,7 @@ class BankAccountUpdateTest extends TestCase
             'type' => 'bank-accounts',
             'id' => (string) $bankAccount->id,
             'attributes' => [
-                'name' => 'Guest Update'
+                'accountName' => 'Guest Update'
             ]
         ];
 
@@ -167,7 +165,7 @@ class BankAccountUpdateTest extends TestCase
             'type' => 'bank-accounts',
             'id' => '999999',
             'attributes' => [
-                'name' => 'Nonexistent Update'
+                'accountName' => 'Nonexistent Update'
             ]
         ];
 
@@ -189,8 +187,8 @@ class BankAccountUpdateTest extends TestCase
             'type' => 'bank-accounts',
             'id' => (string) $bankAccount->id,
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'invalid_boolean'
+                'accountName' => '', // Empty name
+                'isActive' => 'invalid_boolean'
             ]
         ];
 

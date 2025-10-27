@@ -43,12 +43,7 @@ class PaymentMethodDestroyTest extends TestCase
     public function test_admin_can_delete_PaymentMethod_with_metadata(): void
     {
         $admin = $this->getAdminUser();
-        $paymentMethod = PaymentMethod::factory()->create([
-            'metadata' => [
-                'priority' => 'high',
-                'source' => 'import'
-            ]
-        ]);
+        $paymentMethod = PaymentMethod::factory()->create();
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

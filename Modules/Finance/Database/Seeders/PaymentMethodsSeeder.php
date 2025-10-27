@@ -15,8 +15,6 @@ class PaymentMethodsSeeder extends Seeder
 {
     public function run(): void
     {
-        echo "💳 Seeding Payment Methods...\n";
-
         $methods = [
             [
                 'code' => 'CASH',
@@ -77,17 +75,11 @@ class PaymentMethodsSeeder extends Seeder
         ];
 
         foreach ($methods as $methodData) {
-            $method = PaymentMethod::firstOrCreate(
+            PaymentMethod::firstOrCreate(
                 ['code' => $methodData['code']],
                 $methodData
             );
-
-            echo $method->wasRecentlyCreated
-                ? "  ✅ Created: {$method->code} - {$method->name}\n"
-                : "  ℹ️  Exists: {$method->code} - {$method->name}\n";
         }
-
-        echo "✅ Payment Methods seeded successfully!\n";
 
         Log::info('Payment Methods seeded', [
             'count' => PaymentMethod::count(),

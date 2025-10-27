@@ -12,8 +12,8 @@ class BankAccountFactory extends Factory
     public function definition(): array
     {
         return [
-            'account_number' => $this->faker->numberBetween(1, 10),
-            'account_name' => $this->faker->numberBetween(1, 10),
+            'account_number' => $this->faker->unique()->numerify('##########'),
+            'account_name' => $this->faker->words(3, true),
             'bank_name' => $this->faker->words(2, true),
             'currency' => $this->faker->randomElement(['USD', 'EUR', 'MXN']),
             'gl_account_id' => $this->faker->numberBetween(1, 100),

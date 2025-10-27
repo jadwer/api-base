@@ -45,7 +45,7 @@ class APInvoiceSchema extends Schema
             DateTime::make('updatedAt')->sortable()->readOnly(),
 
             // Relationships
-            BelongsTo::make('supplier'),
+            // BelongsTo::make('supplier'), // TODO: Uncomment when Supplier model is implemented
             // Relationships
             BelongsTo::make('journalEntry'),
         ];
@@ -67,7 +67,7 @@ class APInvoiceSchema extends Schema
     public function includePaths(): array
     {
         return [
-            'supplier',
+            // 'supplier', // TODO: Uncomment when Supplier model is implemented
             'journalEntry',
         ];
     }

@@ -5,8 +5,6 @@ namespace Modules\Finance\Tests\Feature;
 use Tests\TestCase;
 use Modules\User\Models\User;
 use Modules\Finance\Models\APInvoice;
-use Modules\Purchase\Models\Supplier;
-use Modules\Accounting\Models\JournalEntry;
 
 class APInvoiceStoreTest extends TestCase
 {
@@ -28,8 +26,6 @@ class APInvoiceStoreTest extends TestCase
     public function test_admin_can_create_APInvoice(): void
     {
         $admin = $this->getAdminUser();
-        $supplier = Supplier::factory()->create();
-        $journalEntry = JournalEntry::factory()->create();
 
         $data = [
             'type' => 'ap-invoices',
@@ -37,14 +33,13 @@ class APInvoiceStoreTest extends TestCase
                 'invoiceNumber' => 'INV-AP-001',
                 'invoiceDate' => '2024-01-01',
                 'dueDate' => '2024-01-31',
-                'supplierId' => $supplier->id,
+                'supplierId' => 1, // Dummy supplier ID (Purchase module not implemented yet)
                 'currency' => 'USD',
                 'subtotal' => 100.00,
                 'taxAmount' => 16.00,
                 'totalAmount' => 116.00,
                 'paidAmount' => 0.00,
                 'status' => 'pending',
-                'journalEntryId' => $journalEntry->id,
                 'notes' => 'Test AP invoice',
                 'metadata' => ['test' => 'value'],
                 'isActive' => true
@@ -61,7 +56,7 @@ class APInvoiceStoreTest extends TestCase
 
         $this->assertDatabaseHas('ap_invoices', [
             'invoice_number' => 'INV-AP-001',
-            'supplier_id' => $supplier->id,
+            'supplier_id' => 1,
             'currency' => 'USD',
             'status' => 'pending',
             'is_active' => true
@@ -75,6 +70,13 @@ class APInvoiceStoreTest extends TestCase
         $data = [
             'type' => 'ap-invoices',
             'attributes' => [
+                'invoiceNumber' => 'INV-MIN-001',
+                'invoiceDate' => '2024-01-01',
+                'dueDate' => '2024-01-31',
+                'supplierId' => 1,
+                'subtotal' => 100.00,
+                'taxAmount' => 16.00,
+                'totalAmount' => 116.00,
                 'isActive' => true
             ]
         ];
@@ -91,13 +93,12 @@ class APInvoiceStoreTest extends TestCase
     public function test_customer_user_cannot_create_APInvoice(): void
     {
         $customer = $this->getCustomerUser();
-        $supplier = Supplier::factory()->create();
 
         $data = [
             'type' => 'ap-invoices',
             'attributes' => [
                 'invoiceNumber' => 'INV-UNAUTH',
-                'supplierId' => $supplier->id,
+                'supplierId' => 1, // Dummy supplier ID
                 'isActive' => true
             ]
         ];

@@ -30,9 +30,7 @@ class PaymentMethodSchema extends Schema
             Str::make('type')->sortable(),
             Boolean::make('requiresReference')->sortable(),
             Boolean::make('isActive')->sortable(),
-            // Metadata
-            ArrayHash::make('metadata'),
-            
+
             // Timestamps
             DateTime::make('createdAt')->sortable()->readOnly(),
             DateTime::make('updatedAt')->sortable()->readOnly(),

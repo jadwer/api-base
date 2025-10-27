@@ -32,9 +32,9 @@ class ARInvoiceUpdateTest extends TestCase
             'type' => 'ar-invoices',
             'id' => (string) $aRInvoice->id,
             'attributes' => [
-                'name' => 'Updated ARInvoice',
-                'description' => 'Updated description',
-                'is_active' => false
+                'invoiceNumber' => 'Updated ARInvoice',
+                'notes' => 'Updated description',
+                'isActive' => false
             ]
         ];
 
@@ -48,8 +48,8 @@ class ARInvoiceUpdateTest extends TestCase
         
         $this->assertDatabaseHas('ar_invoices', [
             'id' => $aRInvoice->id,
-            'name' => 'Updated ARInvoice',
-            'description' => 'Updated description',
+            'invoice_number' => 'Updated ARInvoice',
+            'notes' => 'Updated description',
             'is_active' => false
         ]);
     }
@@ -58,15 +58,15 @@ class ARInvoiceUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $aRInvoice = ARInvoice::factory()->create([
-            'name' => 'Original Name',
-            'description' => 'Original Description'
+            'invoice_number' => 'Original Name',
+            'notes' => 'Original Description'
         ]);
 
         $data = [
             'type' => 'ar-invoices',
             'id' => (string) $aRInvoice->id,
             'attributes' => [
-                'name' => 'Partially Updated Name'
+                'invoiceNumber' => 'Partially Updated Name'
                 // description should remain unchanged
             ]
         ];
@@ -81,8 +81,8 @@ class ARInvoiceUpdateTest extends TestCase
         
         $this->assertDatabaseHas('ar_invoices', [
             'id' => $aRInvoice->id,
-            'name' => 'Partially Updated Name',
-            'description' => 'Original Description'
+            'invoice_number' => 'Partially Updated Name',
+            'notes' => 'Original Description'
         ]);
     }
 
@@ -126,7 +126,7 @@ class ARInvoiceUpdateTest extends TestCase
             'type' => 'ar-invoices',
             'id' => (string) $aRInvoice->id,
             'attributes' => [
-                'name' => 'Unauthorized Update'
+                'invoiceNumber' => 'Unauthorized Update'
             ]
         ];
 
@@ -147,7 +147,7 @@ class ARInvoiceUpdateTest extends TestCase
             'type' => 'ar-invoices',
             'id' => (string) $aRInvoice->id,
             'attributes' => [
-                'name' => 'Guest Update'
+                'invoiceNumber' => 'Guest Update'
             ]
         ];
 
@@ -167,7 +167,7 @@ class ARInvoiceUpdateTest extends TestCase
             'type' => 'ar-invoices',
             'id' => '999999',
             'attributes' => [
-                'name' => 'Nonexistent Update'
+                'invoiceNumber' => 'Nonexistent Update'
             ]
         ];
 
@@ -189,8 +189,8 @@ class ARInvoiceUpdateTest extends TestCase
             'type' => 'ar-invoices',
             'id' => (string) $aRInvoice->id,
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'invalid_boolean'
+                'invoiceNumber' => '', // Empty name
+                'isActive' => 'invalid_boolean'
             ]
         ];
 

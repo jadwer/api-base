@@ -10,16 +10,16 @@ class APInvoiceRequest extends ResourceRequest
     public function rules(): array
     {
         $apinvoice = $this->model();
-        
+
         return [
-            'invoiceNumber' => ['nullable', 'string', 'max:255', Rule::unique('ap_invoices', 'invoice_number')->ignore($apinvoice?->id)],
-            'invoiceDate' => ['nullable', 'date'],
-            'dueDate' => ['nullable', 'date'],
-            'supplierId' => ['nullable', 'integer'],
+            'invoiceNumber' => ['required', 'string', 'max:255', Rule::unique('ap_invoices', 'invoice_number')->ignore($apinvoice?->id)],
+            'invoiceDate' => ['required', 'date'],
+            'dueDate' => ['required', 'date'],
+            'supplierId' => ['required', 'integer'],
             'currency' => ['nullable', 'string', 'max:255'],
-            'subtotal' => ['nullable', 'numeric'],
-            'taxAmount' => ['nullable', 'numeric'],
-            'totalAmount' => ['nullable', 'numeric'],
+            'subtotal' => ['required', 'numeric'],
+            'taxAmount' => ['required', 'numeric'],
+            'totalAmount' => ['required', 'numeric'],
             'paidAmount' => ['nullable', 'numeric'],
             'status' => ['nullable', 'string', 'max:255'],
             'journalEntryId' => ['nullable', 'integer'],

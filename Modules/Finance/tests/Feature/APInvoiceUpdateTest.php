@@ -32,9 +32,9 @@ class APInvoiceUpdateTest extends TestCase
             'type' => 'ap-invoices',
             'id' => (string) $aPInvoice->id,
             'attributes' => [
-                'name' => 'Updated APInvoice',
-                'description' => 'Updated description',
-                'is_active' => false
+                'invoiceNumber' => 'Updated APInvoice',
+                'notes' => 'Updated description',
+                'isActive' => false
             ]
         ];
 
@@ -48,8 +48,8 @@ class APInvoiceUpdateTest extends TestCase
         
         $this->assertDatabaseHas('ap_invoices', [
             'id' => $aPInvoice->id,
-            'name' => 'Updated APInvoice',
-            'description' => 'Updated description',
+            'invoice_number' => 'Updated APInvoice',
+            'notes' => 'Updated description',
             'is_active' => false
         ]);
     }
@@ -58,15 +58,15 @@ class APInvoiceUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $aPInvoice = APInvoice::factory()->create([
-            'name' => 'Original Name',
-            'description' => 'Original Description'
+            'invoice_number' => 'Original Name',
+            'notes' => 'Original Description'
         ]);
 
         $data = [
             'type' => 'ap-invoices',
             'id' => (string) $aPInvoice->id,
             'attributes' => [
-                'name' => 'Partially Updated Name'
+                'invoiceNumber' => 'Partially Updated Name'
                 // description should remain unchanged
             ]
         ];
@@ -81,8 +81,8 @@ class APInvoiceUpdateTest extends TestCase
         
         $this->assertDatabaseHas('ap_invoices', [
             'id' => $aPInvoice->id,
-            'name' => 'Partially Updated Name',
-            'description' => 'Original Description'
+            'invoice_number' => 'Partially Updated Name',
+            'notes' => 'Original Description'
         ]);
     }
 
@@ -126,7 +126,7 @@ class APInvoiceUpdateTest extends TestCase
             'type' => 'ap-invoices',
             'id' => (string) $aPInvoice->id,
             'attributes' => [
-                'name' => 'Unauthorized Update'
+                'invoiceNumber' => 'Unauthorized Update'
             ]
         ];
 
@@ -147,7 +147,7 @@ class APInvoiceUpdateTest extends TestCase
             'type' => 'ap-invoices',
             'id' => (string) $aPInvoice->id,
             'attributes' => [
-                'name' => 'Guest Update'
+                'invoiceNumber' => 'Guest Update'
             ]
         ];
 
@@ -167,7 +167,7 @@ class APInvoiceUpdateTest extends TestCase
             'type' => 'ap-invoices',
             'id' => '999999',
             'attributes' => [
-                'name' => 'Nonexistent Update'
+                'invoiceNumber' => 'Nonexistent Update'
             ]
         ];
 
@@ -189,8 +189,8 @@ class APInvoiceUpdateTest extends TestCase
             'type' => 'ap-invoices',
             'id' => (string) $aPInvoice->id,
             'attributes' => [
-                'name' => '', // Empty name
-                'is_active' => 'invalid_boolean'
+                'invoiceNumber' => '', // Empty name
+                'isActive' => 'invalid_boolean'
             ]
         ];
 
