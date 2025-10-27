@@ -22,14 +22,11 @@ class SequenceService
             // First-or-create atómico para evitar race conditions
             $sequence = JournalSequence::firstOrCreate(
                 [
-                    'company_id' => $journal->company_id,
                     'journal_id' => $journal->id,
                     'fiscal_year' => $date->year
                 ],
                 [
-                    'current_number' => 0,
-                    'prefix' => $journal->prefix,
-                    'created_by_id' => auth()->id()
+                    'current_number' => 0
                 ]
             );
 
@@ -63,8 +60,7 @@ class SequenceService
     public function resetSequence(Journal $journal, int $fiscalYear): bool
     {
         return DB::transaction(function () use ($journal, $fiscalYear) {
-            $sequence = JournalSequence::where('company_id', $journal->company_id)
-                ->where('journal_id', $journal->id)
+            $sequence = JournalSequence::where('journal_id', $journal->id)
                 ->where('fiscal_year', $fiscalYear)
                 ->lockForUpdate()
                 ->first();
@@ -87,8 +83,7 @@ class SequenceService
      */
     public function getCurrentNumber(Journal $journal, int $fiscalYear): int
     {
-        $sequence = JournalSequence::where('company_id', $journal->company_id)
-            ->where('journal_id', $journal->id)
+        $sequence = JournalSequence::where('journal_id', $journal->id)
             ->where('fiscal_year', $fiscalYear)
             ->first();
 

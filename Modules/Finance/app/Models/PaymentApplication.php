@@ -38,7 +38,7 @@ class PaymentApplication extends Model
 
     public function aRInvoice()
     {
-        return $this->belongsTo(ARInvoice::class);
+        return $this->belongsTo(ARInvoice::class, 'ar_invoice_id');
     }
 
     // Factory
