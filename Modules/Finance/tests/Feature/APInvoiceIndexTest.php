@@ -44,7 +44,7 @@ class APInvoiceIndexTest extends TestCase
                         'invoiceNumber',
                         'invoiceDate',
                         'dueDate',
-                        'supplierId',
+                        'contactId',
                         'currency',
                         'subtotal',
                         'taxAmount',

@@ -20,7 +20,7 @@ class BankAccountFactory extends Factory
             'current_balance' => $this->faker->randomFloat(2, 1, 100),
             'opening_balance' => $this->faker->randomFloat(2, 1, 100),
             'status' => $this->faker->randomElement(['active', 'inactive', 'pending']),
-            'metadata' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
+            'metadata' => ['created_by' => 'factory'],
             'is_active' => $this->faker->boolean(70),
         ];
     }

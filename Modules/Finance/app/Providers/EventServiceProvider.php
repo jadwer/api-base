@@ -11,7 +11,15 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array<string, array<int, string>>
      */
-    protected $listen = [];
+    protected $listen = [
+        // Sales → Finance Integration
+        \Modules\Sales\Events\SalesOrderCompleted::class => [
+            \Modules\Finance\Listeners\SalesOrderCompletedListener::class,
+        ],
+        \Modules\Sales\Events\SalesOrderCancelled::class => [
+            \Modules\Finance\Listeners\SalesOrderCancelledListener::class,
+        ],
+    ];
 
     /**
      * Indicates if events should be discovered.

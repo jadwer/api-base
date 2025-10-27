@@ -41,7 +41,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         $invoice = $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->format('Y-m-d'),
             'dueDate' => now()->addDays(30)->format('Y-m-d'),
-            'customerId' => $customer->id,
+            'contactId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
             'taxAmount' => 160.00,
@@ -49,7 +49,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         ]);
 
         $payment = Payment::factory()->create([
-            'customer_id' => $customer->id,
+            'contact_id' => $customer->id,
             'bank_account_id' => $bankAccount->id,
             'payment_method_id' => $paymentMethod->id,
             'amount' => 1160.00,
@@ -87,7 +87,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         $invoice = $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->format('Y-m-d'),
             'dueDate' => now()->addDays(30)->format('Y-m-d'),
-            'customerId' => $customer->id,
+            'contactId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
             'taxAmount' => 160.00,
@@ -95,7 +95,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         ]);
 
         $payment = Payment::factory()->create([
-            'customer_id' => $customer->id,
+            'contact_id' => $customer->id,
             'bank_account_id' => $bankAccount->id,
             'payment_method_id' => $paymentMethod->id,
             'amount' => 600.00,
@@ -132,7 +132,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         $invoice = $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->format('Y-m-d'),
             'dueDate' => now()->addDays(30)->format('Y-m-d'),
-            'customerId' => $customer->id,
+            'contactId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
             'taxAmount' => 160.00,
@@ -140,7 +140,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         ]);
 
         $payment = Payment::factory()->create([
-            'customer_id' => $customer->id,
+            'contact_id' => $customer->id,
             'bank_account_id' => $bankAccount->id,
             'payment_method_id' => $paymentMethod->id,
             'amount' => 1160.00,
@@ -179,7 +179,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         $invoice = $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->format('Y-m-d'),
             'dueDate' => now()->addDays(30)->format('Y-m-d'),
-            'customerId' => $customer->id,
+            'contactId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
             'taxAmount' => 160.00,
@@ -187,7 +187,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         ]);
 
         $payment = Payment::factory()->create([
-            'customer_id' => $customer->id,
+            'contact_id' => $customer->id,
             'bank_account_id' => $bankAccount->id,
             'payment_method_id' => $paymentMethod->id,
             'amount' => 1160.00,
@@ -220,7 +220,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         $invoice = $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->format('Y-m-d'),
             'dueDate' => now()->addDays(30)->format('Y-m-d'),
-            'customerId' => $customer->id,
+            'contactId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
             'taxAmount' => 160.00,
@@ -228,7 +228,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         ]);
 
         $payment = Payment::factory()->create([
-            'customer_id' => $customer->id,
+            'contact_id' => $customer->id,
             'bank_account_id' => $bankAccount->id,
             'payment_method_id' => $paymentMethod->id,
             'amount' => 2000.00,
@@ -254,7 +254,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         $invoice = $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->format('Y-m-d'),
             'dueDate' => now()->addDays(30)->format('Y-m-d'),
-            'customerId' => $customer->id,
+            'contactId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
             'taxAmount' => 160.00,
@@ -262,7 +262,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         ]);
 
         $payment = Payment::factory()->create([
-            'customer_id' => $customer->id,
+            'contact_id' => $customer->id,
             'bank_account_id' => $bankAccount->id,
             'payment_method_id' => $paymentMethod->id,
             'amount' => 500.00,
@@ -289,7 +289,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         $invoice = $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->format('Y-m-d'),
             'dueDate' => now()->addDays(30)->format('Y-m-d'),
-            'customerId' => $customer1->id,
+            'contactId' => $customer1->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
             'taxAmount' => 160.00,
@@ -297,7 +297,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         ]);
 
         $payment = Payment::factory()->create([
-            'customer_id' => $customer2->id,
+            'contact_id' => $customer2->id,
             'bank_account_id' => $bankAccount->id,
             'payment_method_id' => $paymentMethod->id,
             'amount' => 1160.00,
@@ -323,7 +323,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         $invoice = $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->format('Y-m-d'),
             'dueDate' => now()->addDays(30)->format('Y-m-d'),
-            'customerId' => $customer->id,
+            'contactId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
             'taxAmount' => 160.00,
@@ -331,7 +331,7 @@ class PaymentApplicationIntegrationTest extends TestCase
         ]);
 
         $payment = Payment::factory()->create([
-            'customer_id' => $customer->id,
+            'contact_id' => $customer->id,
             'bank_account_id' => $bankAccount->id,
             'payment_method_id' => $paymentMethod->id,
             'amount' => 1160.00,

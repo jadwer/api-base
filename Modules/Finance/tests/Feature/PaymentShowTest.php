@@ -41,7 +41,7 @@ class PaymentShowTest extends TestCase
                 'attributes' => [
                         'paymentNumber',
                         'paymentDate',
-                        'customerId',
+                        'contactId',
                         'bankAccountId',
                         'paymentMethodId',
                         'amount',
@@ -80,7 +80,7 @@ class PaymentShowTest extends TestCase
                 'attributes' => [
                         'paymentNumber',
                         'paymentDate',
-                        'customerId',
+                        'contactId',
                         'bankAccountId',
                         'paymentMethodId',
                         'amount',

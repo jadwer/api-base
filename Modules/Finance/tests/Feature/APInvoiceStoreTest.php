@@ -33,7 +33,7 @@ class APInvoiceStoreTest extends TestCase
                 'invoiceNumber' => 'INV-AP-001',
                 'invoiceDate' => '2024-01-01',
                 'dueDate' => '2024-01-31',
-                'supplierId' => 1, // Dummy supplier ID (Purchase module not implemented yet)
+                'contactId' => 1, // Dummy supplier ID (Purchase module not implemented yet)
                 'currency' => 'USD',
                 'subtotal' => 100.00,
                 'taxAmount' => 16.00,
@@ -56,7 +56,7 @@ class APInvoiceStoreTest extends TestCase
 
         $this->assertDatabaseHas('ap_invoices', [
             'invoice_number' => 'INV-AP-001',
-            'supplier_id' => 1,
+            'contact_id' => 1,
             'currency' => 'USD',
             'status' => 'pending',
             'is_active' => true
@@ -73,7 +73,7 @@ class APInvoiceStoreTest extends TestCase
                 'invoiceNumber' => 'INV-MIN-001',
                 'invoiceDate' => '2024-01-01',
                 'dueDate' => '2024-01-31',
-                'supplierId' => 1,
+                'contactId' => 1,
                 'subtotal' => 100.00,
                 'taxAmount' => 16.00,
                 'totalAmount' => 116.00,
@@ -98,7 +98,7 @@ class APInvoiceStoreTest extends TestCase
             'type' => 'ap-invoices',
             'attributes' => [
                 'invoiceNumber' => 'INV-UNAUTH',
-                'supplierId' => 1, // Dummy supplier ID
+                'contactId' => 1, // Dummy supplier ID
                 'isActive' => true
             ]
         ];

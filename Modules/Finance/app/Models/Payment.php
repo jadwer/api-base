@@ -15,7 +15,7 @@ class Payment extends Model
     protected $table = 'payments';
     
     protected $fillable = [
-        'payment_number', 'payment_date', 'customer_id', 'bank_account_id', 'payment_method_id', 'amount', 'currency', 'applied_amount', 'unapplied_amount', 'status', 'journal_entry_id', 'reference', 'notes', 'metadata', 'is_active'
+        'payment_number', 'payment_date', 'contact_id', 'bank_account_id', 'payment_method_id', 'amount', 'currency', 'applied_amount', 'unapplied_amount', 'status', 'journal_entry_id', 'reference', 'notes', 'metadata', 'is_active'
     ];
 
     protected $casts = [
@@ -34,9 +34,15 @@ class Payment extends Model
     }
 
 
+    public function contact()
+    {
+        return $this->belongsTo(Contact::class, 'contact_id');
+    }
+
+    // Legacy alias for backward compatibility
     public function customer()
     {
-        return $this->belongsTo(Contact::class, 'customer_id');
+        return $this->contact();
     }
 
     public function bankAccount()

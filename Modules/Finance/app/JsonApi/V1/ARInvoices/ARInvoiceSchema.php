@@ -28,7 +28,8 @@ class ARInvoiceSchema extends Schema
             Str::make('invoiceNumber')->sortable(),
             DateTime::make('invoiceDate')->sortable(),
             DateTime::make('dueDate')->sortable(),
-            Number::make('customerId')->sortable(),
+            Number::make('contactId')->sortable(),
+            Number::make('salesOrderId')->sortable(),
             Str::make('currency')->sortable(),
             Number::make('subtotal')->sortable(),
             Number::make('taxAmount')->sortable(),
@@ -45,10 +46,9 @@ class ARInvoiceSchema extends Schema
             DateTime::make('updatedAt')->sortable()->readOnly(),
 
             // Relationships
-            BelongsTo::make('customer'),
-            // Relationships
+            BelongsTo::make('contact'),
+            BelongsTo::make('salesOrder'),
             BelongsTo::make('journalEntry'),
-            // Relationships
             HasMany::make('paymentApplications'),
         ];
     }
@@ -58,7 +58,8 @@ class ARInvoiceSchema extends Schema
         return [
             WhereIdIn::make($this),
             \LaravelJsonApi\Eloquent\Filters\Where::make('invoice_number'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('customer_id'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('contact_id'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('sales_order_id'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('currency'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('status'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('journal_entry_id'),
@@ -69,7 +70,8 @@ class ARInvoiceSchema extends Schema
     public function includePaths(): array
     {
         return [
-            'customer',
+            'contact',
+            'salesOrder',
             'journalEntry',
             'paymentApplications',
         ];

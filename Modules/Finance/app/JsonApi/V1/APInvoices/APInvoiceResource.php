@@ -12,7 +12,8 @@ class APInvoiceResource extends JsonApiResource
             'invoiceNumber' => $this->invoice_number,
             'invoiceDate' => $this->invoice_date,
             'dueDate' => $this->due_date,
-            'supplierId' => $this->supplier_id,
+            'contactId' => $this->contact_id,
+            'purchaseOrderId' => $this->purchase_order_id,
             'currency' => $this->currency,
             'subtotal' => $this->subtotal,
             'taxAmount' => $this->tax_amount,
@@ -31,7 +32,8 @@ class APInvoiceResource extends JsonApiResource
     public function relationships($request): iterable
     {
         return [
-            // 'supplier' => $this->relation('supplier'), // TODO: Uncomment when Supplier model is implemented
+            'contact' => $this->relation('contact'),
+            'purchaseOrder' => $this->relation('purchaseOrder'),
             'journalEntry' => $this->relation('journalEntry'),
         ];
     }

@@ -26,11 +26,11 @@ class PaymentMethodUpdateTest extends TestCase
         ])->patch("/api/v1/payment-methods/{$pm->id}")->assertOk();
     }
 
-    public function test_admin_can_update_PaymentMethod_metadata(): void
+    public function test_admin_can_update_PaymentMethod_code(): void
     {
         $pm = PaymentMethod::factory()->create();
         $this->actingAs($this->getAdminUser(), 'sanctum')->jsonApi()->expects('payment-methods')->withData([
-            'type' => 'payment-methods', 'id' => (string) $pm->id, 'attributes' => ['metadata' => ['test' => 'val']]
+            'type' => 'payment-methods', 'id' => (string) $pm->id, 'attributes' => ['code' => 'NEWCODE']
         ])->patch("/api/v1/payment-methods/{$pm->id}")->assertOk();
     }
 

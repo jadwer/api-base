@@ -87,22 +87,10 @@ class PurchaseOrderItemStoreTest extends TestCase
         $data = [
             'type' => 'purchase-order-items',
             'attributes' => [
+                'purchaseOrderId' => $purchaseOrder->id,
+                'productId' => $product->id,
                 'quantity' => 10,
                 'unitPrice' => 25.50,
-            ],
-            'relationships' => [
-                'purchaseOrder' => [
-                    'data' => [
-                        'type' => 'purchase-orders',
-                        'id' => (string) $purchaseOrder->id,
-                    ],
-                ],
-                'product' => [
-                    'data' => [
-                        'type' => 'products',
-                        'id' => (string) $product->id,
-                    ],
-                ],
             ],
         ];
 
@@ -347,22 +335,10 @@ class PurchaseOrderItemStoreTest extends TestCase
         $data = [
             'type' => 'purchase-order-items',
             'attributes' => [
+                'purchaseOrderId' => $purchaseOrder->id,
+                'productId' => $product->id,
                 'quantity' => 10,
                 'unitPrice' => 25.50,
-            ],
-            'relationships' => [
-                'purchaseOrder' => [
-                    'data' => [
-                        'type' => 'purchase-orders',
-                        'id' => (string) $purchaseOrder->id,
-                    ],
-                ],
-                'product' => [
-                    'data' => [
-                        'type' => 'products',
-                        'id' => (string) $product->id,
-                    ],
-                ],
             ],
         ];
 
@@ -379,22 +355,10 @@ class PurchaseOrderItemStoreTest extends TestCase
         $data = [
             'type' => 'purchase-order-items',
             'attributes' => [
+                'purchaseOrderId' => $purchaseOrder->id,
+                'productId' => $product->id,
                 'quantity' => 10,
                 'unitPrice' => 25.50,
-            ],
-            'relationships' => [
-                'purchaseOrder' => [
-                    'data' => [
-                        'type' => 'purchase-orders',
-                        'id' => (string) $purchaseOrder->id,
-                    ],
-                ],
-                'product' => [
-                    'data' => [
-                        'type' => 'products',
-                        'id' => (string) $product->id,
-                    ],
-                ],
             ],
         ];
 

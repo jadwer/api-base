@@ -27,7 +27,7 @@ class PaymentSchema extends Schema
             
             Str::make('paymentNumber')->sortable(),
             DateTime::make('paymentDate')->sortable(),
-            Number::make('customerId')->sortable(),
+            Number::make('contactId')->sortable(),
             Number::make('bankAccountId')->sortable(),
             Number::make('paymentMethodId')->sortable(),
             Number::make('amount')->sortable(),
@@ -46,14 +46,10 @@ class PaymentSchema extends Schema
             DateTime::make('updatedAt')->sortable()->readOnly(),
 
             // Relationships
-            BelongsTo::make('customer'),
-            // Relationships
+            BelongsTo::make('contact'),
             BelongsTo::make('bankAccount'),
-            // Relationships
             BelongsTo::make('paymentMethod'),
-            // Relationships
             BelongsTo::make('journalEntry'),
-            // Relationships
             HasMany::make('paymentApplications'),
         ];
     }
@@ -63,7 +59,7 @@ class PaymentSchema extends Schema
         return [
             WhereIdIn::make($this),
             \LaravelJsonApi\Eloquent\Filters\Where::make('payment_number'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('customer_id'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('contact_id'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('bank_account_id'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('payment_method_id'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('currency'),
@@ -77,7 +73,7 @@ class PaymentSchema extends Schema
     public function includePaths(): array
     {
         return [
-            'customer',
+            'contact',
             'bankAccount',
             'paymentMethod',
             'journalEntry',

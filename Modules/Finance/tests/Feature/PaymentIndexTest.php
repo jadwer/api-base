@@ -43,7 +43,7 @@ class PaymentIndexTest extends TestCase
                     'attributes' => [
                         'paymentNumber',
                         'paymentDate',
-                        'customerId',
+                        'contactId',
                         'bankAccountId',
                         'paymentMethodId',
                         'amount',

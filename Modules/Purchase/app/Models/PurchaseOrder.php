@@ -12,6 +12,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Modules\Purchase\Database\Factories\PurchaseOrderFactory;
 use Modules\Contacts\Models\Contact;
+use Modules\Finance\Models\APInvoice;
 
 class PurchaseOrder extends Model
 {
@@ -38,6 +39,7 @@ class PurchaseOrder extends Model
             'total_amount' => 'float',
             'ap_invoice_id' => 'integer',
             'invoicing_status' => 'string',
+            'financial_status' => 'string',
         ];
     }
 
@@ -87,6 +89,14 @@ class PurchaseOrder extends Model
     public function purchaseOrderItems(): HasMany
     {
         return $this->hasMany(PurchaseOrderItem::class);
+    }
+
+    /**
+     * Get the AP invoice for this purchase order.
+     */
+    public function apInvoice(): BelongsTo
+    {
+        return $this->belongsTo(APInvoice::class, 'ap_invoice_id');
     }
 
     // ========== SCOPES ==========

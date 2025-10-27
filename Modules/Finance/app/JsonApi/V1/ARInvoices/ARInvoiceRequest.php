@@ -4,18 +4,30 @@ namespace Modules\Finance\JsonApi\V1\ARInvoices;
 
 use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
 use Illuminate\Validation\Rule;
+use Modules\Contacts\Models\Contact;
 
 class ARInvoiceRequest extends ResourceRequest
 {
     public function rules(): array
     {
         $arinvoice = $this->model();
-        
+
         return [
             'invoiceNumber' => ['required', 'string', 'max:255', Rule::unique('ar_invoices', 'invoice_number')->ignore($arinvoice?->id)],
             'invoiceDate' => ['required', 'date'],
             'dueDate' => ['required', 'date'],
-            'customerId' => ['required', 'integer'],
+            'contactId' => [
+                'required',
+                'integer',
+                'exists:contacts,id',
+                function ($attribute, $value, $fail) {
+                    $contact = Contact::find($value);
+                    if (!$contact || !$contact->is_customer) {
+                        $fail('El contacto debe ser un cliente válido (is_customer = true).');
+                    }
+                }
+            ],
+            'salesOrderId' => ['nullable', 'integer'],
             'currency' => ['nullable', 'string', 'max:255'],
             'subtotal' => ['required', 'numeric'],
             'taxAmount' => ['required', 'numeric'],
@@ -37,7 +49,8 @@ class ARInvoiceRequest extends ResourceRequest
             'invoiceNumber.unique' => 'Este Invoice number ya está en uso.',
             'invoiceDate.date' => 'El campo Invoice date debe ser una fecha válida.',
             'dueDate.date' => 'El campo Due date debe ser una fecha válida.',
-            'customerId.integer' => 'El campo Customer id debe ser un número entero.',
+            'contactId.integer' => 'El campo Contact id debe ser un número entero.',
+            'salesOrderId.integer' => 'El campo Sales order id debe ser un número entero.',
             'currency.string' => 'El campo Currency debe ser texto.',
             'currency.max' => 'El campo Currency no puede tener más de 255 caracteres.',
             'subtotal.numeric' => 'El campo Subtotal debe ser un número.',

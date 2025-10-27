@@ -51,7 +51,7 @@ class PaymentApplicationSchema extends Schema
             WhereIdIn::make($this),
             \LaravelJsonApi\Eloquent\Filters\Where::make('payment_id'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('ar_invoice_id'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('is_active', 'isActive'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('isActive', 'is_active'),
         ];
     }
 

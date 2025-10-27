@@ -118,7 +118,7 @@ class PurchaseOrderItemIndexTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('purchase-order-items')
-            ->get("/api/v1/purchase-order-items?filter[purchaseOrder]={$purchaseOrder1->id}");
+            ->get("/api/v1/purchase-order-items?filter[purchaseOrderId]={$purchaseOrder1->id}");
 
         $response->assertOk();
         $this->assertGreaterThanOrEqual(2, count($response->json('data')));

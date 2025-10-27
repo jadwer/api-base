@@ -13,11 +13,16 @@ class JournalLineSeeder extends Seeder
     public function run(): void
     {
         $this->command->info('🌱 Seeding JournalLine...');
-        
-        // Create sample JournalLine records
-        JournalLine::factory()->count(10)->create();
 
-        
-        $this->command->info('✅ JournalLine seeded successfully!');
+        // NOTE: JournalLine seeding is skipped because the factory creates individual lines
+        // that don't satisfy the chk_balanced_entry constraint (debits != credits per entry).
+        // JournalLines should be created as part of complete JournalEntry creation
+        // with balanced debit/credit pairs.
+
+        // Create sample JournalLine records
+        // JournalLine::factory()->count(10)->create(); // Temporarily disabled
+
+
+        $this->command->info('✅ JournalLine seeded successfully (skipped - requires balanced entries)!');
     }
 }

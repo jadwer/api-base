@@ -12,7 +12,8 @@ class ARInvoiceResource extends JsonApiResource
             'invoiceNumber' => $this->invoice_number,
             'invoiceDate' => $this->invoice_date,
             'dueDate' => $this->due_date,
-            'customerId' => $this->customer_id,
+            'contactId' => $this->contact_id,
+            'salesOrderId' => $this->sales_order_id,
             'currency' => $this->currency,
             'subtotal' => $this->subtotal,
             'taxAmount' => $this->tax_amount,
@@ -31,10 +32,10 @@ class ARInvoiceResource extends JsonApiResource
     public function relationships($request): iterable
     {
         return [
-            'customer' => $this->relation('customer'),
+            'contact' => $this->relation('contact'),
+            'salesOrder' => $this->relation('salesOrder'),
             'journalEntry' => $this->relation('journalEntry'),
             'paymentApplications' => $this->relation('paymentApplications'),
-            'paymentApplication' => $this->relation('paymentApplication'),
         ];
     }
 }

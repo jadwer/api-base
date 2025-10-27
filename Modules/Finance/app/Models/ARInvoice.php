@@ -7,15 +7,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Permission\Traits\HasPermissions;
 use Modules\Accounting\Models\JournalEntry;
 use Modules\Contacts\Models\Contact;
+use Modules\Sales\Models\SalesOrder;
 
 class ARInvoice extends Model
 {
     use HasFactory, HasPermissions;
 
     protected $table = 'ar_invoices';
-    
+
     protected $fillable = [
-        'invoice_number', 'invoice_date', 'due_date', 'customer_id', 'currency', 'subtotal', 'tax_amount', 'total_amount', 'paid_amount', 'status', 'journal_entry_id', 'notes', 'metadata', 'is_active'
+        'invoice_number', 'invoice_date', 'due_date', 'contact_id', 'sales_order_id', 'currency', 'subtotal', 'tax_amount', 'total_amount', 'paid_amount', 'status', 'journal_entry_id', 'notes', 'metadata', 'is_active'
     ];
 
     protected $casts = [
@@ -36,9 +37,14 @@ class ARInvoice extends Model
     }
 
 
-    public function customer()
+    public function contact()
     {
-        return $this->belongsTo(Contact::class, 'customer_id');
+        return $this->belongsTo(Contact::class, 'contact_id');
+    }
+
+    public function salesOrder()
+    {
+        return $this->belongsTo(SalesOrder::class, 'sales_order_id');
     }
 
     public function journalEntry()
@@ -49,6 +55,12 @@ class ARInvoice extends Model
     public function paymentApplications()
     {
         return $this->hasMany(PaymentApplication::class);
+    }
+
+    // Legacy alias for backward compatibility
+    public function customer()
+    {
+        return $this->contact();
     }
 
     // Factory

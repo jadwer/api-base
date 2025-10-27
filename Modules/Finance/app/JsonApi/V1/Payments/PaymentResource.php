@@ -11,7 +11,7 @@ class PaymentResource extends JsonApiResource
         return [
             'paymentNumber' => $this->payment_number,
             'paymentDate' => $this->payment_date,
-            'customerId' => $this->customer_id,
+            'contactId' => $this->contact_id,
             'bankAccountId' => $this->bank_account_id,
             'paymentMethodId' => $this->payment_method_id,
             'amount' => $this->amount,
@@ -32,7 +32,7 @@ class PaymentResource extends JsonApiResource
     public function relationships($request): iterable
     {
         return [
-            'customer' => $this->relation('customer'),
+            'contact' => $this->relation('customer'),
             'bankAccount' => $this->relation('bankAccount'),
             'paymentMethod' => $this->relation('paymentMethod'),
             'journalEntry' => $this->relation('journalEntry'),

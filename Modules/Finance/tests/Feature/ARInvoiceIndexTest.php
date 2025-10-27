@@ -44,7 +44,7 @@ class ARInvoiceIndexTest extends TestCase
                         'invoiceNumber',
                         'invoiceDate',
                         'dueDate',
-                        'customerId',
+                        'contactId',
                         'currency',
                         'subtotal',
                         'taxAmount',

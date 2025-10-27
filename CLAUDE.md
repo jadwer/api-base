@@ -7,32 +7,44 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### **NEVER MAKE COMMITS AUTOMATICALLY** ⚠️
 Claude Code MUST NEVER execute git commit commands automatically. Always provide only the commit message text for the user to execute manually. This prevents loss of work and maintains user control over the git repository.
 
+**COMMIT MESSAGE RULES:**
+- NEVER use emojis in commit messages
+- NEVER add "Generated with Claude Code" or similar credits
+- NEVER add "Co-Authored-By: Claude" footers
+- Keep commit messages professional and clean
+
 ### **MODULE REGENERATION POLICY** ⚠️
 **Modules should NOT be regenerated unless explicitly specified.** Always ask the user whether to regenerate or modify existing modules when considering structural changes. Prefer modification over regeneration for working modules.
 
 ### **PHASE PROGRESSION GATE** ⚠️
 **DO NOT ADVANCE TO PHASE 3 UNTIL PHASE 1 AND PHASE 2 HAVE 100% TESTS PASSING.**
 
-**Current Phase Status (Updated 2025-10-26):**
-- **Phase 1 (Accounting):** ✅ 90% complete - Business logic 100% functional, tests pendientes no-críticos
-- **Phase 2 (Finance Integration):** ✅ 97% complete - 3 tests requieren Phase 2 features
-- **Phase 3:** ⚠️ READY TO START - Finance & Accounting modules base completados
+**Current Phase Status (Updated 2025-10-27):**
+- **Phase 1 (Accounting):** ✅ ~95% complete - Core functionality stable, pending test suite validation
+- **Phase 2 (Finance Integration):** ✅ DATABASE CORRECTIONS COMPLETED
+- **Phase 3:** 🔄 READY TO START - All database inconsistencies resolved
 
-**Recent Progress (2025-10-26):**
-- ✅ FASE 2 Finance module test fixes sprint completed
-- ✅ Fixed ARInvoiceUpdateTest (snake_case assertDatabaseHas)
-- ✅ Fixed PaymentMethodDestroyTest & PaymentMethodStoreTest (metadata cleanup)
-- ✅ Contact model integration validated (Payment uses Contact, not Customer)
-- ✅ Factory optimizations (unique constraints, contact validations)
-- ⚠️ 3 tests pending Phase 2 features (PaymentApplicationIndexTest, BankAccountStoreTest, PaymentApplicationIntegrationTest)
+**Recent Progress (2025-10-27) - MAJOR DATABASE CORRECTIONS:**
+- ✅ **DATABASE SCHEMA UNIFIED:** Party Pattern implementation completed
+- ✅ **Migration Created & Executed:** `fix_finance_contact_references` (MySQL + SQLite compatible)
+- ✅ **All Finance Models Updated:** ARInvoice, APInvoice, Payment (contact_id unified)
+- ✅ **All Schemas Updated:** JSON:API field mappings corrected (contactId)
+- ✅ **All Resources Updated:** Proper attribute output
+- ✅ **All Requests Updated:** Validation rules with is_customer/is_supplier checks
+- ✅ **All Factories Updated:** Contact::factory()->customer()/supplier()
+- ✅ **All Tests Updated:** ~11 test files corrected to use contact_id
+- ✅ **PurchaseOrder Enhanced:** Added financial_status + ap_invoice_id fields
+- ✅ **Documentation Updated:** DATABASE_SCHEMA_REFERENCE.md reflects current state
 
 **Critical Documents:**
+- **🔴 DATABASE SCHEMA REFERENCE:** `docs/DATABASE_SCHEMA_REFERENCE.md` **← READ FIRST ALWAYS**
 - Main roadmap: `PROJECT_ACTION_PLAN.md`
-- Finance issues: `docs/development/FINANCE_MODULE_ISSUES.md`
 - Testing guide: `TESTING_GUIDE.md`
 - Phase 2 finance: `docs/roadmaps/phases/PHASE_2_FINANCE.md`
+- Phase 3 testing: `docs/development/PHASE3_TESTING_STRATEGY.md`
+- Module blueprint: `docs/development/module-blueprint-master.md`
 
-**ALWAYS** consult these documents before continuing work on Accounting or Finance modules.
+**ALWAYS** consult `DATABASE_SCHEMA_REFERENCE.md` FIRST before ANY database/model work.
 
 ## Project Overview
 

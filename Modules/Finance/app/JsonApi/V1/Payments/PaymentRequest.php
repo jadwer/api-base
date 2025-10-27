@@ -4,17 +4,30 @@ namespace Modules\Finance\JsonApi\V1\Payments;
 
 use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
 use Illuminate\Validation\Rule;
+use Modules\Contacts\Models\Contact;
 
 class PaymentRequest extends ResourceRequest
 {
     public function rules(): array
     {
         $payment = $this->model();
-        
+
         return [
             'paymentNumber' => ['nullable', 'string', 'max:255', Rule::unique('payments', 'payment_number')->ignore($payment?->id)],
             'paymentDate' => ['nullable', 'date'],
-            'customerId' => ['nullable', 'integer'],
+            'contactId' => [
+                'nullable',
+                'integer',
+                'exists:contacts,id',
+                function ($attribute, $value, $fail) {
+                    if ($value) {
+                        $contact = Contact::find($value);
+                        if (!$contact || !$contact->is_customer) {
+                            $fail('El contacto debe ser un cliente válido (is_customer = true).');
+                        }
+                    }
+                }
+            ],
             'bankAccountId' => ['nullable', 'integer'],
             'paymentMethodId' => ['nullable', 'integer'],
             'amount' => ['nullable', 'numeric'],
@@ -37,7 +50,7 @@ class PaymentRequest extends ResourceRequest
             'paymentNumber.max' => 'El campo Payment number no puede tener más de 255 caracteres.',
             'paymentNumber.unique' => 'Este Payment number ya está en uso.',
             'paymentDate.date' => 'El campo Payment date debe ser una fecha válida.',
-            'customerId.integer' => 'El campo Customer id debe ser un número entero.',
+            'contactId.integer' => 'El campo Contact id debe ser un número entero.',
             'bankAccountId.integer' => 'El campo Bank account id debe ser un número entero.',
             'paymentMethodId.integer' => 'El campo Payment method id debe ser un número entero.',
             'amount.numeric' => 'El campo Amount debe ser un número.',

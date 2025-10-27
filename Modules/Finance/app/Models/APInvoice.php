@@ -6,16 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Permission\Traits\HasPermissions;
 use Modules\Accounting\Models\JournalEntry;
-// use Modules\Purchase\Models\Supplier; // TODO: Uncomment when Supplier model is implemented
+use Modules\Contacts\Models\Contact;
+use Modules\Purchase\Models\PurchaseOrder;
 
 class APInvoice extends Model
 {
     use HasFactory, HasPermissions;
 
     protected $table = 'ap_invoices';
-    
+
     protected $fillable = [
-        'invoice_number', 'invoice_date', 'due_date', 'supplier_id', 'currency', 'subtotal', 'tax_amount', 'total_amount', 'paid_amount', 'status', 'journal_entry_id', 'notes', 'metadata', 'is_active'
+        'invoice_number', 'invoice_date', 'due_date', 'contact_id', 'purchase_order_id', 'currency', 'subtotal', 'tax_amount', 'total_amount', 'paid_amount', 'status', 'journal_entry_id', 'notes', 'metadata', 'is_active'
     ];
 
     protected $casts = [
@@ -35,15 +36,25 @@ class APInvoice extends Model
         return $query->where('is_active', true);
     }
 
-    // TODO: Uncomment when Supplier model is implemented
-    // public function supplier()
-    // {
-    //     return $this->belongsTo(Supplier::class);
-    // }
+    public function contact()
+    {
+        return $this->belongsTo(Contact::class, 'contact_id');
+    }
+
+    public function purchaseOrder()
+    {
+        return $this->belongsTo(PurchaseOrder::class, 'purchase_order_id');
+    }
 
     public function journalEntry()
     {
         return $this->belongsTo(JournalEntry::class);
+    }
+
+    // Legacy alias for backward compatibility
+    public function supplier()
+    {
+        return $this->contact();
     }
 
     // Factory

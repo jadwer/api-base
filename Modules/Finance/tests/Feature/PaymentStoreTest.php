@@ -17,7 +17,7 @@ class PaymentStoreTest extends TestCase
         $paymentMethod = PaymentMethod::factory()->create();
         $this->actingAs($this->getAdminUser(), 'sanctum')->jsonApi()->expects('payments')->withData([
             'type' => 'payments',
-            'attributes' => ['customerId' => $contact->id, 'bankAccountId' => $bankAccount->id, 'paymentMethodId' => $paymentMethod->id, 'amount' => 99.99, 'paymentNumber' => 'PAY-' . time(), 'paymentDate' => '2024-01-01', 'isActive' => true]
+            'attributes' => ['contactId' => $contact->id, 'bankAccountId' => $bankAccount->id, 'paymentMethodId' => $paymentMethod->id, 'amount' => 99.99, 'paymentNumber' => 'PAY-' . time(), 'paymentDate' => '2024-01-01', 'isActive' => true]
         ])->post('/api/v1/payments')->assertCreated();
     }
 
@@ -28,7 +28,7 @@ class PaymentStoreTest extends TestCase
         $paymentMethod = PaymentMethod::factory()->create();
         $this->actingAs($this->getAdminUser(), 'sanctum')->jsonApi()->expects('payments')->withData([
             'type' => 'payments',
-            'attributes' => ['customerId' => $contact->id, 'bankAccountId' => $bankAccount->id, 'paymentMethodId' => $paymentMethod->id, 'amount' => 100.00, 'paymentNumber' => 'PAY-' . time(), 'paymentDate' => '2024-01-01', 'isActive' => true]
+            'attributes' => ['contactId' => $contact->id, 'bankAccountId' => $bankAccount->id, 'paymentMethodId' => $paymentMethod->id, 'amount' => 100.00, 'paymentNumber' => 'PAY-' . time(), 'paymentDate' => '2024-01-01', 'isActive' => true]
         ])->post('/api/v1/payments')->assertCreated();
     }
 

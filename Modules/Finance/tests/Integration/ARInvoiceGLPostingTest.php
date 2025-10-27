@@ -34,7 +34,7 @@ class ARInvoiceGLPostingTest extends TestCase
         $invoice = $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->format('Y-m-d'),
             'dueDate' => now()->addDays(30)->format('Y-m-d'),
-            'customerId' => $customer->id,
+            'contactId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
             'taxAmount' => 160.00,
@@ -65,7 +65,7 @@ class ARInvoiceGLPostingTest extends TestCase
         $invoice = $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->format('Y-m-d'),
             'dueDate' => now()->addDays(30)->format('Y-m-d'),
-            'customerId' => $customer->id,
+            'contactId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
             'taxAmount' => 160.00,
@@ -97,7 +97,7 @@ class ARInvoiceGLPostingTest extends TestCase
         $invoice = $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->format('Y-m-d'),
             'dueDate' => now()->addDays(30)->format('Y-m-d'),
-            'customerId' => $customer->id,
+            'contactId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
             'taxAmount' => 160.00,
@@ -128,7 +128,7 @@ class ARInvoiceGLPostingTest extends TestCase
         $invoice = $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->format('Y-m-d'),
             'dueDate' => now()->addDays(30)->format('Y-m-d'),
-            'customerId' => $customer->id,
+            'contactId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
             'taxAmount' => 160.00,
@@ -162,7 +162,7 @@ class ARInvoiceGLPostingTest extends TestCase
         $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->format('Y-m-d'),
             'dueDate' => now()->addDays(30)->format('Y-m-d'),
-            'customerId' => $customer->id,
+            'contactId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
             'taxAmount' => 160.00,
@@ -179,7 +179,7 @@ class ARInvoiceGLPostingTest extends TestCase
         $invoice1 = $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->format('Y-m-d'),
             'dueDate' => now()->addDays(30)->format('Y-m-d'),
-            'customerId' => $customer->id,
+            'contactId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
             'taxAmount' => 160.00,
@@ -189,7 +189,7 @@ class ARInvoiceGLPostingTest extends TestCase
         $invoice2 = $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->addMonth()->format('Y-m-d'),
             'dueDate' => now()->addMonth()->addDays(30)->format('Y-m-d'),
-            'customerId' => $customer->id,
+            'contactId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 2000.00,
             'taxAmount' => 320.00,
@@ -199,7 +199,7 @@ class ARInvoiceGLPostingTest extends TestCase
         $invoice3 = $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->addMonths(2)->format('Y-m-d'),
             'dueDate' => now()->addMonths(2)->addDays(30)->format('Y-m-d'),
-            'customerId' => $customer->id,
+            'contactId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 500.00,
             'taxAmount' => 80.00,
@@ -226,7 +226,7 @@ class ARInvoiceGLPostingTest extends TestCase
         $invoice = $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->format('Y-m-d'),
             'dueDate' => now()->addDays(30)->format('Y-m-d'),
-            'customerId' => $customer->id,
+            'contactId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 1000.00,
             'taxAmount' => 160.00,

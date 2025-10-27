@@ -28,6 +28,8 @@ class JournalSeeder extends Seeder
                 ['code' => $journalData['code']],
                 [
                     'name' => $journalData['name'],
+                    'prefix' => $journalData['code'],
+                    'type' => 'general',
                     'description' => $journalData['description'],
                     'status' => 'active',
                     'metadata' => ['created_by' => 'JournalSeeder'],

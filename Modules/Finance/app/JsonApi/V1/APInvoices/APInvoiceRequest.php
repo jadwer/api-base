@@ -4,6 +4,7 @@ namespace Modules\Finance\JsonApi\V1\APInvoices;
 
 use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
 use Illuminate\Validation\Rule;
+use Modules\Contacts\Models\Contact;
 
 class APInvoiceRequest extends ResourceRequest
 {
@@ -15,7 +16,18 @@ class APInvoiceRequest extends ResourceRequest
             'invoiceNumber' => ['required', 'string', 'max:255', Rule::unique('ap_invoices', 'invoice_number')->ignore($apinvoice?->id)],
             'invoiceDate' => ['required', 'date'],
             'dueDate' => ['required', 'date'],
-            'supplierId' => ['required', 'integer'],
+            'contactId' => [
+                'required',
+                'integer',
+                'exists:contacts,id',
+                function ($attribute, $value, $fail) {
+                    $contact = Contact::find($value);
+                    if (!$contact || !$contact->is_supplier) {
+                        $fail('El contacto debe ser un proveedor válido (is_supplier = true).');
+                    }
+                }
+            ],
+            'purchaseOrderId' => ['nullable', 'integer'],
             'currency' => ['nullable', 'string', 'max:255'],
             'subtotal' => ['required', 'numeric'],
             'taxAmount' => ['required', 'numeric'],
@@ -37,7 +49,8 @@ class APInvoiceRequest extends ResourceRequest
             'invoiceNumber.unique' => 'Este Invoice number ya está en uso.',
             'invoiceDate.date' => 'El campo Invoice date debe ser una fecha válida.',
             'dueDate.date' => 'El campo Due date debe ser una fecha válida.',
-            'supplierId.integer' => 'El campo Supplier id debe ser un número entero.',
+            'contactId.integer' => 'El campo Contact id debe ser un número entero.',
+            'purchaseOrderId.integer' => 'El campo Purchase order id debe ser un número entero.',
             'currency.string' => 'El campo Currency debe ser texto.',
             'currency.max' => 'El campo Currency no puede tener más de 255 caracteres.',
             'subtotal.numeric' => 'El campo Subtotal debe ser un número.',

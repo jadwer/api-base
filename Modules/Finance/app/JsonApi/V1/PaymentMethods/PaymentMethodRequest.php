@@ -11,9 +11,11 @@ class PaymentMethodRequest extends ResourceRequest
     {
         $paymentmethod = $this->model();
         
+        $isUpdate = $paymentmethod && $paymentmethod->exists;
+
         return [
             'code' => ['nullable', 'string', 'max:255', Rule::unique('payment_methods')->ignore($paymentmethod?->id)],
-            'name' => ['nullable', 'string', 'max:255'],
+            'name' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'type' => ['nullable', 'string', 'max:255'],
             'requiresReference' => ['nullable', 'boolean'],
             'isActive' => ['nullable', 'boolean'],

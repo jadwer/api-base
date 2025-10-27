@@ -5,6 +5,7 @@ namespace Modules\Finance\Tests\Feature;
 use Tests\TestCase;
 use Modules\User\Models\User;
 use Modules\Finance\Models\ARInvoice;
+use Modules\Contacts\Models\Contact;
 
 class ARInvoiceStoreTest extends TestCase
 {
@@ -26,6 +27,7 @@ class ARInvoiceStoreTest extends TestCase
     public function test_admin_can_create_ARInvoice(): void
     {
         $admin = $this->getAdminUser();
+        $customer = Contact::factory()->customer()->create();
 
         $data = [
             'type' => 'ar-invoices',
@@ -33,7 +35,7 @@ class ARInvoiceStoreTest extends TestCase
                 'invoiceNumber' => 'INV-AR-001',
                 'invoiceDate' => '2024-01-01',
                 'dueDate' => '2024-01-31',
-                'customerId' => 1, // Dummy customer ID (Sales module)
+                'contactId' => $customer->id,
                 'currency' => 'USD',
                 'subtotal' => 100.00,
                 'taxAmount' => 16.00,
@@ -56,7 +58,7 @@ class ARInvoiceStoreTest extends TestCase
 
         $this->assertDatabaseHas('ar_invoices', [
             'invoice_number' => 'INV-AR-001',
-            'customer_id' => 1,
+            'contact_id' => $customer->id,
             'currency' => 'USD',
             'status' => 'pending',
             'is_active' => true
@@ -73,7 +75,7 @@ class ARInvoiceStoreTest extends TestCase
                 'invoiceNumber' => 'INV-MIN-AR-001',
                 'invoiceDate' => '2024-01-01',
                 'dueDate' => '2024-01-31',
-                'customerId' => 1,
+                'contactId' => 1,
                 'subtotal' => 100.00,
                 'taxAmount' => 16.00,
                 'totalAmount' => 116.00,
@@ -98,7 +100,7 @@ class ARInvoiceStoreTest extends TestCase
             'type' => 'ar-invoices',
             'attributes' => [
                 'invoiceNumber' => 'INV-UNAUTH',
-                'customerId' => 1, // Dummy customer ID
+                'contactId' => 1, // Dummy customer ID
                 'isActive' => true
             ]
         ];
