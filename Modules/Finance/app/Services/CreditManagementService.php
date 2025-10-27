@@ -91,11 +91,19 @@ class CreditManagementService
     /**
      * Calculate payment score (percentage of on-time payments)
      *
+     * NOTE: Currently returns 100% for all customers. Full implementation requires
+     * adding 'paid_date' field to ar_invoices table to track actual payment dates.
+     *
      * @param Contact $contact
      * @return float
      */
     public function calculatePaymentScore(Contact $contact): float
     {
+        // TODO: Add 'paid_date' field to ar_invoices migration for accurate payment scoring
+        // For now, return 100% (good standing) for all customers
+        return 100.0;
+
+        /* Full implementation (requires paid_date field):
         $totalInvoices = ARInvoice::where('contact_id', $contact->id)
             ->where('status', 'paid')
             ->where('is_active', true)
@@ -113,6 +121,7 @@ class CreditManagementService
             ->count();
 
         return round(($onTimePayments / $totalInvoices) * 100, 2);
+        */
     }
 
     /**
