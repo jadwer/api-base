@@ -4,10 +4,12 @@ namespace Modules\Finance\Services;
 
 use Modules\Finance\Models\ARInvoice;
 use Modules\Finance\Events\ARInvoicePosted;
+use Modules\Finance\Services\CreditManagementService;
 use Modules\Accounting\Models\JournalEntry;
 use Modules\Accounting\Models\JournalLine;
 use Modules\Accounting\Models\Account;
 use Modules\Accounting\Services\AccountingService;
+use Modules\Contacts\Models\Contact;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -25,7 +27,8 @@ use Illuminate\Support\Facades\Log;
 class ARInvoiceService
 {
     public function __construct(
-        private AccountingService $accountingService
+        private AccountingService $accountingService,
+        private CreditManagementService $creditManagementService
     ) {}
 
     /**
@@ -38,6 +41,12 @@ class ARInvoiceService
     public function createInvoice(array $data): ARInvoice
     {
         return DB::transaction(function () use ($data) {
+            // 0. Validate customer credit (if enabled)
+            if (config('finance.credit_validation_enabled', true)) {
+                $contact = Contact::findOrFail($data['contactId']);
+                $this->creditManagementService->validateCustomerCredit($contact, $data['totalAmount']);
+            }
+
             // 1. Validar que existan las cuentas GL requeridas
             $customerAccount = Account::where('code', '1100')->where('is_postable', true)->first();
             $revenueAccount = Account::where('code', '4100')->where('is_postable', true)->first();
