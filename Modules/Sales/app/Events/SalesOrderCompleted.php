@@ -2,11 +2,16 @@
 
 namespace Modules\Sales\Events;
 
+use Modules\Sales\Models\SalesOrder;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Modules\Sales\Models\SalesOrder;
 
+/**
+ * SalesOrderCompleted Event
+ *
+ * Triggered when a Sales Order is completed and ready for invoicing
+ */
 class SalesOrderCompleted
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;

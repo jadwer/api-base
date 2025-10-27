@@ -3,6 +3,7 @@
 namespace Modules\Finance\Services;
 
 use Modules\Finance\Models\APInvoice;
+use Modules\Finance\Events\APInvoicePosted;
 use Modules\Accounting\Models\Account;
 use Modules\Accounting\Services\AccountingService;
 use Illuminate\Support\Facades\DB;
@@ -100,6 +101,9 @@ class APInvoiceService
                     'amount' => $data['totalAmount'],
                 ]);
 
+                // 6. Dispatch event for listeners (status sync, etc.)
+                event(new APInvoicePosted($invoice));
+
             } catch (\Exception $e) {
                 Log::error("Failed to create GL entry for AP Invoice", [
                     'invoice_number' => $invoiceNumber,
@@ -108,7 +112,7 @@ class APInvoiceService
                 throw new \Exception("Failed to create GL entry: " . $e->getMessage());
             }
 
-            // 6. Retornar invoice con relaciones cargadas
+            // 7. Retornar invoice con relaciones cargadas
             return $invoice->fresh(['journalEntry', 'contact']);
         });
     }

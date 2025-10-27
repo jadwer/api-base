@@ -3,6 +3,7 @@
 namespace Modules\Finance\Services;
 
 use Modules\Finance\Models\ARInvoice;
+use Modules\Finance\Events\ARInvoicePosted;
 use Modules\Accounting\Models\JournalEntry;
 use Modules\Accounting\Models\JournalLine;
 use Modules\Accounting\Models\Account;
@@ -102,6 +103,9 @@ class ARInvoiceService
                     'amount' => $data['totalAmount'],
                 ]);
 
+                // 6. Dispatch event for listeners (status sync, etc.)
+                event(new ARInvoicePosted($invoice));
+
             } catch (\Exception $e) {
                 // Si falla el GL posting, loguear y re-lanzar
                 Log::error("Failed to create GL entry for AR Invoice", [
@@ -111,7 +115,7 @@ class ARInvoiceService
                 throw new \Exception("Failed to create GL entry: " . $e->getMessage());
             }
 
-            // 6. Retornar invoice con relaciones cargadas
+            // 7. Retornar invoice con relaciones cargadas
             return $invoice->fresh(['journalEntry', 'contact']);
         });
     }

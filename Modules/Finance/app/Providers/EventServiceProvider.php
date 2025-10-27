@@ -16,8 +16,18 @@ class EventServiceProvider extends ServiceProvider
         \Modules\Sales\Events\SalesOrderCompleted::class => [
             \Modules\Finance\Listeners\SalesOrderCompletedListener::class,
         ],
-        \Modules\Sales\Events\SalesOrderCancelled::class => [
-            \Modules\Finance\Listeners\SalesOrderCancelledListener::class,
+
+        // Purchase → Finance Integration
+        \Modules\Purchase\Events\PurchaseOrderReceived::class => [
+            \Modules\Finance\Listeners\PurchaseOrderReceivedListener::class,
+        ],
+
+        // Finance Internal Events
+        \Modules\Finance\Events\ARInvoicePosted::class => [
+            \Modules\Finance\Listeners\ARInvoicePostedListener::class,
+        ],
+        \Modules\Finance\Events\APInvoicePosted::class => [
+            \Modules\Finance\Listeners\APInvoicePostedListener::class,
         ],
     ];
 
