@@ -46,7 +46,7 @@ class JournalLineShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $journalLine = JournalLine::factory()->create(['debit' => 99.99, 'credit' => 99.99, 'description' => 'test description', 'reference' => 'test string', 'metadata' => 'test value']);
+        $journalLine = JournalLine::factory()->create(['debit' => 99.99, 'credit' => 0, 'description' => 'test description', 'reference' => 'test string', 'metadata' => ['test' => 'value']]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
