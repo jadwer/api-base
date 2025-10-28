@@ -14,13 +14,14 @@ class Contact extends Model
     protected $table = 'contacts';
     
     protected $fillable = [
-        'type', 'name', 'legal_name', 'tax_id', 'email', 'phone', 'website', 'status', 'is_customer', 'is_supplier', 'credit_limit', 'current_credit', 'classification', 'payment_terms', 'notes', 'metadata'
+        'type', 'name', 'legal_name', 'tax_id', 'email', 'phone', 'website', 'status', 'is_customer', 'is_supplier', 'credit_limit', 'minimum_payment_score', 'current_credit', 'classification', 'payment_terms', 'notes', 'metadata'
     ];
 
     protected $casts = [
         'is_customer' => 'boolean',
         'is_supplier' => 'boolean',
         'credit_limit' => 'float',
+        'minimum_payment_score' => 'float',
         'current_credit' => 'float',
         'metadata' => 'array'
     ];

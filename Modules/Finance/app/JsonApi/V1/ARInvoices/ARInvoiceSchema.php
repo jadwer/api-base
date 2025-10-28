@@ -35,6 +35,7 @@ class ARInvoiceSchema extends Schema
             Number::make('taxAmount')->sortable(),
             Number::make('totalAmount')->sortable(),
             Number::make('paidAmount')->sortable(),
+            DateTime::make('paidDate')->sortable(),
             Str::make('status')->sortable(),
             Number::make('journalEntryId')->sortable(),
             Str::make('notes'),

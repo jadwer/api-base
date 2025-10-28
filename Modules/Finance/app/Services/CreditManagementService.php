@@ -99,14 +99,10 @@ class CreditManagementService
      */
     public function calculatePaymentScore(Contact $contact): float
     {
-        // TODO: Add 'paid_date' field to ar_invoices migration for accurate payment scoring
-        // For now, return 100% (good standing) for all customers
-        return 100.0;
-
-        /* Full implementation (requires paid_date field):
         $totalInvoices = ARInvoice::where('contact_id', $contact->id)
             ->where('status', 'paid')
             ->where('is_active', true)
+            ->whereNotNull('paid_date')
             ->count();
 
         if ($totalInvoices === 0) {
@@ -117,11 +113,11 @@ class CreditManagementService
         $onTimePayments = ARInvoice::where('contact_id', $contact->id)
             ->where('status', 'paid')
             ->where('is_active', true)
+            ->whereNotNull('paid_date')
             ->whereRaw('paid_date <= due_date')
             ->count();
 
         return round(($onTimePayments / $totalInvoices) * 100, 2);
-        */
     }
 
     /**

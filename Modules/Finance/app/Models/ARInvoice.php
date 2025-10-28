@@ -16,12 +16,13 @@ class ARInvoice extends Model
     protected $table = 'ar_invoices';
 
     protected $fillable = [
-        'invoice_number', 'invoice_date', 'due_date', 'contact_id', 'sales_order_id', 'currency', 'subtotal', 'tax_amount', 'total_amount', 'paid_amount', 'status', 'journal_entry_id', 'notes', 'metadata', 'is_active'
+        'invoice_number', 'invoice_date', 'due_date', 'contact_id', 'sales_order_id', 'currency', 'subtotal', 'tax_amount', 'total_amount', 'paid_amount', 'paid_date', 'status', 'journal_entry_id', 'notes', 'metadata', 'is_active'
     ];
 
     protected $casts = [
-                'invoice_date' => 'date',
+        'invoice_date' => 'date',
         'due_date' => 'date',
+        'paid_date' => 'date',
         'subtotal' => 'float',
         'tax_amount' => 'float',
         'total_amount' => 'float',

@@ -90,9 +90,40 @@ class CreditManagementServiceTest extends TestCase
 
     public function test_blocks_customer_with_poor_payment_history(): void
     {
-        // SKIPPED: Payment history validation currently disabled (returns 100% for all)
-        // TODO: Re-enable when paid_date field is added to ar_invoices table
-        $this->markTestSkipped('Payment score validation requires paid_date field in ar_invoices');
+        $customer = Contact::factory()->customer()->create([
+            'credit_limit' => 10000,
+            'current_credit' => 0,
+            'minimum_payment_score' => 70,
+        ]);
+
+        // Create 5 paid invoices - 2 paid on time, 3 paid late
+        for ($i = 0; $i < 2; $i++) {
+            ARInvoice::factory()->create([
+                'contact_id' => $customer->id,
+                'total_amount' => 1000,
+                'paid_amount' => 1000,
+                'status' => 'paid',
+                'due_date' => now()->subDays(30),
+                'paid_date' => now()->subDays(30), // Paid on time
+            ]);
+        }
+
+        for ($i = 0; $i < 3; $i++) {
+            ARInvoice::factory()->create([
+                'contact_id' => $customer->id,
+                'total_amount' => 1000,
+                'paid_amount' => 1000,
+                'status' => 'paid',
+                'due_date' => now()->subDays(30),
+                'paid_date' => now()->subDays(20), // Paid late
+            ]);
+        }
+
+        // Payment score = 2/5 = 40% (below 70% threshold)
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Poor payment history');
+
+        $this->service->validateCustomerCredit($customer, 1000);
     }
 
     public function test_calculates_current_ar_balance_correctly(): void
@@ -148,9 +179,35 @@ class CreditManagementServiceTest extends TestCase
 
     public function test_calculates_payment_score_correctly(): void
     {
-        // SKIPPED: Payment history scoring currently returns 100% for all
-        // TODO: Re-enable when paid_date field is added to ar_invoices table
-        $this->markTestSkipped('Payment score calculation requires paid_date field in ar_invoices');
+        $customer = Contact::factory()->customer()->create();
+
+        // Create 10 paid invoices - 7 paid on time, 3 paid late
+        for ($i = 0; $i < 7; $i++) {
+            ARInvoice::factory()->create([
+                'contact_id' => $customer->id,
+                'total_amount' => 1000,
+                'paid_amount' => 1000,
+                'status' => 'paid',
+                'due_date' => now()->subDays(30),
+                'paid_date' => now()->subDays(30), // Paid on time
+            ]);
+        }
+
+        for ($i = 0; $i < 3; $i++) {
+            ARInvoice::factory()->create([
+                'contact_id' => $customer->id,
+                'total_amount' => 1000,
+                'paid_amount' => 1000,
+                'status' => 'paid',
+                'due_date' => now()->subDays(30),
+                'paid_date' => now()->subDays(20), // Paid 10 days late
+            ]);
+        }
+
+        $score = $this->service->calculatePaymentScore($customer);
+
+        // 7 on time out of 10 total = 70%
+        $this->assertEquals(70.0, $score);
     }
 
     public function test_new_customer_gets_perfect_payment_score(): void
