@@ -1,0 +1,379 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Entity Lifecycle State Machines" id="lifecycle-state-machines">
+    <mxGraphModel dx="1434" dy="844" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="2000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="&lt;b style=&quot;font-size:28px;&quot;&gt;Entity Lifecycle State Machines&lt;/b&gt;&lt;br&gt;&lt;br&gt;Complete state transition diagrams for 7 core entities with business rules" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="900" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend" value="&lt;b style=&quot;font-size:14px;&quot;&gt;LEGEND&lt;/b&gt;&lt;hr&gt;&lt;b style=&quot;color:#1976D2;&quot;&gt;●&lt;/b&gt; Normal State&lt;br&gt;&lt;b style=&quot;color:#4CAF50;&quot;&gt;●&lt;/b&gt; Start State&lt;br&gt;&lt;b style=&quot;color:#F44336;&quot;&gt;●&lt;/b&gt; Error/Cancelled State&lt;br&gt;&lt;b style=&quot;color:#9C27B0;&quot;&gt;●&lt;/b&gt; Final State&lt;br&gt;&lt;br&gt;&lt;b&gt;Arrows:&lt;/b&gt;&lt;br&gt;→ Normal transition&lt;br&gt;⇢ Conditional transition&lt;br&gt;↻ Self-transition (allowed)&lt;br&gt;⤫ Reversal/Undo&lt;br&gt;&lt;br&gt;&lt;b&gt;Labels:&lt;/b&gt;&lt;br&gt;[Condition] for transition&lt;br&gt;Actor who performs&lt;br&gt;Validation rules" style="text;html=1;strokeColor=#666666;fillColor=#f5f5f5;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="2080" y="20" width="280" height="380" as="geometry" />
+        </mxCell>
+
+        <!-- ===== 1. AR INVOICE LIFECYCLE ===== -->
+        <mxCell id="section-ar-invoice" value="&lt;b style=&quot;font-size:18px;&quot;&gt;1. AR INVOICE (Accounts Receivable)&lt;/b&gt;" style="text;html=1;strokeColor=#C62828;fillColor=#FFEBEE;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#B71C1C;" vertex="1" parent="1">
+          <mxGeometry x="40" y="140" width="980" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- AR Invoice States -->
+        <mxCell id="ar-draft" value="&lt;b&gt;draft&lt;/b&gt;&lt;br&gt;&lt;br&gt;Initial creation&lt;br&gt;Editable" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#A5D6A7;strokeColor=#4CAF50;strokeWidth=3;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="60" y="200" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-pending-approval" value="&lt;b&gt;pending_approval&lt;/b&gt;&lt;br&gt;&lt;br&gt;Awaiting manager" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1976D2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="220" y="200" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-approved" value="&lt;b&gt;approved&lt;/b&gt;&lt;br&gt;&lt;br&gt;Ready to post" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1976D2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="380" y="200" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-posted" value="&lt;b&gt;posted&lt;/b&gt;&lt;br&gt;&lt;br&gt;In GL,&lt;br&gt;awaiting payment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1976D2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="540" y="200" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-partially-paid" value="&lt;b&gt;partially_paid&lt;/b&gt;&lt;br&gt;&lt;br&gt;0 &lt; paid &lt; total" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1976D2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="700" y="200" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-paid" value="&lt;b&gt;paid&lt;/b&gt;&lt;br&gt;&lt;br&gt;Fully paid&lt;br&gt;FINAL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CE93D8;strokeColor=#6A1B9A;strokeWidth=3;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="860" y="200" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-overdue" value="&lt;b&gt;overdue&lt;/b&gt;&lt;br&gt;&lt;br&gt;Past due date&lt;br&gt;unpaid" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#C62828;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="700" y="320" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-cancelled" value="&lt;b&gt;cancelled&lt;/b&gt;&lt;br&gt;&lt;br&gt;Voided&lt;br&gt;FINAL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#D32F2F;strokeWidth=3;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="380" y="320" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- AR Invoice Arrows -->
+        <mxCell id="ar-arrow1" value="Submit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4CAF50;fontSize=10" edge="1" parent="1" source="ar-draft" target="ar-pending-approval">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-arrow2" value="Approve" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#1976D2;fontSize=10" edge="1" parent="1" source="ar-pending-approval" target="ar-approved">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-arrow3" value="Post to GL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#1976D2;fontSize=10" edge="1" parent="1" source="ar-approved" target="ar-posted">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-arrow4" value="Partial&lt;br&gt;payment" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#1976D2;fontSize=10" edge="1" parent="1" source="ar-posted" target="ar-partially-paid">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-arrow5" value="Full&lt;br&gt;payment" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6A1B9A;fontSize=10" edge="1" parent="1" source="ar-partially-paid" target="ar-paid">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-arrow6" value="Full payment&lt;br&gt;(direct)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6A1B9A;dashed=1;fontSize=10" edge="1" parent="1" source="ar-posted" target="ar-paid">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="600" y="290" />
+              <mxPoint x="920" y="290" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="ar-arrow7" value="due_date &lt; today&lt;br&gt;AND unpaid" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#F44336;dashed=1;fontSize=10" edge="1" parent="1" source="ar-posted" target="ar-overdue">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-arrow8" value="Payment" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6A1B9A;fontSize=10" edge="1" parent="1" source="ar-overdue" target="ar-paid">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ar-arrow9" value="Cancel&lt;br&gt;(before post)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#D32F2F;dashed=1;fontSize=10" edge="1" parent="1" source="ar-draft" target="ar-cancelled">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="120" y="360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ===== 2. AP INVOICE LIFECYCLE ===== -->
+        <mxCell id="section-ap-invoice" value="&lt;b style=&quot;font-size:18px;&quot;&gt;2. AP INVOICE (Accounts Payable) - Similar to AR&lt;/b&gt;" style="text;html=1;strokeColor=#1565C0;fillColor=#E3F2FD;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#0D47A1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="440" width="980" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ap-note" value="&lt;b&gt;AP Invoice follows same status flow as AR Invoice:&lt;/b&gt;&lt;br&gt;&lt;br&gt;draft → pending_approval → approved → posted → partially_paid → paid&lt;br&gt;&lt;br&gt;overdue (if past due_date)&lt;br&gt;cancelled (before posting)&lt;br&gt;&lt;br&gt;&lt;b&gt;Key Differences:&lt;/b&gt;&lt;br&gt;• payment_type = 'sent' (instead of 'received')&lt;br&gt;• GL entry: DR Expense/COGS, DR VAT Recoverable, CR AP&lt;br&gt;• Payment GL: DR AP, CR Bank&lt;br&gt;• Approval tiers slightly different (lower thresholds)&lt;br&gt;• Three-way match validation (optional)" style="text;html=1;strokeColor=#1565C0;fillColor=#E3F2FD;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="60" y="500" width="960" height="220" as="geometry" />
+        </mxCell>
+
+        <!-- ===== 3. JOURNAL ENTRY LIFECYCLE ===== -->
+        <mxCell id="section-journal-entry" value="&lt;b style=&quot;font-size:18px;&quot;&gt;3. JOURNAL ENTRY (General Ledger)&lt;/b&gt;" style="text;html=1;strokeColor=#6A1B9A;fillColor=#F3E5F5;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#4A148C;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="140" width="960" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Journal Entry States -->
+        <mxCell id="je-draft" value="&lt;b&gt;draft&lt;/b&gt;&lt;br&gt;&lt;br&gt;Creating entry&lt;br&gt;Editable" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#A5D6A7;strokeColor=#4CAF50;strokeWidth=3;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="200" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="je-pending-approval" value="&lt;b&gt;pending_approval&lt;/b&gt;&lt;br&gt;&lt;br&gt;Awaiting&lt;br&gt;accountant" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CE93D8;strokeColor=#6A1B9A;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="200" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="je-approved" value="&lt;b&gt;approved&lt;/b&gt;&lt;br&gt;&lt;br&gt;Ready to post" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CE93D8;strokeColor=#6A1B9A;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="200" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="je-posted" value="&lt;b&gt;posted&lt;/b&gt;&lt;br&gt;&lt;br&gt;In GL&lt;br&gt;IMMUTABLE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9C27B0;strokeColor=#6A1B9A;strokeWidth=3;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1580" y="200" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="je-reversed" value="&lt;b&gt;reversed&lt;/b&gt;&lt;br&gt;&lt;br&gt;Reversal entry&lt;br&gt;created&lt;br&gt;FINAL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#D32F2F;strokeWidth=3;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1740" y="200" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="je-cancelled" value="&lt;b&gt;cancelled&lt;/b&gt;&lt;br&gt;&lt;br&gt;Before posting&lt;br&gt;FINAL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#D32F2F;strokeWidth=3;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="320" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Journal Entry Arrows -->
+        <mxCell id="je-arrow1" value="Submit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4CAF50;fontSize=10" edge="1" parent="1" source="je-draft" target="je-pending-approval">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="je-arrow2" value="Approve" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6A1B9A;fontSize=10" edge="1" parent="1" source="je-pending-approval" target="je-approved">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="je-arrow3" value="Post&lt;br&gt;[balanced]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6A1B9A;fontSize=10" edge="1" parent="1" source="je-approved" target="je-posted">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="je-arrow4" value="Reverse&lt;br&gt;[creates new entry]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#D32F2F;fontSize=10" edge="1" parent="1" source="je-posted" target="je-reversed">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="je-arrow5" value="Cancel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#D32F2F;dashed=1;fontSize=10" edge="1" parent="1" source="je-draft" target="je-cancelled">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1160" y="360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ===== 4. FISCAL PERIOD LIFECYCLE ===== -->
+        <mxCell id="section-fiscal-period" value="&lt;b style=&quot;font-size:18px;&quot;&gt;4. FISCAL PERIOD&lt;/b&gt;" style="text;html=1;strokeColor=#F57C00;fillColor=#FFF3E0;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#E65100;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="440" width="960" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Fiscal Period States -->
+        <mxCell id="fp-open" value="&lt;b&gt;open&lt;/b&gt;&lt;br&gt;&lt;br&gt;Anyone can post&lt;br&gt;entries" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#A5D6A7;strokeColor=#4CAF50;strokeWidth=3;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="500" width="140" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fp-locked" value="&lt;b&gt;locked&lt;/b&gt;&lt;br&gt;&lt;br&gt;Only override&lt;br&gt;permission" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE082;strokeColor=#F57C00;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="500" width="140" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fp-closed" value="&lt;b&gt;closed&lt;/b&gt;&lt;br&gt;&lt;br&gt;NO posting&lt;br&gt;FINAL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#D32F2F;strokeWidth=3;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1500" y="500" width="140" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Fiscal Period Arrows -->
+        <mxCell id="fp-arrow1" value="Lock&lt;br&gt;[end of period]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#F57C00;fontSize=10" edge="1" parent="1" source="fp-open" target="fp-locked">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fp-arrow2" value="Close&lt;br&gt;[after reconciliation]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#D32F2F;fontSize=10" edge="1" parent="1" source="fp-locked" target="fp-closed">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fp-arrow3" value="Unlock&lt;br&gt;[if needed]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4CAF50;dashed=1;fontSize=10" edge="1" parent="1" source="fp-locked" target="fp-open">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1370" y="600" />
+              <mxPoint x="1170" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="fp-arrow4" value="Reopen&lt;br&gt;[emergency only]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#F44336;dashed=1;fontSize=10" edge="1" parent="1" source="fp-closed" target="fp-locked">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1570" y="600" />
+              <mxPoint x="1370" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ===== 5. SALES ORDER LIFECYCLE ===== -->
+        <mxCell id="section-sales-order" value="&lt;b style=&quot;font-size:18px;&quot;&gt;5. SALES ORDER&lt;/b&gt;" style="text;html=1;strokeColor=#2196F3;fillColor=#E3F2FD;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#0D47A1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="760" width="1000" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Sales Order States -->
+        <mxCell id="so-pending" value="&lt;b&gt;pending&lt;/b&gt;&lt;br&gt;&lt;br&gt;Created,&lt;br&gt;awaiting approval" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#A5D6A7;strokeColor=#4CAF50;strokeWidth=3;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="60" y="820" width="130" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="so-approved" value="&lt;b&gt;approved&lt;/b&gt;&lt;br&gt;&lt;br&gt;Manager OK,&lt;br&gt;can process" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#90CAF9;strokeColor=#1976D2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="230" y="820" width="130" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="so-in-progress" value="&lt;b&gt;in_progress&lt;/b&gt;&lt;br&gt;&lt;br&gt;Picking/packing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#90CAF9;strokeColor=#1976D2;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="400" y="820" width="130" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="so-completed" value="&lt;b&gt;completed&lt;/b&gt;&lt;br&gt;&lt;br&gt;Shipped,&lt;br&gt;triggers invoice" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E88E5;strokeColor=#0D47A1;strokeWidth=3;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="570" y="820" width="130" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="so-invoiced" value="&lt;b&gt;(invoicing_status)&lt;/b&gt;&lt;br&gt;&lt;br&gt;fully_invoiced&lt;br&gt;FINAL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CE93D8;strokeColor=#6A1B9A;strokeWidth=3;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="740" y="820" width="130" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="so-cancelled" value="&lt;b&gt;cancelled&lt;/b&gt;&lt;br&gt;&lt;br&gt;Customer&lt;br&gt;cancellation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#D32F2F;strokeWidth=3;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="400" y="940" width="130" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Sales Order Arrows -->
+        <mxCell id="so-arrow1" value="Approve" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4CAF50;fontSize=10" edge="1" parent="1" source="so-pending" target="so-approved">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="so-arrow2" value="Start&lt;br&gt;processing" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#1976D2;fontSize=10" edge="1" parent="1" source="so-approved" target="so-in-progress">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="so-arrow3" value="Ship" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0D47A1;fontSize=10" edge="1" parent="1" source="so-in-progress" target="so-completed">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="so-arrow4" value="Event:&lt;br&gt;SalesOrderCompleted" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6A1B9A;fontSize=10" edge="1" parent="1" source="so-completed" target="so-invoiced">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="so-arrow5" value="Cancel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#D32F2F;dashed=1;fontSize=10" edge="1" parent="1" source="so-pending" target="so-cancelled">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="125" y="980" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ===== 6. PURCHASE ORDER LIFECYCLE ===== -->
+        <mxCell id="section-purchase-order" value="&lt;b style=&quot;font-size:18px;&quot;&gt;6. PURCHASE ORDER&lt;/b&gt;" style="text;html=1;strokeColor=#673AB7;fillColor=#F3E5F5;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#4A148C;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="760" width="960" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Purchase Order States -->
+        <mxCell id="po-pending" value="&lt;b&gt;pending&lt;/b&gt;&lt;br&gt;&lt;br&gt;Created,&lt;br&gt;awaiting approval" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#A5D6A7;strokeColor=#4CAF50;strokeWidth=3;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="820" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="po-approved" value="&lt;b&gt;approved&lt;/b&gt;&lt;br&gt;&lt;br&gt;Manager OK" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CE93D8;strokeColor=#673AB7;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="820" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="po-ordered" value="&lt;b&gt;ordered&lt;/b&gt;&lt;br&gt;&lt;br&gt;Sent to supplier" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CE93D8;strokeColor=#673AB7;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="820" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="po-received" value="&lt;b&gt;received&lt;/b&gt;&lt;br&gt;&lt;br&gt;Goods in&lt;br&gt;warehouse" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9C27B0;strokeColor=#673AB7;strokeWidth=3;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1580" y="820" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="po-completed" value="&lt;b&gt;completed&lt;/b&gt;&lt;br&gt;&lt;br&gt;Invoiced&lt;br&gt;FINAL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CE93D8;strokeColor=#6A1B9A;strokeWidth=3;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1740" y="820" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="po-cancelled" value="&lt;b&gt;cancelled&lt;/b&gt;&lt;br&gt;&lt;br&gt;Cancelled" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#D32F2F;strokeWidth=3;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="940" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Purchase Order Arrows -->
+        <mxCell id="po-arrow1" value="Approve" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4CAF50;fontSize=10" edge="1" parent="1" source="po-pending" target="po-approved">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="po-arrow2" value="Send PO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#673AB7;fontSize=10" edge="1" parent="1" source="po-approved" target="po-ordered">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="po-arrow3" value="Receive" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#673AB7;fontSize=10" edge="1" parent="1" source="po-ordered" target="po-received">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="po-arrow4" value="Event:&lt;br&gt;PurchaseOrderReceived" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6A1B9A;fontSize=10" edge="1" parent="1" source="po-received" target="po-completed">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="po-arrow5" value="Cancel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#D32F2F;dashed=1;fontSize=10" edge="1" parent="1" source="po-pending" target="po-cancelled">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1160" y="980" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ===== 7. SHOPPING CART LIFECYCLE ===== -->
+        <mxCell id="section-shopping-cart" value="&lt;b style=&quot;font-size:18px;&quot;&gt;7. SHOPPING CART (E-commerce)&lt;/b&gt;" style="text;html=1;strokeColor=#00897B;fillColor=#E0F2F1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#004D40;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1080" width="1000" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Shopping Cart States -->
+        <mxCell id="cart-active" value="&lt;b&gt;active&lt;/b&gt;&lt;br&gt;&lt;br&gt;Customer&lt;br&gt;shopping" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#A5D6A7;strokeColor=#4CAF50;strokeWidth=3;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1140" width="140" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cart-converted" value="&lt;b&gt;converted&lt;/b&gt;&lt;br&gt;&lt;br&gt;Became&lt;br&gt;sales order&lt;br&gt;FINAL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#26A69A;strokeColor=#00695C;strokeWidth=3;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="240" y="1140" width="140" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cart-abandoned" value="&lt;b&gt;abandoned&lt;/b&gt;&lt;br&gt;&lt;br&gt;No checkout&lt;br&gt;1+ hour&lt;br&gt;FINAL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE082;strokeColor=#F57C00;strokeWidth=3;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1260" width="140" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cart-expired" value="&lt;b&gt;expired&lt;/b&gt;&lt;br&gt;&lt;br&gt;24-30 days old&lt;br&gt;FINAL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#D32F2F;strokeWidth=3;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="240" y="1260" width="140" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Shopping Cart Arrows -->
+        <mxCell id="cart-arrow1" value="Checkout&lt;br&gt;complete" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#00897B;fontSize=10" edge="1" parent="1" source="cart-active" target="cart-converted">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cart-arrow2" value="No activity&lt;br&gt;1+ hour" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#F57C00;dashed=1;fontSize=10" edge="1" parent="1" source="cart-active" target="cart-abandoned">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cart-arrow3" value="24-30 days old" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#D32F2F;dashed=1;fontSize=10" edge="1" parent="1" source="cart-abandoned" target="cart-expired">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Business Rules Summary Box -->
+        <mxCell id="business-rules-summary" value="&lt;b style=&quot;font-size:16px;&quot;&gt;STATE TRANSITION BUSINESS RULES SUMMARY&lt;/b&gt;&lt;hr&gt;&lt;b&gt;1. AR/AP Invoices:&lt;/b&gt;&lt;br&gt;   • Cannot edit after 'posted'&lt;br&gt;   • Cannot cancel after 'posted' (must reverse via GL)&lt;br&gt;   • 'overdue' is automatic (system job checks daily)&lt;br&gt;   • Payment application updates status automatically&lt;br&gt;&lt;br&gt;&lt;b&gt;2. Journal Entries:&lt;/b&gt;&lt;br&gt;   • Must balance (total_debit = total_credit)&lt;br&gt;   • Cannot edit after 'posted' (immutable)&lt;br&gt;   • Reversal creates new entry with opposite amounts&lt;br&gt;   • Period must be 'open' or 'locked' (with override permission)&lt;br&gt;&lt;br&gt;&lt;b&gt;3. Fiscal Periods:&lt;/b&gt;&lt;br&gt;   • 'open': Anyone can post&lt;br&gt;   • 'locked': Only 'override-period-lock' permission&lt;br&gt;   • 'closed': NO posting allowed&lt;br&gt;   • Reopen requires CFO approval (emergency only)&lt;br&gt;&lt;br&gt;&lt;b&gt;4. Sales/Purchase Orders:&lt;/b&gt;&lt;br&gt;   • Approval required based on amount/customer&lt;br&gt;   • 'completed'/'received' triggers automatic invoice creation&lt;br&gt;   • Cancel before 'in_progress'/'ordered' only&lt;br&gt;   • Inventory reserved on approval, released on completion&lt;br&gt;&lt;br&gt;&lt;b&gt;5. Shopping Carts:&lt;/b&gt;&lt;br&gt;   • Active → Converted (one-way, permanent)&lt;br&gt;   • Abandoned cart email reminder after 1 hour&lt;br&gt;   • Expired after 24 hours (guests) or 30 days (logged-in)&lt;br&gt;   • Cart merge on login (guest → user)&lt;br&gt;&lt;br&gt;&lt;b&gt;General Rules:&lt;/b&gt;&lt;br&gt;• All status changes logged in critical_action_logs&lt;br&gt;• Transitions validated at application layer (not DB constraints)&lt;br&gt;• State machine enforced in service layer&lt;br&gt;• Invalid transitions throw ValidationException" style="text;html=1;strokeColor=#1976D2;fillColor=#E3F2FD;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1400" width="1000" height="580" as="geometry" />
+        </mxCell>
+
+        <!-- Permission Matrix Box -->
+        <mxCell id="permission-matrix" value="&lt;b style=&quot;font-size:16px;&quot;&gt;PERMISSION REQUIREMENTS PER STATE&lt;/b&gt;&lt;hr&gt;&lt;b&gt;AR/AP Invoices:&lt;/b&gt;&lt;br&gt;• draft → pending_approval: Creator&lt;br&gt;• pending_approval → approved: Sales/Purchasing Manager&lt;br&gt;• approved → posted: Finance (automatic via service)&lt;br&gt;• posted → paid: Finance (payment application)&lt;br&gt;• * → cancelled: Finance Manager&lt;br&gt;&lt;br&gt;&lt;b&gt;Journal Entries:&lt;/b&gt;&lt;br&gt;• draft → pending_approval: Accountant&lt;br&gt;• pending_approval → approved: Senior Accountant&lt;br&gt;• approved → posted: Accountant&lt;br&gt;• posted → reversed: Senior Accountant + Reason&lt;br&gt;&lt;br&gt;&lt;b&gt;Fiscal Periods:&lt;/b&gt;&lt;br&gt;• open → locked: Accountant (end-of-period)&lt;br&gt;• locked → closed: Senior Accountant (after reconciliation)&lt;br&gt;• locked → open: Senior Accountant (if errors found)&lt;br&gt;• closed → locked: CFO only (emergency)&lt;br&gt;&lt;br&gt;&lt;b&gt;Sales Orders:&lt;/b&gt;&lt;br&gt;• pending → approved: Sales Manager (based on amount)&lt;br&gt;• approved → in_progress: Warehouse&lt;br&gt;• in_progress → completed: Warehouse&lt;br&gt;• * → cancelled: Sales Manager&lt;br&gt;&lt;br&gt;&lt;b&gt;Purchase Orders:&lt;/b&gt;&lt;br&gt;• pending → approved: Purchasing Manager&lt;br&gt;• approved → ordered: Purchasing&lt;br&gt;• ordered → received: Warehouse&lt;br&gt;• * → cancelled: Purchasing Manager&lt;br&gt;&lt;br&gt;&lt;b&gt;Shopping Carts:&lt;/b&gt;&lt;br&gt;• active → converted: Customer (via checkout)&lt;br&gt;• active → abandoned: System (automatic)&lt;br&gt;• abandoned → expired: System (automatic)" style="text;html=1;strokeColor=#6A1B9A;fillColor=#F3E5F5;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="1080" width="960" height="520" as="geometry" />
+        </mxCell>
+
+        <!-- Automatic Transitions Box -->
+        <mxCell id="automatic-transitions" value="&lt;b style=&quot;font-size:16px;&quot;&gt;AUTOMATIC STATE TRANSITIONS&lt;/b&gt;&lt;hr&gt;&lt;b&gt;System-Triggered (No Human Action):&lt;/b&gt;&lt;br&gt;&lt;br&gt;1. &lt;b&gt;Invoices: posted → overdue&lt;/b&gt;&lt;br&gt;   • Scheduled job runs daily at 00:00&lt;br&gt;   • Condition: due_date &lt; today AND status IN ('posted', 'partially_paid')&lt;br&gt;   • Updates status to 'overdue'&lt;br&gt;   • Sends notification to customer &amp; finance team&lt;br&gt;&lt;br&gt;2. &lt;b&gt;Invoices: posted → partially_paid → paid&lt;/b&gt;&lt;br&gt;   • Triggered by: PaymentApplicationService::applyPayment()&lt;br&gt;   • Condition: remaining_balance = 0&lt;br&gt;   • Automatic status update&lt;br&gt;&lt;br&gt;3. &lt;b&gt;Orders: completed/received → invoiced&lt;/b&gt;&lt;br&gt;   • Event: SalesOrderCompleted / PurchaseOrderReceived&lt;br&gt;   • Listener creates AR/AP invoice automatically&lt;br&gt;   • Updates order.invoicing_status &amp; financial_status&lt;br&gt;&lt;br&gt;4. &lt;b&gt;Shopping Cart: active → abandoned&lt;/b&gt;&lt;br&gt;   • Scheduled job runs hourly&lt;br&gt;   • Condition: updated_at &lt; (now - 1 hour) AND status='active'&lt;br&gt;   • Updates status to 'abandoned'&lt;br&gt;   • Triggers email reminder (if user logged in)&lt;br&gt;&lt;br&gt;5. &lt;b&gt;Shopping Cart: abandoned → expired&lt;/b&gt;&lt;br&gt;   • Scheduled job runs nightly&lt;br&gt;   • Condition: created_at &lt; (now - 24 hours) [guests] OR (now - 30 days) [users]&lt;br&gt;   • Updates status to 'expired'&lt;br&gt;   • Queued for deletion (after 90 days)&lt;br&gt;&lt;br&gt;&lt;b&gt;Implementation:&lt;/b&gt;&lt;br&gt;• Laravel Scheduler (app/Console/Kernel.php)&lt;br&gt;• Queued jobs for async processing&lt;br&gt;• Audit log created for each transition&lt;br&gt;• Notifications sent via email queue" style="text;html=1;strokeColor=#00897B;fillColor=#E0F2F1;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="1640" width="960" height="620" as="geometry" />
+        </mxCell>
+
+        <!-- Validation Rules Box -->
+        <mxCell id="validation-rules" value="&lt;b style=&quot;font-size:16px;&quot;&gt;STATE TRANSITION VALIDATION RULES&lt;/b&gt;&lt;hr&gt;&lt;b&gt;1. Balance Validation (Journal Entries):&lt;/b&gt;&lt;br&gt;   approved → posted:&lt;br&gt;   • total_debit must equal total_credit&lt;br&gt;   • At least 2 journal lines required&lt;br&gt;   • Each line: (debit_amount &gt; 0 XOR credit_amount &gt; 0)&lt;br&gt;&lt;br&gt;&lt;b&gt;2. Period Validation (All Financial):&lt;/b&gt;&lt;br&gt;   * → posted:&lt;br&gt;   • fiscal_period.status IN ('open', 'locked')&lt;br&gt;   • If 'locked': user has 'override-period-lock' permission&lt;br&gt;   • entry_date within period.start_date and period.end_date&lt;br&gt;&lt;br&gt;&lt;b&gt;3. Payment Validation (Invoices):&lt;/b&gt;&lt;br&gt;   posted → partially_paid/paid:&lt;br&gt;   • payment_amount &gt; 0&lt;br&gt;   • payment_amount &lt;= remaining_balance&lt;br&gt;   • bank_account exists and is_active=true&lt;br&gt;&lt;br&gt;&lt;b&gt;4. Approval Validation (Orders/Invoices):&lt;/b&gt;&lt;br&gt;   pending → approved:&lt;br&gt;   • Approver has required permission tier&lt;br&gt;   • Amount within approver's authority limit&lt;br&gt;   • Credit validation passed (if applicable)&lt;br&gt;&lt;br&gt;&lt;b&gt;5. Inventory Validation (Orders):&lt;/b&gt;&lt;br&gt;   approved → in_progress:&lt;br&gt;   • All products have sufficient stock&lt;br&gt;   • available_quantity &gt;= order_item.quantity&lt;br&gt;   • Reservation successful (row-level lock)&lt;br&gt;&lt;br&gt;&lt;b&gt;6. Reversal Validation (Journal Entries):&lt;/b&gt;&lt;br&gt;   posted → reversed:&lt;br&gt;   • Original entry exists and status='posted'&lt;br&gt;   • Reversal reason provided (required)&lt;br&gt;   • Senior Accountant permission&lt;br&gt;   • Creates new entry with opposite DR/CR&lt;br&gt;&lt;br&gt;&lt;b&gt;7. Cancellation Validation (Orders):&lt;/b&gt;&lt;br&gt;   * → cancelled:&lt;br&gt;   • status NOT IN ('completed', 'in_progress', 'invoiced')&lt;br&gt;   • Inventory reservation released&lt;br&gt;   • Customer notified&lt;br&gt;&lt;br&gt;&lt;b&gt;Implementation:&lt;/b&gt;&lt;br&gt;• Service layer validation (not controller)&lt;br&gt;• Throws ValidationException on failure&lt;br&gt;• Transaction rollback on validation failure&lt;br&gt;• Clear error messages for frontend" style="text;html=1;strokeColor=#C62828;fillColor=#FFEBEE;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="2020" width="1000" height="680" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
