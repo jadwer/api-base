@@ -31,7 +31,7 @@
           <mxGeometry x="40" y="580" width="1520" height="240" as="geometry" />
         </mxCell>
 
-        <mxCell id="swimlane-finance" value="&lt;b&gt;FINANCE&lt;/b&gt;" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor="#FFEBEE;strokeColor=#C62828;fontSize=14;fontStyle=1" vertex="1" parent="1">
+        <mxCell id="swimlane-finance" value="&lt;b&gt;FINANCE&lt;/b&gt;" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;fontSize=14;fontStyle=1" vertex="1" parent="1">
           <mxGeometry x="40" y="820" width="1520" height="180" as="geometry" />
         </mxCell>
 

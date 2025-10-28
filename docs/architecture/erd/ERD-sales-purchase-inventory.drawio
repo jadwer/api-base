@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net" modified="2025-10-28T00:00:00.000Z" agent="Claude Code" version="22.1.11">
   <diagram name="Sales-Purchase-Inventory ERD" id="erd-operational">
     <mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" math="0" shadow="0">
@@ -10,7 +11,7 @@
           <mxGeometry x="400" y="20" width="1000" height="45" as="geometry" />
         </mxCell>
 
-        <mxCell id="subtitle" value="14 Operational Tables - Complete Order & Stock Management Flow" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=15;fontColor=#666666;" vertex="1" parent="1">
+        <mxCell id="subtitle" value="14 Operational Tables - Complete Order &amp; Stock Management Flow" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=15;fontColor=#666666;" vertex="1" parent="1">
           <mxGeometry x="400" y="65" width="1000" height="30" as="geometry" />
         </mxCell>
 
