@@ -114,8 +114,7 @@ class PurchaseOrderItemSchema extends Schema
     public function relationships(): array
     {
         return [
-            'purchaseOrder',
-            'product',
+            //
         ];
     }
 }

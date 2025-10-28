@@ -120,28 +120,16 @@ class PurchaseOrderItemStoreTest extends TestCase
     {
         $admin = $this->createUserWithPermissions('test', ['purchase-order-items.store']);
         $this->actingAs($admin, 'sanctum');
-        
+
         [$purchaseOrder, $product] = $this->createPurchaseOrderAndProduct();
 
         $data = [
             'type' => 'purchase-order-items',
             'attributes' => [
+                'purchaseOrderId' => $purchaseOrder->id,
+                'productId' => $product->id,
                 'quantity' => 5,
                 'unitPrice' => 15.75,
-            ],
-            'relationships' => [
-                'purchaseOrder' => [
-                    'data' => [
-                        'type' => 'purchase-orders',
-                        'id' => (string) $purchaseOrder->id,
-                    ],
-                ],
-                'product' => [
-                    'data' => [
-                        'type' => 'products',
-                        'id' => (string) $product->id,
-                    ],
-                ],
             ],
         ];
 
@@ -190,30 +178,18 @@ class PurchaseOrderItemStoreTest extends TestCase
         $data = [
             'type' => 'purchase-order-items',
             'attributes' => [
+                'purchaseOrderId' => 999999, // Non-existent ID
+                'productId' => $product->id,
                 'quantity' => 10,
                 'unitPrice' => 25.50,
-            ],
-            'relationships' => [
-                'purchaseOrder' => [
-                    'data' => [
-                        'type' => 'purchase-orders',
-                        'id' => '999999', // Non-existent ID
-                    ],
-                ],
-                'product' => [
-                    'data' => [
-                        'type' => 'products',
-                        'id' => (string) $product->id,
-                    ],
-                ],
             ],
         ];
 
         $response = $this->jsonApi()->withData($data)->post('/api/v1/purchase-order-items');
 
-        $response->assertStatus(404); // Should be 404 when resource doesn't exist
+        $response->assertStatus(422); // Validation error
         $this->assertJsonApiValidationErrors([
-            '/data/relationships/purchaseOrder',
+            '/data/attributes/purchaseOrderId',
         ], $response);
     }
 
@@ -227,30 +203,18 @@ class PurchaseOrderItemStoreTest extends TestCase
         $data = [
             'type' => 'purchase-order-items',
             'attributes' => [
+                'purchaseOrderId' => $purchaseOrder->id,
+                'productId' => 999999, // Non-existent ID
                 'quantity' => 10,
                 'unitPrice' => 25.50,
-            ],
-            'relationships' => [
-                'purchaseOrder' => [
-                    'data' => [
-                        'type' => 'purchase-orders',
-                        'id' => (string) $purchaseOrder->id,
-                    ],
-                ],
-                'product' => [
-                    'data' => [
-                        'type' => 'products',
-                        'id' => '999999', // Non-existent ID
-                    ],
-                ],
             ],
         ];
 
         $response = $this->jsonApi()->withData($data)->post('/api/v1/purchase-order-items');
 
-        $response->assertStatus(404); // Should be 404 when resource doesn't exist
+        $response->assertStatus(422); // Validation error
         $this->assertJsonApiValidationErrors([
-            '/data/relationships/product',
+            '/data/attributes/productId',
         ], $response);
     }
 
@@ -264,22 +228,10 @@ class PurchaseOrderItemStoreTest extends TestCase
         $data = [
             'type' => 'purchase-order-items',
             'attributes' => [
+                'purchaseOrderId' => $purchaseOrder->id,
+                'productId' => $product->id,
                 'quantity' => -5, // Invalid negative quantity
                 'unitPrice' => 25.50,
-            ],
-            'relationships' => [
-                'purchaseOrder' => [
-                    'data' => [
-                        'type' => 'purchase-orders',
-                        'id' => (string) $purchaseOrder->id,
-                    ],
-                ],
-                'product' => [
-                    'data' => [
-                        'type' => 'products',
-                        'id' => (string) $product->id,
-                    ],
-                ],
             ],
         ];
 
@@ -301,22 +253,10 @@ class PurchaseOrderItemStoreTest extends TestCase
         $data = [
             'type' => 'purchase-order-items',
             'attributes' => [
+                'purchaseOrderId' => $purchaseOrder->id,
+                'productId' => $product->id,
                 'quantity' => 10,
                 'unitPrice' => -15.50, // Invalid negative price
-            ],
-            'relationships' => [
-                'purchaseOrder' => [
-                    'data' => [
-                        'type' => 'purchase-orders',
-                        'id' => (string) $purchaseOrder->id,
-                    ],
-                ],
-                'product' => [
-                    'data' => [
-                        'type' => 'products',
-                        'id' => (string) $product->id,
-                    ],
-                ],
             ],
         ];
 
