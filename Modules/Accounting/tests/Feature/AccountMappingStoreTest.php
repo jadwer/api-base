@@ -4,6 +4,7 @@ namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\Accounting\Models\AccountMapping;
+use Modules\Accounting\Models\Account;
 
 class AccountMappingStoreTest extends TestCase
 {
@@ -11,15 +12,17 @@ class AccountMappingStoreTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
+        $account = Account::factory()->create();
+
         $data = [
             'type' => 'account-mappings',
             'attributes' => [
                 'mappingType' => 'test-type',
-                'accountId' => 1,
+                'accountId' => $account->id,
                 'version' => 1,
                 'effectiveFrom' => '2024-01-01',
                 'isActive' => true,
-                'createdById' => 1
+                'createdById' => $admin->id
 ]
         ];
 
@@ -36,15 +39,17 @@ class AccountMappingStoreTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
+        $account = Account::factory()->create();
+
         $data = [
             'type' => 'account-mappings',
             'attributes' => [
                 'mappingType' => 'test-type',
-                'accountId' => 1,
+                'accountId' => $account->id,
                 'version' => 1,
                 'effectiveFrom' => '2024-01-01',
                 'isActive' => true,
-                'createdById' => 1
+                'createdById' => $admin->id
 ]
         ];
 

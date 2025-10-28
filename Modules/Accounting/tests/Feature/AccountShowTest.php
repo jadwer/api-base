@@ -49,7 +49,7 @@ class AccountShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $account = Account::factory()->create(['code' => 'TEST123', 'name' => 'Test Name', 'account_type' => 'test string', 'nature' => 'test string', 'level' => 100, 'currency' => 'test string', 'is_postable' => true, 'is_cash_flow' => true, 'status' => 'active', 'metadata' => 'test value']);
+        $account = Account::factory()->create(['code' => 'TEST123', 'name' => 'Test Name', 'account_type' => 'asset', 'nature' => 'debit', 'level' => 100, 'currency' => 'MXN', 'is_postable' => true, 'is_cash_flow' => true, 'status' => 'active', 'metadata' => 'test value']);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

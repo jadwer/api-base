@@ -48,7 +48,7 @@ class FiscalPeriodShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $fiscalPeriod = FiscalPeriod::factory()->create(['name' => 'Test Name', 'year' => 100, 'month' => 100, 'start_date' => now(), 'end_date' => now(), 'status' => 'active', 'closed_at' => now(), 'metadata' => 'test value']);
+        $fiscalPeriod = FiscalPeriod::factory()->create(['name' => 'Test Name', 'year' => 100, 'month' => 100, 'start_date' => now(), 'end_date' => now(), 'status' => 'open', 'closed_at' => now(), 'metadata' => 'test value']);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

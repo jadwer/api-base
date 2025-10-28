@@ -68,6 +68,7 @@ class ARInvoiceStoreTest extends TestCase
     public function test_admin_can_create_ARInvoice_with_minimal_data(): void
     {
         $admin = $this->getAdminUser();
+        $customer = Contact::factory()->customer()->create();
 
         $data = [
             'type' => 'ar-invoices',
@@ -75,7 +76,7 @@ class ARInvoiceStoreTest extends TestCase
                 'invoiceNumber' => 'INV-MIN-AR-001',
                 'invoiceDate' => '2024-01-01',
                 'dueDate' => '2024-01-31',
-                'contactId' => 1,
+                'contactId' => $customer->id,
                 'subtotal' => 100.00,
                 'taxAmount' => 16.00,
                 'totalAmount' => 116.00,

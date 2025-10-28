@@ -54,7 +54,7 @@ class JournalEntryShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $journalEntry = JournalEntry::factory()->create(['number' => 'test string', 'date' => now(), 'reference' => 'test string', 'description' => 'test description', 'total_debit' => 99.99, 'total_credit' => 99.99, 'status' => 'active', 'approved_at' => now(), 'posted_at' => now(), 'reversal_reason' => 'test description', 'metadata' => ['key' => 'test value']]);
+        $journalEntry = JournalEntry::factory()->create(['number' => 'test string', 'date' => now(), 'reference' => 'test string', 'description' => 'test description', 'total_debit' => 99.99, 'total_credit' => 99.99, 'status' => 'draft', 'approved_at' => now(), 'posted_at' => now(), 'reversal_reason' => 'test description', 'metadata' => ['key' => 'test value']]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

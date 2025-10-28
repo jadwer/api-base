@@ -63,14 +63,14 @@ class FiscalPeriodIndexTest extends TestCase
     public function test_admin_can_filter_FiscalPeriods_by_status(): void
     {
         $admin = $this->getAdminUser();
-        
-        FiscalPeriod::factory()->create(['status' => 'active']);
-        FiscalPeriod::factory()->create(['status' => 'active']);
+
+        FiscalPeriod::factory()->create(['status' => 'open']);
+        FiscalPeriod::factory()->create(['status' => 'open']);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('fiscal-periods')
-            ->get('/api/v1/fiscal-periods?filter[status]=test');
+            ->get('/api/v1/fiscal-periods?filter[status]=open');
 
         $response->assertOk();
     }

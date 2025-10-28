@@ -4,13 +4,15 @@ namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\Accounting\Models\JournalEntry;
+use Modules\Accounting\Models\FiscalPeriod;
 
 class JournalEntryUpdateTest extends TestCase
 {
     public function test_admin_can_update_journal_entries(): void
     {
         $admin = $this->getAdminUser();
-        $entity = JournalEntry::factory()->create();
+        $period = FiscalPeriod::factory()->open()->create();
+        $entity = JournalEntry::factory()->create(['fiscal_period_id' => $period->id, 'status' => 'draft']);
 
         $data = [
             'type' => 'journal-entries',
@@ -33,7 +35,8 @@ class JournalEntryUpdateTest extends TestCase
     public function test_admin_can_partially_update_journal_entries(): void
     {
         $admin = $this->getAdminUser();
-        $entity = JournalEntry::factory()->create();
+        $period = FiscalPeriod::factory()->open()->create();
+        $entity = JournalEntry::factory()->create(['fiscal_period_id' => $period->id, 'status' => 'draft']);
 
         $data = [
             'type' => 'journal-entries',

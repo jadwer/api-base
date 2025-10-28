@@ -5,6 +5,7 @@ namespace Modules\Finance\Tests\Feature;
 use Tests\TestCase;
 use Modules\User\Models\User;
 use Modules\Finance\Models\APInvoice;
+use Modules\Contacts\Models\Contact;
 
 class APInvoiceStoreTest extends TestCase
 {
@@ -26,6 +27,7 @@ class APInvoiceStoreTest extends TestCase
     public function test_admin_can_create_APInvoice(): void
     {
         $admin = $this->getAdminUser();
+        $supplier = Contact::factory()->supplier()->create();
 
         $data = [
             'type' => 'ap-invoices',
@@ -33,7 +35,7 @@ class APInvoiceStoreTest extends TestCase
                 'invoiceNumber' => 'INV-AP-001',
                 'invoiceDate' => '2024-01-01',
                 'dueDate' => '2024-01-31',
-                'contactId' => 1, // Dummy supplier ID (Purchase module not implemented yet)
+                'contactId' => $supplier->id,
                 'currency' => 'USD',
                 'subtotal' => 100.00,
                 'taxAmount' => 16.00,
@@ -56,7 +58,7 @@ class APInvoiceStoreTest extends TestCase
 
         $this->assertDatabaseHas('ap_invoices', [
             'invoice_number' => 'INV-AP-001',
-            'contact_id' => 1,
+            'contact_id' => $supplier->id,
             'currency' => 'USD',
             'status' => 'pending',
             'is_active' => true
@@ -66,6 +68,7 @@ class APInvoiceStoreTest extends TestCase
     public function test_admin_can_create_APInvoice_with_minimal_data(): void
     {
         $admin = $this->getAdminUser();
+        $supplier = Contact::factory()->supplier()->create();
 
         $data = [
             'type' => 'ap-invoices',
@@ -73,7 +76,7 @@ class APInvoiceStoreTest extends TestCase
                 'invoiceNumber' => 'INV-MIN-001',
                 'invoiceDate' => '2024-01-01',
                 'dueDate' => '2024-01-31',
-                'contactId' => 1,
+                'contactId' => $supplier->id,
                 'subtotal' => 100.00,
                 'taxAmount' => 16.00,
                 'totalAmount' => 116.00,

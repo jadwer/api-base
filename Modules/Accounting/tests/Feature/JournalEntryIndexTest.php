@@ -69,14 +69,14 @@ class JournalEntryIndexTest extends TestCase
     public function test_admin_can_filter_JournalEntries_by_status(): void
     {
         $admin = $this->getAdminUser();
-        
-        JournalEntry::factory()->create(['status' => 'active']);
-        JournalEntry::factory()->create(['status' => 'active']);
+
+        JournalEntry::factory()->create(['status' => 'draft']);
+        JournalEntry::factory()->create(['status' => 'draft']);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('journal-entries')
-            ->get('/api/v1/journal-entries?filter[status]=test');
+            ->get('/api/v1/journal-entries?filter[status]=draft');
 
         $response->assertOk();
     }

@@ -4,6 +4,7 @@ namespace Modules\Accounting\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\Accounting\Models\AccountBalance;
+use Modules\Accounting\Models\Account;
 
 class AccountBalanceStoreTest extends TestCase
 {
@@ -11,10 +12,12 @@ class AccountBalanceStoreTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
+        $account = Account::factory()->create();
+
         $data = [
             'type' => 'account-balances',
             'attributes' => [
-                'accountId' => 1,
+                'accountId' => $account->id,
                 'fiscalYear' => 2024,
                 'fiscalMonth' => 1
 ]
@@ -33,10 +36,12 @@ class AccountBalanceStoreTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
+        $account = Account::factory()->create();
+
         $data = [
             'type' => 'account-balances',
             'attributes' => [
-                'accountId' => 1,
+                'accountId' => $account->id,
                 'fiscalYear' => 2024,
                 'fiscalMonth' => 1
 ]

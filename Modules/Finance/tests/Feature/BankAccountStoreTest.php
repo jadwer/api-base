@@ -62,6 +62,8 @@ class BankAccountStoreTest extends TestCase
             'type' => 'bank-accounts',
             'attributes' => [
                 'accountNumber' => 'MIN123',
+                'accountName' => 'Minimal Account',
+                'bankName' => 'Test Bank',
                 'glAccountId' => 1,
                 'isActive' => true
             ]
