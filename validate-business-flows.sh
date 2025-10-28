@@ -50,7 +50,7 @@ CUSTOMER_RESPONSE=$(curl -s -X POST "$API_URL/contacts" \
         "data": {
             "type": "contacts",
             "attributes": {
-                "type": "company",
+                "contactType": "company",
                 "name": "Test Customer Corp",
                 "legalName": "Test Customer Corp SA de CV",
                 "taxId": "TCU123456ABC",
@@ -161,7 +161,7 @@ SUPPLIER_RESPONSE=$(curl -s -X POST "$API_URL/contacts" \
         "data": {
             "type": "contacts",
             "attributes": {
-                "type": "company",
+                "contactType": "company",
                 "name": "Test Supplier SA",
                 "legalName": "Test Supplier SA de CV",
                 "taxId": "TSU987654XYZ",
@@ -192,12 +192,18 @@ PURCHASE_ORDER_RESPONSE=$(curl -s -X POST "$API_URL/purchase-orders" \
             \"type\": \"purchase-orders\",
             \"attributes\": {
                 \"contact_id\": $SUPPLIER_ID,
-                \"order_number\": \"PO-TEST-$(date +%s)\",
-                \"status\": \"draft\",
-                \"order_date\": \"$(date +%Y-%m-%d)\",
-                \"subtotal_amount\": 5000.00,
-                \"tax_amount\": 800.00,
-                \"total_amount\": 5800.00
+                \"orderDate\": \"$(date +%Y-%m-%d)\",
+                \"status\": \"pending\",
+                \"totalAmount\": 5800.00,
+                \"notes\": \"Test purchase order\"
+            },
+            \"relationships\": {
+                \"contact\": {
+                    \"data\": {
+                        \"type\": \"contacts\",
+                        \"id\": \"$SUPPLIER_ID\"
+                    }
+                }
             }
         }
     }")

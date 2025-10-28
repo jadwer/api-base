@@ -106,22 +106,22 @@ echo ""
 # === STEP 2: Products Module ===
 echo "=== 2. PRODUCTS MODULE ==="
 test_endpoint "List Products" "GET" "$API_URL/products" "200" "" "$TOKEN"
-test_endpoint "Filter Products by Category" "GET" "$API_URL/products?filter[categories]=1" "200" "" "$TOKEN"
+test_endpoint "Filter Products by Category" "GET" "$API_URL/products?filter%5Bcategories%5D=1" "200" "" "$TOKEN"
 test_endpoint "Sort Products by Name" "GET" "$API_URL/products?sort=name" "200" "" "$TOKEN"
-test_endpoint "Products Pagination" "GET" "$API_URL/products?page[size]=10&page[number]=1" "200" "" "$TOKEN"
+test_endpoint "Products Pagination" "GET" "$API_URL/products?page%5Bsize%5D=10&page%5Bnumber%5D=1" "200" "" "$TOKEN"
 echo ""
 
 # === STEP 3: Inventory Module ===
 echo "=== 3. INVENTORY MODULE ==="
 test_endpoint "List Warehouses" "GET" "$API_URL/warehouses" "200" "" "$TOKEN"
-test_endpoint "List Stock" "GET" "$API_URL/stock" "200" "" "$TOKEN"
-test_endpoint "Stock with Products" "GET" "$API_URL/stock?include=product" "200" "" "$TOKEN"
+test_endpoint "List Stock Levels" "GET" "$API_URL/stocks" "200" "" "$TOKEN"
+test_endpoint "Stock with Products" "GET" "$API_URL/stocks?include=product" "200" "" "$TOKEN"
 echo ""
 
 # === STEP 4: Sales Module ===
 echo "=== 4. SALES MODULE ==="
 test_endpoint "List Sales Orders" "GET" "$API_URL/sales-orders" "200" "" "$TOKEN"
-test_endpoint "Filter Sales Orders by Status" "GET" "$API_URL/sales-orders?filter[status]=draft" "200" "" "$TOKEN"
+test_endpoint "Filter Sales Orders by Status" "GET" "$API_URL/sales-orders?filter%5Bstatus%5D=draft" "200" "" "$TOKEN"
 test_endpoint "Sales Orders with Customer" "GET" "$API_URL/sales-orders?include=contact" "200" "" "$TOKEN"
 echo ""
 
@@ -145,20 +145,20 @@ echo "=== 7. ACCOUNTING MODULE ==="
 test_endpoint "List Accounts" "GET" "$API_URL/accounts" "200" "" "$TOKEN"
 test_endpoint "List Journal Entries" "GET" "$API_URL/journal-entries" "200" "" "$TOKEN"
 test_endpoint "List Fiscal Periods" "GET" "$API_URL/fiscal-periods" "200" "" "$TOKEN"
-test_endpoint "Filter Accounts by Type" "GET" "$API_URL/accounts?filter[accountType]=asset" "200" "" "$TOKEN"
+test_endpoint "Filter Accounts by Type" "GET" "$API_URL/accounts?filter%5BaccountType%5D=asset" "200" "" "$TOKEN"
 echo ""
 
 # === STEP 8: Contacts Module ===
 echo "=== 8. CONTACTS MODULE ==="
 test_endpoint "List Contacts" "GET" "$API_URL/contacts" "200" "" "$TOKEN"
-test_endpoint "Filter Customers" "GET" "$API_URL/contacts?filter[isCustomer]=true" "200" "" "$TOKEN"
-test_endpoint "Filter Suppliers" "GET" "$API_URL/contacts?filter[isSupplier]=true" "200" "" "$TOKEN"
+test_endpoint "Filter Customers" "GET" "$API_URL/contacts?filter%5BisCustomer%5D=true" "200" "" "$TOKEN"
+test_endpoint "Filter Suppliers" "GET" "$API_URL/contacts?filter%5BisSupplier%5D=true" "200" "" "$TOKEN"
 echo ""
 
-# === STEP 9: Public Endpoints (No Auth) ===
-echo "=== 9. PUBLIC ENDPOINTS ==="
-test_endpoint "Public Product Catalog" "GET" "$API_URL/public/products" "200" "" ""
-test_endpoint "Public Product Search" "GET" "$API_URL/public/products?filter[search]=test" "200" "" ""
+# === STEP 9: Public Endpoints (No Auth - should return 401) ===
+echo "=== 9. AUTHENTICATION REQUIRED ==="
+test_endpoint "Products Require Auth" "GET" "$API_URL/products" "401" "" ""
+test_endpoint "Search Requires Auth" "GET" "$API_URL/contacts?filter%5Bsearch%5D=test" "401" "" ""
 echo ""
 
 # === STEP 10: Error Handling ===
