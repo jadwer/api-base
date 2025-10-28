@@ -144,61 +144,55 @@ class PublicProductIndexTest extends TestCase
 
     public function test_guest_can_filter_public_products_by_category(): void
     {
-        $this->artisan('db:seed', ['--class' => 'Modules\\Product\\Database\\Seeders\\ProductDatabaseSeeder']);
+        $smartphones = Category::factory()->create(['name' => 'Smartphones']);
+        $laptops = Category::factory()->create(['name' => 'Laptops']);
 
-        // Filter by Smartphones category (category_id=1)
-        $response = $this->jsonApi()->get('/api/public/v1/public-products?filter[category_id]=1');
+        Product::factory()->count(3)->create(['category_id' => $smartphones->id]);
+        Product::factory()->count(2)->create(['category_id' => $laptops->id]);
+
+        // Filter by Smartphones category
+        $response = $this->jsonApi()->get("/api/public/v1/public-products?filter[category_id]={$smartphones->id}");
 
         $response->assertOk();
         $products = $response->json('data');
-        
-        $this->assertGreaterThan(0, count($products), 'Should find products in Smartphones category');
-        
-        echo "\n📱 PUBLIC CATALOG - Smartphones category:\n";
-        foreach ($products as $product) {
-            $name = $product['attributes']['name'];
-            $sku = $product['attributes']['sku'];
-            echo "   • {$name} ({$sku})\n";
-        }
+
+        $this->assertCount(3, $products, 'Should find 3 products in Smartphones category');
     }
 
     public function test_guest_can_filter_public_products_by_brand(): void
     {
-        $this->artisan('db:seed', ['--class' => 'Modules\\Product\\Database\\Seeders\\ProductDatabaseSeeder']);
+        $apple = Brand::factory()->create(['name' => 'Apple']);
+        $samsung = Brand::factory()->create(['name' => 'Samsung']);
 
-        // Filter by Apple brand (brand_id=2)
-        $response = $this->jsonApi()->get('/api/public/v1/public-products?filter[brand_id]=2');
+        Product::factory()->count(4)->create(['brand_id' => $apple->id]);
+        Product::factory()->count(2)->create(['brand_id' => $samsung->id]);
+
+        // Filter by Apple brand
+        $response = $this->jsonApi()->get("/api/public/v1/public-products?filter[brand_id]={$apple->id}");
 
         $response->assertOk();
         $products = $response->json('data');
-        
-        $this->assertGreaterThan(0, count($products), 'Should find Apple products');
-        
-        echo "\n🍎 PUBLIC CATALOG - Apple products:\n";
-        foreach ($products as $product) {
-            $name = $product['attributes']['name'];
-            echo "   • {$name}\n";
-        }
+
+        $this->assertCount(4, $products, 'Should find 4 Apple products');
     }
 
     public function test_guest_can_filter_public_products_by_multiple_brands(): void
     {
-        $this->artisan('db:seed', ['--class' => 'Modules\\Product\\Database\\Seeders\\ProductDatabaseSeeder']);
+        $apple = Brand::factory()->create(['name' => 'Apple']);
+        $samsung = Brand::factory()->create(['name' => 'Samsung']);
+        $sony = Brand::factory()->create(['name' => 'Sony']);
 
-        // Filter by Apple (2) and Samsung (1) brands
-        $response = $this->jsonApi()->get('/api/public/v1/public-products?filter[brands]=2,1');
+        Product::factory()->count(2)->create(['brand_id' => $apple->id]);
+        Product::factory()->count(3)->create(['brand_id' => $samsung->id]);
+        Product::factory()->count(1)->create(['brand_id' => $sony->id]);
+
+        // Filter by Apple and Samsung brands
+        $response = $this->jsonApi()->get("/api/public/v1/public-products?filter[brands]={$apple->id},{$samsung->id}");
 
         $response->assertOk();
         $products = $response->json('data');
-        
-        $this->assertGreaterThan(0, count($products), 'Should find products from Apple and Samsung');
-        
-        echo "\n🔍 PUBLIC CATALOG - Multiple brands (Apple + Samsung):\n";
-        foreach ($products as $product) {
-            $name = $product['attributes']['name'];
-            $sku = $product['attributes']['sku'];
-            echo "   • {$name} ({$sku})\n";
-        }
+
+        $this->assertCount(5, $products, 'Should find 5 products from Apple and Samsung');
     }
 
     public function test_guest_can_search_public_products_by_name(): void
