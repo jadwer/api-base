@@ -12,8 +12,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Global middleware (applied to all routes)
+        $middleware->append(\App\Http\Middleware\SecureHeaders::class);
+
+        // Route middleware aliases
         $middleware->alias([
             'auth:sanctum' => \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            'cache.jsonapi' => \App\Http\Middleware\CacheJsonApiResponse::class,
+            'api.ratelimit' => \App\Http\Middleware\ApiRateLimiter::class,
+            'login.throttle' => \App\Http\Middleware\LoginThrottler::class,
+            'profile.memory' => \App\Http\Middleware\ProfileMemory::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

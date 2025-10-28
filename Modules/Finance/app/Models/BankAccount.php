@@ -36,6 +36,11 @@ class BankAccount extends Model
         return $this->belongsTo(Account::class);
     }
 
+    public function transactions()
+    {
+        return $this->hasMany(BankTransaction::class);
+    }
+
     // Factory
     protected static function newFactory()
     {
