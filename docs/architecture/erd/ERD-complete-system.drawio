@@ -1,0 +1,214 @@
+<mxfile host="app.diagrams.net" modified="2025-10-28T00:00:00.000Z" agent="Claude Code" version="22.1.11">
+  <diagram name="Complete System ERD" id="erd-complete">
+    <mxGraphModel dx="2400" dy="1600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="Entity Relationship Diagram - Complete System" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="700" y="20" width="1000" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="subtitle" value="Laravel Modular ERP - 39+ Tables across 7 Modules" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="700" y="70" width="1000" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Product Module Tables (Top Left) -->
+        <mxCell id="products" value="&lt;div style='background:#1976D2;color:white;padding:5px;font-weight:bold;'&gt;products&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;name: string&lt;br&gt;sku: string (unique)&lt;br&gt;description: text&lt;br&gt;price: decimal&lt;br&gt;cost: decimal&lt;br&gt;iva: decimal&lt;br&gt;🔗 unit_id: bigint&lt;br&gt;🔗 category_id: bigint&lt;br&gt;🔗 brand_id: bigint&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="100" y="140" width="220" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="units" value="&lt;div style='background:#1976D2;color:white;padding:5px;font-weight:bold;'&gt;units&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;name: string&lt;br&gt;abbreviation: string&lt;br&gt;type: string&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="360" y="140" width="180" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="categories" value="&lt;div style='background:#1976D2;color:white;padding:5px;font-weight:bold;'&gt;categories&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;name: string&lt;br&gt;description: text&lt;br&gt;slug: string&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="360" y="280" width="180" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="brands" value="&lt;div style='background:#1976D2;color:white;padding:5px;font-weight:bold;'&gt;brands&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;name: string&lt;br&gt;description: text&lt;br&gt;slug: string&lt;br&gt;logo: string&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="360" y="430" width="180" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Inventory Module Tables (Middle Left) -->
+        <mxCell id="warehouses" value="&lt;div style='background:#2E7D32;color:white;padding:5px;font-weight:bold;'&gt;warehouses&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;name: string&lt;br&gt;code: string&lt;br&gt;address, city, state&lt;br&gt;warehouse_type: enum&lt;br&gt;max_capacity: decimal&lt;br&gt;is_active: boolean&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="100" y="600" width="220" height="170" as="geometry" />
+        </mxCell>
+
+        <mxCell id="warehouse_locations" value="&lt;div style='background:#2E7D32;color:white;padding:5px;font-weight:bold;'&gt;warehouse_locations&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;🔗 warehouse_id: bigint&lt;br&gt;name: string&lt;br&gt;code: string&lt;br&gt;location_type: enum&lt;br&gt;aisle, rack, shelf, level&lt;br&gt;is_active: boolean&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="360" y="600" width="220" height="170" as="geometry" />
+        </mxCell>
+
+        <mxCell id="stock" value="&lt;div style='background:#2E7D32;color:white;padding:5px;font-weight:bold;'&gt;stock&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;🔗 product_id: bigint&lt;br&gt;🔗 warehouse_id: bigint&lt;br&gt;🔗 warehouse_location_id: bigint&lt;br&gt;quantity: decimal&lt;br&gt;reserved_quantity: decimal&lt;br&gt;available_quantity: decimal&lt;br&gt;minimum_stock, maximum_stock&lt;br&gt;reorder_point: decimal&lt;br&gt;status: string&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="100" y="810" width="240" height="210" as="geometry" />
+        </mxCell>
+
+        <mxCell id="inventory_movements" value="&lt;div style='background:#2E7D32;color:white;padding:5px;font-weight:bold;'&gt;inventory_movements&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;movement_type: enum(entry/exit/transfer/adjustment)&lt;br&gt;🔗 product_id: bigint&lt;br&gt;🔗 warehouse_id: bigint&lt;br&gt;🔗 destination_warehouse_id: bigint&lt;br&gt;quantity: decimal&lt;br&gt;previous_stock, new_stock&lt;br&gt;🔗 gl_journal_entry_id: bigint&lt;br&gt;status: string&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="360" y="810" width="260" height="210" as="geometry" />
+        </mxCell>
+
+        <!-- Contacts Module (Party Pattern) - Top Center -->
+        <mxCell id="contacts" value="&lt;div style='background:#F57C00;color:white;padding:5px;font-weight:bold;'&gt;contacts (Party Pattern)&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;type: enum(company/individual)&lt;br&gt;name: string&lt;br&gt;legal_name, tax_id, email&lt;br&gt;is_customer: boolean&lt;br&gt;is_supplier: boolean&lt;br&gt;credit_limit: decimal&lt;br&gt;minimum_payment_score: decimal&lt;br&gt;current_credit: decimal&lt;br&gt;payment_terms: integer&lt;br&gt;status: enum&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#F57C00;strokeWidth=3;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="700" y="140" width="280" height="240" as="geometry" />
+        </mxCell>
+
+        <mxCell id="contact_addresses" value="&lt;div style='background:#F57C00;color:white;padding:5px;font-weight:bold;'&gt;contact_addresses&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;🔗 contact_id: bigint&lt;br&gt;address_type: string&lt;br&gt;address_line1, address_line2&lt;br&gt;city, state, postal_code&lt;br&gt;country, is_primary&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#F57C00;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="140" width="220" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- Sales Module - Center -->
+        <mxCell id="sales_orders" value="&lt;div style='background:#0288D1;color:white;padding:5px;font-weight:bold;'&gt;sales_orders&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;order_number: string&lt;br&gt;🔗 contact_id: bigint&lt;br&gt;status: enum&lt;br&gt;order_date, approved_at&lt;br&gt;total_amount: decimal&lt;br&gt;🔗 ar_invoice_id: bigint&lt;br&gt;invoicing_status: enum&lt;br&gt;financial_status: enum&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#0288D1;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="700" y="420" width="240" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sales_order_items" value="&lt;div style='background:#0288D1;color:white;padding:5px;font-weight:bold;'&gt;sales_order_items&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;🔗 sales_order_id: bigint&lt;br&gt;🔗 product_id: bigint&lt;br&gt;quantity: decimal&lt;br&gt;unit_price: decimal&lt;br&gt;discount: decimal&lt;br&gt;total: decimal&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#0288D1;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="980" y="420" width="220" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- Purchase Module - Bottom Center -->
+        <mxCell id="purchase_orders" value="&lt;div style='background:#5E35B1;color:white;padding:5px;font-weight:bold;'&gt;purchase_orders&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;order_number: string&lt;br&gt;🔗 contact_id: bigint&lt;br&gt;status: enum&lt;br&gt;order_date: date&lt;br&gt;total_amount: decimal&lt;br&gt;🔗 ap_invoice_id: bigint&lt;br&gt;invoicing_status: enum&lt;br&gt;financial_status: enum&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EDE7F6;strokeColor=#5E35B1;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="700" y="660" width="240" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="purchase_order_items" value="&lt;div style='background:#5E35B1;color:white;padding:5px;font-weight:bold;'&gt;purchase_order_items&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;🔗 purchase_order_id: bigint&lt;br&gt;🔗 product_id: bigint&lt;br&gt;quantity: decimal&lt;br&gt;unit_price: decimal&lt;br&gt;discount: decimal&lt;br&gt;total: decimal&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EDE7F6;strokeColor=#5E35B1;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="980" y="660" width="220" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- Finance Module - Right Side -->
+        <mxCell id="ar_invoices" value="&lt;div style='background:#C62828;color:white;padding:5px;font-weight:bold;'&gt;ar_invoices (Accounts Receivable)&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;invoice_number: string&lt;br&gt;🔗 contact_id: bigint&lt;br&gt;🔗 sales_order_id: bigint&lt;br&gt;invoice_date, due_date, paid_date&lt;br&gt;total_amount: decimal&lt;br&gt;paid_amount: decimal&lt;br&gt;status: enum&lt;br&gt;🔗 journal_entry_id: bigint&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="140" width="300" height="210" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ap_invoices" value="&lt;div style='background:#C62828;color:white;padding:5px;font-weight:bold;'&gt;ap_invoices (Accounts Payable)&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;invoice_number: string&lt;br&gt;🔗 contact_id: bigint&lt;br&gt;🔗 purchase_order_id: bigint&lt;br&gt;invoice_date, due_date&lt;br&gt;total_amount: decimal&lt;br&gt;paid_amount: decimal&lt;br&gt;status: enum&lt;br&gt;🔗 journal_entry_id: bigint&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="380" width="300" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="payments" value="&lt;div style='background:#C62828;color:white;padding:5px;font-weight:bold;'&gt;payments&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;payment_number: string&lt;br&gt;🔗 contact_id: bigint&lt;br&gt;🔗 bank_account_id: bigint&lt;br&gt;🔗 payment_method_id: bigint&lt;br&gt;amount: decimal&lt;br&gt;applied_amount: decimal&lt;br&gt;status: enum&lt;br&gt;🔗 journal_entry_id: bigint&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="620" width="260" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="payment_applications" value="&lt;div style='background:#C62828;color:white;padding:5px;font-weight:bold;'&gt;payment_applications&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;🔗 payment_id: bigint&lt;br&gt;🔗 ar_invoice_id: bigint&lt;br&gt;amount: decimal&lt;br&gt;application_date: date&lt;br&gt;notes: text&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1620" y="140" width="220" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="bank_accounts" value="&lt;div style='background:#C62828;color:white;padding:5px;font-weight:bold;'&gt;bank_accounts&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;account_number: string&lt;br&gt;account_name, bank_name&lt;br&gt;🔗 gl_account_id: bigint&lt;br&gt;current_balance: decimal&lt;br&gt;opening_balance: decimal&lt;br&gt;status: enum&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1620" y="320" width="220" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- Accounting Module - Far Right -->
+        <mxCell id="accounts" value="&lt;div style='background:#1B5E20;color:white;padding:5px;font-weight:bold;'&gt;accounts (Chart of Accounts)&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;code: string (unique)&lt;br&gt;name: string&lt;br&gt;account_type: enum&lt;br&gt;nature: enum(debit/credit)&lt;br&gt;🔗 parent_id: bigint&lt;br&gt;level: integer&lt;br&gt;is_postable: boolean&lt;br&gt;is_cash_flow: boolean&lt;br&gt;status: enum&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#1B5E20;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1900" y="140" width="280" height="220" as="geometry" />
+        </mxCell>
+
+        <mxCell id="journal_entries" value="&lt;div style='background:#1B5E20;color:white;padding:5px;font-weight:bold;'&gt;journal_entries&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;number: string&lt;br&gt;🔗 journal_id: bigint&lt;br&gt;🔗 fiscal_period_id: bigint&lt;br&gt;date: date&lt;br&gt;reference: string&lt;br&gt;total_debit, total_credit&lt;br&gt;status: enum(draft/posted)&lt;br&gt;posted_at, posted_by_id&lt;br&gt;🔗 reversal_of_id: bigint&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#1B5E20;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1900" y="400" width="260" height="230" as="geometry" />
+        </mxCell>
+
+        <mxCell id="journal_lines" value="&lt;div style='background:#1B5E20;color:white;padding:5px;font-weight:bold;'&gt;journal_lines&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;🔗 journal_entry_id: bigint&lt;br&gt;🔗 account_id: bigint&lt;br&gt;🔗 contact_id: bigint (nullable)&lt;br&gt;debit: decimal&lt;br&gt;credit: decimal&lt;br&gt;description: text&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#1B5E20;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="2200" y="400" width="220" height="170" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fiscal_periods" value="&lt;div style='background:#1B5E20;color:white;padding:5px;font-weight:bold;'&gt;fiscal_periods&lt;/div&gt;&lt;hr style='margin:2px 0;'&gt;🔑 id: bigint&lt;br&gt;name: string&lt;br&gt;year, month&lt;br&gt;start_date, end_date&lt;br&gt;status: enum(open/locked/closed)&lt;br&gt;closed_at, closed_by_id&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#1B5E20;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1900" y="670" width="240" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- Key Relationships (selected examples) -->
+
+        <!-- Product → Units -->
+        <mxCell id="rel-product-unit" value="" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;fontSize=10;strokeWidth=2;strokeColor=#1976D2;" edge="1" parent="1" source="products" target="units">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="320" y="195" as="sourcePoint" />
+            <mxPoint x="360" y="195" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Contact → Sales Orders -->
+        <mxCell id="rel-contact-sales" value="" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;fontSize=10;strokeWidth=2;strokeColor=#F57C00;" edge="1" parent="1" source="contacts" target="sales_orders">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- SalesOrder → ARInvoice -->
+        <mxCell id="rel-sales-ar" value="" style="endArrow=ERone;startArrow=ERmany;endFill=0;startFill=0;fontSize=10;strokeWidth=2;strokeColor=#0288D1;" edge="1" parent="1" source="sales_orders" target="ar_invoices">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1100" y="520" />
+              <mxPoint x="1100" y="245" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Contact → Purchase Orders -->
+        <mxCell id="rel-contact-purchase" value="" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;fontSize=10;strokeWidth=2;strokeColor=#F57C00;" edge="1" parent="1" source="contacts" target="purchase_orders">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="840" y="380" />
+              <mxPoint x="840" y="760" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- PurchaseOrder → APInvoice -->
+        <mxCell id="rel-purchase-ap" value="" style="endArrow=ERone;startArrow=ERmany;endFill=0;startFill=0;fontSize=10;strokeWidth=2;strokeColor=#5E35B1;" edge="1" parent="1" source="purchase_orders" target="ap_invoices">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1100" y="760" />
+              <mxPoint x="1100" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ARInvoice → JournalEntry -->
+        <mxCell id="rel-ar-je" value="" style="endArrow=ERone;startArrow=ERmany;endFill=0;startFill=0;fontSize=10;strokeWidth=3;strokeColor=#C62828;" edge="1" parent="1" source="ar_invoices" target="journal_entries">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1700" y="245" />
+              <mxPoint x="1700" y="515" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Payment → PaymentApplication -->
+        <mxCell id="rel-payment-app" value="" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;fontSize=10;strokeWidth=2;strokeColor=#C62828;" edge="1" parent="1" source="payments" target="payment_applications">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1730" y="720" />
+              <mxPoint x="1730" y="215" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- JournalEntry → JournalLines -->
+        <mxCell id="rel-je-lines" value="" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;fontSize=10;strokeWidth=2;strokeColor=#1B5E20;" edge="1" parent="1" source="journal_entries" target="journal_lines">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- JournalLine → Account -->
+        <mxCell id="rel-line-account" value="" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;fontSize=10;strokeWidth=2;strokeColor=#1B5E20;" edge="1" parent="1" source="journal_lines" target="accounts">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2310" y="360" />
+              <mxPoint x="2040" y="360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend" value="&lt;b&gt;Legend:&lt;/b&gt;&lt;br&gt;🔑 Primary Key&lt;br&gt;🔗 Foreign Key&lt;br&gt;&lt;br&gt;&lt;b&gt;Module Colors:&lt;/b&gt;&lt;br&gt;🔵 Product (Blue)&lt;br&gt;🟢 Inventory (Green)&lt;br&gt;🟠 Contacts (Orange)&lt;br&gt;🔵 Sales (Light Blue)&lt;br&gt;🟣 Purchase (Purple)&lt;br&gt;🔴 Finance (Red)&lt;br&gt;🟢 Accounting (Dark Green)&lt;br&gt;&lt;br&gt;&lt;b&gt;Relationships:&lt;/b&gt;&lt;br&gt;─── One to Many&lt;br&gt;Crow's Foot Notation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#333333;strokeWidth=2;align=left;verticalAlign=top;fontSize=11;fontColor=#000000;spacingLeft=15;spacingTop=15;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1080" width="300" height="320" as="geometry" />
+        </mxCell>
+
+        <!-- Summary Stats -->
+        <mxCell id="stats" value="&lt;b style='font-size:14px;'&gt;System Statistics&lt;/b&gt;&lt;hr&gt;&lt;br&gt;&lt;b&gt;Total Tables:&lt;/b&gt; 39+&lt;br&gt;&lt;b&gt;Total Modules:&lt;/b&gt; 7 core + 2 supporting&lt;br&gt;&lt;b&gt;Foreign Key Relationships:&lt;/b&gt; 40+&lt;br&gt;&lt;br&gt;&lt;b&gt;By Module:&lt;/b&gt;&lt;br&gt;• Product: 4 tables&lt;br&gt;• Inventory: 5 tables&lt;br&gt;• Sales: 2 tables&lt;br&gt;• Purchase: 2 tables&lt;br&gt;• Finance: 6 tables&lt;br&gt;• Accounting: 11 tables&lt;br&gt;• Contacts: 4 tables&lt;br&gt;• Ecommerce: 3 tables&lt;br&gt;• Core/Auth: 2 tables&lt;br&gt;&lt;br&gt;&lt;b&gt;Key Features:&lt;/b&gt;&lt;br&gt;• Party Pattern (Contact unifies customers/suppliers)&lt;br&gt;• Event-driven integration&lt;br&gt;• Hierarchical Chart of Accounts&lt;br&gt;• Complete audit trail&lt;br&gt;• Multi-currency support&lt;br&gt;• SAT compliance (7-15 year retention)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF4E6;strokeColor=#E8B44A;strokeWidth=2;align=left;verticalAlign=top;fontSize=11;fontColor=#000000;spacingLeft=15;spacingTop=15;" vertex="1" parent="1">
+          <mxGeometry x="450" y="1080" width="450" height="320" as="geometry" />
+        </mxCell>
+
+        <!-- Notes -->
+        <mxCell id="notes" value="&lt;b style='font-size:14px;'&gt;Important Notes&lt;/b&gt;&lt;hr&gt;&lt;br&gt;&lt;b&gt;1. Party Pattern:&lt;/b&gt;&lt;br&gt;The 'contacts' table uses is_customer and is_supplier flags to unify customer and supplier management. This eliminates duplicate data and enables mixed party scenarios.&lt;br&gt;&lt;br&gt;&lt;b&gt;2. Event-Driven Integration:&lt;/b&gt;&lt;br&gt;SalesOrder → ARInvoice and PurchaseOrder → APInvoice are automated via Laravel events, not direct foreign keys in the initial create.&lt;br&gt;&lt;br&gt;&lt;b&gt;3. GL Integration:&lt;/b&gt;&lt;br&gt;All financial transactions (AR/AP invoices, Payments) automatically create journal entries, ensuring complete accounting audit trail.&lt;br&gt;&lt;br&gt;&lt;b&gt;4. Hierarchical Accounts:&lt;/b&gt;&lt;br&gt;The 'accounts' table has self-referencing parent_id for multi-level chart of accounts (90+ accounts, 4 levels deep).&lt;br&gt;&lt;br&gt;&lt;b&gt;5. Database Integrity:&lt;/b&gt;&lt;br&gt;• CHECK constraints enforce valid enum values&lt;br&gt;• MySQL triggers auto-calculate journal_entry totals&lt;br&gt;• Foreign key constraints with onDelete('restrict')&lt;br&gt;• Indexes on filter/sort fields for performance" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;fontColor=#000000;spacingLeft=15;spacingTop=15;" vertex="1" parent="1">
+          <mxGeometry x="950" y="1080" width="550" height="320" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

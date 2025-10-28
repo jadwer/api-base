@@ -1,0 +1,189 @@
+<mxfile host="app.diagrams.net" modified="2025-10-28T00:00:00.000Z" agent="Claude Code" version="22.1.11">
+  <diagram name="Finance & Accounting ERD" id="erd-finance">
+    <mxGraphModel dx="1600" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="ERD: Finance &amp; Accounting Modules" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="400" y="20" width="800" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="subtitle" value="17 Tables - Complete Financial System Integration" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="400" y="60" width="800" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Finance Module (Left Side) -->
+        <mxCell id="ar_invoices" value="&lt;div style='background:#C62828;color:white;padding:5px;font-weight:bold;'&gt;ar_invoices&lt;/div&gt;&lt;hr&gt;🔑 id&lt;br&gt;invoice_number&lt;br&gt;🔗 contact_id&lt;br&gt;🔗 sales_order_id&lt;br&gt;🔗 journal_entry_id&lt;br&gt;total_amount&lt;br&gt;paid_amount&lt;br&gt;paid_date&lt;br&gt;status&lt;br&gt;due_date" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="100" y="140" width="200" height="180" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ap_invoices" value="&lt;div style='background:#C62828;color:white;padding:5px;font-weight:bold;'&gt;ap_invoices&lt;/div&gt;&lt;hr&gt;🔑 id&lt;br&gt;invoice_number&lt;br&gt;🔗 contact_id&lt;br&gt;🔗 purchase_order_id&lt;br&gt;🔗 journal_entry_id&lt;br&gt;total_amount&lt;br&gt;paid_amount&lt;br&gt;status&lt;br&gt;due_date" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="100" y="360" width="200" height="170" as="geometry" />
+        </mxCell>
+
+        <mxCell id="payments" value="&lt;div style='background:#C62828;color:white;padding:5px;font-weight:bold;'&gt;payments&lt;/div&gt;&lt;hr&gt;🔑 id&lt;br&gt;payment_number&lt;br&gt;🔗 contact_id&lt;br&gt;🔗 bank_account_id&lt;br&gt;🔗 payment_method_id&lt;br&gt;🔗 journal_entry_id&lt;br&gt;amount&lt;br&gt;applied_amount&lt;br&gt;status" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="100" y="570" width="200" height="170" as="geometry" />
+        </mxCell>
+
+        <mxCell id="payment_applications" value="&lt;div style='background:#C62828;color:white;padding:5px;font-weight:bold;'&gt;payment_applications&lt;/div&gt;&lt;hr&gt;🔑 id&lt;br&gt;🔗 payment_id&lt;br&gt;🔗 ar_invoice_id&lt;br&gt;amount&lt;br&gt;application_date&lt;br&gt;notes" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;align=left;verticalAlign=top;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="350" y="140" width="180" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="bank_accounts" value="&lt;div style='background:#C62828;color:white;padding:5px;font-weight:bold;'&gt;bank_accounts&lt;/div&gt;&lt;hr&gt;🔑 id&lt;br&gt;account_number&lt;br&gt;account_name&lt;br&gt;bank_name&lt;br&gt;🔗 gl_account_id&lt;br&gt;current_balance&lt;br&gt;status" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;align=left;verticalAlign=top;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="350" y="300" width="180" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="payment_methods" value="&lt;div style='background:#C62828;color:white;padding:5px;font-weight:bold;'&gt;payment_methods&lt;/div&gt;&lt;hr&gt;🔑 id&lt;br&gt;code, name&lt;br&gt;type&lt;br&gt;requires_reference&lt;br&gt;is_active" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;align=left;verticalAlign=top;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="350" y="480" width="180" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Accounting Module (Right Side) -->
+        <mxCell id="accounts" value="&lt;div style='background:#1B5E20;color:white;padding:5px;font-weight:bold;'&gt;accounts&lt;/div&gt;&lt;hr&gt;🔑 id&lt;br&gt;code (unique)&lt;br&gt;name&lt;br&gt;account_type&lt;br&gt;nature (debit/credit)&lt;br&gt;🔗 parent_id (self)&lt;br&gt;level&lt;br&gt;is_postable&lt;br&gt;status" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#1B5E20;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="600" y="140" width="180" height="170" as="geometry" />
+        </mxCell>
+
+        <mxCell id="journal_entries" value="&lt;div style='background:#1B5E20;color:white;padding:5px;font-weight:bold;'&gt;journal_entries&lt;/div&gt;&lt;hr&gt;🔑 id&lt;br&gt;number&lt;br&gt;🔗 journal_id&lt;br&gt;🔗 fiscal_period_id&lt;br&gt;date&lt;br&gt;total_debit&lt;br&gt;total_credit&lt;br&gt;status&lt;br&gt;posted_at&lt;br&gt;🔗 reversal_of_id" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#1B5E20;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="820" y="140" width="200" height="190" as="geometry" />
+        </mxCell>
+
+        <mxCell id="journal_lines" value="&lt;div style='background:#1B5E20;color:white;padding:5px;font-weight:bold;'&gt;journal_lines&lt;/div&gt;&lt;hr&gt;🔑 id&lt;br&gt;🔗 journal_entry_id&lt;br&gt;🔗 account_id&lt;br&gt;🔗 contact_id&lt;br&gt;debit&lt;br&gt;credit&lt;br&gt;description" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#1B5E20;align=left;verticalAlign=top;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="140" width="180" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fiscal_periods" value="&lt;div style='background:#1B5E20;color:white;padding:5px;font-weight:bold;'&gt;fiscal_periods&lt;/div&gt;&lt;hr&gt;🔑 id&lt;br&gt;name&lt;br&gt;year, month&lt;br&gt;start_date, end_date&lt;br&gt;status (open/locked/closed)&lt;br&gt;closed_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#1B5E20;align=left;verticalAlign=top;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="820" y="370" width="200" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="journals" value="&lt;div style='background:#1B5E20;color:white;padding:5px;font-weight:bold;'&gt;journals&lt;/div&gt;&lt;hr&gt;🔑 id&lt;br&gt;code&lt;br&gt;name&lt;br&gt;type (GL/AR/AP)&lt;br&gt;status" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#1B5E20;align=left;verticalAlign=top;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="600" y="350" width="180" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="journal_sequences" value="&lt;div style='background:#1B5E20;color:white;padding:5px;font-weight:bold;'&gt;journal_sequences&lt;/div&gt;&lt;hr&gt;🔑 id&lt;br&gt;🔗 journal_id&lt;br&gt;year, month&lt;br&gt;last_number&lt;br&gt;prefix, suffix" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#1B5E20;align=left;verticalAlign=top;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="600" y="500" width="180" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="exchange_rates" value="&lt;div style='background:#1B5E20;color:white;padding:5px;font-weight:bold;'&gt;exchange_rates&lt;/div&gt;&lt;hr&gt;🔑 id&lt;br&gt;from_currency&lt;br&gt;to_currency&lt;br&gt;rate&lt;br&gt;effective_date&lt;br&gt;status" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#1B5E20;align=left;verticalAlign=top;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="820" y="540" width="180" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="account_balances" value="&lt;div style='background:#1B5E20;color:white;padding:5px;font-weight:bold;'&gt;account_balances&lt;/div&gt;&lt;hr&gt;🔑 id&lt;br&gt;🔗 account_id&lt;br&gt;🔗 fiscal_period_id&lt;br&gt;beginning_balance&lt;br&gt;period_debit&lt;br&gt;period_credit&lt;br&gt;ending_balance" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#1B5E20;align=left;verticalAlign=top;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="320" width="180" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="critical_logs" value="&lt;div style='background:#E65100;color:white;padding:5px;font-weight:bold;'&gt;critical_action_logs&lt;/div&gt;&lt;hr&gt;🔑 id&lt;br&gt;model_type, model_id&lt;br&gt;action&lt;br&gt;🔗 user_id&lt;br&gt;verification_hash (SHA256)&lt;br&gt;retention_years (7-15)&lt;br&gt;created_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="500" width="200" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- Key Relationships -->
+
+        <!-- AR Invoice → JournalEntry -->
+        <mxCell id="rel-ar-je" value="" style="endArrow=ERone;startArrow=ERmany;endFill=0;startFill=0;strokeWidth=3;strokeColor=#C62828;" edge="1" parent="1" source="ar_invoices" target="journal_entries">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="550" y="230" />
+              <mxPoint x="550" y="100" />
+              <mxPoint x="920" y="100" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Payment → BankAccount -->
+        <mxCell id="rel-pay-bank" value="" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#C62828;" edge="1" parent="1" source="payments" target="bank_accounts">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="300" y="655" />
+              <mxPoint x="300" y="370" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Payment → PaymentApplication -->
+        <mxCell id="rel-pay-app" value="" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#C62828;" edge="1" parent="1" source="payments" target="payment_applications">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="770" />
+              <mxPoint x="60" y="770" />
+              <mxPoint x="60" y="200" />
+              <mxPoint x="440" y="200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- PaymentApplication → AR Invoice -->
+        <mxCell id="rel-app-ar" value="" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#C62828;" edge="1" parent="1" source="payment_applications" target="ar_invoices">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- BankAccount → Account -->
+        <mxCell id="rel-bank-acct" value="GL Link" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#1B5E20;fontSize=9;" edge="1" parent="1" source="bank_accounts" target="accounts">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- JournalEntry → Journal -->
+        <mxCell id="rel-je-journal" value="" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#1B5E20;" edge="1" parent="1" source="journal_entries" target="journals">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="820" y="235" />
+              <mxPoint x="750" y="235" />
+              <mxPoint x="750" y="405" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- JournalEntry → FiscalPeriod -->
+        <mxCell id="rel-je-period" value="" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#1B5E20;" edge="1" parent="1" source="journal_entries" target="fiscal_periods">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="920" y="330" />
+              <mxPoint x="920" y="435" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- JournalEntry → JournalLines -->
+        <mxCell id="rel-je-lines" value="" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#1B5E20;" edge="1" parent="1" source="journal_entries" target="journal_lines">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- JournalLine → Account -->
+        <mxCell id="rel-line-account" value="" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#1B5E20;" edge="1" parent="1" source="journal_lines" target="accounts">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1150" y="120" />
+              <mxPoint x="690" y="120" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Account → AccountBalance -->
+        <mxCell id="rel-acct-bal" value="" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#1B5E20;" edge="1" parent="1" source="accounts" target="account_balances">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="780" y="225" />
+              <mxPoint x="780" y="390" />
+              <mxPoint x="1150" y="390" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Notes -->
+        <mxCell id="notes" value="&lt;b style='font-size:12px;'&gt;Integration Flow:&lt;/b&gt;&lt;br&gt;ARInvoice → JournalEntry → JournalLines → Accounts&lt;br&gt;Payment → BankAccount (GL linked) → JournalEntry&lt;br&gt;PaymentApplication → ARInvoice (balance tracking)&lt;br&gt;&lt;br&gt;&lt;b&gt;Key Features:&lt;/b&gt;&lt;br&gt;• Automatic GL posting from Finance&lt;br&gt;• Hierarchical Chart of Accounts (parent_id)&lt;br&gt;• Period controls (open/locked/closed)&lt;br&gt;• Critical action logs with SHA256 verification&lt;br&gt;• Multi-currency support (exchange_rates)&lt;br&gt;• Complete audit trail (7-15 year retention)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF4E6;strokeColor=#E8B44A;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;fontColor=#000000;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="100" y="800" width="500" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- Stats -->
+        <mxCell id="stats" value="&lt;b style='font-size:12px;'&gt;Module Breakdown:&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Finance Module (6 tables):&lt;/b&gt;&lt;br&gt;• ar_invoices, ap_invoices&lt;br&gt;• payments, payment_applications&lt;br&gt;• bank_accounts, payment_methods&lt;br&gt;&lt;br&gt;&lt;b&gt;Accounting Module (11 tables):&lt;/b&gt;&lt;br&gt;• accounts, journal_entries, journal_lines&lt;br&gt;• fiscal_periods, journals&lt;br&gt;• journal_sequences, exchange_rates&lt;br&gt;• account_balances&lt;br&gt;• critical_action_logs (Phase 3)&lt;br&gt;&lt;br&gt;&lt;b&gt;Total: 17 Tables&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;fontColor=#000000;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="650" y="800" width="360" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- Business Rules -->
+        <mxCell id="rules" value="&lt;b style='font-size:12px;'&gt;Business Rules:&lt;/b&gt;&lt;br&gt;&lt;br&gt;1. Payment Score Calculation:&lt;br&gt;   (on_time_payments / total_paid) × 100&lt;br&gt;&lt;br&gt;2. Credit Validation (Phase 3):&lt;br&gt;   • Credit limit check&lt;br&gt;   • Overdue detection&lt;br&gt;   • Payment score threshold (default 60%)&lt;br&gt;&lt;br&gt;3. GL Posting Rules:&lt;br&gt;   • AR: DR Customers, CR Revenue&lt;br&gt;   • AP: DR Expenses, CR Payables&lt;br&gt;   • Payment: DR Bank, CR Customers&lt;br&gt;&lt;br&gt;4. Period Lock Rules:&lt;br&gt;   • Open: Anyone can post&lt;br&gt;   • Locked: Requires override permission&lt;br&gt;   • Closed: No posting allowed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;fontColor=#000000;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="800" width="300" height="180" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,194 @@
+<mxfile host="app.diagrams.net" modified="2025-10-28T00:00:00.000Z" agent="Claude Code" version="22.1.11">
+  <diagram name="Sales-Purchase-Inventory ERD" id="erd-operational">
+    <mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="ERD: Sales, Purchase &amp; Inventory Modules" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="400" y="20" width="1000" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="subtitle" value="14 Operational Tables - Complete Order & Stock Management Flow" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=15;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="400" y="65" width="1000" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Product Module (Center-Top) -->
+        <mxCell id="products" value="&lt;div style='background:#1976D2;color:white;padding:6px;font-weight:bold;font-size:11px;'&gt;products&lt;/div&gt;&lt;hr style='margin:3px 0;'&gt;🔑 id: bigint&lt;br&gt;name: string(255)&lt;br&gt;sku: string(100) UNIQUE&lt;br&gt;description: text&lt;br&gt;price: decimal(10,2)&lt;br&gt;cost: decimal(10,2)&lt;br&gt;iva: decimal(5,2)&lt;br&gt;🔗 unit_id: bigint FK&lt;br&gt;🔗 category_id: bigint FK&lt;br&gt;🔗 brand_id: bigint FK&lt;br&gt;is_active: boolean DEFAULT true&lt;br&gt;created_at, updated_at&lt;br&gt;&lt;br&gt;INDEX(sku), INDEX(category_id)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="680" y="130" width="260" height="260" as="geometry" />
+        </mxCell>
+
+        <mxCell id="units" value="&lt;div style='background:#1976D2;color:white;padding:6px;font-weight:bold;font-size:11px;'&gt;units&lt;/div&gt;&lt;hr style='margin:3px 0;'&gt;🔑 id: bigint&lt;br&gt;name: string(100)&lt;br&gt;abbreviation: string(20)&lt;br&gt;type: enum('weight','length','volume','unit')&lt;br&gt;is_active: boolean&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="130" width="300" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="categories" value="&lt;div style='background:#1976D2;color:white;padding:6px;font-weight:bold;font-size:11px;'&gt;categories&lt;/div&gt;&lt;hr style='margin:3px 0;'&gt;🔑 id: bigint&lt;br&gt;name: string(255)&lt;br&gt;description: text&lt;br&gt;slug: string(255) UNIQUE&lt;br&gt;is_active: boolean&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="300" width="300" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="brands" value="&lt;div style='background:#1976D2;color:white;padding:6px;font-weight:bold;font-size:11px;'&gt;brands&lt;/div&gt;&lt;hr style='margin:3px 0;'&gt;🔑 id: bigint&lt;br&gt;name: string(255)&lt;br&gt;description: text&lt;br&gt;slug: string(255) UNIQUE&lt;br&gt;logo: string(500)&lt;br&gt;is_active: boolean&lt;br&gt;created_at, updated_at" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1350" y="130" width="300" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- Inventory Module (Left Side) -->
+        <mxCell id="warehouses" value="&lt;div style='background:#2E7D32;color:white;padding:6px;font-weight:bold;font-size:11px;'&gt;warehouses&lt;/div&gt;&lt;hr style='margin:3px 0;'&gt;🔑 id: bigint&lt;br&gt;name: string(255)&lt;br&gt;code: string(50) UNIQUE&lt;br&gt;slug: string(255)&lt;br&gt;address: text, city, state, country&lt;br&gt;postal_code, phone, email&lt;br&gt;warehouse_type: enum('main','distribution','retail')&lt;br&gt;max_capacity: decimal(15,2)&lt;br&gt;capacity_unit: string(50)&lt;br&gt;operating_hours: JSON&lt;br&gt;metadata: JSON&lt;br&gt;is_active: boolean DEFAULT true&lt;br&gt;created_at, updated_at&lt;br&gt;&lt;br&gt;INDEX(code), INDEX(warehouse_type)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="80" y="130" width="310" height="300" as="geometry" />
+        </mxCell>
+
+        <mxCell id="warehouse_locations" value="&lt;div style='background:#2E7D32;color:white;padding:6px;font-weight:bold;font-size:11px;'&gt;warehouse_locations&lt;/div&gt;&lt;hr style='margin:3px 0;'&gt;🔑 id: bigint&lt;br&gt;🔗 warehouse_id: bigint FK&lt;br&gt;name: string(255)&lt;br&gt;code: string(100) UNIQUE&lt;br&gt;location_type: enum('bin','shelf','zone','cold')&lt;br&gt;aisle, rack, shelf, level: string&lt;br&gt;position, barcode: string&lt;br&gt;max_weight, max_volume: decimal&lt;br&gt;dimensions: JSON&lt;br&gt;is_active, is_pickable, is_receivable: boolean&lt;br&gt;priority: integer&lt;br&gt;metadata: JSON&lt;br&gt;created_at, updated_at&lt;br&gt;&lt;br&gt;INDEX(warehouse_id, code)&lt;br&gt;INDEX(location_type, is_active)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="420" y="130" width="230" height="330" as="geometry" />
+        </mxCell>
+
+        <mxCell id="stock" value="&lt;div style='background:#2E7D32;color:white;padding:6px;font-weight:bold;font-size:11px;'&gt;stock&lt;/div&gt;&lt;hr style='margin:3px 0;'&gt;🔑 id: bigint&lt;br&gt;🔗 product_id: bigint FK&lt;br&gt;🔗 warehouse_id: bigint FK&lt;br&gt;🔗 warehouse_location_id: bigint FK&lt;br&gt;quantity: decimal(15,3)&lt;br&gt;reserved_quantity: decimal(15,3)&lt;br&gt;available_quantity: decimal(15,3) GENERATED&lt;br&gt;minimum_stock: decimal(15,3)&lt;br&gt;maximum_stock: decimal(15,3)&lt;br&gt;reorder_point: decimal(15,3)&lt;br&gt;unit_cost: decimal(15,4)&lt;br&gt;total_value: decimal(20,2) GENERATED&lt;br&gt;status: enum('active','depleted','overstock')&lt;br&gt;last_movement_date: datetime&lt;br&gt;last_movement_type: string(50)&lt;br&gt;batch_info: JSON (ArrayHash)&lt;br&gt;metadata: JSON&lt;br&gt;created_at, updated_at&lt;br&gt;&lt;br&gt;UNIQUE(product_id, warehouse_id, warehouse_location_id)&lt;br&gt;INDEX(warehouse_id), INDEX(status)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="80" y="470" width="370" height="400" as="geometry" />
+        </mxCell>
+
+        <mxCell id="product_batches" value="&lt;div style='background:#2E7D32;color:white;padding:6px;font-weight:bold;font-size:11px;'&gt;product_batches&lt;/div&gt;&lt;hr style='margin:3px 0;'&gt;🔑 id: bigint&lt;br&gt;🔗 product_id: bigint FK&lt;br&gt;🔗 warehouse_id: bigint FK&lt;br&gt;🔗 warehouse_location_id: bigint FK&lt;br&gt;batch_number: string(100) UNIQUE&lt;br&gt;lot_number: string(100)&lt;br&gt;manufacturing_date, expiration_date: date&lt;br&gt;best_before_date: date&lt;br&gt;initial_quantity, current_quantity: decimal&lt;br&gt;reserved_quantity, available_quantity: decimal&lt;br&gt;unit_cost, total_value: decimal&lt;br&gt;status: enum('active','expired','recalled')&lt;br&gt;supplier_name, supplier_batch: string&lt;br&gt;quality_notes: text&lt;br&gt;test_results, certifications, metadata: JSON&lt;br&gt;created_at, updated_at&lt;br&gt;&lt;br&gt;INDEX(batch_number), INDEX(expiration_date)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="490" y="500" width="320" height="370" as="geometry" />
+        </mxCell>
+
+        <mxCell id="inventory_movements" value="&lt;div style='background:#2E7D32;color:white;padding:6px;font-weight:bold;font-size:11px;'&gt;inventory_movements&lt;/div&gt;&lt;hr style='margin:3px 0;'&gt;🔑 id: bigint&lt;br&gt;movement_type: enum('entry','exit','transfer','adjustment')&lt;br&gt;reference_type, reference_id: string/bigint&lt;br&gt;movement_date: datetime&lt;br&gt;description: text&lt;br&gt;🔗 product_id: bigint FK&lt;br&gt;🔗 warehouse_id: bigint FK&lt;br&gt;🔗 warehouse_location_id: bigint FK (nullable)&lt;br&gt;🔗 destination_warehouse_id: bigint FK (nullable)&lt;br&gt;🔗 destination_location_id: bigint FK (nullable)&lt;br&gt;quantity: decimal(15,3)&lt;br&gt;unit_cost, total_cost, total_value: decimal&lt;br&gt;status: enum('pending','completed','cancelled')&lt;br&gt;🔗 user_id: bigint FK&lt;br&gt;previous_stock, new_stock: decimal(15,3)&lt;br&gt;batch_info, metadata: JSON&lt;br&gt;🔗 gl_journal_entry_id: bigint FK (nullable)&lt;br&gt;gl_posting_status: string(50)&lt;br&gt;created_at, updated_at&lt;br&gt;&lt;br&gt;INDEX(movement_type, movement_date)&lt;br&gt;INDEX(product_id, warehouse_id)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="850" y="470" width="380" height="400" as="geometry" />
+        </mxCell>
+
+        <!-- Sales Module (Top Right) -->
+        <mxCell id="sales_orders" value="&lt;div style='background:#0288D1;color:white;padding:6px;font-weight:bold;font-size:11px;'&gt;sales_orders&lt;/div&gt;&lt;hr style='margin:3px 0;'&gt;🔑 id: bigint&lt;br&gt;order_number: string(100) UNIQUE&lt;br&gt;🔗 contact_id: bigint FK (is_customer=true)&lt;br&gt;status: enum('pending','approved','in_progress','completed','cancelled')&lt;br&gt;order_date, approved_at, delivered_at: datetime&lt;br&gt;total_amount, discount_total: decimal(15,2)&lt;br&gt;notes, metadata: JSON&lt;br&gt;🔗 ar_invoice_id: bigint FK (nullable)&lt;br&gt;invoicing_status: enum('not_invoiced','partial','invoiced')&lt;br&gt;financial_status: enum('not_invoiced','partial_paid','paid')&lt;br&gt;invoicing_notes: text&lt;br&gt;created_at, updated_at&lt;br&gt;&lt;br&gt;INDEX(order_number), INDEX(contact_id, status)&lt;br&gt;INDEX(invoicing_status)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#0288D1;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="480" width="400" height="310" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sales_order_items" value="&lt;div style='background:#0288D1;color:white;padding:6px;font-weight:bold;font-size:11px;'&gt;sales_order_items&lt;/div&gt;&lt;hr style='margin:3px 0;'&gt;🔑 id: bigint&lt;br&gt;🔗 sales_order_id: bigint FK&lt;br&gt;🔗 product_id: bigint FK&lt;br&gt;quantity: decimal(15,3)&lt;br&gt;unit_price: decimal(15,4)&lt;br&gt;discount: decimal(15,2)&lt;br&gt;total: decimal(15,2)&lt;br&gt;metadata: JSON&lt;br&gt;🔗 ar_invoice_line_id: bigint FK (nullable)&lt;br&gt;invoiced_quantity, invoiced_amount: decimal&lt;br&gt;created_at, updated_at&lt;br&gt;&lt;br&gt;INDEX(sales_order_id)&lt;br&gt;INDEX(product_id)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#0288D1;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1710" y="480" width="300" height="260" as="geometry" />
+        </mxCell>
+
+        <!-- Purchase Module (Bottom Right) -->
+        <mxCell id="purchase_orders" value="&lt;div style='background:#5E35B1;color:white;padding:6px;font-weight:bold;font-size:11px;'&gt;purchase_orders&lt;/div&gt;&lt;hr style='margin:3px 0;'&gt;🔑 id: bigint&lt;br&gt;order_number: string(100) UNIQUE&lt;br&gt;🔗 contact_id: bigint FK (is_supplier=true)&lt;br&gt;order_date: date&lt;br&gt;status: enum('pending','approved','received','cancelled')&lt;br&gt;financial_status: enum('not_invoiced','partial_paid','paid')&lt;br&gt;invoicing_status: enum('not_invoiced','partial','invoiced')&lt;br&gt;total_amount: decimal(15,2)&lt;br&gt;🔗 ap_invoice_id: bigint FK (nullable)&lt;br&gt;notes, metadata: JSON&lt;br&gt;created_at, updated_at&lt;br&gt;&lt;br&gt;INDEX(order_number), INDEX(contact_id, status)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EDE7F6;strokeColor=#5E35B1;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="830" width="400" height="260" as="geometry" />
+        </mxCell>
+
+        <mxCell id="purchase_order_items" value="&lt;div style='background:#5E35B1;color:white;padding:6px;font-weight:bold;font-size:11px;'&gt;purchase_order_items&lt;/div&gt;&lt;hr style='margin:3px 0;'&gt;🔑 id: bigint&lt;br&gt;🔗 purchase_order_id: bigint FK&lt;br&gt;🔗 product_id: bigint FK&lt;br&gt;quantity: decimal(15,3)&lt;br&gt;unit_price: decimal(15,4)&lt;br&gt;discount: decimal(15,2)&lt;br&gt;subtotal, total: decimal(15,2)&lt;br&gt;metadata: JSON&lt;br&gt;🔗 ap_invoice_line_id: bigint FK (nullable)&lt;br&gt;invoiced_quantity, invoiced_amount: decimal&lt;br&gt;created_at, updated_at&lt;br&gt;&lt;br&gt;INDEX(purchase_order_id)&lt;br&gt;INDEX(product_id)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EDE7F6;strokeColor=#5E35B1;align=left;verticalAlign=top;fontSize=10;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1710" y="830" width="300" height="240" as="geometry" />
+        </mxCell>
+
+        <!-- Key Relationships -->
+
+        <!-- Product → Unit -->
+        <mxCell id="rel-product-unit" value="belongs to" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#1976D2;fontSize=9;" edge="1" parent="1" source="products" target="units">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Product → Category -->
+        <mxCell id="rel-product-category" value="belongs to" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#1976D2;fontSize=9;" edge="1" parent="1" source="products" target="categories">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="810" y="390" />
+              <mxPoint x="1150" y="390" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Product → Brand -->
+        <mxCell id="rel-product-brand" value="belongs to" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#1976D2;fontSize=9;" edge="1" parent="1" source="products" target="brands">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="940" y="205" />
+              <mxPoint x="1500" y="205" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Warehouse → WarehouseLocation -->
+        <mxCell id="rel-warehouse-location" value="has many" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#2E7D32;fontSize=9;" edge="1" parent="1" source="warehouses" target="warehouse_locations">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Stock → Product -->
+        <mxCell id="rel-stock-product" value="tracks" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#2E7D32;fontSize=9;" edge="1" parent="1" source="stock" target="products">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="265" y="450" />
+              <mxPoint x="810" y="450" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Stock → Warehouse -->
+        <mxCell id="rel-stock-warehouse" value="stored in" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#2E7D32;fontSize=9;" edge="1" parent="1" source="stock" target="warehouses">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="235" y="470" />
+              <mxPoint x="235" y="430" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- InventoryMovement → Product -->
+        <mxCell id="rel-movement-product" value="moves" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#2E7D32;fontSize=9;" edge="1" parent="1" source="inventory_movements" target="products">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1040" y="470" />
+              <mxPoint x="1040" y="420" />
+              <mxPoint x="810" y="420" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- InventoryMovement → Warehouse (source) -->
+        <mxCell id="rel-movement-warehouse" value="from" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#2E7D32;fontSize=9;dashed=1;" edge="1" parent="1" source="inventory_movements" target="warehouses">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="850" y="670" />
+              <mxPoint x="235" y="670" />
+              <mxPoint x="235" y="430" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- SalesOrderItem → Product -->
+        <mxCell id="rel-soi-product" value="sells" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#0288D1;fontSize=9;" edge="1" parent="1" source="sales_order_items" target="products">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1860" y="450" />
+              <mxPoint x="810" y="450" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- SalesOrderItem → SalesOrder -->
+        <mxCell id="rel-soi-so" value="belongs to" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#0288D1;fontSize=9;" edge="1" parent="1" source="sales_order_items" target="sales_orders">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- PurchaseOrderItem → Product -->
+        <mxCell id="rel-poi-product" value="purchases" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#5E35B1;fontSize=9;" edge="1" parent="1" source="purchase_order_items" target="products">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1860" y="1100" />
+              <mxPoint x="1860" y="440" />
+              <mxPoint x="810" y="440" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- PurchaseOrderItem → PurchaseOrder -->
+        <mxCell id="rel-poi-po" value="belongs to" style="endArrow=ERmany;startArrow=ERone;endFill=0;startFill=0;strokeWidth=2;strokeColor=#5E35B1;fontSize=9;" edge="1" parent="1" source="purchase_order_items" target="purchase_orders">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Notes & Stats -->
+        <mxCell id="notes" value="&lt;b style='font-size:13px;'&gt;Integration Flow:&lt;/b&gt;&lt;hr&gt;&lt;br&gt;&lt;b&gt;Order-to-Cash:&lt;/b&gt;&lt;br&gt;SalesOrder → SalesOrderItems → Product → Stock&lt;br&gt;SalesOrder → ARInvoice (via event - see Finance ERD)&lt;br&gt;&lt;br&gt;&lt;b&gt;Procure-to-Pay:&lt;/b&gt;&lt;br&gt;PurchaseOrder → PurchaseOrderItems → Product → Stock&lt;br&gt;PurchaseOrder → APInvoice (via event - see Finance ERD)&lt;br&gt;&lt;br&gt;&lt;b&gt;Inventory Control:&lt;/b&gt;&lt;br&gt;InventoryMovement tracks all stock changes&lt;br&gt;Stock tracks real-time available quantity&lt;br&gt;ProductBatch for expiration tracking&lt;br&gt;&lt;br&gt;&lt;b&gt;Key Features:&lt;/b&gt;&lt;br&gt;• Multi-warehouse support&lt;br&gt;• Hierarchical warehouse locations (aisle/rack/shelf)&lt;br&gt;• Batch/lot tracking with expiration dates&lt;br&gt;• Reserved quantity for orders&lt;br&gt;• Available quantity = quantity - reserved&lt;br&gt;• Movement audit trail with previous/new stock&lt;br&gt;• GL posting ready (gl_journal_entry_id)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF4E6;strokeColor=#E8B44A;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;fontColor=#000000;spacingLeft=12;spacingTop=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="920" width="530" height="350" as="geometry" />
+        </mxCell>
+
+        <mxCell id="stats" value="&lt;b style='font-size:13px;'&gt;Module Statistics:&lt;/b&gt;&lt;hr&gt;&lt;br&gt;&lt;b&gt;Product Module (4 tables):&lt;/b&gt;&lt;br&gt;• products (master catalog)&lt;br&gt;• units, categories, brands&lt;br&gt;&lt;br&gt;&lt;b&gt;Inventory Module (5 tables):&lt;/b&gt;&lt;br&gt;• warehouses&lt;br&gt;• warehouse_locations&lt;br&gt;• stock (real-time quantity)&lt;br&gt;• product_batches (lot tracking)&lt;br&gt;• inventory_movements (audit trail)&lt;br&gt;&lt;br&gt;&lt;b&gt;Sales Module (2 tables):&lt;/b&gt;&lt;br&gt;• sales_orders&lt;br&gt;• sales_order_items&lt;br&gt;&lt;br&gt;&lt;b&gt;Purchase Module (2 tables):&lt;/b&gt;&lt;br&gt;• purchase_orders&lt;br&gt;• purchase_order_items&lt;br&gt;&lt;br&gt;&lt;b&gt;Total: 14 Operational Tables&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Foreign Keys: 25+&lt;/b&gt;&lt;br&gt;&lt;b&gt;Indexes: 30+&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;fontColor=#000000;spacingLeft=12;spacingTop=12;" vertex="1" parent="1">
+          <mxGeometry x="650" y="920" width="350" height="350" as="geometry" />
+        </mxCell>
+
+        <mxCell id="business-rules" value="&lt;b style='font-size:13px;'&gt;Business Rules:&lt;/b&gt;&lt;hr&gt;&lt;br&gt;&lt;b&gt;Stock Control:&lt;/b&gt;&lt;br&gt;• available_quantity = quantity - reserved_quantity&lt;br&gt;• Cannot oversell (check available before order)&lt;br&gt;• Reorder point triggers purchase suggestions&lt;br&gt;&lt;br&gt;&lt;b&gt;Movement Types:&lt;/b&gt;&lt;br&gt;• entry: Receiving goods (from PO)&lt;br&gt;• exit: Shipping goods (from SO)&lt;br&gt;• transfer: Between warehouses&lt;br&gt;• adjustment: Manual corrections&lt;br&gt;&lt;br&gt;&lt;b&gt;Batch Management:&lt;/b&gt;&lt;br&gt;• FEFO: First Expired, First Out&lt;br&gt;• Automatic expiration alerts&lt;br&gt;• Recalled batch blocking&lt;br&gt;&lt;br&gt;&lt;b&gt;Order Status Flow:&lt;/b&gt;&lt;br&gt;• pending → approved → in_progress → completed&lt;br&gt;• invoicing_status syncs with Finance&lt;br&gt;• financial_status tracks payment&lt;br&gt;&lt;br&gt;&lt;b&gt;Validation Rules:&lt;/b&gt;&lt;br&gt;• Unique SKU per product&lt;br&gt;• Unique order_number per order&lt;br&gt;• Unique batch_number per batch&lt;br&gt;• Contact must be customer/supplier (Party Pattern)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;align=left;verticalAlign=top;fontSize=10;fontColor=#000000;spacingLeft=12;spacingTop=12;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="920" width="440" height="350" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
