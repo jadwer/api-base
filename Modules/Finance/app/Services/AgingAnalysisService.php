@@ -47,8 +47,8 @@ class AgingAnalysisService
                 $balance = $invoice->total_amount - $invoice->paid_amount;
 
                 // Calcular días vencidos (positivo = vencido, negativo = por vencer)
-                $daysOverdue = Carbon::parse($asOfDate)
-                    ->diffInDays(Carbon::parse($invoice->due_date), false);
+                $daysOverdue = (int) Carbon::parse($invoice->due_date)
+                    ->diffInDays(Carbon::parse($asOfDate), false);
 
                 return [
                     'invoice_id' => $invoice->id,
@@ -98,8 +98,8 @@ class AgingAnalysisService
                 $balance = $invoice->total_amount - $invoice->paid_amount;
 
                 // Calcular días vencidos
-                $daysOverdue = Carbon::parse($asOfDate)
-                    ->diffInDays(Carbon::parse($invoice->due_date), false);
+                $daysOverdue = (int) Carbon::parse($invoice->due_date)
+                    ->diffInDays(Carbon::parse($asOfDate), false);
 
                 return [
                     'invoice_id' => $invoice->id,
