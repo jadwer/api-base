@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules/Purchase\Events;
+namespace Modules\Purchase\Events;
 
 use Modules\Purchase\Models\PurchaseOrder;
 use Illuminate\Broadcasting\InteractsWithSockets;
