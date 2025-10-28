@@ -305,32 +305,28 @@ class ProductIndexTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
-        // Run seeders to get products with known brands
-        $this->artisan('db:seed', ['--class' => 'Modules\\Product\\Database\\Seeders\\ProductDatabaseSeeder']);
+        // Create test brands and products
+        $apple = Brand::factory()->create(['name' => 'Apple']);
+        $samsung = Brand::factory()->create(['name' => 'Samsung']);
+        $sony = Brand::factory()->create(['name' => 'Sony']);
 
-        // Filter by Apple (2) and Samsung (1) brands
-        $response = $this->jsonApi()->get('/api/v1/products?filter[brands]=2,1');
+        Product::factory()->count(2)->create(['brand_id' => $apple->id]);
+        Product::factory()->count(2)->create(['brand_id' => $samsung->id]);
+        Product::factory()->count(1)->create(['brand_id' => $sony->id]);
+
+        // Filter by Apple and Samsung brands
+        $response = $this->jsonApi()->get("/api/v1/products?filter[brands]={$apple->id},{$samsung->id}");
 
         $response->assertOk();
         $products = $response->json('data');
-        
-        $this->assertGreaterThan(0, count($products), 'Should find products from Apple and Samsung');
-        
-        // Verify products are only from Apple (brand_id=2) or Samsung (brand_id=1)
-        foreach ($products as $product) {
-            $name = $product['attributes']['name'];
-            $isApple = str_contains($name, 'iPhone') || str_contains($name, 'MacBook') || str_contains($name, 'iPad') || str_contains($name, 'AirPods') || str_contains($name, 'Apple');
-            $isSamsung = str_contains($name, 'Samsung') || str_contains($name, 'Galaxy');
-            
-            $this->assertTrue($isApple || $isSamsung, "Product '{$name}' should be from Apple or Samsung");
-        }
-        
-        echo "\n🔍 MÚLTIPLES MARCAS (Apple + Samsung):\n";
-        foreach ($products as $product) {
-            $name = $product['attributes']['name'];
-            $sku = $product['attributes']['sku'];
-            echo "   • {$name} ({$sku})\n";
-        }
+
+        $this->assertCount(4, $products, 'Should find 4 products from Apple and Samsung');
+
+        // Verify products are only from Apple or Samsung
+        $brandIds = collect($products)->pluck('relationships.brand.data.id')->unique();
+        $this->assertCount(2, $brandIds, 'Should only have products from 2 brands');
+        $this->assertTrue($brandIds->contains((string)$apple->id), 'Should have Apple products');
+        $this->assertTrue($brandIds->contains((string)$samsung->id), 'Should have Samsung products');
     }
 
     public function test_admin_can_filter_products_by_single_brand(): void
@@ -338,27 +334,25 @@ class ProductIndexTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
-        // Run seeders to get products with known brands
-        $this->artisan('db:seed', ['--class' => 'Modules\\Product\\Database\\Seeders\\ProductDatabaseSeeder']);
+        // Create test brands and products
+        $apple = Brand::factory()->create(['name' => 'Apple']);
+        $samsung = Brand::factory()->create(['name' => 'Samsung']);
 
-        // Filter by Apple only (brand_id=2)
-        $response = $this->jsonApi()->get('/api/v1/products?filter[brand_id]=2');
+        Product::factory()->count(3)->create(['brand_id' => $apple->id]);
+        Product::factory()->count(2)->create(['brand_id' => $samsung->id]);
+
+        // Filter by Apple only
+        $response = $this->jsonApi()->get("/api/v1/products?filter[brand_id]={$apple->id}");
 
         $response->assertOk();
         $products = $response->json('data');
-        
-        $this->assertGreaterThan(0, count($products), 'Should find Apple products');
-        
+
+        $this->assertCount(3, $products, 'Should find 3 Apple products');
+
         // Verify all products are from Apple
         foreach ($products as $product) {
-            $name = $product['attributes']['name'];
-            $isApple = str_contains($name, 'iPhone') || str_contains($name, 'MacBook') || str_contains($name, 'iPad') || str_contains($name, 'AirPods') || str_contains($name, 'Apple');
-            $this->assertTrue($isApple, "Product '{$name}' should be from Apple");
-        }
-        
-        echo "\n🍎 MARCA ÚNICA (Apple):\n";
-        foreach ($products as $product) {
-            echo "   • " . $product['attributes']['name'] . "\n";
+            $brandId = $product['relationships']['brand']['data']['id'] ?? null;
+            $this->assertEquals((string)$apple->id, $brandId, 'All products should be from Apple');
         }
     }
 
@@ -367,28 +361,29 @@ class ProductIndexTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
-        // Run seeders to get products with known brands
-        $this->artisan('db:seed', ['--class' => 'Modules\\Product\\Database\\Seeders\\ProductDatabaseSeeder']);
+        // Create test brands and products
+        $apple = Brand::factory()->create(['name' => 'Apple']);
+        $samsung = Brand::factory()->create(['name' => 'Samsung']);
 
-        // Search for "Pro" products only from Apple (brand_id=2)
-        $response = $this->jsonApi()->get('/api/v1/products?filter[search_name]=Pro&filter[brands]=2');
+        Product::factory()->create(['name' => 'iPhone Pro', 'brand_id' => $apple->id]);
+        Product::factory()->create(['name' => 'MacBook Pro', 'brand_id' => $apple->id]);
+        Product::factory()->create(['name' => 'iPad Air', 'brand_id' => $apple->id]);
+        Product::factory()->create(['name' => 'Galaxy Pro', 'brand_id' => $samsung->id]);
+
+        // Search for "Pro" products only from Apple
+        $response = $this->jsonApi()->get("/api/v1/products?filter[search_name]=Pro&filter[brands]={$apple->id}");
 
         $response->assertOk();
         $products = $response->json('data');
-        
-        $this->assertGreaterThan(0, count($products), 'Should find Apple products with "Pro" in name');
-        
+
+        $this->assertCount(2, $products, 'Should find 2 Apple products with "Pro" in name');
+
         // Verify all products contain "Pro" and are from Apple
         foreach ($products as $product) {
             $name = $product['attributes']['name'];
-            $this->assertStringContainsString('Pro', $name, "Product name '{$name}' should contain 'Pro'");
-            $isApple = str_contains($name, 'iPhone') || str_contains($name, 'MacBook') || str_contains($name, 'iPad') || str_contains($name, 'AirPods') || str_contains($name, 'Apple');
-            $this->assertTrue($isApple, "Product '{$name}' should be from Apple");
-        }
-        
-        echo "\n🎯 BÚSQUEDA + MARCA ('Pro' en Apple):\n";
-        foreach ($products as $product) {
-            echo "   • " . $product['attributes']['name'] . "\n";
+            $brandId = $product['relationships']['brand']['data']['id'] ?? null;
+            $this->assertStringContainsString('Pro', $name, "Product name should contain 'Pro'");
+            $this->assertEquals((string)$apple->id, $brandId, 'Product should be from Apple');
         }
     }
 
@@ -397,26 +392,33 @@ class ProductIndexTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
-        // Run seeders to get products with known brands
-        $this->artisan('db:seed', ['--class' => 'Modules\\Product\\Database\\Seeders\\ProductDatabaseSeeder']);
+        // Create test brands and products
+        $apple = Brand::factory()->create(['name' => 'Apple']);
+        $samsung = Brand::factory()->create(['name' => 'Samsung']);
+        $sony = Brand::factory()->create(['name' => 'Sony']);
 
-        // Search for "Ultra" products from Samsung and Apple (should only find Samsung)
-        $response = $this->jsonApi()->get('/api/v1/products?filter[search_name]=Ultra&filter[brands]=2,1');
+        Product::factory()->create(['name' => 'Galaxy Ultra', 'brand_id' => $samsung->id]);
+        Product::factory()->create(['name' => 'Ultra Pro Phone', 'brand_id' => $samsung->id]);
+        Product::factory()->create(['name' => 'iPhone 14', 'brand_id' => $apple->id]);
+        Product::factory()->create(['name' => 'Ultra TV', 'brand_id' => $sony->id]);
+
+        // Search for "Ultra" products from Samsung and Apple only
+        $response = $this->jsonApi()->get("/api/v1/products?filter[search_name]=Ultra&filter[brands]={$samsung->id},{$apple->id}");
 
         $response->assertOk();
         $products = $response->json('data');
-        
-        $this->assertGreaterThan(0, count($products), 'Should find products with "Ultra" in name');
-        
-        // Verify all products contain "Ultra"
+
+        $this->assertCount(2, $products, 'Should find 2 Samsung products with "Ultra" in name');
+
+        // Verify all products contain "Ultra" and are from Samsung or Apple
         foreach ($products as $product) {
             $name = $product['attributes']['name'];
-            $this->assertStringContainsString('Ultra', $name, "Product name '{$name}' should contain 'Ultra'");
-        }
-        
-        echo "\n🔍 BÚSQUEDA MÚLTIPLE ('Ultra' en Apple + Samsung):\n";
-        foreach ($products as $product) {
-            echo "   • " . $product['attributes']['name'] . "\n";
+            $brandId = $product['relationships']['brand']['data']['id'] ?? null;
+            $this->assertStringContainsString('Ultra', $name, "Product name should contain 'Ultra'");
+            $this->assertTrue(
+                $brandId === (string)$samsung->id || $brandId === (string)$apple->id,
+                'Product should be from Samsung or Apple'
+            );
         }
     }
 }

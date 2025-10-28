@@ -31,28 +31,37 @@ class SalesOrderIndexTest extends TestCase
     public function test_admin_can_sort_sales_orders_by_order_number(): void
     {
         $admin = $this->getAdminUser();
-        
+
         $customer = Contact::factory()->customer()->create();
         SalesOrder::factory()->create([
             'contact_id' => $customer->id,
-            'order_number' => 'SO-2024-002'
+            'order_number' => 'SO-2024-ZZZ' // Will sort last
         ]);
         SalesOrder::factory()->create([
             'contact_id' => $customer->id,
-            'order_number' => 'SO-2024-001'
+            'order_number' => 'SO-2024-AAA' // Will sort first
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('sales-orders')
-            ->get('/api/v1/sales-orders?sort=order_number');
+            ->get('/api/v1/sales-orders?sort=orderNumber&page[size]=100');
 
         $response->assertOk();
-        $orderNumbers = collect($response->json('data'))->pluck('attributes.orderNumber')->filter(function($num) {
-            return in_array($num, ['SO-2024-001', 'SO-2024-002']);
+
+        // Verify sorting: first item should have orderNumber starting with 'SO-2024-AAA'
+        $data = $response->json('data');
+        $this->assertGreaterThan(0, count($data), 'Should have at least one sales order');
+
+        // Find our test orders in the response
+        $testOrders = collect($data)->filter(function($item) {
+            $num = $item['attributes']['orderNumber'] ?? null;
+            return $num === 'SO-2024-AAA' || $num === 'SO-2024-ZZZ';
         })->values();
-        $this->assertCount(2, $orderNumbers);
-        $this->assertEquals('SO-2024-001', $orderNumbers->first());
+
+        $this->assertCount(2, $testOrders, 'Should find both test orders');
+        $this->assertEquals('SO-2024-AAA', $testOrders[0]['attributes']['orderNumber'], 'First should be AAA (sorted ascending)');
+        $this->assertEquals('SO-2024-ZZZ', $testOrders[1]['attributes']['orderNumber'], 'Second should be ZZZ');
     }
 
     public function test_admin_can_filter_sales_orders_by_status(): void
