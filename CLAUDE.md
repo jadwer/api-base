@@ -37,15 +37,22 @@ Claude Code MUST NEVER execute git commit commands automatically. Always provide
 
 **Critical Documents:**
 - **🔴 DATABASE SCHEMA REFERENCE:** `docs/DATABASE_SCHEMA_REFERENCE.md` **← READ FIRST ALWAYS**
-- Main roadmap: `PROJECT_ACTION_PLAN.md`
-- **Phase 3 complete:** `docs/development/PHASE3_COMPLETE_2025_10_27.md` ✅
-- **Event-driven integration:** `docs/development/EVENT_DRIVEN_INTEGRATION_2025_10_27.md`
-- **Known issues:** `docs/development/KNOWN_ISSUES_PHASE3.md`
-- Testing guide: `TESTING_GUIDE.md`
-- Phase 3 roadmap: `docs/roadmaps/phases/PHASE_3_BUSINESS_RULES.md`
+- **🏗️ ARCHITECTURE (NEW):** `docs/architecture/README.md` **← Complete system documentation**
+- **🎯 DEVELOPMENT ROADMAP:** `docs/DEVELOPMENT_ROADMAP.md` **← Active planning & next steps**
+- **📋 BUSINESS RULES:** `docs/architecture/BUSINESS_RULES_COMPLETE.md` **← 150+ rules inventory**
+- **🔄 BUSINESS FLOWS:** `docs/architecture/BUSINESS_FLOWS.md` **← Order-to-Cash, Procure-to-Pay**
+- **🗄️ DATABASE DIAGRAMS:** `docs/architecture/ERD_DOCUMENTATION.md` **← Complete ERDs**
+- **🌐 FRONTEND GUIDE:** `docs/FRONTEND_INTEGRATION_GUIDE.md` **← API integration guide**
 - Module blueprint: `docs/development/module-blueprint-master.md`
+- Testing guide: `TESTING_GUIDE.md`
+- Main roadmap: `PROJECT_ACTION_PLAN.md`
+
+**Historical Reference (Archived):**
+- Phase 3 complete: `docs/archived/phase-summaries/PHASE3_COMPLETE.md`
+- Phase roadmaps: `docs/archived/phase-roadmaps/PHASE_1-3_*.md`
 
 **ALWAYS** consult `DATABASE_SCHEMA_REFERENCE.md` FIRST before ANY database/model work.
+**For system architecture understanding**, start with `docs/architecture/README.md`.
 
 ## Project Overview
 
