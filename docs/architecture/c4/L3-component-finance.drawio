@@ -1,0 +1,188 @@
+<mxfile host="app.diagrams.net" modified="2025-10-28T00:00:00.000Z" agent="Claude Code" version="22.1.11">
+  <diagram name="C4 L3 - Finance Module Components" id="finance-components">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="C4 Level 3: Component Diagram - Finance Module" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="350" y="30" width="700" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Module Boundary -->
+        <mxCell id="module-boundary" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#438DD5;strokeWidth=3;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="100" width="1200" height="850" as="geometry" />
+        </mxCell>
+
+        <mxCell id="module-label" value="Finance Module Container" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#438DD5;" vertex="1" parent="1">
+          <mxGeometry x="120" y="110" width="300" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Services Layer -->
+        <mxCell id="services-label" value="Business Services Layer" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="140" y="160" width="200" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- ARInvoiceService -->
+        <mxCell id="ar-invoice-service" value="&lt;b&gt;ARInvoiceService&lt;/b&gt;&lt;br&gt;[Service Component]&lt;br&gt;&lt;br&gt;• createInvoice()&lt;br&gt;• updateInvoice()&lt;br&gt;• calculateRemainingBalance()&lt;br&gt;• isFullyPaid()&lt;br&gt;• isOverdue()&lt;br&gt;&lt;br&gt;Manages AR invoice lifecycle with GL integration" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85BBF0;strokeColor=none;fontColor=#000000;fontSize=10;align=left;verticalAlign=top;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="140" y="200" width="220" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- APInvoiceService -->
+        <mxCell id="ap-invoice-service" value="&lt;b&gt;APInvoiceService&lt;/b&gt;&lt;br&gt;[Service Component]&lt;br&gt;&lt;br&gt;• createInvoice()&lt;br&gt;• updateInvoice()&lt;br&gt;• calculateRemainingBalance()&lt;br&gt;• isFullyPaid()&lt;br&gt;• isOverdue()&lt;br&gt;&lt;br&gt;Manages AP invoice lifecycle with GL integration" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85BBF0;strokeColor=none;fontColor=#000000;fontSize=10;align=left;verticalAlign=top;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="400" y="200" width="220" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- CreditManagementService -->
+        <mxCell id="credit-service" value="&lt;b&gt;CreditManagementService&lt;/b&gt;&lt;br&gt;[Service Component - Phase 3]&lt;br&gt;&lt;br&gt;• validateCustomerCredit()&lt;br&gt;• getCurrentARBalance()&lt;br&gt;• getOverdueAmount()&lt;br&gt;• calculatePaymentScore()&lt;br&gt;• getCreditAnalysis()&lt;br&gt;• getAgingSummary()&lt;br&gt;&lt;br&gt;Credit limits, payment scoring, aging" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C7E9C0;strokeColor=#2E7D32;strokeWidth=2;fontColor=#000000;fontSize=10;align=left;verticalAlign=top;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="660" y="200" width="220" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- ApprovalWorkflowService -->
+        <mxCell id="approval-service" value="&lt;b&gt;ApprovalWorkflowService&lt;/b&gt;&lt;br&gt;[Service Component - Phase 3]&lt;br&gt;&lt;br&gt;• requiresARApproval()&lt;br&gt;• requiresAPApproval()&lt;br&gt;• getRequiredApprovers()&lt;br&gt;• approveInvoice()&lt;br&gt;• rejectInvoice()&lt;br&gt;&lt;br&gt;Multi-tier approval routing (3 tiers AR/AP)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C7E9C0;strokeColor=#2E7D32;strokeWidth=2;fontColor=#000000;fontSize=10;align=left;verticalAlign=top;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="920" y="200" width="230" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- BankReconciliationService -->
+        <mxCell id="bank-recon-service" value="&lt;b&gt;BankReconciliationService&lt;/b&gt;&lt;br&gt;[Service Component - Phase 3]&lt;br&gt;&lt;br&gt;• autoReconcile()&lt;br&gt;• markAsReconciled()&lt;br&gt;• bulkReconcile()&lt;br&gt;• getReconciliationSummary()&lt;br&gt;&lt;br&gt;Auto-matching (3 strategies), confidence scoring" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C7E9C0;strokeColor=#2E7D32;strokeWidth=2;fontColor=#000000;fontSize=10;align=left;verticalAlign=top;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="140" y="380" width="240" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- PaymentApplicationService -->
+        <mxCell id="payment-app-service" value="&lt;b&gt;PaymentApplicationService&lt;/b&gt;&lt;br&gt;[Service Component]&lt;br&gt;&lt;br&gt;• applyPayment()&lt;br&gt;• unapplyPayment()&lt;br&gt;• getApplicationHistory()&lt;br&gt;&lt;br&gt;Links payments to invoices with balance tracking" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85BBF0;strokeColor=none;fontColor=#000000;fontSize=10;align=left;verticalAlign=top;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="420" y="380" width="240" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Models Layer -->
+        <mxCell id="models-label" value="Domain Models Layer" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="140" y="540" width="200" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- ARInvoice Model -->
+        <mxCell id="ar-invoice-model" value="&lt;b&gt;ARInvoice&lt;/b&gt;&lt;br&gt;[Eloquent Model]&lt;br&gt;&lt;br&gt;invoice_number, contact_id&lt;br&gt;sales_order_id, journal_entry_id&lt;br&gt;total_amount, paid_amount&lt;br&gt;status, due_date, paid_date" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#0277BD;strokeWidth=1;fontColor=#000000;fontSize=9;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="140" y="580" width="150" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- APInvoice Model -->
+        <mxCell id="ap-invoice-model" value="&lt;b&gt;APInvoice&lt;/b&gt;&lt;br&gt;[Eloquent Model]&lt;br&gt;&lt;br&gt;invoice_number, contact_id&lt;br&gt;purchase_order_id, journal_entry_id&lt;br&gt;total_amount, paid_amount&lt;br&gt;status, due_date" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#0277BD;strokeWidth=1;fontColor=#000000;fontSize=9;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="320" y="580" width="150" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Payment Model -->
+        <mxCell id="payment-model" value="&lt;b&gt;Payment&lt;/b&gt;&lt;br&gt;[Eloquent Model]&lt;br&gt;&lt;br&gt;payment_number, contact_id&lt;br&gt;bank_account_id, payment_method_id&lt;br&gt;amount, applied_amount&lt;br&gt;unapplied_amount, status" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#0277BD;strokeWidth=1;fontColor=#000000;fontSize=9;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="500" y="580" width="150" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- PaymentApplication Model -->
+        <mxCell id="payment-app-model" value="&lt;b&gt;PaymentApplication&lt;/b&gt;&lt;br&gt;[Eloquent Model]&lt;br&gt;&lt;br&gt;payment_id&lt;br&gt;ar_invoice_id&lt;br&gt;amount&lt;br&gt;application_date" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#0277BD;strokeWidth=1;fontColor=#000000;fontSize=9;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="680" y="580" width="150" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- BankAccount Model -->
+        <mxCell id="bank-account-model" value="&lt;b&gt;BankAccount&lt;/b&gt;&lt;br&gt;[Eloquent Model]&lt;br&gt;&lt;br&gt;account_number, bank_name&lt;br&gt;gl_account_id&lt;br&gt;current_balance&lt;br&gt;opening_balance, status" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#0277BD;strokeWidth=1;fontColor=#000000;fontSize=9;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="860" y="580" width="150" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- PaymentMethod Model -->
+        <mxCell id="payment-method-model" value="&lt;b&gt;PaymentMethod&lt;/b&gt;&lt;br&gt;[Eloquent Model]&lt;br&gt;&lt;br&gt;code, name&lt;br&gt;type&lt;br&gt;requires_reference&lt;br&gt;is_active" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#0277BD;strokeWidth=1;fontColor=#000000;fontSize=9;align=left;verticalAlign=top;spacingLeft=8;spacingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="580" width="150" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- External Dependencies -->
+        <mxCell id="dependencies-label" value="External Dependencies" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="140" y="730" width="200" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Accounting Module -->
+        <mxCell id="accounting-dep" value="&lt;b&gt;Accounting Module&lt;/b&gt;&lt;br&gt;[External Container]&lt;br&gt;&lt;br&gt;AccountingService for GL posting" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EEEEEE;strokeColor=#666666;strokeWidth=2;fontColor=#000000;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="140" y="770" width="180" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Contacts Module -->
+        <mxCell id="contacts-dep" value="&lt;b&gt;Contacts Module&lt;/b&gt;&lt;br&gt;[External Container]&lt;br&gt;&lt;br&gt;Contact (Party Pattern)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EEEEEE;strokeColor=#666666;strokeWidth=2;fontColor=#000000;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="360" y="770" width="160" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Sales Module -->
+        <mxCell id="sales-dep" value="&lt;b&gt;Sales Module&lt;/b&gt;&lt;br&gt;[External Container]&lt;br&gt;&lt;br&gt;SalesOrder linkage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EEEEEE;strokeColor=#666666;strokeWidth=2;fontColor=#000000;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="560" y="770" width="140" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Purchase Module -->
+        <mxCell id="purchase-dep" value="&lt;b&gt;Purchase Module&lt;/b&gt;&lt;br&gt;[External Container]&lt;br&gt;&lt;br&gt;PurchaseOrder linkage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EEEEEE;strokeColor=#666666;strokeWidth=2;fontColor=#000000;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="740" y="770" width="150" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Event Bus -->
+        <mxCell id="event-dep" value="&lt;b&gt;Event Bus&lt;/b&gt;&lt;br&gt;[External Container]&lt;br&gt;&lt;br&gt;Fires: ARInvoicePosted, APInvoicePosted&lt;br&gt;Listens: SalesOrderCompleted, PurchaseOrderReceived" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F57F17;strokeWidth=2;fontColor=#000000;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="930" y="770" width="240" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Service to Service Relationships -->
+        <mxCell id="rel-ar-credit" value="Validates" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=8;strokeColor=#2E7D32;strokeWidth=2;" edge="1" parent="1" source="ar-invoice-service" target="credit-service">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-ar-approval" value="Checks" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;fontSize=8;strokeColor=#2E7D32;strokeWidth=2;dashed=1;" edge="1" parent="1" source="ar-invoice-service" target="approval-service">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="380" y="238" />
+              <mxPoint x="380" y="160" />
+              <mxPoint x="920" y="160" />
+              <mxPoint x="920" y="238" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Service to Model Relationships -->
+        <mxCell id="rel-ar-service-model" value="CRUD" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=8;strokeColor=#0277BD;strokeWidth=2;" edge="1" parent="1" source="ar-invoice-service" target="ar-invoice-model">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-ap-service-model" value="CRUD" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=8;strokeColor=#0277BD;strokeWidth=2;" edge="1" parent="1" source="ap-invoice-service" target="ap-invoice-model">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="510" y="360" />
+              <mxPoint x="395" y="360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="rel-payment-app-service-model" value="CRUD" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=8;strokeColor=#0277BD;strokeWidth=2;" edge="1" parent="1" source="payment-app-service" target="payment-app-model">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="540" y="635" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Service to External Dependencies -->
+        <mxCell id="rel-ar-accounting" value="createJournalEntry()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=8;strokeColor=#666666;strokeWidth=2;" edge="1" parent="1" source="ar-invoice-service" target="accounting-dep">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="350" />
+              <mxPoint x="140" y="720" />
+              <mxPoint x="230" y="720" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="rel-credit-contact" value="Queries" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=8;strokeColor=#666666;strokeWidth=1;dashed=1;" edge="1" parent="1" source="credit-service" target="contacts-dep">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="770" y="740" />
+              <mxPoint x="440" y="740" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Notes -->
+        <mxCell id="notes" value="&lt;b&gt;Key Responsibilities:&lt;/b&gt;&lt;br&gt;• AR/AP Invoice Management with automatic GL posting&lt;br&gt;• Credit Management (limits, scoring, aging analysis) - Phase 3&lt;br&gt;• Multi-tier Approval Workflows (3 tiers AR/AP) - Phase 3&lt;br&gt;• Bank Reconciliation (auto-matching, confidence scoring) - Phase 3&lt;br&gt;• Payment Application (linking payments to invoices)&lt;br&gt;• Event-driven integration with Sales/Purchase modules&lt;br&gt;• 100% test coverage (65+ tests)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF4E6;strokeColor=#E8B44A;align=left;verticalAlign=top;fontSize=10;fontColor=#333333;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="140" y="890" width="1030" height="50" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

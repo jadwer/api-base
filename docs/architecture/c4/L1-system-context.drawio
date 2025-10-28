@@ -1,0 +1,119 @@
+<mxfile host="app.diagrams.net" modified="2025-10-28T00:00:00.000Z" agent="Claude Code" version="22.1.11">
+  <diagram name="C4 L1 - System Context" id="system-context">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="C4 Level 1: System Context Diagram" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="320" y="30" width="530" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="subtitle" value="Laravel Modular ERP - Enterprise Finance &amp; Accounting System" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="320" y="70" width="530" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- External Actors - Left Side -->
+
+        <!-- Customer -->
+        <mxCell id="customer" value="&lt;b&gt;Customer&lt;/b&gt;&lt;br&gt;[Person]&lt;br&gt;&lt;br&gt;End customer using e-commerce, viewing invoices, making payments" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fillColor=#08427B;fontColor=#ffffff;strokeColor=none;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="180" width="80" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Admin User -->
+        <mxCell id="admin" value="&lt;b&gt;Admin User&lt;/b&gt;&lt;br&gt;[Person]&lt;br&gt;&lt;br&gt;System administrator managing products, inventory, orders" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fillColor=#08427B;fontColor=#ffffff;strokeColor=none;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="350" width="80" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Accountant -->
+        <mxCell id="accountant" value="&lt;b&gt;Accountant&lt;/b&gt;&lt;br&gt;[Person]&lt;br&gt;&lt;br&gt;Financial staff managing GL, invoices, payments, reconciliation" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fillColor=#08427B;fontColor=#ffffff;strokeColor=none;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="520" width="80" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Central System -->
+        <mxCell id="erp-system" value="&lt;b&gt;Laravel Modular ERP&lt;/b&gt;&lt;br&gt;[Software System]&lt;br&gt;&lt;br&gt;Complete enterprise resource planning system with integrated modules for Product Management, Inventory, Sales, Purchasing, E-commerce, Finance, and Accounting. Provides JSON:API endpoints, event-driven integration, and real-time financial reporting.&lt;br&gt;&lt;br&gt;• 7 core business modules&lt;br&gt;• 32+ entities with full CRUD&lt;br&gt;• Order-to-Cash automation&lt;br&gt;• Procure-to-Pay automation&lt;br&gt;• Credit management &amp;amp; approval workflows&lt;br&gt;• SAT compliance (7-15 year retention)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=none;fontColor=#ffffff;fontSize=12;align=center;verticalAlign=middle;spacingLeft=10;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="340" y="240" width="490" height="340" as="geometry" />
+        </mxCell>
+
+        <!-- External Systems - Right Side -->
+
+        <!-- Payment Gateway -->
+        <mxCell id="payment-gateway" value="&lt;b&gt;Payment Gateway&lt;/b&gt;&lt;br&gt;[External System]&lt;br&gt;&lt;br&gt;Stripe, MercadoPago&lt;br&gt;&lt;br&gt;Processes online payments from customers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=none;fontColor=#ffffff;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="950" y="180" width="180" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- PAC System -->
+        <mxCell id="pac-system" value="&lt;b&gt;PAC System&lt;/b&gt;&lt;br&gt;[External System]&lt;br&gt;&lt;br&gt;SAT México CFDI&lt;br&gt;&lt;br&gt;Digital stamping and CFDI certification for Mexican invoices" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=none;fontColor=#ffffff;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="950" y="350" width="180" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Bank System -->
+        <mxCell id="bank-system" value="&lt;b&gt;Bank System&lt;/b&gt;&lt;br&gt;[External System]&lt;br&gt;&lt;br&gt;Banking APIs&lt;br&gt;&lt;br&gt;Bank statement downloads, account balances, transaction data" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=none;fontColor=#ffffff;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="950" y="520" width="180" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Relationships - Actors to System -->
+
+        <mxCell id="rel-customer-system" value="Views products, places orders, receives invoices&lt;br&gt;[HTTPS/JSON:API]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;fontSize=10;fontColor=#666666;strokeColor=#08427B;strokeWidth=2;" edge="1" parent="1" source="customer" target="erp-system">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="250" y="240" />
+              <mxPoint x="250" y="325" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="rel-admin-system" value="Manages products, inventory, warehouses, orders&lt;br&gt;[HTTPS/JSON:API]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=10;fontColor=#666666;strokeColor=#08427B;strokeWidth=2;" edge="1" parent="1" source="admin" target="erp-system">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-accountant-system" value="Posts journal entries, approves invoices, reconciles accounts&lt;br&gt;[HTTPS/JSON:API]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;fontSize=10;fontColor=#666666;strokeColor=#08427B;strokeWidth=2;" edge="1" parent="1" source="accountant" target="erp-system">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="250" y="580" />
+              <mxPoint x="250" y="495" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Relationships - System to External Systems -->
+
+        <mxCell id="rel-system-payment" value="Processes payments&lt;br&gt;[HTTPS/REST API]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=10;fontColor=#666666;strokeColor=#1168BD;strokeWidth=2;" edge="1" parent="1" source="erp-system" target="payment-gateway">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-system-pac" value="Requests CFDI stamping&lt;br&gt;[HTTPS/SOAP]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=10;fontColor=#666666;strokeColor=#1168BD;strokeWidth=2;dashed=1;" edge="1" parent="1" source="erp-system" target="pac-system">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-system-bank" value="Downloads statements, checks balances&lt;br&gt;[HTTPS/REST API]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=10;fontColor=#666666;strokeColor=#1168BD;strokeWidth=2;" edge="1" parent="1" source="erp-system" target="bank-system">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend-title" value="Legend" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="80" y="710" width="100" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-person" value="Person" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fillColor=#08427B;fontColor=#ffffff;strokeColor=none;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="80" y="740" width="30" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-system" value="Software System" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=none;fontColor=#ffffff;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="150" y="745" width="120" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-external" value="External System" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=none;fontColor=#ffffff;fontSize=9;align=center;" vertex="1" parent="1">
+          <mxGeometry x="310" y="745" width="120" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Notes -->
+        <mxCell id="notes" value="&lt;b&gt;Key Points:&lt;/b&gt;&lt;br&gt;• JSON:API 1.1 compliant REST API&lt;br&gt;• Laravel 12 with modular architecture&lt;br&gt;• Event-driven integration between modules&lt;br&gt;• 100% test coverage (1,469+ tests)&lt;br&gt;• Production-ready with &amp;lt;200ms response times&lt;br&gt;• Phases 1-3 complete (Accounting, Finance, Business Rules)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF4E6;strokeColor=#E8B44A;align=left;verticalAlign=top;fontSize=10;fontColor=#333333;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="480" y="700" width="350" height="100" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

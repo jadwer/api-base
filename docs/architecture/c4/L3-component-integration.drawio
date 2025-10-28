@@ -1,0 +1,189 @@
+<mxfile host="app.diagrams.net" modified="2025-10-28T00:00:00.000Z" agent="Claude Code" version="22.1.11">
+  <diagram name="C4 L3 - Event-Driven Integration" id="integration-components">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="C4 Level 3: Event-Driven Integration Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="250" y="30" width="800" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="subtitle" value="Cross-Module Automation: Order-to-Cash &amp; Procure-to-Pay" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="250" y="70" width="800" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Event Bus -->
+        <mxCell id="event-bus" value="&lt;b&gt;Laravel Event Bus&lt;/b&gt;&lt;br&gt;[Infrastructure Component]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F57F17;strokeWidth=3;fontColor=#000000;fontSize=14;align=center;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="480" y="400" width="340" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Sales Module -->
+        <mxCell id="sales-module" value="&lt;b&gt;Sales Module&lt;/b&gt;&lt;br&gt;[Container]&lt;br&gt;&lt;br&gt;SalesOrder entity&lt;br&gt;Status: completed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1976D2;strokeWidth=2;fontColor=#000000;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="100" y="160" width="180" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Purchase Module -->
+        <mxCell id="purchase-module" value="&lt;b&gt;Purchase Module&lt;/b&gt;&lt;br&gt;[Container]&lt;br&gt;&lt;br&gt;PurchaseOrder entity&lt;br&gt;Status: received" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1976D2;strokeWidth=2;fontColor=#000000;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="100" y="640" width="180" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Finance Module -->
+        <mxCell id="finance-module" value="&lt;b&gt;Finance Module&lt;/b&gt;&lt;br&gt;[Container]&lt;br&gt;&lt;br&gt;ARInvoice / APInvoice entities&lt;br&gt;ARInvoiceService / APInvoiceService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#388E3C;strokeWidth=2;fontColor=#000000;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="350" width="200" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- Events (Left Side) -->
+
+        <!-- SalesOrderCompleted Event -->
+        <mxCell id="sales-completed-event" value="&lt;b&gt;SalesOrderCompleted&lt;/b&gt;&lt;br&gt;[Event - Phase 3]&lt;br&gt;&lt;br&gt;Payload:&lt;br&gt;• salesOrder: SalesOrder&lt;br&gt;• orderId: int&lt;br&gt;• totalAmount: float&lt;br&gt;• customerId: int" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE082;strokeColor=#F57C00;strokeWidth=2;fontColor=#000000;fontSize=10;align=left;verticalAlign=top;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="330" y="160" width="200" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- PurchaseOrderReceived Event -->
+        <mxCell id="purchase-received-event" value="&lt;b&gt;PurchaseOrderReceived&lt;/b&gt;&lt;br&gt;[Event - Phase 3]&lt;br&gt;&lt;br&gt;Payload:&lt;br&gt;• purchaseOrder: PurchaseOrder&lt;br&gt;• orderId: int&lt;br&gt;• totalAmount: float&lt;br&gt;• supplierId: int" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE082;strokeColor=#F57C00;strokeWidth=2;fontColor=#000000;fontSize=10;align=left;verticalAlign=top;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="330" y="620" width="200" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- ARInvoicePosted Event -->
+        <mxCell id="ar-posted-event" value="&lt;b&gt;ARInvoicePosted&lt;/b&gt;&lt;br&gt;[Event - Phase 3]&lt;br&gt;&lt;br&gt;Payload:&lt;br&gt;• arInvoice: ARInvoice&lt;br&gt;• invoiceId: int&lt;br&gt;• salesOrderId: int&lt;br&gt;• journalEntryId: int" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE082;strokeColor=#F57C00;strokeWidth=2;fontColor=#000000;fontSize=10;align=left;verticalAlign=top;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="750" y="140" width="200" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- APInvoicePosted Event -->
+        <mxCell id="ap-posted-event" value="&lt;b&gt;APInvoicePosted&lt;/b&gt;&lt;br&gt;[Event - Phase 3]&lt;br&gt;&lt;br&gt;Payload:&lt;br&gt;• apInvoice: APInvoice&lt;br&gt;• invoiceId: int&lt;br&gt;• purchaseOrderId: int&lt;br&gt;• journalEntryId: int" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE082;strokeColor=#F57C00;strokeWidth=2;fontColor=#000000;fontSize=10;align=left;verticalAlign=top;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="750" y="640" width="200" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Listeners (Right Side near Event Bus) -->
+
+        <!-- SalesOrderCompletedListener -->
+        <mxCell id="sales-listener" value="&lt;b&gt;SalesOrderCompletedListener&lt;/b&gt;&lt;br&gt;[Listener - Phase 3]&lt;br&gt;&lt;br&gt;handle(SalesOrderCompleted $event):&lt;br&gt;1. Check idempotency (ar_invoice_id exists?)&lt;br&gt;2. Call ARInvoiceService.createInvoice()&lt;br&gt;3. Credit validation (if enabled)&lt;br&gt;4. GL posting automatic&lt;br&gt;5. Update sales_orders.ar_invoice_id&lt;br&gt;6. Catch exceptions (non-blocking)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B2DFDB;strokeColor=#00897B;strokeWidth=2;fontColor=#000000;fontSize=9;align=left;verticalAlign=top;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="570" y="140" width="160" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- PurchaseOrderReceivedListener -->
+        <mxCell id="purchase-listener" value="&lt;b&gt;PurchaseOrderReceivedListener&lt;/b&gt;&lt;br&gt;[Listener - Phase 3]&lt;br&gt;&lt;br&gt;handle(PurchaseOrderReceived $event):&lt;br&gt;1. Check idempotency (ap_invoice_id exists?)&lt;br&gt;2. Call APInvoiceService.createInvoice()&lt;br&gt;3. GL posting automatic&lt;br&gt;4. Update purchase_orders.ap_invoice_id&lt;br&gt;5. Catch exceptions (non-blocking)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B2DFDB;strokeColor=#00897B;strokeWidth=2;fontColor=#000000;fontSize=9;align=left;verticalAlign=top;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="570" y="560" width="160" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- ARInvoicePostedListener -->
+        <mxCell id="ar-listener" value="&lt;b&gt;ARInvoicePostedListener&lt;/b&gt;&lt;br&gt;[Listener - Phase 3]&lt;br&gt;&lt;br&gt;handle(ARInvoicePosted $event):&lt;br&gt;1. Update SalesOrder:&lt;br&gt;   - invoicing_status = 'invoiced'&lt;br&gt;   - financial_status = 'invoiced'&lt;br&gt;   - invoicing_notes&lt;br&gt;2. Trigger credit check (async)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B2DFDB;strokeColor=#00897B;strokeWidth=2;fontColor=#000000;fontSize=9;align=left;verticalAlign=top;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="330" y="320" width="180" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- APInvoicePostedListener -->
+        <mxCell id="ap-listener" value="&lt;b&gt;APInvoicePostedListener&lt;/b&gt;&lt;br&gt;[Listener - Phase 3]&lt;br&gt;&lt;br&gt;handle(APInvoicePosted $event):&lt;br&gt;1. Update PurchaseOrder:&lt;br&gt;   - invoicing_status = 'invoiced'&lt;br&gt;   - financial_status = 'invoiced'&lt;br&gt;   - invoicing_notes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B2DFDB;strokeColor=#00897B;strokeWidth=2;fontColor=#000000;fontSize=9;align=left;verticalAlign=top;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="330" y="490" width="180" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Relationships -->
+
+        <!-- Sales to Event -->
+        <mxCell id="rel-sales-event" value="Fires" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=10;strokeColor=#F57C00;strokeWidth=3;" edge="1" parent="1" source="sales-module" target="sales-completed-event">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Event to Event Bus -->
+        <mxCell id="rel-sales-event-bus" value="Dispatches" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;fontSize=9;strokeColor=#F57C00;strokeWidth=2;dashed=1;" edge="1" parent="1" source="sales-completed-event" target="event-bus">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Event Bus to Listener -->
+        <mxCell id="rel-bus-sales-listener" value="Routes to" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontSize=9;strokeColor=#00897B;strokeWidth=2;" edge="1" parent="1" source="event-bus" target="sales-listener">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Listener to Finance -->
+        <mxCell id="rel-listener-finance" value="Creates AR Invoice" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;fontSize=9;strokeColor=#388E3C;strokeWidth=3;" edge="1" parent="1" source="sales-listener" target="finance-module">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Finance fires ARInvoicePosted -->
+        <mxCell id="rel-finance-ar-event" value="Fires" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.25;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=9;strokeColor=#F57C00;strokeWidth=3;" edge="1" parent="1" source="finance-module" target="ar-posted-event">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ARInvoicePosted to Event Bus -->
+        <mxCell id="rel-ar-event-bus" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;fontSize=9;strokeColor=#F57C00;strokeWidth=2;dashed=1;" edge="1" parent="1" source="ar-posted-event" target="event-bus">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="750" y="200" />
+              <mxPoint x="735" y="200" />
+              <mxPoint x="735" y="400" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Event Bus to ARListener -->
+        <mxCell id="rel-bus-ar-listener" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=9;strokeColor=#00897B;strokeWidth=2;" edge="1" parent="1" source="event-bus" target="ar-listener">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ARListener back to Sales -->
+        <mxCell id="rel-ar-listener-sales" value="Updates status" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontSize=9;strokeColor=#1976D2;strokeWidth=2;dashed=1;" edge="1" parent="1" source="ar-listener" target="sales-module">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="190" y="390" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Purchase Flow (similar pattern) -->
+        <mxCell id="rel-purchase-event" value="Fires" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=10;strokeColor=#F57C00;strokeWidth=3;" edge="1" parent="1" source="purchase-module" target="purchase-received-event">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-purchase-event-bus" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;fontSize=9;strokeColor=#F57C00;strokeWidth=2;dashed=1;" edge="1" parent="1" source="purchase-received-event" target="event-bus">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-bus-purchase-listener" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=9;strokeColor=#00897B;strokeWidth=2;" edge="1" parent="1" source="event-bus" target="purchase-listener">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-purchase-listener-finance" value="Creates AP Invoice" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;fontSize=9;strokeColor=#388E3C;strokeWidth=3;" edge="1" parent="1" source="purchase-listener" target="finance-module">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-finance-ap-event" value="Fires" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=9;strokeColor=#F57C00;strokeWidth=3;" edge="1" parent="1" source="finance-module" target="ap-posted-event">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-ap-event-bus" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;fontSize=9;strokeColor=#F57C00;strokeWidth=2;dashed=1;" edge="1" parent="1" source="ap-posted-event" target="event-bus">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="750" y="700" />
+              <mxPoint x="735" y="700" />
+              <mxPoint x="735" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="rel-bus-ap-listener" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=9;strokeColor=#00897B;strokeWidth=2;" edge="1" parent="1" source="event-bus" target="ap-listener">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="480" y="460" />
+              <mxPoint x="480" y="550" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="rel-ap-listener-purchase" value="Updates status" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=9;strokeColor=#1976D2;strokeWidth=2;dashed=1;" edge="1" parent="1" source="ap-listener" target="purchase-module">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="190" y="550" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend" value="&lt;b&gt;Legend:&lt;/b&gt;&lt;br&gt;━━━ Fires Event&lt;br&gt;- - - Dispatches/Routes&lt;br&gt;━━━ Creates/Updates&lt;br&gt;&lt;br&gt;&lt;b&gt;Safety Features:&lt;/b&gt;&lt;br&gt;• Idempotency checks prevent duplicates&lt;br&gt;• Exceptions are caught (non-blocking)&lt;br&gt;• DB transactions for data consistency&lt;br&gt;• Comprehensive logging for debugging" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF4E6;strokeColor=#E8B44A;align=left;verticalAlign=top;fontSize=10;fontColor=#333333;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="580" width="200" height="180" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

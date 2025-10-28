@@ -1,0 +1,168 @@
+<mxfile host="app.diagrams.net" modified="2025-10-28T00:00:00.000Z" agent="Claude Code" version="22.1.11">
+  <diagram name="C4 L2 - Container" id="container">
+    <mxGraphModel dx="1800" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="C4 Level 2: Container Diagram" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="500" y="30" width="600" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="subtitle" value="Laravel Modular ERP - Internal Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="500" y="70" width="600" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- System Boundary -->
+        <mxCell id="system-boundary" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#1168BD;strokeWidth=3;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="180" y="140" width="1240" height="920" as="geometry" />
+        </mxCell>
+
+        <mxCell id="system-label" value="Laravel Modular ERP System" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;fontColor=#1168BD;" vertex="1" parent="1">
+          <mxGeometry x="200" y="150" width="300" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Frontend / API Gateway Layer -->
+        <mxCell id="frontend" value="&lt;b&gt;Frontend Application&lt;/b&gt;&lt;br&gt;[Vue.js / React SPA]&lt;br&gt;&lt;br&gt;Customer-facing UI for e-commerce, admin dashboard for management, accountant portal for financial operations" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=none;fontColor=#ffffff;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="240" y="220" width="280" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="api-gateway" value="&lt;b&gt;JSON:API Gateway&lt;/b&gt;&lt;br&gt;[Laravel 12]&lt;br&gt;&lt;br&gt;RESTful API following JSON:API 1.1 spec. Sanctum auth, rate limiting, validation, error handling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=none;fontColor=#ffffff;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="600" y="220" width="280" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Core Business Modules Row 1 -->
+        <mxCell id="product-module" value="&lt;b&gt;Product Module&lt;/b&gt;&lt;br&gt;[Laravel Module]&lt;br&gt;&lt;br&gt;4 entities: Product, Category, Brand, Unit&lt;br&gt;Master data for catalog management" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=none;fontColor=#ffffff;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="240" y="380" width="200" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="inventory-module" value="&lt;b&gt;Inventory Module&lt;/b&gt;&lt;br&gt;[Laravel Module]&lt;br&gt;&lt;br&gt;5 entities: Warehouse, Location, Stock, Batch, Movement&lt;br&gt;Real-time stock control" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=none;fontColor=#ffffff;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="480" y="380" width="200" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sales-module" value="&lt;b&gt;Sales Module&lt;/b&gt;&lt;br&gt;[Laravel Module]&lt;br&gt;&lt;br&gt;2 entities: SalesOrder, SalesOrderItem&lt;br&gt;Customer order management" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=none;fontColor=#ffffff;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="720" y="380" width="200" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="purchase-module" value="&lt;b&gt;Purchase Module&lt;/b&gt;&lt;br&gt;[Laravel Module]&lt;br&gt;&lt;br&gt;2 entities: PurchaseOrder, PurchaseOrderItem&lt;br&gt;Supplier order management" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=none;fontColor=#ffffff;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="960" y="380" width="200" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ecommerce-module" value="&lt;b&gt;E-commerce Module&lt;/b&gt;&lt;br&gt;[Laravel Module]&lt;br&gt;&lt;br&gt;3 entities: ShoppingCart, CartItem, Coupon&lt;br&gt;Online shopping experience" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=none;fontColor=#ffffff;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="380" width="200" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Financial Modules Row 2 -->
+        <mxCell id="finance-module" value="&lt;b&gt;Finance Module&lt;/b&gt;&lt;br&gt;[Laravel Module]&lt;br&gt;&lt;br&gt;6 entities: AR/AP Invoice, Payment, PaymentApplication, BankAccount, PaymentMethod&lt;br&gt;&lt;br&gt;6 services: ARInvoice, APInvoice, CreditManagement, ApprovalWorkflow, BankReconciliation, PaymentApplication" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85BBF0;strokeColor=none;fontColor=#000000;fontSize=10;align=center;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="340" y="560" width="280" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="accounting-module" value="&lt;b&gt;Accounting Module&lt;/b&gt;&lt;br&gt;[Laravel Module]&lt;br&gt;&lt;br&gt;11 entities: Account, JournalEntry, JournalLine, FiscalPeriod, Journal, ExchangeRate, etc.&lt;br&gt;&lt;br&gt;4 services: Accounting, PeriodControl, AuditTrail, Sequence" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#85BBF0;strokeColor=none;fontColor=#000000;fontSize=10;align=center;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="680" y="560" width="280" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- Supporting Modules -->
+        <mxCell id="contacts-module" value="&lt;b&gt;Contacts Module&lt;/b&gt;&lt;br&gt;[Laravel Module]&lt;br&gt;&lt;br&gt;Party Pattern: Unified customer/supplier management&lt;br&gt;4 entities: Contact, Address, Document, Person" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=none;fontColor=#ffffff;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="560" width="200" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="permission-module" value="&lt;b&gt;PermissionManager&lt;/b&gt;&lt;br&gt;[Laravel Module]&lt;br&gt;&lt;br&gt;Role-based access control&lt;br&gt;Spatie Laravel Permission" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=none;fontColor=#ffffff;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="560" width="120" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- Event Bus -->
+        <mxCell id="event-bus" value="&lt;b&gt;Event Bus&lt;/b&gt;&lt;br&gt;[Laravel Events]&lt;br&gt;&lt;br&gt;4 Events: SalesOrderCompleted, PurchaseOrderReceived, ARInvoicePosted, APInvoicePosted&lt;br&gt;4 Listeners for cross-module integration" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFD966;strokeColor=none;fontColor=#000000;fontSize=10;align=center;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="240" y="760" width="460" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Database -->
+        <mxCell id="database" value="&lt;b&gt;MySQL Database&lt;/b&gt;&lt;br&gt;[Database]&lt;br&gt;&lt;br&gt;39+ tables across all modules&lt;br&gt;Foreign key constraints, triggers&lt;br&gt;Indexes for performance&lt;br&gt;CHECK constraints for data integrity" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#757575;strokeColor=none;fontColor=#ffffff;fontSize=11;align=center;" vertex="1" parent="1">
+          <mxGeometry x="760" y="780" width="200" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Queue System -->
+        <mxCell id="queue" value="&lt;b&gt;Queue System&lt;/b&gt;&lt;br&gt;[Redis/Database]&lt;br&gt;&lt;br&gt;Async jobs for heavy processing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFD966;strokeColor=none;fontColor=#000000;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="780" width="160" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Cache -->
+        <mxCell id="cache" value="&lt;b&gt;Cache&lt;/b&gt;&lt;br&gt;[Redis]&lt;br&gt;&lt;br&gt;Session, catalog data" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFD966;strokeColor=none;fontColor=#000000;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="780" width="140" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Activity Log -->
+        <mxCell id="activity-log" value="&lt;b&gt;Activity Log&lt;/b&gt;&lt;br&gt;[Spatie Activity Log]&lt;br&gt;&lt;br&gt;Audit trail for all actions" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFD966;strokeColor=none;fontColor=#000000;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="900" width="340" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Relationships -->
+
+        <!-- Frontend to API Gateway -->
+        <mxCell id="rel-frontend-api" value="HTTPS/JSON:API" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=9;strokeColor=#438DD5;strokeWidth=2;" edge="1" parent="1" source="frontend" target="api-gateway">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- API Gateway to Modules -->
+        <mxCell id="rel-api-product" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=9;strokeColor=#438DD5;strokeWidth=1;" edge="1" parent="1" source="api-gateway" target="product-module">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-api-inventory" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=9;strokeColor=#438DD5;strokeWidth=1;" edge="1" parent="1" source="api-gateway" target="inventory-module">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-api-sales" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=9;strokeColor=#438DD5;strokeWidth=1;" edge="1" parent="1" source="api-gateway" target="sales-module">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Module to Database connections -->
+        <mxCell id="rel-finance-db" value="SQL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=52.5;entryPerimeter=0;fontSize=9;strokeColor=#757575;strokeWidth=1;dashed=1;" edge="1" parent="1" source="finance-module" target="database">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-accounting-db" value="SQL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;fontSize=9;strokeColor=#757575;strokeWidth=1;dashed=1;" edge="1" parent="1" source="accounting-module" target="database">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Event-driven integration -->
+        <mxCell id="rel-sales-event" value="Fires events" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;fontSize=9;strokeColor=#FFD966;strokeWidth=2;dashed=1;" edge="1" parent="1" source="sales-module" target="event-bus">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="720" y="540" />
+              <mxPoint x="585" y="540" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="rel-purchase-event" value="Fires events" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;fontSize=9;strokeColor=#FFD966;strokeWidth=2;dashed=1;" edge="1" parent="1" source="purchase-module" target="event-bus">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="960" y="540" />
+              <mxPoint x="700" y="540" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="rel-event-finance" value="Listens" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;fontSize=9;strokeColor=#FFD966;strokeWidth=2;" edge="1" parent="1" source="event-bus" target="finance-module">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="470" y="880" />
+              <mxPoint x="410" y="880" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="rel-finance-accounting" value="Creates GL entries" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=9;strokeColor=#85BBF0;strokeWidth=3;" edge="1" parent="1" source="finance-module" target="accounting-module">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Notes -->
+        <mxCell id="notes" value="&lt;b&gt;Key Integration Patterns:&lt;/b&gt;&lt;br&gt;• Event-Driven: Sales/Purchase → Finance (auto-invoice creation)&lt;br&gt;• Direct Service Calls: Finance → Accounting (GL posting)&lt;br&gt;• Party Pattern: All modules use Contact for customers/suppliers&lt;br&gt;• Shared Services: PermissionManager, Activity Log&lt;br&gt;• Database-level: Foreign key constraints enforce relationships" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF4E6;strokeColor=#E8B44A;align=left;verticalAlign=top;fontSize=10;fontColor=#333333;spacingLeft=10;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="240" y="900" width="460" height="120" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
