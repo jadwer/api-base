@@ -27,3 +27,5 @@ Thumbs.db
 /temp
 /.claude*
 /.claude/*
+# Auto-generated documentation
+docs/api/documentation.md
