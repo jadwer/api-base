@@ -1,0 +1,330 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Inventory Management Flow" id="inventory-management">
+    <mxGraphModel dx="1434" dy="844" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="&lt;b style=&quot;font-size:24px;&quot;&gt;Inventory Management - Movement Types Flow&lt;/b&gt;&lt;br&gt;&lt;br&gt;Complete workflow for 4 movement types: Entry, Exit, Transfer, Adjustment" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="800" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend" value="&lt;b&gt;MOVEMENT TYPES&lt;/b&gt;&lt;hr&gt;&lt;b style=&quot;color:#2E7D32;&quot;&gt;●&lt;/b&gt; Entry (Receiving)&lt;br&gt;&lt;b style=&quot;color:#D32F2F;&quot;&gt;●&lt;/b&gt; Exit (Shipping)&lt;br&gt;&lt;b style=&quot;color:#1976D2;&quot;&gt;●&lt;/b&gt; Transfer (Between WH)&lt;br&gt;&lt;b style=&quot;color:#F57C00;&quot;&gt;●&lt;/b&gt; Adjustment (Manual)&lt;br&gt;&lt;br&gt;&lt;b&gt;AUDIT TRAIL&lt;/b&gt;&lt;hr&gt;All movements log:&lt;br&gt;• previous_stock&lt;br&gt;• new_stock&lt;br&gt;• performed_by&lt;br&gt;• reason" style="text;html=1;strokeColor=#666666;fillColor=#f5f5f5;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="20" width="240" height="280" as="geometry" />
+        </mxCell>
+
+        <!-- ====== ENTRY FLOW (Receiving) ====== -->
+        <mxCell id="section-entry" value="&lt;b style=&quot;font-size:16px;&quot;&gt;1. ENTRY (Receiving)&lt;/b&gt;" style="text;html=1;strokeColor=#2E7D32;fillColor=#E8F5E9;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#1B5E20;" vertex="1" parent="1">
+          <mxGeometry x="40" y="120" width="700" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="entry-trigger" value="&lt;b&gt;Trigger&lt;/b&gt;&lt;br&gt;&lt;br&gt;Purchase Order&lt;br&gt;status='received'" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#66BB6A;strokeColor=none;fontColor=#ffffff;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="60" y="180" width="120" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="entry-validate" value="&lt;b&gt;Validate&lt;/b&gt;&lt;br&gt;&lt;br&gt;• Check PO exists&lt;br&gt;• Verify quantities&lt;br&gt;• Inspect quality" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#4CAF50;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="220" y="180" width="120" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="entry-create-movement" value="&lt;b&gt;Create Movement&lt;/b&gt;&lt;br&gt;&lt;br&gt;movement_type=&lt;br&gt;'entry'&lt;br&gt;&lt;br&gt;• product_id&lt;br&gt;• warehouse_id&lt;br&gt;• quantity (+)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#388E3C;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="380" y="180" width="120" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="entry-update-stock" value="&lt;b&gt;Update Stock&lt;/b&gt;&lt;br&gt;&lt;br&gt;stock.quantity&lt;br&gt;+= quantity&lt;br&gt;&lt;br&gt;previous_stock&lt;br&gt;→ new_stock" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#2E7D32;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="540" y="180" width="120" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="entry-gl-posting" value="&lt;b&gt;GL Posting&lt;/b&gt;&lt;br&gt;&lt;br&gt;DR Inventory&lt;br&gt;Asset&lt;br&gt;&lt;br&gt;CR Accounts&lt;br&gt;Payable" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1B5E20;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="700" y="180" width="100" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Entry Arrows -->
+        <mxCell id="entry-arrow1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#4CAF50;" edge="1" parent="1" source="entry-trigger" target="entry-validate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="entry-arrow2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#4CAF50;" edge="1" parent="1" source="entry-validate" target="entry-create-movement">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="entry-arrow3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#4CAF50;" edge="1" parent="1" source="entry-create-movement" target="entry-update-stock">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="entry-arrow4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#4CAF50;" edge="1" parent="1" source="entry-update-stock" target="entry-gl-posting">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ====== EXIT FLOW (Shipping) ====== -->
+        <mxCell id="section-exit" value="&lt;b style=&quot;font-size:16px;&quot;&gt;2. EXIT (Shipping)&lt;/b&gt;" style="text;html=1;strokeColor=#C62828;fillColor=#FFEBEE;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#B71C1C;" vertex="1" parent="1">
+          <mxGeometry x="40" y="320" width="700" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="exit-trigger" value="&lt;b&gt;Trigger&lt;/b&gt;&lt;br&gt;&lt;br&gt;Sales Order&lt;br&gt;status='completed'" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EF5350;strokeColor=none;fontColor=#ffffff;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="60" y="380" width="120" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="exit-check-stock" value="&lt;b&gt;Check Stock&lt;/b&gt;&lt;br&gt;&lt;br&gt;• Verify availability&lt;br&gt;• Check reserved&lt;br&gt;• Select batch (FEFO)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E53935;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="220" y="380" width="120" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="exit-create-movement" value="&lt;b&gt;Create Movement&lt;/b&gt;&lt;br&gt;&lt;br&gt;movement_type=&lt;br&gt;'exit'&lt;br&gt;&lt;br&gt;• product_id&lt;br&gt;• warehouse_id&lt;br&gt;• quantity (-)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D32F2F;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="380" y="380" width="120" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="exit-update-stock" value="&lt;b&gt;Update Stock&lt;/b&gt;&lt;br&gt;&lt;br&gt;stock.quantity&lt;br&gt;-= quantity&lt;br&gt;&lt;br&gt;previous_stock&lt;br&gt;→ new_stock" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#C62828;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="540" y="380" width="120" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="exit-gl-posting" value="&lt;b&gt;GL Posting&lt;/b&gt;&lt;br&gt;&lt;br&gt;DR COGS&lt;br&gt;&lt;br&gt;CR Inventory&lt;br&gt;Asset" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#B71C1C;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="700" y="380" width="100" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Exit Arrows -->
+        <mxCell id="exit-arrow1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#F44336;" edge="1" parent="1" source="exit-trigger" target="exit-check-stock">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="exit-arrow2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#F44336;" edge="1" parent="1" source="exit-check-stock" target="exit-create-movement">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="exit-arrow3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#F44336;" edge="1" parent="1" source="exit-create-movement" target="exit-update-stock">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="exit-arrow4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#F44336;" edge="1" parent="1" source="exit-update-stock" target="exit-gl-posting">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ====== TRANSFER FLOW ====== -->
+        <mxCell id="section-transfer" value="&lt;b style=&quot;font-size:16px;&quot;&gt;3. TRANSFER (Between Warehouses)&lt;/b&gt;" style="text;html=1;strokeColor=#1565C0;fillColor=#E3F2FD;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#0D47A1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="520" width="1160" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="transfer-request" value="&lt;b&gt;Request&lt;/b&gt;&lt;br&gt;&lt;br&gt;Manager initiates&lt;br&gt;transfer between&lt;br&gt;warehouses" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#42A5F5;strokeColor=none;fontColor=#ffffff;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="60" y="580" width="120" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="transfer-validate" value="&lt;b&gt;Validate&lt;/b&gt;&lt;br&gt;&lt;br&gt;• Source has stock&lt;br&gt;• Destination exists&lt;br&gt;• Authorization check" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#2196F3;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="220" y="580" width="120" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="transfer-create-movement" value="&lt;b&gt;Create Movement&lt;/b&gt;&lt;br&gt;&lt;br&gt;movement_type=&lt;br&gt;'transfer'&lt;br&gt;&lt;br&gt;• source_warehouse&lt;br&gt;• dest_warehouse&lt;br&gt;• quantity" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1E88E5;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="380" y="580" width="130" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="transfer-decrease-source" value="&lt;b&gt;Source -&lt;/b&gt;&lt;br&gt;&lt;br&gt;source_stock.&lt;br&gt;quantity&lt;br&gt;-= quantity" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1976D2;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="550" y="580" width="110" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="transfer-increase-dest" value="&lt;b&gt;Destination +&lt;/b&gt;&lt;br&gt;&lt;br&gt;dest_stock.&lt;br&gt;quantity&lt;br&gt;+= quantity" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1565C0;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="700" y="580" width="110" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="transfer-gl-posting" value="&lt;b&gt;GL Posting&lt;/b&gt;&lt;br&gt;&lt;br&gt;DR Inv WH-B&lt;br&gt;&lt;br&gt;CR Inv WH-A&lt;br&gt;&lt;br&gt;(if different&lt;br&gt;GL accounts)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0D47A1;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="850" y="580" width="110" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="transfer-complete" value="&lt;b&gt;Complete&lt;/b&gt;&lt;br&gt;&lt;br&gt;Update both&lt;br&gt;stocks&lt;br&gt;atomically" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#01579B;strokeColor=none;fontColor=#ffffff;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1000" y="580" width="120" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Transfer Arrows -->
+        <mxCell id="transfer-arrow1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#2196F3;" edge="1" parent="1" source="transfer-request" target="transfer-validate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="transfer-arrow2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#2196F3;" edge="1" parent="1" source="transfer-validate" target="transfer-create-movement">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="transfer-arrow3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#2196F3;" edge="1" parent="1" source="transfer-create-movement" target="transfer-decrease-source">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="transfer-arrow4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#2196F3;" edge="1" parent="1" source="transfer-decrease-source" target="transfer-increase-dest">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="transfer-arrow5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#2196F3;" edge="1" parent="1" source="transfer-increase-dest" target="transfer-gl-posting">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="transfer-arrow6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#2196F3;" edge="1" parent="1" source="transfer-gl-posting" target="transfer-complete">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ====== ADJUSTMENT FLOW ====== -->
+        <mxCell id="section-adjustment" value="&lt;b style=&quot;font-size:16px;&quot;&gt;4. ADJUSTMENT (Manual Correction)&lt;/b&gt;" style="text;html=1;strokeColor=#E65100;fillColor=#FFF3E0;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=14;fontStyle=1;fontColor=#BF360C;" vertex="1" parent="1">
+          <mxGeometry x="40" y="720" width="1080" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="adjustment-trigger" value="&lt;b&gt;Trigger&lt;/b&gt;&lt;br&gt;&lt;br&gt;• Cycle count&lt;br&gt;• Physical&lt;br&gt;  inventory&lt;br&gt;• Damage/theft" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9800;strokeColor=none;fontColor=#ffffff;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="60" y="780" width="120" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="adjustment-count" value="&lt;b&gt;Physical Count&lt;/b&gt;&lt;br&gt;&lt;br&gt;• Count actual&lt;br&gt;• Compare to&lt;br&gt;  system&lt;br&gt;• Note discrepancy" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FB8C00;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="220" y="780" width="120" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="adjustment-decision" value="&lt;b&gt;Discrepancy?&lt;/b&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F57C00;strokeColor=none;fontColor=#ffffff;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="380" y="800" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="adjustment-create-movement" value="&lt;b&gt;Create Movement&lt;/b&gt;&lt;br&gt;&lt;br&gt;movement_type=&lt;br&gt;'adjustment'&lt;br&gt;&lt;br&gt;• quantity (+ or -)&lt;br&gt;• reason (required)&lt;br&gt;• approval" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EF6C00;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="540" y="780" width="140" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="adjustment-update-stock" value="&lt;b&gt;Update Stock&lt;/b&gt;&lt;br&gt;&lt;br&gt;stock.quantity&lt;br&gt;= actual_count&lt;br&gt;&lt;br&gt;(override with&lt;br&gt;physical count)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E65100;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="720" y="780" width="120" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="adjustment-gl-posting" value="&lt;b&gt;GL Posting&lt;/b&gt;&lt;br&gt;&lt;br&gt;If shortage:&lt;br&gt;DR Inv Adjust&lt;br&gt;CR Inventory&lt;br&gt;&lt;br&gt;If overage:&lt;br&gt;DR Inventory&lt;br&gt;CR Inv Adjust" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#BF360C;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="880" y="780" width="120" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="adjustment-no-action" value="&lt;b&gt;No Action&lt;/b&gt;&lt;br&gt;&lt;br&gt;System matches&lt;br&gt;physical count" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#A5D6A7;strokeColor=none;fontColor=#1B5E20;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="380" y="940" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Adjustment Arrows -->
+        <mxCell id="adjustment-arrow1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#FF9800;" edge="1" parent="1" source="adjustment-trigger" target="adjustment-count">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="adjustment-arrow2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#FF9800;" edge="1" parent="1" source="adjustment-count" target="adjustment-decision">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="adjustment-arrow3-yes" value="YES" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#F44336;fontSize=11;fontStyle=1" edge="1" parent="1" source="adjustment-decision" target="adjustment-create-movement">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="adjustment-arrow3-no" value="NO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#4CAF50;fontSize=11;fontStyle=1" edge="1" parent="1" source="adjustment-decision" target="adjustment-no-action">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="adjustment-arrow4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#FF9800;" edge="1" parent="1" source="adjustment-create-movement" target="adjustment-update-stock">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="adjustment-arrow5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#FF9800;" edge="1" parent="1" source="adjustment-update-stock" target="adjustment-gl-posting">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Comparison Table -->
+        <mxCell id="comparison-table" value="&lt;b style=&quot;font-size:14px;&quot;&gt;MOVEMENT TYPE COMPARISON&lt;/b&gt;" style="text;html=1;strokeColor=#333333;fillColor=#f5f5f5;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="1060" width="1480" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Table Header -->
+        <mxCell id="table-header-type" value="&lt;b&gt;Type&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#666666;strokeColor=none;fontColor=#ffffff;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="1100" width="180" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="table-header-trigger" value="&lt;b&gt;Trigger&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#666666;strokeColor=none;fontColor=#ffffff;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="220" y="1100" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="table-header-stock" value="&lt;b&gt;Stock Impact&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#666666;strokeColor=none;fontColor=#ffffff;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="420" y="1100" width="180" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="table-header-gl" value="&lt;b&gt;GL Impact&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#666666;strokeColor=none;fontColor=#ffffff;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="600" y="1100" width="280" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="table-header-auth" value="&lt;b&gt;Authorization&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#666666;strokeColor=none;fontColor=#ffffff;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="880" y="1100" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="table-header-audit" value="&lt;b&gt;Audit Trail&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#666666;strokeColor=none;fontColor=#ffffff;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1080" y="1100" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="table-header-examples" value="&lt;b&gt;Use Cases&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#666666;strokeColor=none;fontColor=#ffffff;fontSize=11;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1280" y="1100" width="240" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Row 1: Entry -->
+        <mxCell id="row1-type" value="&lt;b&gt;ENTRY&lt;/b&gt;&lt;br&gt;(Receiving)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#4CAF50;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1140" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row1-trigger" value="Purchase Order&lt;br&gt;status='received'" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="220" y="1140" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row1-stock" value="+quantity&lt;br&gt;(Increase)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="420" y="1140" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row1-gl" value="DR Inventory Asset&lt;br&gt;CR Accounts Payable" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="600" y="1140" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row1-auth" value="Warehouse Manager" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="880" y="1140" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row1-audit" value="previous_stock,&lt;br&gt;new_stock,&lt;br&gt;PO reference" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="1140" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row1-examples" value="Receiving shipment,&lt;br&gt;Returns from customer,&lt;br&gt;Production output" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="1140" width="240" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Row 2: Exit -->
+        <mxCell id="row2-type" value="&lt;b&gt;EXIT&lt;/b&gt;&lt;br&gt;(Shipping)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#F44336;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1200" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row2-trigger" value="Sales Order&lt;br&gt;status='completed'" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="220" y="1200" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row2-stock" value="-quantity&lt;br&gt;(Decrease)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="420" y="1200" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row2-gl" value="DR Cost of Goods Sold&lt;br&gt;CR Inventory Asset" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="600" y="1200" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row2-auth" value="Warehouse Manager" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="880" y="1200" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row2-audit" value="previous_stock,&lt;br&gt;new_stock,&lt;br&gt;SO reference,&lt;br&gt;batch_id (FEFO)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="1200" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row2-examples" value="Shipping to customer,&lt;br&gt;Returns to supplier,&lt;br&gt;Production consumption" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="1200" width="240" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Row 3: Transfer -->
+        <mxCell id="row3-type" value="&lt;b&gt;TRANSFER&lt;/b&gt;&lt;br&gt;(Between WH)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#2196F3;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1260" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row3-trigger" value="Manual request by&lt;br&gt;manager" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="220" y="1260" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row3-stock" value="Source: -quantity&lt;br&gt;Destination: +quantity" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="420" y="1260" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row3-gl" value="DR Inventory WH-Destination&lt;br&gt;CR Inventory WH-Source&lt;br&gt;(if separate GL accounts)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="600" y="1260" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row3-auth" value="Operations Manager" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="880" y="1260" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row3-audit" value="previous_stock (both),&lt;br&gt;new_stock (both),&lt;br&gt;destination_warehouse_id" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="1260" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row3-examples" value="Rebalancing stock,&lt;br&gt;Moving to retail location,&lt;br&gt;Consolidation" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="1260" width="240" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Row 4: Adjustment -->
+        <mxCell id="row4-type" value="&lt;b&gt;ADJUSTMENT&lt;/b&gt;&lt;br&gt;(Manual)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#FF9800;fontSize=11;align=left;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1320" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row4-trigger" value="Cycle count,&lt;br&gt;Physical inventory,&lt;br&gt;Damage/theft" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="220" y="1320" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row4-stock" value="Set to actual count&lt;br&gt;(± as needed)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="420" y="1320" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row4-gl" value="Shortage: DR Inv Adjust Expense, CR Inv&lt;br&gt;Overage: DR Inv, CR Inv Adjust Expense" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="600" y="1320" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row4-auth" value="Finance Manager&lt;br&gt;(requires approval)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="880" y="1320" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row4-audit" value="previous_stock,&lt;br&gt;new_stock,&lt;br&gt;reason (required),&lt;br&gt;approved_by" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="1320" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="row4-examples" value="Physical inventory variance,&lt;br&gt;Damaged goods write-off,&lt;br&gt;Theft loss" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#dddddd;fontSize=10;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="1320" width="240" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Business Rules Box -->
+        <mxCell id="business-rules" value="&lt;b style=&quot;font-size:14px;&quot;&gt;BUSINESS RULES &amp; VALIDATIONS&lt;/b&gt;&lt;hr&gt;&lt;b&gt;1. Stock Availability Check:&lt;/b&gt;&lt;br&gt;   • available_quantity = quantity - reserved_quantity&lt;br&gt;   • Exit/Transfer must check available_quantity &gt;= requested&lt;br&gt;   • Negative stock not allowed (except with override permission)&lt;br&gt;&lt;br&gt;&lt;b&gt;2. FEFO Strategy (First Expired, First Out):&lt;/b&gt;&lt;br&gt;   • For exits, select batch with earliest expiration_date&lt;br&gt;   • Quality check: quality_status = 'passed' required&lt;br&gt;   • Expired batches (expiration_date &lt; today) blocked&lt;br&gt;&lt;br&gt;&lt;b&gt;3. Audit Trail Requirements:&lt;/b&gt;&lt;br&gt;   • previous_stock (before movement)&lt;br&gt;   • new_stock (after movement)&lt;br&gt;   • performed_by (user_id) required&lt;br&gt;   • reason required for adjustments&lt;br&gt;   • reference_type + reference_id for linked movements&lt;br&gt;&lt;br&gt;&lt;b&gt;4. GL Posting Rules:&lt;/b&gt;&lt;br&gt;   • Entry: DR Inventory Asset, CR AP&lt;br&gt;   • Exit: DR COGS, CR Inventory Asset&lt;br&gt;   • Transfer: DR Inv Dest WH, CR Inv Source WH (if different accounts)&lt;br&gt;   • Adjustment: DR/CR Inventory Adjustment Expense&lt;br&gt;   • All postings link via gl_journal_entry_id&lt;br&gt;&lt;br&gt;&lt;b&gt;5. Authorization Matrix:&lt;/b&gt;&lt;br&gt;   • Entry/Exit: Warehouse Manager&lt;br&gt;   • Transfer: Operations Manager + approval if &gt; threshold&lt;br&gt;   • Adjustment: Finance Manager approval required&lt;br&gt;&lt;br&gt;&lt;b&gt;6. Transaction Safety:&lt;/b&gt;&lt;br&gt;   • DB transactions for atomic operations&lt;br&gt;   • Row-level locking on stock updates (prevent race conditions)&lt;br&gt;   • Transfer: both warehouses updated atomically or rollback&lt;br&gt;   • GL posting failure = rollback inventory movement" style="text;html=1;strokeColor=#1976D2;fillColor=#E3F2FD;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="900" y="120" width="580" height="600" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

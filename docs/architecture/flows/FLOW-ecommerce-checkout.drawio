@@ -1,0 +1,211 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="E-commerce Checkout Flow" id="ecommerce-checkout">
+    <mxGraphModel dx="1434" dy="844" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="&lt;b style=&quot;font-size:24px;&quot;&gt;E-commerce Checkout Flow&lt;/b&gt;&lt;br&gt;&lt;br&gt;Complete flow from shopping cart to payment with Order-to-Cash integration" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="800" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend" value="&lt;b&gt;LEGEND&lt;/b&gt;&lt;hr&gt;&lt;b style=&quot;color:#8E24AA;&quot;&gt;●&lt;/b&gt; Customer Action&lt;br&gt;&lt;b style=&quot;color:#00897B;&quot;&gt;●&lt;/b&gt; System Process&lt;br&gt;&lt;b style=&quot;color:#1565C0;&quot;&gt;●&lt;/b&gt; Payment Gateway&lt;br&gt;&lt;b style=&quot;color:#C62828;&quot;&gt;●&lt;/b&gt; Finance Integration&lt;br&gt;&lt;b style=&quot;color:#F57C00;&quot;&gt;●&lt;/b&gt; Decision Point" style="text;html=1;strokeColor=#666666;fillColor=#f5f5f5;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1360" y="20" width="200" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- Swimlanes -->
+        <mxCell id="swimlane-customer" value="&lt;b&gt;CUSTOMER (Frontend)&lt;/b&gt;" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#8E24AA;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="120" width="1310" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="swimlane-cart-system" value="&lt;b&gt;SHOPPING CART SYSTEM&lt;/b&gt;" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#E0F2F1;strokeColor=#00695C;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="280" width="1310" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="swimlane-order-system" value="&lt;b&gt;ORDER SYSTEM (Sales Module)&lt;/b&gt;" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#388E3C;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="420" width="1310" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="swimlane-payment" value="&lt;b&gt;PAYMENT GATEWAY&lt;/b&gt;" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="560" width="1310" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="swimlane-finance" value="&lt;b&gt;FINANCE MODULE&lt;/b&gt;" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="680" width="1310" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="swimlane-accounting" value="&lt;b&gt;ACCOUNTING MODULE (GL)&lt;/b&gt;" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;fontSize=14;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="800" width="1310" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Flow Steps - Customer Swimlane -->
+        <mxCell id="customer-browse" value="&lt;b&gt;1. Browse&lt;/b&gt;&lt;br&gt;&lt;br&gt;View product&lt;br&gt;catalog" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BA68C8;strokeColor=none;fontColor=#ffffff;fontSize=11;fontStyle=1" vertex="1" parent="swimlane-customer">
+          <mxGeometry x="60" y="30" width="100" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="customer-add-cart" value="&lt;b&gt;2. Add to Cart&lt;/b&gt;&lt;br&gt;&lt;br&gt;Select quantity&lt;br&gt;and options" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#AB47BC;strokeColor=none;fontColor=#ffffff;fontSize=11;fontStyle=1" vertex="1" parent="swimlane-customer">
+          <mxGeometry x="200" y="30" width="100" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="customer-review-cart" value="&lt;b&gt;3. Review Cart&lt;/b&gt;&lt;br&gt;&lt;br&gt;View items,&lt;br&gt;apply coupon" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9C27B0;strokeColor=none;fontColor=#ffffff;fontSize=11;fontStyle=1" vertex="1" parent="swimlane-customer">
+          <mxGeometry x="340" y="30" width="100" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="customer-checkout" value="&lt;b&gt;5. Checkout&lt;/b&gt;&lt;br&gt;&lt;br&gt;Enter shipping&lt;br&gt;and billing info" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8E24AA;strokeColor=none;fontColor=#ffffff;fontSize=11;fontStyle=1" vertex="1" parent="swimlane-customer">
+          <mxGeometry x="620" y="30" width="100" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="customer-payment" value="&lt;b&gt;7. Pay&lt;/b&gt;&lt;br&gt;&lt;br&gt;Enter payment&lt;br&gt;details" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B1FA2;strokeColor=none;fontColor=#ffffff;fontSize=11;fontStyle=1" vertex="1" parent="swimlane-customer">
+          <mxGeometry x="900" y="30" width="100" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="customer-confirmation" value="&lt;b&gt;11. Confirmation&lt;/b&gt;&lt;br&gt;&lt;br&gt;Order #,&lt;br&gt;Invoice,&lt;br&gt;Receipt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6A1B9A;strokeColor=none;fontColor=#ffffff;fontSize=11;fontStyle=1" vertex="1" parent="swimlane-customer">
+          <mxGeometry x="1180" y="30" width="100" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Flow Steps - Cart System Swimlane -->
+        <mxCell id="cart-create" value="&lt;b&gt;Create Cart&lt;/b&gt;&lt;br&gt;&lt;br&gt;• session_id&lt;br&gt;• user_id (if logged)&lt;br&gt;• status='active'" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#26A69A;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="swimlane-cart-system">
+          <mxGeometry x="200" y="20" width="120" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cart-add-items" value="&lt;b&gt;Add Cart Items&lt;/b&gt;&lt;br&gt;&lt;br&gt;• product_id&lt;br&gt;• quantity&lt;br&gt;• unit_price&lt;br&gt;• line_total" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#00897B;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="swimlane-cart-system">
+          <mxGeometry x="340" y="20" width="120" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cart-apply-coupon" value="&lt;b&gt;4. Apply Coupon&lt;/b&gt;&lt;br&gt;&lt;br&gt;• Validate code&lt;br&gt;• Calculate discount&lt;br&gt;• Update total" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#00796B;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="swimlane-cart-system">
+          <mxGeometry x="480" y="20" width="120" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Flow Steps - Order System Swimlane -->
+        <mxCell id="order-convert" value="&lt;b&gt;6. Convert to Order&lt;/b&gt;&lt;br&gt;&lt;br&gt;• Create sales_order&lt;br&gt;• Copy cart items&lt;br&gt;• Reserve inventory&lt;br&gt;• status='pending'" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#66BB6A;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="swimlane-order-system">
+          <mxGeometry x="620" y="20" width="140" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="order-complete" value="&lt;b&gt;9. Complete Order&lt;/b&gt;&lt;br&gt;&lt;br&gt;• Update status=&lt;br&gt;  'completed'&lt;br&gt;• Trigger event:&lt;br&gt;  SalesOrderCompleted" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#4CAF50;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="swimlane-order-system">
+          <mxGeometry x="1040" y="20" width="140" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Flow Steps - Payment Gateway Swimlane -->
+        <mxCell id="payment-process" value="&lt;b&gt;8. Process Payment&lt;/b&gt;&lt;br&gt;&lt;br&gt;• Authorize card&lt;br&gt;• Charge amount&lt;br&gt;• Return transaction_id" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#42A5F5;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="swimlane-payment">
+          <mxGeometry x="900" y="10" width="140" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Flow Steps - Finance Module Swimlane -->
+        <mxCell id="finance-create-invoice" value="&lt;b&gt;10a. Create AR Invoice&lt;/b&gt;&lt;br&gt;&lt;br&gt;• ARInvoiceService&lt;br&gt;• Link to sales_order_id&lt;br&gt;• status='posted'&lt;br&gt;• Auto via event listener" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EF5350;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="swimlane-finance">
+          <mxGeometry x="1040" y="10" width="140" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="finance-record-payment" value="&lt;b&gt;10b. Record Payment&lt;/b&gt;&lt;br&gt;&lt;br&gt;• Create payment&lt;br&gt;• Apply to invoice&lt;br&gt;• Update paid_amount&lt;br&gt;• status='paid'" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E53935;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="swimlane-finance">
+          <mxGeometry x="1200" y="10" width="110" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Flow Steps - Accounting Module Swimlane -->
+        <mxCell id="accounting-gl-posting" value="&lt;b&gt;10c. GL Posting (Auto)&lt;/b&gt;&lt;br&gt;&lt;br&gt;DR Customers (AR)&lt;br&gt;   CR Revenue&lt;br&gt;   CR VAT Payable&lt;br&gt;DR Bank&lt;br&gt;   CR Customers (AR)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#9C27B0;strokeColor=none;fontColor=#ffffff;fontSize=11;align=left;" vertex="1" parent="swimlane-accounting">
+          <mxGeometry x="1040" y="10" width="140" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Arrows -->
+        <mxCell id="arrow1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9C27B0;" edge="1" parent="1" source="customer-browse" target="customer-add-cart">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9C27B0;" edge="1" parent="1" source="customer-add-cart" target="cart-create">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#00897B;" edge="1" parent="1" source="cart-create" target="cart-add-items">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#00897B;" edge="1" parent="1" source="cart-add-items" target="customer-review-cart">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow5" value="(optional)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#00897B;dashed=1;fontSize=10" edge="1" parent="1" source="customer-review-cart" target="cart-apply-coupon">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9C27B0;" edge="1" parent="1" source="customer-review-cart" target="customer-checkout">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="530" y="180" />
+              <mxPoint x="530" y="200" />
+              <mxPoint x="660" y="200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="arrow7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4CAF50;" edge="1" parent="1" source="customer-checkout" target="order-convert">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4CAF50;" edge="1" parent="1" source="order-convert" target="customer-payment">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="470" />
+              <mxPoint x="760" y="200" />
+              <mxPoint x="940" y="200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="arrow9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#1565C0;" edge="1" parent="1" source="customer-payment" target="payment-process">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow10" value="Success" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4CAF50;fontSize=11;fontStyle=1" edge="1" parent="1" source="payment-process" target="order-complete">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1040" y="610" />
+              <mxPoint x="1040" y="470" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="arrow11" value="SalesOrderCompleted&lt;br&gt;event" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4CAF50;fontSize=11;fontStyle=1" edge="1" parent="1" source="order-complete" target="finance-create-invoice">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#EF5350;" edge="1" parent="1" source="finance-create-invoice" target="finance-record-payment">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9C27B0;" edge="1" parent="1" source="finance-create-invoice" target="accounting-gl-posting">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrow14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9C27B0;" edge="1" parent="1" source="finance-record-payment" target="customer-confirmation">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1230" y="690" />
+              <mxPoint x="1230" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Business Flow Box -->
+        <mxCell id="business-flow" value="&lt;b style=&quot;font-size:14px;&quot;&gt;BUSINESS FLOW DETAILS&lt;/b&gt;&lt;hr&gt;&lt;b&gt;1. Shopping Cart Management:&lt;/b&gt;&lt;br&gt;   • Guest carts: session_id only&lt;br&gt;   • Logged-in carts: user_id linkage&lt;br&gt;   • Cart expiration: 24 hours inactive&lt;br&gt;   • Cart merge: guest → logged-in user&lt;br&gt;&lt;br&gt;&lt;b&gt;2. Coupon System:&lt;/b&gt;&lt;br&gt;   • Validate: code, expiration, usage limits&lt;br&gt;   • Types: percentage, fixed_amount, free_shipping&lt;br&gt;   • Restrictions: minimum_amount, category, product&lt;br&gt;   • Stacking: configurable (allow/disallow)&lt;br&gt;&lt;br&gt;&lt;b&gt;3. Order Conversion:&lt;/b&gt;&lt;br&gt;   • Cart → Sales Order (1:1)&lt;br&gt;   • Cart items → Sales order items&lt;br&gt;   • Inventory reservation (reserved_quantity++)&lt;br&gt;   • Cart status='converted'&lt;br&gt;&lt;br&gt;&lt;b&gt;4. Payment Integration:&lt;/b&gt;&lt;br&gt;   • Supported gateways: Stripe, MercadoPago, PayPal&lt;br&gt;   • Authorization → Capture flow&lt;br&gt;   • Transaction ID stored&lt;br&gt;   • Webhook verification for async updates&lt;br&gt;&lt;br&gt;&lt;b&gt;5. Event-Driven Automation:&lt;/b&gt;&lt;br&gt;   • Order completion triggers SalesOrderCompleted&lt;br&gt;   • Listener creates AR Invoice automatically&lt;br&gt;   • Invoice posting creates GL entries&lt;br&gt;   • Payment recorded and applied to invoice&lt;br&gt;   • Invoice status → 'paid'&lt;br&gt;&lt;br&gt;&lt;b&gt;6. Email Notifications:&lt;/b&gt;&lt;br&gt;   • Order confirmation email&lt;br&gt;   • Invoice PDF attached&lt;br&gt;   • Payment receipt&lt;br&gt;   • Shipping tracking (when available)" style="text;html=1;strokeColor=#00695C;fillColor=#E0F2F1;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="40" y="960" width="460" height="660" as="geometry" />
+        </mxCell>
+
+        <!-- Database Tables Box -->
+        <mxCell id="database-tables" value="&lt;b style=&quot;font-size:14px;&quot;&gt;DATABASE TABLES INVOLVED&lt;/b&gt;&lt;hr&gt;&lt;b&gt;Shopping Cart Module (3 tables):&lt;/b&gt;&lt;br&gt;1. &lt;b&gt;shopping_carts&lt;/b&gt;&lt;br&gt;   • id, user_id, session_id, status&lt;br&gt;   • subtotal, discount, tax, total&lt;br&gt;   • coupon_id, applied_at&lt;br&gt;&lt;br&gt;2. &lt;b&gt;shopping_cart_items&lt;/b&gt;&lt;br&gt;   • id, cart_id, product_id&lt;br&gt;   • quantity, unit_price, line_total&lt;br&gt;&lt;br&gt;3. &lt;b&gt;coupons&lt;/b&gt;&lt;br&gt;   • id, code, type, value&lt;br&gt;   • valid_from, valid_until&lt;br&gt;   • usage_limit, times_used&lt;br&gt;&lt;br&gt;&lt;b&gt;Sales Module (2 tables):&lt;/b&gt;&lt;br&gt;4. &lt;b&gt;sales_orders&lt;/b&gt;&lt;br&gt;   • id, order_number, contact_id&lt;br&gt;   • status, total_amount&lt;br&gt;   • ar_invoice_id, financial_status&lt;br&gt;&lt;br&gt;5. &lt;b&gt;sales_order_items&lt;/b&gt;&lt;br&gt;   • id, sales_order_id, product_id&lt;br&gt;   • quantity, unit_price, line_total&lt;br&gt;&lt;br&gt;&lt;b&gt;Finance Module (3 tables):&lt;/b&gt;&lt;br&gt;6. &lt;b&gt;ar_invoices&lt;/b&gt;&lt;br&gt;   • id, invoice_number, contact_id&lt;br&gt;   • sales_order_id, total_amount&lt;br&gt;   • paid_amount, status&lt;br&gt;&lt;br&gt;7. &lt;b&gt;payments&lt;/b&gt;&lt;br&gt;   • id, payment_number, contact_id&lt;br&gt;   • payment_amount, bank_account_id&lt;br&gt;   • reference_number (transaction_id)&lt;br&gt;&lt;br&gt;8. &lt;b&gt;payment_applications&lt;/b&gt;&lt;br&gt;   • id, payment_id, invoice_id&lt;br&gt;   • applied_amount&lt;br&gt;&lt;br&gt;&lt;b&gt;Accounting Module (2 tables):&lt;/b&gt;&lt;br&gt;9. &lt;b&gt;journal_entries&lt;/b&gt;&lt;br&gt;   • id, entry_number, source_type&lt;br&gt;   • source_id, status&lt;br&gt;&lt;br&gt;10. &lt;b&gt;journal_lines&lt;/b&gt;&lt;br&gt;    • id, journal_entry_id, account_id&lt;br&gt;    • debit_amount, credit_amount&lt;br&gt;&lt;br&gt;&lt;b&gt;Total: 10 tables across 4 modules&lt;/b&gt;" style="text;html=1;strokeColor=#1565C0;fillColor=#E3F2FD;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="540" y="960" width="380" height="660" as="geometry" />
+        </mxCell>
+
+        <!-- API Endpoints Box -->
+        <mxCell id="api-endpoints" value="&lt;b style=&quot;font-size:14px;&quot;&gt;KEY API ENDPOINTS&lt;/b&gt;&lt;hr&gt;&lt;b&gt;Shopping Cart:&lt;/b&gt;&lt;br&gt;POST   /api/v1/shopping-carts&lt;br&gt;GET    /api/v1/shopping-carts/{id}&lt;br&gt;POST   /api/v1/shopping-carts/{id}/items&lt;br&gt;PATCH  /api/v1/shopping-cart-items/{id}&lt;br&gt;DELETE /api/v1/shopping-cart-items/{id}&lt;br&gt;POST   /api/v1/shopping-carts/{id}/apply-coupon&lt;br&gt;&lt;br&gt;&lt;b&gt;Checkout:&lt;/b&gt;&lt;br&gt;POST   /api/v1/shopping-carts/{id}/checkout&lt;br&gt;  → Creates sales_order&lt;br&gt;  → Returns order_id, total, payment_required&lt;br&gt;&lt;br&gt;&lt;b&gt;Payment:&lt;/b&gt;&lt;br&gt;POST   /api/v1/sales-orders/{id}/pay&lt;br&gt;  → Processes payment via gateway&lt;br&gt;  → Returns transaction_id&lt;br&gt;  → Completes order (status='completed')&lt;br&gt;&lt;br&gt;POST   /api/v1/webhooks/payment-gateway&lt;br&gt;  → Receives async payment confirmations&lt;br&gt;  → Verifies signature&lt;br&gt;  → Updates payment status&lt;br&gt;&lt;br&gt;&lt;b&gt;Order Status:&lt;/b&gt;&lt;br&gt;GET    /api/v1/sales-orders/{id}&lt;br&gt;  → Returns order details&lt;br&gt;  → Includes financial_status&lt;br&gt;  → Includes invoice_id&lt;br&gt;&lt;br&gt;&lt;b&gt;Invoice Download:&lt;/b&gt;&lt;br&gt;GET    /api/v1/ar-invoices/{id}/pdf&lt;br&gt;  → Generates invoice PDF&lt;br&gt;  → Includes company logo, tax info&lt;br&gt;  → SAT CFDI compliant (Mexico)&lt;br&gt;&lt;br&gt;&lt;b&gt;Public Endpoints (No Auth):&lt;/b&gt;&lt;br&gt;GET    /api/v1/public/products&lt;br&gt;GET    /api/v1/public/products/{id}&lt;br&gt;GET    /api/v1/public/categories&lt;br&gt;&lt;br&gt;&lt;b&gt;Protected Endpoints:&lt;/b&gt;&lt;br&gt;• Checkout requires auth:sanctum&lt;br&gt;• Payment requires verified email&lt;br&gt;• Invoice access restricted to customer" style="text;html=1;strokeColor=#6A1B9A;fillColor=#F3E5F5;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="960" y="960" width="400" height="660" as="geometry" />
+        </mxCell>
+
+        <!-- Performance & Security Box -->
+        <mxCell id="performance-security" value="&lt;b style=&quot;font-size:14px;&quot;&gt;PERFORMANCE & SECURITY&lt;/b&gt;&lt;hr&gt;&lt;b&gt;Caching Strategy:&lt;/b&gt;&lt;br&gt;• Product catalog: 1 hour cache&lt;br&gt;• Cart data: Redis (real-time)&lt;br&gt;• Coupon validation: 5 min cache&lt;br&gt;&lt;br&gt;&lt;b&gt;Race Condition Prevention:&lt;/b&gt;&lt;br&gt;• Inventory reservation: row-level locks&lt;br&gt;• Coupon usage: atomic increment&lt;br&gt;• Payment processing: idempotency keys&lt;br&gt;&lt;br&gt;&lt;b&gt;Security Measures:&lt;/b&gt;&lt;br&gt;• CSRF protection on all forms&lt;br&gt;• Payment data never stored (PCI DSS)&lt;br&gt;• Transaction IDs encrypted at rest&lt;br&gt;• Rate limiting: 10 requests/min checkout&lt;br&gt;• Webhook signature verification&lt;br&gt;&lt;br&gt;&lt;b&gt;Error Handling:&lt;/b&gt;&lt;br&gt;• Payment failure → order status='pending'&lt;br&gt;• Inventory shortage → show error before payment&lt;br&gt;• Gateway timeout → retry 3 times&lt;br&gt;• DB transaction rollback on any failure&lt;br&gt;&lt;br&gt;&lt;b&gt;Validation Rules:&lt;/b&gt;&lt;br&gt;• Cart total matches order total&lt;br&gt;• Product prices validated server-side&lt;br&gt;• Coupon eligibility re-checked at checkout&lt;br&gt;• Stock availability confirmed before payment&lt;br&gt;&lt;br&gt;&lt;b&gt;Performance Metrics:&lt;/b&gt;&lt;br&gt;• Add to cart: &lt;50ms&lt;br&gt;• Checkout conversion: &lt;500ms&lt;br&gt;• Payment processing: 2-5 seconds&lt;br&gt;• Invoice generation: &lt;200ms&lt;br&gt;• Email delivery: async (queue)&lt;br&gt;&lt;br&gt;&lt;b&gt;Scalability:&lt;/b&gt;&lt;br&gt;• Supports 1000+ concurrent users&lt;br&gt;• Queue workers: 5-10 recommended&lt;br&gt;• Database: 100k+ carts/day&lt;br&gt;• Redis: 50k+ active sessions" style="text;html=1;strokeColor=#C62828;fillColor=#FFEBEE;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1400" y="960" width="360" height="660" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
