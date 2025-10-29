@@ -15,6 +15,7 @@ class EcommerceDatabaseSeeder extends Seeder
         
         $this->call([
             PermissionsSeeder::class,
+            ShippingMethodSeeder::class,
             ShoppingCartSeeder::class,
             CartItemSeeder::class,
             CouponSeeder::class,

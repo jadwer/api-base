@@ -11,5 +11,6 @@
     "Ecommerce": true,
     "Contacts": true,
     "Accounting": true,
-    "Finance": true
+    "Finance": true,
+    "Reports": true
 }
