@@ -28,8 +28,7 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapApiRoutes();
         $this->mapWebRoutes();
         $this->mapJsonApiRoutes();
-        $this->mapPublicJsonApiRoutes();
-        $this->mapCatalogRoutes();
+        $this->mapPublicRoutes();
     }
 
     /**
@@ -59,21 +58,15 @@ class RouteServiceProvider extends ServiceProvider
             ->group(module_path($this->name, '/routes/jsonapi.php'));
     }
 
-    protected function mapPublicJsonApiRoutes(): void
-    {
-        Route::prefix('api')
-            ->middleware('api')
-            ->group(module_path($this->name, '/routes/public-jsonapi.php'));
-    }
-
     /**
-     * Define the "catalog" routes for the application.
+     * Define the "public" routes for the application.
      *
-     * These are public routes without authentication.
+     * These routes are publicly accessible and use the 'public' JSON:API server.
+     * We apply ONLY the prefix that matches the PublicServer's baseUri.
      */
-    protected function mapCatalogRoutes(): void
+    protected function mapPublicRoutes(): void
     {
-        Route::middleware('api')
-            ->group(module_path($this->name, '/routes/catalog.php'));
+        Route::prefix('api/public/v1')
+            ->group(module_path($this->name, '/routes/public.php'));
     }
 }
