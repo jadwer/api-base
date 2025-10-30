@@ -2,84 +2,87 @@
 
 namespace Modules\Reports\Http\Controllers\Api\V1;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Modules\Reports\Services\FinancialStatements\IncomeStatementService;
 use Carbon\Carbon;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Collection;
+use LaravelJsonApi\Core\Responses\DataResponse;
+use Modules\Reports\Services\FinancialStatements\IncomeStatementService;
+use Modules\Reports\JsonApi\V1\IncomeStatements\IncomeStatementRequest;
+use Modules\Reports\JsonApi\V1\IncomeStatements\IncomeStatementResource;
 
 class IncomeStatementController extends Controller
 {
-    private IncomeStatementService $incomeStatementService;
+    protected IncomeStatementService $incomeStatementService;
 
     public function __construct(IncomeStatementService $incomeStatementService)
     {
         $this->incomeStatementService = $incomeStatementService;
-        $this->middleware('auth:sanctum');
     }
 
     /**
-     * Generate Income Statement
+     * Fetch income statements (list view)
      *
-     * GET /api/v1/reports/income-statement?start_date=2025-01-01&end_date=2025-10-28
+     * GET /api/v1/reports/income-statements
      *
-     * @param Request $request
-     * @return JsonResponse
+     * @param IncomeStatementRequest $request
+     * @return DataResponse
      */
-    public function index(Request $request): JsonResponse
+    public function index(IncomeStatementRequest $request): DataResponse
     {
-        $request->validate([
-            'start_date' => 'sometimes|date',
-            'end_date' => 'sometimes|date|after_or_equal:start_date',
-        ]);
-
-        // Default to current month if no dates provided
-        $startDate = $request->has('start_date')
-            ? Carbon::parse($request->input('start_date'))
+        // Get filter parameters
+        $startDate = $request->input('filter.startDate')
+            ? Carbon::parse($request->input('filter.startDate'))
             : Carbon::now()->startOfMonth();
-
-        $endDate = $request->has('end_date')
-            ? Carbon::parse($request->input('end_date'))
+        $endDate = $request->input('filter.endDate')
+            ? Carbon::parse($request->input('filter.endDate'))
             : Carbon::now();
+        $currency = $request->input('filter.currency') ?? 'MXN';
 
-        $incomeStatement = $this->incomeStatementService->generate($startDate, $endDate);
+        // Generate income statement using service
+        $incomeStatementData = $this->incomeStatementService->generate($startDate, $endDate, $currency);
 
-        return response()->json([
-            'data' => $incomeStatement,
-        ]);
+        // Convert to stdClass with ID for JSON:API compliance
+        $incomeStatement = (object) array_merge(['id' => '1'], $incomeStatementData);
+
+        // Wrap in collection for JSON:API response
+        $collection = collect([$incomeStatement]);
+
+        // Return JSON:API response
+        return DataResponse::make($collection)
+            ->withResources(IncomeStatementResource::collection($collection));
     }
 
     /**
-     * Generate Comparative Income Statement
+     * Fetch a single income statement
      *
-     * GET /api/v1/reports/income-statement/comparative?current_start=2025-10-01&current_end=2025-10-31&prior_start=2025-09-01&prior_end=2025-09-30
+     * GET /api/v1/reports/income-statements/{id}
      *
-     * @param Request $request
-     * @return JsonResponse
+     * @param string $id
+     * @param IncomeStatementRequest $request
+     * @return DataResponse
      */
-    public function comparative(Request $request): JsonResponse
+    public function show(string $id, IncomeStatementRequest $request): DataResponse
     {
-        $request->validate([
-            'current_start' => 'required|date',
-            'current_end' => 'required|date|after_or_equal:current_start',
-            'prior_start' => 'required|date',
-            'prior_end' => 'required|date|after_or_equal:prior_start|before:current_start',
-        ]);
+        // For reports, ID doesn't matter much - we generate based on filters
+        // But we support it for JSON:API compliance
 
-        $currentStartDate = Carbon::parse($request->input('current_start'));
-        $currentEndDate = Carbon::parse($request->input('current_end'));
-        $priorStartDate = Carbon::parse($request->input('prior_start'));
-        $priorEndDate = Carbon::parse($request->input('prior_end'));
+        // Get filter parameters
+        $startDate = $request->input('filter.startDate')
+            ? Carbon::parse($request->input('filter.startDate'))
+            : Carbon::now()->startOfMonth();
+        $endDate = $request->input('filter.endDate')
+            ? Carbon::parse($request->input('filter.endDate'))
+            : Carbon::now();
+        $currency = $request->input('filter.currency') ?? 'MXN';
 
-        $comparative = $this->incomeStatementService->generateComparative(
-            $currentStartDate,
-            $currentEndDate,
-            $priorStartDate,
-            $priorEndDate
-        );
+        // Generate income statement using service
+        $incomeStatementData = $this->incomeStatementService->generate($startDate, $endDate, $currency);
 
-        return response()->json([
-            'data' => $comparative,
-        ]);
+        // Convert to stdClass with ID for JSON:API compliance
+        $incomeStatement = (object) array_merge(['id' => $id], $incomeStatementData);
+
+        // Return JSON:API response
+        return DataResponse::make($incomeStatement)
+            ->withResource(new IncomeStatementResource($incomeStatement));
     }
 }

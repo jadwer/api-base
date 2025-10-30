@@ -2,100 +2,81 @@
 
 namespace Modules\Reports\Http\Controllers\Api\V1;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Modules\Reports\Services\FinancialStatements\TrialBalanceService;
 use Carbon\Carbon;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Collection;
+use LaravelJsonApi\Core\Responses\DataResponse;
+use Modules\Reports\Services\FinancialStatements\TrialBalanceService;
+use Modules\Reports\JsonApi\V1\TrialBalances\TrialBalanceRequest;
+use Modules\Reports\JsonApi\V1\TrialBalances\TrialBalanceResource;
 
 class TrialBalanceController extends Controller
 {
-    private TrialBalanceService $trialBalanceService;
+    protected TrialBalanceService $trialBalanceService;
 
     public function __construct(TrialBalanceService $trialBalanceService)
     {
         $this->trialBalanceService = $trialBalanceService;
-        $this->middleware('auth:sanctum');
     }
 
     /**
-     * Generate Trial Balance
+     * Fetch trial balances (list view)
      *
-     * GET /api/v1/reports/trial-balance?as_of_date=2025-10-28
+     * GET /api/v1/reports/trial-balances
      *
-     * @param Request $request
-     * @return JsonResponse
+     * @param TrialBalanceRequest $request
+     * @return DataResponse
      */
-    public function index(Request $request): JsonResponse
+    public function index(TrialBalanceRequest $request): DataResponse
     {
-        $request->validate([
-            'as_of_date' => 'sometimes|date',
-        ]);
-
-        $asOfDate = $request->has('as_of_date')
-            ? Carbon::parse($request->input('as_of_date'))
+        // Get filter parameters
+        $asOfDate = $request->input('filter.asOfDate')
+            ? Carbon::parse($request->input('filter.asOfDate'))
             : Carbon::now();
+        $currency = $request->input('filter.currency') ?? 'MXN';
 
-        $trialBalance = $this->trialBalanceService->generate($asOfDate);
+        // Generate trial balance using service
+        $trialBalanceData = $this->trialBalanceService->generate($asOfDate, $currency);
 
-        return response()->json([
-            'data' => $trialBalance,
-        ]);
+        // Convert to stdClass with ID for JSON:API compliance
+        $trialBalance = (object) array_merge(['id' => '1'], $trialBalanceData);
+
+        // Wrap in collection for JSON:API response
+        $collection = collect([$trialBalance]);
+
+        // Return JSON:API response
+        return DataResponse::make($collection)
+            ->withResources(TrialBalanceResource::collection($collection));
     }
 
     /**
-     * Generate Comparative Trial Balance
+     * Fetch a single trial balance
      *
-     * GET /api/v1/reports/trial-balance/comparative?current_date=2025-10-28&prior_date=2025-09-30
+     * GET /api/v1/reports/trial-balances/{id}
      *
-     * @param Request $request
-     * @return JsonResponse
+     * @param string $id
+     * @param TrialBalanceRequest $request
+     * @return DataResponse
      */
-    public function comparative(Request $request): JsonResponse
+    public function show(string $id, TrialBalanceRequest $request): DataResponse
     {
-        $request->validate([
-            'current_date' => 'required|date',
-            'prior_date' => 'required|date|before:current_date',
-        ]);
+        // For reports, ID doesn't matter much - we generate based on filters
+        // But we support it for JSON:API compliance
 
-        $currentDate = Carbon::parse($request->input('current_date'));
-        $priorDate = Carbon::parse($request->input('prior_date'));
-
-        $comparative = $this->trialBalanceService->generateComparative($currentDate, $priorDate);
-
-        return response()->json([
-            'data' => $comparative,
-        ]);
-    }
-
-    /**
-     * Generate Detailed Trial Balance with Period Activity
-     *
-     * GET /api/v1/reports/trial-balance/detailed?start_date=2025-10-01&end_date=2025-10-31
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function detailed(Request $request): JsonResponse
-    {
-        $request->validate([
-            'start_date' => 'sometimes|date',
-            'end_date' => 'sometimes|date|after_or_equal:start_date',
-        ]);
-
-        // Default to current month if no dates provided
-        $startDate = $request->has('start_date')
-            ? Carbon::parse($request->input('start_date'))
-            : Carbon::now()->startOfMonth();
-
-        $endDate = $request->has('end_date')
-            ? Carbon::parse($request->input('end_date'))
+        // Get filter parameters
+        $asOfDate = $request->input('filter.asOfDate')
+            ? Carbon::parse($request->input('filter.asOfDate'))
             : Carbon::now();
+        $currency = $request->input('filter.currency') ?? 'MXN';
 
-        $detailedTrialBalance = $this->trialBalanceService->generateDetailed($startDate, $endDate);
+        // Generate trial balance using service
+        $trialBalanceData = $this->trialBalanceService->generate($asOfDate, $currency);
 
-        return response()->json([
-            'data' => $detailedTrialBalance,
-        ]);
+        // Convert to stdClass with ID for JSON:API compliance
+        $trialBalance = (object) array_merge(['id' => $id], $trialBalanceData);
+
+        // Return JSON:API response
+        return DataResponse::make($trialBalance)
+            ->withResource(new TrialBalanceResource($trialBalance));
     }
 }

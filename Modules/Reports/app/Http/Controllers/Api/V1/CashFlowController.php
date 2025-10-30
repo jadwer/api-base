@@ -2,84 +2,87 @@
 
 namespace Modules\Reports\Http\Controllers\Api\V1;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Modules\Reports\Services\FinancialStatements\CashFlowService;
 use Carbon\Carbon;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Collection;
+use LaravelJsonApi\Core\Responses\DataResponse;
+use Modules\Reports\Services\FinancialStatements\CashFlowService;
+use Modules\Reports\JsonApi\V1\CashFlows\CashFlowRequest;
+use Modules\Reports\JsonApi\V1\CashFlows\CashFlowResource;
 
 class CashFlowController extends Controller
 {
-    private CashFlowService $cashFlowService;
+    protected CashFlowService $cashFlowService;
 
     public function __construct(CashFlowService $cashFlowService)
     {
         $this->cashFlowService = $cashFlowService;
-        $this->middleware('auth:sanctum');
     }
 
     /**
-     * Generate Cash Flow Statement
+     * Fetch cash flow statements (list view)
      *
-     * GET /api/v1/reports/cash-flow?start_date=2025-01-01&end_date=2025-10-28
+     * GET /api/v1/reports/cash-flows
      *
-     * @param Request $request
-     * @return JsonResponse
+     * @param CashFlowRequest $request
+     * @return DataResponse
      */
-    public function index(Request $request): JsonResponse
+    public function index(CashFlowRequest $request): DataResponse
     {
-        $request->validate([
-            'start_date' => 'sometimes|date',
-            'end_date' => 'sometimes|date|after_or_equal:start_date',
-        ]);
-
-        // Default to current month if no dates provided
-        $startDate = $request->has('start_date')
-            ? Carbon::parse($request->input('start_date'))
+        // Get filter parameters
+        $startDate = $request->input('filter.startDate')
+            ? Carbon::parse($request->input('filter.startDate'))
             : Carbon::now()->startOfMonth();
-
-        $endDate = $request->has('end_date')
-            ? Carbon::parse($request->input('end_date'))
+        $endDate = $request->input('filter.endDate')
+            ? Carbon::parse($request->input('filter.endDate'))
             : Carbon::now();
+        $currency = $request->input('filter.currency') ?? 'MXN';
 
-        $cashFlow = $this->cashFlowService->generate($startDate, $endDate);
+        // Generate cash flow statement using service
+        $cashFlowData = $this->cashFlowService->generate($startDate, $endDate, $currency);
 
-        return response()->json([
-            'data' => $cashFlow,
-        ]);
+        // Convert to stdClass with ID for JSON:API compliance
+        $cashFlow = (object) array_merge(['id' => '1'], $cashFlowData);
+
+        // Wrap in collection for JSON:API response
+        $collection = collect([$cashFlow]);
+
+        // Return JSON:API response
+        return DataResponse::make($collection)
+            ->withResources(CashFlowResource::collection($collection));
     }
 
     /**
-     * Generate Comparative Cash Flow Statement
+     * Fetch a single cash flow statement
      *
-     * GET /api/v1/reports/cash-flow/comparative?current_start=2025-10-01&current_end=2025-10-31&prior_start=2025-09-01&prior_end=2025-09-30
+     * GET /api/v1/reports/cash-flows/{id}
      *
-     * @param Request $request
-     * @return JsonResponse
+     * @param string $id
+     * @param CashFlowRequest $request
+     * @return DataResponse
      */
-    public function comparative(Request $request): JsonResponse
+    public function show(string $id, CashFlowRequest $request): DataResponse
     {
-        $request->validate([
-            'current_start' => 'required|date',
-            'current_end' => 'required|date|after_or_equal:current_start',
-            'prior_start' => 'required|date',
-            'prior_end' => 'required|date|after_or_equal:prior_start|before:current_start',
-        ]);
+        // For reports, ID doesn't matter much - we generate based on filters
+        // But we support it for JSON:API compliance
 
-        $currentStartDate = Carbon::parse($request->input('current_start'));
-        $currentEndDate = Carbon::parse($request->input('current_end'));
-        $priorStartDate = Carbon::parse($request->input('prior_start'));
-        $priorEndDate = Carbon::parse($request->input('prior_end'));
+        // Get filter parameters
+        $startDate = $request->input('filter.startDate')
+            ? Carbon::parse($request->input('filter.startDate'))
+            : Carbon::now()->startOfMonth();
+        $endDate = $request->input('filter.endDate')
+            ? Carbon::parse($request->input('filter.endDate'))
+            : Carbon::now();
+        $currency = $request->input('filter.currency') ?? 'MXN';
 
-        $comparative = $this->cashFlowService->generateComparative(
-            $currentStartDate,
-            $currentEndDate,
-            $priorStartDate,
-            $priorEndDate
-        );
+        // Generate cash flow statement using service
+        $cashFlowData = $this->cashFlowService->generate($startDate, $endDate, $currency);
 
-        return response()->json([
-            'data' => $comparative,
-        ]);
+        // Convert to stdClass with ID for JSON:API compliance
+        $cashFlow = (object) array_merge(['id' => $id], $cashFlowData);
+
+        // Return JSON:API response
+        return DataResponse::make($cashFlow)
+            ->withResource(new CashFlowResource($cashFlow));
     }
 }
