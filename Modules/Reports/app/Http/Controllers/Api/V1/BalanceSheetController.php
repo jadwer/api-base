@@ -2,69 +2,79 @@
 
 namespace Modules\Reports\Http\Controllers\Api\V1;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Modules\Reports\Services\FinancialStatements\BalanceSheetService;
 use Carbon\Carbon;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Collection;
+use LaravelJsonApi\Core\Responses\DataResponse;
+use Modules\Reports\Services\FinancialStatements\BalanceSheetService;
+use Modules\Reports\JsonApi\V1\BalanceSheets\BalanceSheetRequest;
+use Modules\Reports\JsonApi\V1\BalanceSheets\BalanceSheetResource;
 
 class BalanceSheetController extends Controller
 {
-    private BalanceSheetService $balanceSheetService;
+    protected BalanceSheetService $balanceSheetService;
 
     public function __construct(BalanceSheetService $balanceSheetService)
     {
         $this->balanceSheetService = $balanceSheetService;
-        $this->middleware('auth:sanctum');
     }
 
     /**
-     * Generate Balance Sheet
+     * Fetch balance sheets (list view)
      *
-     * GET /api/v1/reports/balance-sheet?as_of_date=2025-10-28
+     * GET /api/v1/balance-sheets
      *
-     * @param Request $request
-     * @return JsonResponse
+     * @param BalanceSheetRequest $request
+     * @return DataResponse
      */
-    public function index(Request $request): JsonResponse
+    public function index(BalanceSheetRequest $request): DataResponse
     {
-        $request->validate([
-            'as_of_date' => 'sometimes|date',
-        ]);
-
-        $asOfDate = $request->has('as_of_date')
-            ? Carbon::parse($request->input('as_of_date'))
+        // Get filter parameters
+        $asOfDate = $request->input('filter.asOfDate')
+            ? Carbon::parse($request->input('filter.asOfDate'))
             : Carbon::now();
 
-        $balanceSheet = $this->balanceSheetService->generate($asOfDate);
+        // Generate balance sheet using service
+        $balanceSheetData = $this->balanceSheetService->generate($asOfDate);
 
-        return response()->json([
-            'data' => $balanceSheet,
-        ]);
+        // Convert to stdClass with ID for JSON:API compliance
+        $balanceSheet = (object) array_merge(['id' => '1'], $balanceSheetData);
+
+        // Wrap in collection for JSON:API response
+        $collection = collect([$balanceSheet]);
+
+        // Return JSON:API response
+        return DataResponse::make($collection)
+            ->withResources(BalanceSheetResource::collection($collection));
     }
 
     /**
-     * Generate Comparative Balance Sheet
+     * Fetch a single balance sheet
      *
-     * GET /api/v1/reports/balance-sheet/comparative?current_date=2025-10-28&prior_date=2025-09-30
+     * GET /api/v1/balance-sheets/{id}
      *
-     * @param Request $request
-     * @return JsonResponse
+     * @param string $id
+     * @param BalanceSheetRequest $request
+     * @return DataResponse
      */
-    public function comparative(Request $request): JsonResponse
+    public function show(string $id, BalanceSheetRequest $request): DataResponse
     {
-        $request->validate([
-            'current_date' => 'required|date',
-            'prior_date' => 'required|date|before:current_date',
-        ]);
+        // For reports, ID doesn't matter much - we generate based on filters
+        // But we support it for JSON:API compliance
 
-        $currentDate = Carbon::parse($request->input('current_date'));
-        $priorDate = Carbon::parse($request->input('prior_date'));
+        // Get filter parameters
+        $asOfDate = $request->input('filter.asOfDate')
+            ? Carbon::parse($request->input('filter.asOfDate'))
+            : Carbon::now();
 
-        $comparative = $this->balanceSheetService->generateComparative($currentDate, $priorDate);
+        // Generate balance sheet using service
+        $balanceSheetData = $this->balanceSheetService->generate($asOfDate);
 
-        return response()->json([
-            'data' => $comparative,
-        ]);
+        // Convert to stdClass with ID for JSON:API compliance
+        $balanceSheet = (object) array_merge(['id' => $id], $balanceSheetData);
+
+        // Return JSON:API response
+        return DataResponse::make($balanceSheet)
+            ->withResource(new BalanceSheetResource($balanceSheet));
     }
 }

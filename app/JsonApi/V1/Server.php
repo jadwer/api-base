@@ -53,6 +53,7 @@ use Modules\Finance\JsonApi\V1\Payments\PaymentSchema;
 use Modules\Finance\JsonApi\V1\PaymentApplications\PaymentApplicationSchema;
 use Modules\Finance\JsonApi\V1\BankAccounts\BankAccountSchema;
 use Modules\Finance\JsonApi\V1\PaymentMethods\PaymentMethodSchema;
+use Modules\Reports\JsonApi\V1\BalanceSheets\BalanceSheetSchema;
 
 class Server extends BaseServer
 {
@@ -153,8 +154,11 @@ class Server extends BaseServer
             BankAccountSchema::class,
             PaymentMethodSchema::class,
 
+            // Reports Module (Phase 4.2 - Corrected)
+            BalanceSheetSchema::class,
+
         ];
-        
+
         return $schemas;
     }
 
@@ -213,8 +217,11 @@ class Server extends BaseServer
             'payment-applications' => \Modules\Finance\JsonApi\V1\PaymentApplications\PaymentApplicationAuthorizer::class,
             'bank-accounts' => \Modules\Finance\JsonApi\V1\BankAccounts\BankAccountAuthorizer::class,
             'payment-methods' => \Modules\Finance\JsonApi\V1\PaymentMethods\PaymentMethodAuthorizer::class,
+
+            // Reports Module (Phase 4.2 - Corrected)
+            'balance-sheets' => \Modules\Reports\JsonApi\V1\BalanceSheets\BalanceSheetAuthorizer::class,
         ];
-        
+
         return $authorizers;
     }
 }
