@@ -10,6 +10,11 @@ use Modules\Ecommerce\Http\Controllers\Api\V1\PaymentTransactionController;
 use Modules\Ecommerce\Http\Controllers\Api\V1\InventoryReservationController;
 use Modules\Ecommerce\Http\Controllers\Api\V1\ShippingMethodController;
 use Modules\Ecommerce\Http\Controllers\Api\V1\ProductReviewController;
+use Modules\Ecommerce\Http\Controllers\Api\V1\WishlistController;
+use Modules\Ecommerce\Http\Controllers\Api\V1\WishlistItemController;
+use Modules\Ecommerce\Http\Controllers\Api\V1\ProductRecommendationController;
+use Modules\Ecommerce\Http\Controllers\Api\V1\CurrencyController;
+use Illuminate\Support\Facades\Route;
 
 // Public routes (authorization handled by Authorizers)
 JsonApiRoute::server('v1')
@@ -17,6 +22,9 @@ JsonApiRoute::server('v1')
     ->resources(function (ResourceRegistrar $server) {
         // Phase 4.3.1 Advanced Ecommerce - Product Reviews (public access for approved reviews)
         $server->resource('product-reviews', ProductReviewController::class);
+
+        // Phase 4.3.4 Advanced Ecommerce - Currencies (public read, admin write)
+        $server->resource('currencies', CurrencyController::class);
     });
 
 // Authenticated routes
@@ -34,4 +42,29 @@ JsonApiRoute::server('v1')
         $server->resource('payment-transactions', PaymentTransactionController::class);
         $server->resource('inventory-reservations', InventoryReservationController::class);
         $server->resource('shipping-methods', ShippingMethodController::class);
+
+        // Phase 4.3.2 Advanced Ecommerce - Wishlist System
+        $server->resource('wishlists', WishlistController::class);
+        $server->resource('wishlist-items', WishlistItemController::class);
     });
+
+// Phase 4.3.3 Advanced Ecommerce - Product Recommendations
+// Public routes for recommendations
+Route::prefix('v1')->group(function () {
+    Route::get('products/{id}/related', [ProductRecommendationController::class, 'related'])
+        ->name('products.related');
+    Route::get('products/{id}/frequently-bought-together', [ProductRecommendationController::class, 'frequentlyBoughtTogether'])
+        ->name('products.frequently-bought-together');
+    Route::get('products/trending', [ProductRecommendationController::class, 'trending'])
+        ->name('products.trending');
+    Route::get('products/popular', [ProductRecommendationController::class, 'popular'])
+        ->name('products.popular');
+    Route::get('products/new-arrivals', [ProductRecommendationController::class, 'newArrivals'])
+        ->name('products.new-arrivals');
+});
+
+// Authenticated route for personalized recommendations
+Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
+    Route::get('products/recommended', [ProductRecommendationController::class, 'personalized'])
+        ->name('products.recommended');
+});

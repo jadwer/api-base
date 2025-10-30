@@ -187,6 +187,50 @@ class PermissionsSeeder extends Seeder
             'guard_name' => 'api',
         ]);
 
+        // Phase 4.3.2 - Wishlists
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.wishlists.index',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.wishlists.show',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.wishlists.store',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.wishlists.update',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.wishlists.destroy',
+            'guard_name' => 'api',
+        ]);
+
+        // Phase 4.3.2 - Wishlist Items
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.wishlist-items.index',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.wishlist-items.show',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.wishlist-items.store',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.wishlist-items.update',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.wishlist-items.destroy',
+            'guard_name' => 'api',
+        ]);
+
         // Assign permissions to roles
 
         // god role permissions
@@ -234,6 +278,17 @@ class PermissionsSeeder extends Seeder
             $rolegod->givePermissionTo('ecommerce.product-reviews.store');
             $rolegod->givePermissionTo('ecommerce.product-reviews.update');
             $rolegod->givePermissionTo('ecommerce.product-reviews.destroy');
+            // Phase 4.3.2 permissions
+            $rolegod->givePermissionTo('ecommerce.wishlists.index');
+            $rolegod->givePermissionTo('ecommerce.wishlists.show');
+            $rolegod->givePermissionTo('ecommerce.wishlists.store');
+            $rolegod->givePermissionTo('ecommerce.wishlists.update');
+            $rolegod->givePermissionTo('ecommerce.wishlists.destroy');
+            $rolegod->givePermissionTo('ecommerce.wishlist-items.index');
+            $rolegod->givePermissionTo('ecommerce.wishlist-items.show');
+            $rolegod->givePermissionTo('ecommerce.wishlist-items.store');
+            $rolegod->givePermissionTo('ecommerce.wishlist-items.update');
+            $rolegod->givePermissionTo('ecommerce.wishlist-items.destroy');
         }
 
         // admin role permissions
@@ -281,6 +336,17 @@ class PermissionsSeeder extends Seeder
             $roleadmin->givePermissionTo('ecommerce.product-reviews.store');
             $roleadmin->givePermissionTo('ecommerce.product-reviews.update');
             $roleadmin->givePermissionTo('ecommerce.product-reviews.destroy');
+            // Phase 4.3.2 permissions
+            $roleadmin->givePermissionTo('ecommerce.wishlists.index');
+            $roleadmin->givePermissionTo('ecommerce.wishlists.show');
+            $roleadmin->givePermissionTo('ecommerce.wishlists.store');
+            $roleadmin->givePermissionTo('ecommerce.wishlists.update');
+            $roleadmin->givePermissionTo('ecommerce.wishlists.destroy');
+            $roleadmin->givePermissionTo('ecommerce.wishlist-items.index');
+            $roleadmin->givePermissionTo('ecommerce.wishlist-items.show');
+            $roleadmin->givePermissionTo('ecommerce.wishlist-items.store');
+            $roleadmin->givePermissionTo('ecommerce.wishlist-items.update');
+            $roleadmin->givePermissionTo('ecommerce.wishlist-items.destroy');
         }
 
         // customer role permissions (can manage their own carts/items but not list all or manage others')
@@ -298,6 +364,9 @@ class PermissionsSeeder extends Seeder
             $rolecustomer->givePermissionTo('ecommerce.shipping-methods.show');
             // Phase 4.3.1 permissions (customers can create reviews)
             $rolecustomer->givePermissionTo('ecommerce.product-reviews.store');
+            // Phase 4.3.2 permissions (customers can manage their own wishlists)
+            $rolecustomer->givePermissionTo('ecommerce.wishlists.store');
+            $rolecustomer->givePermissionTo('ecommerce.wishlist-items.store');
         }
 
         // guest role permissions
@@ -333,6 +402,11 @@ class PermissionsSeeder extends Seeder
             $roletech->givePermissionTo('ecommerce.product-reviews.index');
             $roletech->givePermissionTo('ecommerce.product-reviews.show');
             $roletech->givePermissionTo('ecommerce.product-reviews.destroy');
+            // Phase 4.3.2 permissions (read-only)
+            $roletech->givePermissionTo('ecommerce.wishlists.index');
+            $roletech->givePermissionTo('ecommerce.wishlists.show');
+            $roletech->givePermissionTo('ecommerce.wishlist-items.index');
+            $roletech->givePermissionTo('ecommerce.wishlist-items.show');
         }
 
         $this->command->info('✅ Ecommerce permissions seeded successfully!');

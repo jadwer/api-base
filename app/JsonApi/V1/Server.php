@@ -27,6 +27,9 @@ use Modules\Ecommerce\JsonApi\V1\ShoppingCarts\ShoppingCartSchema;
 use Modules\Ecommerce\JsonApi\V1\CartItems\CartItemSchema;
 use Modules\Ecommerce\JsonApi\V1\Coupons\CouponSchema;
 use Modules\Ecommerce\JsonApi\V1\ProductReviews\ProductReviewSchema;
+use Modules\Ecommerce\JsonApi\V1\Wishlists\WishlistSchema;
+use Modules\Ecommerce\JsonApi\V1\WishlistItems\WishlistItemSchema;
+use Modules\Ecommerce\JsonApi\V1\Currencies\CurrencySchema;
 use Modules\VerificationTest\JsonApi\V1\VerificationItems\VerificationItemSchema;
 use Modules\Contacts\JsonApi\V1\Contacts\ContactSchema;
 use Modules\Contacts\JsonApi\V1\ContactDocuments\ContactDocumentSchema;
@@ -116,6 +119,9 @@ class Server extends BaseServer
             \Modules\Ecommerce\JsonApi\V1\InventoryReservations\InventoryReservationSchema::class,
             \Modules\Ecommerce\JsonApi\V1\ShippingMethods\ShippingMethodSchema::class,
             ProductReviewSchema::class, // Phase 4.3.1
+            WishlistSchema::class, // Phase 4.3.2
+            WishlistItemSchema::class, // Phase 4.3.2
+            CurrencySchema::class, // Phase 4.3.4
 
             // Contacts Module
             ContactSchema::class,
@@ -175,6 +181,9 @@ class Server extends BaseServer
             'cart-items' => \Modules\Ecommerce\JsonApi\V1\CartItems\CartItemAuthorizer::class,
             'coupons' => \Modules\Ecommerce\JsonApi\V1\Coupons\CouponAuthorizer::class,
             'product-reviews' => \Modules\Ecommerce\JsonApi\V1\ProductReviews\ProductReviewAuthorizer::class,
+            'wishlists' => \Modules\Ecommerce\JsonApi\V1\Wishlists\WishlistAuthorizer::class,
+            'wishlist-items' => \Modules\Ecommerce\JsonApi\V1\WishlistItems\WishlistItemAuthorizer::class,
+            'currencies' => \Modules\Ecommerce\JsonApi\V1\Currencies\CurrencyAuthorizer::class,
 
             // Contacts Module
             'contacts' => \Modules\Contacts\JsonApi\V1\Contacts\ContactAuthorizer::class,
