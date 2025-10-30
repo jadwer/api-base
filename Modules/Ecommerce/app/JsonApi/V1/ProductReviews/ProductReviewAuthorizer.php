@@ -76,7 +76,7 @@ class ProductReviewAuthorizer implements Authorizer
     }
 
     /**
-     * Only owner or admin can delete review
+     * Only owner, admin, or tech can delete review
      */
     public function destroy(Request $request, object $model): bool|Response
     {
@@ -85,7 +85,7 @@ class ProductReviewAuthorizer implements Authorizer
             return false;
         }
 
-        if ($user->hasAnyRole(['god', 'admin'])) {
+        if ($user->hasAnyRole(['god', 'admin', 'tech'])) {
             return true;
         }
 

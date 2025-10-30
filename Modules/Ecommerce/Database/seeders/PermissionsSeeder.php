@@ -165,6 +165,28 @@ class PermissionsSeeder extends Seeder
             'guard_name' => 'api',
         ]);
 
+        // Phase 4.3.1 - Product Reviews
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-reviews.index',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-reviews.show',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-reviews.store',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-reviews.update',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-reviews.destroy',
+            'guard_name' => 'api',
+        ]);
+
         // Assign permissions to roles
 
         // god role permissions
@@ -206,6 +228,12 @@ class PermissionsSeeder extends Seeder
             $rolegod->givePermissionTo('ecommerce.shipping-methods.store');
             $rolegod->givePermissionTo('ecommerce.shipping-methods.update');
             $rolegod->givePermissionTo('ecommerce.shipping-methods.destroy');
+            // Phase 4.3.1 permissions
+            $rolegod->givePermissionTo('ecommerce.product-reviews.index');
+            $rolegod->givePermissionTo('ecommerce.product-reviews.show');
+            $rolegod->givePermissionTo('ecommerce.product-reviews.store');
+            $rolegod->givePermissionTo('ecommerce.product-reviews.update');
+            $rolegod->givePermissionTo('ecommerce.product-reviews.destroy');
         }
 
         // admin role permissions
@@ -247,6 +275,12 @@ class PermissionsSeeder extends Seeder
             $roleadmin->givePermissionTo('ecommerce.shipping-methods.store');
             $roleadmin->givePermissionTo('ecommerce.shipping-methods.update');
             $roleadmin->givePermissionTo('ecommerce.shipping-methods.destroy');
+            // Phase 4.3.1 permissions
+            $roleadmin->givePermissionTo('ecommerce.product-reviews.index');
+            $roleadmin->givePermissionTo('ecommerce.product-reviews.show');
+            $roleadmin->givePermissionTo('ecommerce.product-reviews.store');
+            $roleadmin->givePermissionTo('ecommerce.product-reviews.update');
+            $roleadmin->givePermissionTo('ecommerce.product-reviews.destroy');
         }
 
         // customer role permissions (can manage their own carts/items but not list all or manage others')
@@ -262,6 +296,8 @@ class PermissionsSeeder extends Seeder
             $rolecustomer->givePermissionTo('ecommerce.payment-transactions.show');
             $rolecustomer->givePermissionTo('ecommerce.shipping-methods.index');
             $rolecustomer->givePermissionTo('ecommerce.shipping-methods.show');
+            // Phase 4.3.1 permissions (customers can create reviews)
+            $rolecustomer->givePermissionTo('ecommerce.product-reviews.store');
         }
 
         // guest role permissions
@@ -293,8 +329,12 @@ class PermissionsSeeder extends Seeder
             $roletech->givePermissionTo('ecommerce.inventory-reservations.show');
             $roletech->givePermissionTo('ecommerce.shipping-methods.index');
             $roletech->givePermissionTo('ecommerce.shipping-methods.show');
+            // Phase 4.3.1 permissions (can moderate reviews)
+            $roletech->givePermissionTo('ecommerce.product-reviews.index');
+            $roletech->givePermissionTo('ecommerce.product-reviews.show');
+            $roletech->givePermissionTo('ecommerce.product-reviews.destroy');
         }
-        
+
         $this->command->info('✅ Ecommerce permissions seeded successfully!');
     }
 }

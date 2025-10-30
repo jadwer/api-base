@@ -57,9 +57,9 @@ class ProductReviewIndexTest extends TestCase
             'product_id' => $product->id,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($admin)
             ->get('/api/v1/product-reviews');
 
         $response->assertSuccessful()
@@ -83,9 +83,9 @@ class ProductReviewIndexTest extends TestCase
             'product_id' => $product2->id,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($admin)
             ->filter(['productId' => $product1->id])
             ->get('/api/v1/product-reviews');
 
@@ -109,9 +109,9 @@ class ProductReviewIndexTest extends TestCase
             'product_id' => $product->id,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($admin)
             ->filter(['status' => 'approved'])
             ->get('/api/v1/product-reviews');
 
@@ -135,9 +135,9 @@ class ProductReviewIndexTest extends TestCase
             'product_id' => $product->id,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($admin)
             ->filter(['rating' => '5'])
             ->get('/api/v1/product-reviews');
 
@@ -162,10 +162,10 @@ class ProductReviewIndexTest extends TestCase
             'is_verified_purchase' => false,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($admin)
-            ->filter(['isVerifiedPurchase' => 'true'])
+            ->filter(['isVerifiedPurchase' => '1'])
             ->get('/api/v1/product-reviews');
 
         $response->assertSuccessful()
@@ -184,9 +184,9 @@ class ProductReviewIndexTest extends TestCase
         $review2 = ProductReview::factory()->rating(3)->approved()->create(['product_id' => $product->id]);
         $review3 = ProductReview::factory()->rating(4)->approved()->create(['product_id' => $product->id]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($admin)
             ->sort('rating')
             ->get('/api/v1/product-reviews');
 
@@ -209,9 +209,9 @@ class ProductReviewIndexTest extends TestCase
             'product_id' => $product->id,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($admin)
             ->includePaths('product')
             ->get('/api/v1/product-reviews');
 
@@ -240,9 +240,9 @@ class ProductReviewIndexTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($admin)
             ->includePaths('user')
             ->get('/api/v1/product-reviews');
 
@@ -269,9 +269,9 @@ class ProductReviewIndexTest extends TestCase
             'product_id' => $product->id,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($admin)
             ->page(['number' => 1, 'size' => 10])
             ->get('/api/v1/product-reviews');
 

@@ -33,7 +33,8 @@ class ProductReviewUpdateTest extends TestCase
             ],
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
             ->patch('/api/v1/product-reviews/' . $review->id);
@@ -66,10 +67,11 @@ class ProductReviewUpdateTest extends TestCase
             ],
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($customer)
+            
             ->patch('/api/v1/product-reviews/' . $review->id);
 
         $response->assertSuccessful()
@@ -114,10 +116,11 @@ class ProductReviewUpdateTest extends TestCase
             ],
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($customer)
+            
             ->patch('/api/v1/product-reviews/' . $review->id);
 
         $response->assertStatus(403);
@@ -146,10 +149,11 @@ class ProductReviewUpdateTest extends TestCase
             ],
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($admin)
+            
             ->patch('/api/v1/product-reviews/' . $review->id);
 
         $response->assertSuccessful()
@@ -190,10 +194,11 @@ class ProductReviewUpdateTest extends TestCase
             ],
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($customer)
+            
             ->patch('/api/v1/product-reviews/' . $review->id);
 
         $response->assertSuccessful();
@@ -227,10 +232,11 @@ class ProductReviewUpdateTest extends TestCase
             ],
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($customer)
+            
             ->patch('/api/v1/product-reviews/' . $review->id);
 
         $response->assertStatus(422)
@@ -239,10 +245,11 @@ class ProductReviewUpdateTest extends TestCase
         // Test rating too high
         $data['attributes']['rating'] = 6;
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($customer)
+            
             ->patch('/api/v1/product-reviews/' . $review->id);
 
         $response->assertStatus(422)
@@ -270,10 +277,11 @@ class ProductReviewUpdateTest extends TestCase
             ],
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($customer)
+            
             ->patch('/api/v1/product-reviews/' . $review->id);
 
         $response->assertStatus(422)
@@ -303,7 +311,7 @@ class ProductReviewUpdateTest extends TestCase
         $response = $this->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($admin)
+            
             ->patch('/api/v1/product-reviews/' . $review->id);
 
         $response->assertSuccessful();
@@ -334,10 +342,11 @@ class ProductReviewUpdateTest extends TestCase
             ],
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($admin)
+            
             ->patch('/api/v1/product-reviews/' . $review->id);
 
         $response->assertSuccessful();
@@ -368,10 +377,11 @@ class ProductReviewUpdateTest extends TestCase
             ],
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($admin)
+            
             ->patch('/api/v1/product-reviews/' . $review->id);
 
         $response->assertStatus(422)
@@ -399,10 +409,11 @@ class ProductReviewUpdateTest extends TestCase
             ],
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($admin)
+            
             ->patch('/api/v1/product-reviews/' . $review->id);
 
         $response->assertSuccessful();
@@ -428,10 +439,11 @@ class ProductReviewUpdateTest extends TestCase
             ],
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($admin)
+            
             ->patch('/api/v1/product-reviews/99999');
 
         $response->assertStatus(404);

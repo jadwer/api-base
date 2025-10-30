@@ -94,9 +94,9 @@ class ProductReviewShowTest extends TestCase
             'product_id' => $product->id,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($admin)
             ->get('/api/v1/product-reviews/' . $review->id);
 
         $response->assertSuccessful()
@@ -121,9 +121,9 @@ class ProductReviewShowTest extends TestCase
             'user_id' => $customer->id,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($customer)
             ->get('/api/v1/product-reviews/' . $review->id);
 
         $response->assertSuccessful()
@@ -152,9 +152,9 @@ class ProductReviewShowTest extends TestCase
             'user_id' => $otherUser->id,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($customer)
             ->get('/api/v1/product-reviews/' . $review->id);
 
         $response->assertStatus(403);
@@ -172,9 +172,9 @@ class ProductReviewShowTest extends TestCase
             'product_id' => $product->id,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($admin)
             ->includePaths('product')
             ->get('/api/v1/product-reviews/' . $review->id);
 
@@ -203,9 +203,9 @@ class ProductReviewShowTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($admin)
             ->includePaths('user')
             ->get('/api/v1/product-reviews/' . $review->id);
 
@@ -239,9 +239,9 @@ class ProductReviewShowTest extends TestCase
             'helpful_count' => 10,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($admin)
             ->get('/api/v1/product-reviews/' . $review->id);
 
         $response->assertSuccessful()
@@ -270,9 +270,9 @@ class ProductReviewShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($admin)
             ->get('/api/v1/product-reviews/99999');
 
         $response->assertStatus(404);

@@ -49,9 +49,9 @@ class ProductReviewDestroyTest extends TestCase
             'user_id' => $customer->id,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($customer)
             ->delete('/api/v1/product-reviews/' . $review->id);
 
         $response->assertNoContent();
@@ -75,9 +75,9 @@ class ProductReviewDestroyTest extends TestCase
             'user_id' => $otherUser->id,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($customer)
             ->delete('/api/v1/product-reviews/' . $review->id);
 
         $response->assertStatus(403);
@@ -101,9 +101,9 @@ class ProductReviewDestroyTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($admin)
             ->delete('/api/v1/product-reviews/' . $review->id);
 
         $response->assertNoContent();
@@ -127,9 +127,9 @@ class ProductReviewDestroyTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($tech, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($tech)
             ->delete('/api/v1/product-reviews/' . $review->id);
 
         $response->assertNoContent();
@@ -152,9 +152,9 @@ class ProductReviewDestroyTest extends TestCase
             'user_id' => $customer->id,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($customer)
             ->delete('/api/v1/product-reviews/' . $review->id);
 
         $response->assertNoContent();
@@ -177,9 +177,9 @@ class ProductReviewDestroyTest extends TestCase
             'user_id' => $customer->id,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($customer)
             ->delete('/api/v1/product-reviews/' . $review->id);
 
         $response->assertNoContent();
@@ -196,9 +196,9 @@ class ProductReviewDestroyTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($admin)
             ->delete('/api/v1/product-reviews/99999');
 
         $response->assertStatus(404);
@@ -216,9 +216,9 @@ class ProductReviewDestroyTest extends TestCase
             'product_id' => $product->id,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($admin)
             ->delete('/api/v1/product-reviews/' . $review->id);
 
         $response->assertNoContent();
@@ -242,9 +242,9 @@ class ProductReviewDestroyTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($admin)
             ->delete('/api/v1/product-reviews/' . $review->id);
 
         $response->assertNoContent();
@@ -273,9 +273,9 @@ class ProductReviewDestroyTest extends TestCase
         ]);
 
         // Delete first review
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
-            ->withToken($customer)
             ->delete('/api/v1/product-reviews/' . $review1->id);
 
         $response->assertNoContent();

@@ -36,7 +36,8 @@ class ProductReviewStoreTest extends TestCase
             ]
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
             ->post('/api/v1/product-reviews');
@@ -69,10 +70,11 @@ class ProductReviewStoreTest extends TestCase
             ]
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($customer)
+            
             ->post('/api/v1/product-reviews');
 
         $response->assertCreated()
@@ -123,10 +125,11 @@ class ProductReviewStoreTest extends TestCase
             ]
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($admin)
+            
             ->post('/api/v1/product-reviews');
 
         $response->assertCreated();
@@ -162,10 +165,10 @@ class ProductReviewStoreTest extends TestCase
             ]
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($tech, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($tech)
             ->post('/api/v1/product-reviews');
 
         $response->assertCreated();
@@ -189,7 +192,7 @@ class ProductReviewStoreTest extends TestCase
         $response = $this->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($customer)
+            
             ->post('/api/v1/product-reviews');
 
         $response->assertStatus(422)
@@ -219,10 +222,11 @@ class ProductReviewStoreTest extends TestCase
             ]
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($customer)
+            
             ->post('/api/v1/product-reviews');
 
         $response->assertStatus(422)
@@ -252,10 +256,11 @@ class ProductReviewStoreTest extends TestCase
             ]
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($customer)
+            
             ->post('/api/v1/product-reviews');
 
         $response->assertStatus(422)
@@ -287,10 +292,11 @@ class ProductReviewStoreTest extends TestCase
             ]
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($customer)
+            
             ->post('/api/v1/product-reviews');
 
         $response->assertStatus(422)
@@ -299,10 +305,11 @@ class ProductReviewStoreTest extends TestCase
         // Test rating too high
         $data['attributes']['rating'] = 6;
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($customer)
+            
             ->post('/api/v1/product-reviews');
 
         $response->assertStatus(422)
@@ -333,10 +340,11 @@ class ProductReviewStoreTest extends TestCase
             ]
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($customer)
+            
             ->post('/api/v1/product-reviews');
 
         $response->assertCreated();
@@ -367,10 +375,11 @@ class ProductReviewStoreTest extends TestCase
             ]
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($admin)
+            
             ->post('/api/v1/product-reviews');
 
         $response->assertCreated()
@@ -410,7 +419,7 @@ class ProductReviewStoreTest extends TestCase
         $response = $this->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($customer)
+            
             ->post('/api/v1/product-reviews');
 
         $response->assertStatus(422)
@@ -441,10 +450,11 @@ class ProductReviewStoreTest extends TestCase
             ]
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            ->withToken($customer)
+            
             ->post('/api/v1/product-reviews');
 
         $response->assertCreated();
