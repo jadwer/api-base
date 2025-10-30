@@ -65,6 +65,38 @@ class Product extends Model
     }
 
     /**
+     * Un producto puede tener múltiples reviews (Advanced Ecommerce - Phase 4.3.1)
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(\Modules\Ecommerce\Models\ProductReview::class);
+    }
+
+    /**
+     * Only approved reviews
+     */
+    public function approvedReviews(): HasMany
+    {
+        return $this->reviews()->where('status', 'approved');
+    }
+
+    /**
+     * Get average rating from approved reviews
+     */
+    public function getAverageRatingAttribute(): float
+    {
+        return round($this->approvedReviews()->avg('rating') ?? 0.0, 1);
+    }
+
+    /**
+     * Get total count of approved reviews
+     */
+    public function getTotalReviewsAttribute(): int
+    {
+        return $this->approvedReviews()->count();
+    }
+
+    /**
      * Scope para búsqueda global en nombre, SKU y descripción
      */
     public function scopeSearch($query, $term)

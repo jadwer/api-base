@@ -2,7 +2,7 @@
 
 **Last Updated:** 2025-10-29
 **Status:** Phase 3, 3.5, 3.6, 4.1 & 4.2 Complete - Full Business Rules + Performance + Ecommerce + Reporting
-**Next Focus:** Phase 4.3 (Advanced Ecommerce) or Phase 5.1 (Billing/CFDI)
+**Next Focus:** Phase 4.3 - Choose from 5 options (Advanced Ecommerce RECOMMENDED) - See comparison matrix below
 
 ---
 
@@ -372,36 +372,332 @@
 
 #### Phase 4.3: Module Expansion (Varies)
 
-**Status:** Design Phase
-**Options:**
+**Status:** Design Phase - Decision Required
+**Context:** With Phase 4.1 (Ecommerce Enhancement) and Phase 4.2 (Reporting) complete, choose next module expansion.
 
-1. **HR Module** (Recursos Humanos) - 4-5 days
-   - Employees, Departments, Positions
-   - Payroll integration with Accounting
-   - Attendance tracking
-   - Leave management
-   - Complexity: Medium (3/5)
+**Available Options:**
 
-2. **CRM Module** (Customer Relationship Management) - 4-5 days
-   - Leads, Opportunities, Quotes
-   - Sales pipeline management
-   - Customer communication tracking
-   - Marketing campaigns
-   - Complexity: Medium (3/5)
+##### Option 1: Advanced Ecommerce Features (3-4 days)
 
-3. **Project Management Module** - 4-5 days
-   - Projects, Tasks, Time tracking
-   - Resource allocation
-   - Budget management
-   - Gantt chart support
-   - Complexity: Medium (3/5)
+**Objective:** Enhance existing Ecommerce module with customer engagement and advanced features.
 
-4. **Manufacturing Module** - 5-6 days
-   - Bill of Materials (BOM)
-   - Work Orders
-   - Production planning
-   - Quality control
-   - Complexity: High (4/5)
+**Features:**
+- Product reviews and ratings system
+- Wishlist functionality
+- Related products and recommendations engine
+- Product comparison feature
+- Customer Q&A system
+- Multi-currency support (USD, MXN, EUR)
+
+**Why Choose This:**
+- ✅ Builds directly on completed Phase 4.1
+- ✅ Leverages existing Ecommerce infrastructure
+- ✅ Quick wins for customer satisfaction
+- ✅ Low risk (isolated to Ecommerce module)
+- ✅ Immediate business value for online sales
+
+**Deliverables:**
+- ProductReview model with rating aggregation
+- Wishlist model and API
+- RecommendationEngine service
+- Currency conversion system
+- 20+ new API endpoints
+- Enhanced customer experience
+
+**Complexity:** Low-Medium (2/5)
+**Business Value:** High for ecommerce operations
+**Dependencies:** Phase 4.1 complete ✅
+**Risk Level:** Low
+
+---
+
+##### Option 2: HR Module (Recursos Humanos) (4-5 days)
+
+**Objective:** Human resources and payroll management.
+
+**Features:**
+- Employees, Departments, Positions
+- Payroll integration with Accounting
+- Attendance tracking
+- Leave management
+- Performance reviews
+- Benefits administration
+
+**Why Choose This:**
+- Comprehensive employee management
+- Payroll automation with GL posting
+- Time and attendance tracking
+- Compliance management
+
+**Deliverables:**
+- 8-10 new entities (Employee, Department, Position, Payroll, etc.)
+- Payroll calculation engine
+- Attendance tracking system
+- Integration with Accounting module
+- 30+ API endpoints
+
+**Complexity:** Medium (3/5)
+**Business Value:** High for companies with employees
+**Dependencies:** Accounting module ✅
+**Risk Level:** Medium
+
+---
+
+##### Option 3: CRM Module (Customer Relationship Management) (4-5 days)
+
+**Objective:** Sales pipeline and customer relationship management.
+
+**Features:**
+- Leads, Opportunities, Quotes
+- Sales pipeline management
+- Customer communication tracking
+- Marketing campaigns
+- Email integration
+- Sales forecasting
+
+**Why Choose This:**
+- Sales team enablement
+- Lead nurturing automation
+- Sales analytics
+- Customer engagement tracking
+
+**Deliverables:**
+- 7-9 new entities (Lead, Opportunity, Quote, Campaign, etc.)
+- Pipeline management system
+- Communication tracking
+- Quote generation with conversion to Sales Orders
+- 35+ API endpoints
+
+**Complexity:** Medium (3/5)
+**Business Value:** High for B2B companies
+**Dependencies:** Sales module ✅
+**Risk Level:** Medium
+
+---
+
+##### Option 4: Project Management Module (4-5 days)
+
+**Objective:** Project and task management with resource allocation.
+
+**Features:**
+- Projects, Tasks, Milestones
+- Time tracking and timesheets
+- Resource allocation
+- Budget management
+- Gantt chart data support
+- Project profitability analysis
+
+**Why Choose This:**
+- Project-based business support
+- Time and expense tracking
+- Resource utilization analytics
+- Budget vs actual tracking
+
+**Deliverables:**
+- 6-8 new entities (Project, Task, Timesheet, Milestone, etc.)
+- Time tracking system
+- Resource allocation engine
+- Project accounting integration
+- 30+ API endpoints
+
+**Complexity:** Medium (3/5)
+**Business Value:** High for service companies
+**Dependencies:** Accounting, Sales modules ✅
+**Risk Level:** Medium
+
+---
+
+##### Option 5: Manufacturing Module (5-6 days)
+
+**Objective:** Manufacturing operations and production planning.
+
+**Features:**
+- Bill of Materials (BOM)
+- Work Orders and production scheduling
+- Production planning (MRP)
+- Quality control and inspections
+- Shop floor management
+- Production costing
+
+**Why Choose This:**
+- Manufacturing operations support
+- Complex inventory management
+- Production scheduling
+- Cost accounting for manufactured goods
+
+**Deliverables:**
+- 8-10 new entities (BOM, WorkOrder, ProductionStep, QualityCheck, etc.)
+- BOM explosion/implosion engine
+- Production scheduling system
+- Quality control workflows
+- Integration with Inventory and Accounting
+- 35+ API endpoints
+
+**Complexity:** High (4/5)
+**Business Value:** Critical for manufacturing companies
+**Dependencies:** Inventory, Product, Accounting modules ✅
+**Risk Level:** High
+
+---
+
+### Phase 4.3 Comparison Matrix
+
+| Criteria | Advanced Ecommerce | HR Module | CRM Module | Project Mgmt | Manufacturing |
+|----------|-------------------|-----------|------------|--------------|---------------|
+| **Duration** | 3-4 days | 4-5 days | 4-5 days | 4-5 days | 5-6 days |
+| **Complexity** | ⭐⭐ (2/5) | ⭐⭐⭐ (3/5) | ⭐⭐⭐ (3/5) | ⭐⭐⭐ (3/5) | ⭐⭐⭐⭐ (4/5) |
+| **Business Value** | High (ecommerce) | High (employees) | High (B2B) | High (services) | Critical (mfg) |
+| **Risk Level** | Low | Medium | Medium | Medium | High |
+| **Dependencies Met** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| **Time to Value** | Fast (1-2 weeks) | Medium (2-3 weeks) | Medium (2-3 weeks) | Medium (2-3 weeks) | Slow (4+ weeks) |
+| **Integration Points** | Ecommerce only | Accounting | Sales, Contacts | Sales, Accounting | Inventory, Product, Accounting |
+| **New Entities** | 4-5 | 8-10 | 7-9 | 6-8 | 8-10 |
+| **New Endpoints** | 20+ | 30+ | 35+ | 30+ | 35+ |
+| **Frontend Complexity** | Medium | High | High | Very High | Very High |
+| **Maintenance Cost** | Low | Medium | Medium | High | Very High |
+
+---
+
+### Recommended Priority Order
+
+**Based on current system state and business context:**
+
+#### 🥇 **RECOMMENDED: Option 1 - Advanced Ecommerce Features**
+
+**Rationale:**
+- Leverages recently completed Phase 4.1 investment
+- Fastest time-to-value (3-4 days)
+- Lowest risk and complexity
+- Immediate revenue impact for online sales
+- Customer-facing improvements
+- Isolated scope (won't affect other modules)
+
+**Best For:**
+- Companies with active ecommerce operations
+- Customer satisfaction focus
+- Quick wins needed
+- Limited development time
+
+---
+
+#### 🥈 **Second Priority: Option 3 - CRM Module**
+
+**Rationale:**
+- Natural extension of Sales module
+- High business value for most companies
+- Sales team enablement
+- Lead-to-customer conversion tracking
+- Medium complexity, well-understood domain
+
+**Best For:**
+- B2B companies with sales teams
+- Companies needing lead management
+- Sales pipeline visibility required
+- Marketing campaign tracking
+
+---
+
+#### 🥉 **Third Priority: Option 2 - HR Module**
+
+**Rationale:**
+- Every company needs employee management
+- Payroll automation high-value
+- Accounting integration already exists
+- Compliance benefits
+
+**Best For:**
+- Companies with 10+ employees
+- Payroll automation needed
+- Time tracking required
+- HR compliance focus
+
+---
+
+#### 4️⃣ **Fourth Priority: Option 4 - Project Management**
+
+**Rationale:**
+- Valuable for service-based businesses
+- Time tracking and billing integration
+- Project profitability analysis
+- Higher complexity frontend
+
+**Best For:**
+- Service companies (consulting, agencies)
+- Project-based billing
+- Resource utilization tracking
+- Professional services firms
+
+---
+
+#### 5️⃣ **Fifth Priority: Option 5 - Manufacturing**
+
+**Rationale:**
+- Highest complexity and risk
+- Only needed for manufacturing operations
+- Requires extensive testing
+- Long implementation and stabilization
+
+**Best For:**
+- Manufacturing companies only
+- Complex production processes
+- BOM management critical
+- Production costing required
+
+---
+
+### Decision Guidance
+
+**Choose Advanced Ecommerce if:**
+- ✅ You have active online sales
+- ✅ Customer engagement is priority
+- ✅ Want quick wins on existing investment
+- ✅ Limited development time (3-4 days)
+- ✅ Low risk tolerance
+
+**Choose CRM if:**
+- You have a sales team
+- Lead management is critical
+- Need sales pipeline visibility
+- B2B business model
+- 4-5 days available
+
+**Choose HR if:**
+- 10+ employees
+- Payroll automation needed
+- Time tracking required
+- Compliance is important
+- 4-5 days available
+
+**Choose Project Management if:**
+- Service-based business
+- Project billing needed
+- Resource management critical
+- 4-5 days available
+
+**Choose Manufacturing if:**
+- Manufacturing operations
+- BOM management needed
+- Production scheduling critical
+- 5-6 days available
+- Can handle high complexity
+
+---
+
+### Optional: Phase 4.4 - Loyalty & Promotions (2-3 days)
+
+**Can be added after Advanced Ecommerce if chosen:**
+
+**Features:**
+- Loyalty points system
+- Advanced promotion engine
+- Gift cards and vouchers
+- Subscription products
+- Referral program
+- Tier-based rewards
+
+**Business Value:** Very High for customer retention
+**Complexity:** Medium (2.5/5)
+**Dependencies:** Phase 4.1 ✅, Phase 4.3 Option 1 (if chosen)
 
 ---
 

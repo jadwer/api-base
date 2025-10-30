@@ -76,7 +76,95 @@ class PermissionsSeeder extends Seeder
             'name' => 'ecommerce.coupons.destroy',
             'guard_name' => 'api',
         ]);
-        
+
+        // Phase 4.1 - Checkout Sessions
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.checkout-sessions.index',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.checkout-sessions.show',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.checkout-sessions.store',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.checkout-sessions.update',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.checkout-sessions.destroy',
+            'guard_name' => 'api',
+        ]);
+
+        // Phase 4.1 - Payment Transactions
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.payment-transactions.index',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.payment-transactions.show',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.payment-transactions.store',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.payment-transactions.update',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.payment-transactions.destroy',
+            'guard_name' => 'api',
+        ]);
+
+        // Phase 4.1 - Inventory Reservations
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.inventory-reservations.index',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.inventory-reservations.show',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.inventory-reservations.store',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.inventory-reservations.update',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.inventory-reservations.destroy',
+            'guard_name' => 'api',
+        ]);
+
+        // Phase 4.1 - Shipping Methods
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.shipping-methods.index',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.shipping-methods.show',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.shipping-methods.store',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.shipping-methods.update',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.shipping-methods.destroy',
+            'guard_name' => 'api',
+        ]);
+
         // Assign permissions to roles
 
         // god role permissions
@@ -97,6 +185,27 @@ class PermissionsSeeder extends Seeder
             $rolegod->givePermissionTo('ecommerce.coupons.store');
             $rolegod->givePermissionTo('ecommerce.coupons.update');
             $rolegod->givePermissionTo('ecommerce.coupons.destroy');
+            // Phase 4.1 permissions
+            $rolegod->givePermissionTo('ecommerce.checkout-sessions.index');
+            $rolegod->givePermissionTo('ecommerce.checkout-sessions.show');
+            $rolegod->givePermissionTo('ecommerce.checkout-sessions.store');
+            $rolegod->givePermissionTo('ecommerce.checkout-sessions.update');
+            $rolegod->givePermissionTo('ecommerce.checkout-sessions.destroy');
+            $rolegod->givePermissionTo('ecommerce.payment-transactions.index');
+            $rolegod->givePermissionTo('ecommerce.payment-transactions.show');
+            $rolegod->givePermissionTo('ecommerce.payment-transactions.store');
+            $rolegod->givePermissionTo('ecommerce.payment-transactions.update');
+            $rolegod->givePermissionTo('ecommerce.payment-transactions.destroy');
+            $rolegod->givePermissionTo('ecommerce.inventory-reservations.index');
+            $rolegod->givePermissionTo('ecommerce.inventory-reservations.show');
+            $rolegod->givePermissionTo('ecommerce.inventory-reservations.store');
+            $rolegod->givePermissionTo('ecommerce.inventory-reservations.update');
+            $rolegod->givePermissionTo('ecommerce.inventory-reservations.destroy');
+            $rolegod->givePermissionTo('ecommerce.shipping-methods.index');
+            $rolegod->givePermissionTo('ecommerce.shipping-methods.show');
+            $rolegod->givePermissionTo('ecommerce.shipping-methods.store');
+            $rolegod->givePermissionTo('ecommerce.shipping-methods.update');
+            $rolegod->givePermissionTo('ecommerce.shipping-methods.destroy');
         }
 
         // admin role permissions
@@ -117,6 +226,27 @@ class PermissionsSeeder extends Seeder
             $roleadmin->givePermissionTo('ecommerce.coupons.store');
             $roleadmin->givePermissionTo('ecommerce.coupons.update');
             $roleadmin->givePermissionTo('ecommerce.coupons.destroy');
+            // Phase 4.1 permissions
+            $roleadmin->givePermissionTo('ecommerce.checkout-sessions.index');
+            $roleadmin->givePermissionTo('ecommerce.checkout-sessions.show');
+            $roleadmin->givePermissionTo('ecommerce.checkout-sessions.store');
+            $roleadmin->givePermissionTo('ecommerce.checkout-sessions.update');
+            $roleadmin->givePermissionTo('ecommerce.checkout-sessions.destroy');
+            $roleadmin->givePermissionTo('ecommerce.payment-transactions.index');
+            $roleadmin->givePermissionTo('ecommerce.payment-transactions.show');
+            $roleadmin->givePermissionTo('ecommerce.payment-transactions.store');
+            $roleadmin->givePermissionTo('ecommerce.payment-transactions.update');
+            $roleadmin->givePermissionTo('ecommerce.payment-transactions.destroy');
+            $roleadmin->givePermissionTo('ecommerce.inventory-reservations.index');
+            $roleadmin->givePermissionTo('ecommerce.inventory-reservations.show');
+            $roleadmin->givePermissionTo('ecommerce.inventory-reservations.store');
+            $roleadmin->givePermissionTo('ecommerce.inventory-reservations.update');
+            $roleadmin->givePermissionTo('ecommerce.inventory-reservations.destroy');
+            $roleadmin->givePermissionTo('ecommerce.shipping-methods.index');
+            $roleadmin->givePermissionTo('ecommerce.shipping-methods.show');
+            $roleadmin->givePermissionTo('ecommerce.shipping-methods.store');
+            $roleadmin->givePermissionTo('ecommerce.shipping-methods.update');
+            $roleadmin->givePermissionTo('ecommerce.shipping-methods.destroy');
         }
 
         // customer role permissions (can manage their own carts/items but not list all or manage others')
@@ -125,6 +255,13 @@ class PermissionsSeeder extends Seeder
             $rolecustomer->givePermissionTo('ecommerce.shopping-carts.store');
             $rolecustomer->givePermissionTo('ecommerce.cart-items.store');
             $rolecustomer->givePermissionTo('ecommerce.coupons.show');
+            // Phase 4.1 permissions (can manage their own checkout sessions)
+            $rolecustomer->givePermissionTo('ecommerce.checkout-sessions.show');
+            $rolecustomer->givePermissionTo('ecommerce.checkout-sessions.store');
+            $rolecustomer->givePermissionTo('ecommerce.checkout-sessions.update');
+            $rolecustomer->givePermissionTo('ecommerce.payment-transactions.show');
+            $rolecustomer->givePermissionTo('ecommerce.shipping-methods.index');
+            $rolecustomer->givePermissionTo('ecommerce.shipping-methods.show');
         }
 
         // guest role permissions
@@ -147,6 +284,15 @@ class PermissionsSeeder extends Seeder
             $roletech->givePermissionTo('ecommerce.cart-items.show');
             $roletech->givePermissionTo('ecommerce.coupons.index');
             $roletech->givePermissionTo('ecommerce.coupons.show');
+            // Phase 4.1 permissions (read-only)
+            $roletech->givePermissionTo('ecommerce.checkout-sessions.index');
+            $roletech->givePermissionTo('ecommerce.checkout-sessions.show');
+            $roletech->givePermissionTo('ecommerce.payment-transactions.index');
+            $roletech->givePermissionTo('ecommerce.payment-transactions.show');
+            $roletech->givePermissionTo('ecommerce.inventory-reservations.index');
+            $roletech->givePermissionTo('ecommerce.inventory-reservations.show');
+            $roletech->givePermissionTo('ecommerce.shipping-methods.index');
+            $roletech->givePermissionTo('ecommerce.shipping-methods.show');
         }
         
         $this->command->info('✅ Ecommerce permissions seeded successfully!');
