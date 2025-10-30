@@ -14,14 +14,6 @@ use Tests\TestCase;
 
 class ProductRecommendationEndpointsTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->seed(\Database\Seeders\DatabaseSeeder::class);
-    }
-
     /** @test */
     public function public_can_access_related_products_endpoint()
     {

@@ -16,14 +16,11 @@ use Tests\TestCase;
 
 class RecommendationEngineTest extends TestCase
 {
-    use RefreshDatabase;
-
     protected RecommendationEngine $engine;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(\Database\Seeders\DatabaseSeeder::class);
         $this->engine = new RecommendationEngine();
     }
 

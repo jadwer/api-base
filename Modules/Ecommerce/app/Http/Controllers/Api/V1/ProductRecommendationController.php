@@ -2,12 +2,11 @@
 
 namespace Modules\Ecommerce\Http\Controllers\Api\V1;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Ecommerce\Services\RecommendationEngine;
 use Modules\Product\Models\Product;
-use Modules\Product\JsonApi\V1\Products\ProductResource;
 
 class ProductRecommendationController extends Controller
 {
@@ -16,6 +15,29 @@ class ProductRecommendationController extends Controller
     public function __construct(RecommendationEngine $recommendationEngine)
     {
         $this->recommendationEngine = $recommendationEngine;
+    }
+
+    /**
+     * Transform Product model to JSON:API format
+     */
+    protected function transformProduct(Product $product): array
+    {
+        return [
+            'type' => 'products',
+            'id' => (string) $product->id,
+            'attributes' => [
+                'name' => $product->name,
+                'sku' => $product->sku,
+                'description' => $product->description,
+                'price' => $product->price,
+                'cost' => $product->cost,
+                'imgPath' => $product->img_path,
+                'isActive' => $product->is_active,
+                'averageRating' => $product->average_rating,
+                'totalReviews' => $product->total_reviews,
+                'totalSales' => $product->total_sales,
+            ],
+        ];
     }
 
     /**
@@ -33,7 +55,7 @@ class ProductRecommendationController extends Controller
         $relatedProducts = $this->recommendationEngine->getRelatedProducts($product, $limit);
 
         return response()->json([
-            'data' => ProductResource::collection($relatedProducts),
+            'data' => $relatedProducts->map(fn($p) => $this->transformProduct($p)),
             'meta' => [
                 'count' => $relatedProducts->count(),
                 'type' => 'related',
@@ -56,7 +78,7 @@ class ProductRecommendationController extends Controller
         $products = $this->recommendationEngine->getFrequentlyBoughtTogether($product, $limit);
 
         return response()->json([
-            'data' => ProductResource::collection($products),
+            'data' => $products->map(fn($p) => $this->transformProduct($p)),
             'meta' => [
                 'count' => $products->count(),
                 'type' => 'frequently_bought_together',
@@ -77,7 +99,7 @@ class ProductRecommendationController extends Controller
         $products = $this->recommendationEngine->getTrendingProducts($limit);
 
         return response()->json([
-            'data' => ProductResource::collection($products),
+            'data' => $products->map(fn($p) => $this->transformProduct($p)),
             'meta' => [
                 'count' => $products->count(),
                 'type' => 'trending',
@@ -98,7 +120,7 @@ class ProductRecommendationController extends Controller
         $products = $this->recommendationEngine->getPopularProducts($limit);
 
         return response()->json([
-            'data' => ProductResource::collection($products),
+            'data' => $products->map(fn($p) => $this->transformProduct($p)),
             'meta' => [
                 'count' => $products->count(),
                 'type' => 'popular',
@@ -119,7 +141,7 @@ class ProductRecommendationController extends Controller
         $products = $this->recommendationEngine->getNewArrivals($limit);
 
         return response()->json([
-            'data' => ProductResource::collection($products),
+            'data' => $products->map(fn($p) => $this->transformProduct($p)),
             'meta' => [
                 'count' => $products->count(),
                 'type' => 'new_arrivals',
@@ -141,7 +163,7 @@ class ProductRecommendationController extends Controller
         $products = $this->recommendationEngine->getPersonalizedRecommendations($user, $limit);
 
         return response()->json([
-            'data' => ProductResource::collection($products),
+            'data' => $products->map(fn($p) => $this->transformProduct($p)),
             'meta' => [
                 'count' => $products->count(),
                 'type' => 'personalized',

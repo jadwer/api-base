@@ -31,6 +31,10 @@ class Product extends Model
         'unit_id' => 'integer',
         'category_id' => 'integer',
         'brand_id' => 'integer',
+        'is_active' => 'boolean',
+        'average_rating' => 'float',
+        'total_reviews' => 'integer',
+        'total_sales' => 'integer',
     ];
 
     public function unit(): BelongsTo
@@ -81,19 +85,14 @@ class Product extends Model
     }
 
     /**
-     * Get average rating from approved reviews
+     * Update cached rating and review count
+     * Call this method when reviews are added/updated/deleted
      */
-    public function getAverageRatingAttribute(): float
+    public function updateCachedReviewStats(): void
     {
-        return round($this->approvedReviews()->avg('rating') ?? 0.0, 1);
-    }
-
-    /**
-     * Get total count of approved reviews
-     */
-    public function getTotalReviewsAttribute(): int
-    {
-        return $this->approvedReviews()->count();
+        $this->average_rating = round($this->approvedReviews()->avg('rating') ?? 0.0, 1);
+        $this->total_reviews = $this->approvedReviews()->count();
+        $this->saveQuietly();
     }
 
     /**

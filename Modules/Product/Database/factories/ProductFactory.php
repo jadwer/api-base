@@ -29,6 +29,10 @@ class ProductFactory extends Factory
             'unit_id' => Unit::factory(),
             'category_id' => Category::factory(),
             'brand_id' => Brand::factory(),
+            'is_active' => $this->faker->boolean(90), // 90% active
+            'average_rating' => $this->faker->boolean(70) ? $this->faker->randomFloat(1, 3.0, 5.0) : null, // 70% have ratings
+            'total_reviews' => $this->faker->boolean(70) ? $this->faker->numberBetween(1, 50) : 0, // 70% have reviews
+            'total_sales' => $this->faker->numberBetween(0, 200),
         ];
     }
 
