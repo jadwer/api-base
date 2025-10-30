@@ -29,3 +29,4 @@ Thumbs.db
 /.claude/*
 # Auto-generated documentation
 docs/api/documentation.md
+CLAUDE.md
