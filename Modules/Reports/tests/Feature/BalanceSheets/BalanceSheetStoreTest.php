@@ -38,7 +38,7 @@ class BalanceSheetStoreTest extends TestCase
             ->jsonApi()
             ->expects('balance-sheets')
             ->withData($data)
-            ->post('/api/v1/balance-sheets');
+            ->post('/api/v1/reports/balance-sheets');
 
         // Should return 405 Method Not Allowed or 403 Forbidden
         // Balance sheets are generated, not created
@@ -61,7 +61,7 @@ class BalanceSheetStoreTest extends TestCase
             ->jsonApi()
             ->expects('balance-sheets')
             ->withData($data)
-            ->post('/api/v1/balance-sheets');
+            ->post('/api/v1/reports/balance-sheets');
 
         // Reports cannot be created directly
         $this->assertContains($response->status(), [403, 405]);

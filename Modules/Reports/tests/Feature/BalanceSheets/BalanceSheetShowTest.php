@@ -39,7 +39,7 @@ class BalanceSheetShowTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('balance-sheets')
-            ->get('/api/v1/balance-sheets/1');
+            ->get('/api/v1/reports/balance-sheets/1');
 
         $response->assertOk();
         $response->assertJsonStructure([
@@ -70,7 +70,7 @@ class BalanceSheetShowTest extends TestCase
         $response = $this->actingAs($tech, 'sanctum')
             ->jsonApi()
             ->expects('balance-sheets')
-            ->get('/api/v1/balance-sheets/1');
+            ->get('/api/v1/reports/balance-sheets/1');
 
         $response->assertOk();
     }
@@ -83,7 +83,7 @@ class BalanceSheetShowTest extends TestCase
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
             ->expects('balance-sheets')
-            ->get('/api/v1/balance-sheets/1');
+            ->get('/api/v1/reports/balance-sheets/1');
 
         $response->assertStatus(403);
     }
@@ -93,7 +93,7 @@ class BalanceSheetShowTest extends TestCase
     {
         $response = $this->jsonApi()
             ->expects('balance-sheets')
-            ->get('/api/v1/balance-sheets/1');
+            ->get('/api/v1/reports/balance-sheets/1');
 
         $response->assertStatus(401);
     }
@@ -107,7 +107,7 @@ class BalanceSheetShowTest extends TestCase
             ->jsonApi()
             ->expects('balance-sheets')
             ->filter(['asOfDate' => '2025-10-30'])
-            ->get('/api/v1/balance-sheets/1');
+            ->get('/api/v1/reports/balance-sheets/1');
 
         $response->assertOk();
         $response->assertJsonPath('data.attributes.asOfDate', '2025-10-30');
@@ -121,7 +121,7 @@ class BalanceSheetShowTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('balance-sheets')
-            ->get('/api/v1/balance-sheets/1');
+            ->get('/api/v1/reports/balance-sheets/1');
 
         $response->assertOk();
 

@@ -54,6 +54,15 @@ use Modules\Finance\JsonApi\V1\PaymentApplications\PaymentApplicationSchema;
 use Modules\Finance\JsonApi\V1\BankAccounts\BankAccountSchema;
 use Modules\Finance\JsonApi\V1\PaymentMethods\PaymentMethodSchema;
 use Modules\Reports\JsonApi\V1\BalanceSheets\BalanceSheetSchema;
+use Modules\Reports\JsonApi\V1\IncomeStatements\IncomeStatementSchema;
+use Modules\Reports\JsonApi\V1\CashFlows\CashFlowSchema;
+use Modules\Reports\JsonApi\V1\TrialBalances\TrialBalanceSchema;
+use Modules\Reports\JsonApi\V1\ARAgingReports\ARAgingReportSchema;
+use Modules\Reports\JsonApi\V1\APAgingReports\APAgingReportSchema;
+use Modules\Reports\JsonApi\V1\SalesByCustomerReports\SalesByCustomerReportSchema;
+use Modules\Reports\JsonApi\V1\SalesByProductReports\SalesByProductReportSchema;
+use Modules\Reports\JsonApi\V1\PurchaseBySupplierReports\PurchaseBySupplierReportSchema;
+use Modules\Reports\JsonApi\V1\PurchaseByProductReports\PurchaseByProductReportSchema;
 
 class Server extends BaseServer
 {
@@ -156,6 +165,15 @@ class Server extends BaseServer
 
             // Reports Module (Phase 4.2 - Corrected)
             BalanceSheetSchema::class,
+            IncomeStatementSchema::class,
+            CashFlowSchema::class,
+            TrialBalanceSchema::class,
+            ARAgingReportSchema::class,
+            APAgingReportSchema::class,
+            SalesByCustomerReportSchema::class,
+            SalesByProductReportSchema::class,
+            PurchaseBySupplierReportSchema::class,
+            PurchaseByProductReportSchema::class,
 
         ];
 
@@ -220,6 +238,15 @@ class Server extends BaseServer
 
             // Reports Module (Phase 4.2 - Corrected)
             'balance-sheets' => \Modules\Reports\JsonApi\V1\BalanceSheets\BalanceSheetAuthorizer::class,
+            'income-statements' => \Modules\Reports\JsonApi\V1\IncomeStatements\IncomeStatementAuthorizer::class,
+            'cash-flows' => \Modules\Reports\JsonApi\V1\CashFlows\CashFlowAuthorizer::class,
+            'trial-balances' => \Modules\Reports\JsonApi\V1\TrialBalances\TrialBalanceAuthorizer::class,
+            'ar-aging-reports' => \Modules\Reports\JsonApi\V1\ARAgingReports\ARAgingReportAuthorizer::class,
+            'ap-aging-reports' => \Modules\Reports\JsonApi\V1\APAgingReports\APAgingReportAuthorizer::class,
+            'sales-by-customer-reports' => \Modules\Reports\JsonApi\V1\SalesByCustomerReports\SalesByCustomerReportAuthorizer::class,
+            'sales-by-product-reports' => \Modules\Reports\JsonApi\V1\SalesByProductReports\SalesByProductReportAuthorizer::class,
+            'purchase-by-supplier-reports' => \Modules\Reports\JsonApi\V1\PurchaseBySupplierReports\PurchaseBySupplierReportAuthorizer::class,
+            'purchase-by-product-reports' => \Modules\Reports\JsonApi\V1\PurchaseByProductReports\PurchaseByProductReportAuthorizer::class,
         ];
 
         return $authorizers;

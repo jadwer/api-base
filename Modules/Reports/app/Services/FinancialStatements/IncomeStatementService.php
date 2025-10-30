@@ -2,251 +2,172 @@
 
 namespace Modules\Reports\Services\FinancialStatements;
 
-use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use Modules\Accounting\Models\Account;
 use Modules\Accounting\Models\JournalLine;
-use Carbon\Carbon;
 
 class IncomeStatementService
 {
     /**
-     * Generate Income Statement (Estado de Resultados)
+     * Generate Income Statement report
      *
      * @param Carbon $startDate
      * @param Carbon $endDate
+     * @param string $currency
      * @return array
      */
-    public function generate(Carbon $startDate, Carbon $endDate): array
+    public function generate(Carbon $startDate, Carbon $endDate, string $currency = 'MXN'): array
     {
-        $revenue = $this->calculateRevenue($startDate, $endDate);
-        $costOfGoodsSold = $this->calculateCostOfGoodsSold($startDate, $endDate);
-        $grossProfit = $revenue['total_revenue'] - $costOfGoodsSold;
+        // Get revenue and expense accounts
+        $revenues = $this->getAccountsByType('revenue', $startDate, $endDate, $currency);
+        $expenses = $this->getAccountsByType('expense', $startDate, $endDate, $currency);
 
-        $operatingExpenses = $this->calculateOperatingExpenses($startDate, $endDate);
-        $operatingIncome = $grossProfit - $operatingExpenses['total_operating_expenses'];
-
-        $otherIncomeExpenses = $this->calculateOtherIncomeExpenses($startDate, $endDate);
-        $netIncome = $operatingIncome + $otherIncomeExpenses['net_other'];
+        // Calculate totals
+        $totalRevenues = $this->calculateTotal($revenues);
+        $totalExpenses = $this->calculateTotal($expenses);
+        $netIncome = $totalRevenues - $totalExpenses;
 
         return [
-            'period' => [
-                'start_date' => $startDate->toDateString(),
-                'end_date' => $endDate->toDateString(),
-            ],
-            'currency' => config('app.currency', 'MXN'),
-            'revenue' => $revenue,
-            'cost_of_goods_sold' => $costOfGoodsSold,
-            'gross_profit' => $grossProfit,
-            'gross_profit_margin' => $revenue['total_revenue'] > 0
-                ? round(($grossProfit / $revenue['total_revenue']) * 100, 2)
-                : 0,
-            'operating_expenses' => $operatingExpenses,
-            'operating_income' => $operatingIncome,
-            'operating_margin' => $revenue['total_revenue'] > 0
-                ? round(($operatingIncome / $revenue['total_revenue']) * 100, 2)
-                : 0,
-            'other_income_expenses' => $otherIncomeExpenses,
-            'net_income' => $netIncome,
-            'net_profit_margin' => $revenue['total_revenue'] > 0
-                ? round(($netIncome / $revenue['total_revenue']) * 100, 2)
-                : 0,
+            'startDate' => $startDate->format('Y-m-d'),
+            'endDate' => $endDate->format('Y-m-d'),
+            'currency' => $currency,
+            'revenues' => $this->formatAccountsHierarchy($revenues, 'revenue'),
+            'totalRevenues' => round($totalRevenues, 2),
+            'expenses' => $this->formatAccountsHierarchy($expenses, 'expense'),
+            'totalExpenses' => round($totalExpenses, 2),
+            'netIncome' => round($netIncome, 2),
+            'generatedAt' => now()->toIso8601String(),
         ];
     }
 
     /**
-     * Calculate Revenue section
+     * Get accounts by type with their period activity
      *
+     * @param string $type
      * @param Carbon $startDate
      * @param Carbon $endDate
-     * @return array
+     * @param string $currency
+     * @return \Illuminate\Support\Collection
      */
-    private function calculateRevenue(Carbon $startDate, Carbon $endDate): array
+    protected function getAccountsByType(string $type, Carbon $startDate, Carbon $endDate, string $currency)
     {
-        $revenueAccounts = Account::where('account_type', 'revenue')
-            ->where('is_active', true)
-            ->get();
+        return Account::where('type', $type)
+            ->where('active', true)
+            ->orderBy('code')
+            ->get()
+            ->map(function ($account) use ($startDate, $endDate, $currency) {
+                $activity = $this->getAccountActivity($account, $startDate, $endDate, $currency);
 
-        $revenueItems = [];
-        $totalRevenue = 0;
-
-        foreach ($revenueAccounts as $account) {
-            $balance = $this->getAccountBalanceForPeriod($account->id, $startDate, $endDate);
-
-            if ($balance != 0) {
-                $revenueItems[] = [
+                return [
                     'code' => $account->code,
                     'name' => $account->name,
-                    'amount' => $balance,
+                    'type' => $account->type,
+                    'amount' => $activity,
                 ];
-                $totalRevenue += $balance;
-            }
-        }
-
-        return [
-            'accounts' => $revenueItems,
-            'total_revenue' => $totalRevenue,
-        ];
+            })
+            ->filter(function ($account) {
+                // Only include accounts with activity
+                return abs($account['amount']) > 0.01;
+            });
     }
 
     /**
-     * Calculate Cost of Goods Sold
+     * Get account activity for period
      *
+     * @param Account $account
      * @param Carbon $startDate
      * @param Carbon $endDate
+     * @param string $currency
      * @return float
      */
-    private function calculateCostOfGoodsSold(Carbon $startDate, Carbon $endDate): float
+    protected function getAccountActivity(Account $account, Carbon $startDate, Carbon $endDate, string $currency): float
     {
-        // COGS accounts typically have codes starting with 5xxx or contain "cost of" in name
-        $cogsAccounts = Account::where('account_type', 'expense')
-            ->where('is_active', true)
-            ->where(function ($query) {
-                $query->where('code', 'like', '5%')
-                    ->orWhere('name', 'like', '%cost of%')
-                    ->orWhere('name', 'like', '%costo de%');
-            })
-            ->get();
-
-        $totalCogs = 0;
-
-        foreach ($cogsAccounts as $account) {
-            $totalCogs += $this->getAccountBalanceForPeriod($account->id, $startDate, $endDate);
-        }
-
-        return $totalCogs;
-    }
-
-    /**
-     * Calculate Operating Expenses section
-     *
-     * @param Carbon $startDate
-     * @param Carbon $endDate
-     * @return array
-     */
-    private function calculateOperatingExpenses(Carbon $startDate, Carbon $endDate): array
-    {
-        // Operating expenses are expenses that are NOT COGS
-        $expenseAccounts = Account::where('account_type', 'expense')
-            ->where('is_active', true)
-            ->where(function ($query) {
-                $query->where('code', 'not like', '5%')
-                    ->where('name', 'not like', '%cost of%')
-                    ->where('name', 'not like', '%costo de%');
-            })
-            ->get();
-
-        $expenseItems = [];
-        $totalExpenses = 0;
-
-        foreach ($expenseAccounts as $account) {
-            $balance = $this->getAccountBalanceForPeriod($account->id, $startDate, $endDate);
-
-            if ($balance != 0) {
-                $expenseItems[] = [
-                    'code' => $account->code,
-                    'name' => $account->name,
-                    'amount' => $balance,
-                ];
-                $totalExpenses += $balance;
-            }
-        }
-
-        return [
-            'accounts' => $expenseItems,
-            'total_operating_expenses' => $totalExpenses,
-        ];
-    }
-
-    /**
-     * Calculate Other Income/Expenses
-     *
-     * @param Carbon $startDate
-     * @param Carbon $endDate
-     * @return array
-     */
-    private function calculateOtherIncomeExpenses(Carbon $startDate, Carbon $endDate): array
-    {
-        // Other income/expenses like interest, gains/losses
-        // For now, return empty structure - can be enhanced later
-        return [
-            'other_income' => 0,
-            'other_expenses' => 0,
-            'net_other' => 0,
-        ];
-    }
-
-    /**
-     * Get account balance for specific period
-     *
-     * @param int $accountId
-     * @param Carbon $startDate
-     * @param Carbon $endDate
-     * @return float
-     */
-    private function getAccountBalanceForPeriod(int $accountId, Carbon $startDate, Carbon $endDate): float
-    {
-        $account = Account::find($accountId);
-
-        if (!$account) {
-            return 0.0;
-        }
-
-        // Get sum of posted journal entries within the period
-        $balance = JournalLine::where('account_id', $accountId)
+        $debits = JournalLine::where('account_id', $account->id)
             ->whereHas('journalEntry', function ($query) use ($startDate, $endDate) {
-                $query->where('status', 'posted')
-                    ->whereDate('accounting_date', '>=', $startDate->toDateString())
-                    ->whereDate('accounting_date', '<=', $endDate->toDateString());
+                $query->whereBetween('entry_date', [$startDate, $endDate])
+                    ->where('status', 'posted');
             })
-            ->selectRaw('SUM(debit_amount) as total_debits, SUM(credit_amount) as total_credits')
-            ->first();
+            ->sum('debit_amount');
 
-        $totalDebits = $balance->total_debits ?? 0;
-        $totalCredits = $balance->total_credits ?? 0;
+        $credits = JournalLine::where('account_id', $account->id)
+            ->whereHas('journalEntry', function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('entry_date', [$startDate, $endDate])
+                    ->where('status', 'posted');
+            })
+            ->sum('credit_amount');
 
-        // Calculate balance based on account type normal balance
-        // Revenue: Credit - Debit (normal credit balance)
-        // Expenses: Debit - Credit (normal debit balance)
-        if ($account->account_type === 'revenue') {
-            return $totalCredits - $totalDebits;
-        } else {
-            return $totalDebits - $totalCredits;
+        // Revenue accounts: credits increase, debits decrease
+        if ($account->type === 'revenue') {
+            return (float) ($credits - $debits);
         }
+
+        // Expense accounts: debits increase, credits decrease
+        if ($account->type === 'expense') {
+            return (float) ($debits - $credits);
+        }
+
+        return 0.0;
     }
 
     /**
-     * Generate comparative income statement (two periods)
+     * Calculate total from accounts collection
      *
-     * @param Carbon $currentStartDate
-     * @param Carbon $currentEndDate
-     * @param Carbon $priorStartDate
-     * @param Carbon $priorEndDate
+     * @param \Illuminate\Support\Collection $accounts
+     * @return float
+     */
+    protected function calculateTotal($accounts): float
+    {
+        return $accounts->sum('amount');
+    }
+
+    /**
+     * Format accounts hierarchy for JSON response
+     *
+     * @param \Illuminate\Support\Collection $accounts
+     * @param string $type
      * @return array
      */
-    public function generateComparative(
-        Carbon $currentStartDate,
-        Carbon $currentEndDate,
-        Carbon $priorStartDate,
-        Carbon $priorEndDate
-    ): array {
-        $current = $this->generate($currentStartDate, $currentEndDate);
-        $prior = $this->generate($priorStartDate, $priorEndDate);
+    protected function formatAccountsHierarchy($accounts, string $type): array
+    {
+        // Group by account code prefix
+        $grouped = $accounts->groupBy(function ($account) {
+            return substr($account['code'], 0, 1);
+        });
 
-        return [
-            'current_period' => $current,
-            'prior_period' => $prior,
-            'changes' => [
-                'revenue' => $current['revenue']['total_revenue'] - $prior['revenue']['total_revenue'],
-                'revenue_growth_percentage' => $prior['revenue']['total_revenue'] > 0
-                    ? round((($current['revenue']['total_revenue'] - $prior['revenue']['total_revenue']) / $prior['revenue']['total_revenue']) * 100, 2)
-                    : 0,
-                'gross_profit' => $current['gross_profit'] - $prior['gross_profit'],
-                'operating_income' => $current['operating_income'] - $prior['operating_income'],
-                'net_income' => $current['net_income'] - $prior['net_income'],
-                'net_income_growth_percentage' => $prior['net_income'] > 0
-                    ? round((($current['net_income'] - $prior['net_income']) / $prior['net_income']) * 100, 2)
-                    : 0,
+        $hierarchy = [];
+        foreach ($grouped as $prefix => $group) {
+            $categoryName = $this->getCategoryName($prefix, $type);
+
+            $hierarchy[] = [
+                'category' => $categoryName,
+                'accounts' => $group->values()->toArray(),
+                'subtotal' => round($group->sum('amount'), 2),
+            ];
+        }
+
+        return $hierarchy;
+    }
+
+    /**
+     * Get category name based on prefix and type
+     *
+     * @param string $prefix
+     * @param string $type
+     * @return string
+     */
+    protected function getCategoryName(string $prefix, string $type): string
+    {
+        $categories = [
+            'revenue' => [
+                '7' => 'Ingresos por Ventas',
+                '8' => 'Otros Ingresos',
+            ],
+            'expense' => [
+                '9' => 'Costos de Ventas',
+                '0' => 'Gastos Operativos',
             ],
         ];
+
+        return $categories[$type][$prefix] ?? ucfirst($type);
     }
 }

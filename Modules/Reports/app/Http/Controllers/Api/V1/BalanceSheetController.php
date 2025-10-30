@@ -22,7 +22,7 @@ class BalanceSheetController extends Controller
     /**
      * Fetch balance sheets (list view)
      *
-     * GET /api/v1/balance-sheets
+     * GET /api/v1/reports/balance-sheets
      *
      * @param BalanceSheetRequest $request
      * @return DataResponse
@@ -34,8 +34,10 @@ class BalanceSheetController extends Controller
             ? Carbon::parse($request->input('filter.asOfDate'))
             : Carbon::now();
 
+        $currency = $request->input('filter.currency') ?? 'MXN';
+
         // Generate balance sheet using service
-        $balanceSheetData = $this->balanceSheetService->generate($asOfDate);
+        $balanceSheetData = $this->balanceSheetService->generate($asOfDate, $currency);
 
         // Convert to stdClass with ID for JSON:API compliance
         $balanceSheet = (object) array_merge(['id' => '1'], $balanceSheetData);
@@ -51,7 +53,7 @@ class BalanceSheetController extends Controller
     /**
      * Fetch a single balance sheet
      *
-     * GET /api/v1/balance-sheets/{id}
+     * GET /api/v1/reports/balance-sheets/{id}
      *
      * @param string $id
      * @param BalanceSheetRequest $request
@@ -67,8 +69,10 @@ class BalanceSheetController extends Controller
             ? Carbon::parse($request->input('filter.asOfDate'))
             : Carbon::now();
 
+        $currency = $request->input('filter.currency') ?? 'MXN';
+
         // Generate balance sheet using service
-        $balanceSheetData = $this->balanceSheetService->generate($asOfDate);
+        $balanceSheetData = $this->balanceSheetService->generate($asOfDate, $currency);
 
         // Convert to stdClass with ID for JSON:API compliance
         $balanceSheet = (object) array_merge(['id' => $id], $balanceSheetData);

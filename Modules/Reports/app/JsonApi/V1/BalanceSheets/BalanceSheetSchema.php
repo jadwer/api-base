@@ -24,6 +24,16 @@ class BalanceSheetSchema extends Schema
     public static string $model = \stdClass::class;
 
     /**
+     * Get the JSON:API resource type.
+     *
+     * @return string
+     */
+    public static function type(): string
+    {
+        return 'balance-sheets';
+    }
+
+    /**
      * Get the resource fields.
      *
      * @return array

@@ -39,7 +39,7 @@ class BalanceSheetIndexTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('balance-sheets')
-            ->get('/api/v1/balance-sheets');
+            ->get('/api/v1/reports/balance-sheets');
 
         $response->assertOk();
         $response->assertJsonStructure([
@@ -72,7 +72,7 @@ class BalanceSheetIndexTest extends TestCase
         $response = $this->actingAs($tech, 'sanctum')
             ->jsonApi()
             ->expects('balance-sheets')
-            ->get('/api/v1/balance-sheets');
+            ->get('/api/v1/reports/balance-sheets');
 
         $response->assertOk();
     }
@@ -85,7 +85,7 @@ class BalanceSheetIndexTest extends TestCase
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
             ->expects('balance-sheets')
-            ->get('/api/v1/balance-sheets');
+            ->get('/api/v1/reports/balance-sheets');
 
         $response->assertStatus(403);
     }
@@ -95,7 +95,7 @@ class BalanceSheetIndexTest extends TestCase
     {
         $response = $this->jsonApi()
             ->expects('balance-sheets')
-            ->get('/api/v1/balance-sheets');
+            ->get('/api/v1/reports/balance-sheets');
 
         $response->assertStatus(401);
     }
@@ -109,7 +109,7 @@ class BalanceSheetIndexTest extends TestCase
             ->jsonApi()
             ->expects('balance-sheets')
             ->filter(['asOfDate' => '2025-10-30'])
-            ->get('/api/v1/balance-sheets');
+            ->get('/api/v1/reports/balance-sheets');
 
         $response->assertOk();
         $response->assertJsonPath('data.0.attributes.asOfDate', '2025-10-30');
@@ -123,7 +123,7 @@ class BalanceSheetIndexTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('balance-sheets')
-            ->get('/api/v1/balance-sheets');
+            ->get('/api/v1/reports/balance-sheets');
 
         $response->assertOk();
 
@@ -145,7 +145,7 @@ class BalanceSheetIndexTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('balance-sheets')
-            ->get('/api/v1/balance-sheets');
+            ->get('/api/v1/reports/balance-sheets');
 
         $response->assertOk();
 

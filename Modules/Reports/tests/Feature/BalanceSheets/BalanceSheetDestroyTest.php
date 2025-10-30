@@ -29,7 +29,7 @@ class BalanceSheetDestroyTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('balance-sheets')
-            ->delete('/api/v1/balance-sheets/1');
+            ->delete('/api/v1/reports/balance-sheets/1');
 
         // Should return 405 Method Not Allowed or 403 Forbidden
         // Balance sheets cannot be deleted
@@ -44,7 +44,7 @@ class BalanceSheetDestroyTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('balance-sheets')
-            ->delete('/api/v1/balance-sheets/1');
+            ->delete('/api/v1/reports/balance-sheets/1');
 
         // Reports cannot be deleted
         $this->assertContains($response->status(), [403, 405]);

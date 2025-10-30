@@ -1,0 +1,36 @@
+<?php
+
+namespace Modules\Reports\JsonApi\V1\IncomeStatements;
+
+use LaravelJsonApi\Laravel\Http\Requests\ResourceQuery;
+use LaravelJsonApi\Validation\Rule as JsonApiRule;
+
+class IncomeStatementRequest extends ResourceQuery
+{
+    public function rules(): array
+    {
+        return [
+            'filter.startDate' => ['sometimes', 'date'],
+            'filter.endDate' => ['sometimes', 'date', 'after_or_equal:filter.startDate'],
+            'sort' => [
+                'nullable',
+                'string',
+                JsonApiRule::allowedSortParameters(['generatedAt']),
+            ],
+            'include' => [
+                'nullable',
+                'string',
+                JsonApiRule::includePaths(),
+            ],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'filter.startDate.date' => 'El campo start_date debe ser una fecha válida.',
+            'filter.endDate.date' => 'El campo end_date debe ser una fecha válida.',
+            'filter.endDate.after_or_equal' => 'El campo end_date debe ser posterior o igual a start_date.',
+        ];
+    }
+}

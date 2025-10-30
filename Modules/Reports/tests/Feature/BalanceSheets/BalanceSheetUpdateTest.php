@@ -38,7 +38,7 @@ class BalanceSheetUpdateTest extends TestCase
             ->jsonApi()
             ->expects('balance-sheets')
             ->withData($data)
-            ->patch('/api/v1/balance-sheets/1');
+            ->patch('/api/v1/reports/balance-sheets/1');
 
         // Should return 405 Method Not Allowed or 403 Forbidden
         // Balance sheets are generated, not edited
@@ -62,7 +62,7 @@ class BalanceSheetUpdateTest extends TestCase
             ->jsonApi()
             ->expects('balance-sheets')
             ->withData($data)
-            ->patch('/api/v1/balance-sheets/1');
+            ->patch('/api/v1/reports/balance-sheets/1');
 
         // Reports cannot be updated
         $this->assertContains($response->status(), [403, 405]);
