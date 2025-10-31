@@ -1,0 +1,390 @@
+<?php
+
+namespace Modules\Ecommerce\Tests\Feature;
+
+use Modules\Ecommerce\Models\ProductComparison;
+use Modules\Product\Models\Product;
+use Modules\User\Models\User;
+use Tests\TestCase;
+
+class ProductComparisonItemStoreTest extends TestCase
+{
+    /** @test */
+    public function admin_can_create_comparison_item()
+    {
+        $admin = User::role('admin')->first();
+        $comparison = ProductComparison::factory()->create();
+        $product = Product::factory()->create();
+
+        $data = [
+            'type' => 'product-comparison-items',
+            'attributes' => [
+                'position' => 0,
+            ],
+            'relationships' => [
+                'comparison' => [
+                    'data' => [
+                        'type' => 'product-comparisons',
+                        'id' => (string) $comparison->id,
+                    ],
+                ],
+                'product' => [
+                    'data' => [
+                        'type' => 'products',
+                        'id' => (string) $product->id,
+                    ],
+                ],
+            ],
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('product-comparison-items')
+            ->withData($data)
+            ->post('/api/v1/product-comparison-items');
+
+        $response->assertCreated();
+        $response->assertJson([
+            'data' => [
+                'type' => 'product-comparison-items',
+                'attributes' => [
+                    'comparisonId' => $comparison->id,
+                    'productId' => $product->id,
+                    'position' => 0,
+                ],
+            ],
+        ]);
+
+        $this->assertDatabaseHas('product_comparison_items', [
+            'comparison_id' => $comparison->id,
+            'product_id' => $product->id,
+            'position' => 0,
+        ]);
+    }
+
+    /** @test */
+    public function customer_can_add_item_to_their_own_comparison()
+    {
+        $customer = User::role('customer')->first();
+        $comparison = ProductComparison::factory()->create(['user_id' => $customer->id]);
+        $product = Product::factory()->create();
+
+        $data = [
+            'type' => 'product-comparison-items',
+            'attributes' => [
+                'position' => 1,
+            ],
+            'relationships' => [
+                'comparison' => [
+                    'data' => [
+                        'type' => 'product-comparisons',
+                        'id' => (string) $comparison->id,
+                    ],
+                ],
+                'product' => [
+                    'data' => [
+                        'type' => 'products',
+                        'id' => (string) $product->id,
+                    ],
+                ],
+            ],
+        ];
+
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
+            ->expects('product-comparison-items')
+            ->withData($data)
+            ->post('/api/v1/product-comparison-items');
+
+        $response->assertCreated();
+    }
+
+    /** @test */
+    public function customer_cannot_add_item_to_other_users_comparison()
+    {
+        $customer = User::role('customer')->first();
+        $otherUser = User::factory()->create();
+        $comparison = ProductComparison::factory()->create(['user_id' => $otherUser->id]);
+        $product = Product::factory()->create();
+
+        $data = [
+            'type' => 'product-comparison-items',
+            'attributes' => [
+                'position' => 0,
+            ],
+            'relationships' => [
+                'comparison' => [
+                    'data' => [
+                        'type' => 'product-comparisons',
+                        'id' => (string) $comparison->id,
+                    ],
+                ],
+                'product' => [
+                    'data' => [
+                        'type' => 'products',
+                        'id' => (string) $product->id,
+                    ],
+                ],
+            ],
+        ];
+
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
+            ->expects('product-comparison-items')
+            ->withData($data)
+            ->post('/api/v1/product-comparison-items');
+
+        $response->assertStatus(403);
+    }
+
+    /** @test */
+    public function tech_user_cannot_create_comparison_item()
+    {
+        $tech = User::role('tech')->first();
+        $comparison = ProductComparison::factory()->create();
+        $product = Product::factory()->create();
+
+        $data = [
+            'type' => 'product-comparison-items',
+            'attributes' => [
+                'position' => 0,
+            ],
+            'relationships' => [
+                'comparison' => [
+                    'data' => [
+                        'type' => 'product-comparisons',
+                        'id' => (string) $comparison->id,
+                    ],
+                ],
+                'product' => [
+                    'data' => [
+                        'type' => 'products',
+                        'id' => (string) $product->id,
+                    ],
+                ],
+            ],
+        ];
+
+        $response = $this->actingAs($tech, 'sanctum')
+            ->jsonApi()
+            ->expects('product-comparison-items')
+            ->withData($data)
+            ->post('/api/v1/product-comparison-items');
+
+        $response->assertStatus(403);
+    }
+
+    /** @test */
+    public function guest_cannot_create_comparison_item()
+    {
+        $comparison = ProductComparison::factory()->create();
+        $product = Product::factory()->create();
+
+        $data = [
+            'type' => 'product-comparison-items',
+            'attributes' => [
+                'position' => 0,
+            ],
+            'relationships' => [
+                'comparison' => [
+                    'data' => [
+                        'type' => 'product-comparisons',
+                        'id' => (string) $comparison->id,
+                    ],
+                ],
+                'product' => [
+                    'data' => [
+                        'type' => 'products',
+                        'id' => (string) $product->id,
+                    ],
+                ],
+            ],
+        ];
+
+        $response = $this->jsonApi()
+            ->expects('product-comparison-items')
+            ->withData($data)
+            ->post('/api/v1/product-comparison-items');
+
+        $response->assertStatus(401);
+    }
+
+    /** @test */
+    public function comparison_relationship_is_required()
+    {
+        $admin = User::role('admin')->first();
+        $product = Product::factory()->create();
+
+        $data = [
+            'type' => 'product-comparison-items',
+            'attributes' => [
+                'position' => 0,
+            ],
+            'relationships' => [
+                'product' => [
+                    'data' => [
+                        'type' => 'products',
+                        'id' => (string) $product->id,
+                    ],
+                ],
+            ],
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('product-comparison-items')
+            ->withData($data)
+            ->post('/api/v1/product-comparison-items');
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['comparison']);
+    }
+
+    /** @test */
+    public function product_relationship_is_required()
+    {
+        $admin = User::role('admin')->first();
+        $comparison = ProductComparison::factory()->create();
+
+        $data = [
+            'type' => 'product-comparison-items',
+            'attributes' => [
+                'position' => 0,
+            ],
+            'relationships' => [
+                'comparison' => [
+                    'data' => [
+                        'type' => 'product-comparisons',
+                        'id' => (string) $comparison->id,
+                    ],
+                ],
+            ],
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('product-comparison-items')
+            ->withData($data)
+            ->post('/api/v1/product-comparison-items');
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['product']);
+    }
+
+    /** @test */
+    public function position_defaults_to_zero()
+    {
+        $admin = User::role('admin')->first();
+        $comparison = ProductComparison::factory()->create();
+        $product = Product::factory()->create();
+
+        $data = [
+            'type' => 'product-comparison-items',
+            'relationships' => [
+                'comparison' => [
+                    'data' => [
+                        'type' => 'product-comparisons',
+                        'id' => (string) $comparison->id,
+                    ],
+                ],
+                'product' => [
+                    'data' => [
+                        'type' => 'products',
+                        'id' => (string) $product->id,
+                    ],
+                ],
+            ],
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('product-comparison-items')
+            ->withData($data)
+            ->post('/api/v1/product-comparison-items');
+
+        $response->assertCreated();
+        $response->assertJson([
+            'data' => [
+                'attributes' => [
+                    'position' => 0,
+                ],
+            ],
+        ]);
+    }
+
+    /** @test */
+    public function position_must_be_integer()
+    {
+        $admin = User::role('admin')->first();
+        $comparison = ProductComparison::factory()->create();
+        $product = Product::factory()->create();
+
+        $data = [
+            'type' => 'product-comparison-items',
+            'attributes' => [
+                'position' => 'not-a-number',
+            ],
+            'relationships' => [
+                'comparison' => [
+                    'data' => [
+                        'type' => 'product-comparisons',
+                        'id' => (string) $comparison->id,
+                    ],
+                ],
+                'product' => [
+                    'data' => [
+                        'type' => 'products',
+                        'id' => (string) $product->id,
+                    ],
+                ],
+            ],
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('product-comparison-items')
+            ->withData($data)
+            ->post('/api/v1/product-comparison-items');
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['position']);
+    }
+
+    /** @test */
+    public function position_cannot_be_negative()
+    {
+        $admin = User::role('admin')->first();
+        $comparison = ProductComparison::factory()->create();
+        $product = Product::factory()->create();
+
+        $data = [
+            'type' => 'product-comparison-items',
+            'attributes' => [
+                'position' => -1,
+            ],
+            'relationships' => [
+                'comparison' => [
+                    'data' => [
+                        'type' => 'product-comparisons',
+                        'id' => (string) $comparison->id,
+                    ],
+                ],
+                'product' => [
+                    'data' => [
+                        'type' => 'products',
+                        'id' => (string) $product->id,
+                    ],
+                ],
+            ],
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('product-comparison-items')
+            ->withData($data)
+            ->post('/api/v1/product-comparison-items');
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['position']);
+    }
+}

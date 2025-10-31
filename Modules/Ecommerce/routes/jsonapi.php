@@ -14,6 +14,10 @@ use Modules\Ecommerce\Http\Controllers\Api\V1\WishlistController;
 use Modules\Ecommerce\Http\Controllers\Api\V1\WishlistItemController;
 use Modules\Ecommerce\Http\Controllers\Api\V1\ProductRecommendationController;
 use Modules\Ecommerce\Http\Controllers\Api\V1\CurrencyController;
+use Modules\Ecommerce\Http\Controllers\Api\V1\ProductComparisonController;
+use Modules\Ecommerce\Http\Controllers\Api\V1\ProductComparisonItemController;
+use Modules\Ecommerce\Http\Controllers\Api\V1\ProductQuestionController;
+use Modules\Ecommerce\Http\Controllers\Api\V1\ProductAnswerController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes (authorization handled by Authorizers)
@@ -46,6 +50,14 @@ JsonApiRoute::server('v1')
         // Phase 4.3.2 Advanced Ecommerce - Wishlist System
         $server->resource('wishlists', WishlistController::class);
         $server->resource('wishlist-items', WishlistItemController::class);
+
+        // Phase 4.3.5 Advanced Ecommerce - Product Comparison System
+        $server->resource('product-comparisons', ProductComparisonController::class);
+        $server->resource('product-comparison-items', ProductComparisonItemController::class);
+
+        // Phase 4.3.6 Advanced Ecommerce - Customer Q&A System
+        $server->resource('product-questions', ProductQuestionController::class);
+        $server->resource('product-answers', ProductAnswerController::class);
     });
 
 // Phase 4.3.3 Advanced Ecommerce - Product Recommendations

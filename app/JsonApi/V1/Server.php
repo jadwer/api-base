@@ -30,6 +30,10 @@ use Modules\Ecommerce\JsonApi\V1\ProductReviews\ProductReviewSchema;
 use Modules\Ecommerce\JsonApi\V1\Wishlists\WishlistSchema;
 use Modules\Ecommerce\JsonApi\V1\WishlistItems\WishlistItemSchema;
 use Modules\Ecommerce\JsonApi\V1\Currencies\CurrencySchema;
+use Modules\Ecommerce\JsonApi\V1\ProductComparisons\ProductComparisonSchema;
+use Modules\Ecommerce\JsonApi\V1\ProductComparisonItems\ProductComparisonItemSchema;
+use Modules\Ecommerce\JsonApi\V1\ProductQuestions\ProductQuestionSchema;
+use Modules\Ecommerce\JsonApi\V1\ProductAnswers\ProductAnswerSchema;
 use Modules\VerificationTest\JsonApi\V1\VerificationItems\VerificationItemSchema;
 use Modules\Contacts\JsonApi\V1\Contacts\ContactSchema;
 use Modules\Contacts\JsonApi\V1\ContactDocuments\ContactDocumentSchema;
@@ -132,6 +136,10 @@ class Server extends BaseServer
             WishlistSchema::class, // Phase 4.3.2
             WishlistItemSchema::class, // Phase 4.3.2
             CurrencySchema::class, // Phase 4.3.4
+            ProductComparisonSchema::class, // Phase 4.3.5
+            ProductComparisonItemSchema::class, // Phase 4.3.5
+            ProductQuestionSchema::class, // Phase 4.3.6
+            ProductAnswerSchema::class, // Phase 4.3.6
 
             // Contacts Module
             ContactSchema::class,

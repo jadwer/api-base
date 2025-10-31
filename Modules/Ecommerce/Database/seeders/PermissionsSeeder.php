@@ -231,6 +231,94 @@ class PermissionsSeeder extends Seeder
             'guard_name' => 'api',
         ]);
 
+        // Phase 4.3.5 - Product Comparisons
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-comparisons.index',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-comparisons.show',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-comparisons.store',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-comparisons.update',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-comparisons.destroy',
+            'guard_name' => 'api',
+        ]);
+
+        // Phase 4.3.5 - Product Comparison Items
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-comparison-items.index',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-comparison-items.show',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-comparison-items.store',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-comparison-items.update',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-comparison-items.destroy',
+            'guard_name' => 'api',
+        ]);
+
+        // Phase 4.3.6 - Product Questions
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-questions.index',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-questions.show',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-questions.store',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-questions.update',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-questions.destroy',
+            'guard_name' => 'api',
+        ]);
+
+        // Phase 4.3.6 - Product Answers
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-answers.index',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-answers.show',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-answers.store',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-answers.update',
+            'guard_name' => 'api',
+        ]);
+        Permission::firstOrCreate([
+            'name' => 'ecommerce.product-answers.destroy',
+            'guard_name' => 'api',
+        ]);
+
         // Assign permissions to roles
 
         // god role permissions
@@ -289,6 +377,28 @@ class PermissionsSeeder extends Seeder
             $rolegod->givePermissionTo('ecommerce.wishlist-items.store');
             $rolegod->givePermissionTo('ecommerce.wishlist-items.update');
             $rolegod->givePermissionTo('ecommerce.wishlist-items.destroy');
+            // Phase 4.3.5 permissions
+            $rolegod->givePermissionTo('ecommerce.product-comparisons.index');
+            $rolegod->givePermissionTo('ecommerce.product-comparisons.show');
+            $rolegod->givePermissionTo('ecommerce.product-comparisons.store');
+            $rolegod->givePermissionTo('ecommerce.product-comparisons.update');
+            $rolegod->givePermissionTo('ecommerce.product-comparisons.destroy');
+            $rolegod->givePermissionTo('ecommerce.product-comparison-items.index');
+            $rolegod->givePermissionTo('ecommerce.product-comparison-items.show');
+            $rolegod->givePermissionTo('ecommerce.product-comparison-items.store');
+            $rolegod->givePermissionTo('ecommerce.product-comparison-items.update');
+            $rolegod->givePermissionTo('ecommerce.product-comparison-items.destroy');
+            // Phase 4.3.6 permissions
+            $rolegod->givePermissionTo('ecommerce.product-questions.index');
+            $rolegod->givePermissionTo('ecommerce.product-questions.show');
+            $rolegod->givePermissionTo('ecommerce.product-questions.store');
+            $rolegod->givePermissionTo('ecommerce.product-questions.update');
+            $rolegod->givePermissionTo('ecommerce.product-questions.destroy');
+            $rolegod->givePermissionTo('ecommerce.product-answers.index');
+            $rolegod->givePermissionTo('ecommerce.product-answers.show');
+            $rolegod->givePermissionTo('ecommerce.product-answers.store');
+            $rolegod->givePermissionTo('ecommerce.product-answers.update');
+            $rolegod->givePermissionTo('ecommerce.product-answers.destroy');
         }
 
         // admin role permissions
@@ -347,6 +457,28 @@ class PermissionsSeeder extends Seeder
             $roleadmin->givePermissionTo('ecommerce.wishlist-items.store');
             $roleadmin->givePermissionTo('ecommerce.wishlist-items.update');
             $roleadmin->givePermissionTo('ecommerce.wishlist-items.destroy');
+            // Phase 4.3.5 permissions
+            $roleadmin->givePermissionTo('ecommerce.product-comparisons.index');
+            $roleadmin->givePermissionTo('ecommerce.product-comparisons.show');
+            $roleadmin->givePermissionTo('ecommerce.product-comparisons.store');
+            $roleadmin->givePermissionTo('ecommerce.product-comparisons.update');
+            $roleadmin->givePermissionTo('ecommerce.product-comparisons.destroy');
+            $roleadmin->givePermissionTo('ecommerce.product-comparison-items.index');
+            $roleadmin->givePermissionTo('ecommerce.product-comparison-items.show');
+            $roleadmin->givePermissionTo('ecommerce.product-comparison-items.store');
+            $roleadmin->givePermissionTo('ecommerce.product-comparison-items.update');
+            $roleadmin->givePermissionTo('ecommerce.product-comparison-items.destroy');
+            // Phase 4.3.6 permissions
+            $roleadmin->givePermissionTo('ecommerce.product-questions.index');
+            $roleadmin->givePermissionTo('ecommerce.product-questions.show');
+            $roleadmin->givePermissionTo('ecommerce.product-questions.store');
+            $roleadmin->givePermissionTo('ecommerce.product-questions.update');
+            $roleadmin->givePermissionTo('ecommerce.product-questions.destroy');
+            $roleadmin->givePermissionTo('ecommerce.product-answers.index');
+            $roleadmin->givePermissionTo('ecommerce.product-answers.show');
+            $roleadmin->givePermissionTo('ecommerce.product-answers.store');
+            $roleadmin->givePermissionTo('ecommerce.product-answers.update');
+            $roleadmin->givePermissionTo('ecommerce.product-answers.destroy');
         }
 
         // customer role permissions (can manage their own carts/items but not list all or manage others')
@@ -367,6 +499,12 @@ class PermissionsSeeder extends Seeder
             // Phase 4.3.2 permissions (customers can manage their own wishlists)
             $rolecustomer->givePermissionTo('ecommerce.wishlists.store');
             $rolecustomer->givePermissionTo('ecommerce.wishlist-items.store');
+            // Phase 4.3.5 permissions (customers can manage their own comparisons)
+            $rolecustomer->givePermissionTo('ecommerce.product-comparisons.store');
+            $rolecustomer->givePermissionTo('ecommerce.product-comparison-items.store');
+            // Phase 4.3.6 permissions (customers can ask and answer questions)
+            $rolecustomer->givePermissionTo('ecommerce.product-questions.store');
+            $rolecustomer->givePermissionTo('ecommerce.product-answers.store');
         }
 
         // guest role permissions
@@ -407,6 +545,17 @@ class PermissionsSeeder extends Seeder
             $roletech->givePermissionTo('ecommerce.wishlists.show');
             $roletech->givePermissionTo('ecommerce.wishlist-items.index');
             $roletech->givePermissionTo('ecommerce.wishlist-items.show');
+            // Phase 4.3.5 permissions (read-only)
+            $roletech->givePermissionTo('ecommerce.product-comparisons.index');
+            $roletech->givePermissionTo('ecommerce.product-comparisons.show');
+            $roletech->givePermissionTo('ecommerce.product-comparison-items.index');
+            $roletech->givePermissionTo('ecommerce.product-comparison-items.show');
+            // Phase 4.3.6 permissions (can moderate Q&A)
+            $roletech->givePermissionTo('ecommerce.product-questions.index');
+            $roletech->givePermissionTo('ecommerce.product-questions.show');
+            $roletech->givePermissionTo('ecommerce.product-questions.update');
+            $roletech->givePermissionTo('ecommerce.product-answers.index');
+            $roletech->givePermissionTo('ecommerce.product-answers.show');
         }
 
         $this->command->info('✅ Ecommerce permissions seeded successfully!');
