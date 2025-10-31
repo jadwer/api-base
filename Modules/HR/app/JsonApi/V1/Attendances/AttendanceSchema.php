@@ -59,6 +59,7 @@ class AttendanceSchema extends Schema
             WhereIdIn::make($this),
             Where::make('date'),
             Where::make('status'),
+            Where::make('employee', 'employee_id'),
             Where::make('employeeId', 'employee_id'),
         ];
     }

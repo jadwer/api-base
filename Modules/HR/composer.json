@@ -18,8 +18,8 @@
     "autoload": {
         "psr-4": {
             "Modules\\HR\\": "app/",
-            "Modules\\HR\\Database\\Factories\\": "database/factories/",
-            "Modules\\HR\\Database\\Seeders\\": "database/seeders/"
+            "Modules\\HR\\Database\\Factories\\": "Database/factories/",
+            "Modules\\HR\\Database\\Seeders\\": "Database/seeders/"
         }
     },
     "autoload-dev": {

@@ -57,7 +57,7 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapJsonApiRoutes(): void
     {
         if (file_exists(module_path($this->name, '/routes/jsonapi.php'))) {
-            require module_path($this->name, '/routes/jsonapi.php');
+            Route::middleware('api')->prefix('api')->group(module_path($this->name, '/routes/jsonapi.php'));
         }
     }
 }

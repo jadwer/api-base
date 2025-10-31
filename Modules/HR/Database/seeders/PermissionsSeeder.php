@@ -183,34 +183,43 @@ class PermissionsSeeder extends Seeder
             'hr.performance-reviews.update', 'hr.performance-reviews.destroy',
         ]);
 
-        // TECH role - Read-only access for reporting and support
+        // TECH role - Full CRUD permissions (consistent with other modules)
         $roletech->givePermissionTo([
-            // Departments (read-only)
-            'hr.departments.index', 'hr.departments.show',
+            // Departments
+            'hr.departments.index', 'hr.departments.show', 'hr.departments.store',
+            'hr.departments.update', 'hr.departments.destroy',
 
-            // Positions (read-only)
-            'hr.positions.index', 'hr.positions.show',
+            // Positions
+            'hr.positions.index', 'hr.positions.show', 'hr.positions.store',
+            'hr.positions.update', 'hr.positions.destroy',
 
-            // Employees (read-only)
-            'hr.employees.index', 'hr.employees.show',
+            // Employees
+            'hr.employees.index', 'hr.employees.show', 'hr.employees.store',
+            'hr.employees.update', 'hr.employees.destroy',
 
-            // Attendances (read-only)
-            'hr.attendances.index', 'hr.attendances.show',
+            // Attendances
+            'hr.attendances.index', 'hr.attendances.show', 'hr.attendances.store',
+            'hr.attendances.update', 'hr.attendances.destroy',
 
-            // Leaves (read-only)
-            'hr.leaves.index', 'hr.leaves.show',
+            // Leaves
+            'hr.leaves.index', 'hr.leaves.show', 'hr.leaves.store',
+            'hr.leaves.update', 'hr.leaves.destroy',
 
-            // LeaveTypes (read-only)
-            'hr.leave-types.index', 'hr.leave-types.show',
+            // LeaveTypes
+            'hr.leave-types.index', 'hr.leave-types.show', 'hr.leave-types.store',
+            'hr.leave-types.update', 'hr.leave-types.destroy',
 
-            // PayrollPeriods (read-only)
-            'hr.payroll-periods.index', 'hr.payroll-periods.show',
+            // PayrollPeriods
+            'hr.payroll-periods.index', 'hr.payroll-periods.show', 'hr.payroll-periods.store',
+            'hr.payroll-periods.update', 'hr.payroll-periods.destroy',
 
-            // PayrollItems (read-only)
-            'hr.payroll-items.index', 'hr.payroll-items.show',
+            // PayrollItems
+            'hr.payroll-items.index', 'hr.payroll-items.show', 'hr.payroll-items.store',
+            'hr.payroll-items.update', 'hr.payroll-items.destroy',
 
-            // PerformanceReviews (read-only)
-            'hr.performance-reviews.index', 'hr.performance-reviews.show',
+            // PerformanceReviews
+            'hr.performance-reviews.index', 'hr.performance-reviews.show', 'hr.performance-reviews.store',
+            'hr.performance-reviews.update', 'hr.performance-reviews.destroy',
         ]);
 
         // CUSTOMER role - No HR permissions (internal module)
@@ -219,7 +228,7 @@ class PermissionsSeeder extends Seeder
         $this->command->info('✅ HR Permissions created successfully: 45 permissions (9 entities × 5 actions)');
         $this->command->info('✅ God role: 45 permissions');
         $this->command->info('✅ Admin role: 45 permissions');
-        $this->command->info('✅ Tech role: 18 permissions (read-only)');
+        $this->command->info('✅ Tech role: 45 permissions (full CRUD for consistency)');
         $this->command->info('✅ Customer role: 0 permissions (internal module)');
     }
 }
