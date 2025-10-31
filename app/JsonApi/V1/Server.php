@@ -194,11 +194,11 @@ class Server extends BaseServer
             \Modules\HR\JsonApi\V1\PayrollItems\PayrollItemSchema::class,
             \Modules\HR\JsonApi\V1\PerformanceReviews\PerformanceReviewSchema::class,
 
-            // Billing Module (Phase 5.1 - Stripe + CFDI) - Will uncomment as we create entities
-            // \Modules\Billing\JsonApi\V1\PaymentTransactions\PaymentTransactionSchema::class,
-            // \Modules\Billing\JsonApi\V1\CompanySettings\CompanySettingSchema::class,
-            // \Modules\Billing\JsonApi\V1\CFDIInvoices\CFDIInvoiceSchema::class,
-            // \Modules\Billing\JsonApi\V1\CFDIItems\CFDIItemSchema::class,
+            // Billing Module (Phase 5.1 - Stripe + CFDI)
+            \Modules\Billing\JsonApi\V1\PaymentTransactions\PaymentTransactionSchema::class,
+            \Modules\Billing\JsonApi\V1\CompanySettings\CompanySettingSchema::class,
+            \Modules\Billing\JsonApi\V1\CFDIInvoices\CFDIInvoiceSchema::class,
+            \Modules\Billing\JsonApi\V1\CFDIItems\CFDIItemSchema::class,
 
         ];
 
@@ -284,11 +284,11 @@ class Server extends BaseServer
             'payroll-items' => \Modules\HR\JsonApi\V1\PayrollItems\PayrollItemAuthorizer::class,
             'performance-reviews' => \Modules\HR\JsonApi\V1\PerformanceReviews\PerformanceReviewAuthorizer::class,
 
-            // Billing Module (Phase 5.1 - Stripe + CFDI) - Will uncomment as we create entities
-            // 'payment-transactions' => \Modules\Billing\JsonApi\V1\PaymentTransactions\PaymentTransactionAuthorizer::class,
-            // 'company-settings' => \Modules\Billing\JsonApi\V1\CompanySettings\CompanySettingAuthorizer::class,
-            // 'cfdi-invoices' => \Modules\Billing\JsonApi\V1\CFDIInvoices\CFDIInvoiceAuthorizer::class,
-            // 'cfdi-items' => \Modules\Billing\JsonApi\V1\CFDIItems\CFDIItemAuthorizer::class,
+            // Billing Module (Phase 5.1 - Stripe + CFDI)
+            'payment-transactions' => \Modules\Billing\JsonApi\V1\PaymentTransactions\PaymentTransactionAuthorizer::class,
+            'company-settings' => \Modules\Billing\JsonApi\V1\CompanySettings\CompanySettingAuthorizer::class,
+            'cfdi-invoices' => \Modules\Billing\JsonApi\V1\CFDIInvoices\CFDIInvoiceAuthorizer::class,
+            'cfdi-items' => \Modules\Billing\JsonApi\V1\CFDIItems\CFDIItemAuthorizer::class,
         ];
 
         return $authorizers;

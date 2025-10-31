@@ -36,6 +36,11 @@ class BillingServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+
+        // Register StripeService as singleton
+        $this->app->singleton(\Modules\Billing\Services\StripeService::class, function ($app) {
+            return new \Modules\Billing\Services\StripeService();
+        });
     }
 
     /**
