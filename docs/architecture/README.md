@@ -29,7 +29,7 @@ Comprehensive guide to the C4 model architecture with color legends, reading tip
 
 ### Level 2: Container
 - **[L2-container.drawio](./c4/L2-container.drawio)**
-  - 7 Core Modules: Product (4 entities), Inventory (5), Sales (2), Purchase (2), Ecommerce (3), Finance (6 entities + 6 services), Accounting (11 entities + 4 services)
+  - 9 Core Modules: Product (4 entities), Inventory (5), Sales (2), Purchase (2), Ecommerce (11 entities - Phase 4.1+4.3), Finance (6 entities + 6 services), Accounting (11 entities + 4 services), Reports (service layer - Phase 4.2), HR (9 entities + PayrollService - Phase 4.4)
   - Infrastructure: Database, Event Bus, Queue, Cache, Activity Log
   - API Gateway and authentication layer
 
@@ -82,10 +82,10 @@ Complete guide to database schema with table descriptions, relationship explanat
     - Inventory Movements: movement_type enum, audit trail fields
 
 ### Database Statistics
-- **Modules**: 7 core business modules
-- **Tables**: 39+ with complete field definitions
-- **Relationships**: 40+ foreign key relationships
-- **Indexes**: 70+ including composite indexes
+- **Modules**: 9 core business modules (Product, Inventory, Sales, Purchase, Ecommerce, Finance, Accounting, Reports, HR)
+- **Tables**: 54+ with complete field definitions
+- **Relationships**: 60+ foreign key relationships
+- **Indexes**: 150+ including composite indexes (Phase 3.5 optimization)
 - **Constraints**: 5 CHECK constraints for data integrity
 - **Triggers**: 4 MySQL triggers for automatic calculations
 

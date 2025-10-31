@@ -1,8 +1,8 @@
 # ERD Documentation - Complete System Overview
 
-**Date:** 2025-10-28
-**Version:** 1.0
-**Status:** Production-Ready Phase 3 Complete
+**Date:** 2025-10-31
+**Version:** 1.1
+**Status:** Production-Ready Phase 4.4 Complete (HR Module)
 
 ---
 
@@ -23,7 +23,7 @@
 
 ## Overview
 
-This document provides comprehensive documentation for all Entity Relationship Diagrams (ERDs) in the Laravel Modular ERP system. The system uses a modular architecture with **7 core business modules** managing **39+ database tables** with complete relationship mapping.
+This document provides comprehensive documentation for all Entity Relationship Diagrams (ERDs) in the Laravel Modular ERP system. The system uses a modular architecture with **9 core business modules** managing **54+ database tables** with complete relationship mapping.
 
 ### Key Architectural Patterns
 
@@ -62,9 +62,9 @@ All ERD diagrams are created in **DrawIO XML format** and can be opened/edited a
 
 ### Overall System Metrics
 
-- **Total Modules:** 7
-- **Total Tables:** 39+
-- **Total Relationships:** 40+ foreign key constraints
+- **Total Modules:** 9
+- **Total Tables:** 54+
+- **Total Relationships:** 60+ foreign key constraints
 - **Total Indexes:** 70+ (including composites) - see [Performance Optimization](../performance/OPTIMIZATION_SESSION_LOG.md)
 - **Database Engine:** MySQL 8.0 (Production), SQLite (Testing)
 - **Character Set:** utf8mb4 (full Unicode support including emojis)
@@ -79,8 +79,11 @@ All ERD diagrams are created in **DrawIO XML format** and can be opened/edited a
 | **Contacts** | 4 | Contacts (Party), Addresses, Documents, Persons | Medium |
 | **Sales** | 2 | Sales Orders, Order Items | Medium |
 | **Purchase** | 2 | Purchase Orders, Order Items | Medium |
+| **Ecommerce** | 11 | Carts, Checkout, Payments, Shipping, Wishlists, Reviews, Recommendations, Currencies | Very High |
 | **Finance** | 6 | AR/AP Invoices, Payments, Applications, Bank Accounts | High |
 | **Accounting** | 11 | Accounts, Journal Entries/Lines, Fiscal Periods | Very High |
+| **Reports** | 0 | (Service layer only - uses existing tables) | Medium |
+| **HR** | 9 | Departments, Positions, Employees, Attendance, Leaves, Payroll, Reviews | Very High |
 
 ---
 
