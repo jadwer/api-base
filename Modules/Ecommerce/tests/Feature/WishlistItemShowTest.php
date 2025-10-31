@@ -6,18 +6,9 @@ use Modules\Ecommerce\Models\Wishlist;
 use Modules\Ecommerce\Models\WishlistItem;
 use Modules\User\Models\User;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class WishlistItemShowTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->seed(\Database\Seeders\DatabaseSeeder::class);
-    }
-
     /** @test */
     public function admin_can_view_any_wishlist_item()
     {

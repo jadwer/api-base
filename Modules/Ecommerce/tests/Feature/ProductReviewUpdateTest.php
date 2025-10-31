@@ -3,15 +3,12 @@
 namespace Modules\Ecommerce\Tests\Feature;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Ecommerce\Models\ProductReview;
 use Modules\Product\Models\Product;
 use App\Models\User;
 
 class ProductReviewUpdateTest extends TestCase
 {
-    use RefreshDatabase;
-
     /**
      * Test guest cannot update product review.
      */

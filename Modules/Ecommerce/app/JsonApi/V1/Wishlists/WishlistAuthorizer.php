@@ -100,4 +100,44 @@ class WishlistAuthorizer implements Authorizer
 
         return Response::deny('You can only delete your own wishlists.');
     }
+
+    /**
+     * Authorization for viewing related resources
+     */
+    public function showRelated(Request $request, object $model, string $fieldName): bool|Response
+    {
+        return $this->show($request, $model);
+    }
+
+    /**
+     * Authorization for viewing relationship data
+     */
+    public function showRelationship(Request $request, object $model, string $fieldName): bool|Response
+    {
+        return $this->show($request, $model);
+    }
+
+    /**
+     * Authorization for updating relationships
+     */
+    public function updateRelationship(Request $request, object $model, string $fieldName): bool|Response
+    {
+        return $this->update($request, $model);
+    }
+
+    /**
+     * Authorization for attaching to relationships
+     */
+    public function attachRelationship(Request $request, object $model, string $fieldName): bool|Response
+    {
+        return $this->update($request, $model);
+    }
+
+    /**
+     * Authorization for detaching from relationships
+     */
+    public function detachRelationship(Request $request, object $model, string $fieldName): bool|Response
+    {
+        return $this->update($request, $model);
+    }
 }

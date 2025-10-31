@@ -7,18 +7,9 @@ use Modules\Ecommerce\Models\WishlistItem;
 use Modules\Product\Models\Product;
 use Modules\User\Models\User;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class WishlistItemStoreTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->seed(\Database\Seeders\DatabaseSeeder::class);
-    }
-
     /** @test */
     public function admin_can_create_wishlist_item()
     {
