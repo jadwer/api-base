@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
             \Modules\Contacts\Database\Seeders\ContactsDatabaseSeeder::class,
             \Modules\Accounting\Database\Seeders\AccountingDatabaseSeeder::class,
             \Modules\Finance\Database\Seeders\FinanceDatabaseSeeder::class,
+            \Modules\HR\Database\Seeders\HRDatabaseSeeder::class,
         ]);
     }
 }

@@ -183,6 +183,17 @@ class Server extends BaseServer
             PurchaseBySupplierReportSchema::class,
             PurchaseByProductReportSchema::class,
 
+            // HR Module (Phase 4.4) - Will uncomment as we create entities
+            \Modules\HR\JsonApi\V1\Departments\DepartmentSchema::class,
+            \Modules\HR\JsonApi\V1\Positions\PositionSchema::class,
+            \Modules\HR\JsonApi\V1\Employees\EmployeeSchema::class,
+            \Modules\HR\JsonApi\V1\Attendances\AttendanceSchema::class,
+            \Modules\HR\JsonApi\V1\LeaveTypes\LeaveTypeSchema::class,
+            \Modules\HR\JsonApi\V1\Leaves\LeaveSchema::class,
+            \Modules\HR\JsonApi\V1\PayrollPeriods\PayrollPeriodSchema::class,
+            \Modules\HR\JsonApi\V1\PayrollItems\PayrollItemSchema::class,
+            \Modules\HR\JsonApi\V1\PerformanceReviews\PerformanceReviewSchema::class,
+
         ];
 
         return $schemas;
@@ -255,6 +266,17 @@ class Server extends BaseServer
             'sales-by-product-reports' => \Modules\Reports\JsonApi\V1\SalesByProductReports\SalesByProductReportAuthorizer::class,
             'purchase-by-supplier-reports' => \Modules\Reports\JsonApi\V1\PurchaseBySupplierReports\PurchaseBySupplierReportAuthorizer::class,
             'purchase-by-product-reports' => \Modules\Reports\JsonApi\V1\PurchaseByProductReports\PurchaseByProductReportAuthorizer::class,
+
+            // HR Module (Phase 4.4) - Will uncomment as we create entities
+            'departments' => \Modules\HR\JsonApi\V1\Departments\DepartmentAuthorizer::class,
+            'positions' => \Modules\HR\JsonApi\V1\Positions\PositionAuthorizer::class,
+            'employees' => \Modules\HR\JsonApi\V1\Employees\EmployeeAuthorizer::class,
+            'attendances' => \Modules\HR\JsonApi\V1\Attendances\AttendanceAuthorizer::class,
+            'leave-types' => \Modules\HR\JsonApi\V1\LeaveTypes\LeaveTypeAuthorizer::class,
+            'leaves' => \Modules\HR\JsonApi\V1\Leaves\LeaveAuthorizer::class,
+            'payroll-periods' => \Modules\HR\JsonApi\V1\PayrollPeriods\PayrollPeriodAuthorizer::class,
+            'payroll-items' => \Modules\HR\JsonApi\V1\PayrollItems\PayrollItemAuthorizer::class,
+            'performance-reviews' => \Modules\HR\JsonApi\V1\PerformanceReviews\PerformanceReviewAuthorizer::class,
         ];
 
         return $authorizers;

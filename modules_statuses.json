@@ -12,5 +12,6 @@
     "Contacts": true,
     "Accounting": true,
     "Finance": true,
-    "Reports": true
+    "Reports": true,
+    "HR": true
 }

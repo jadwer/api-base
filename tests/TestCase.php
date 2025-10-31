@@ -45,6 +45,7 @@ abstract class TestCase extends BaseTestCase
         $this->artisan('module:seed', ['module' => 'Purchase', '--quiet' => true]);
         $this->artisan('module:seed', ['module' => 'Sales', '--quiet' => true]);
         $this->artisan('module:seed', ['module' => 'Ecommerce', '--quiet' => true]);
+        $this->artisan('module:seed', ['module' => 'HR', '--quiet' => true]);
         $this->artisan('module:seed', ['module' => 'Audit', '--quiet' => true]);
 
         // Cachear usuarios
