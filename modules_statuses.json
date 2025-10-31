@@ -13,5 +13,6 @@
     "Accounting": true,
     "Finance": true,
     "Reports": true,
-    "HR": true
+    "HR": true,
+    "Billing": true
 }
