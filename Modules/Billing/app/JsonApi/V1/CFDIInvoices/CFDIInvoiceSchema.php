@@ -35,10 +35,15 @@ class CFDIInvoiceSchema extends Schema
         return [
             ID::make(),
 
+            // Foreign keys (for creation/updates)
+            Number::make('companySettingId', 'company_setting_id'),
+            Number::make('contactId', 'contact_id'),
+            Number::make('arInvoiceId', 'ar_invoice_id'),
+
             // Relations
-            BelongsTo::make('companySetting')->type('company-settings')->readOnly(),
-            BelongsTo::make('contact')->type('contacts')->readOnly(),
-            BelongsTo::make('arInvoice')->type('ar-invoices')->readOnly(),
+            BelongsTo::make('companySetting')->type('company-settings'),
+            BelongsTo::make('contact')->type('contacts'),
+            BelongsTo::make('arInvoice')->type('ar-invoices'),
             HasMany::make('items')->type('cfdi-items')->readOnly(),
 
             // CFDI Identification
@@ -65,7 +70,7 @@ class CFDIInvoiceSchema extends Schema
 
             // Currency
             Str::make('moneda')->sortable(),
-            Str::make('tipoCambio', 'tipo_cambio'),
+            Number::make('tipoCambio', 'tipo_cambio'),
 
             // Payment Information
             Str::make('formaPago', 'forma_pago'),

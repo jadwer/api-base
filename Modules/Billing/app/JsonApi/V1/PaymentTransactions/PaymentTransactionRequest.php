@@ -9,11 +9,12 @@ class PaymentTransactionRequest extends ResourceRequest
 {
     public function rules(): array
     {
+        $creating = $this->isMethod('POST');
         $transactionId = $this->route('payment_transaction');
 
         return [
             'gateway' => [
-                'sometimes',
+                $creating ? 'required' : 'sometimes',
                 'string',
                 'max:50',
                 'in:stripe,conekta,paypal',
@@ -28,7 +29,7 @@ class PaymentTransactionRequest extends ResourceRequest
                 'sometimes',
                 'string',
                 'max:255',
-                JsonApiRule::unique('payment_transactions', 'transaction_id')->ignore($transactionId),
+                Rule::unique('payment_transactions', 'transaction_id')->ignore($transactionId),
             ],
             'clientSecret' => [
                 'sometimes',
@@ -36,7 +37,7 @@ class PaymentTransactionRequest extends ResourceRequest
                 'max:255',
             ],
             'amount' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'numeric',
                 'min:0',
                 'max:9999999.99',
@@ -97,18 +98,8 @@ class PaymentTransactionRequest extends ResourceRequest
                 'sometimes',
                 'array',
             ],
-            'checkoutSession' => [
-                'sometimes',
-                JsonApiRule::toOne(),
-            ],
-            'salesOrder' => [
-                'sometimes',
-                JsonApiRule::toOne(),
-            ],
-            'arInvoice' => [
-                'sometimes',
-                JsonApiRule::toOne(),
-            ],
+            // Relationships are set via foreign key IDs (checkoutSessionId, salesOrderId, arInvoiceId)
+            // No need for relationship validation rules here
         ];
     }
 

@@ -34,16 +34,20 @@ class CFDIItemSchema extends Schema
         return [
             ID::make(),
 
+            // Foreign keys (for creation/updates)
+            Number::make('cfdiInvoiceId', 'cfdi_invoice_id'),
+            Number::make('productId', 'product_id'),
+
             // Relations
-            BelongsTo::make('cfdiInvoice')->type('cfdi-invoices')->readOnly(),
-            BelongsTo::make('product')->type('products')->readOnly(),
+            BelongsTo::make('cfdiInvoice')->type('cfdi-invoices'),
+            BelongsTo::make('product')->type('products'),
 
             // Item Information
             Number::make('numeroLinea', 'numero_linea')->sortable(),
             Str::make('claveProdServ', 'clave_prod_serv'),
             Str::make('claveUnidad', 'clave_unidad'),
             Str::make('unidad'),
-            Str::make('cantidad'),
+            Number::make('cantidad'),
             Str::make('descripcion'),
             Str::make('noIdentificacion', 'no_identificacion'),
 

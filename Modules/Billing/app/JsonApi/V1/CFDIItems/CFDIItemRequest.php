@@ -8,9 +8,11 @@ class CFDIItemRequest extends ResourceRequest
 {
     public function rules(): array
     {
+        $creating = $this->isMethod('POST');
+
         return [
             'cfdiInvoiceId' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'integer',
                 'exists:cfdi_invoices,id',
             ],
@@ -21,12 +23,12 @@ class CFDIItemRequest extends ResourceRequest
                 'exists:products,id',
             ],
             'numeroLinea' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'integer',
                 'min:1',
             ],
             'claveProdServ' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'string',
                 'max:20',
             ],
@@ -42,12 +44,12 @@ class CFDIItemRequest extends ResourceRequest
                 'max:50',
             ],
             'cantidad' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'numeric',
                 'min:0.000001',
             ],
             'descripcion' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'string',
             ],
             'noIdentificacion' => [
@@ -57,12 +59,12 @@ class CFDIItemRequest extends ResourceRequest
                 'max:100',
             ],
             'valorUnitario' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'integer',
                 'min:1',
             ],
             'importe' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'integer',
                 'min:1',
             ],

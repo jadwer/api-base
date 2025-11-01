@@ -29,6 +29,11 @@ class PaymentTransactionSchema extends Schema
         return [
             ID::make(),
 
+            // Foreign keys (for creation/updates)
+            Number::make('checkoutSessionId', 'checkout_session_id'),
+            Number::make('salesOrderId', 'sales_order_id'),
+            Number::make('arInvoiceId', 'ar_invoice_id'),
+
             // Gateway Info
             Str::make('gateway')->sortable(),
             Str::make('paymentIntentId', 'payment_intent_id')->sortable(),

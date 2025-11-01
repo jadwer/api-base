@@ -9,14 +9,16 @@ class CFDIInvoiceRequest extends ResourceRequest
 {
     public function rules(): array
     {
+        $creating = $this->isMethod('POST');
+
         return [
             'companySettingId' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'integer',
                 'exists:company_settings,id',
             ],
             'contactId' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'integer',
                 'exists:contacts,id',
             ],
@@ -27,12 +29,12 @@ class CFDIInvoiceRequest extends ResourceRequest
                 'exists:ar_invoices,id',
             ],
             'series' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'string',
                 'max:10',
             ],
             'folio' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'integer',
                 'min:1',
             ],
@@ -42,13 +44,13 @@ class CFDIInvoiceRequest extends ResourceRequest
                 'in:I,E,T,N,P',
             ],
             'receptorRfc' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'string',
                 'size:13',
                 'regex:/^[A-Z]{4}[0-9]{6}[A-Z0-9]{3}$/',
             ],
             'receptorNombre' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'string',
                 'max:255',
             ],
@@ -71,12 +73,12 @@ class CFDIInvoiceRequest extends ResourceRequest
                 'regex:/^[0-9]{5}$/',
             ],
             'subtotal' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'integer',
                 'min:1',
             ],
             'total' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'integer',
                 'min:1',
             ],
@@ -149,7 +151,7 @@ class CFDIInvoiceRequest extends ResourceRequest
                 'in:draft,valid,cancelled,error',
             ],
             'fechaEmision' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'date',
             ],
             'metadata' => [
