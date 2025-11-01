@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Billing\Database\Factories\CFDIInvoiceFactory;
 use Modules\Finance\Models\ARInvoice;
-use Modules\Sales\Models\Contact;
+use Modules\Contacts\Models\Contact;
 
 class CFDIInvoice extends Model
 {

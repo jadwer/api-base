@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Modules\Billing\Models\CFDIInvoice;
 use Modules\Billing\Models\CompanySetting;
-use Modules\Sales\Models\Contact;
+use Modules\Contacts\Models\Contact;
 
 class CFDIInvoiceStoreTest extends TestCase
 {

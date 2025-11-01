@@ -19,7 +19,7 @@ class PaymentTransactionFactory extends Factory
         $paymentMethod = $this->faker->randomElement(['card', 'bank_transfer', 'oxxo', 'spei']);
 
         return [
-            'checkout_session_id' => CheckoutSession::factory(),
+            'checkout_session_id' => null, // Avoid deep factory chains - use withCheckoutSession() state if needed
             'sales_order_id' => null,
             'ar_invoice_id' => null,
             'gateway' => $gateway,
@@ -180,6 +180,16 @@ class PaymentTransactionFactory extends Factory
             'payment_method' => 'oxxo',
             'card_brand' => null,
             'card_last4' => null,
+        ]);
+    }
+
+    /**
+     * Attach a checkout session to the transaction.
+     */
+    public function withCheckoutSession(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'checkout_session_id' => CheckoutSession::factory(),
         ]);
     }
 }
