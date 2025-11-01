@@ -427,6 +427,9 @@ class StripeService
                 'transaction_id' => $transaction->id,
                 'payment_intent_id' => $paymentIntent->id,
             ]);
+
+            // Dispatch PaymentCaptured event for CFDI auto-generation
+            event(new \Modules\Billing\Events\PaymentCaptured($transaction));
         }
     }
 

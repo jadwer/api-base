@@ -11,7 +11,17 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array<string, array<int, string>>
      */
-    protected $listen = [];
+    protected $listen = [
+        \Modules\Billing\Events\PaymentCaptured::class => [
+            \Modules\Billing\Listeners\GenerateCFDIAfterPayment::class,
+        ],
+        // Future: CFDIGenerated event can trigger stamping, GL posting, email sending, etc.
+        // \Modules\Billing\Events\CFDIGenerated::class => [
+        //     \Modules\Billing\Listeners\StampCFDIWithPAC::class,
+        //     \Modules\Billing\Listeners\PostCFDIToGeneralLedger::class,
+        //     \Modules\Billing\Listeners\SendCFDIToCustomer::class,
+        // ],
+    ];
 
     /**
      * Indicates if events should be discovered.

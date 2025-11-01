@@ -50,6 +50,11 @@ class BillingServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Billing\Services\CFDI\CFDIPDFGenerator::class, function ($app) {
             return new \Modules\Billing\Services\CFDI\CFDIPDFGenerator();
         });
+
+        // Register CFDI Automation Service as singleton
+        $this->app->singleton(\Modules\Billing\Services\CFDIAutomationService::class, function ($app) {
+            return new \Modules\Billing\Services\CFDIAutomationService();
+        });
     }
 
     /**
