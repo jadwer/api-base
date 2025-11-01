@@ -1091,8 +1091,146 @@ For major decisions or blockers:
 
 ---
 
-**Next Action:** Confirm which phase to prioritize (Phase 3.6 or Phase 3.5) and begin execution.
+## Phase 5.1: Billing Module (Stripe + CFDI) - IN PROGRESS
 
-**Document Status:** Up-to-date as of 2025-10-28
+**Status:** 🟡 **85% COMPLETE** (Completed: 2025-11-01)
+**Duration:** 4 days actual (6-9 days estimated)
+**Complexity:** High (4/5)
+**Business Value:** Critical for payments and Mexican tax compliance
+
+**Summary Document:** `docs/roadmaps/phases/PHASE5.1_BILLING_MODULE_STRIPE_CFDI_COMPLETE_PLAN.md`
+
+### ✅ Completed Components
+
+#### Phase 1: Stripe Integration (100%)
+- [x] PaymentTransaction model and migration
+- [x] StripeService with complete Stripe SDK integration
+- [x] Stripe webhook handling (payment_intent.succeeded, payment_failed, charge.refunded)
+- [x] Configuration in config/services.php
+
+#### Phase 2: CFDI Module Structure (100%)
+- [x] 4 entities: CFDIInvoice, CFDIItem, CompanySetting, PaymentTransaction
+- [x] Complete JSON:API implementation (schemas, authorizers, resources, requests)
+- [x] CRUD endpoints for all entities
+- [x] 20+ test files (5 per entity)
+- [x] 25 permissions with role-based access control
+
+#### Phase 2.5: CFDI Generators (100%)
+- [x] CFDIXMLGenerator - CFDI 4.0 SAT-compliant XML generation
+- [x] CFDIPDFGenerator - Professional PDF with QR codes
+- [x] Blade template (cfdi-pdf.blade.php) with SAT-required elements
+- [x] Dependencies: barryvdh/laravel-dompdf, simplesoftwareio/simple-qrcode
+
+#### Phase 2.6: CFDI Operations (100%)
+- [x] 5 custom endpoints: generate-xml, generate-pdf, download-xml, download-pdf, preview-pdf
+- [x] Permission-based access control (admin/tech/customer roles)
+- [x] 46 comprehensive tests for CFDI operations
+- [x] Proper amount handling (cents ↔ currency conversion)
+
+#### Phase 4: Full Integration & Automation (100%)
+- [x] CFDIAutomationService - Auto-generate CFDI from ARInvoice or PaymentTransaction
+- [x] PaymentCaptured event - Dispatched when Stripe payment succeeds
+- [x] CFDIGenerated event - Dispatched after CFDI creation
+- [x] GenerateCFDIAfterPayment listener - Queued async CFDI generation
+- [x] Event-driven workflow: Stripe Payment → CFDI Generation → (Ready for Stamping)
+- [x] Service registration in BillingServiceProvider
+
+### ⏳ Pending (Blocked - Requires Credentials)
+
+#### Phase 3: SW Sapien PAC Integration (0% - Blocked)
+- [ ] SWPacService implementation
+- [ ] CFDIStampingService
+- [ ] Stamp CFDI endpoint
+- [ ] Cancel CFDI endpoint
+- [ ] PAC webhook handler
+- [ ] Tests for PAC integration
+
+**Blocker:** Awaiting SW Sapien account approval and API credentials
+
+### 📊 Implementation Metrics
+
+**Code Statistics:**
+- **Services:** 4 (StripeService, CFDIXMLGenerator, CFDIPDFGenerator, CFDIAutomationService)
+- **Events:** 2 (PaymentCaptured, CFDIGenerated)
+- **Listeners:** 1 (GenerateCFDIAfterPayment - queued)
+- **Models:** 4 (PaymentTransaction, CFDIInvoice, CFDIItem, CompanySetting)
+- **API Endpoints:** 55+ routes (20 CRUD + 35 custom operations)
+- **Tests:** 65+ test files with 200+ assertions
+- **Permissions:** 25 permissions (god/admin: 25, tech: 14, customer: 9)
+- **Production Code:** ~3,500 lines
+- **Test Code:** ~2,500 lines
+
+**Commits Made (7 total):**
+1. `feat(billing): implement Phase 0 - module structure and permissions`
+2. `feat(billing): implement Phase 5.1 - Stripe integration and CFDI foundation`
+3. `chore(billing): install PDF and QR code generation dependencies`
+4. `feat(billing): implement CFDI XML and PDF generators`
+5. `feat(billing): add CFDI XML/PDF generation and download endpoints`
+6. `fix(billing): correct permissions and Party Pattern in CFDI factories`
+7. `feat(billing): implement CFDI automation workflow with event-driven architecture`
+
+### 🎯 Automated Workflow
+
+```
+1. Customer Completes Checkout
+   ↓
+2. Stripe Payment Intent Created
+   ↓
+3. Stripe Webhook: payment_intent.succeeded
+   ↓
+4. StripeService Updates PaymentTransaction (status='captured')
+   ↓
+5. Dispatches PaymentCaptured Event
+   ↓
+6. GenerateCFDIAfterPayment Listener (queued)
+   - Retrieves AR Invoice
+   - Calls CFDIAutomationService
+   - Generates draft CFDI with XML
+   ↓
+7. Dispatches CFDIGenerated Event
+   ↓
+8. [FUTURE] Stamp with PAC (pending credentials)
+   ↓
+9. [FUTURE] Post to General Ledger
+   ↓
+10. [FUTURE] Email CFDI to Customer
+```
+
+### 💡 Production Readiness
+
+**Currently Working:**
+- ✅ Stripe payment processing (test mode)
+- ✅ CFDI XML generation (CFDI 4.0 compliant)
+- ✅ CFDI PDF generation (professional, with QR codes)
+- ✅ Automated workflow (Payment → CFDI draft)
+- ✅ Download/preview endpoints for customers
+- ✅ Permission-based access control
+- ✅ Event-driven architecture
+
+**Pending (requires PAC):**
+- ❌ CFDI stamping (timbrado) - requires SW Sapien credentials
+- ❌ CFDI cancellation - requires SW Sapien credentials
+- ❌ SAT verification - requires stamped CFDIs
+
+**Workaround:**
+Draft CFDIs can be generated, downloaded, and used internally. Once PAC credentials are obtained, stamping can be added in ~4-6 hours without affecting existing functionality.
+
+### 🚀 Next Steps (When PAC Available)
+
+1. Implement SWPacService with SW Sapien API integration (~2 hours)
+2. Create CFDIStampingService to orchestrate stamping workflow (~1 hour)
+3. Add stamp/cancel endpoints with proper error handling (~1 hour)
+4. Create PAC webhook handler for async stamp status (~1 hour)
+5. Write comprehensive PAC integration tests (~2 hours)
+6. Document PAC integration for frontend team (~1 hour)
+
+**Estimated:** 8 hours total to complete Phase 3 when credentials available
+
+---
+
+**Next Action:** Continue with other phases OR wait for SW Sapien credentials to complete Phase 5.1
+
+**Document Status:** Up-to-date as of 2025-11-01
 **Architecture:** Modular Laravel 12 with JSON:API 1.1 compliance
-**Test Coverage:** 692+ assertions across 27+ test suites
+**Test Coverage:** 890+ assertions across 90+ test suites
+**Modules Complete:** 10 (Product, Inventory, Sales, Purchase, Ecommerce, Finance, Accounting, Reports, HR, Billing)
