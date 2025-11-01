@@ -4,15 +4,17 @@ namespace Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use LaravelJsonApi\Testing\MakesJsonApiRequests;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Modules\User\Models\User;
 
 abstract class TestCase extends BaseTestCase
 {
-    use MakesJsonApiRequests, RefreshDatabase;
+    use MakesJsonApiRequests, DatabaseTransactions;
 
     /**
      * Cache de usuarios en memoria
+     * IMPORTANT: Users are seeded ONCE in bootstrap/testing.php
+     * Tests use DatabaseTransactions to rollback changes, keeping seeded data intact
      */
     protected static ?User $cachedAdminUser = null;
     protected static ?User $cachedTechUser = null;
@@ -22,37 +24,15 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        // Seed mínimo + Accounting (usado por mayoría de tests)
-        $this->seedBasicData();
-    }
-
-    /**
-     * Seed de datos básicos - Todos los módulos necesarios
-     */
-    protected function seedBasicData(): void
-    {
+        // Clear permission cache before each test
         app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
 
-        // Seeders de todos los módulos (mantener performance con --quiet)
-        // IMPORTANT: Accounting must be seeded before Finance (FiscalPeriods, Journals)
-        $this->artisan('module:seed', ['module' => 'PermissionManager', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'User', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Accounting', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Finance', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Contacts', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Product', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Inventory', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Purchase', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Sales', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Ecommerce', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'HR', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Billing', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Audit', '--quiet' => true]);
-
-        // Cachear usuarios
-        static::$cachedAdminUser = User::where('email', 'admin@example.com')->first();
-        static::$cachedTechUser = User::where('email', 'tech@example.com')->first();
-        static::$cachedCustomerUser = User::where('email', 'customer@example.com')->first();
+        // Cache users on first access (already seeded in bootstrap)
+        if (static::$cachedAdminUser === null) {
+            static::$cachedAdminUser = User::where('email', 'admin@example.com')->first();
+            static::$cachedTechUser = User::where('email', 'tech@example.com')->first();
+            static::$cachedCustomerUser = User::where('email', 'customer@example.com')->first();
+        }
     }
 
     /**
