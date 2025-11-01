@@ -18,9 +18,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Drop the balanced entry constraint
-        // Balance is still validated in application code
-        DB::statement('ALTER TABLE journal_entries DROP CHECK chk_balanced_entry');
+        // Only run on MySQL - SQLite doesn't support DROP CHECK syntax
+        if (DB::getDriverName() === 'mysql') {
+            // Drop the balanced entry constraint
+            // Balance is still validated in application code
+            DB::statement('ALTER TABLE journal_entries DROP CHECK chk_balanced_entry');
+        }
     }
 
     /**
@@ -28,11 +31,14 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Re-add the constraint if needed
-        DB::statement('
-            ALTER TABLE journal_entries
-            ADD CONSTRAINT chk_balanced_entry
-            CHECK (total_debit = total_credit)
-        ');
+        // Only run on MySQL - SQLite doesn't support named CHECK constraints
+        if (DB::getDriverName() === 'mysql') {
+            // Re-add the constraint if needed
+            DB::statement('
+                ALTER TABLE journal_entries
+                ADD CONSTRAINT chk_balanced_entry
+                CHECK (total_debit = total_credit)
+            ');
+        }
     }
 };

@@ -30,7 +30,10 @@ return new class extends Migration
                 $msg = $e->getMessage();
                 if (!str_contains($msg, 'Duplicate key name') &&
                     !str_contains($msg, "doesn't exist in table") &&
-                    !str_contains($msg, "doesn't exist")) {
+                    !str_contains($msg, "doesn't exist") &&
+                    !str_contains($msg, "no such table") &&
+                    !str_contains($msg, "no such column") &&
+                    !str_contains($msg, "syntax error")) {
                     throw $e;
                 }
             }
