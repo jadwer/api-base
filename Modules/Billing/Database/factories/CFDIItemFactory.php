@@ -78,6 +78,41 @@ class CFDIItemFactory extends Factory
     }
 
     /**
+     * State: With taxes (IVA 16% + IEPS 8%)
+     */
+    public function withTaxes(): static
+    {
+        return $this->state(function (array $attributes) {
+            $importe = $attributes['importe'];
+            $iva = (int) ($importe * 0.16);
+            $ieps = (int) ($importe * 0.08);
+
+            return [
+                'objeto_imp' => '02', // Sí objeto de impuesto
+                'impuestos' => [
+                    'traslados' => [
+                        [
+                            'base' => $importe,
+                            'impuesto' => '002', // IVA
+                            'tipo_factor' => 'Tasa',
+                            'tasa_o_cuota' => '0.160000',
+                            'importe' => $iva,
+                        ],
+                        [
+                            'base' => $importe,
+                            'impuesto' => '003', // IEPS
+                            'tipo_factor' => 'Tasa',
+                            'tasa_o_cuota' => '0.080000',
+                            'importe' => $ieps,
+                        ]
+                    ],
+                    'retenciones' => []
+                ],
+            ];
+        });
+    }
+
+    /**
      * State: No taxes (exento)
      */
     public function exento(): static

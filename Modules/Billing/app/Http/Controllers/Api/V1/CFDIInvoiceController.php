@@ -31,7 +31,7 @@ class CFDIInvoiceController
     public function generateXml(CFDIInvoice $cfdiInvoice, CFDIXMLGenerator $xmlGenerator): JsonResponse
     {
         // Check permission
-        if (Gate::denies('cfdi-invoices.generate-xml')) {
+        if (Gate::denies('billing.cfdi-invoices.generate-xml')) {
             abort(403, 'No tiene permisos para generar XML CFDI');
         }
 
@@ -66,7 +66,7 @@ class CFDIInvoiceController
     public function generatePdf(CFDIInvoice $cfdiInvoice, CFDIPDFGenerator $pdfGenerator): JsonResponse
     {
         // Check permission
-        if (Gate::denies('cfdi-invoices.generate-pdf')) {
+        if (Gate::denies('billing.cfdi-invoices.generate-pdf')) {
             abort(403, 'No tiene permisos para generar PDF CFDI');
         }
 
@@ -97,7 +97,7 @@ class CFDIInvoiceController
     public function downloadPdf(CFDIInvoice $cfdiInvoice, CFDIPDFGenerator $pdfGenerator): Response
     {
         // Check permission
-        if (Gate::denies('cfdi-invoices.download-pdf')) {
+        if (Gate::denies('billing.cfdi-invoices.download-pdf')) {
             abort(403, 'No tiene permisos para descargar PDF CFDI');
         }
 
@@ -118,7 +118,7 @@ class CFDIInvoiceController
     public function previewPdf(CFDIInvoice $cfdiInvoice, CFDIPDFGenerator $pdfGenerator): Response
     {
         // Check permission
-        if (Gate::denies('cfdi-invoices.preview-pdf')) {
+        if (Gate::denies('billing.cfdi-invoices.preview-pdf')) {
             abort(403, 'No tiene permisos para previsualizar PDF CFDI');
         }
 
@@ -138,7 +138,7 @@ class CFDIInvoiceController
     public function downloadXml(CFDIInvoice $cfdiInvoice): Response
     {
         // Check permission
-        if (Gate::denies('cfdi-invoices.download-xml')) {
+        if (Gate::denies('billing.cfdi-invoices.download-xml')) {
             abort(403, 'No tiene permisos para descargar XML CFDI');
         }
 

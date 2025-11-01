@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Billing\Models\CFDIInvoice;
 use Modules\Billing\Models\CompanySetting;
 use Modules\Finance\Models\ARInvoice;
-use Modules\Sales\Models\Contact;
+use Modules\Contacts\Models\Contact;
 
 class CFDIInvoiceFactory extends Factory
 {
@@ -20,7 +20,7 @@ class CFDIInvoiceFactory extends Factory
 
         // Get or create dependencies
         $companySetting = CompanySetting::first() ?? CompanySetting::factory()->create();
-        $contact = Contact::where('contact_type', 'customer')->first()
+        $contact = Contact::where('is_customer', true)->first()
             ?? Contact::factory()->customer()->create();
 
         return [
