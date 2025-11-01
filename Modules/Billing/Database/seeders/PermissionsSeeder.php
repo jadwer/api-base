@@ -56,6 +56,15 @@ class PermissionsSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'billing.cfdi-items.destroy', 'guard_name' => 'api']);
 
         // =========================================================================
+        // CFDI GENERATION PERMISSIONS (Phase 2 - CFDI Operations)
+        // =========================================================================
+        Permission::firstOrCreate(['name' => 'billing.cfdi-invoices.generate-xml', 'guard_name' => 'api']);
+        Permission::firstOrCreate(['name' => 'billing.cfdi-invoices.generate-pdf', 'guard_name' => 'api']);
+        Permission::firstOrCreate(['name' => 'billing.cfdi-invoices.download-xml', 'guard_name' => 'api']);
+        Permission::firstOrCreate(['name' => 'billing.cfdi-invoices.download-pdf', 'guard_name' => 'api']);
+        Permission::firstOrCreate(['name' => 'billing.cfdi-invoices.preview-pdf', 'guard_name' => 'api']);
+
+        // =========================================================================
         // ASSIGN PERMISSIONS TO ROLES
         // =========================================================================
 
@@ -76,6 +85,11 @@ class PermissionsSeeder extends Seeder
             'billing.cfdi-invoices.store',
             'billing.cfdi-invoices.update',
             'billing.cfdi-invoices.destroy',
+            'billing.cfdi-invoices.generate-xml',
+            'billing.cfdi-invoices.generate-pdf',
+            'billing.cfdi-invoices.download-xml',
+            'billing.cfdi-invoices.download-pdf',
+            'billing.cfdi-invoices.preview-pdf',
             'billing.cfdi-items.index',
             'billing.cfdi-items.show',
             'billing.cfdi-items.store',
@@ -100,6 +114,11 @@ class PermissionsSeeder extends Seeder
             'billing.cfdi-invoices.store',
             'billing.cfdi-invoices.update',
             'billing.cfdi-invoices.destroy',
+            'billing.cfdi-invoices.generate-xml',
+            'billing.cfdi-invoices.generate-pdf',
+            'billing.cfdi-invoices.download-xml',
+            'billing.cfdi-invoices.download-pdf',
+            'billing.cfdi-invoices.preview-pdf',
             'billing.cfdi-items.index',
             'billing.cfdi-items.show',
             'billing.cfdi-items.store',
@@ -107,7 +126,7 @@ class PermissionsSeeder extends Seeder
             'billing.cfdi-items.destroy',
         ]);
 
-        // TECH role - Full CRUD for transactions, Read-only for company settings, invoices, and items
+        // TECH role - Full CRUD for transactions, Read-only for company settings, invoices, and items, can view/download CFDI files
         $roletech->givePermissionTo([
             'billing.payment-transactions.index',
             'billing.payment-transactions.show',
@@ -118,24 +137,30 @@ class PermissionsSeeder extends Seeder
             'billing.company-settings.show',
             'billing.cfdi-invoices.index',
             'billing.cfdi-invoices.show',
+            'billing.cfdi-invoices.download-xml',
+            'billing.cfdi-invoices.download-pdf',
+            'billing.cfdi-invoices.preview-pdf',
             'billing.cfdi-items.index',
             'billing.cfdi-items.show',
         ]);
 
-        // CUSTOMER role - Read-only for transactions, invoices, and items, no access to company settings
+        // CUSTOMER role - Read-only for transactions, invoices, and items, can download their own CFDI files
         $rolecustomer->givePermissionTo([
             'billing.payment-transactions.index',
             'billing.payment-transactions.show',
             'billing.cfdi-invoices.index',
             'billing.cfdi-invoices.show',
+            'billing.cfdi-invoices.download-xml',
+            'billing.cfdi-invoices.download-pdf',
+            'billing.cfdi-invoices.preview-pdf',
             'billing.cfdi-items.index',
             'billing.cfdi-items.show',
         ]);
 
         $this->command->info('✅ Billing Module Permissions created successfully');
-        $this->command->info('   - God role: 20 permissions (full CRUD on 4 entities)');
-        $this->command->info('   - Admin role: 20 permissions (full CRUD on 4 entities)');
-        $this->command->info('   - Tech role: 11 permissions (full CRUD transactions, read-only settings/invoices/items)');
-        $this->command->info('   - Customer role: 6 permissions (read-only transactions/invoices/items)');
+        $this->command->info('   - God role: 25 permissions (full CRUD + CFDI operations)');
+        $this->command->info('   - Admin role: 25 permissions (full CRUD + CFDI operations)');
+        $this->command->info('   - Tech role: 14 permissions (full CRUD transactions, read + download CFDI)');
+        $this->command->info('   - Customer role: 9 permissions (read + download own CFDI)');
     }
 }

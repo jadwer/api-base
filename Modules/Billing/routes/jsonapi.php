@@ -35,3 +35,12 @@ JsonApiRoute::server('v1')
                 $relationships->hasOne('product');
             });
     });
+
+// CFDI Generation Endpoints (Custom actions outside JSON:API spec)
+Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
+    Route::post('cfdi-invoices/{cfdiInvoice}/generate-xml', [\Modules\Billing\Http\Controllers\Api\V1\CFDIInvoiceController::class, 'generateXml']);
+    Route::post('cfdi-invoices/{cfdiInvoice}/generate-pdf', [\Modules\Billing\Http\Controllers\Api\V1\CFDIInvoiceController::class, 'generatePdf']);
+    Route::get('cfdi-invoices/{cfdiInvoice}/download-pdf', [\Modules\Billing\Http\Controllers\Api\V1\CFDIInvoiceController::class, 'downloadPdf']);
+    Route::get('cfdi-invoices/{cfdiInvoice}/preview-pdf', [\Modules\Billing\Http\Controllers\Api\V1\CFDIInvoiceController::class, 'previewPdf']);
+    Route::get('cfdi-invoices/{cfdiInvoice}/download-xml', [\Modules\Billing\Http\Controllers\Api\V1\CFDIInvoiceController::class, 'downloadXml']);
+});
