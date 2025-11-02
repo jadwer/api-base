@@ -40,18 +40,21 @@ class PaymentTransactionRequest extends ResourceRequest
             ],
             'paymentIntentId' => [
                 'sometimes',
+                'nullable',
                 'string',
                 'max:255',
                 Rule::unique('payment_transactions', 'payment_intent_id')->ignore($transactionId),
             ],
             'transactionId' => [
                 'sometimes',
+                'nullable',
                 'string',
                 'max:255',
                 Rule::unique('payment_transactions', 'transaction_id')->ignore($transactionId),
             ],
             'clientSecret' => [
                 'sometimes',
+                'nullable',
                 'string',
                 'max:255',
             ],
@@ -75,42 +78,51 @@ class PaymentTransactionRequest extends ResourceRequest
             ],
             'paymentMethod' => [
                 'sometimes',
+                'nullable',
                 'string',
                 'max:50',
             ],
             'cardBrand' => [
                 'sometimes',
+                'nullable',
                 'string',
                 'max:50',
             ],
             'cardLast4' => [
                 'sometimes',
+                'nullable',
                 'string',
                 'size:4',
                 'regex:/^\d{4}$/',
             ],
             'gatewayResponse' => [
                 'sometimes',
+                'nullable',
                 'array',
             ],
             'errorMessage' => [
                 'sometimes',
+                'nullable',
                 'string',
             ],
             'authorizedAt' => [
                 'sometimes',
+                'nullable',
                 'date',
             ],
             'capturedAt' => [
                 'sometimes',
+                'nullable',
                 'date',
             ],
             'failedAt' => [
                 'sometimes',
+                'nullable',
                 'date',
             ],
             'refundedAt' => [
                 'sometimes',
+                'nullable',
                 'date',
             ],
             'metadata' => [

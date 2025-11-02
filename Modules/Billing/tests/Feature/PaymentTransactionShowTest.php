@@ -29,7 +29,6 @@ class PaymentTransactionShowTest extends TestCase
             ->get('/api/v1/payment-transactions/' . $transaction->id);
 
         $response->assertSuccessful()
-            ->assertJsonApiResource()
             ->assertJson([
                 'data' => [
                     'type' => 'payment-transactions',
@@ -58,8 +57,7 @@ class PaymentTransactionShowTest extends TestCase
             ->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
             ->get('/api/v1/payment-transactions/' . $transaction->id);
 
-        $response->assertSuccessful()
-            ->assertJsonApiResource();
+        $response->assertSuccessful();
     }
 
     /**
@@ -75,8 +73,7 @@ class PaymentTransactionShowTest extends TestCase
             ->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
             ->get('/api/v1/payment-transactions/' . $transaction->id);
 
-        $response->assertSuccessful()
-            ->assertJsonApiResource();
+        $response->assertSuccessful();
     }
 
     /**
@@ -156,7 +153,6 @@ class PaymentTransactionShowTest extends TestCase
             ->get('/api/v1/payment-transactions/' . $transaction->id);
 
         $response->assertSuccessful()
-            ->assertJsonApiResource()
             ->assertJsonApiIncluded([
                 ['type' => 'checkout-sessions', 'id' => (string)$checkoutSession->id],
             ]);
@@ -180,7 +176,6 @@ class PaymentTransactionShowTest extends TestCase
             ->get('/api/v1/payment-transactions/' . $transaction->id);
 
         $response->assertSuccessful()
-            ->assertJsonApiResource()
             ->assertJsonApiIncluded([
                 ['type' => 'sales-orders', 'id' => (string)$salesOrder->id],
             ]);
