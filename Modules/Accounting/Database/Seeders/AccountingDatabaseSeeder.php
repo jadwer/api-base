@@ -15,18 +15,18 @@ class AccountingDatabaseSeeder extends Seeder
 
         $this->call([
             PermissionsSeeder::class,
-            IdempotencyKeySeeder::class,
-            AccountMappingSeeder::class,
-            AccountBalanceSeeder::class,
-            ExchangeRatePolicySeeder::class,
-            AuditLogSeeder::class,
+            // IdempotencyKeySeeder::class, // Commented for performance - not needed for tests
+            // AccountMappingSeeder::class, // Commented for performance - not needed for tests
+            // AccountBalanceSeeder::class, // Commented for performance - creates test data
+            // ExchangeRatePolicySeeder::class, // Commented for performance - not needed for tests
+            // AuditLogSeeder::class, // Commented for performance - creates test data
             AccountSeeder::class,
             FiscalPeriodSeeder::class,
             JournalSeeder::class,
             JournalSequenceSeeder::class,
-            JournalEntrySeeder::class,
-            JournalLineSeeder::class,
-            ExchangeRateSeeder::class,
+            // JournalEntrySeeder::class, // Commented for performance - creates 17 test records
+            JournalLineSeeder::class, // Already skipped internally
+            ExchangeRateSeeder::class, // Needed for currency conversion
         ]);
         
         $this->command->info('🎉 Accounting module seeded successfully!');

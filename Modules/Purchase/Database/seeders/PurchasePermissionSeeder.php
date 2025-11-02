@@ -4,10 +4,12 @@ namespace Modules\Purchase\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
-use Spatie\Permission\Models\Permission;
+use App\Database\Seeders\Concerns\BulkPermissions;
 
 class PurchasePermissionSeeder extends Seeder
 {
+    use BulkPermissions;
+
     /**
      * Run the database seeds.
      */
@@ -20,14 +22,14 @@ class PurchasePermissionSeeder extends Seeder
             'suppliers.store',
             'suppliers.update',
             'suppliers.destroy',
-            
+
             // Purchase Order permissions
             'purchase-orders.index',
             'purchase-orders.show',
             'purchase-orders.store',
             'purchase-orders.update',
             'purchase-orders.destroy',
-            
+
             // Purchase Order Item permissions
             'purchase-order-items.index',
             'purchase-order-items.show',
@@ -36,12 +38,7 @@ class PurchasePermissionSeeder extends Seeder
             'purchase-order-items.destroy',
         ];
 
-        foreach ($permissions as $permission) {
-            Permission::firstOrCreate([
-                'name' => $permission,
-                'guard_name' => 'api',
-            ]);
-        }
+        $this->bulkCreatePermissions($permissions);
 
         Log::info('Purchase permissions created successfully.');
     }

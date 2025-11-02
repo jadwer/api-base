@@ -3,11 +3,12 @@
 namespace Modules\PageBuilder\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Permission;
-
+use App\Database\Seeders\Concerns\BulkPermissions;
 
 class PagePermissionSeeder extends Seeder
 {
+    use BulkPermissions;
+
     /**
      * Run the database seeds.
      */
@@ -21,11 +22,6 @@ class PagePermissionSeeder extends Seeder
             'page.destroy',
         ];
 
-        foreach ($permissions as $permission) {
-            Permission::firstOrCreate([
-                'name' => $permission,
-                'guard_name' => 'api',
-            ]);
-        }
+        $this->bulkCreatePermissions($permissions);
     }
 }

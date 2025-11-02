@@ -3,11 +3,12 @@
 namespace Modules\Audit\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Permission;
-
+use App\Database\Seeders\Concerns\BulkPermissions;
 
 class AuditPermissionSeeder extends Seeder
 {
+    use BulkPermissions;
+
     /**
      * Run the database seeds.
      */
@@ -22,11 +23,6 @@ class AuditPermissionSeeder extends Seeder
             'audit.export',
         ];
 
-        foreach ($permissions as $permission) {
-            Permission::firstOrCreate([
-                'name' => $permission,
-                'guard_name' => 'api',
-            ]);
-        }
+        $this->bulkCreatePermissions($permissions);
     }
 }

@@ -18,7 +18,7 @@ class SalesDatabaseSeeder extends Seeder
         $this->call([
             SalesPermissionSeeder::class,
             SalesAssignPermissionsSeeder::class,
-            SalesOrderSeeder::class, // Ahora incluimos el seeder de datos
+            // SalesOrderSeeder::class, // Commented for performance - creates test data
         ]);
     }
 }

@@ -14,11 +14,11 @@ class InventoryDatabaseSeeder extends Seeder
         $this->call([
             InventoryPermissionSeeder::class,
             InventoryAssignPermissionsSeeder::class,
-            WarehouseSeeder::class,
-            WarehouseLocationSeeder::class,
-            StockSeeder::class,
-            ProductBatchSeeder::class,
-            InventoryMovementSeeder::class,
+            // WarehouseSeeder::class, // Commented for performance - creates test data
+            // WarehouseLocationSeeder::class, // Commented for performance - creates test data
+            // StockSeeder::class, // Commented for performance - creates test data
+            // ProductBatchSeeder::class, // Commented for performance - creates test data
+            // InventoryMovementSeeder::class, // Commented for performance - creates test data
         ]);
     }
 }

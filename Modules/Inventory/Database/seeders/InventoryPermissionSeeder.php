@@ -3,10 +3,12 @@
 namespace Modules\Inventory\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Permission;
+use App\Database\Seeders\Concerns\BulkPermissions;
 
 class InventoryPermissionSeeder extends Seeder
 {
+    use BulkPermissions;
+
     /**
      * Run the database seeds.
      *
@@ -16,44 +18,42 @@ class InventoryPermissionSeeder extends Seeder
     {
         $permissions = [
             // Warehouse permissions (PLURAL para coincidir con JSON:API type)
-            ['name' => 'warehouses.index', 'guard_name' => 'api'],
-            ['name' => 'warehouses.show', 'guard_name' => 'api'],
-            ['name' => 'warehouses.store', 'guard_name' => 'api'],
-            ['name' => 'warehouses.update', 'guard_name' => 'api'],
-            ['name' => 'warehouses.destroy', 'guard_name' => 'api'],
+            'warehouses.index',
+            'warehouses.show',
+            'warehouses.store',
+            'warehouses.update',
+            'warehouses.destroy',
 
             // Warehouse Location permissions (PLURAL para coincidir con JSON:API type)
-            ['name' => 'warehouse-locations.index', 'guard_name' => 'api'],
-            ['name' => 'warehouse-locations.show', 'guard_name' => 'api'],
-            ['name' => 'warehouse-locations.store', 'guard_name' => 'api'],
-            ['name' => 'warehouse-locations.update', 'guard_name' => 'api'],
-            ['name' => 'warehouse-locations.destroy', 'guard_name' => 'api'],
+            'warehouse-locations.index',
+            'warehouse-locations.show',
+            'warehouse-locations.store',
+            'warehouse-locations.update',
+            'warehouse-locations.destroy',
 
             // Stock permissions (PLURAL para coincidir con JSON:API type y Authorizer)
-            ['name' => 'stocks.index', 'guard_name' => 'api'],
-            ['name' => 'stocks.show', 'guard_name' => 'api'],
-            ['name' => 'stocks.store', 'guard_name' => 'api'],
-            ['name' => 'stocks.update', 'guard_name' => 'api'],
-            ['name' => 'stocks.destroy', 'guard_name' => 'api'],
+            'stocks.index',
+            'stocks.show',
+            'stocks.store',
+            'stocks.update',
+            'stocks.destroy',
 
             // Product Batch permissions (PLURAL para coincidir con JSON:API type)
-            ['name' => 'product-batches.index', 'guard_name' => 'api'],
-            ['name' => 'product-batches.show', 'guard_name' => 'api'],
-            ['name' => 'product-batches.store', 'guard_name' => 'api'],
-            ['name' => 'product-batches.update', 'guard_name' => 'api'],
-            ['name' => 'product-batches.destroy', 'guard_name' => 'api'],
+            'product-batches.index',
+            'product-batches.show',
+            'product-batches.store',
+            'product-batches.update',
+            'product-batches.destroy',
 
             // Inventory Movement permissions (PLURAL para coincidir con JSON:API type)
-            ['name' => 'inventory-movements.index', 'guard_name' => 'api'],
-            ['name' => 'inventory-movements.show', 'guard_name' => 'api'],
-            ['name' => 'inventory-movements.store', 'guard_name' => 'api'],
-            ['name' => 'inventory-movements.update', 'guard_name' => 'api'],
-            ['name' => 'inventory-movements.destroy', 'guard_name' => 'api'],
+            'inventory-movements.index',
+            'inventory-movements.show',
+            'inventory-movements.store',
+            'inventory-movements.update',
+            'inventory-movements.destroy',
         ];
 
-        foreach ($permissions as $permission) {
-            Permission::firstOrCreate($permission);
-        }
+        $this->bulkCreatePermissions($permissions);
 
         $this->command->info('Inventory permissions created successfully.');
     }

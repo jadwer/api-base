@@ -14,10 +14,10 @@ class ProductDatabaseSeeder extends Seeder
         $this->call([
             ProductPermissionSeeder::class,
             ProductAssignPermissionsSeeder::class,
-            UnitSeeder::class,
-            BrandSeeder::class,
-            CategorySeeder::class,
-            ProductSeeder::class,
+            UnitSeeder::class, // Keep for basic data
+            BrandSeeder::class, // Keep for basic data
+            CategorySeeder::class, // Keep for basic data
+            // ProductSeeder::class, // Commented for performance - creates test data
         ]);
     }
 }

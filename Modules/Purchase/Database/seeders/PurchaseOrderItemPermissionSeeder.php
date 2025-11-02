@@ -6,16 +6,18 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
 use Modules\User\Models\User;
 use Modules\PermissionManager\Models\Role;
-use Modules\PermissionManager\Models\Permission;
+use App\Database\Seeders\Concerns\BulkPermissions;
 
 class PurchaseOrderItemPermissionSeeder extends Seeder
 {
+    use BulkPermissions;
+
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        // Crear permisos específicos para Purchase Order Items si no existen
+        // Create permissions using bulk insert
         $permissions = [
             'purchase-order-items.index',
             'purchase-order-items.show',
@@ -24,53 +26,28 @@ class PurchaseOrderItemPermissionSeeder extends Seeder
             'purchase-order-items.destroy',
         ];
 
-        foreach ($permissions as $permissionName) {
-            Permission::firstOrCreate([
-                'name' => $permissionName,
-                'guard_name' => 'api'
-            ]);
-        }
+        // Use bulk method to create and assign to roles
+        $this->bulkCreateAndAssignPermissions($permissions, ['god', 'admin']);
 
-        // Obtener o crear roles con guard 'api'
-        $godRole = Role::firstOrCreate([
-            'name' => 'god',
-            'guard_name' => 'api'
-        ]);
+        // Assign roles to users
+        $godRole = Role::where('name', 'god')->where('guard_name', 'api')->first();
+        $adminRole = Role::where('name', 'admin')->where('guard_name', 'api')->first();
 
-        $adminRole = Role::firstOrCreate([
-            'name' => 'admin', 
-            'guard_name' => 'api'
-        ]);
-
-        // Asignar permisos a los roles
-        foreach ($permissions as $permissionName) {
-            $permission = Permission::where('name', $permissionName)
-                ->where('guard_name', 'api')
-                ->first();
-            
-            if ($permission) {
-                if (!$godRole->hasPermissionTo($permission)) {
-                    $godRole->givePermissionTo($permission);
-                }
-                
-                if (!$adminRole->hasPermissionTo($permission)) {
-                    $adminRole->givePermissionTo($permission);
+        if ($godRole) {
+            $godUsers = User::whereIn('email', ['system@audit.local', 'god@example.com'])->get();
+            foreach ($godUsers as $user) {
+                if (!$user->hasRole($godRole)) {
+                    $user->assignRole($godRole);
                 }
             }
         }
 
-        // Asignar roles a usuarios específicos
-        $godUsers = User::whereIn('email', ['system@audit.local', 'god@example.com'])->get();
-        foreach ($godUsers as $user) {
-            if (!$user->hasRole($godRole)) {
-                $user->assignRole($godRole);
-            }
-        }
-
-        $adminUsers = User::whereIn('email', ['admin@example.com'])->get();
-        foreach ($adminUsers as $user) {
-            if (!$user->hasRole($adminRole)) {
-                $user->assignRole($adminRole);
+        if ($adminRole) {
+            $adminUsers = User::whereIn('email', ['admin@example.com'])->get();
+            foreach ($adminUsers as $user) {
+                if (!$user->hasRole($adminRole)) {
+                    $user->assignRole($adminRole);
+                }
             }
         }
 
