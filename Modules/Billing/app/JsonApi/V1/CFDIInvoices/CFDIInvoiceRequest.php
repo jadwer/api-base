@@ -56,6 +56,7 @@ class CFDIInvoiceRequest extends ResourceRequest
             ],
             'receptorUsoCfdi' => [
                 'sometimes',
+                'nullable',
                 'string',
                 'max:10',
             ],
@@ -84,36 +85,43 @@ class CFDIInvoiceRequest extends ResourceRequest
             ],
             'descuento' => [
                 'sometimes',
+                'nullable',
                 'integer',
                 'min:0',
             ],
             'iva' => [
                 'sometimes',
+                'nullable',
                 'integer',
                 'min:0',
             ],
             'ieps' => [
                 'sometimes',
+                'nullable',
                 'integer',
                 'min:0',
             ],
             'isrRetenido' => [
                 'sometimes',
+                'nullable',
                 'integer',
                 'min:0',
             ],
             'ivaRetenido' => [
                 'sometimes',
+                'nullable',
                 'integer',
                 'min:0',
             ],
             'moneda' => [
                 'sometimes',
+                'nullable',
                 'string',
                 'size:3',
             ],
             'tipoCambio' => [
                 'sometimes',
+                'nullable',
                 'numeric',
                 'min:0',
             ],
@@ -125,6 +133,7 @@ class CFDIInvoiceRequest extends ResourceRequest
             ],
             'metodoPago' => [
                 'sometimes',
+                'nullable',
                 'string',
                 'in:PUE,PPD',
             ],

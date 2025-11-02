@@ -62,15 +62,15 @@ class CFDIInvoiceSchema extends Schema
             // Amounts (in cents)
             Number::make('subtotal')->sortable(),
             Number::make('total')->sortable(),
-            Number::make('descuento'),
-            Number::make('iva'),
-            Number::make('ieps'),
-            Number::make('isrRetenido', 'isr_retenido'),
-            Number::make('ivaRetenido', 'iva_retenido'),
+            Number::make('descuento')->serializeUsing(fn ($value) => $value)->deserializeUsing(fn ($value) => $value),
+            Number::make('iva')->serializeUsing(fn ($value) => $value)->deserializeUsing(fn ($value) => $value),
+            Number::make('ieps')->serializeUsing(fn ($value) => $value)->deserializeUsing(fn ($value) => $value),
+            Number::make('isrRetenido', 'isr_retenido')->serializeUsing(fn ($value) => $value)->deserializeUsing(fn ($value) => $value),
+            Number::make('ivaRetenido', 'iva_retenido')->serializeUsing(fn ($value) => $value)->deserializeUsing(fn ($value) => $value),
 
             // Currency
             Str::make('moneda')->sortable(),
-            Number::make('tipoCambio', 'tipo_cambio'),
+            Number::make('tipoCambio', 'tipo_cambio')->serializeUsing(fn ($value) => $value)->deserializeUsing(fn ($value) => $value),
 
             // Payment Information
             Str::make('formaPago', 'forma_pago'),
