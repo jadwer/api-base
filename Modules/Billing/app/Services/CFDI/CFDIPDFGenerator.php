@@ -31,7 +31,7 @@ class CFDIPDFGenerator
         }
 
         // Generate QR Code
-        $qrData = $this->generateQRData($invoice);
+        $qrData = $this->generateQRData($invoice, $settings);
         $qrCodeSvg = QrCode::size(150)
             ->margin(1)
             ->generate($qrData);
@@ -76,9 +76,10 @@ class CFDIPDFGenerator
      * &id=UUID&re=RFC_EMISOR&rr=RFC_RECEPTOR&tt=TOTAL&fe=ULTIMOS_8_DIGITOS_SELLO
      *
      * @param CFDIInvoice $invoice
+     * @param CompanySetting $settings
      * @return string QR code URL
      */
-    protected function generateQRData(CFDIInvoice $invoice): string
+    protected function generateQRData(CFDIInvoice $invoice, CompanySetting $settings): string
     {
         if (!$invoice->uuid) {
             // For draft invoices, return placeholder
@@ -87,7 +88,7 @@ class CFDIPDFGenerator
 
         $params = [
             'id' => $invoice->uuid,
-            're' => $invoice->emisor_rfc,
+            're' => $settings->rfc, // Use company RFC from settings
             'rr' => $invoice->receptor_rfc,
             'tt' => number_format($invoice->total / 100, 6, '.', ''), // Convert from cents
             'fe' => $this->extractSelloDigits($invoice),
