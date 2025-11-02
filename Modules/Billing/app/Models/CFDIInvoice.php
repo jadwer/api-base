@@ -62,7 +62,7 @@ class CFDIInvoice extends Model
         'ieps' => 'integer',
         'isr_retenido' => 'integer',
         'iva_retenido' => 'integer',
-        'tipo_cambio' => 'decimal:6',
+        'tipo_cambio' => 'float',
         'cfdi_relacionado_uuids' => 'array',
         'metadata' => 'array',
         'fecha_emision' => 'datetime',
