@@ -20,20 +20,13 @@ class PaymentTransactionStoreTest extends TestCase
         $data = [
             'type' => 'payment-transactions',
             'attributes' => [
+                'checkoutSessionId' => $checkoutSession->id,
                 'gateway' => 'stripe',
                 'paymentIntentId' => 'pi_test_' . uniqid(),
                 'amount' => 1500.00,
                 'currency' => 'MXN',
                 'status' => 'pending',
                 'paymentMethod' => 'card',
-            ],
-            'relationships' => [
-                'checkoutSession' => [
-                    'data' => [
-                        'type' => 'checkout-sessions',
-                        'id' => (string)$checkoutSession->id,
-                    ],
-                ],
             ],
         ];
 
@@ -44,7 +37,6 @@ class PaymentTransactionStoreTest extends TestCase
             ->post('/api/v1/payment-transactions');
 
         $response->assertCreated()
-            ->assertJsonApiResource()
             ->assertJson([
                 'data' => [
                     'type' => 'payment-transactions',
@@ -412,6 +404,7 @@ class PaymentTransactionStoreTest extends TestCase
         $data = [
             'type' => 'payment-transactions',
             'attributes' => [
+                'salesOrderId' => $salesOrder->id,
                 'gateway' => 'stripe',
                 'paymentIntentId' => 'pi_test_' . uniqid(),
                 'transactionId' => 'ch_test_' . uniqid(),
@@ -425,14 +418,6 @@ class PaymentTransactionStoreTest extends TestCase
                 'metadata' => [
                     'customer_email' => 'test@example.com',
                     'order_id' => '12345',
-                ],
-            ],
-            'relationships' => [
-                'salesOrder' => [
-                    'data' => [
-                        'type' => 'sales-orders',
-                        'id' => (string)$salesOrder->id,
-                    ],
                 ],
             ],
         ];

@@ -13,6 +13,25 @@ class PaymentTransactionRequest extends ResourceRequest
         $transactionId = $this->route('payment_transaction');
 
         return [
+            // Foreign key IDs (camelCase as per HR module pattern)
+            'checkoutSessionId' => [
+                'sometimes',
+                'nullable',
+                'integer',
+                'exists:checkout_sessions,id',
+            ],
+            'salesOrderId' => [
+                'sometimes',
+                'nullable',
+                'integer',
+                'exists:sales_orders,id',
+            ],
+            'arInvoiceId' => [
+                'sometimes',
+                'nullable',
+                'integer',
+                'exists:ar_invoices,id',
+            ],
             'gateway' => [
                 $creating ? 'required' : 'sometimes',
                 'string',

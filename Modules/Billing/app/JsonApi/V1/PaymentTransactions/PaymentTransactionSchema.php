@@ -29,7 +29,7 @@ class PaymentTransactionSchema extends Schema
         return [
             ID::make(),
 
-            // Foreign keys (for creation/updates)
+            // Foreign keys (for creation/updates) - camelCase with mapping (HR module pattern)
             Number::make('checkoutSessionId', 'checkout_session_id'),
             Number::make('salesOrderId', 'sales_order_id'),
             Number::make('arInvoiceId', 'ar_invoice_id'),
@@ -64,9 +64,9 @@ class PaymentTransactionSchema extends Schema
             ArrayHash::make('metadata'),
 
             // Relationships
-            BelongsTo::make('checkoutSession')->type('checkout-sessions'),
-            BelongsTo::make('salesOrder')->type('sales-orders'),
-            BelongsTo::make('arInvoice')->type('ar-invoices'),
+            BelongsTo::make('checkoutSession')->type('checkout-sessions')->readOnly(),
+            BelongsTo::make('salesOrder')->type('sales-orders')->readOnly(),
+            BelongsTo::make('arInvoice')->type('ar-invoices')->readOnly(),
 
             // Timestamps
             DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
