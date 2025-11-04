@@ -16,7 +16,6 @@ class InventoryMovementIndexTest extends TestCase
         $admin = $this->getAdminUser();
         
         // Clear existing data and create fresh test data
-        InventoryMovement::truncate();
         InventoryMovement::factory()->count(3)->create();
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -50,7 +49,6 @@ class InventoryMovementIndexTest extends TestCase
         $admin = $this->getAdminUser();
         
         // Clear existing data and create fresh test data
-        InventoryMovement::truncate();
         InventoryMovement::factory()->count(2)->create(['movement_type' => 'entry']);
         InventoryMovement::factory()->count(1)->create(['movement_type' => 'exit']);
 
@@ -68,7 +66,6 @@ class InventoryMovementIndexTest extends TestCase
         $admin = $this->getAdminUser();
         
         // Clear existing data and create fresh test data
-        InventoryMovement::truncate();
         InventoryMovement::factory()->count(2)->create(['status' => 'completed']);
         InventoryMovement::factory()->count(1)->create(['status' => 'pending']);
 
@@ -86,7 +83,6 @@ class InventoryMovementIndexTest extends TestCase
         $tech = $this->getTechUser();
         
         // Clear existing data and create fresh test data
-        InventoryMovement::truncate();
         InventoryMovement::factory()->count(2)->create();
 
         $response = $this->actingAs($tech, 'sanctum')
@@ -124,7 +120,6 @@ class InventoryMovementIndexTest extends TestCase
         $admin = $this->getAdminUser();
         
         // Clear existing data and create fresh test data
-        InventoryMovement::truncate();
         InventoryMovement::factory()->count(25)->create();
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -146,7 +141,6 @@ class InventoryMovementIndexTest extends TestCase
         $admin = $this->getAdminUser();
         
         // Clear existing data and create fresh test data
-        InventoryMovement::truncate();
         InventoryMovement::factory()->count(2)->create();
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -178,7 +172,6 @@ class InventoryMovementIndexTest extends TestCase
         $admin = $this->getAdminUser();
         
         // Clear existing data and create fresh test data
-        InventoryMovement::truncate();
         InventoryMovement::factory()->count(2)->create();
 
         $response = $this->actingAs($admin, 'sanctum')

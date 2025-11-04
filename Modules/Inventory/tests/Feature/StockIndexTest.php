@@ -46,10 +46,7 @@ class StockIndexTest extends TestCase
     public function test_admin_can_list_stocks()
     {
         $admin = $this->createUserWithPermissions('admin', ['stocks.index']);
-        
-        // Limpiar stocks existentes
-        Stock::truncate();
-        
+
         // Crear stocks de prueba
         $warehouse = Warehouse::factory()->create();
         $product = Product::factory()->create();
@@ -102,12 +99,9 @@ class StockIndexTest extends TestCase
     public function test_admin_can_sort_stocks_by_quantity()
     {
         $admin = $this->createUserWithPermissions('admin', ['stocks.index']);
-        
-        // Limpiar stocks existentes
-        Stock::truncate();
-        
+
         $warehouse = Warehouse::factory()->create();
-        
+
         // Crear stocks con diferentes cantidades
         $stock1 = Stock::factory()->create([
             'warehouse_id' => $warehouse->id,
@@ -140,11 +134,8 @@ class StockIndexTest extends TestCase
     {
         $admin = $this->createUserWithPermissions('admin', ['stocks.index']);
         
-        // Limpiar stocks existentes
-        Stock::truncate();
-        
         $warehouse = Warehouse::factory()->create();
-        
+
         // Crear stocks con diferentes estados
         $activeStock = Stock::factory()->create([
             'warehouse_id' => $warehouse->id,
@@ -194,10 +185,7 @@ class StockIndexTest extends TestCase
     public function test_tech_can_list_stocks()
     {
         $tech = $this->createUserWithPermissions('tech', ['stocks.index']);
-        
-        // Limpiar stocks existentes
-        Stock::truncate();
-        
+
         $warehouse = Warehouse::factory()->create();
         Stock::factory()->create(['warehouse_id' => $warehouse->id]);
 
