@@ -63,18 +63,9 @@ class ProductIndexTest extends TestCase
             'jsonapi',
         ]);
 
-        // Display existing products for debugging/info
+        // Verify we have products
         $products = $response->json('data');
         $this->assertGreaterThanOrEqual(8, count($products), 'Should have at least 8 seeded products + 3 factory products');
-        
-        // Display seeded products info
-        echo "\n📦 Products found in test:\n";
-        foreach ($products as $product) {
-            $name = $product['attributes']['name'];
-            $sku = $product['attributes']['sku'];
-            $price = $product['attributes']['price'];
-            echo "   • {$name} ({$sku}) - \${$price}\n";
-        }
     }
 
     public function test_admin_can_sort_products_by_name(): void
@@ -146,28 +137,6 @@ class ProductIndexTest extends TestCase
         $products = $response->json('data');
         $included = $response->json('included') ?? [];
 
-        echo "\n🏪 SEEDED PRODUCTS CATALOG:\n";
-        echo "=" . str_repeat("=", 80) . "\n";
-        
-        foreach ($products as $product) {
-            $name = $product['attributes']['name'];
-            $sku = $product['attributes']['sku'];
-            $price = $product['attributes']['price'];
-            $description = $product['attributes']['description'];
-            
-            // Find related data in included
-            $unitName = $this->findIncludedName($product, 'unit', $included, 'units');
-            $categoryName = $this->findIncludedName($product, 'category', $included, 'categories');
-            $brandName = $this->findIncludedName($product, 'brand', $included, 'brands');
-
-            echo "📱 {$name}\n";
-            echo "   SKU: {$sku}\n";
-            echo "   Price: \${$price}\n";
-            echo "   Brand: {$brandName} | Category: {$categoryName} | Unit: {$unitName}\n";
-            echo "   Description: {$description}\n";
-            echo "   " . str_repeat("-", 75) . "\n";
-        }
-        
         // Assert we have the expected seeded products
         $productNames = array_column(array_column($products, 'attributes'), 'name');
         $this->assertContains('iPhone 15 Pro', $productNames);
@@ -196,11 +165,6 @@ class ProductIndexTest extends TestCase
             $name = $product['attributes']['name'];
             $this->assertStringContainsString('iPhone', $name, "Product name '{$name}' should contain 'iPhone'");
         }
-        
-        echo "\n🔍 SEARCH RESULTS for 'iPhone':\n";
-        foreach ($products as $product) {
-            echo "   • " . $product['attributes']['name'] . " (" . $product['attributes']['sku'] . ")\n";
-        }
     }
 
     public function test_admin_can_search_products_by_partial_sku(): void
@@ -223,11 +187,6 @@ class ProductIndexTest extends TestCase
         foreach ($products as $product) {
             $sku = $product['attributes']['sku'];
             $this->assertStringContainsString('APL', $sku, "Product SKU '{$sku}' should contain 'APL'");
-        }
-        
-        echo "\n🔍 SEARCH RESULTS for SKU 'APL':\n";
-        foreach ($products as $product) {
-            echo "   • " . $product['attributes']['name'] . " (" . $product['attributes']['sku'] . ")\n";
         }
     }
 
@@ -292,12 +251,6 @@ class ProductIndexTest extends TestCase
         $this->assertEquals(5, $meta['perPage']);
         $this->assertArrayHasKey('total', $meta);
         $this->assertArrayHasKey('links', $response->json());
-
-        echo "\n📄 PAGINATION TEST RESULTS:\n";
-        echo "Current Page: {$meta['currentPage']}\n";
-        echo "Per Page: {$meta['perPage']}\n";
-        echo "Total: {$meta['total']}\n";
-        echo "Last Page: {$meta['lastPage']}\n";
     }
 
     public function test_admin_can_filter_products_by_multiple_brands(): void
@@ -315,7 +268,7 @@ class ProductIndexTest extends TestCase
         Product::factory()->count(1)->create(['brand_id' => $sony->id]);
 
         // Filter by Apple and Samsung brands
-        $response = $this->jsonApi()->get("/api/v1/products?filter[brands]={$apple->id},{$samsung->id}");
+        $response = $this->jsonApi()->get("/api/v1/products?filter[brands]={$apple->id},{$samsung->id}&include=brand");
 
         $response->assertOk();
         $products = $response->json('data');
@@ -342,7 +295,7 @@ class ProductIndexTest extends TestCase
         Product::factory()->count(2)->create(['brand_id' => $samsung->id]);
 
         // Filter by Apple only
-        $response = $this->jsonApi()->get("/api/v1/products?filter[brand_id]={$apple->id}");
+        $response = $this->jsonApi()->get("/api/v1/products?filter[brand_id]={$apple->id}&include=brand");
 
         $response->assertOk();
         $products = $response->json('data');
@@ -371,7 +324,7 @@ class ProductIndexTest extends TestCase
         Product::factory()->create(['name' => 'Galaxy Pro', 'brand_id' => $samsung->id]);
 
         // Search for "Pro" products only from Apple
-        $response = $this->jsonApi()->get("/api/v1/products?filter[search_name]=Pro&filter[brands]={$apple->id}");
+        $response = $this->jsonApi()->get("/api/v1/products?filter[search_name]=Pro&filter[brands]={$apple->id}&include=brand");
 
         $response->assertOk();
         $products = $response->json('data');
@@ -403,7 +356,7 @@ class ProductIndexTest extends TestCase
         Product::factory()->create(['name' => 'Ultra TV', 'brand_id' => $sony->id]);
 
         // Search for "Ultra" products from Samsung and Apple only
-        $response = $this->jsonApi()->get("/api/v1/products?filter[search_name]=Ultra&filter[brands]={$samsung->id},{$apple->id}");
+        $response = $this->jsonApi()->get("/api/v1/products?filter[search_name]=Ultra&filter[brands]={$samsung->id},{$apple->id}&include=brand");
 
         $response->assertOk();
         $products = $response->json('data');

@@ -82,4 +82,48 @@ class CurrencyAuthorizer implements Authorizer
 
         return Response::deny('Only administrators can delete currencies.');
     }
+
+    // =========================================================================
+    // 5 RELATIONSHIP METHODS (Required by LaravelJsonApi\Contracts\Auth\Authorizer)
+    // =========================================================================
+
+    /**
+     * Authorize showing related resources
+     */
+    public function showRelated(Request $request, object $model, string $fieldName): bool|Response
+    {
+        return $this->show($request, $model);
+    }
+
+    /**
+     * Authorize showing a relationship
+     */
+    public function showRelationship(Request $request, object $model, string $fieldName): bool|Response
+    {
+        return $this->show($request, $model);
+    }
+
+    /**
+     * Authorize updating a relationship
+     */
+    public function updateRelationship(Request $request, object $model, string $fieldName): bool|Response
+    {
+        return $this->update($request, $model);
+    }
+
+    /**
+     * Authorize attaching to a relationship
+     */
+    public function attachRelationship(Request $request, object $model, string $fieldName): bool|Response
+    {
+        return $this->update($request, $model);
+    }
+
+    /**
+     * Authorize detaching from a relationship
+     */
+    public function detachRelationship(Request $request, object $model, string $fieldName): bool|Response
+    {
+        return $this->update($request, $model);
+    }
 }

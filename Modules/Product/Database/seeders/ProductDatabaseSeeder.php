@@ -17,7 +17,7 @@ class ProductDatabaseSeeder extends Seeder
             UnitSeeder::class, // Keep for basic data
             BrandSeeder::class, // Keep for basic data
             CategorySeeder::class, // Keep for basic data
-            // ProductSeeder::class, // Commented for performance - creates test data
+            ProductSeeder::class, // Needed for tests that depend on seeded products
         ]);
     }
 }
