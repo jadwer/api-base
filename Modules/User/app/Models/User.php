@@ -2,6 +2,23 @@
 
 namespace Modules\User\Models;
 
+/**
+ * ✅ MODELO USER PRINCIPAL DEL PROYECTO
+ *
+ * Este es el modelo User configurado en config/auth.php
+ * Extiende el modelo base de Laravel con funcionalidades adicionales del proyecto.
+ *
+ * Características adicionales vs App\Models\User:
+ * - SoftDeletes: Eliminación lógica (requiere columna deleted_at)
+ * - LogsActivity: Registro de actividad (Spatie Activity Log)
+ * - Campo 'status': active/inactive/suspended
+ * - Guard 'api': Configurado para Spatie Permission
+ *
+ * Tabla: users
+ * Migración base: database/migrations/0001_01_01_000000_create_users_table.php
+ * Migración status: Modules/User/Database/migrations/2025_06_17_210137_add_status_to_users_table.php
+ */
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -21,13 +38,27 @@ class User extends Authenticatable
 {
     use HasApiTokens, Notifiable, HasRoles, LogsActivity, SoftDeletes, HasFactory;
 
+    /**
+     * IMPORTANTE: Guard configurado para Spatie Permission
+     * Todos los roles y permisos usan el guard 'api'
+     */
     protected $guard_name = 'api';
 
+    /**
+     * Campos fillable
+     *
+     * Campos base (migración 0001_01_01_000000):
+     * - name, email, password, email_verified_at, remember_token
+     *
+     * Campos adicionales del módulo:
+     * - status: Campo agregado en Modules/User/Database/migrations/2025_06_17_210137_add_status_to_users_table.php
+     *   Valores: active, inactive, suspended
+     */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'status',
+        'status', // Campo del módulo User
     ];
 
     protected $hidden = [
@@ -35,6 +66,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    /**
+     * NOTA: El campo 'deleted_at' es gestionado automáticamente por el trait SoftDeletes
+     * Migración: database/migrations/0001_01_01_000000_create_users_table.php línea 22
+     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',

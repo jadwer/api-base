@@ -51,7 +51,7 @@ class CFDIItem extends Model
      */
     public function cfdiInvoice(): BelongsTo
     {
-        return $this->belongsTo(CFDIInvoice::class);
+        return $this->belongsTo(CFDIInvoice::class, 'cfdi_invoice_id');
     }
 
     public function product(): BelongsTo

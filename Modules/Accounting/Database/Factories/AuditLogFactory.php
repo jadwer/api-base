@@ -31,7 +31,7 @@ class AuditLogFactory extends Factory
             'model_type' => $this->faker->randomElement($models),
             'model_id' => $this->faker->numberBetween(1, 100),
             'action' => $action,
-            'user_id' => 1,
+            'user_id' => \Modules\User\Models\User::factory(),
             'changes' => $changes,
             'ip_address' => $this->faker->ipv4(),
             'user_agent' => $this->faker->optional(0.8)->userAgent(),

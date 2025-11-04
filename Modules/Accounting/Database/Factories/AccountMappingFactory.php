@@ -21,7 +21,7 @@ class AccountMappingFactory extends Factory
             'effective_from' => $effectiveFrom->format('Y-m-d'),
             'effective_to' => $this->faker->optional(0.3)->dateTimeBetween($effectiveFrom, '+1 year')?->format('Y-m-d'),
             'is_active' => $this->faker->boolean(80),
-            'created_by_id' => 1,
+            'created_by_id' => \Modules\User\Models\User::factory(),
             'notes' => $this->faker->optional(0.5)->sentence(10),
             'metadata' => [],
         ];

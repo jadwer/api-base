@@ -30,7 +30,7 @@ class IdempotencyKeyFactory extends Factory
 
         return [
             'company_id' => null,
-            'user_id' => 1,
+            'user_id' => \Modules\User\Models\User::factory(),
             'endpoint' => $this->faker->randomElement($endpoints),
             'idempotency_key' => $this->faker->uuid(),
             'request_hash' => $this->faker->sha256(),

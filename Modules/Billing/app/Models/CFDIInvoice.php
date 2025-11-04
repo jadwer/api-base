@@ -93,7 +93,7 @@ class CFDIInvoice extends Model
 
     public function items(): HasMany
     {
-        return $this->hasMany(CFDIItem::class);
+        return $this->hasMany(CFDIItem::class, 'cfdi_invoice_id');
     }
 
     /**
