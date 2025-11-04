@@ -35,9 +35,9 @@ class SalesOrderSchema extends Schema
     {
         return [
             ID::make(),
-            
+
             // Foreign key
-            Number::make('contact_id'),
+            Number::make('contactId', 'contact_id'),
             
             // Relación con Contact
             BelongsTo::make('contact')->type('contacts'),
@@ -45,25 +45,25 @@ class SalesOrderSchema extends Schema
             // Relación con Customer (usa contact_id como clave foránea)
             BelongsTo::make('customer')->type('customers'),
             
-            // Campos básicos - snake_case consistency
-            Str::make('order_number')->sortable(),
+            // Campos básicos - camelCase for JSON:API, mapped to snake_case in DB
+            Str::make('orderNumber', 'order_number')->sortable(),
             Str::make('status')->sortable(),
-            DateTime::make('order_date')->sortable(),
-            DateTime::make('approved_at')->sortable(),
-            DateTime::make('delivered_at')->sortable(),
-            
+            DateTime::make('orderDate', 'order_date')->sortable(),
+            DateTime::make('approvedAt', 'approved_at')->sortable(),
+            DateTime::make('deliveredAt', 'delivered_at')->sortable(),
+
             // Campos de montos
-            Number::make('subtotal_amount')->sortable(),
-            Number::make('tax_amount'),
-            Number::make('discount_total'),
-            Number::make('total_amount')->sortable(),
+            Number::make('subtotalAmount', 'subtotal_amount')->sortable(),
+            Number::make('taxAmount', 'tax_amount'),
+            Number::make('discountTotal', 'discount_total'),
+            Number::make('totalAmount', 'total_amount')->sortable(),
             
             Str::make('notes'),
-            
+
             // Finance Integration Fields
-            Number::make('ar_invoice_id'),
-            Str::make('invoicing_status')->sortable(),
-            Str::make('invoicing_notes'),
+            Number::make('arInvoiceId', 'ar_invoice_id'),
+            Str::make('invoicingStatus', 'invoicing_status')->sortable(),
+            Str::make('invoicingNotes', 'invoicing_notes'),
             
             // Metadata JSON
             ArrayHash::make('metadata'),
@@ -72,8 +72,8 @@ class SalesOrderSchema extends Schema
             HasMany::make('items')->type('sales-order-items'),
             
             // Timestamps
-            DateTime::make('created_at')->readOnly()->sortable(),
-            DateTime::make('updated_at')->readOnly()->sortable(),
+            DateTime::make('createdAt', 'created_at')->readOnly()->sortable(),
+            DateTime::make('updatedAt', 'updated_at')->readOnly()->sortable(),
         ];
     }
 

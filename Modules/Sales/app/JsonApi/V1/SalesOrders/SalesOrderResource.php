@@ -12,30 +12,36 @@ class SalesOrderResource extends JsonApiResource
     public function attributes($request): iterable
     {
         return [
-            // Direct foreign key field - both snake_case and camelCase for compatibility
-            'contact_id' => $this->contact_id,
+            // Foreign key - camelCase for JSON:API consistency
             'contactId' => $this->contact_id,
-            
-            // Order fields - snake_case for existing compatibility
-            'order_number' => $this->order_number,
+
+            // Order fields - camelCase for JSON:API consistency
+            'orderNumber' => $this->order_number,
             'status' => $this->status,
-            'order_date' => $this->order_date,
-            'approved_at' => $this->approved_at,
-            'delivered_at' => $this->delivered_at,
-            
-            // Amount fields - snake_case for existing compatibility
-            'total_amount' => $this->total_amount,
-            'discount_total' => $this->discount_total,
-            
+            'orderDate' => $this->order_date,
+            'approvedAt' => $this->approved_at,
+            'deliveredAt' => $this->delivered_at,
+
+            // Amount fields - camelCase for JSON:API consistency
+            'subtotalAmount' => $this->subtotal_amount,
+            'taxAmount' => $this->tax_amount,
+            'discountTotal' => $this->discount_total,
+            'totalAmount' => $this->total_amount,
+
+            // Finance Integration Fields
+            'arInvoiceId' => $this->ar_invoice_id,
+            'invoicingStatus' => $this->invoicing_status,
+            'invoicingNotes' => $this->invoicing_notes,
+
             // Text fields
             'notes' => $this->notes,
-            
+
             // JSON fields
             'metadata' => $this->metadata,
-            
-            // Timestamps - snake_case for existing compatibility
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+
+            // Timestamps - camelCase for JSON:API consistency
+            'createdAt' => $this->created_at,
+            'updatedAt' => $this->updated_at,
         ];
     }
 
