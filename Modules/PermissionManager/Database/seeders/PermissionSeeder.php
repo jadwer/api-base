@@ -17,10 +17,9 @@ class PermissionSeeder extends Seeder
     {
         // Crear usuario System (causer_id = 1) si no existe
         $system = User::firstOrCreate(
-            ['id' => 1],
+            ['email' => 'system@audit.local'],
             [
                 'name' => 'System',
-                'email' => 'system@audit.local',
                 'password' => 'system',
                 'status' => 'active',
             ]

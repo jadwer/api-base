@@ -15,10 +15,11 @@ class EcommerceDatabaseSeeder extends Seeder
         
         $this->call([
             PermissionsSeeder::class,
+            EcommerceAssignPermissionsSeeder::class,
             CurrencySeeder::class,
             ShippingMethodSeeder::class,
-            ShoppingCartSeeder::class,
-            CartItemSeeder::class,
+            // ShoppingCartSeeder::class, // Disabled - tests use factories
+            // CartItemSeeder::class, // Disabled - tests use factories
             CouponSeeder::class,
         ]);
         

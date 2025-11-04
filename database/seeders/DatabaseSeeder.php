@@ -15,14 +15,18 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        $system = User::factory()->create([
+        $system = User::firstOrCreate(
+            ['email' => 'system@audit.local'],
+            [
                 'name' => 'System',
-                'email' => 'system@audit.local',
                 'password' => 'system',
                 'status' => 'active',
-        ]);
+            ]
+        );
 
-        activity()->causedBy($system)->log('System user created');
+        if ($system->wasRecentlyCreated) {
+            activity()->causedBy($system)->log('System user created');
+        }
 
         $this->call([
             \Modules\PermissionManager\Database\Seeders\PermissionManagerDatabaseSeeder::class,

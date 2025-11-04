@@ -13,6 +13,7 @@ class HRDatabaseSeeder extends Seeder
     {
         $this->call([
             PermissionsSeeder::class,
+            HRAssignPermissionsSeeder::class,
         ]);
     }
 }
