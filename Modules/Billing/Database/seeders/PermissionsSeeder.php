@@ -46,6 +46,10 @@ class PermissionsSeeder extends Seeder
             'billing.cfdi-invoices.download-xml',
             'billing.cfdi-invoices.download-pdf',
             'billing.cfdi-invoices.preview-pdf',
+            'billing.cfdi-invoices.stamp',
+            'billing.cfdi-invoices.cancel',
+            'billing.cfdi-invoices.validate',
+            'billing.cfdi-invoices.cancellation-status',
         ];
 
         $this->bulkCreatePermissions($permissions);

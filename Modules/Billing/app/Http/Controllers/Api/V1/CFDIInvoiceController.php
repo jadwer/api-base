@@ -7,7 +7,10 @@ use Modules\Billing\JsonApi\V1\CfdiInvoices\CFDIInvoiceSchema;
 use Modules\Billing\Models\CFDIInvoice;
 use Modules\Billing\Services\CFDI\CFDIXMLGenerator;
 use Modules\Billing\Services\CFDI\CFDIPDFGenerator;
+use Modules\Billing\Services\CFDI\CFDIStampingService;
+use Modules\Billing\Exceptions\PacException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 
@@ -172,5 +175,197 @@ class CFDIInvoiceController
         }
 
         return "CFDI_{$serie}_{$folio}_DRAFT.xml";
+    }
+
+    /**
+     * Stamp CFDI with PAC
+     *
+     * @param CFDIInvoice $cfdiInvoice
+     * @param Request $request
+     * @param CFDIStampingService $stampingService
+     * @return JsonResponse
+     */
+    public function stamp(
+        CFDIInvoice $cfdiInvoice,
+        Request $request,
+        CFDIStampingService $stampingService
+    ): JsonResponse {
+        // Check permission
+        if (Gate::denies('billing.cfdi-invoices.stamp')) {
+            abort(403, 'No tiene permisos para timbrar CFDI');
+        }
+
+        try {
+            $regenerateXml = $request->boolean('regenerate_xml', false);
+
+            $invoice = $stampingService->stamp($cfdiInvoice, $regenerateXml);
+
+            return response()->json([
+                'message' => 'CFDI timbrado correctamente',
+                'data' => [
+                    'id' => $invoice->id,
+                    'uuid' => $invoice->uuid,
+                    'fecha_timbrado' => $invoice->fecha_timbrado,
+                    'status' => $invoice->status,
+                    'folio_completo' => $invoice->getFolioCompleto(),
+                ],
+            ]);
+        } catch (PacException $e) {
+            return response()->json([
+                'message' => 'Error al timbrar CFDI',
+                'error' => $e->getMessage(),
+            ], $e->getStatusCode());
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error inesperado al timbrar CFDI',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Cancel CFDI with PAC
+     *
+     * @param CFDIInvoice $cfdiInvoice
+     * @param Request $request
+     * @param CFDIStampingService $stampingService
+     * @return JsonResponse
+     */
+    public function cancel(
+        CFDIInvoice $cfdiInvoice,
+        Request $request,
+        CFDIStampingService $stampingService
+    ): JsonResponse {
+        // Check permission
+        if (Gate::denies('billing.cfdi-invoices.cancel')) {
+            abort(403, 'No tiene permisos para cancelar CFDI');
+        }
+
+        // Validate request
+        $validated = $request->validate([
+            'motivo_cancelacion' => ['required', 'string', 'in:01,02,03,04'],
+            'uuid_sustitucion' => ['nullable', 'string', 'uuid'],
+        ]);
+
+        try {
+            $motivoCancelacion = $validated['motivo_cancelacion'];
+            $invoiceSustitucion = null;
+
+            // If motive is 01, find replacement invoice by UUID
+            if ($motivoCancelacion === '01') {
+                if (empty($validated['uuid_sustitucion'])) {
+                    return response()->json([
+                        'message' => 'El motivo 01 requiere UUID de sustitución',
+                    ], 422);
+                }
+
+                $invoiceSustitucion = CFDIInvoice::where('uuid', $validated['uuid_sustitucion'])->first();
+
+                if (!$invoiceSustitucion) {
+                    return response()->json([
+                        'message' => 'No se encontró el CFDI de sustitución',
+                    ], 404);
+                }
+            }
+
+            $invoice = $stampingService->cancel(
+                $cfdiInvoice,
+                $motivoCancelacion,
+                $invoiceSustitucion
+            );
+
+            return response()->json([
+                'message' => 'CFDI cancelado correctamente',
+                'data' => [
+                    'id' => $invoice->id,
+                    'uuid' => $invoice->uuid,
+                    'fecha_cancelacion' => $invoice->fecha_cancelacion,
+                    'status' => $invoice->status,
+                    'motivo' => $motivoCancelacion,
+                ],
+            ]);
+        } catch (PacException $e) {
+            return response()->json([
+                'message' => 'Error al cancelar CFDI',
+                'error' => $e->getMessage(),
+            ], $e->getStatusCode());
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error inesperado al cancelar CFDI',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Validate CFDI with SAT
+     *
+     * @param CFDIInvoice $cfdiInvoice
+     * @param CFDIStampingService $stampingService
+     * @return JsonResponse
+     */
+    public function validateSAT(
+        CFDIInvoice $cfdiInvoice,
+        CFDIStampingService $stampingService
+    ): JsonResponse {
+        // Check permission
+        if (Gate::denies('billing.cfdi-invoices.validate')) {
+            abort(403, 'No tiene permisos para validar CFDI');
+        }
+
+        try {
+            $validationData = $stampingService->validateWithSAT($cfdiInvoice);
+
+            return response()->json([
+                'message' => 'Validación completada',
+                'data' => $validationData,
+            ]);
+        } catch (PacException $e) {
+            return response()->json([
+                'message' => 'Error al validar CFDI',
+                'error' => $e->getMessage(),
+            ], $e->getStatusCode());
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error inesperado',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Get cancellation status from PAC
+     *
+     * @param CFDIInvoice $cfdiInvoice
+     * @param CFDIStampingService $stampingService
+     * @return JsonResponse
+     */
+    public function cancellationStatus(
+        CFDIInvoice $cfdiInvoice,
+        CFDIStampingService $stampingService
+    ): JsonResponse {
+        // Check permission
+        if (Gate::denies('billing.cfdi-invoices.cancellation-status')) {
+            abort(403, 'No tiene permisos para consultar estatus de cancelación');
+        }
+
+        try {
+            $statusData = $stampingService->getCancellationStatus($cfdiInvoice);
+
+            return response()->json([
+                'message' => 'Estatus de cancelación obtenido',
+                'data' => $statusData,
+            ]);
+        } catch (PacException $e) {
+            return response()->json([
+                'message' => 'Error al consultar estatus',
+                'error' => $e->getMessage(),
+            ], $e->getStatusCode());
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error inesperado',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }
