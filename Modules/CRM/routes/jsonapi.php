@@ -39,7 +39,7 @@ JsonApiRoute::server('v1')
         // $server->resource('campaigns', JsonApiController::class);
 
         // Pipeline Stages - Pipeline configuration
-        // $server->resource('pipeline-stages', JsonApiController::class);
+        $server->resource('pipeline-stages', \Modules\CRM\Http\Controllers\Api\V1\PipelineStageController::class);
     });
 
 // Custom CRM endpoints (will be added in Phase 4)

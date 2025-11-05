@@ -207,7 +207,7 @@ class Server extends BaseServer
             // \Modules\CRM\JsonApi\V1\QuoteItems\QuoteItemSchema::class,
             // \Modules\CRM\JsonApi\V1\Activities\ActivitySchema::class,
             // \Modules\CRM\JsonApi\V1\Campaigns\CampaignSchema::class,
-            // \Modules\CRM\JsonApi\V1\PipelineStages\PipelineStageSchema::class,
+            \Modules\CRM\JsonApi\V1\PipelineStages\PipelineStageSchema::class,
 
         ];
 
@@ -306,7 +306,7 @@ class Server extends BaseServer
             // 'quote-items' => \Modules\CRM\JsonApi\V1\QuoteItems\QuoteItemAuthorizer::class,
             // 'activities' => \Modules\CRM\JsonApi\V1\Activities\ActivityAuthorizer::class,
             // 'campaigns' => \Modules\CRM\JsonApi\V1\Campaigns\CampaignAuthorizer::class,
-            // 'pipeline-stages' => \Modules\CRM\JsonApi\V1\PipelineStages\PipelineStageAuthorizer::class,
+            'pipeline-stages' => \Modules\CRM\JsonApi\V1\PipelineStages\PipelineStageAuthorizer::class,
         ];
 
         return $authorizers;
