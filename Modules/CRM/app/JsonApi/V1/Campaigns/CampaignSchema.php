@@ -53,7 +53,7 @@ class CampaignSchema extends Schema
     public function filters(): array
     {
         return [
-            WhereIdIn::make($this),
+            WhereIdIn::make($this)->delimiter(','),
             Where::make('name'),
             Where::make('type'),
             Where::make('status'),
