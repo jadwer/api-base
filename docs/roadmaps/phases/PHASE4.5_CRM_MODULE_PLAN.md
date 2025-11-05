@@ -465,13 +465,18 @@ crm.pipeline-stages.index, show, store, update, destroy
 - Tests: 55+ cases (CRUD, permissions, filtering, sorting)
 - Database: 7 fields + 2 composite indexes
 
-**Phase 1: Lead** ✅
+**Phase 1: Lead** ✅ (with critical fixes applied)
 - Files: 13 (migration, model, factory, schema, authorizer, request, resource, controller, 5 tests)
 - Features: 14 fields, 5 relationships (Contact, User, Campaign, Activity, Opportunity)
 - Factory: 15+ states (status: new/contacted/qualified/unqualified/converted, rating: hot/warm/cold)
-- Tests: 60+ cases covering all CRUD operations
+- Tests: 60+ cases covering all CRUD operations (9/10 passing, 1 skipped pending Contact module)
 - Database: 14 fields + 5 performance indexes
 - Routes: 5 JSON:API endpoints
+- **Fixes Applied (commit 3869345):**
+  - RouteServiceProvider: Added missing middleware('api') for JSON:API resolution
+  - Authorizers: Updated method signatures to match JSON:API 5.x interface (bool|Response)
+  - LeadFactory: Renamed new() to statusNew() to avoid static method conflict
+  - Contact dependency: Removed foreign key constraint and relationships until Phase 2
 
 ### In Progress (0/7 entities)
 
