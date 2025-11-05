@@ -29,6 +29,10 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
         $response = $this->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
             ->postJson('/api/v1/cfdi-invoices/' . $invoice->id . '/generate-pdf');
 
+        if ($response->status() !== 200) {
+            dump($response->json());
+        }
+
         $response->assertSuccessful()
             ->assertJson([
                 'message' => 'PDF CFDI generado correctamente',
