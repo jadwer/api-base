@@ -21,7 +21,7 @@ JsonApiRoute::server('v1')
     ->prefix('v1')
     ->resources(function ($server) {
         // Leads - Lead management
-        // $server->resource('leads', JsonApiController::class);
+        $server->resource('leads', \Modules\CRM\Http\Controllers\Api\V1\LeadController::class);
 
         // Opportunities - Sales opportunities
         // $server->resource('opportunities', JsonApiController::class);

@@ -201,7 +201,7 @@ class Server extends BaseServer
             \Modules\Billing\JsonApi\V1\CFDIItems\CFDIItemSchema::class,
 
             // CRM Module (Phase 4.5)
-            // \Modules\CRM\JsonApi\V1\Leads\LeadSchema::class,
+            \Modules\CRM\JsonApi\V1\Leads\LeadSchema::class,
             // \Modules\CRM\JsonApi\V1\Opportunities\OpportunitySchema::class,
             // \Modules\CRM\JsonApi\V1\Quotes\QuoteSchema::class,
             // \Modules\CRM\JsonApi\V1\QuoteItems\QuoteItemSchema::class,
@@ -300,7 +300,7 @@ class Server extends BaseServer
             'cfdi-items' => \Modules\Billing\JsonApi\V1\CFDIItems\CFDIItemAuthorizer::class,
 
             // CRM Module (Phase 4.5)
-            // 'leads' => \Modules\CRM\JsonApi\V1\Leads\LeadAuthorizer::class,
+            'leads' => \Modules\CRM\JsonApi\V1\Leads\LeadAuthorizer::class,
             // 'opportunities' => \Modules\CRM\JsonApi\V1\Opportunities\OpportunityAuthorizer::class,
             // 'quotes' => \Modules\CRM\JsonApi\V1\Quotes\QuoteAuthorizer::class,
             // 'quote-items' => \Modules\CRM\JsonApi\V1\QuoteItems\QuoteItemAuthorizer::class,
