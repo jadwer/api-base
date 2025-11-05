@@ -200,6 +200,15 @@ class Server extends BaseServer
             \Modules\Billing\JsonApi\V1\CFDIInvoices\CFDIInvoiceSchema::class,
             \Modules\Billing\JsonApi\V1\CFDIItems\CFDIItemSchema::class,
 
+            // CRM Module (Phase 4.5)
+            // \Modules\CRM\JsonApi\V1\Leads\LeadSchema::class,
+            // \Modules\CRM\JsonApi\V1\Opportunities\OpportunitySchema::class,
+            // \Modules\CRM\JsonApi\V1\Quotes\QuoteSchema::class,
+            // \Modules\CRM\JsonApi\V1\QuoteItems\QuoteItemSchema::class,
+            // \Modules\CRM\JsonApi\V1\Activities\ActivitySchema::class,
+            // \Modules\CRM\JsonApi\V1\Campaigns\CampaignSchema::class,
+            // \Modules\CRM\JsonApi\V1\PipelineStages\PipelineStageSchema::class,
+
         ];
 
         return $schemas;
@@ -289,6 +298,15 @@ class Server extends BaseServer
             'company-settings' => \Modules\Billing\JsonApi\V1\CompanySettings\CompanySettingAuthorizer::class,
             'cfdi-invoices' => \Modules\Billing\JsonApi\V1\CFDIInvoices\CFDIInvoiceAuthorizer::class,
             'cfdi-items' => \Modules\Billing\JsonApi\V1\CFDIItems\CFDIItemAuthorizer::class,
+
+            // CRM Module (Phase 4.5)
+            // 'leads' => \Modules\CRM\JsonApi\V1\Leads\LeadAuthorizer::class,
+            // 'opportunities' => \Modules\CRM\JsonApi\V1\Opportunities\OpportunityAuthorizer::class,
+            // 'quotes' => \Modules\CRM\JsonApi\V1\Quotes\QuoteAuthorizer::class,
+            // 'quote-items' => \Modules\CRM\JsonApi\V1\QuoteItems\QuoteItemAuthorizer::class,
+            // 'activities' => \Modules\CRM\JsonApi\V1\Activities\ActivityAuthorizer::class,
+            // 'campaigns' => \Modules\CRM\JsonApi\V1\Campaigns\CampaignAuthorizer::class,
+            // 'pipeline-stages' => \Modules\CRM\JsonApi\V1\PipelineStages\PipelineStageAuthorizer::class,
         ];
 
         return $authorizers;

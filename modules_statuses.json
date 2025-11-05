@@ -14,5 +14,6 @@
     "Finance": true,
     "Reports": true,
     "HR": true,
-    "Billing": true
+    "Billing": true,
+    "CRM": true
 }
