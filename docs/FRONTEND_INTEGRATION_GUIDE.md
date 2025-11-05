@@ -1,101 +1,159 @@
 # Frontend Integration Guide
 
-Complete guide for integrating with the Laravel Modular ERP JSON:API endpoints.
+**Last Updated:** 2025-11-05
+**API Version:** v1
+**JSON:API Specification:** 1.1
+**Base URL:** `/api/v1`
+
+## Overview
+
+This guide provides frontend developers with comprehensive documentation for integrating with the API. Each module has its own detailed guide with specific field mappings, examples, and TypeScript interfaces.
 
 ## Table of Contents
+
 - [Authentication](#authentication)
-- [Common Patterns](#common-patterns)
-- [Module Integration](#module-integration)
-- [File Handling](#file-handling)
-- [Best Practices](#best-practices)
+- [Common JSON:API Patterns](#common-jsonapi-patterns)
+- [Module Guides](#module-guides)
 - [Error Handling](#error-handling)
+- [Best Practices](#best-practices)
+- [Quick Reference](#quick-reference)
 
 ---
 
 ## Authentication
 
-All API requests require Bearer token authentication via Laravel Sanctum.
-
-### Getting a Token
+### Login
 
 ```javascript
 const response = await fetch('/api/auth/login', {
   method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  },
   body: JSON.stringify({
-    email: 'user@example.com',
+    email: 'admin@example.com',
     password: 'password'
   })
 });
 
-const { token } = await response.json();
-// Store token securely (localStorage, sessionStorage, or state management)
+const data = await response.json();
+const token = data.token; // Store this token for subsequent requests
 ```
 
 ### Using the Token
 
-All subsequent requests must include the token:
+All subsequent requests must include the authentication token:
 
 ```javascript
 const headers = {
-  'Authorization': `Bearer ${token}`,
+  'Content-Type': 'application/vnd.api+json',
   'Accept': 'application/vnd.api+json',
-  'Content-Type': 'application/vnd.api+json'
+  'Authorization': `Bearer ${token}`
 };
 ```
 
 ---
 
-## Common Patterns
+## Common JSON:API Patterns
 
-### JSON:API Request Format
-
-All POST/PATCH requests follow JSON:API 1.1 specification:
+### Fetching a List of Resources
 
 ```javascript
-const data = {
+const response = await fetch('/api/v1/{resource}', { headers });
+const data = await response.json();
+
+console.log(data);
+// {
+//   data: [...],
+//   links: { first, last, prev, next },
+//   meta: { page: { currentPage, from, to, lastPage, total } }
+// }
+```
+
+### Fetching a Single Resource
+
+```javascript
+const response = await fetch('/api/v1/{resource}/123', { headers });
+const data = await response.json();
+
+console.log(data);
+// {
+//   data: { id, type, attributes, relationships }
+// }
+```
+
+### Creating a Resource
+
+```javascript
+const payload = {
   data: {
-    type: "resource-type",  // plural, kebab-case
+    type: "resources",
     attributes: {
-      fieldName: "value",   // camelCase
-      // ...
+      fieldName: "value",
+      anotherField: "value"
     }
   }
 };
+
+const response = await fetch('/api/v1/{resource}', {
+  method: 'POST',
+  headers,
+  body: JSON.stringify(payload)
+});
+
+const data = await response.json();
 ```
 
-### Fetching Resources with Relationships
+### Updating a Resource (PATCH)
 
 ```javascript
-// Include related resources
+const payload = {
+  data: {
+    type: "resources",
+    id: "123",
+    attributes: {
+      fieldName: "new value"
+    }
+  }
+};
+
+const response = await fetch('/api/v1/{resource}/123', {
+  method: 'PATCH',
+  headers,
+  body: JSON.stringify(payload)
+});
+
+const data = await response.json();
+```
+
+### Deleting a Resource
+
+```javascript
+const response = await fetch('/api/v1/{resource}/123', {
+  method: 'DELETE',
+  headers
+});
+
+// 204 No Content on success
+```
+
+### Including Relationships
+
+Use the `include` query parameter:
+
+```javascript
 const response = await fetch(
-  '/api/v1/contacts/27?include=contactPeople,contactAddresses,contactDocuments',
+  '/api/v1/{resource}/123?include=relation1,relation2',
   { headers }
 );
-
-const { data, included } = await response.json();
-// data = main resource
-// included = array of related resources
 ```
 
 ### Filtering
 
 ```javascript
-// Filter by field
-const customers = await fetch(
-  '/api/v1/contacts?filter[isCustomer]=true',
-  { headers }
-);
-
-// Filter by relationship
-const addresses = await fetch(
-  '/api/v1/contact-addresses?filter[contactId]=27',
-  { headers }
-);
-
-// Search by name (partial match)
-const search = await fetch(
-  '/api/v1/contacts?filter[name]=Empresa',
+const response = await fetch(
+  '/api/v1/{resource}?filter[fieldName]=value&filter[anotherField]=value',
   { headers }
 );
 ```
@@ -103,329 +161,133 @@ const search = await fetch(
 ### Sorting
 
 ```javascript
-// Sort ascending
-const sorted = await fetch('/api/v1/products?sort=name', { headers });
+// Ascending
+const response = await fetch('/api/v1/{resource}?sort=fieldName', { headers });
 
-// Sort descending
-const sorted = await fetch('/api/v1/products?sort=-price', { headers });
+// Descending
+const response = await fetch('/api/v1/{resource}?sort=-fieldName', { headers });
 
-// Multiple sorts
-const sorted = await fetch('/api/v1/products?sort=category,-price', { headers });
+// Multiple fields
+const response = await fetch('/api/v1/{resource}?sort=-field1,field2', { headers });
 ```
 
 ### Pagination
 
 ```javascript
-// Default pagination (25 per page)
-const page1 = await fetch('/api/v1/products', { headers });
+const response = await fetch(
+  '/api/v1/{resource}?page[number]=2&page[size]=20',
+  { headers }
+);
+```
 
-// Custom page size
-const page1 = await fetch('/api/v1/products?page[size]=50', { headers });
+### Sparse Fieldsets
 
-// Specific page
-const page2 = await fetch('/api/v1/products?page[number]=2', { headers });
+Request only specific fields to optimize performance:
 
-// Response includes pagination metadata
-const response = await page1.json();
-// response.meta.page.currentPage
-// response.meta.page.total
-// response.links.first, .prev, .next, .last
+```javascript
+const response = await fetch(
+  '/api/v1/{resource}?fields[resources]=field1,field2,field3',
+  { headers }
+);
 ```
 
 ---
 
-## Module Integration
+## Module Guides
 
-### Contacts Module
+Each module has a dedicated frontend integration guide with detailed information:
 
-Complete contact management with addresses, people, and documents.
+### Core Business Modules
 
-#### Create Contact
+- **[Product Module](modules/PRODUCT_FRONTEND_GUIDE.md)** - Products, Categories, Brands, Units
+- **[Inventory Module](modules/INVENTORY_FRONTEND_GUIDE.md)** - Warehouses, Stock, Batches, Movements
+- **[Purchase Module](modules/PURCHASE_FRONTEND_GUIDE.md)** - Purchase Orders, Suppliers
+- **[Sales Module](modules/SALES_FRONTEND_GUIDE.md)** - Sales Orders, Customers, Order Tracking
 
-```javascript
-async function createContact(contactData) {
-  const payload = {
-    data: {
-      type: "contacts",
-      attributes: {
-        contactType: "company",        // "company" or "person"
-        name: "Company ABC",
-        legalName: "Company ABC S.A.",
-        taxId: "TAX123456",
-        email: "info@company.com",
-        phone: "+1-555-1234",
-        website: "https://company.com",
-        status: "active",              // "active" or "inactive"
-        isCustomer: true,
-        isSupplier: false,
-        creditLimit: 50000.00,
-        classification: "A",           // A, B, C
-        paymentTerms: 30,              // days
-        notes: "Important client"
-      }
-    }
-  };
+### E-commerce & Customer Engagement
 
-  const response = await fetch('/api/v1/contacts', {
-    method: 'POST',
-    headers,
-    body: JSON.stringify(payload)
-  });
+- **[Ecommerce Module](modules/ECOMMERCE_FRONTEND_GUIDE.md)** - Cart, Checkout, Payments, Wishlists, Reviews, Recommendations
+- **[CRM Module](modules/CRM_FRONTEND_GUIDE.md)** - Leads, Campaigns, Pipeline Stages (900+ lines)
 
-  return await response.json();
-}
-```
+### Financial & Accounting
 
-#### Add Contact Address
+- **[Finance Module](modules/FINANCE_FRONTEND_GUIDE.md)** - AR/AP Invoices, Payments, Bank Accounts
+- **[Accounting Module](modules/ACCOUNTING_FRONTEND_GUIDE.md)** - Chart of Accounts, Journal Entries, Fiscal Periods
+- **[Billing/CFDI Module](modules/BILLING_FRONTEND_GUIDE.md)** - Mexican Electronic Invoicing (CFDI 4.0), PAC Integration
 
-```javascript
-async function addAddress(contactId, addressData) {
-  const payload = {
-    data: {
-      type: "contact-addresses",
-      attributes: {
-        contactId: parseInt(contactId),
-        addressType: "billing",       // "billing", "shipping", "office"
-        addressLine1: "123 Main St",
-        addressLine2: "Suite 500",
-        city: "New York",
-        state: "NY",
-        country: "USA",
-        postalCode: "10001",
-        isDefault: true
-      }
-    }
-  };
+### Human Resources & Reporting
 
-  const response = await fetch('/api/v1/contact-addresses', {
-    method: 'POST',
-    headers,
-    body: JSON.stringify(payload)
-  });
+- **[HR Module](modules/HR_FRONTEND_GUIDE.md)** - Employees, Payroll, Attendance, Leave Management
+- **[Reports Module](modules/REPORTS_FRONTEND_GUIDE.md)** - Financial Statements, Analytics, KPIs
 
-  return await response.json();
-}
-```
+### Supporting Modules
 
-#### Add Contact Person
-
-```javascript
-async function addContactPerson(contactId, personData) {
-  const payload = {
-    data: {
-      type: "contact-people",
-      attributes: {
-        contactId: parseInt(contactId),
-        name: "John Doe",
-        position: "Purchasing Manager",
-        department: "Procurement",
-        email: "john.doe@company.com",
-        phone: "+1-555-1235",
-        mobile: "+1-555-1236",
-        isPrimary: true
-      }
-    }
-  };
-
-  const response = await fetch('/api/v1/contact-people', {
-    method: 'POST',
-    headers,
-    body: JSON.stringify(payload)
-  });
-
-  return await response.json();
-}
-```
-
-### Sales Module
-
-See [BUSINESS_FLOWS.md](architecture/BUSINESS_FLOWS.md) for complete Order-to-Cash flow.
-
-#### Create Sales Order
-
-```javascript
-async function createSalesOrder(orderData) {
-  const payload = {
-    data: {
-      type: "sales-orders",
-      attributes: {
-        contactId: 27,
-        orderDate: "2025-01-15",
-        status: "pending",            // pending, approved, completed
-        totalAmount: 1500.00,
-        notes: "Rush order"
-      }
-    }
-  };
-
-  const response = await fetch('/api/v1/sales-orders', {
-    method: 'POST',
-    headers,
-    body: JSON.stringify(payload)
-  });
-
-  return await response.json();
-}
-```
-
-### Purchase Module
-
-See [BUSINESS_FLOWS.md](architecture/BUSINESS_FLOWS.md) for complete Procure-to-Pay flow.
-
-### Finance Module
-
-Accounts Receivable and Accounts Payable management.
-
-#### Get AR Invoice with Balance
-
-```javascript
-// AR Invoices include calculated fields:
-// - paidAmount: sum of all payment applications
-// - remainingBalance: totalAmount - paidAmount
-
-const response = await fetch('/api/v1/ar-invoices/123', { headers });
-const invoice = await response.json();
-
-console.log(invoice.data.attributes);
-// {
-//   invoiceNumber: "AR-2025-001",
-//   totalAmount: 1500.00,
-//   paidAmount: 500.00,        // Calculated
-//   remainingBalance: 1000.00,  // Calculated
-//   status: "partially_paid"
-// }
-```
-
-### Accounting Module
-
-General Ledger, Journal Entries, and Fiscal Periods.
-
-See [ERD_DOCUMENTATION.md](architecture/ERD_DOCUMENTATION.md) for complete schema reference.
+- **[Contacts Module](modules/CONTACTS_FRONTEND_GUIDE.md)** - Contact Management, Addresses, Documents
 
 ---
 
-## File Handling
+## Error Handling
 
-### Upload Document
-
-Documents use `multipart/form-data` instead of JSON:API format.
+### Standard Error Response Format
 
 ```javascript
-async function uploadDocument(contactId, file, documentType, notes = '') {
-  const formData = new FormData();
-  formData.append('contact_id', contactId);
-  formData.append('document_type', documentType);  // See types below
-  formData.append('file', file);
-  formData.append('notes', notes);
-  formData.append('expires_at', '2025-12-31');     // Optional
-
-  const response = await fetch('/api/v1/contact-documents/upload', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`
-      // Do NOT set Content-Type - FormData handles it automatically
-    },
-    body: formData
-  });
-
-  return await response.json();
-}
-```
-
-**Supported Document Types:**
-- `rfc` - Tax ID
-- `cedula_fiscal` - Tax Certificate
-- `ine` - Government ID
-- `constancia_sat` - Tax Status Certificate
-- `opinion_sat` - Tax Opinion
-- `certificado_sello` - Digital Stamp Certificate
-- `comprobante_domicilio` - Proof of Address
-- `cotizacion` - Quote
-- `orden_compra` - Purchase Order
-- `factura` - Invoice
-- `contrato` - Contract
-- `otros` - Other
-
-**Supported File Types:**
-- PDF: `.pdf`
-- Images: `.jpg`, `.jpeg`, `.png`, `.gif`
-- Word: `.doc`, `.docx`
-- Excel: `.xls`, `.xlsx`
-- **Max size:** 10MB
-
-### View/Preview Document
-
-```javascript
-async function showDocument(documentId, elementId) {
-  const response = await fetch(
-    `/api/v1/contact-documents/${documentId}/view`,
-    { headers }
-  );
-
-  if (response.ok) {
-    const blob = await response.blob();
-    const url = URL.createObjectURL(blob);
-
-    // For images
-    document.getElementById(elementId).src = url;
-
-    // For PDFs in iframe
-    document.getElementById('pdf-viewer').src = url;
-
-    // Remember to revoke URL when done
-    // setTimeout(() => URL.revokeObjectURL(url), 100);
-  }
-}
-```
-
-### Download Document
-
-```javascript
-async function downloadDocument(documentId, filename) {
-  const response = await fetch(
-    `/api/v1/contact-documents/${documentId}/download`,
-    { headers }
-  );
-
-  if (response.ok) {
-    const blob = await response.blob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-}
-```
-
-### Verify/Unverify Document
-
-```javascript
-// Mark document as verified
-async function verifyDocument(documentId) {
-  const response = await fetch(
-    `/api/v1/contact-documents/${documentId}/verify`,
+{
+  errors: [
     {
-      method: 'PATCH',
-      headers
+      status: "422",
+      title: "Validation Error",
+      detail: "The name field is required.",
+      source: { pointer: "/data/attributes/name" }
     }
-  );
-
-  return await response.json();
+  ]
 }
+```
 
-// Remove verification
-async function unverifyDocument(documentId) {
-  const response = await fetch(
-    `/api/v1/contact-documents/${documentId}/unverify`,
-    {
-      method: 'PATCH',
-      headers
+### Common HTTP Status Codes
+
+- **200 OK** - Successful GET or PATCH request
+- **201 Created** - Successful POST request
+- **204 No Content** - Successful DELETE request
+- **400 Bad Request** - Malformed request
+- **401 Unauthorized** - Missing or invalid authentication token
+- **403 Forbidden** - Insufficient permissions
+- **404 Not Found** - Resource not found
+- **422 Unprocessable Entity** - Validation errors
+- **500 Internal Server Error** - Server-side error
+
+### Error Handling Example
+
+```javascript
+async function handleApiRequest(url, options) {
+  try {
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+
+      if (response.status === 422) {
+        // Validation errors
+        const validationErrors = errorData.errors.map(err => ({
+          field: err.source.pointer.split('/').pop(),
+          message: err.detail
+        }));
+        console.error('Validation errors:', validationErrors);
+      } else if (response.status === 401) {
+        // Redirect to login
+        window.location.href = '/login';
+      } else if (response.status === 403) {
+        // Show permission error
+        console.error('You do not have permission to perform this action');
+      }
+
+      throw new Error(errorData.errors[0].detail);
     }
-  );
 
-  return await response.json();
+    return await response.json();
+  } catch (error) {
+    console.error('API request failed:', error);
+    throw error;
+  }
 }
 ```
 
@@ -433,313 +295,230 @@ async function unverifyDocument(documentId) {
 
 ## Best Practices
 
-### 1. Use TypeScript Interfaces
+### 1. API Client Pattern
+
+Create a reusable API client:
+
+```javascript
+class ApiClient {
+  constructor(baseURL, token) {
+    this.baseURL = baseURL;
+    this.token = token;
+  }
+
+  get headers() {
+    return {
+      'Content-Type': 'application/vnd.api+json',
+      'Accept': 'application/vnd.api+json',
+      'Authorization': `Bearer ${this.token}`
+    };
+  }
+
+  async request(endpoint, options = {}) {
+    const url = `${this.baseURL}${endpoint}`;
+    const config = {
+      ...options,
+      headers: {
+        ...this.headers,
+        ...options.headers
+      }
+    };
+
+    const response = await fetch(url, config);
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.errors[0].detail);
+    }
+
+    if (response.status === 204) return null;
+    return await response.json();
+  }
+
+  get(endpoint, params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    const url = queryString ? `${endpoint}?${queryString}` : endpoint;
+    return this.request(url, { method: 'GET' });
+  }
+
+  post(endpoint, data) {
+    return this.request(endpoint, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  }
+
+  patch(endpoint, data) {
+    return this.request(endpoint, {
+      method: 'PATCH',
+      body: JSON.stringify(data)
+    });
+  }
+
+  delete(endpoint) {
+    return this.request(endpoint, { method: 'DELETE' });
+  }
+}
+
+// Usage
+const api = new ApiClient('/api/v1', token);
+const products = await api.get('/products', { 'filter[isActive]': 'true' });
+```
+
+### 2. Response Caching
+
+Implement caching for frequently accessed data:
+
+```javascript
+class CachedApiClient extends ApiClient {
+  constructor(baseURL, token, cacheDuration = 300000) { // 5 minutes default
+    super(baseURL, token);
+    this.cache = new Map();
+    this.cacheDuration = cacheDuration;
+  }
+
+  async get(endpoint, params = {}) {
+    const cacheKey = `${endpoint}?${JSON.stringify(params)}`;
+    const cached = this.cache.get(cacheKey);
+
+    if (cached && Date.now() - cached.timestamp < this.cacheDuration) {
+      return cached.data;
+    }
+
+    const data = await super.get(endpoint, params);
+    this.cache.set(cacheKey, { data, timestamp: Date.now() });
+    return data;
+  }
+
+  invalidateCache(pattern) {
+    for (const key of this.cache.keys()) {
+      if (key.includes(pattern)) {
+        this.cache.delete(key);
+      }
+    }
+  }
+}
+```
+
+### 3. Retry Logic for Failed Requests
+
+```javascript
+async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await fetch(url, options);
+    } catch (error) {
+      if (i === retries - 1) throw error;
+      await new Promise(resolve => setTimeout(resolve, delay * (i + 1)));
+    }
+  }
+}
+```
+
+### 4. TypeScript Integration
+
+Use TypeScript interfaces for type safety:
 
 ```typescript
 interface JsonApiResource<T> {
   data: {
+    id: string;
     type: string;
-    id?: string;
     attributes: T;
+    relationships?: Record<string, any>;
   };
 }
 
-interface Contact {
-  contactType: 'company' | 'person';
-  name: string;
-  email: string;
-  // ...
-}
-```
-
-### 2. Create Reusable API Client
-
-```javascript
-class ApiClient {
-  constructor(baseUrl, token) {
-    this.baseUrl = baseUrl;
-    this.token = token;
-  }
-
-  async get(endpoint, params = {}) {
-    const url = new URL(endpoint, this.baseUrl);
-    Object.keys(params).forEach(key =>
-      url.searchParams.append(key, params[key])
-    );
-
-    const response = await fetch(url, {
-      headers: this.getHeaders()
-    });
-
-    return this.handleResponse(response);
-  }
-
-  async post(endpoint, data) {
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
-      method: 'POST',
-      headers: this.getHeaders(),
-      body: JSON.stringify(data)
-    });
-
-    return this.handleResponse(response);
-  }
-
-  getHeaders() {
-    return {
-      'Authorization': `Bearer ${this.token}`,
-      'Accept': 'application/vnd.api+json',
-      'Content-Type': 'application/vnd.api+json'
+interface JsonApiCollection<T> {
+  data: Array<{
+    id: string;
+    type: string;
+    attributes: T;
+  }>;
+  links: {
+    first: string;
+    last: string;
+    prev: string | null;
+    next: string | null;
+  };
+  meta: {
+    page: {
+      currentPage: number;
+      from: number;
+      to: number;
+      lastPage: number;
+      total: number;
     };
-  }
-
-  async handleResponse(response) {
-    if (!response.ok) {
-      const error = await response.json();
-      throw new ApiError(error, response.status);
-    }
-    return await response.json();
-  }
+  };
 }
 ```
 
-### 3. Handle Included Resources
+### 5. Field Name Conventions
 
-```javascript
-function normalizeJsonApiResponse(response) {
-  const { data, included = [] } = response;
+**IMPORTANT**: The API uses camelCase in JSON:API responses but snake_case in the database.
 
-  // Create lookup map for included resources
-  const includedMap = {};
-  included.forEach(item => {
-    if (!includedMap[item.type]) {
-      includedMap[item.type] = {};
-    }
-    includedMap[item.type][item.id] = item.attributes;
-  });
+- **JSON:API (Frontend):** `createdAt`, `updatedAt`, `isActive`, `unitId`
+- **Database (Backend):** `created_at`, `updated_at`, `is_active`, `unit_id`
 
-  // Merge relationships into main data
-  if (data.relationships) {
-    Object.keys(data.relationships).forEach(key => {
-      const relationship = data.relationships[key].data;
-      if (Array.isArray(relationship)) {
-        data.attributes[key] = relationship.map(r =>
-          includedMap[r.type]?.[r.id]
-        );
-      } else if (relationship) {
-        data.attributes[key] = includedMap[relationship.type]?.[relationship.id];
-      }
-    });
-  }
-
-  return data.attributes;
-}
-```
-
-### 4. Always Use parseInt() for IDs
-
-```javascript
-// JSON:API returns IDs as strings, but backend expects integers
-const payload = {
-  data: {
-    type: "contact-addresses",
-    attributes: {
-      contactId: parseInt(contactId),  // ✓ Correct
-      // contactId: contactId,         // ✗ May fail validation
-    }
-  }
-};
-```
-
-### 5. Handle Validation Errors
-
-```javascript
-async function handleSubmit(formData) {
-  try {
-    const response = await api.post('/api/v1/contacts', formData);
-    // Success
-  } catch (error) {
-    if (error.status === 422) {
-      // Validation errors
-      const errors = error.errors;
-      Object.keys(errors).forEach(field => {
-        showFieldError(field, errors[field][0]);
-      });
-    } else {
-      // Other errors
-      showGeneralError(error.message);
-    }
-  }
-}
-```
+The conversion is automatic - always use camelCase when sending/receiving data from the API.
 
 ---
 
-## Error Handling
+## Quick Reference
 
-### Common HTTP Status Codes
+### All Available Endpoints
 
-| Code | Meaning | Action |
-|------|---------|--------|
-| 401 | Unauthenticated | Token expired/invalid - redirect to login |
-| 403 | Forbidden | User lacks permission - show error |
-| 404 | Not Found | Resource doesn't exist - show not found |
-| 422 | Validation Error | Show field-specific errors |
-| 500 | Server Error | Show generic error, log for support |
+**Product Module** (20 endpoints):
+- `/products`, `/categories`, `/brands`, `/units`
 
-### Validation Errors (422)
+**Inventory Module** (25 endpoints):
+- `/warehouses`, `/warehouse-locations`, `/stocks`, `/product-batches`, `/inventory-movements`
 
-```javascript
-// Response format
-{
-  "message": "The given data was invalid.",
-  "errors": {
-    "name": ["The name field is required."],
-    "email": ["The email must be a valid email address."]
-  }
-}
-```
+**Purchase Module** (15 endpoints):
+- `/purchase-orders`, `/purchase-order-items`, `/suppliers`
 
-### Authentication Errors (401)
+**Sales Module** (24 endpoints):
+- `/sales-orders`, `/sales-order-items`, `/customers`, `/order-tracking`
 
-```javascript
-{
-  "message": "Unauthenticated."
-}
-```
+**Ecommerce Module** (67 endpoints):
+- `/shopping-carts`, `/cart-items`, `/checkout-sessions`, `/payment-transactions`
+- `/wishlists`, `/wishlist-items`, `/product-reviews`, `/coupons`
+- `/shipping-methods`, `/currencies`, `/product-recommendations`
 
-### Permission Errors (403)
+**Finance Module** (40 endpoints):
+- `/ar-invoices`, `/ap-invoices`, `/payments`, `/payment-applications`
+- `/bank-accounts`, `/payment-methods`
 
-```javascript
-{
-  "message": "This action is unauthorized."
-}
-```
+**Accounting Module** (30 endpoints):
+- `/accounts`, `/journal-entries`, `/journal-lines`, `/journals`
+- `/fiscal-periods`, `/exchange-rates`, `/account-balances`
 
----
+**HR Module** (49 endpoints):
+- `/employees`, `/departments`, `/positions`, `/attendances`
+- `/leave-types`, `/leaves`, `/payroll-periods`, `/payroll-items`, `/performance-reviews`
 
-## Complete Example: Create Contact with Everything
+**Reports Module** (30 endpoints):
+- `/balance-sheets`, `/income-statements`, `/cash-flows`, `/trial-balances`
+- `/ar-aging-reports`, `/ap-aging-reports`, `/sales-reports`, `/inventory-valuation-reports`
 
-```javascript
-async function createCompleteContact() {
-  try {
-    // 1. Create contact
-    const contact = await createContact({
-      contactType: "company",
-      name: "My Company",
-      email: "info@mycompany.com",
-      phone: "+1-555-1234",
-      isCustomer: true,
-      status: "active"
-    });
+**Billing/CFDI Module** (30 endpoints):
+- `/cfdi-invoices`, `/cfdi-concepts`, `/company-settings`
+- `/cfdi-invoices/{id}/stamp`, `/cfdi-invoices/{id}/cancel`, `/cfdi-invoices/{id}/pdf`
 
-    const contactId = contact.data.id;
-    console.log('✓ Contact created:', contactId);
+**CRM Module** (15 endpoints):
+- `/pipeline-stages`, `/leads`, `/campaigns`
 
-    // 2. Add address
-    await addAddress(contactId, {
-      addressType: "billing",
-      addressLine1: "123 Main St",
-      city: "New York",
-      state: "NY",
-      country: "USA",
-      postalCode: "10001",
-      isDefault: true
-    });
-    console.log('✓ Address added');
-
-    // 3. Add contact person
-    await addContactPerson(contactId, {
-      name: "Jane Smith",
-      position: "General Manager",
-      email: "jane@mycompany.com",
-      phone: "+1-555-1235",
-      isPrimary: true
-    });
-    console.log('✓ Contact person added');
-
-    // 4. Upload document (if file available)
-    const fileInput = document.getElementById('file-input');
-    if (fileInput.files.length > 0) {
-      await uploadDocument(
-        contactId,
-        fileInput.files[0],
-        'rfc',
-        'Company tax ID'
-      );
-      console.log('✓ Document uploaded');
-    }
-
-    // 5. Fetch complete contact
-    const fullContact = await fetch(
-      `/api/v1/contacts/${contactId}?include=contactPeople,contactDocuments,contactAddresses`,
-      { headers }
-    );
-
-    const complete = await fullContact.json();
-    console.log('🎉 Complete contact:', complete);
-
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-```
+**Contacts Module** (20 endpoints):
+- `/contacts`, `/contact-addresses`, `/contact-people`, `/contact-documents`
 
 ---
 
-## Reference Documentation
+## Support
 
-For more detailed information, see:
+For module-specific integration details, examples, and TypeScript interfaces, refer to the individual module guides listed above.
 
-- **System Architecture**: [docs/architecture/README.md](architecture/README.md)
-- **Database Schema**: [docs/architecture/ERD_DOCUMENTATION.md](architecture/ERD_DOCUMENTATION.md)
-- **Business Flows**: [docs/architecture/BUSINESS_FLOWS.md](architecture/BUSINESS_FLOWS.md)
-- **Business Rules**: [docs/architecture/BUSINESS_RULES_COMPLETE.md](architecture/BUSINESS_RULES_COMPLETE.md)
-- **API Module Specs**: [docs/api-documentation/backend-specs/modules/](api-documentation/backend-specs/modules/)
-
----
-
-## Quick Reference URLs
-
-### Authentication
-- Login: `POST /api/auth/login`
-
-### Contacts
-- Contacts: `/api/v1/contacts`
-- Addresses: `/api/v1/contact-addresses`
-- People: `/api/v1/contact-people`
-- Documents (List/CRUD): `/api/v1/contact-documents`
-- Upload Document: `POST /api/v1/contact-documents/upload`
-- Download: `GET /api/v1/contact-documents/{id}/download`
-- View/Preview: `GET /api/v1/contact-documents/{id}/view`
-- Verify: `PATCH /api/v1/contact-documents/{id}/verify`
-- Unverify: `PATCH /api/v1/contact-documents/{id}/unverify`
-
-### Products & Inventory
-- Products: `/api/v1/products`
-- Categories: `/api/v1/categories`
-- Brands: `/api/v1/brands`
-- Units: `/api/v1/units`
-- Warehouses: `/api/v1/warehouses`
-- Stock: `/api/v1/stock`
-- Inventory Movements: `/api/v1/inventory-movements`
-
-### Sales & Purchase
-- Sales Orders: `/api/v1/sales-orders`
-- Sales Order Items: `/api/v1/sales-order-items`
-- Purchase Orders: `/api/v1/purchase-orders`
-- Purchase Order Items: `/api/v1/purchase-order-items`
-
-### Finance & Accounting
-- AR Invoices: `/api/v1/ar-invoices`
-- AP Invoices: `/api/v1/ap-invoices`
-- Payments: `/api/v1/payments`
-- Bank Accounts: `/api/v1/bank-accounts`
-- GL Accounts: `/api/v1/accounts`
-- Journal Entries: `/api/v1/journal-entries`
-- Fiscal Periods: `/api/v1/fiscal-periods`
-
----
-
-**Last Updated**: 2025-10-28
-**API Version**: v1
-**JSON:API Spec**: 1.1
+For API issues or questions:
+- Review the specific module guide
+- Check error responses for validation details
+- Ensure proper JSON:API format compliance
+- Verify authentication token is valid
