@@ -55,6 +55,15 @@ class BillingServiceProvider extends ServiceProvider
         $this->app->singleton(\Modules\Billing\Services\CFDIAutomationService::class, function ($app) {
             return new \Modules\Billing\Services\CFDIAutomationService();
         });
+
+        // Register PAC services as singletons
+        $this->app->singleton(\Modules\Billing\Services\PAC\SWPacService::class, function ($app) {
+            return new \Modules\Billing\Services\PAC\SWPacService();
+        });
+
+        $this->app->singleton(\Modules\Billing\Services\CFDI\CFDIStampingService::class, function ($app) {
+            return new \Modules\Billing\Services\CFDI\CFDIStampingService();
+        });
     }
 
     /**
