@@ -16,7 +16,7 @@ class APInvoice extends Model
     protected $table = 'ap_invoices';
 
     protected $fillable = [
-        'invoice_number', 'invoice_date', 'due_date', 'contact_id', 'purchase_order_id', 'currency', 'subtotal', 'tax_amount', 'total_amount', 'paid_amount', 'status', 'journal_entry_id', 'notes', 'metadata', 'is_active'
+        'invoice_number', 'invoice_date', 'due_date', 'contact_id', 'purchase_order_id', 'currency', 'subtotal', 'tax_amount', 'total_amount', 'paid_amount', 'status', 'journal_entry_id', 'fiscal_period_id', 'notes', 'metadata', 'is_active'
     ];
 
     protected $casts = [

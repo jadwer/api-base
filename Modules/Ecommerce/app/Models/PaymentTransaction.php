@@ -18,7 +18,7 @@ class PaymentTransaction extends Model
         'sales_order_id',
         'ar_invoice_id',
         'transaction_id',
-        'payment_gateway',
+        'gateway',
         'payment_method',
         'status',
         'amount',
@@ -120,7 +120,7 @@ class PaymentTransaction extends Model
 
     public function scopeByGateway($query, string $gateway)
     {
-        return $query->where('payment_gateway', $gateway);
+        return $query->where('gateway', $gateway);
     }
 
     public function scopeForCheckoutSession($query, int $sessionId)

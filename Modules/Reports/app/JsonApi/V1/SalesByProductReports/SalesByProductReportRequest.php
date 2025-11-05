@@ -23,14 +23,12 @@ class SalesByProductReportRequest extends ResourceQuery
             'sort' => [
                 'nullable',
                 'string',
-                JsonApiRule::allowedSortParameters(['asOfDate', 'currency', 'generatedAt']),
             ],
 
             // Include paths (none for balance sheets, but validation is still needed)
             'include' => [
                 'nullable',
                 'string',
-                JsonApiRule::includePaths(),
             ],
         ];
     }

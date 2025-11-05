@@ -14,8 +14,8 @@ class ProductComparisonItemRequest extends ResourceRequest
     {
         return [
             'position' => ['sometimes', 'integer', 'min:0'],
-            'comparison' => JsonApiRule::toOne()->required(),
-            'product' => JsonApiRule::toOne()->required(),
+            'comparison' => ['required', JsonApiRule::toOne()],
+            'product' => ['required', JsonApiRule::toOne()],
         ];
     }
 }

@@ -74,7 +74,7 @@ class SalesOrder extends Model
     // Backward compatibility alias
     public function customer(): BelongsTo
     {
-        return $this->contact();
+        return $this->belongsTo(Contact::class, 'contact_id');
     }
 
     public function items(): HasMany

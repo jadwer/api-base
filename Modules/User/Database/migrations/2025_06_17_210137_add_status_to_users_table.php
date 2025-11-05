@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('status')->default('active')->after('password');
-            $table->softDeletes();
+            // Note: deleted_at column is already added in base migration 0001_01_01_000000_create_users_table.php
         });
     }
 
@@ -24,7 +24,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('status');
-            $table->dropSoftDeletes();
+            // Note: deleted_at column is managed by base migration, not dropped here
         });
     }
 };

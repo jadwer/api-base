@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('sales_orders', function (Blueprint $table) {
             // E-commerce specific fields
             $table->enum('order_source', ['ecommerce', 'manual', 'api', 'import'])->default('manual')->after('status');
-            $table->foreignId('checkout_session_id')->nullable()->constrained('checkout_sessions')->onDelete('set null')->after('customer_id');
+            $table->foreignId('checkout_session_id')->nullable()->constrained('checkout_sessions')->onDelete('set null')->after('contact_id');
             $table->string('tracking_number')->nullable()->after('order_source');
             $table->string('tracking_url')->nullable()->after('tracking_number');
             $table->json('shipping_address')->nullable()->after('notes');

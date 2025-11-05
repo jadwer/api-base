@@ -19,7 +19,7 @@ class CashFlowService
     public function generate(Carbon $startDate, Carbon $endDate, string $currency = 'MXN'): array
     {
         // Get cash and bank accounts
-        $cashAccounts = Account::where('type', 'asset')
+        $cashAccounts = Account::where('account_type', 'asset')
             ->where('code', 'LIKE', '1%') // Assuming cash accounts start with 1
             ->where('active', true)
             ->pluck('id')

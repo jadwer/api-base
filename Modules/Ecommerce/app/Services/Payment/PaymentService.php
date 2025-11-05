@@ -84,7 +84,7 @@ class PaymentService
             $transaction = PaymentTransaction::create([
                 'checkout_session_id' => $session->id,
                 'transaction_id' => $paymentIntent['payment_intent_id'],
-                'payment_gateway' => $gateway,
+                'gateway' => $gateway,
                 'payment_method' => $paymentData['payment_method'] ?? 'card',
                 'status' => 'pending',
                 'amount' => $session->total_amount,
@@ -120,7 +120,7 @@ class PaymentService
         }
 
         return DB::transaction(function () use ($transaction) {
-            $gateway = $this->getGateway($transaction->payment_gateway);
+            $gateway = $this->getGateway($transaction->gateway);
 
             // Capture payment from gateway
             $result = $gateway->capturePayment($transaction->transaction_id);
@@ -167,7 +167,7 @@ class PaymentService
      */
     public function verifyPayment(PaymentTransaction $transaction): bool
     {
-        $gateway = $this->getGateway($transaction->payment_gateway);
+        $gateway = $this->getGateway($transaction->gateway);
         $status = $gateway->getPaymentStatus($transaction->transaction_id);
 
         // Update transaction status if different
@@ -197,7 +197,7 @@ class PaymentService
         }
 
         return DB::transaction(function () use ($transaction, $amount, $reason) {
-            $gateway = $this->getGateway($transaction->payment_gateway);
+            $gateway = $this->getGateway($transaction->gateway);
 
             // Process refund
             $result = $gateway->refundPayment($transaction->transaction_id, $amount, $reason);
@@ -239,7 +239,7 @@ class PaymentService
             throw new \Exception('Can only cancel pending payments');
         }
 
-        $gateway = $this->getGateway($transaction->payment_gateway);
+        $gateway = $this->getGateway($transaction->gateway);
         $result = $gateway->cancelPayment($transaction->transaction_id);
 
         $transaction->update([

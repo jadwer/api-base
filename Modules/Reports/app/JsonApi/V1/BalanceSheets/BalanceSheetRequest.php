@@ -19,19 +19,11 @@ class BalanceSheetRequest extends ResourceQuery
             'filter.asOfDate' => ['sometimes', 'date'],
             'filter.currency' => ['sometimes', 'string', 'max:3'],
 
-            // Sorting validation
-            'sort' => [
-                'nullable',
-                'string',
-                JsonApiRule::allowedSortParameters(['asOfDate', 'currency', 'generatedAt']),
-            ],
+            // Sorting validation - JSON:API 5.x handles this in the Schema
+            'sort' => ['nullable', 'string'],
 
-            // Include paths (none for balance sheets, but validation is still needed)
-            'include' => [
-                'nullable',
-                'string',
-                JsonApiRule::includePaths(),
-            ],
+            // Include validation - JSON:API 5.x handles this in the Schema
+            'include' => ['nullable', 'string'],
         ];
     }
 

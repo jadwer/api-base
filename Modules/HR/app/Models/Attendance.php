@@ -26,8 +26,8 @@ class Attendance extends Model
     protected $casts = [
         'employee_id' => 'integer',
         'date' => 'date',
-        'check_in' => 'datetime:H:i',
-        'check_out' => 'datetime:H:i',
+        // Note: check_in and check_out are TIME fields in MySQL, not DATETIME
+        // Laravel handles them correctly as strings (HH:MM:SS format)
         'hours_worked' => 'float',
         'overtime_hours' => 'float',
         'status' => 'string',

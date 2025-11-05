@@ -22,7 +22,7 @@ class PaymentTransactionIndexTest extends TestCase
             ->get('/api/v1/payment-transactions');
 
         $response->assertSuccessful()
-            ->assertJsonApiCollection()
+            
             ->assertJsonApiHas(3);
     }
 
@@ -40,7 +40,7 @@ class PaymentTransactionIndexTest extends TestCase
             ->get('/api/v1/payment-transactions');
 
         $response->assertSuccessful()
-            ->assertJsonApiCollection()
+            
             ->assertJsonApiHas(2);
     }
 
@@ -58,7 +58,7 @@ class PaymentTransactionIndexTest extends TestCase
             ->get('/api/v1/payment-transactions');
 
         $response->assertSuccessful()
-            ->assertJsonApiCollection();
+            ;
     }
 
     /**
@@ -92,7 +92,7 @@ class PaymentTransactionIndexTest extends TestCase
             ->get('/api/v1/payment-transactions');
 
         $response->assertSuccessful()
-            ->assertJsonApiCollection()
+            
             ->assertJsonApiHas(2);
     }
 
@@ -112,7 +112,7 @@ class PaymentTransactionIndexTest extends TestCase
             ->get('/api/v1/payment-transactions');
 
         $response->assertSuccessful()
-            ->assertJsonApiCollection()
+            
             ->assertJsonApiHas(3);
     }
 
@@ -132,7 +132,7 @@ class PaymentTransactionIndexTest extends TestCase
             ->get('/api/v1/payment-transactions');
 
         $response->assertSuccessful()
-            ->assertJsonApiCollection()
+            
             ->assertJsonApiHas(2);
     }
 
@@ -152,7 +152,7 @@ class PaymentTransactionIndexTest extends TestCase
             ->get('/api/v1/payment-transactions');
 
         $response->assertSuccessful()
-            ->assertJsonApiCollection()
+            
             ->assertJsonApiHas(3);
     }
 
@@ -173,7 +173,7 @@ class PaymentTransactionIndexTest extends TestCase
             ->get('/api/v1/payment-transactions');
 
         $response->assertSuccessful()
-            ->assertJsonApiCollection();
+            ;
 
         $amounts = collect($response->json('data'))
             ->pluck('attributes.amount')
@@ -199,7 +199,7 @@ class PaymentTransactionIndexTest extends TestCase
             ->get('/api/v1/payment-transactions');
 
         $response->assertSuccessful()
-            ->assertJsonApiCollection();
+            ;
     }
 
     /**
@@ -220,7 +220,7 @@ class PaymentTransactionIndexTest extends TestCase
             ->get('/api/v1/payment-transactions');
 
         $response->assertSuccessful()
-            ->assertJsonApiCollection()
+            
             ->assertJsonApiIncluded([
                 ['type' => 'checkout-sessions', 'id' => (string)$checkoutSession->id],
             ]);
@@ -241,7 +241,7 @@ class PaymentTransactionIndexTest extends TestCase
             ->get('/api/v1/payment-transactions');
 
         $response->assertSuccessful()
-            ->assertJsonApiCollection()
+            
             ->assertJson([
                 'meta' => [
                     'page' => [

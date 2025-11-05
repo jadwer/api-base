@@ -22,7 +22,7 @@ class PaymentTransactionFactory extends Factory
             'sales_order_id' => null,
             'ar_invoice_id' => null,
             'transaction_id' => $this->generateTransactionId($gateway),
-            'payment_gateway' => $gateway,
+            'gateway' => $gateway,
             'payment_method' => $method,
             'status' => 'pending',
             'amount' => $this->faker->randomFloat(2, 50, 5000),
@@ -185,7 +185,7 @@ class PaymentTransactionFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'payment_gateway' => 'stripe',
+                'gateway' => 'stripe',
                 'transaction_id' => 'ch_' . $this->faker->regexify('[A-Za-z0-9]{24}'),
                 'payment_method' => $this->faker->randomElement(['credit_card', 'debit_card']),
             ];
@@ -199,7 +199,7 @@ class PaymentTransactionFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'payment_gateway' => 'paypal',
+                'gateway' => 'paypal',
                 'transaction_id' => $this->faker->regexify('[A-Z0-9]{17}'),
                 'payment_method' => 'paypal',
             ];
@@ -213,7 +213,7 @@ class PaymentTransactionFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'payment_gateway' => 'mercadopago',
+                'gateway' => 'mercadopago',
                 'transaction_id' => $this->faker->numerify('##########'),
                 'payment_method' => $this->faker->randomElement(['credit_card', 'debit_card', 'oxxo']),
             ];

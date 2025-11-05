@@ -30,7 +30,7 @@ class PaymentTransactionSchema extends Schema
             Number::make('arInvoiceId', 'ar_invoice_id'),
 
             Str::make('transactionId', 'transaction_id'),
-            Str::make('paymentGateway', 'payment_gateway'),
+            Str::make('paymentGateway', 'gateway'),
             Str::make('paymentMethod', 'payment_method'),
             Str::make('status'),
 
@@ -60,7 +60,7 @@ class PaymentTransactionSchema extends Schema
         return [
             WhereIdIn::make($this),
             Where::make('status'),
-            Where::make('paymentGateway', 'payment_gateway'),
+            Where::make('paymentGateway', 'gateway'),
             Where::make('checkoutSessionId', 'checkout_session_id'),
             Where::make('salesOrderId', 'sales_order_id'),
         ];

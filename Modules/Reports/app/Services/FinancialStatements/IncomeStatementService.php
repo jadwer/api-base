@@ -51,7 +51,7 @@ class IncomeStatementService
      */
     protected function getAccountsByType(string $type, Carbon $startDate, Carbon $endDate, string $currency)
     {
-        return Account::where('type', $type)
+        return Account::where('account_type', $type)
             ->where('active', true)
             ->orderBy('code')
             ->get()
@@ -61,7 +61,7 @@ class IncomeStatementService
                 return [
                     'code' => $account->code,
                     'name' => $account->name,
-                    'type' => $account->type,
+                    'account_type' => $account->type,
                     'amount' => $activity,
                 ];
             })

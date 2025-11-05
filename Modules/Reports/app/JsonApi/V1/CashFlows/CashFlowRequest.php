@@ -15,12 +15,10 @@ class CashFlowRequest extends ResourceQuery
             'sort' => [
                 'nullable',
                 'string',
-                JsonApiRule::allowedSortParameters(['generatedAt']),
             ],
             'include' => [
                 'nullable',
                 'string',
-                JsonApiRule::includePaths(),
             ],
         ];
     }

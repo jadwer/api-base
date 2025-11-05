@@ -14,11 +14,12 @@ class JournalEntry extends Model
     protected $table = 'journal_entries';
     
     protected $fillable = [
-        'journal_id', 'fiscal_period_id', 'number', 'date', 'reference', 'description', 'total_debit', 'total_credit', 'company_id', 'status', 'approved_at', 'approved_by_id', 'posted_at', 'posted_by_id', 'reversal_of_id', 'reversal_reason', 'metadata'
+        'journal_id', 'fiscal_period_id', 'number', 'date', 'accounting_date', 'reference', 'description', 'total_debit', 'total_credit', 'company_id', 'status', 'approved_at', 'approved_by_id', 'posted_at', 'posted_by_id', 'reversal_of_id', 'reversal_reason', 'metadata'
     ];
 
     protected $casts = [
-                'date' => 'date',
+        'date' => 'date',
+        'accounting_date' => 'date',
         'total_debit' => 'float',
         'total_credit' => 'float',
         'approved_at' => 'datetime',
