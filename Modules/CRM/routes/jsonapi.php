@@ -36,7 +36,7 @@ JsonApiRoute::server('v1')
         // $server->resource('activities', JsonApiController::class);
 
         // Campaigns - Marketing campaigns
-        // $server->resource('campaigns', JsonApiController::class);
+        $server->resource('campaigns', \Modules\CRM\Http\Controllers\Api\V1\CampaignController::class);
 
         // Pipeline Stages - Pipeline configuration
         $server->resource('pipeline-stages', \Modules\CRM\Http\Controllers\Api\V1\PipelineStageController::class);
