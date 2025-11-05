@@ -4,7 +4,6 @@ namespace Modules\CRM\Tests\Feature\Leads;
 
 use Tests\TestCase;
 use Modules\CRM\Models\Lead;
-use Modules\Contact\Models\Contact;
 use Modules\User\Models\User;
 
 class IndexLeadsTest extends TestCase
@@ -13,11 +12,9 @@ class IndexLeadsTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $contact = Contact::factory()->create();
         $user = User::factory()->create();
 
         Lead::factory()->count(3)->create([
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
 
@@ -34,11 +31,9 @@ class IndexLeadsTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $contact = Contact::factory()->create();
         $user = User::factory()->create();
 
         Lead::factory()->count(25)->create([
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
 
@@ -56,17 +51,14 @@ class IndexLeadsTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $contact = Contact::factory()->create();
         $user = User::factory()->create();
 
         Lead::factory()->create([
             'title' => 'Alpha Lead',
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
         Lead::factory()->create([
             'title' => 'Beta Lead',
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
 
@@ -84,15 +76,12 @@ class IndexLeadsTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $contact = Contact::factory()->create();
         $user = User::factory()->create();
 
         Lead::factory()->count(2)->qualified()->create([
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
         Lead::factory()->count(1)->new()->create([
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
 
@@ -113,15 +102,12 @@ class IndexLeadsTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $contact = Contact::factory()->create();
         $user = User::factory()->create();
 
         Lead::factory()->count(2)->hot()->create([
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
         Lead::factory()->count(1)->cold()->create([
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
 
@@ -142,11 +128,9 @@ class IndexLeadsTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $contact = Contact::factory()->create();
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
 
@@ -163,11 +147,9 @@ class IndexLeadsTest extends TestCase
     {
         $tech = $this->getTechUser();
 
-        $contact = Contact::factory()->create();
         $user = User::factory()->create();
 
         Lead::factory()->count(2)->create([
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
 

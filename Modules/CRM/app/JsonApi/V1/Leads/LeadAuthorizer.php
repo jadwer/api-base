@@ -9,73 +9,53 @@ use Modules\CRM\Models\Lead;
 
 class LeadAuthorizer implements AuthorizerContract
 {
-    public function index(Request $request): Response
+    public function index(Request $request, string $modelClass): bool|Response
     {
-        return $request->user() && $request->user()->can('crm.leads.index')
-            ? Response::allow()
-            : Response::deny('You do not have permission to view leads.');
+        return $request->user()?->can('crm.leads.index') ?? false;
     }
 
-    public function show(Request $request, Lead $model): Response
+    public function store(Request $request, string $modelClass): bool|Response
     {
-        return $request->user() && $request->user()->can('crm.leads.show')
-            ? Response::allow()
-            : Response::deny('You do not have permission to view this lead.');
+        return $request->user()?->can('crm.leads.store') ?? false;
     }
 
-    public function store(Request $request): Response
+    public function show(Request $request, object $model): bool|Response
     {
-        return $request->user() && $request->user()->can('crm.leads.store')
-            ? Response::allow()
-            : Response::deny('You do not have permission to create leads.');
+        return $request->user()?->can('crm.leads.show') ?? false;
     }
 
-    public function update(Request $request, Lead $model): Response
+    public function update(Request $request, object $model): bool|Response
     {
-        return $request->user() && $request->user()->can('crm.leads.update')
-            ? Response::allow()
-            : Response::deny('You do not have permission to update this lead.');
+        return $request->user()?->can('crm.leads.update') ?? false;
     }
 
-    public function destroy(Request $request, Lead $model): Response
+    public function destroy(Request $request, object $model): bool|Response
     {
-        return $request->user() && $request->user()->can('crm.leads.destroy')
-            ? Response::allow()
-            : Response::deny('You do not have permission to delete this lead.');
+        return $request->user()?->can('crm.leads.destroy') ?? false;
     }
 
-    public function showRelated(Request $request, Lead $model): Response
+    public function showRelated(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user() && $request->user()->can('crm.leads.show')
-            ? Response::allow()
-            : Response::deny('You do not have permission to view this lead relationship.');
+        return $request->user()?->can('crm.leads.show') ?? false;
     }
 
-    public function showRelationship(Request $request, Lead $model): Response
+    public function showRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user() && $request->user()->can('crm.leads.show')
-            ? Response::allow()
-            : Response::deny('You do not have permission to view this lead relationship.');
+        return $request->user()?->can('crm.leads.show') ?? false;
     }
 
-    public function updateRelationship(Request $request, Lead $model): Response
+    public function updateRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user() && $request->user()->can('crm.leads.update')
-            ? Response::allow()
-            : Response::deny('You do not have permission to update this lead relationship.');
+        return $request->user()?->can('crm.leads.update') ?? false;
     }
 
-    public function attachRelationship(Request $request, Lead $model): Response
+    public function attachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user() && $request->user()->can('crm.leads.update')
-            ? Response::allow()
-            : Response::deny('You do not have permission to update this lead relationship.');
+        return $request->user()?->can('crm.leads.update') ?? false;
     }
 
-    public function detachRelationship(Request $request, Lead $model): Response
+    public function detachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user() && $request->user()->can('crm.leads.update')
-            ? Response::allow()
-            : Response::deny('You do not have permission to update this lead relationship.');
+        return $request->user()?->can('crm.leads.update') ?? false;
     }
 }

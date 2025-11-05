@@ -4,7 +4,6 @@ namespace Modules\CRM\Tests\Feature\Leads;
 
 use Tests\TestCase;
 use Modules\CRM\Models\Lead;
-use Modules\Contact\Models\Contact;
 use Modules\User\Models\User;
 
 class StoreLeadTest extends TestCase
@@ -13,7 +12,6 @@ class StoreLeadTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $contact = Contact::factory()->create();
         $user = User::factory()->create();
 
         $data = [
@@ -64,7 +62,6 @@ class StoreLeadTest extends TestCase
 
         $this->assertDatabaseHas('leads', [
             'title' => 'New Business Opportunity',
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
     }
@@ -73,7 +70,6 @@ class StoreLeadTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $contact = Contact::factory()->create();
         $user = User::factory()->create();
 
         $data = [

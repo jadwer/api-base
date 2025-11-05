@@ -30,7 +30,7 @@ class PipelineStageAuthorizer implements AuthorizerContract
     /**
      * Authorize show (view) requests.
      */
-    public function show(Request $request, $model): bool|Response
+    public function show(Request $request, object $model): bool|Response
     {
         $user = $request->user();
         return $user?->can('crm.pipeline-stages.show') ?? false;
@@ -39,7 +39,7 @@ class PipelineStageAuthorizer implements AuthorizerContract
     /**
      * Authorize update requests.
      */
-    public function update(Request $request, $model): bool|Response
+    public function update(Request $request, object $model): bool|Response
     {
         $user = $request->user();
         return $user?->can('crm.pipeline-stages.update') ?? false;
@@ -48,7 +48,7 @@ class PipelineStageAuthorizer implements AuthorizerContract
     /**
      * Authorize destroy (delete) requests.
      */
-    public function destroy(Request $request, $model): bool|Response
+    public function destroy(Request $request, object $model): bool|Response
     {
         $user = $request->user();
         return $user?->can('crm.pipeline-stages.destroy') ?? false;
@@ -57,7 +57,7 @@ class PipelineStageAuthorizer implements AuthorizerContract
     /**
      * Authorize showRelated requests.
      */
-    public function showRelated(Request $request, $model, string $fieldName): bool|Response
+    public function showRelated(Request $request, object $model, string $fieldName): bool|Response
     {
         $user = $request->user();
         return $user?->can('crm.pipeline-stages.show-related') ?? false;
@@ -66,7 +66,7 @@ class PipelineStageAuthorizer implements AuthorizerContract
     /**
      * Authorize showRelationship requests.
      */
-    public function showRelationship(Request $request, $model, string $fieldName): bool|Response
+    public function showRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
         $user = $request->user();
         return $user?->can('crm.pipeline-stages.show-relationship') ?? false;
@@ -75,7 +75,7 @@ class PipelineStageAuthorizer implements AuthorizerContract
     /**
      * Authorize updateRelationship requests.
      */
-    public function updateRelationship(Request $request, $model, string $fieldName): bool|Response
+    public function updateRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
         $user = $request->user();
         return $user?->can('crm.pipeline-stages.update-relationship') ?? false;
@@ -84,7 +84,7 @@ class PipelineStageAuthorizer implements AuthorizerContract
     /**
      * Authorize attachRelationship requests.
      */
-    public function attachRelationship(Request $request, $model, string $fieldName): bool|Response
+    public function attachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
         $user = $request->user();
         return $user?->can('crm.pipeline-stages.attach-relationship') ?? false;
@@ -93,7 +93,7 @@ class PipelineStageAuthorizer implements AuthorizerContract
     /**
      * Authorize detachRelationship requests.
      */
-    public function detachRelationship(Request $request, $model, string $fieldName): bool|Response
+    public function detachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
         $user = $request->user();
         return $user?->can('crm.pipeline-stages.detach-relationship') ?? false;

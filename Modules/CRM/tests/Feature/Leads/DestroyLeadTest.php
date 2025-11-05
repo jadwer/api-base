@@ -4,7 +4,6 @@ namespace Modules\CRM\Tests\Feature\Leads;
 
 use Tests\TestCase;
 use Modules\CRM\Models\Lead;
-use Modules\Contact\Models\Contact;
 use Modules\User\Models\User;
 
 class DestroyLeadTest extends TestCase
@@ -13,11 +12,9 @@ class DestroyLeadTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $contact = Contact::factory()->create();
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
 
@@ -37,11 +34,9 @@ class DestroyLeadTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $contact = Contact::factory()->create();
         $user = User::factory()->create();
 
-        $lead = Lead::factory()->new()->create([
-            'contact_id' => $contact->id,
+        $lead = Lead::factory()->statusNew()->create([
             'user_id' => $user->id,
         ]);
 
@@ -58,11 +53,9 @@ class DestroyLeadTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $contact = Contact::factory()->create();
         $user = User::factory()->create();
 
         $lead = Lead::factory()->qualified()->create([
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
 
@@ -79,11 +72,9 @@ class DestroyLeadTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $contact = Contact::factory()->create();
         $user = User::factory()->create();
 
         $lead = Lead::factory()->converted()->create([
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
 
@@ -100,11 +91,9 @@ class DestroyLeadTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $contact = Contact::factory()->create();
         $user = User::factory()->create();
 
         $lead = Lead::factory()->hot()->create([
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
 
@@ -140,11 +129,9 @@ class DestroyLeadTest extends TestCase
     {
         $tech = $this->getTechUser();
 
-        $contact = Contact::factory()->create();
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
 
@@ -161,11 +148,9 @@ class DestroyLeadTest extends TestCase
     {
         $customer = $this->getCustomerUser();
 
-        $contact = Contact::factory()->create();
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
 
@@ -180,11 +165,9 @@ class DestroyLeadTest extends TestCase
 
     public function test_guest_cannot_delete_lead(): void
     {
-        $contact = Contact::factory()->create();
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
 
@@ -212,17 +195,14 @@ class DestroyLeadTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $contact = Contact::factory()->create();
         $user = User::factory()->create();
 
         $lead1 = Lead::factory()->create([
             'title' => 'Lead 1',
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
         $lead2 = Lead::factory()->create([
             'title' => 'Lead 2',
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
 
@@ -240,11 +220,9 @@ class DestroyLeadTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $contact = Contact::factory()->create();
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
 
@@ -262,11 +240,9 @@ class DestroyLeadTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $contact = Contact::factory()->create();
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'contact_id' => $contact->id,
             'user_id' => $user->id,
         ]);
 

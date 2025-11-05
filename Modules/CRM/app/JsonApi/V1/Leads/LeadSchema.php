@@ -43,21 +43,29 @@ class LeadSchema extends Schema
             DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
 
             // Relationships
-            BelongsTo::make('contact')
-                ->type('contacts')
-                ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
+            // BelongsTo::make('contact')
+            //     ->type('contacts')
+            //     ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
+            // TODO: Enable when Contact module is implemented
+
             BelongsTo::make('user')
                 ->type('users')
                 ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
-            BelongsToMany::make('campaigns')
-                ->type('campaigns')
-                ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
-            HasMany::make('activities')
-                ->type('activities')
-                ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
-            HasOne::make('opportunity')
-                ->type('opportunities')
-                ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
+
+            // BelongsToMany::make('campaigns')
+            //     ->type('campaigns')
+            //     ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
+            // TODO: Enable when Campaign entity is implemented
+
+            // HasMany::make('activities')
+            //     ->type('activities')
+            //     ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
+            // TODO: Enable when Activity entity is implemented
+
+            // HasOne::make('opportunity')
+            //     ->type('opportunities')
+            //     ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
+            // TODO: Enable when Opportunity entity is implemented
         ];
     }
 
@@ -72,7 +80,7 @@ class LeadSchema extends Schema
             Where::make('companyName', 'company_name'),
             Where::make('email'),
             Where::make('userId', 'user_id'),
-            Where::make('contactId', 'contact_id'),
+            // Where::make('contactId', 'contact_id'), // TODO: Enable when Contact module is implemented
         ];
     }
 

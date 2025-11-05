@@ -19,7 +19,7 @@ return new class extends Migration
             $table->enum('rating', ['hot', 'warm', 'cold'])->default('warm');
 
             // Relationships
-            $table->foreignId('contact_id')->nullable()->constrained('contacts')->onDelete('restrict');
+            $table->foreignId('contact_id')->nullable()->comment('Will be constrained when Contact module is implemented');
             $table->foreignId('user_id')->constrained('users')->onDelete('restrict')->comment('Assigned sales rep');
 
             // Lead details

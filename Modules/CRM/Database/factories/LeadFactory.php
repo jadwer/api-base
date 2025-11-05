@@ -4,7 +4,6 @@ namespace Modules\CRM\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\CRM\Models\Lead;
-use Modules\Contact\Models\Contact;
 use Modules\User\Models\User;
 
 class LeadFactory extends Factory
@@ -18,7 +17,7 @@ class LeadFactory extends Factory
             'source' => $this->faker->randomElement(['website', 'referral', 'cold call', 'trade show', 'social media', 'email campaign']),
             'status' => 'new',
             'rating' => 'warm',
-            'contact_id' => Contact::factory(),
+            'contact_id' => null, // Will be populated when Contact module is implemented
             'user_id' => User::factory(),
             'company_name' => $this->faker->company(),
             'contact_person' => $this->faker->name(),
@@ -39,7 +38,7 @@ class LeadFactory extends Factory
     /**
      * Status States
      */
-    public function new(): static
+    public function statusNew(): static
     {
         return $this->state(fn (array $attributes) => [
             'status' => 'new',

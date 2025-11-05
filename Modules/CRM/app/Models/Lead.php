@@ -5,8 +5,8 @@ namespace Modules\CRM\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\CRM\Database\Factories\LeadFactory;
-use Modules\Contact\Models\Contact;
 use Modules\User\Models\User;
+// use Modules\Contact\Models\Contact; // Will be enabled when Contact module is implemented
 
 class Lead extends Model
 {
@@ -40,35 +40,39 @@ class Lead extends Model
     /**
      * Relationships
      */
-    public function contact()
-    {
-        return $this->belongsTo(Contact::class);
-    }
+    // public function contact()
+    // {
+    //     return $this->belongsTo(Contact::class);
+    // }
+    // TODO: Enable when Contact module is implemented
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function campaigns()
-    {
-        return $this->belongsToMany(
-            Campaign::class,
-            'campaign_lead',
-            'lead_id',
-            'campaign_id'
-        )->withTimestamps();
-    }
+    // public function campaigns()
+    // {
+    //     return $this->belongsToMany(
+    //         Campaign::class,
+    //         'campaign_lead',
+    //         'lead_id',
+    //         'campaign_id'
+    //     )->withTimestamps();
+    // }
+    // TODO: Enable when Campaign entity is implemented
 
-    public function activities()
-    {
-        return $this->morphMany(Activity::class, 'activityable');
-    }
+    // public function activities()
+    // {
+    //     return $this->morphMany(Activity::class, 'activityable');
+    // }
+    // TODO: Enable when Activity entity is implemented
 
-    public function opportunity()
-    {
-        return $this->hasOne(Opportunity::class);
-    }
+    // public function opportunity()
+    // {
+    //     return $this->hasOne(Opportunity::class);
+    // }
+    // TODO: Enable when Opportunity entity is implemented
 
     /**
      * Scopes
