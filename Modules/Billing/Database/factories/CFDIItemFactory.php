@@ -22,23 +22,23 @@ class CFDIItemFactory extends Factory
         $product = Product::first();
 
         return [
-            'cfdiInvoiceId' => $invoice->id,
-            'productId' => $product ? $product->id : null,
-            'numeroLinea' => 1,
-            'claveProdServ' => $this->faker->randomElement(['01010101', '10101500', '43231500', '50202200', '78101800']),
-            'claveUnidad' => $this->faker->randomElement(['ACT', 'E48', 'H87', 'KGM', 'LTR']),
+            'cfdi_invoice_id' => $invoice->id,
+            'product_id' => $product ? $product->id : null,
+            'numero_linea' => 1,
+            'clave_prod_serv' => $this->faker->randomElement(['01010101', '10101500', '43231500', '50202200', '78101800']),
+            'clave_unidad' => $this->faker->randomElement(['ACT', 'E48', 'H87', 'KGM', 'LTR']),
             'unidad' => $this->faker->randomElement(['Actividad', 'Servicio', 'Pieza', 'Kilogramo', 'Litro']),
             'cantidad' => $cantidad,
             'descripcion' => $this->faker->sentence(6),
-            'noIdentificacion' => $this->faker->optional()->bothify('SKU-####'),
-            'valorUnitario' => $valorUnitario,
+            'no_identificacion' => $this->faker->optional()->bothify('SKU-####'),
+            'valor_unitario' => $valorUnitario,
             'importe' => $importe,
             'descuento' => 0,
             'impuestos' => $this->generateImpuestos($importe),
-            'objetoImp' => '02', // Sí objeto de impuesto
-            'numeroPedimento' => null,
-            'cuentaPredial' => null,
-            'informacionAduanera' => null,
+            'objeto_imp' => '02', // Sí objeto de impuesto
+            'numero_pedimento' => null,
+            'cuenta_predial' => null,
+            'informacion_aduanera' => null,
             'metadata' => [],
         ];
     }
@@ -88,7 +88,7 @@ class CFDIItemFactory extends Factory
             $ieps = (int) ($importe * 0.08);
 
             return [
-                'objetoImp' => '02', // Sí objeto de impuesto
+                'objeto_imp' => '02', // Sí objeto de impuesto
                 'impuestos' => [
                     'traslados' => [
                         [
@@ -118,7 +118,7 @@ class CFDIItemFactory extends Factory
     public function exento(): static
     {
         return $this->state(fn (array $attributes) => [
-            'objetoImp' => '04', // Sí objeto pero exento
+            'objeto_imp' => '04', // Sí objeto pero exento
             'impuestos' => [
                 'traslados' => [],
                 'retenciones' => []
@@ -132,7 +132,7 @@ class CFDIItemFactory extends Factory
     public function notObjectOfTax(): static
     {
         return $this->state(fn (array $attributes) => [
-            'objetoImp' => '01', // No objeto de impuesto
+            'objeto_imp' => '01', // No objeto de impuesto
             'impuestos' => null,
         ]);
     }
@@ -145,8 +145,8 @@ class CFDIItemFactory extends Factory
         return $this->state(function (array $attributes) {
             $product = Product::first() ?? Product::factory()->create();
             return [
-                'productId' => $product->id,
-                'noIdentificacion' => $product->sku,
+                'product_id' => $product->id,
+                'no_identificacion' => $product->sku,
                 'descripcion' => $product->name,
             ];
         });
@@ -158,9 +158,9 @@ class CFDIItemFactory extends Factory
     public function service(): static
     {
         return $this->state(fn (array $attributes) => [
-            'productId' => null,
-            'claveProdServ' => '80101500', // Servicios profesionales
-            'claveUnidad' => 'E48', // Servicio
+            'product_id' => null,
+            'clave_prod_serv' => '80101500', // Servicios profesionales
+            'clave_unidad' => 'E48', // Servicio
             'unidad' => 'Servicio',
             'descripcion' => 'Servicios profesionales de consultoría',
         ]);
@@ -172,10 +172,10 @@ class CFDIItemFactory extends Factory
     public function withCustoms(): static
     {
         return $this->state(fn (array $attributes) => [
-            'numeroPedimento' => $this->faker->numerify('##  ##  ####  #######'),
-            'informacionAduanera' => [
+            'numero_pedimento' => $this->faker->numerify('##  ##  ####  #######'),
+            'informacion_aduanera' => [
                 [
-                    'numeroPedimento' => $this->faker->numerify('##  ##  ####  #######'),
+                    'numero_pedimento' => $this->faker->numerify('##  ##  ####  #######'),
                 ]
             ],
         ]);
@@ -187,7 +187,7 @@ class CFDIItemFactory extends Factory
     public function lineNumber(int $number): static
     {
         return $this->state(fn (array $attributes) => [
-            'numeroLinea' => $number,
+            'numero_linea' => $number,
         ]);
     }
 
@@ -197,7 +197,7 @@ class CFDIItemFactory extends Factory
     public function forInvoice(CFDIInvoice $invoice): static
     {
         return $this->state(fn (array $attributes) => [
-            'cfdiInvoiceId' => $invoice->id,
+            'cfdi_invoice_id' => $invoice->id,
         ]);
     }
 }
