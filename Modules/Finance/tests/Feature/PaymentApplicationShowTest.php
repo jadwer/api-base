@@ -56,7 +56,7 @@ class PaymentApplicationShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $paymentApplication = PaymentApplication::factory()->create(['amount' => 99.99, 'application_date' => now(), 'notes' => 'test description', 'is_active' => true]);
+        $paymentApplication = PaymentApplication::factory()->create(['amount' => 99.99, 'application_date' => now(), 'notes' => 'test description', 'isActive' => true]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

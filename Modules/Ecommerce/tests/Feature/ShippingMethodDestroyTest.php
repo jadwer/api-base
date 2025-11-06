@@ -28,7 +28,7 @@ class ShippingMethodDestroyTest extends TestCase
 
         // Create a checkout session that uses this shipping method
         \Modules\Ecommerce\Models\CheckoutSession::factory()->create([
-            'shipping_method_id' => $method->id,
+            'shippingMethodId' => $method->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

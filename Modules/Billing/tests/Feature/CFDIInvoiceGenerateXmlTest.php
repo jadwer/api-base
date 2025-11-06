@@ -16,7 +16,7 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
         $user = $this->getAdminUser();
 
         // Create company settings
-        $settings = CompanySetting::factory()->create(['is_active' => true]);
+        $settings = CompanySetting::factory()->create(['isActive' => true]);
 
         // Create invoice with items
         $invoice = CFDIInvoice::factory()
@@ -31,12 +31,12 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
         $response->assertSuccessful()
             ->assertJson([
                 'message' => 'XML CFDI generado correctamente',
-                'invoice_id' => $invoice->id,
+                'invoiceId' => $invoice->id,
             ])
             ->assertJsonStructure([
                 'message',
                 'xml',
-                'invoice_id',
+                'invoiceId',
             ]);
 
         // Verify XML was stored in database
@@ -50,7 +50,7 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
     {
         $user = $this->getAdminUser();
 
-        $settings = CompanySetting::factory()->create(['is_active' => true]);
+        $settings = CompanySetting::factory()->create(['isActive' => true]);
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
@@ -90,7 +90,7 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
     {
         $user = $this->getAdminUser();
 
-        $settings = CompanySetting::factory()->create(['is_active' => true]);
+        $settings = CompanySetting::factory()->create(['isActive' => true]);
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->withTaxes()->count(1), 'items')
             ->create([
@@ -113,7 +113,7 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
     {
         $user = $this->getTechUser();
 
-        $settings = CompanySetting::factory()->create(['is_active' => true]);
+        $settings = CompanySetting::factory()->create(['isActive' => true]);
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $settings->id,
         ]);
@@ -131,7 +131,7 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
     {
         $user = $this->getCustomerUser();
 
-        $settings = CompanySetting::factory()->create(['is_active' => true]);
+        $settings = CompanySetting::factory()->create(['isActive' => true]);
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $settings->id,
         ]);
@@ -147,7 +147,7 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
 
     public function test_guest_cannot_generate_xml()
     {
-        $settings = CompanySetting::factory()->create(['is_active' => true]);
+        $settings = CompanySetting::factory()->create(['isActive' => true]);
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $settings->id,
         ]);
@@ -162,7 +162,7 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
         $user = $this->getAdminUser();
 
         // Deactivate all company settings
-        CompanySetting::query()->update(['is_active' => false]);
+        CompanySetting::query()->update(['isActive' => false]);
 
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
@@ -181,7 +181,7 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
     {
         $user = $this->getAdminUser();
 
-        $settings = CompanySetting::factory()->create(['is_active' => true]);
+        $settings = CompanySetting::factory()->create(['isActive' => true]);
         $invoice = CFDIInvoice::factory()
             ->withDiscount()
             ->has(CFDIItem::factory()->count(1), 'items')
@@ -202,7 +202,7 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
     {
         $user = $this->getAdminUser();
 
-        $settings = CompanySetting::factory()->create(['is_active' => true]);
+        $settings = CompanySetting::factory()->create(['isActive' => true]);
         $invoice = CFDIInvoice::factory()
             ->egreso()
             ->has(CFDIItem::factory()->count(1), 'items')
@@ -224,7 +224,7 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
     {
         $user = $this->getAdminUser();
 
-        $settings = CompanySetting::factory()->create(['is_active' => true]);
+        $settings = CompanySetting::factory()->create(['isActive' => true]);
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([

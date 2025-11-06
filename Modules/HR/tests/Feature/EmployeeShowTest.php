@@ -14,12 +14,12 @@ class EmployeeShowTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
-            'first_name' => 'John',
-            'last_name' => 'Doe',
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
+            'firstName' => 'John',
+            'lastName' => 'Doe',
             'email' => 'john.doe@example.com',
             'salary' => 50000.00,
             'status' => 'active'
@@ -53,10 +53,10 @@ class EmployeeShowTest extends TestCase
         $tech = $this->getTechUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
 
         $response = $this->actingAs($tech, 'sanctum')
@@ -73,10 +73,10 @@ class EmployeeShowTest extends TestCase
         $customer = $this->getCustomerUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -90,10 +90,10 @@ class EmployeeShowTest extends TestCase
     public function test_guest_cannot_view_employee(): void
     {
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
 
         $response = $this->jsonApi()
@@ -120,10 +120,10 @@ class EmployeeShowTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -146,10 +146,10 @@ class EmployeeShowTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -172,10 +172,10 @@ class EmployeeShowTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->terminated()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

@@ -24,7 +24,7 @@ class DepartmentUpdateTest extends TestCase
             'attributes' => [
                 'name' => 'New Department Name',
                 'description' => 'Updated description',
-                'is_active' => false
+                'isActive' => false
             ]
         ];
 
@@ -42,7 +42,7 @@ class DepartmentUpdateTest extends TestCase
         $this->assertDatabaseHas('departments', [
             'id' => $department->id,
             'name' => 'New Department Name',
-            'is_active' => false
+            'isActive' => false
         ]);
     }
 
@@ -51,10 +51,10 @@ class DepartmentUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $manager = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
 
         $data = [
@@ -85,7 +85,7 @@ class DepartmentUpdateTest extends TestCase
             'type' => 'departments',
             'id' => (string) $department->id,
             'attributes' => [
-                'is_active' => false
+                'isActive' => false
             ]
         ];
 
@@ -220,7 +220,7 @@ class DepartmentUpdateTest extends TestCase
         $department = Department::factory()->create([
             'name' => 'Original Name',
             'description' => 'Original description',
-            'is_active' => true
+            'isActive' => true
         ]);
 
         $data = [
@@ -248,10 +248,10 @@ class DepartmentUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $manager = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $department->update(['manager_id' => $manager->id]);
 

@@ -244,7 +244,7 @@ class ARInvoiceGLPostingTest extends TestCase
         $this->assertFalse($this->arInvoiceService->isOverdue($invoice));
 
         // Act: Simular pago parcial
-        $invoice->update(['paid_amount' => 500.00]);
+        $invoice->update(['paidAmount' => 500.00]);
 
         // Assert: Remaining balance debe actualizarse
         $remainingBalance = $this->arInvoiceService->calculateRemainingBalance($invoice);
@@ -252,7 +252,7 @@ class ARInvoiceGLPostingTest extends TestCase
         $this->assertFalse($this->arInvoiceService->isFullyPaid($invoice));
 
         // Act: Simular pago completo
-        $invoice->update(['paid_amount' => 1160.00]);
+        $invoice->update(['paidAmount' => 1160.00]);
 
         // Assert: Debe estar fully paid
         $this->assertTrue($this->arInvoiceService->isFullyPaid($invoice));

@@ -54,7 +54,7 @@ class CouponStoreTest extends TestCase
             'max_amount' => 100.00,
             'max_uses' => 100,
             'used_count' => 0,
-            'is_active' => true
+            'isActive' => true
         ]);
     }
 

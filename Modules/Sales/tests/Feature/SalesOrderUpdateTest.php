@@ -17,19 +17,19 @@ class SalesOrderUpdateTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contact_id' => $customer->id,
-            'order_number' => 'SO-UPDATE-001',
+            'contactId' => $customer->id,
+            'orderNumber' => 'SO-UPDATE-001',
             'status' => 'draft',
-            'total_amount' => 1000.00
+            'totalAmount' => 1000.00
         ]);
 
         $data = [
             'type' => 'sales-orders',
             'id' => (string) $salesOrder->id,
             'attributes' => [
-                'order_number' => 'SO-UPDATED-001',
+                'orderNumber' => 'SO-UPDATED-001',
                 'status' => 'confirmed',
-                'total_amount' => 1500.00,
+                'totalAmount' => 1500.00,
                 'notes' => 'Updated order notes'
             ]
         ];
@@ -45,9 +45,9 @@ class SalesOrderUpdateTest extends TestCase
         // Verificar que se actualizó en base de datos
         $this->assertDatabaseHas('sales_orders', [
             'id' => $salesOrder->id,
-            'order_number' => 'SO-UPDATED-001',
+            'orderNumber' => 'SO-UPDATED-001',
             'status' => 'confirmed',
-            'total_amount' => 1500.00,
+            'totalAmount' => 1500.00,
             'notes' => 'Updated order notes'
         ]);
 
@@ -62,7 +62,7 @@ class SalesOrderUpdateTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contact_id' => $customer->id,
+            'contactId' => $customer->id,
             'status' => 'draft'
         ]);
 
@@ -94,7 +94,7 @@ class SalesOrderUpdateTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contact_id' => $customer->id,
+            'contactId' => $customer->id,
             'metadata' => ['priority' => 'low']
         ]);
 
@@ -131,8 +131,8 @@ class SalesOrderUpdateTest extends TestCase
         $tech = $this->getTechUser();
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contact_id' => $customer->id,
-            'order_number' => 'SO-TECH-UPDATE'
+            'contactId' => $customer->id,
+            'orderNumber' => 'SO-TECH-UPDATE'
         ]);
 
         $data = [
@@ -158,7 +158,7 @@ class SalesOrderUpdateTest extends TestCase
         $customer = $this->getCustomerUser();
         $customerModel = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contact_id' => $customerModel->id
+            'contactId' => $customerModel->id
         ]);
 
         $data = [
@@ -183,7 +183,7 @@ class SalesOrderUpdateTest extends TestCase
     {
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contact_id' => $customer->id
+            'contactId' => $customer->id
         ]);
 
         $data = [
@@ -228,7 +228,7 @@ class SalesOrderUpdateTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contact_id' => $customer->id
+            'contactId' => $customer->id
         ]);
 
         $data = [
@@ -261,12 +261,12 @@ class SalesOrderUpdateTest extends TestCase
         
         // Crear dos sales orders
         $salesOrder1 = SalesOrder::factory()->create([
-            'contact_id' => $customer->id,
-            'order_number' => 'SO-EXISTING-001'
+            'contactId' => $customer->id,
+            'orderNumber' => 'SO-EXISTING-001'
         ]);
         $salesOrder2 = SalesOrder::factory()->create([
-            'contact_id' => $customer->id,
-            'order_number' => 'SO-TO-UPDATE-001'
+            'contactId' => $customer->id,
+            'orderNumber' => 'SO-TO-UPDATE-001'
         ]);
 
         // Intentar actualizar el segundo order con el número del primero
@@ -274,7 +274,7 @@ class SalesOrderUpdateTest extends TestCase
             'type' => 'sales-orders',
             'id' => (string) $salesOrder2->id,
             'attributes' => [
-                'order_number' => 'SO-EXISTING-001'  // Duplicado
+                'orderNumber' => 'SO-EXISTING-001'  // Duplicado
             ]
         ];
 
@@ -288,7 +288,7 @@ class SalesOrderUpdateTest extends TestCase
         $errors = $response->json('errors');
         $this->assertNotEmpty($errors);
         $orderNumberError = collect($errors)->first(function ($error) {
-            return str_contains($error['source']['pointer'] ?? '', 'order_number');
+            return str_contains($error['source']['pointer'] ?? '', 'orderNumber');
         });
         $this->assertNotNull($orderNumberError, 'Expected order_number unique validation error');
     }
@@ -298,8 +298,8 @@ class SalesOrderUpdateTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contact_id' => $customer->id,
-            'order_number' => 'SO-SAME-001'
+            'contactId' => $customer->id,
+            'orderNumber' => 'SO-SAME-001'
         ]);
 
         // Actualizar el order number al mismo valor (debería permitirse)
@@ -307,7 +307,7 @@ class SalesOrderUpdateTest extends TestCase
             'type' => 'sales-orders',
             'id' => (string) $salesOrder->id,
             'attributes' => [
-                'order_number' => 'SO-SAME-001',  // Mismo valor
+                'orderNumber' => 'SO-SAME-001',  // Mismo valor
                 'notes' => 'Updated notes'
             ]
         ];

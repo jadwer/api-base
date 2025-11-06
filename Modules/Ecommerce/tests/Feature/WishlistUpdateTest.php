@@ -15,7 +15,7 @@ class WishlistUpdateTest extends TestCase
 
         $wishlist = Wishlist::factory()->create([
             'name' => 'Original Name',
-            'is_default' => false,
+            'isDefault' => false,
             'is_public' => false,
         ]);
 
@@ -51,7 +51,7 @@ class WishlistUpdateTest extends TestCase
         $this->assertDatabaseHas('wishlists', [
             'id' => $wishlist->id,
             'name' => 'Updated Name',
-            'is_default' => true,
+            'isDefault' => true,
             'is_public' => true,
         ]);
     }
@@ -62,9 +62,9 @@ class WishlistUpdateTest extends TestCase
         $customer = User::role('customer')->first();
 
         $wishlist = Wishlist::factory()->create([
-            'user_id' => $customer->id,
+            'userId' => $customer->id,
             'name' => 'Original Wishlist',
-            'is_default' => false,
+            'isDefault' => false,
             'is_public' => false,
         ]);
 
@@ -100,7 +100,7 @@ class WishlistUpdateTest extends TestCase
         $customer = User::role('customer')->first();
 
         $otherUser = User::factory()->create();
-        $wishlist = Wishlist::factory()->create(['user_id' => $otherUser->id]);
+        $wishlist = Wishlist::factory()->create(['userId' => $otherUser->id]);
 
         $data = [
             'type' => 'wishlists',
@@ -170,9 +170,9 @@ class WishlistUpdateTest extends TestCase
         $customer = User::role('customer')->first();
 
         $wishlist = Wishlist::factory()->create([
-            'user_id' => $customer->id,
+            'userId' => $customer->id,
             'name' => 'Original',
-            'is_default' => false,
+            'isDefault' => false,
             'is_public' => false,
         ]);
 
@@ -195,7 +195,7 @@ class WishlistUpdateTest extends TestCase
         $this->assertDatabaseHas('wishlists', [
             'id' => $wishlist->id,
             'name' => 'Only Name Changed',
-            'is_default' => false,
+            'isDefault' => false,
             'is_public' => false,
         ]);
     }
@@ -206,8 +206,8 @@ class WishlistUpdateTest extends TestCase
         $customer = User::role('customer')->first();
 
         $wishlist = Wishlist::factory()->create([
-            'user_id' => $customer->id,
-            'is_default' => false,
+            'userId' => $customer->id,
+            'isDefault' => false,
         ]);
 
         $data = [
@@ -228,7 +228,7 @@ class WishlistUpdateTest extends TestCase
 
         $this->assertDatabaseHas('wishlists', [
             'id' => $wishlist->id,
-            'is_default' => true,
+            'isDefault' => true,
         ]);
     }
 
@@ -238,7 +238,7 @@ class WishlistUpdateTest extends TestCase
         $customer = User::role('customer')->first();
 
         $wishlist = Wishlist::factory()->create([
-            'user_id' => $customer->id,
+            'userId' => $customer->id,
             'is_public' => false,
         ]);
 

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\CRM\Database\Factories\LeadFactory;
 use Modules\User\Models\User;
-// use Modules\Contact\Models\Contact; // Will be enabled when Contact module is implemented
+// use Modules\Contacts\Models\Contact; // Will be enabled when Contact module is implemented
 
 class Lead extends Model
 {

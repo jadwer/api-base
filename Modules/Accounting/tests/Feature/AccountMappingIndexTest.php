@@ -62,8 +62,8 @@ class AccountMappingIndexTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        AccountMapping::factory()->create(['is_active' => true]);
-        AccountMapping::factory()->create(['is_active' => true]);
+        AccountMapping::factory()->create(['isActive' => true]);
+        AccountMapping::factory()->create(['isActive' => true]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

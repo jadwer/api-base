@@ -210,7 +210,7 @@ class PaymentTransactionIndexTest extends TestCase
         $user = $this->getAdminUser();
         $checkoutSession = CheckoutSession::factory()->create();
         PaymentTransaction::factory()->create([
-            'checkout_session_id' => $checkoutSession->id,
+            'checkoutSessionId' => $checkoutSession->id,
         ]);
 
         $response = $this->jsonApi()

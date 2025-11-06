@@ -65,7 +65,7 @@ class CouponShowTest extends TestCase
             'used_count' => 5,
             'starts_at' => now()->subDay(),
             'expires_at' => now()->addMonth(),
-            'is_active' => true,
+            'isActive' => true,
             'customer_ids' => [1, 2, 3],
             'product_ids' => [4, 5, 6],
             'category_ids' => [7, 8, 9]

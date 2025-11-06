@@ -20,13 +20,13 @@ class ProductReviewIndexTest extends TestCase
 
         // Create mix of approved and pending reviews
         ProductReview::factory()->count(3)->approved()->create([
-            'product_id' => $product->id,
-            'user_id' => $user->id,
+            'productId' => $product->id,
+            'userId' => $user->id,
         ]);
 
         ProductReview::factory()->count(2)->pending()->create([
-            'product_id' => $product->id,
-            'user_id' => $user->id,
+            'productId' => $product->id,
+            'userId' => $user->id,
         ]);
 
         // Guest should see all reviews (filtering happens client-side)
@@ -47,11 +47,11 @@ class ProductReviewIndexTest extends TestCase
         $product = Product::factory()->create();
 
         ProductReview::factory()->count(3)->approved()->create([
-            'product_id' => $product->id,
+            'productId' => $product->id,
         ]);
 
         ProductReview::factory()->count(2)->pending()->create([
-            'product_id' => $product->id,
+            'productId' => $product->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -73,11 +73,11 @@ class ProductReviewIndexTest extends TestCase
         $product2 = Product::factory()->create();
 
         ProductReview::factory()->count(3)->approved()->create([
-            'product_id' => $product1->id,
+            'productId' => $product1->id,
         ]);
 
         ProductReview::factory()->count(2)->approved()->create([
-            'product_id' => $product2->id,
+            'productId' => $product2->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -99,11 +99,11 @@ class ProductReviewIndexTest extends TestCase
         $product = Product::factory()->create();
 
         ProductReview::factory()->count(3)->approved()->create([
-            'product_id' => $product->id,
+            'productId' => $product->id,
         ]);
 
         ProductReview::factory()->count(2)->pending()->create([
-            'product_id' => $product->id,
+            'productId' => $product->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -125,11 +125,11 @@ class ProductReviewIndexTest extends TestCase
         $product = Product::factory()->create();
 
         ProductReview::factory()->count(3)->rating(5)->approved()->create([
-            'product_id' => $product->id,
+            'productId' => $product->id,
         ]);
 
         ProductReview::factory()->count(2)->rating(3)->approved()->create([
-            'product_id' => $product->id,
+            'productId' => $product->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -151,11 +151,11 @@ class ProductReviewIndexTest extends TestCase
         $product = Product::factory()->create();
 
         ProductReview::factory()->count(3)->verifiedPurchase()->approved()->create([
-            'product_id' => $product->id,
+            'productId' => $product->id,
         ]);
 
         ProductReview::factory()->count(2)->approved()->create([
-            'product_id' => $product->id,
+            'productId' => $product->id,
             'is_verified_purchase' => false,
         ]);
 
@@ -177,9 +177,9 @@ class ProductReviewIndexTest extends TestCase
         $admin = $this->getAdminUser();
         $product = Product::factory()->create();
 
-        $review1 = ProductReview::factory()->rating(5)->approved()->create(['product_id' => $product->id]);
-        $review2 = ProductReview::factory()->rating(3)->approved()->create(['product_id' => $product->id]);
-        $review3 = ProductReview::factory()->rating(4)->approved()->create(['product_id' => $product->id]);
+        $review1 = ProductReview::factory()->rating(5)->approved()->create(['productId' => $product->id]);
+        $review2 = ProductReview::factory()->rating(3)->approved()->create(['productId' => $product->id]);
+        $review3 = ProductReview::factory()->rating(4)->approved()->create(['productId' => $product->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -203,7 +203,7 @@ class ProductReviewIndexTest extends TestCase
         $product = Product::factory()->create();
 
         ProductReview::factory()->approved()->create([
-            'product_id' => $product->id,
+            'productId' => $product->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -233,8 +233,8 @@ class ProductReviewIndexTest extends TestCase
         $product = Product::factory()->create();
 
         ProductReview::factory()->approved()->create([
-            'product_id' => $product->id,
-            'user_id' => $user->id,
+            'productId' => $product->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -263,7 +263,7 @@ class ProductReviewIndexTest extends TestCase
         $product = Product::factory()->create();
 
         ProductReview::factory()->count(25)->approved()->create([
-            'product_id' => $product->id,
+            'productId' => $product->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

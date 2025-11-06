@@ -64,7 +64,7 @@ class APInvoiceShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $aPInvoice = APInvoice::factory()->create(['invoice_number' => 'test string', 'invoice_date' => now(), 'due_date' => now(), 'currency' => 'test string', 'subtotal' => 99.99, 'tax_amount' => 99.99, 'total_amount' => 99.99, 'paid_amount' => 99.99, 'status' => 'active', 'notes' => 'test description', 'metadata' => 'test value', 'is_active' => true]);
+        $aPInvoice = APInvoice::factory()->create(['invoiceNumber' => 'test string', 'invoiceDate' => now(), 'dueDate' => now(), 'currency' => 'test string', 'subtotal' => 99.99, 'taxAmount' => 99.99, 'totalAmount' => 99.99, 'paidAmount' => 99.99, 'status' => 'active', 'notes' => 'test description', 'metadata' => 'test value', 'isActive' => true]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

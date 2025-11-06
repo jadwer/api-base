@@ -49,7 +49,7 @@ class CartItemShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $cartItem = CartItem::factory()->create(['quantity' => 99.99, 'unit_price' => 99.99, 'original_price' => 99.99, 'discount_percent' => 99.99, 'discount_amount' => 99.99, 'subtotal' => 99.99, 'tax_rate' => 99.99, 'tax_amount' => 99.99, 'total' => 99.99]);
+        $cartItem = CartItem::factory()->create(['quantity' => 99.99, 'unitPrice' => 99.99, 'original_price' => 99.99, 'discount_percent' => 99.99, 'discountAmount' => 99.99, 'subtotal' => 99.99, 'tax_rate' => 99.99, 'taxAmount' => 99.99, 'total' => 99.99]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

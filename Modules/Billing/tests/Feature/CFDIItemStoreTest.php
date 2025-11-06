@@ -50,7 +50,7 @@ class CFDIItemStoreTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('cfdi_items', [
-            'cfdi_invoice_id' => $invoice->id,
+            'cfdiInvoiceId' => $invoice->id,
             'numero_linea' => 1,
         ]);
     }

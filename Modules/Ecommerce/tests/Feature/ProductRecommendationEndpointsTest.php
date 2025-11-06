@@ -20,15 +20,15 @@ class ProductRecommendationEndpointsTest extends TestCase
         $category = Category::factory()->create();
 
         $product = Product::factory()->create([
-            'category_id' => $category->id,
+            'categoryId' => $category->id,
             'price' => 100.00,
-            'is_active' => true,
+            'isActive' => true,
         ]);
 
         Product::factory()->create([
-            'category_id' => $category->id,
+            'categoryId' => $category->id,
             'price' => 110.00,
-            'is_active' => true,
+            'isActive' => true,
         ]);
 
         $response = $this->getJson("/api/v1/products/{$product->id}/related");
@@ -60,15 +60,15 @@ class ProductRecommendationEndpointsTest extends TestCase
         $category = Category::factory()->create();
 
         $product = Product::factory()->create([
-            'category_id' => $category->id,
+            'categoryId' => $category->id,
             'price' => 100.00,
-            'is_active' => true,
+            'isActive' => true,
         ]);
 
         Product::factory()->count(10)->create([
-            'category_id' => $category->id,
+            'categoryId' => $category->id,
             'price' => 100.00,
-            'is_active' => true,
+            'isActive' => true,
         ]);
 
         $response = $this->getJson("/api/v1/products/{$product->id}/related?limit=3");
@@ -82,17 +82,17 @@ class ProductRecommendationEndpointsTest extends TestCase
     {
         $customer = User::factory()->create();
 
-        $product = Product::factory()->create(['is_active' => true]);
-        $relatedProduct = Product::factory()->create(['is_active' => true]);
+        $product = Product::factory()->create(['isActive' => true]);
+        $relatedProduct = Product::factory()->create(['isActive' => true]);
 
-        $order = SalesOrder::factory()->create(['customer_id' => $customer->id]);
+        $order = SalesOrder::factory()->create(['customerId' => $customer->id]);
         SalesOrderItem::factory()->create([
             'sales_order_id' => $order->id,
-            'product_id' => $product->id,
+            'productId' => $product->id,
         ]);
         SalesOrderItem::factory()->create([
             'sales_order_id' => $order->id,
-            'product_id' => $relatedProduct->id,
+            'productId' => $relatedProduct->id,
         ]);
 
         $response = $this->getJson("/api/v1/products/{$product->id}/frequently-bought-together");
@@ -117,16 +117,16 @@ class ProductRecommendationEndpointsTest extends TestCase
     {
         $customer = User::factory()->create();
 
-        $product = Product::factory()->create(['is_active' => true]);
+        $product = Product::factory()->create(['isActive' => true]);
 
         // Create recent sales
         $order = SalesOrder::factory()->create([
-            'customer_id' => $customer->id,
+            'customerId' => $customer->id,
             'created_at' => Carbon::now()->subDays(5),
         ]);
         SalesOrderItem::factory()->create([
             'sales_order_id' => $order->id,
-            'product_id' => $product->id,
+            'productId' => $product->id,
         ]);
 
         $response = $this->getJson('/api/v1/products/trending');
@@ -150,7 +150,7 @@ class ProductRecommendationEndpointsTest extends TestCase
     public function public_can_access_popular_products_endpoint()
     {
         Product::factory()->create([
-            'is_active' => true,
+            'isActive' => true,
             'average_rating' => 4.5,
             'total_reviews' => 10,
         ]);
@@ -176,7 +176,7 @@ class ProductRecommendationEndpointsTest extends TestCase
     public function public_can_access_new_arrivals_endpoint()
     {
         Product::factory()->create([
-            'is_active' => true,
+            'isActive' => true,
             'created_at' => Carbon::now()->subDays(1),
         ]);
 
@@ -204,19 +204,19 @@ class ProductRecommendationEndpointsTest extends TestCase
 
         $category = Category::factory()->create();
         $purchasedProduct = Product::factory()->create([
-            'category_id' => $category->id,
-            'is_active' => true,
+            'categoryId' => $category->id,
+            'isActive' => true,
         ]);
 
-        $order = SalesOrder::factory()->create(['customer_id' => $customer->id]);
+        $order = SalesOrder::factory()->create(['customerId' => $customer->id]);
         SalesOrderItem::factory()->create([
             'sales_order_id' => $order->id,
-            'product_id' => $purchasedProduct->id,
+            'productId' => $purchasedProduct->id,
         ]);
 
         Product::factory()->create([
-            'category_id' => $category->id,
-            'is_active' => true,
+            'categoryId' => $category->id,
+            'isActive' => true,
             'average_rating' => 4.5,
         ]);
 
@@ -251,8 +251,8 @@ class ProductRecommendationEndpointsTest extends TestCase
     {
         $category = Category::factory()->create();
         Product::factory()->count(20)->create([
-            'category_id' => $category->id,
-            'is_active' => true,
+            'categoryId' => $category->id,
+            'isActive' => true,
             'average_rating' => 4.5,
             'total_reviews' => 10,
             'price' => 100.00,
@@ -285,7 +285,7 @@ class ProductRecommendationEndpointsTest extends TestCase
     /** @test */
     public function all_endpoints_return_empty_array_when_no_results()
     {
-        $product = Product::factory()->create(['is_active' => true]);
+        $product = Product::factory()->create(['isActive' => true]);
 
         // No related products
         $response = $this->getJson("/api/v1/products/{$product->id}/related");
@@ -306,16 +306,16 @@ class ProductRecommendationEndpointsTest extends TestCase
         $category = Category::factory()->create();
 
         $activeProduct = Product::factory()->create([
-            'category_id' => $category->id,
-            'is_active' => true,
+            'categoryId' => $category->id,
+            'isActive' => true,
             'average_rating' => 4.5,
             'total_reviews' => 10,
             'created_at' => Carbon::now()->subDays(1),
         ]);
 
         $inactiveProduct = Product::factory()->create([
-            'category_id' => $category->id,
-            'is_active' => false,
+            'categoryId' => $category->id,
+            'isActive' => false,
             'average_rating' => 4.8,
             'total_reviews' => 15,
             'created_at' => Carbon::now(),

@@ -33,7 +33,7 @@ class BankReconciliationServiceTest extends TestCase
             'code' => '1010',
             'name' => 'Banco Principal',
             'account_type' => 'asset',
-            'is_active' => true,
+            'isActive' => true,
         ]);
 
         // Create bank account
@@ -42,15 +42,15 @@ class BankReconciliationServiceTest extends TestCase
             'account_name' => 'Main Bank Account',
             'bank_name' => 'Banco Test',
             'current_balance' => 100000,
-            'is_active' => true,
+            'isActive' => true,
         ]);
 
         // Create fiscal period
         $this->fiscalPeriod = FiscalPeriod::factory()->create([
             'year' => now()->year,
             'month' => now()->month,
-            'start_date' => now()->startOfMonth(),
-            'end_date' => now()->endOfMonth(),
+            'startDate' => now()->startOfMonth(),
+            'endDate' => now()->endOfMonth(),
             'status' => 'open',
         ]);
     }
@@ -73,7 +73,7 @@ class BankReconciliationServiceTest extends TestCase
 
         // Create matching GL entry
         $journalEntry = JournalEntry::factory()->create([
-            'fiscal_period_id' => $this->fiscalPeriod->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
             'accounting_date' => $date,
             'reference' => 'TX-12345',
             'status' => 'posted',
@@ -81,7 +81,7 @@ class BankReconciliationServiceTest extends TestCase
 
         $journalLine = JournalLine::factory()->create([
             'journal_entry_id' => $journalEntry->id,
-            'account_id' => $this->glAccount->id,
+            'accountId' => $this->glAccount->id,
             'debit_amount' => $amount,
             'credit_amount' => 0,
             'description' => 'Customer payment',
@@ -121,14 +121,14 @@ class BankReconciliationServiceTest extends TestCase
 
         // Create GL entry with date variance
         $journalEntry = JournalEntry::factory()->create([
-            'fiscal_period_id' => $this->fiscalPeriod->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
             'accounting_date' => $glDate,
             'status' => 'posted',
         ]);
 
         $journalLine = JournalLine::factory()->create([
             'journal_entry_id' => $journalEntry->id,
-            'account_id' => $this->glAccount->id,
+            'accountId' => $this->glAccount->id,
             'debit_amount' => $amount,
             'credit_amount' => 0,
         ]);
@@ -169,7 +169,7 @@ class BankReconciliationServiceTest extends TestCase
 
         // Create GL entry with matching reference
         $journalEntry = JournalEntry::factory()->create([
-            'fiscal_period_id' => $this->fiscalPeriod->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
             'accounting_date' => $date->copy()->addDays(1),
             'reference' => $reference,
             'status' => 'posted',
@@ -177,7 +177,7 @@ class BankReconciliationServiceTest extends TestCase
 
         $journalLine = JournalLine::factory()->create([
             'journal_entry_id' => $journalEntry->id,
-            'account_id' => $this->glAccount->id,
+            'accountId' => $this->glAccount->id,
             'debit_amount' => $glAmount,
             'credit_amount' => 0,
         ]);
@@ -208,14 +208,14 @@ class BankReconciliationServiceTest extends TestCase
 
         // Create GL entry with completely different amount and date
         $journalEntry = JournalEntry::factory()->create([
-            'fiscal_period_id' => $this->fiscalPeriod->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
             'accounting_date' => $date->copy()->addDays(10), // Too far
             'status' => 'posted',
         ]);
 
         $journalLine = JournalLine::factory()->create([
             'journal_entry_id' => $journalEntry->id,
-            'account_id' => $this->glAccount->id,
+            'accountId' => $this->glAccount->id,
             'debit_amount' => 9999.00, // Different amount
             'credit_amount' => 0,
         ]);
@@ -258,27 +258,27 @@ class BankReconciliationServiceTest extends TestCase
 
         // Create matching GL entries for first two
         $journalEntry1 = JournalEntry::factory()->create([
-            'fiscal_period_id' => $this->fiscalPeriod->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
             'accounting_date' => $date,
             'status' => 'posted',
         ]);
 
         JournalLine::factory()->create([
             'journal_entry_id' => $journalEntry1->id,
-            'account_id' => $this->glAccount->id,
+            'accountId' => $this->glAccount->id,
             'debit_amount' => 1000.00,
             'credit_amount' => 0,
         ]);
 
         $journalEntry2 = JournalEntry::factory()->create([
-            'fiscal_period_id' => $this->fiscalPeriod->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
             'accounting_date' => $date->copy()->addDay(),
             'status' => 'posted',
         ]);
 
         JournalLine::factory()->create([
             'journal_entry_id' => $journalEntry2->id,
-            'account_id' => $this->glAccount->id,
+            'accountId' => $this->glAccount->id,
             'debit_amount' => 2000.00,
             'credit_amount' => 0,
         ]);
@@ -308,14 +308,14 @@ class BankReconciliationServiceTest extends TestCase
 
         // Create matching GL entry
         $journalEntry = JournalEntry::factory()->create([
-            'fiscal_period_id' => $this->fiscalPeriod->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
             'accounting_date' => $date,
             'status' => 'posted',
         ]);
 
         $journalLine = JournalLine::factory()->create([
             'journal_entry_id' => $journalEntry->id,
-            'account_id' => $this->glAccount->id,
+            'accountId' => $this->glAccount->id,
             'debit_amount' => 4000.00,
             'credit_amount' => 0,
         ]);
@@ -358,27 +358,27 @@ class BankReconciliationServiceTest extends TestCase
 
         // Create GL entries for both
         $journalEntry1 = JournalEntry::factory()->create([
-            'fiscal_period_id' => $this->fiscalPeriod->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
             'accounting_date' => $date,
             'status' => 'posted',
         ]);
 
         JournalLine::factory()->create([
             'journal_entry_id' => $journalEntry1->id,
-            'account_id' => $this->glAccount->id,
+            'accountId' => $this->glAccount->id,
             'debit_amount' => 1500.00,
             'credit_amount' => 0,
         ]);
 
         $journalEntry2 = JournalEntry::factory()->create([
-            'fiscal_period_id' => $this->fiscalPeriod->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
             'accounting_date' => $date,
             'status' => 'posted',
         ]);
 
         JournalLine::factory()->create([
             'journal_entry_id' => $journalEntry2->id,
-            'account_id' => $this->glAccount->id,
+            'accountId' => $this->glAccount->id,
             'debit_amount' => 2500.00,
             'credit_amount' => 0,
         ]);

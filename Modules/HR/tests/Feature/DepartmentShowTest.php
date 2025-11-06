@@ -16,7 +16,7 @@ class DepartmentShowTest extends TestCase
         $department = Department::factory()->create([
             'name' => 'Engineering Department',
             'description' => 'Software development team',
-            'is_active' => true
+            'isActive' => true
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -97,10 +97,10 @@ class DepartmentShowTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $manager = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $department->update(['manager_id' => $manager->id]);
 
@@ -124,10 +124,10 @@ class DepartmentShowTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         Employee::factory()->count(3)->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

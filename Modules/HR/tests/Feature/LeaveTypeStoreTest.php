@@ -17,7 +17,7 @@ class LeaveTypeStoreTest extends TestCase
                 'name' => 'Sick Leave',
                 'code' => 'SICK',
                 'description' => 'Medical leave',
-                'days_allowed' => 10,
+                'daysAllowed' => 10,
                 'requires_approval' => true,
                 'paid' => true,
                 'active' => true
@@ -49,7 +49,7 @@ class LeaveTypeStoreTest extends TestCase
             'attributes' => [
                 'name' => 'Vacation',
                 'code' => 'VAC',
-                'days_allowed' => 15,
+                'daysAllowed' => 15,
                 'paid' => true,
                 'active' => true
             ]
@@ -72,7 +72,7 @@ class LeaveTypeStoreTest extends TestCase
             'type' => 'leave-types',
             'attributes' => [
                 'name' => 'Should Not Create',
-                'days_allowed' => 5,
+                'daysAllowed' => 5,
                 'active' => true
             ]
         ];
@@ -92,7 +92,7 @@ class LeaveTypeStoreTest extends TestCase
             'type' => 'leave-types',
             'attributes' => [
                 'name' => 'Should Not Create',
-                'days_allowed' => 5,
+                'daysAllowed' => 5,
                 'active' => true
             ]
         ];
@@ -112,7 +112,7 @@ class LeaveTypeStoreTest extends TestCase
         $data = [
             'type' => 'leave-types',
             'attributes' => [
-                'days_allowed' => 10,
+                'daysAllowed' => 10,
                 'active' => true
             ]
         ];
@@ -136,7 +136,7 @@ class LeaveTypeStoreTest extends TestCase
             'type' => 'leave-types',
             'attributes' => [
                 'name' => 'Existing Leave',
-                'days_allowed' => 10,
+                'daysAllowed' => 10,
                 'active' => true
             ]
         ];
@@ -158,7 +158,7 @@ class LeaveTypeStoreTest extends TestCase
             'type' => 'leave-types',
             'attributes' => [
                 'name' => 'Test Leave',
-                'days_allowed' => 'not_a_number',
+                'daysAllowed' => 'not_a_number',
                 'active' => true
             ]
         ];

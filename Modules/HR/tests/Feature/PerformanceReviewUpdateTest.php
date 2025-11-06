@@ -15,18 +15,18 @@ class PerformanceReviewUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
 
         $review = PerformanceReview::factory()->create([
-            'employee_id' => $employee->id,
+            'employeeId' => $employee->id,
             'reviewer_id' => $reviewer->id,
             'comments' => 'Initial comments',
         ]);
@@ -57,18 +57,18 @@ class PerformanceReviewUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
 
         $review = PerformanceReview::factory()->draft()->create([
-            'employee_id' => $employee->id,
+            'employeeId' => $employee->id,
             'reviewer_id' => $reviewer->id,
         ]);
 
@@ -98,18 +98,18 @@ class PerformanceReviewUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
 
         $review = PerformanceReview::factory()->create([
-            'employee_id' => $employee->id,
+            'employeeId' => $employee->id,
             'reviewer_id' => $reviewer->id,
             'overall_rating' => 3,
             'goals_rating' => 3,
@@ -149,18 +149,18 @@ class PerformanceReviewUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
 
         $review = PerformanceReview::factory()->create([
-            'employee_id' => $employee->id,
+            'employeeId' => $employee->id,
             'reviewer_id' => $reviewer->id,
             'review_date' => '2024-01-15',
             'review_period_start' => '2024-01-01',
@@ -195,18 +195,18 @@ class PerformanceReviewUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
 
         $review = PerformanceReview::factory()->reviewed()->create([
-            'employee_id' => $employee->id,
+            'employeeId' => $employee->id,
             'reviewer_id' => $reviewer->id,
             'employee_comments' => null,
         ]);
@@ -237,18 +237,18 @@ class PerformanceReviewUpdateTest extends TestCase
         $tech = $this->getTechUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
 
         $review = PerformanceReview::factory()->create([
-            'employee_id' => $employee->id,
+            'employeeId' => $employee->id,
             'reviewer_id' => $reviewer->id,
             'comments' => 'Initial comments',
         ]);
@@ -275,18 +275,18 @@ class PerformanceReviewUpdateTest extends TestCase
         $customer = $this->getCustomerUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
 
         $review = PerformanceReview::factory()->create([
-            'employee_id' => $employee->id,
+            'employeeId' => $employee->id,
             'reviewer_id' => $reviewer->id,
         ]);
 
@@ -310,18 +310,18 @@ class PerformanceReviewUpdateTest extends TestCase
     public function test_guest_cannot_update_performance_review(): void
     {
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
 
         $review = PerformanceReview::factory()->create([
-            'employee_id' => $employee->id,
+            'employeeId' => $employee->id,
             'reviewer_id' => $reviewer->id,
         ]);
 
@@ -367,18 +367,18 @@ class PerformanceReviewUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
 
         $review = PerformanceReview::factory()->create([
-            'employee_id' => $employee->id,
+            'employeeId' => $employee->id,
             'reviewer_id' => $reviewer->id,
         ]);
 
@@ -404,18 +404,18 @@ class PerformanceReviewUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
 
         $review = PerformanceReview::factory()->create([
-            'employee_id' => $employee->id,
+            'employeeId' => $employee->id,
             'reviewer_id' => $reviewer->id,
         ]);
 
@@ -442,18 +442,18 @@ class PerformanceReviewUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
         ]);
 
         $review = PerformanceReview::factory()->draft()->create([
-            'employee_id' => $employee->id,
+            'employeeId' => $employee->id,
             'reviewer_id' => $reviewer->id,
         ]);
 

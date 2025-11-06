@@ -31,25 +31,25 @@ class RecommendationEngineTest extends TestCase
         $brand = Brand::factory()->create();
 
         $baseProduct = Product::factory()->create([
-            'category_id' => $category->id,
-            'brand_id' => $brand->id,
+            'categoryId' => $category->id,
+            'brandId' => $brand->id,
             'price' => 100.00,
-            'is_active' => true,
+            'isActive' => true,
         ]);
 
         // Create related products in same category
         $relatedProduct1 = Product::factory()->create([
-            'category_id' => $category->id,
+            'categoryId' => $category->id,
             'price' => 90.00, // Within ±30%
-            'is_active' => true,
+            'isActive' => true,
             'average_rating' => 4.5,
             'total_sales' => 100,
         ]);
 
         $relatedProduct2 = Product::factory()->create([
-            'category_id' => $category->id,
+            'categoryId' => $category->id,
             'price' => 110.00, // Within ±30%
-            'is_active' => true,
+            'isActive' => true,
             'average_rating' => 4.8,
             'total_sales' => 150,
         ]);
@@ -57,7 +57,7 @@ class RecommendationEngineTest extends TestCase
         // Create unrelated products (different category, out of price range)
         Product::factory()->create([
             'price' => 200.00, // Outside ±30%
-            'is_active' => true,
+            'isActive' => true,
         ]);
 
         $related = $this->engine->getRelatedProducts($baseProduct, 6);
@@ -73,23 +73,23 @@ class RecommendationEngineTest extends TestCase
         $category = Category::factory()->create();
 
         $baseProduct = Product::factory()->create([
-            'category_id' => $category->id,
+            'categoryId' => $category->id,
             'price' => 100.00,
-            'is_active' => true,
+            'isActive' => true,
         ]);
 
         // Within range (70-130)
         $inRangeProduct = Product::factory()->create([
-            'category_id' => $category->id,
+            'categoryId' => $category->id,
             'price' => 120.00,
-            'is_active' => true,
+            'isActive' => true,
         ]);
 
         // Outside range
         Product::factory()->create([
-            'category_id' => $category->id,
+            'categoryId' => $category->id,
             'price' => 200.00, // Outside ±30%
-            'is_active' => true,
+            'isActive' => true,
         ]);
 
         $related = $this->engine->getRelatedProducts($baseProduct, 6);
@@ -104,41 +104,41 @@ class RecommendationEngineTest extends TestCase
         $customer = User::factory()->create();
 
         $baseProduct = Product::factory()->create();
-        $productA = Product::factory()->create(['is_active' => true]);
-        $productB = Product::factory()->create(['is_active' => true]);
-        $productC = Product::factory()->create(['is_active' => true]);
+        $productA = Product::factory()->create(['isActive' => true]);
+        $productB = Product::factory()->create(['isActive' => true]);
+        $productC = Product::factory()->create(['isActive' => true]);
 
         // Create 3 orders where baseProduct is bought with productA
         for ($i = 0; $i < 3; $i++) {
-            $order = SalesOrder::factory()->create(['customer_id' => $customer->id]);
+            $order = SalesOrder::factory()->create(['customerId' => $customer->id]);
             SalesOrderItem::factory()->create([
                 'sales_order_id' => $order->id,
-                'product_id' => $baseProduct->id,
+                'productId' => $baseProduct->id,
             ]);
             SalesOrderItem::factory()->create([
                 'sales_order_id' => $order->id,
-                'product_id' => $productA->id,
+                'productId' => $productA->id,
             ]);
         }
 
         // Create 2 orders where baseProduct is bought with productB
         for ($i = 0; $i < 2; $i++) {
-            $order = SalesOrder::factory()->create(['customer_id' => $customer->id]);
+            $order = SalesOrder::factory()->create(['customerId' => $customer->id]);
             SalesOrderItem::factory()->create([
                 'sales_order_id' => $order->id,
-                'product_id' => $baseProduct->id,
+                'productId' => $baseProduct->id,
             ]);
             SalesOrderItem::factory()->create([
                 'sales_order_id' => $order->id,
-                'product_id' => $productB->id,
+                'productId' => $productB->id,
             ]);
         }
 
         // ProductC is never bought with baseProduct
-        $order = SalesOrder::factory()->create(['customer_id' => $customer->id]);
+        $order = SalesOrder::factory()->create(['customerId' => $customer->id]);
         SalesOrderItem::factory()->create([
             'sales_order_id' => $order->id,
-            'product_id' => $productC->id,
+            'productId' => $productC->id,
         ]);
 
         $result = $this->engine->getFrequentlyBoughtTogether($baseProduct, 4);
@@ -159,27 +159,27 @@ class RecommendationEngineTest extends TestCase
 
         // Customer has purchased products from category1
         $purchasedProduct = Product::factory()->create([
-            'category_id' => $category1->id,
-            'is_active' => true,
+            'categoryId' => $category1->id,
+            'isActive' => true,
         ]);
 
-        $order = SalesOrder::factory()->create(['customer_id' => $customer->id]);
+        $order = SalesOrder::factory()->create(['customerId' => $customer->id]);
         SalesOrderItem::factory()->create([
             'sales_order_id' => $order->id,
-            'product_id' => $purchasedProduct->id,
+            'productId' => $purchasedProduct->id,
         ]);
 
         // Create more products in category1 (not purchased yet)
         $recommendedProduct = Product::factory()->create([
-            'category_id' => $category1->id,
-            'is_active' => true,
+            'categoryId' => $category1->id,
+            'isActive' => true,
             'average_rating' => 4.5,
         ]);
 
         // Create products in category2 (customer has no history here)
         Product::factory()->create([
-            'category_id' => $category2->id,
-            'is_active' => true,
+            'categoryId' => $category2->id,
+            'isActive' => true,
             'average_rating' => 4.8,
         ]);
 
@@ -197,7 +197,7 @@ class RecommendationEngineTest extends TestCase
 
         // Create popular products (no purchase history for this customer)
         Product::factory()->create([
-            'is_active' => true,
+            'isActive' => true,
             'average_rating' => 4.5,
             'total_reviews' => 10,
         ]);
@@ -212,29 +212,29 @@ class RecommendationEngineTest extends TestCase
     {
         $customer = User::factory()->create();
 
-        $trendingProduct = Product::factory()->create(['is_active' => true]);
-        $oldProduct = Product::factory()->create(['is_active' => true]);
+        $trendingProduct = Product::factory()->create(['isActive' => true]);
+        $oldProduct = Product::factory()->create(['isActive' => true]);
 
         // Create recent sales for trending product (within 30 days)
         for ($i = 0; $i < 5; $i++) {
             $order = SalesOrder::factory()->create([
-                'customer_id' => $customer->id,
+                'customerId' => $customer->id,
                 'created_at' => Carbon::now()->subDays(10),
             ]);
             SalesOrderItem::factory()->create([
                 'sales_order_id' => $order->id,
-                'product_id' => $trendingProduct->id,
+                'productId' => $trendingProduct->id,
             ]);
         }
 
         // Create old sales (more than 30 days ago)
         $oldOrder = SalesOrder::factory()->create([
-            'customer_id' => $customer->id,
+            'customerId' => $customer->id,
             'created_at' => Carbon::now()->subDays(45),
         ]);
         SalesOrderItem::factory()->create([
             'sales_order_id' => $oldOrder->id,
-            'product_id' => $oldProduct->id,
+            'productId' => $oldProduct->id,
         ]);
 
         $result = $this->engine->getTrendingProducts(12);
@@ -249,21 +249,21 @@ class RecommendationEngineTest extends TestCase
     {
         // Product with high rating and enough reviews
         $popularProduct = Product::factory()->create([
-            'is_active' => true,
+            'isActive' => true,
             'average_rating' => 4.5,
             'total_reviews' => 10,
         ]);
 
         // Product with high rating but not enough reviews
         Product::factory()->create([
-            'is_active' => true,
+            'isActive' => true,
             'average_rating' => 4.8,
             'total_reviews' => 3, // Less than 5
         ]);
 
         // Product with enough reviews but low rating
         Product::factory()->create([
-            'is_active' => true,
+            'isActive' => true,
             'average_rating' => 3.5, // Less than 4.0
             'total_reviews' => 10,
         ]);
@@ -278,19 +278,19 @@ class RecommendationEngineTest extends TestCase
     public function popular_products_orders_by_rating_then_reviews()
     {
         $product1 = Product::factory()->create([
-            'is_active' => true,
+            'isActive' => true,
             'average_rating' => 4.8,
             'total_reviews' => 20,
         ]);
 
         $product2 = Product::factory()->create([
-            'is_active' => true,
+            'isActive' => true,
             'average_rating' => 4.5,
             'total_reviews' => 50,
         ]);
 
         $product3 = Product::factory()->create([
-            'is_active' => true,
+            'isActive' => true,
             'average_rating' => 4.8,
             'total_reviews' => 30,
         ]);
@@ -308,18 +308,18 @@ class RecommendationEngineTest extends TestCase
     {
         // Create old product
         $oldProduct = Product::factory()->create([
-            'is_active' => true,
+            'isActive' => true,
             'created_at' => Carbon::now()->subDays(30),
         ]);
 
         // Create new products
         $newProduct1 = Product::factory()->create([
-            'is_active' => true,
+            'isActive' => true,
             'created_at' => Carbon::now()->subDays(2),
         ]);
 
         $newProduct2 = Product::factory()->create([
-            'is_active' => true,
+            'isActive' => true,
             'created_at' => Carbon::now()->subDays(1),
         ]);
 
@@ -335,7 +335,7 @@ class RecommendationEngineTest extends TestCase
     public function new_arrivals_respects_limit()
     {
         // Create 15 products
-        Product::factory()->count(15)->create(['is_active' => true]);
+        Product::factory()->count(15)->create(['isActive' => true]);
 
         $result = $this->engine->getNewArrivals(5);
 
@@ -348,15 +348,15 @@ class RecommendationEngineTest extends TestCase
         $category = Category::factory()->create();
 
         $activeProduct = Product::factory()->create([
-            'category_id' => $category->id,
-            'is_active' => true,
+            'categoryId' => $category->id,
+            'isActive' => true,
             'average_rating' => 4.5,
             'total_reviews' => 10,
         ]);
 
         $inactiveProduct = Product::factory()->create([
-            'category_id' => $category->id,
-            'is_active' => false,
+            'categoryId' => $category->id,
+            'isActive' => false,
             'average_rating' => 4.8,
             'total_reviews' => 15,
         ]);

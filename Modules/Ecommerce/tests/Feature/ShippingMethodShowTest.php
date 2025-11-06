@@ -47,7 +47,7 @@ class ShippingMethodShowTest extends TestCase
     public function test_customer_can_view_active_shipping_method(): void
     {
         $customer = $this->getCustomerUser();
-        $method = ShippingMethod::factory()->create(['is_active' => true]);
+        $method = ShippingMethod::factory()->create(['isActive' => true]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()

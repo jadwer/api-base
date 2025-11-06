@@ -39,7 +39,7 @@ class CheckoutSessionDestroyTest extends TestCase
     {
         $customer = $this->getCustomerUser();
         $session = CheckoutSession::factory()->create([
-            'user_id' => $customer->id,
+            'userId' => $customer->id,
             'status' => 'initiated',
         ]);
 
@@ -56,7 +56,7 @@ class CheckoutSessionDestroyTest extends TestCase
     {
         $customer = $this->getCustomerUser();
         $session = CheckoutSession::factory()->create([
-            'user_id' => $customer->id,
+            'userId' => $customer->id,
             'status' => 'completed',
         ]);
 
@@ -73,7 +73,7 @@ class CheckoutSessionDestroyTest extends TestCase
     {
         $customer = $this->getCustomerUser();
         $otherUser = $this->getAdminUser();
-        $session = CheckoutSession::factory()->create(['user_id' => $otherUser->id]);
+        $session = CheckoutSession::factory()->create(['userId' => $otherUser->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()

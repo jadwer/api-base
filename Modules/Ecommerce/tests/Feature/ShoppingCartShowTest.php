@@ -52,11 +52,11 @@ class ShoppingCartShowTest extends TestCase
         $shoppingCart = ShoppingCart::factory()->create([
             'status' => 'active',
             'expires_at' => now()->addDays(7),
-            'total_amount' => 199.99,
+            'totalAmount' => 199.99,
             'currency' => 'USD',
             'coupon_code' => 'SAVE20',
-            'discount_amount' => 20.00,
-            'tax_amount' => 15.99,
+            'discountAmount' => 20.00,
+            'taxAmount' => 15.99,
             'shipping_amount' => 9.99,
             'notes' => 'Premium shopping cart'
         ]);

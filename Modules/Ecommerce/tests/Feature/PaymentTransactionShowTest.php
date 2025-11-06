@@ -43,8 +43,8 @@ class PaymentTransactionShowTest extends TestCase
     public function test_customer_can_view_own_payment_transaction(): void
     {
         $customer = $this->getCustomerUser();
-        $session = CheckoutSession::factory()->create(['user_id' => $customer->id]);
-        $transaction = PaymentTransaction::factory()->create(['checkout_session_id' => $session->id]);
+        $session = CheckoutSession::factory()->create(['userId' => $customer->id]);
+        $transaction = PaymentTransaction::factory()->create(['checkoutSessionId' => $session->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()

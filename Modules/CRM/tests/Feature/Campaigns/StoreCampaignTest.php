@@ -52,7 +52,7 @@ class StoreCampaignTest extends TestCase
 
         $this->assertDatabaseHas('campaigns', [
             'name' => 'Q4 2024 Email Campaign',
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
     }
 

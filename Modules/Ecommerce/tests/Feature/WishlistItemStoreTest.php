@@ -61,7 +61,7 @@ class WishlistItemStoreTest extends TestCase
 
         $this->assertDatabaseHas('wishlist_items', [
             'wishlist_id' => $wishlist->id,
-            'product_id' => $product->id,
+            'productId' => $product->id,
             'quantity' => 2,
             'priority' => 'high',
         ]);
@@ -72,7 +72,7 @@ class WishlistItemStoreTest extends TestCase
     {
         $customer = User::role('customer')->first();
 
-        $wishlist = Wishlist::factory()->create(['user_id' => $customer->id]);
+        $wishlist = Wishlist::factory()->create(['userId' => $customer->id]);
         $product = Product::factory()->create();
 
         $data = [

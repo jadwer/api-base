@@ -56,7 +56,7 @@ class PaymentTransactionStoreTest extends TestCase
             'currency' => 'MXN',
             'status' => 'pending',
             'payment_method' => 'card',
-            'checkout_session_id' => $checkoutSession->id,
+            'checkoutSessionId' => $checkoutSession->id,
         ]);
     }
 

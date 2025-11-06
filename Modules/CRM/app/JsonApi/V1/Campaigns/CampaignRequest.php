@@ -16,13 +16,14 @@ class CampaignRequest extends ResourceRequest
     public function rules(): array
     {
         $campaignId = $this->route('campaign');
+        $isCreating = $this->isCreating();
 
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'type' => ['required', Rule::in(['email', 'social_media', 'event', 'webinar', 'direct_mail', 'telemarketing'])],
+            'name' => [$isCreating ? 'required' : 'sometimes', 'string', 'max:255'],
+            'type' => [$isCreating ? 'required' : 'sometimes', Rule::in(['email', 'social_media', 'event', 'webinar', 'direct_mail', 'telemarketing'])],
             'status' => ['sometimes', Rule::in(['planning', 'active', 'paused', 'completed', 'cancelled'])],
-            'userId' => ['required', JsonApiRule::toOne()],
-            'startDate' => ['required', 'date'],
+            'userId' => [$isCreating ? 'required' : 'sometimes', JsonApiRule::toOne()],
+            'startDate' => [$isCreating ? 'required' : 'sometimes', 'date'],
             'endDate' => ['nullable', 'date', 'after_or_equal:startDate'],
             'budget' => ['nullable', 'numeric', 'min:0'],
             'actualCost' => ['nullable', 'numeric', 'min:0'],

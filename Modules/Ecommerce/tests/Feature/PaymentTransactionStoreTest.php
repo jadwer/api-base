@@ -34,7 +34,7 @@ class PaymentTransactionStoreTest extends TestCase
 
         $response->assertCreated();
         $this->assertDatabaseHas('payment_transactions', [
-            'checkout_session_id' => $session->id,
+            'checkoutSessionId' => $session->id,
             'transaction_id' => 'ch_test123',
             'amount' => 100.00,
         ]);

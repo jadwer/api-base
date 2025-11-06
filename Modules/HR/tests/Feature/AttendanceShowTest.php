@@ -15,16 +15,16 @@ class AttendanceShowTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $attendance = Attendance::factory()->create([
-            'employee_id' => $employee->id,
-            'attendance_date' => '2024-01-15',
-            'check_in_time' => '09:00:00',
-            'check_out_time' => '17:00:00',
+            'employeeId' => $employee->id,
+            'attendanceDate' => '2024-01-15',
+            'checkInTime' => '09:00:00',
+            'checkOutTime' => '17:00:00',
             'status' => 'present'
         ]);
 
@@ -55,12 +55,12 @@ class AttendanceShowTest extends TestCase
         $tech = $this->getTechUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
-        $attendance = Attendance::factory()->create(['employee_id' => $employee->id]);
+        $attendance = Attendance::factory()->create(['employeeId' => $employee->id]);
 
         $response = $this->actingAs($tech, 'sanctum')
             ->jsonApi()
@@ -76,12 +76,12 @@ class AttendanceShowTest extends TestCase
         $customer = $this->getCustomerUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
-        $attendance = Attendance::factory()->create(['employee_id' => $employee->id]);
+        $attendance = Attendance::factory()->create(['employeeId' => $employee->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
@@ -94,12 +94,12 @@ class AttendanceShowTest extends TestCase
     public function test_guest_cannot_view_attendance(): void
     {
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
-        $attendance = Attendance::factory()->create(['employee_id' => $employee->id]);
+        $attendance = Attendance::factory()->create(['employeeId' => $employee->id]);
 
         $response = $this->jsonApi()
             ->expects('attendances')
@@ -125,12 +125,12 @@ class AttendanceShowTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
-        $attendance = Attendance::factory()->create(['employee_id' => $employee->id]);
+        $attendance = Attendance::factory()->create(['employeeId' => $employee->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -152,16 +152,16 @@ class AttendanceShowTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $attendance = Attendance::factory()->create([
-            'employee_id' => $employee->id,
-            'attendance_date' => '2024-01-15',
-            'check_in_time' => '09:00:00',
-            'check_out_time' => '17:30:00'
+            'employeeId' => $employee->id,
+            'attendanceDate' => '2024-01-15',
+            'checkInTime' => '09:00:00',
+            'checkOutTime' => '17:30:00'
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

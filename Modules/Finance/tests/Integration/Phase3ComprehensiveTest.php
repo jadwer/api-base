@@ -45,17 +45,17 @@ class Phase3ComprehensiveTest extends TestCase
     public function test_credit_management_validates_customer_credit_limit(): void
     {
         $customer = Contact::factory()->customer()->create([
-            'credit_limit' => 10000,
+            'creditLimit' => 10000,
             'current_credit' => 0,
         ]);
 
         // Create existing AR balance of 6000
         ARInvoice::factory()->create([
-            'contact_id' => $customer->id,
-            'total_amount' => 6000,
-            'paid_amount' => 0,
+            'contactId' => $customer->id,
+            'totalAmount' => 6000,
+            'paidAmount' => 0,
             'status' => 'posted',
-            'due_date' => now()->addDays(30)->toDateString(),
+            'dueDate' => now()->addDays(30)->toDateString(),
         ]);
 
         // Should allow 3000 more (total 9000 < 10000 limit)
@@ -72,17 +72,17 @@ class Phase3ComprehensiveTest extends TestCase
     public function test_credit_management_blocks_customers_with_overdue_invoices(): void
     {
         $customer = Contact::factory()->customer()->create([
-            'credit_limit' => 10000,
+            'creditLimit' => 10000,
             'current_credit' => 0,
         ]);
 
         // Create overdue invoice
         ARInvoice::factory()->create([
-            'contact_id' => $customer->id,
-            'total_amount' => 2000,
-            'paid_amount' => 0,
+            'contactId' => $customer->id,
+            'totalAmount' => 2000,
+            'paidAmount' => 0,
             'status' => 'posted',
-            'due_date' => now()->subDays(10)->toDateString(),
+            'dueDate' => now()->subDays(10)->toDateString(),
         ]);
 
         $this->expectException(\Exception::class);
@@ -97,16 +97,16 @@ class Phase3ComprehensiveTest extends TestCase
 
         // Give customer payment history (not first-time)
         ARInvoice::factory()->create([
-            'contact_id' => $customer->id,
-            'total_amount' => 1000,
-            'paid_amount' => 1000,
+            'contactId' => $customer->id,
+            'totalAmount' => 1000,
+            'paidAmount' => 1000,
             'status' => 'paid',
         ]);
 
         // Small invoice - should not require approval (< 50K, not first-time, MXN currency)
         $smallInvoice = ARInvoice::factory()->create([
-            'contact_id' => $customer->id,
-            'total_amount' => 10000,
+            'contactId' => $customer->id,
+            'totalAmount' => 10000,
             'currency' => 'MXN',
         ]);
 
@@ -114,8 +114,8 @@ class Phase3ComprehensiveTest extends TestCase
 
         // Large invoice - should require approval
         $largeInvoice = ARInvoice::factory()->create([
-            'contact_id' => $customer->id,
-            'total_amount' => 100000,
+            'contactId' => $customer->id,
+            'totalAmount' => 100000,
         ]);
 
         $this->assertTrue($this->approvalService->requiresARApproval($largeInvoice));
@@ -128,8 +128,8 @@ class Phase3ComprehensiveTest extends TestCase
 
         // Invoice >100,000 requires Finance Director
         $invoice = ARInvoice::factory()->create([
-            'contact_id' => $customer->id,
-            'total_amount' => 150000,
+            'contactId' => $customer->id,
+            'totalAmount' => 150000,
         ]);
 
         $approvers = $this->approvalService->getRequiredARApprovers($invoice);
@@ -152,8 +152,8 @@ class Phase3ComprehensiveTest extends TestCase
     public function test_period_control_validates_open_period(): void
     {
         $period = FiscalPeriod::factory()->create([
-            'start_date' => now()->startOfMonth()->toDateString(),
-            'end_date' => now()->endOfMonth()->toDateString(),
+            'startDate' => now()->startOfMonth()->toDateString(),
+            'endDate' => now()->endOfMonth()->toDateString(),
             'status' => 'open',
         ]);
 
@@ -170,8 +170,8 @@ class Phase3ComprehensiveTest extends TestCase
 
         // Create a closed period for current month
         $period = FiscalPeriod::factory()->create([
-            'start_date' => now()->startOfMonth()->toDateString(),
-            'end_date' => now()->endOfMonth()->toDateString(),
+            'startDate' => now()->startOfMonth()->toDateString(),
+            'endDate' => now()->endOfMonth()->toDateString(),
             'status' => 'closed',
         ]);
 
@@ -187,8 +187,8 @@ class Phase3ComprehensiveTest extends TestCase
         $this->actingAs($user, 'api');
 
         $period = FiscalPeriod::factory()->create([
-            'start_date' => now()->startOfMonth()->toDateString(),
-            'end_date' => now()->endOfMonth()->toDateString(),
+            'startDate' => now()->startOfMonth()->toDateString(),
+            'endDate' => now()->endOfMonth()->toDateString(),
             'status' => 'open',
         ]);
 
@@ -258,22 +258,22 @@ class Phase3ComprehensiveTest extends TestCase
 
         // Create customer with credit limit
         $customer = Contact::factory()->customer()->create([
-            'credit_limit' => 100000,
+            'creditLimit' => 100000,
             'current_credit' => 0,
         ]);
 
         // Give customer payment history (not first-time) to avoid approval requirement
         ARInvoice::factory()->create([
-            'contact_id' => $customer->id,
-            'total_amount' => 1000,
-            'paid_amount' => 1000,
+            'contactId' => $customer->id,
+            'totalAmount' => 1000,
+            'paidAmount' => 1000,
             'status' => 'paid',
         ]);
 
         // Create fiscal period
         $period = FiscalPeriod::factory()->create([
-            'start_date' => now()->startOfMonth()->toDateString(),
-            'end_date' => now()->endOfMonth()->toDateString(),
+            'startDate' => now()->startOfMonth()->toDateString(),
+            'endDate' => now()->endOfMonth()->toDateString(),
             'status' => 'open',
         ]);
 
@@ -287,12 +287,12 @@ class Phase3ComprehensiveTest extends TestCase
 
         // Create AR Invoice (should validate credit)
         $invoice = ARInvoice::factory()->create([
-            'contact_id' => $customer->id,
-            'total_amount' => 30000,
-            'paid_amount' => 0,
+            'contactId' => $customer->id,
+            'totalAmount' => 30000,
+            'paidAmount' => 0,
             'status' => 'draft',
             'currency' => 'MXN', // Ensure MXN currency to avoid foreign currency approval rule
-            'due_date' => now()->addDays(30)->toDateString(),
+            'dueDate' => now()->addDays(30)->toDateString(),
         ]);
 
         // Check if requires approval (should not: < 50K, not first-time, MXN currency, not high risk)

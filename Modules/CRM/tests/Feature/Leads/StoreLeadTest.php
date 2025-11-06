@@ -62,7 +62,7 @@ class StoreLeadTest extends TestCase
 
         $this->assertDatabaseHas('leads', [
             'title' => 'New Business Opportunity',
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
     }
 
@@ -143,7 +143,7 @@ class StoreLeadTest extends TestCase
         $response->assertCreated();
         $this->assertDatabaseHas('leads', [
             'title' => 'Unlinked Lead',
-            'contact_id' => null,
+            'contactId' => null,
         ]);
     }
 

@@ -13,7 +13,7 @@ class LeaveTypeShowTest extends TestCase
 
         $leaveType = LeaveType::factory()->create([
             'name' => 'Annual Leave',
-            'days_allowed' => 20,
+            'daysAllowed' => 20,
             'paid' => true,
             'active' => true
         ]);

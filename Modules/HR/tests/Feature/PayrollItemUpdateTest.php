@@ -16,16 +16,16 @@ class PayrollItemUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $period = PayrollPeriod::factory()->create();
         $payrollItem = PayrollItem::factory()->create([
-            'employee_id' => $employee->id,
-            'payroll_period_id' => $period->id,
-            'basic_salary' => 2000.00,
+            'employeeId' => $employee->id,
+            'payrollPeriodId' => $period->id,
+            'basicSalary' => 2000.00,
             'status' => 'draft'
         ]);
 
@@ -33,7 +33,7 @@ class PayrollItemUpdateTest extends TestCase
             'type' => 'payroll-items',
             'id' => (string) $payrollItem->id,
             'attributes' => [
-                'basic_salary' => 3500.00,
+                'basicSalary' => 3500.00,
                 'overtime_pay' => 500.00,
                 'bonuses' => 300.00,
                 'deductions' => 200.00,
@@ -55,7 +55,7 @@ class PayrollItemUpdateTest extends TestCase
 
         $this->assertDatabaseHas('payroll_items', [
             'id' => $payrollItem->id,
-            'basic_salary' => 3500.00,
+            'basicSalary' => 3500.00,
             'status' => 'pending'
         ]);
     }
@@ -65,15 +65,15 @@ class PayrollItemUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $period = PayrollPeriod::factory()->create();
         $payrollItem = PayrollItem::factory()->pending()->create([
-            'employee_id' => $employee->id,
-            'payroll_period_id' => $period->id
+            'employeeId' => $employee->id,
+            'payrollPeriodId' => $period->id
         ]);
 
         $data = [
@@ -100,15 +100,15 @@ class PayrollItemUpdateTest extends TestCase
         $tech = $this->getTechUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $period = PayrollPeriod::factory()->create();
         $payrollItem = PayrollItem::factory()->create([
-            'employee_id' => $employee->id,
-            'payroll_period_id' => $period->id
+            'employeeId' => $employee->id,
+            'payrollPeriodId' => $period->id
         ]);
 
         $data = [
@@ -134,15 +134,15 @@ class PayrollItemUpdateTest extends TestCase
         $customer = $this->getCustomerUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $period = PayrollPeriod::factory()->create();
         $payrollItem = PayrollItem::factory()->create([
-            'employee_id' => $employee->id,
-            'payroll_period_id' => $period->id
+            'employeeId' => $employee->id,
+            'payrollPeriodId' => $period->id
         ]);
 
         $data = [
@@ -165,15 +165,15 @@ class PayrollItemUpdateTest extends TestCase
     public function test_guest_cannot_update_payroll_item(): void
     {
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $period = PayrollPeriod::factory()->create();
         $payrollItem = PayrollItem::factory()->create([
-            'employee_id' => $employee->id,
-            'payroll_period_id' => $period->id
+            'employeeId' => $employee->id,
+            'payrollPeriodId' => $period->id
         ]);
 
         $data = [
@@ -218,15 +218,15 @@ class PayrollItemUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $period = PayrollPeriod::factory()->create();
         $payrollItem = PayrollItem::factory()->create([
-            'employee_id' => $employee->id,
-            'payroll_period_id' => $period->id
+            'employeeId' => $employee->id,
+            'payrollPeriodId' => $period->id
         ]);
 
         $data = [
@@ -253,16 +253,16 @@ class PayrollItemUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $period = PayrollPeriod::factory()->create();
         $payrollItem = PayrollItem::factory()->create([
-            'employee_id' => $employee->id,
-            'payroll_period_id' => $period->id,
-            'basic_salary' => 2000.00,
+            'employeeId' => $employee->id,
+            'payrollPeriodId' => $period->id,
+            'basicSalary' => 2000.00,
             'overtime_pay' => 0,
             'bonuses' => 0,
             'deductions' => 0
@@ -298,16 +298,16 @@ class PayrollItemUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $period = PayrollPeriod::factory()->create();
         $payrollItem = PayrollItem::factory()->create([
-            'employee_id' => $employee->id,
-            'payroll_period_id' => $period->id,
-            'basic_salary' => 3000.00,
+            'employeeId' => $employee->id,
+            'payrollPeriodId' => $period->id,
+            'basicSalary' => 3000.00,
             'status' => 'draft'
         ]);
 

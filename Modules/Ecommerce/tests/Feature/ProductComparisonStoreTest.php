@@ -40,7 +40,7 @@ class ProductComparisonStoreTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('product_comparisons', [
-            'user_id' => $admin->id,
+            'userId' => $admin->id,
             'name' => 'Laptop Comparison',
             'is_public' => false,
         ]);
@@ -170,7 +170,7 @@ class ProductComparisonStoreTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('product_comparisons', [
-            'user_id' => $customer->id,
+            'userId' => $customer->id,
             'is_public' => true,
         ]);
     }

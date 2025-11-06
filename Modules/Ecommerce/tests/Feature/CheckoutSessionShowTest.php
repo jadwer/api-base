@@ -31,7 +31,7 @@ class CheckoutSessionShowTest extends TestCase
         $admin = $this->getAdminUser();
         $session = CheckoutSession::factory()->create([
             'status' => 'initiated',
-            'total_amount' => 1500.00,
+            'totalAmount' => 1500.00,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -66,7 +66,7 @@ class CheckoutSessionShowTest extends TestCase
     public function test_customer_can_only_view_own_checkout_session(): void
     {
         $customer = $this->getCustomerUser();
-        $session = CheckoutSession::factory()->create(['user_id' => $customer->id]);
+        $session = CheckoutSession::factory()->create(['userId' => $customer->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
@@ -80,7 +80,7 @@ class CheckoutSessionShowTest extends TestCase
     {
         $customer = $this->getCustomerUser();
         $otherUser = $this->getAdminUser();
-        $session = CheckoutSession::factory()->create(['user_id' => $otherUser->id]);
+        $session = CheckoutSession::factory()->create(['userId' => $otherUser->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()

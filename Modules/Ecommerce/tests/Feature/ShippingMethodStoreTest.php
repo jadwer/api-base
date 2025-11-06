@@ -42,7 +42,7 @@ class ShippingMethodStoreTest extends TestCase
             'name' => 'Express Delivery',
             'code' => 'express-001',
             'carrier' => 'DHL',
-            'is_active' => true,
+            'isActive' => true,
         ]);
     }
 

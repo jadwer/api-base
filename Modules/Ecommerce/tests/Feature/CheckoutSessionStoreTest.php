@@ -38,9 +38,9 @@ class CheckoutSessionStoreTest extends TestCase
 
         $response->assertCreated();
         $this->assertDatabaseHas('checkout_sessions', [
-            'shopping_cart_id' => $cart->id,
+            'shoppingCartId' => $cart->id,
             'status' => 'initiated',
-            'total_amount' => 126.00,
+            'totalAmount' => 126.00,
         ]);
     }
 
@@ -73,7 +73,7 @@ class CheckoutSessionStoreTest extends TestCase
     public function test_customer_user_can_create_checkout_session(): void
     {
         $customer = $this->getCustomerUser();
-        $cart = ShoppingCart::factory()->create(['user_id' => $customer->id]);
+        $cart = ShoppingCart::factory()->create(['userId' => $customer->id]);
 
         $data = [
             'type' => 'checkout-sessions',
@@ -95,8 +95,8 @@ class CheckoutSessionStoreTest extends TestCase
 
         $response->assertCreated();
         $this->assertDatabaseHas('checkout_sessions', [
-            'shopping_cart_id' => $cart->id,
-            'total_amount' => 200.00,
+            'shoppingCartId' => $cart->id,
+            'totalAmount' => 200.00,
         ]);
     }
 

@@ -58,7 +58,7 @@ class WishlistIndexTest extends TestCase
         $customer = User::role('customer')->first();
 
         // Create customer's own wishlists
-        Wishlist::factory()->count(2)->create(['user_id' => $customer->id]);
+        Wishlist::factory()->count(2)->create(['userId' => $customer->id]);
 
         // Create public wishlists from other users
         Wishlist::factory()->public()->count(2)->create();
@@ -90,7 +90,7 @@ class WishlistIndexTest extends TestCase
         $admin = User::role('admin')->first();
         $user = User::factory()->create();
 
-        Wishlist::factory()->count(2)->create(['user_id' => $user->id]);
+        Wishlist::factory()->count(2)->create(['userId' => $user->id]);
         Wishlist::factory()->count(3)->create();
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -107,7 +107,7 @@ class WishlistIndexTest extends TestCase
         $admin = User::role('admin')->first();
 
         Wishlist::factory()->default()->count(1)->create();
-        Wishlist::factory()->count(3)->create(['is_default' => false]);
+        Wishlist::factory()->count(3)->create(['isDefault' => false]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

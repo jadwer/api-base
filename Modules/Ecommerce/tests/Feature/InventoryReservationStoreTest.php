@@ -39,7 +39,7 @@ class InventoryReservationStoreTest extends TestCase
 
         $response->assertCreated();
         $this->assertDatabaseHas('inventory_reservations', [
-            'checkout_session_id' => $session->id,
+            'checkoutSessionId' => $session->id,
             'quantity_reserved' => 5,
             'status' => 'active',
         ]);

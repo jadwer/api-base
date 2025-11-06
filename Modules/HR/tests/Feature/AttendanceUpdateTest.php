@@ -15,15 +15,15 @@ class AttendanceUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $attendance = Attendance::factory()->create([
-            'employee_id' => $employee->id,
-            'check_in_time' => '09:00:00',
-            'check_out_time' => '17:00:00',
+            'employeeId' => $employee->id,
+            'checkInTime' => '09:00:00',
+            'checkOutTime' => '17:00:00',
             'status' => 'present'
         ]);
 
@@ -31,8 +31,8 @@ class AttendanceUpdateTest extends TestCase
             'type' => 'attendances',
             'id' => (string) $attendance->id,
             'attributes' => [
-                'check_out_time' => '18:00:00',
-                'overtime_hours' => 1.0,
+                'checkOutTime' => '18:00:00',
+                'overtimeHours' => 1.0,
                 'notes' => 'Worked overtime'
             ]
         ];
@@ -52,12 +52,12 @@ class AttendanceUpdateTest extends TestCase
         $tech = $this->getTechUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
-        $attendance = Attendance::factory()->create(['employee_id' => $employee->id]);
+        $attendance = Attendance::factory()->create(['employeeId' => $employee->id]);
 
         $data = [
             'type' => 'attendances',
@@ -81,12 +81,12 @@ class AttendanceUpdateTest extends TestCase
         $customer = $this->getCustomerUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
-        $attendance = Attendance::factory()->create(['employee_id' => $employee->id]);
+        $attendance = Attendance::factory()->create(['employeeId' => $employee->id]);
 
         $data = [
             'type' => 'attendances',
@@ -108,12 +108,12 @@ class AttendanceUpdateTest extends TestCase
     public function test_guest_cannot_update_attendance(): void
     {
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
-        $attendance = Attendance::factory()->create(['employee_id' => $employee->id]);
+        $attendance = Attendance::factory()->create(['employeeId' => $employee->id]);
 
         $data = [
             'type' => 'attendances',
@@ -157,12 +157,12 @@ class AttendanceUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
-        $attendance = Attendance::factory()->create(['employee_id' => $employee->id]);
+        $attendance = Attendance::factory()->create(['employeeId' => $employee->id]);
 
         $data = [
             'type' => 'attendances',
@@ -186,22 +186,22 @@ class AttendanceUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $attendance = Attendance::factory()->create([
-            'employee_id' => $employee->id,
-            'check_in_time' => '09:00:00',
-            'check_out_time' => '17:00:00'
+            'employeeId' => $employee->id,
+            'checkInTime' => '09:00:00',
+            'checkOutTime' => '17:00:00'
         ]);
 
         $data = [
             'type' => 'attendances',
             'id' => (string) $attendance->id,
             'attributes' => [
-                'check_out_time' => '19:00:00'
+                'checkOutTime' => '19:00:00'
             ]
         ];
 

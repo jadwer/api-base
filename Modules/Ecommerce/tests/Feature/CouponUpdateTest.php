@@ -38,7 +38,7 @@ class CouponUpdateTest extends TestCase
             'id' => $coupon->id,
             'name' => 'Updated Coupon',
             'description' => 'Updated description',
-            'is_active' => false
+            'isActive' => false
         ]);
     }
 

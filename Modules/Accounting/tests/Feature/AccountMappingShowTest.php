@@ -46,7 +46,7 @@ class AccountMappingShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $accountMapping = AccountMapping::factory()->create(['mapping_type' => 'test string', 'version' => 100, 'effective_from' => now(), 'effective_to' => now(), 'is_active' => true, 'notes' => 'test description']);
+        $accountMapping = AccountMapping::factory()->create(['mapping_type' => 'test string', 'version' => 100, 'effective_from' => now(), 'effective_to' => now(), 'isActive' => true, 'notes' => 'test description']);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

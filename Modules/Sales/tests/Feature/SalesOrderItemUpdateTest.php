@@ -18,7 +18,7 @@ class SalesOrderItemUpdateTest extends TestCase
         $admin = $this->getAdminUser();
         $item = SalesOrderItem::factory()->create([
             'quantity' => 5.0,
-            'unit_price' => 100.0,
+            'unitPrice' => 100.0,
             'total' => 500.0
         ]);
         
@@ -51,7 +51,7 @@ class SalesOrderItemUpdateTest extends TestCase
         $admin = $this->getAdminUser();
         $item = SalesOrderItem::factory()->create([
             'quantity' => 5.0,
-            'unit_price' => 100.0,
+            'unitPrice' => 100.0,
             'total' => 500.0
         ]);
         
@@ -74,7 +74,7 @@ class SalesOrderItemUpdateTest extends TestCase
         
         $this->assertDatabaseHas('sales_order_items', [
             'id' => $item->id,
-            'unit_price' => 150.0,
+            'unitPrice' => 150.0,
             'total' => 750.0
         ]);
     }
@@ -84,7 +84,7 @@ class SalesOrderItemUpdateTest extends TestCase
         $admin = $this->getAdminUser();
         $item = SalesOrderItem::factory()->create([
             'quantity' => 5.0,
-            'unit_price' => 100.0,
+            'unitPrice' => 100.0,
             'discount' => 0.0,
             'total' => 500.0
         ]);
@@ -170,7 +170,7 @@ class SalesOrderItemUpdateTest extends TestCase
         
         $this->assertDatabaseHas('sales_order_items', [
             'id' => $item->id,
-            'product_id' => $newProduct->id
+            'productId' => $newProduct->id
         ]);
     }
 

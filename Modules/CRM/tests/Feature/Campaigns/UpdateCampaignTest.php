@@ -15,7 +15,7 @@ class UpdateCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
             'name' => 'Original Campaign',
         ]);
 
@@ -57,7 +57,7 @@ class UpdateCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->planning()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $data = [
@@ -88,7 +88,7 @@ class UpdateCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->email()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $data = [
@@ -119,7 +119,7 @@ class UpdateCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
             'budget' => 50000.00,
         ]);
 
@@ -151,7 +151,7 @@ class UpdateCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->active()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
             'budget' => 100000.00,
         ]);
 
@@ -187,8 +187,8 @@ class UpdateCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'user_id' => $user->id,
-            'start_date' => now(),
+            'userId' => $user->id,
+            'startDate' => now(),
         ]);
 
         $newStartDate = now()->addMonth()->format('Y-m-d');
@@ -212,8 +212,8 @@ class UpdateCampaignTest extends TestCase
         $response->assertOk();
         $this->assertDatabaseHas('campaigns', [
             'id' => $campaign->id,
-            'start_date' => $newStartDate,
-            'end_date' => $newEndDate,
+            'startDate' => $newStartDate,
+            'endDate' => $newEndDate,
         ]);
     }
 
@@ -224,7 +224,7 @@ class UpdateCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
             'metadata' => [
                 'platform' => 'Email',
             ],
@@ -262,7 +262,7 @@ class UpdateCampaignTest extends TestCase
         $user2 = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'user_id' => $user1->id,
+            'userId' => $user1->id,
         ]);
 
         $data = [
@@ -287,7 +287,7 @@ class UpdateCampaignTest extends TestCase
         $response->assertOk();
         $this->assertDatabaseHas('campaigns', [
             'id' => $campaign->id,
-            'user_id' => $user2->id,
+            'userId' => $user2->id,
         ]);
     }
 
@@ -298,7 +298,7 @@ class UpdateCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $data = [
@@ -326,7 +326,7 @@ class UpdateCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $data = [
@@ -354,7 +354,7 @@ class UpdateCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $data = [
@@ -383,7 +383,7 @@ class UpdateCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $data = [
@@ -410,7 +410,7 @@ class UpdateCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $data = [
@@ -435,7 +435,7 @@ class UpdateCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $data = [
@@ -483,11 +483,11 @@ class UpdateCampaignTest extends TestCase
 
         $campaign1 = Campaign::factory()->create([
             'name' => 'Campaign 1',
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
         $campaign2 = Campaign::factory()->create([
             'name' => 'Campaign 2',
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $data = [

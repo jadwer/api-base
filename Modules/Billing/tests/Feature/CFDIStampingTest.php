@@ -55,12 +55,12 @@ class CFDIStampingTest extends TestCase
         // Create company setting
         $this->companySetting = CompanySetting::factory()->create([
             'rfc' => 'XAXX010101000',
-            'company_name' => 'Test Company SA de CV',
+            'companyName' => 'Test Company SA de CV',
         ]);
 
         // Create contact
         $this->contact = Contact::factory()->create([
-            'tax_id' => 'XEXX010101000',
+            'taxId' => 'XEXX010101000',
         ]);
     }
 
@@ -77,7 +77,7 @@ class CFDIStampingTest extends TestCase
         // Create CFDI invoice
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $this->companySetting->id,
-            'contact_id' => $this->contact->id,
+            'contactId' => $this->contact->id,
             'receptor_rfc' => $this->contact->tax_id,
             'status' => 'draft',
             'uuid' => null,
@@ -102,7 +102,7 @@ class CFDIStampingTest extends TestCase
         // Create already stamped CFDI invoice
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $this->companySetting->id,
-            'contact_id' => $this->contact->id,
+            'contactId' => $this->contact->id,
             'receptor_rfc' => $this->contact->tax_id,
             'status' => 'valid',
             'uuid' => 'A1B2C3D4-E5F6-7890-ABCD-EF1234567890',
@@ -130,7 +130,7 @@ class CFDIStampingTest extends TestCase
         // Create stamped CFDI invoice
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $this->companySetting->id,
-            'contact_id' => $this->contact->id,
+            'contactId' => $this->contact->id,
             'receptor_rfc' => $this->contact->tax_id,
             'status' => 'valid',
             'uuid' => 'A1B2C3D4-E5F6-7890-ABCD-EF1234567890',
@@ -156,7 +156,7 @@ class CFDIStampingTest extends TestCase
         // Create draft CFDI invoice
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $this->companySetting->id,
-            'contact_id' => $this->contact->id,
+            'contactId' => $this->contact->id,
             'receptor_rfc' => $this->contact->tax_id,
             'status' => 'draft',
             'uuid' => null,
@@ -180,7 +180,7 @@ class CFDIStampingTest extends TestCase
         // Create stamped CFDI invoice
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $this->companySetting->id,
-            'contact_id' => $this->contact->id,
+            'contactId' => $this->contact->id,
             'receptor_rfc' => $this->contact->tax_id,
             'status' => 'valid',
             'uuid' => 'A1B2C3D4-E5F6-7890-ABCD-EF1234567890',
@@ -207,7 +207,7 @@ class CFDIStampingTest extends TestCase
 
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $this->companySetting->id,
-            'contact_id' => $this->contact->id,
+            'contactId' => $this->contact->id,
             'receptor_rfc' => $this->contact->tax_id,
             'status' => 'draft',
         ]);
@@ -222,7 +222,7 @@ class CFDIStampingTest extends TestCase
     {
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $this->companySetting->id,
-            'contact_id' => $this->contact->id,
+            'contactId' => $this->contact->id,
             'series' => 'F',
             'folio' => 123,
             'status' => 'draft',
@@ -251,7 +251,7 @@ class CFDIStampingTest extends TestCase
     {
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $this->companySetting->id,
-            'contact_id' => $this->contact->id,
+            'contactId' => $this->contact->id,
             'status' => 'valid',
             'uuid' => 'A1B2C3D4-E5F6-7890-ABCD-EF1234567890',
             'fecha_timbrado' => now(),

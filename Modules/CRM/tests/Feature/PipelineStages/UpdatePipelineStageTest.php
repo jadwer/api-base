@@ -41,7 +41,7 @@ class UpdatePipelineStageTest extends TestCase
             'id' => $stage->id,
             'name' => 'Updated Name',
             'probability' => 50,
-            'is_active' => false
+            'isActive' => false
         ]);
     }
 
@@ -219,7 +219,7 @@ class UpdatePipelineStageTest extends TestCase
             'type' => 'opportunity',
             'probability' => 25,
             'sort_order' => 1,
-            'is_active' => true
+            'isActive' => true
         ]);
 
         $data = [

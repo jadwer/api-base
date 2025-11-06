@@ -37,8 +37,8 @@ class EdgeCaseIntegrationTest extends TestCase
         $this->fiscalPeriod = FiscalPeriod::factory()->create([
             'year' => now()->year,
             'month' => now()->month,
-            'start_date' => now()->startOfMonth(),
-            'end_date' => now()->endOfMonth(),
+            'startDate' => now()->startOfMonth(),
+            'endDate' => now()->endOfMonth(),
             'status' => 'open',
         ]);
 
@@ -46,7 +46,7 @@ class EdgeCaseIntegrationTest extends TestCase
         $this->customer = Contact::factory()->create([
             'name' => 'Test Customer',
             'is_customer' => true,
-            'credit_limit' => 50000,
+            'creditLimit' => 50000,
         ]);
 
         // Create supplier
@@ -63,27 +63,27 @@ class EdgeCaseIntegrationTest extends TestCase
     {
         // Create original AR invoice
         $originalInvoice = ARInvoice::factory()->create([
-            'contact_id' => $this->customer->id,
-            'fiscal_period_id' => $this->fiscalPeriod->id,
-            'invoice_number' => 'INV-001',
-            'invoice_date' => now(),
-            'due_date' => now()->addDays(30),
+            'contactId' => $this->customer->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
+            'invoiceNumber' => 'INV-001',
+            'invoiceDate' => now(),
+            'dueDate' => now()->addDays(30),
             'subtotal' => 10000,
-            'tax_amount' => 1600,
-            'total_amount' => 11600,
+            'taxAmount' => 1600,
+            'totalAmount' => 11600,
             'status' => 'posted',
         ]);
 
         // Create refund (negative invoice)
         $refundInvoice = ARInvoice::factory()->create([
-            'contact_id' => $this->customer->id,
-            'fiscal_period_id' => $this->fiscalPeriod->id,
-            'invoice_number' => 'REF-001',
-            'invoice_date' => now(),
-            'due_date' => now(),
+            'contactId' => $this->customer->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
+            'invoiceNumber' => 'REF-001',
+            'invoiceDate' => now(),
+            'dueDate' => now(),
             'subtotal' => -10000,
-            'tax_amount' => -1600,
-            'total_amount' => -11600,
+            'taxAmount' => -1600,
+            'totalAmount' => -11600,
             'status' => 'posted',
             'is_refund' => true,
             'refund_of_invoice_id' => $originalInvoice->id,
@@ -95,8 +95,8 @@ class EdgeCaseIntegrationTest extends TestCase
         $this->assertEquals($originalInvoice->id, $refundInvoice->refund_of_invoice_id);
 
         // Verify net AR balance is zero
-        $netBalance = ARInvoice::where('contact_id', $this->customer->id)
-            ->sum('total_amount');
+        $netBalance = ARInvoice::where('contactId', $this->customer->id)
+            ->sum('totalAmount');
         $this->assertEquals(0, $netBalance);
     }
 
@@ -107,12 +107,12 @@ class EdgeCaseIntegrationTest extends TestCase
     {
         // Create original AP invoice (with error)
         $voidedInvoice = APInvoice::factory()->create([
-            'contact_id' => $this->supplier->id,
-            'fiscal_period_id' => $this->fiscalPeriod->id,
-            'invoice_number' => 'VOID-001',
-            'invoice_date' => now()->subDay(),
-            'due_date' => now()->addDays(30),
-            'total_amount' => 5000,
+            'contactId' => $this->supplier->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
+            'invoiceNumber' => 'VOID-001',
+            'invoiceDate' => now()->subDay(),
+            'dueDate' => now()->addDays(30),
+            'totalAmount' => 5000,
             'status' => 'posted',
         ]);
 
@@ -126,12 +126,12 @@ class EdgeCaseIntegrationTest extends TestCase
 
         // Create replacement invoice
         $replacementInvoice = APInvoice::factory()->create([
-            'contact_id' => $this->supplier->id,
-            'fiscal_period_id' => $this->fiscalPeriod->id,
-            'invoice_number' => 'REPL-001',
-            'invoice_date' => now(),
-            'due_date' => now()->addDays(30),
-            'total_amount' => 5500, // Corrected amount
+            'contactId' => $this->supplier->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
+            'invoiceNumber' => 'REPL-001',
+            'invoiceDate' => now(),
+            'dueDate' => now()->addDays(30),
+            'totalAmount' => 5500, // Corrected amount
             'status' => 'posted',
             'replaces_invoice_id' => $voidedInvoice->id,
         ]);
@@ -142,9 +142,9 @@ class EdgeCaseIntegrationTest extends TestCase
         $this->assertEquals(5500, $replacementInvoice->total_amount);
 
         // Only replacement should count towards AP balance
-        $apBalance = APInvoice::where('contact_id', $this->supplier->id)
+        $apBalance = APInvoice::where('contactId', $this->supplier->id)
             ->where('status', 'posted')
-            ->sum('total_amount');
+            ->sum('totalAmount');
         $this->assertEquals(5500, $apBalance);
     }
 
@@ -155,25 +155,25 @@ class EdgeCaseIntegrationTest extends TestCase
     {
         // Create AR invoice
         $invoice = ARInvoice::factory()->create([
-            'contact_id' => $this->customer->id,
-            'fiscal_period_id' => $this->fiscalPeriod->id,
-            'total_amount' => 10000,
+            'contactId' => $this->customer->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
+            'totalAmount' => 10000,
             'status' => 'posted',
         ]);
 
         // Create payment
         $payment = ARPayment::factory()->create([
-            'contact_id' => $this->customer->id,
-            'fiscal_period_id' => $this->fiscalPeriod->id,
+            'contactId' => $this->customer->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
             'payment_amount' => 10000,
             'status' => 'posted',
         ]);
 
         // Apply payment (incorrectly to wrong invoice initially)
         $wrongInvoice = ARInvoice::factory()->create([
-            'contact_id' => $this->customer->id,
-            'fiscal_period_id' => $this->fiscalPeriod->id,
-            'total_amount' => 5000,
+            'contactId' => $this->customer->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
+            'totalAmount' => 5000,
             'status' => 'posted',
         ]);
 
@@ -224,8 +224,8 @@ class EdgeCaseIntegrationTest extends TestCase
 
         // Create original journal entry
         $originalEntry = JournalEntry::factory()->create([
-            'fiscal_period_id' => $this->fiscalPeriod->id,
-            'journal_id' => null,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
+            'journalId' => null,
             'accounting_date' => now()->subDay(),
             'reference' => 'JE-001',
             'description' => 'Original Entry',
@@ -234,14 +234,14 @@ class EdgeCaseIntegrationTest extends TestCase
 
         // Add lines to original entry
         $originalEntry->lines()->create([
-            'account_id' => $cashAccount->id,
+            'accountId' => $cashAccount->id,
             'debit_amount' => 10000,
             'credit_amount' => 0,
             'description' => 'Cash receipt',
         ]);
 
         $originalEntry->lines()->create([
-            'account_id' => $revenueAccount->id,
+            'accountId' => $revenueAccount->id,
             'debit_amount' => 0,
             'credit_amount' => 10000,
             'description' => 'Revenue earned',
@@ -249,8 +249,8 @@ class EdgeCaseIntegrationTest extends TestCase
 
         // Create reversal entry
         $reversalEntry = JournalEntry::factory()->create([
-            'fiscal_period_id' => $this->fiscalPeriod->id,
-            'journal_id' => null,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
+            'journalId' => null,
             'accounting_date' => now(),
             'reference' => 'JE-001-REV',
             'description' => 'Reversal of JE-001',
@@ -261,14 +261,14 @@ class EdgeCaseIntegrationTest extends TestCase
 
         // Add opposite lines to reversal
         $reversalEntry->lines()->create([
-            'account_id' => $cashAccount->id,
+            'accountId' => $cashAccount->id,
             'debit_amount' => 0,
             'credit_amount' => 10000, // Opposite of original
             'description' => 'Cash receipt reversal',
         ]);
 
         $reversalEntry->lines()->create([
-            'account_id' => $revenueAccount->id,
+            'accountId' => $revenueAccount->id,
             'debit_amount' => 10000, // Opposite of original
             'credit_amount' => 0,
             'description' => 'Revenue reversal',
@@ -293,32 +293,32 @@ class EdgeCaseIntegrationTest extends TestCase
     {
         // Create sales order
         $salesOrder = SalesOrder::factory()->create([
-            'customer_id' => $this->customer->id,
-            'order_number' => 'SO-001',
-            'order_date' => now(),
+            'customerId' => $this->customer->id,
+            'orderNumber' => 'SO-001',
+            'orderDate' => now(),
             'subtotal' => 20000,
-            'tax_amount' => 3200,
-            'total_amount' => 23200,
+            'taxAmount' => 3200,
+            'totalAmount' => 23200,
             'status' => 'completed',
         ]);
 
         // Create AR invoice from sales order
         $arInvoice = ARInvoice::factory()->create([
-            'contact_id' => $this->customer->id,
+            'contactId' => $this->customer->id,
             'sales_order_id' => $salesOrder->id,
-            'fiscal_period_id' => $this->fiscalPeriod->id,
-            'invoice_number' => 'INV-SO-001',
-            'invoice_date' => now(),
-            'due_date' => now()->addDays(30),
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
+            'invoiceNumber' => 'INV-SO-001',
+            'invoiceDate' => now(),
+            'dueDate' => now()->addDays(30),
             'subtotal' => 20000,
-            'tax_amount' => 3200,
-            'total_amount' => 23200,
+            'taxAmount' => 3200,
+            'totalAmount' => 23200,
             'status' => 'posted',
         ]);
 
         // Create GL entry for AR invoice
         $glEntry = JournalEntry::factory()->create([
-            'fiscal_period_id' => $this->fiscalPeriod->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
             'accounting_date' => now(),
             'reference' => 'INV-SO-001',
             'description' => 'AR Invoice from SO-001',
@@ -333,19 +333,19 @@ class EdgeCaseIntegrationTest extends TestCase
         $taxAccount = Account::factory()->create(['code' => '2030', 'name' => 'Sales Tax Payable', 'account_type' => 'liability']);
 
         $glEntry->lines()->create([
-            'account_id' => $arAccount->id,
+            'accountId' => $arAccount->id,
             'debit_amount' => 23200,
             'credit_amount' => 0,
         ]);
 
         $glEntry->lines()->create([
-            'account_id' => $revenueAccount->id,
+            'accountId' => $revenueAccount->id,
             'debit_amount' => 0,
             'credit_amount' => 20000,
         ]);
 
         $glEntry->lines()->create([
-            'account_id' => $taxAccount->id,
+            'accountId' => $taxAccount->id,
             'debit_amount' => 0,
             'credit_amount' => 3200,
         ]);
@@ -370,18 +370,18 @@ class EdgeCaseIntegrationTest extends TestCase
     {
         // Create sales order
         $salesOrder = SalesOrder::factory()->create([
-            'customer_id' => $this->customer->id,
-            'order_number' => 'SO-DUP-001',
-            'total_amount' => 15000,
+            'customerId' => $this->customer->id,
+            'orderNumber' => 'SO-DUP-001',
+            'totalAmount' => 15000,
             'status' => 'completed',
         ]);
 
         // Create first AR invoice
         $invoice1 = ARInvoice::factory()->create([
-            'contact_id' => $this->customer->id,
+            'contactId' => $this->customer->id,
             'sales_order_id' => $salesOrder->id,
-            'fiscal_period_id' => $this->fiscalPeriod->id,
-            'total_amount' => 15000,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
+            'totalAmount' => 15000,
             'status' => 'posted',
         ]);
 
@@ -408,16 +408,16 @@ class EdgeCaseIntegrationTest extends TestCase
     {
         // Create AR invoice
         $invoice = ARInvoice::factory()->create([
-            'contact_id' => $this->customer->id,
-            'fiscal_period_id' => $this->fiscalPeriod->id,
-            'total_amount' => 10000,
+            'contactId' => $this->customer->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
+            'totalAmount' => 10000,
             'status' => 'posted',
         ]);
 
         // Create overpayment
         $payment = ARPayment::factory()->create([
-            'contact_id' => $this->customer->id,
-            'fiscal_period_id' => $this->fiscalPeriod->id,
+            'contactId' => $this->customer->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
             'payment_amount' => 12000, // $2000 overpayment
             'status' => 'posted',
         ]);
@@ -445,23 +445,23 @@ class EdgeCaseIntegrationTest extends TestCase
     {
         // Create multiple invoices
         $invoice1 = ARInvoice::factory()->create([
-            'contact_id' => $this->customer->id,
-            'fiscal_period_id' => $this->fiscalPeriod->id,
-            'total_amount' => 5000,
+            'contactId' => $this->customer->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
+            'totalAmount' => 5000,
             'status' => 'posted',
         ]);
 
         $invoice2 = ARInvoice::factory()->create([
-            'contact_id' => $this->customer->id,
-            'fiscal_period_id' => $this->fiscalPeriod->id,
-            'total_amount' => 7000,
+            'contactId' => $this->customer->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
+            'totalAmount' => 7000,
             'status' => 'posted',
         ]);
 
         // Create single payment
         $payment = ARPayment::factory()->create([
-            'contact_id' => $this->customer->id,
-            'fiscal_period_id' => $this->fiscalPeriod->id,
+            'contactId' => $this->customer->id,
+            'fiscalPeriodId' => $this->fiscalPeriod->id,
             'payment_amount' => 10000,
             'status' => 'posted',
         ]);

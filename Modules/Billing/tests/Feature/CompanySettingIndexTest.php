@@ -142,8 +142,8 @@ class CompanySettingIndexTest extends TestCase
     {
         $user = $this->getAdminUser();
 
-        $settingA = CompanySetting::factory()->create(['company_name' => 'Alpha Corp']);
-        $settingB = CompanySetting::factory()->create(['company_name' => 'Beta Inc']);
+        $settingA = CompanySetting::factory()->create(['companyName' => 'Alpha Corp']);
+        $settingB = CompanySetting::factory()->create(['companyName' => 'Beta Inc']);
 
         $response = $this->jsonApi()
             ->expects('company-settings')

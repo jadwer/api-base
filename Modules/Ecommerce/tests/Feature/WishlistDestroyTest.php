@@ -33,7 +33,7 @@ class WishlistDestroyTest extends TestCase
     {
         $customer = User::role('customer')->first();
 
-        $wishlist = Wishlist::factory()->create(['user_id' => $customer->id]);
+        $wishlist = Wishlist::factory()->create(['userId' => $customer->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
@@ -53,7 +53,7 @@ class WishlistDestroyTest extends TestCase
         $customer = User::role('customer')->first();
 
         $otherUser = User::factory()->create();
-        $wishlist = Wishlist::factory()->create(['user_id' => $otherUser->id]);
+        $wishlist = Wishlist::factory()->create(['userId' => $otherUser->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
@@ -107,7 +107,7 @@ class WishlistDestroyTest extends TestCase
     {
         $customer = User::role('customer')->first();
 
-        $wishlist = Wishlist::factory()->create(['user_id' => $customer->id]);
+        $wishlist = Wishlist::factory()->create(['userId' => $customer->id]);
         $item1 = WishlistItem::factory()->create(['wishlist_id' => $wishlist->id]);
         $item2 = WishlistItem::factory()->create(['wishlist_id' => $wishlist->id]);
 
@@ -150,7 +150,7 @@ class WishlistDestroyTest extends TestCase
     {
         $customer = User::role('customer')->first();
 
-        $wishlist = Wishlist::factory()->public()->create(['user_id' => $customer->id]);
+        $wishlist = Wishlist::factory()->public()->create(['userId' => $customer->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
@@ -169,7 +169,7 @@ class WishlistDestroyTest extends TestCase
     {
         $customer = User::role('customer')->first();
 
-        $wishlist = Wishlist::factory()->default()->create(['user_id' => $customer->id]);
+        $wishlist = Wishlist::factory()->default()->create(['userId' => $customer->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
