@@ -18,8 +18,8 @@ class ProductReviewDestroyTest extends TestCase
         $user = User::factory()->create();
 
         $review = ProductReview::factory()->approved()->create([
-            'product_id' => $product->id,
-            'user_id' => $user->id,
+            'productId' => $product->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->jsonApi()
@@ -42,8 +42,8 @@ class ProductReviewDestroyTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->pending()->create([
-            'product_id' => $product->id,
-            'user_id' => $customer->id,
+            'productId' => $product->id,
+            'userId' => $customer->id,
         ]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -68,8 +68,8 @@ class ProductReviewDestroyTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->pending()->create([
-            'product_id' => $product->id,
-            'user_id' => $otherUser->id,
+            'productId' => $product->id,
+            'userId' => $otherUser->id,
         ]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -94,8 +94,8 @@ class ProductReviewDestroyTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->approved()->create([
-            'product_id' => $product->id,
-            'user_id' => $user->id,
+            'productId' => $product->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -120,8 +120,8 @@ class ProductReviewDestroyTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->approved()->create([
-            'product_id' => $product->id,
-            'user_id' => $user->id,
+            'productId' => $product->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->actingAs($tech, 'sanctum')
@@ -145,8 +145,8 @@ class ProductReviewDestroyTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->approved()->create([
-            'product_id' => $product->id,
-            'user_id' => $customer->id,
+            'productId' => $product->id,
+            'userId' => $customer->id,
         ]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -170,8 +170,8 @@ class ProductReviewDestroyTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->rejected()->create([
-            'product_id' => $product->id,
-            'user_id' => $customer->id,
+            'productId' => $product->id,
+            'userId' => $customer->id,
         ]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -210,7 +210,7 @@ class ProductReviewDestroyTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->approved()->create([
-            'product_id' => $product->id,
+            'productId' => $product->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -235,8 +235,8 @@ class ProductReviewDestroyTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->approved()->create([
-            'product_id' => $product->id,
-            'user_id' => $user->id,
+            'productId' => $product->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -260,13 +260,13 @@ class ProductReviewDestroyTest extends TestCase
         $product = Product::factory()->create();
 
         $review1 = ProductReview::factory()->approved()->create([
-            'product_id' => $product->id,
-            'user_id' => $customer->id,
+            'productId' => $product->id,
+            'userId' => $customer->id,
         ]);
 
         $review2 = ProductReview::factory()->approved()->create([
-            'product_id' => $product->id,
-            'user_id' => $customer->id,
+            'productId' => $product->id,
+            'userId' => $customer->id,
         ]);
 
         // Delete first review

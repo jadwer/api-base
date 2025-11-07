@@ -18,7 +18,7 @@ class PositionStoreTest extends TestCase
             'type' => 'positions',
             'attributes' => [
                 'title' => 'Software Engineer',
-                'department_id' => $department->id,
+                'departmentId' => $department->id,
                 'description' => 'Develop and maintain software applications',
                 'min_salary' => 40000.00,
                 'max_salary' => 70000.00,
@@ -53,7 +53,7 @@ class PositionStoreTest extends TestCase
 
         $this->assertDatabaseHas('positions', [
             'title' => 'Software Engineer',
-            'department_id' => $department->id,
+            'departmentId' => $department->id,
             'isActive' => true
         ]);
     }
@@ -68,7 +68,7 @@ class PositionStoreTest extends TestCase
             'type' => 'positions',
             'attributes' => [
                 'title' => 'Junior Developer',
-                'department_id' => $department->id,
+                'departmentId' => $department->id,
                 'description' => 'Entry level position',
                 'isActive' => true
             ]
@@ -94,7 +94,7 @@ class PositionStoreTest extends TestCase
             'type' => 'positions',
             'attributes' => [
                 'title' => 'Data Analyst',
-                'department_id' => $department->id,
+                'departmentId' => $department->id,
                 'description' => 'Analyze business data',
                 'isActive' => true
             ]
@@ -120,7 +120,7 @@ class PositionStoreTest extends TestCase
             'type' => 'positions',
             'attributes' => [
                 'title' => 'Should Not Create',
-                'department_id' => $department->id,
+                'departmentId' => $department->id,
                 'isActive' => true
             ]
         ];
@@ -142,7 +142,7 @@ class PositionStoreTest extends TestCase
             'type' => 'positions',
             'attributes' => [
                 'title' => 'Should Not Create',
-                'department_id' => $department->id,
+                'departmentId' => $department->id,
                 'isActive' => true
             ]
         ];
@@ -164,7 +164,7 @@ class PositionStoreTest extends TestCase
         $data = [
             'type' => 'positions',
             'attributes' => [
-                'department_id' => $department->id,
+                'departmentId' => $department->id,
                 'description' => 'Missing title',
                 'isActive' => true
             ]
@@ -214,7 +214,7 @@ class PositionStoreTest extends TestCase
             'type' => 'positions',
             'attributes' => [
                 'title' => 'Invalid Salary',
-                'department_id' => $department->id,
+                'departmentId' => $department->id,
                 'min_salary' => 'not_a_number',
                 'isActive' => true
             ]
@@ -241,7 +241,7 @@ class PositionStoreTest extends TestCase
             'type' => 'positions',
             'attributes' => [
                 'title' => 'Invalid Salary',
-                'department_id' => $department->id,
+                'departmentId' => $department->id,
                 'max_salary' => 'not_a_number',
                 'isActive' => true
             ]
@@ -268,7 +268,7 @@ class PositionStoreTest extends TestCase
             'type' => 'positions',
             'attributes' => [
                 'title' => 'Default Active Position',
-                'department_id' => $department->id,
+                'departmentId' => $department->id,
                 'description' => 'Test default active'
             ]
         ];
@@ -293,7 +293,7 @@ class PositionStoreTest extends TestCase
             'type' => 'positions',
             'attributes' => [
                 'title' => 'Inactive Position',
-                'department_id' => $department->id,
+                'departmentId' => $department->id,
                 'description' => 'This position is not active',
                 'isActive' => false
             ]
@@ -319,7 +319,7 @@ class PositionStoreTest extends TestCase
             'type' => 'positions',
             'attributes' => [
                 'title' => 'Position Without Description',
-                'department_id' => $department->id,
+                'departmentId' => $department->id,
                 'isActive' => true
             ]
         ];

@@ -18,8 +18,8 @@ class JournalEntryStoreTest extends TestCase
         $data = [
             'type' => 'journal-entries',
             'attributes' => [
-                'journal_id' => $journal->id,
-                'fiscal_period_id' => $fiscalPeriod->id,
+                'journalId' => $journal->id,
+                'fiscalPeriodId' => $fiscalPeriod->id,
                 'date' => '2024-01-01',
                 'totalDebit' => 100.00,
                 'totalCredit' => 100.00,
@@ -45,8 +45,8 @@ class JournalEntryStoreTest extends TestCase
         $data = [
             'type' => 'journal-entries',
             'attributes' => [
-                'journal_id' => $journal->id,
-                'fiscal_period_id' => $fiscalPeriod->id,
+                'journalId' => $journal->id,
+                'fiscalPeriodId' => $fiscalPeriod->id,
                 'date' => '2024-01-01',
                 'totalDebit' => 100.00,
                 'totalCredit' => 100.00,
@@ -70,7 +70,7 @@ class JournalEntryStoreTest extends TestCase
         $data = [
             'type' => 'journal-entries',
             'attributes' => [
-                'journal_id' => 1
+                'journalId' => 1
             ]
         ];
 
@@ -90,7 +90,7 @@ class JournalEntryStoreTest extends TestCase
         $data = [
             'type' => 'journal-entries',
             'attributes' => [
-                'journal_id' => 1
+                'journalId' => 1
             ]
         ];
 
@@ -108,7 +108,7 @@ class JournalEntryStoreTest extends TestCase
         $data = [
             'type' => 'journal-entries',
             'attributes' => [
-                'journal_id' => 1
+                'journalId' => 1
             ]
         ];
 
@@ -127,7 +127,7 @@ class JournalEntryStoreTest extends TestCase
         $data = [
             'type' => 'journal-entries',
             'attributes' => [
-                'journal_id' => 1
+                'journalId' => 1
             ]
         ];
 
@@ -147,7 +147,7 @@ class JournalEntryStoreTest extends TestCase
         $data = [
             'type' => 'journal-entries',
             'attributes' => [
-                'journal_id' => 'invalid_data_type'
+                'journalId' => 'invalid_data_type'
             ]
         ];
 

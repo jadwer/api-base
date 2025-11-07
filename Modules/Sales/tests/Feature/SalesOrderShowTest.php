@@ -18,7 +18,7 @@ class SalesOrderShowTest extends TestCase
         
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contact_id' => $customer->id,
+            'contactId' => $customer->id,
             'orderNumber' => 'SO-TEST-001',
             'status' => 'confirmed',
             'totalAmount' => 1500.00,
@@ -58,7 +58,7 @@ class SalesOrderShowTest extends TestCase
         $admin = $this->getAdminUser();
         
         $contact = \Modules\Contacts\Models\Contact::factory()->create(['name' => 'Test Contact Relationship']);
-        $salesOrder = SalesOrder::factory()->create(['contact_id' => $contact->id]);
+        $salesOrder = SalesOrder::factory()->create(['contactId' => $contact->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -86,7 +86,7 @@ class SalesOrderShowTest extends TestCase
         
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->draft()->create([
-            'contact_id' => $customer->id,
+            'contactId' => $customer->id,
             'orderNumber' => 'SO-DRAFT-001'
         ]);
 
@@ -105,7 +105,7 @@ class SalesOrderShowTest extends TestCase
         $tech = $this->getTechUser();
         
         $customer = Contact::factory()->customer()->create();
-        $salesOrder = SalesOrder::factory()->create(['contact_id' => $customer->id]);
+        $salesOrder = SalesOrder::factory()->create(['contactId' => $customer->id]);
 
         $response = $this->actingAs($tech, 'sanctum')
             ->jsonApi()
@@ -120,7 +120,7 @@ class SalesOrderShowTest extends TestCase
         $customer = $this->getCustomerUser();
         
         $customerModel = Contact::factory()->customer()->create();
-        $salesOrder = SalesOrder::factory()->create(['contact_id' => $customerModel->id]);
+        $salesOrder = SalesOrder::factory()->create(['contactId' => $customerModel->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
@@ -140,7 +140,7 @@ class SalesOrderShowTest extends TestCase
     public function test_guest_cannot_view_sales_order(): void
     {
         $customer = Contact::factory()->customer()->create();
-        $salesOrder = SalesOrder::factory()->create(['contact_id' => $customer->id]);
+        $salesOrder = SalesOrder::factory()->create(['contactId' => $customer->id]);
 
         $response = $this->jsonApi()
             ->expects('sales-orders')
@@ -166,7 +166,7 @@ class SalesOrderShowTest extends TestCase
         $admin = $this->getAdminUser();
         
         $customer = Contact::factory()->customer()->create();
-        $salesOrder = SalesOrder::factory()->create(['contact_id' => $customer->id]);
+        $salesOrder = SalesOrder::factory()->create(['contactId' => $customer->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -191,7 +191,7 @@ class SalesOrderShowTest extends TestCase
         
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contact_id' => $customer->id,
+            'contactId' => $customer->id,
             'metadata' => $metadata
         ]);
 
@@ -213,7 +213,7 @@ class SalesOrderShowTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create(['name' => 'Test Customer']);
         $salesOrder = SalesOrder::factory()->create([
-            'contact_id' => $customer->id,
+            'contactId' => $customer->id,
             'orderNumber' => 'SO-ITEMS-001'
         ]);
         
@@ -267,7 +267,7 @@ class SalesOrderShowTest extends TestCase
         $admin = $this->getAdminUser();
         $contact = \Modules\Contacts\Models\Contact::factory()->create(['name' => 'Nested Contact']);
         $salesOrder = SalesOrder::factory()->create([
-            'contact_id' => $contact->id,
+            'contactId' => $contact->id,
             'orderNumber' => 'SO-NESTED-PROD-001'
         ]);
         
@@ -278,7 +278,7 @@ class SalesOrderShowTest extends TestCase
         // Crear 2 items con productos diferentes
         $item1 = \Modules\Sales\Models\SalesOrderItem::factory()->create([
             'sales_order_id' => $salesOrder->id,
-            'product_id' => $product1->id,
+            'productId' => $product1->id,
             'quantity' => 1.0,
             'unitPrice' => 100.0,
             'total' => 100.0
@@ -286,7 +286,7 @@ class SalesOrderShowTest extends TestCase
         
         $item2 = \Modules\Sales\Models\SalesOrderItem::factory()->create([
             'sales_order_id' => $salesOrder->id,
-            'product_id' => $product2->id,
+            'productId' => $product2->id,
             'quantity' => 2.0,
             'unitPrice' => 50.0,
             'total' => 100.0
@@ -342,7 +342,7 @@ class SalesOrderShowTest extends TestCase
         $admin = $this->getAdminUser();
         $contact = \Modules\Contacts\Models\Contact::factory()->create(['name' => 'Hybrid Contact']);
         $salesOrder = SalesOrder::factory()->create([
-            'contact_id' => $contact->id,
+            'contactId' => $contact->id,
             'orderNumber' => 'SO-HYBRID-001'
         ]);
 
@@ -358,10 +358,10 @@ class SalesOrderShowTest extends TestCase
         $data = $response->json('data');
         
         // Campo directo contactId (BOTH snake_case AND camelCase)
-        $this->assertArrayHasKey('contact_id', $data['attributes']);
-        $this->assertArrayHasKey('contact_id', $data['attributes']);
-        $this->assertEquals($contact->id, $data['attributes']['contact_id']);
-        $this->assertEquals($contact->id, $data['attributes']['contact_id']);
+        $this->assertArrayHasKey('contactId', $data['attributes']);
+        $this->assertArrayHasKey('contactId', $data['attributes']);
+        $this->assertEquals($contact->id, $data['attributes']['contactId']);
+        $this->assertEquals($contact->id, $data['attributes']['contactId']);
         
         // Relación contact en relationships
         $this->assertArrayHasKey('contact', $data['relationships']);

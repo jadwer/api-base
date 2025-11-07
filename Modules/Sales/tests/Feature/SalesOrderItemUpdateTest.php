@@ -156,7 +156,7 @@ class SalesOrderItemUpdateTest extends TestCase
             'type' => 'sales-order-items',
             'id' => (string) $item->id,
             'attributes' => [
-                'product_id' => $newProduct->id
+                'productId' => $newProduct->id
             ]
         ];
 
@@ -170,7 +170,7 @@ class SalesOrderItemUpdateTest extends TestCase
         
         $this->assertDatabaseHas('sales_order_items', [
             'id' => $item->id,
-            'product_id' => $newProduct->id
+            'productId' => $newProduct->id
         ]);
     }
 

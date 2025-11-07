@@ -17,7 +17,7 @@ class AccountBalanceStoreTest extends TestCase
         $data = [
             'type' => 'account-balances',
             'attributes' => [
-                'account_id' => $account->id,
+                'accountId' => $account->id,
                 'fiscalYear' => 2024,
                 'fiscalMonth' => 1
 ]
@@ -41,7 +41,7 @@ class AccountBalanceStoreTest extends TestCase
         $data = [
             'type' => 'account-balances',
             'attributes' => [
-                'account_id' => $account->id,
+                'accountId' => $account->id,
                 'fiscalYear' => 2024,
                 'fiscalMonth' => 1
 ]
@@ -63,7 +63,7 @@ class AccountBalanceStoreTest extends TestCase
         $data = [
             'type' => 'account-balances',
             'attributes' => [
-                'account_id' => 1
+                'accountId' => 1
             ]
         ];
 
@@ -83,7 +83,7 @@ class AccountBalanceStoreTest extends TestCase
         $data = [
             'type' => 'account-balances',
             'attributes' => [
-                'account_id' => 1
+                'accountId' => 1
             ]
         ];
 
@@ -101,7 +101,7 @@ class AccountBalanceStoreTest extends TestCase
         $data = [
             'type' => 'account-balances',
             'attributes' => [
-                'account_id' => 1
+                'accountId' => 1
             ]
         ];
 
@@ -120,7 +120,7 @@ class AccountBalanceStoreTest extends TestCase
         $data = [
             'type' => 'account-balances',
             'attributes' => [
-                'account_id' => 1
+                'accountId' => 1
                 // Missing fiscalYear and fiscalMonth (required)
             ]
         ];
@@ -141,7 +141,7 @@ class AccountBalanceStoreTest extends TestCase
         $data = [
             'type' => 'account-balances',
             'attributes' => [
-                'account_id' => 'invalid_data_type'
+                'accountId' => 'invalid_data_type'
             ]
         ];
 

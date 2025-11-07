@@ -15,7 +15,7 @@ class ShowCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -44,7 +44,7 @@ class ShowCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->completed()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
             'target_audience' => 'Small business owners',
             'description' => 'Q4 2024 email campaign targeting SMBs',
             'budget' => 100000.00,
@@ -92,7 +92,7 @@ class ShowCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -112,7 +112,7 @@ class ShowCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -131,7 +131,7 @@ class ShowCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->actingAs($tech, 'sanctum')
@@ -149,7 +149,7 @@ class ShowCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -165,7 +165,7 @@ class ShowCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->jsonApi()
@@ -194,7 +194,7 @@ class ShowCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->active()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -219,7 +219,7 @@ class ShowCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->completed()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -245,7 +245,7 @@ class ShowCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->email()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -270,7 +270,7 @@ class ShowCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->socialMedia()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

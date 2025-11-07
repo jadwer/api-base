@@ -14,7 +14,7 @@ class PositionDestroyTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -33,7 +33,7 @@ class PositionDestroyTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->active()->create(['department_id' => $department->id]);
+        $position = Position::factory()->active()->create(['departmentId' => $department->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -49,7 +49,7 @@ class PositionDestroyTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->inactive()->create(['department_id' => $department->id]);
+        $position = Position::factory()->inactive()->create(['departmentId' => $department->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -65,7 +65,7 @@ class PositionDestroyTest extends TestCase
         $tech = $this->getTechUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
 
         $response = $this->actingAs($tech, 'sanctum')
             ->jsonApi()
@@ -81,7 +81,7 @@ class PositionDestroyTest extends TestCase
         $customer = $this->getCustomerUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
@@ -95,7 +95,7 @@ class PositionDestroyTest extends TestCase
     public function test_guest_cannot_delete_position(): void
     {
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
 
         $response = $this->jsonApi()
             ->expects('positions')
@@ -122,7 +122,7 @@ class PositionDestroyTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -138,8 +138,8 @@ class PositionDestroyTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position1 = Position::factory()->create(['department_id' => $department->id]);
-        $position2 = Position::factory()->create(['department_id' => $department->id]);
+        $position1 = Position::factory()->create(['departmentId' => $department->id]);
+        $position2 = Position::factory()->create(['departmentId' => $department->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -156,10 +156,10 @@ class PositionDestroyTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

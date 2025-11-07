@@ -30,8 +30,8 @@ class JournalLineIndexTest extends TestCase
                     'type',
                     'attributes' => [
                         'journalEntryId',
-                        'account_id',
-                        'contact_id',
+                        'accountId',
+                        'contactId',
                         'debit',
                         'credit',
                         'description',

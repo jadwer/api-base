@@ -16,18 +16,18 @@ class LeaveStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $leaveType = LeaveType::factory()->create();
 
         $data = [
             'type' => 'leaves',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'leave_type_id' => $leaveType->id,
+                'employeeId' => $employee->id,
+                'leaveTypeId' => $leaveType->id,
                 'startDate' => '2024-02-15',
                 'endDate' => '2024-02-20',
                 'daysRequested' => 5,
@@ -47,8 +47,8 @@ class LeaveStoreTest extends TestCase
         $this->assertEquals(5, $response->json('data.attributes.daysRequested'));
 
         $this->assertDatabaseHas('leaves', [
-            'employee_id' => $employee->id,
-            'leave_type_id' => $leaveType->id,
+            'employeeId' => $employee->id,
+            'leaveTypeId' => $leaveType->id,
             'status' => 'pending'
         ]);
     }
@@ -58,18 +58,18 @@ class LeaveStoreTest extends TestCase
         $tech = $this->getTechUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $leaveType = LeaveType::factory()->create();
 
         $data = [
             'type' => 'leaves',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'leave_type_id' => $leaveType->id,
+                'employeeId' => $employee->id,
+                'leaveTypeId' => $leaveType->id,
                 'startDate' => '2024-03-01',
                 'endDate' => '2024-03-05',
                 'daysRequested' => 4,
@@ -91,18 +91,18 @@ class LeaveStoreTest extends TestCase
         $customer = $this->getCustomerUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $leaveType = LeaveType::factory()->create();
 
         $data = [
             'type' => 'leaves',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'leave_type_id' => $leaveType->id,
+                'employeeId' => $employee->id,
+                'leaveTypeId' => $leaveType->id,
                 'startDate' => '2024-02-15',
                 'endDate' => '2024-02-20',
                 'daysRequested' => 5,
@@ -122,18 +122,18 @@ class LeaveStoreTest extends TestCase
     public function test_guest_cannot_create_leave(): void
     {
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $leaveType = LeaveType::factory()->create();
 
         $data = [
             'type' => 'leaves',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'leave_type_id' => $leaveType->id,
+                'employeeId' => $employee->id,
+                'leaveTypeId' => $leaveType->id,
                 'startDate' => '2024-02-15',
                 'endDate' => '2024-02-20',
                 'daysRequested' => 5,
@@ -158,7 +158,7 @@ class LeaveStoreTest extends TestCase
         $data = [
             'type' => 'leaves',
             'attributes' => [
-                'leave_type_id' => $leaveType->id,
+                'leaveTypeId' => $leaveType->id,
                 'startDate' => '2024-02-15',
                 'endDate' => '2024-02-20',
                 'daysRequested' => 5,
@@ -180,16 +180,16 @@ class LeaveStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
 
         $data = [
             'type' => 'leaves',
             'attributes' => [
-                'employee_id' => $employee->id,
+                'employeeId' => $employee->id,
                 'startDate' => '2024-02-15',
                 'endDate' => '2024-02-20',
                 'daysRequested' => 5,
@@ -211,18 +211,18 @@ class LeaveStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $leaveType = LeaveType::factory()->create();
 
         $data = [
             'type' => 'leaves',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'leave_type_id' => $leaveType->id,
+                'employeeId' => $employee->id,
+                'leaveTypeId' => $leaveType->id,
                 'endDate' => '2024-02-20',
                 'daysRequested' => 5,
                 'status' => 'pending'
@@ -243,18 +243,18 @@ class LeaveStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $leaveType = LeaveType::factory()->create();
 
         $data = [
             'type' => 'leaves',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'leave_type_id' => $leaveType->id,
+                'employeeId' => $employee->id,
+                'leaveTypeId' => $leaveType->id,
                 'startDate' => '2024-02-15',
                 'daysRequested' => 5,
                 'status' => 'pending'
@@ -275,18 +275,18 @@ class LeaveStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $leaveType = LeaveType::factory()->create();
 
         $data = [
             'type' => 'leaves',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'leave_type_id' => $leaveType->id,
+                'employeeId' => $employee->id,
+                'leaveTypeId' => $leaveType->id,
                 'startDate' => '2024-02-15',
                 'endDate' => '2024-02-20',
                 'status' => 'pending'
@@ -307,18 +307,18 @@ class LeaveStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $leaveType = LeaveType::factory()->create();
 
         $data = [
             'type' => 'leaves',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'leave_type_id' => $leaveType->id,
+                'employeeId' => $employee->id,
+                'leaveTypeId' => $leaveType->id,
                 'startDate' => '2024-02-15',
                 'endDate' => '2024-02-20',
                 'daysRequested' => 5,

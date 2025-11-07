@@ -16,15 +16,15 @@ class LeaveIndexTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $leaveType = LeaveType::factory()->create();
         Leave::factory()->count(3)->create([
-            'employee_id' => $employee->id,
-            'leave_type_id' => $leaveType->id
+            'employeeId' => $employee->id,
+            'leaveTypeId' => $leaveType->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -41,21 +41,21 @@ class LeaveIndexTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $leaveType = LeaveType::factory()->create();
 
         Leave::factory()->create([
-            'employee_id' => $employee->id,
-            'leave_type_id' => $leaveType->id,
+            'employeeId' => $employee->id,
+            'leaveTypeId' => $leaveType->id,
             'startDate' => '2024-02-15'
         ]);
         Leave::factory()->create([
-            'employee_id' => $employee->id,
-            'leave_type_id' => $leaveType->id,
+            'employeeId' => $employee->id,
+            'leaveTypeId' => $leaveType->id,
             'startDate' => '2024-01-10'
         ]);
 
@@ -74,20 +74,20 @@ class LeaveIndexTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $leaveType = LeaveType::factory()->create();
 
         Leave::factory()->count(2)->approved()->create([
-            'employee_id' => $employee->id,
-            'leave_type_id' => $leaveType->id
+            'employeeId' => $employee->id,
+            'leaveTypeId' => $leaveType->id
         ]);
         Leave::factory()->count(1)->pending()->create([
-            'employee_id' => $employee->id,
-            'leave_type_id' => $leaveType->id
+            'employeeId' => $employee->id,
+            'leaveTypeId' => $leaveType->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -104,24 +104,24 @@ class LeaveIndexTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee1 = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $employee2 = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $leaveType = LeaveType::factory()->create();
 
         Leave::factory()->count(2)->create([
-            'employee_id' => $employee1->id,
-            'leave_type_id' => $leaveType->id
+            'employeeId' => $employee1->id,
+            'leaveTypeId' => $leaveType->id
         ]);
         Leave::factory()->count(1)->create([
-            'employee_id' => $employee2->id,
-            'leave_type_id' => $leaveType->id
+            'employeeId' => $employee2->id,
+            'leaveTypeId' => $leaveType->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -138,15 +138,15 @@ class LeaveIndexTest extends TestCase
         $tech = $this->getTechUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $leaveType = LeaveType::factory()->create();
         Leave::factory()->count(2)->create([
-            'employee_id' => $employee->id,
-            'leave_type_id' => $leaveType->id
+            'employeeId' => $employee->id,
+            'leaveTypeId' => $leaveType->id
         ]);
 
         $response = $this->actingAs($tech, 'sanctum')
@@ -163,15 +163,15 @@ class LeaveIndexTest extends TestCase
         $customer = $this->getCustomerUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $leaveType = LeaveType::factory()->create();
         Leave::factory()->count(2)->create([
-            'employee_id' => $employee->id,
-            'leave_type_id' => $leaveType->id
+            'employeeId' => $employee->id,
+            'leaveTypeId' => $leaveType->id
         ]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -196,15 +196,15 @@ class LeaveIndexTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $leaveType = LeaveType::factory()->create();
         Leave::factory()->count(25)->create([
-            'employee_id' => $employee->id,
-            'leave_type_id' => $leaveType->id
+            'employeeId' => $employee->id,
+            'leaveTypeId' => $leaveType->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -227,15 +227,15 @@ class LeaveIndexTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $leaveType = LeaveType::factory()->create();
         Leave::factory()->create([
-            'employee_id' => $employee->id,
-            'leave_type_id' => $leaveType->id
+            'employeeId' => $employee->id,
+            'leaveTypeId' => $leaveType->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -260,15 +260,15 @@ class LeaveIndexTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
         $leaveType = LeaveType::factory()->create();
         Leave::factory()->create([
-            'employee_id' => $employee->id,
-            'leave_type_id' => $leaveType->id
+            'employeeId' => $employee->id,
+            'leaveTypeId' => $leaveType->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

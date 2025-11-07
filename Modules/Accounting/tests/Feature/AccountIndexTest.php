@@ -34,7 +34,7 @@ class AccountIndexTest extends TestCase
                         'accountType',
                         'nature',
                         'level',
-                        'parent_id',
+                        'parentId',
                         'currency',
                         'isPostable',
                         'isCashFlow',

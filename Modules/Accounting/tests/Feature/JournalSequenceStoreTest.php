@@ -17,7 +17,7 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
-                'journal_id' => $journal->id,
+                'journalId' => $journal->id,
                 'fiscalYear' => 2024,
                 'currentNumber' => 1
             ]
@@ -41,7 +41,7 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
-                'journal_id' => $journal->id,
+                'journalId' => $journal->id,
                 'fiscalYear' => 2024,
                 'currentNumber' => 1
             ]
@@ -63,7 +63,7 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
-                'journal_id' => 1,
+                'journalId' => 1,
                 'fiscalYear' => 2024
             ]
         ];
@@ -84,7 +84,7 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
-                'journal_id' => 1,
+                'journalId' => 1,
                 'fiscalYear' => 2024
             ]
         ];
@@ -103,7 +103,7 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
-                'journal_id' => 1,
+                'journalId' => 1,
                 'fiscalYear' => 2024
             ]
         ];
@@ -123,7 +123,7 @@ class JournalSequenceStoreTest extends TestCase
         $data = [
             'type' => 'journal-sequences',
             'attributes' => [
-                'journal_id' => 1,
+                'journalId' => 1,
                 'fiscalYear' => 2024
             ]
         ];
@@ -145,7 +145,7 @@ class JournalSequenceStoreTest extends TestCase
             'type' => 'journal-sequences',
             'attributes' => [
                 'name' => 'Test Sequence',
-                'journal_id' => 'invalid_data_type'
+                'journalId' => 'invalid_data_type'
             ]
         ];
 

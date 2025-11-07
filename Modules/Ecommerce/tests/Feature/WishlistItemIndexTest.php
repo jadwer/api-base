@@ -27,8 +27,8 @@ class WishlistItemIndexTest extends TestCase
                     'type',
                     'id',
                     'attributes' => [
-                        'wishlist_id',
-                        'product_id',
+                        'wishlistId',
+                        'productId',
                         'quantity',
                         'priority',
                         'notes',
@@ -104,7 +104,7 @@ class WishlistItemIndexTest extends TestCase
         $item1 = WishlistItem::factory()->create();
         $productId = $item1->product_id;
 
-        WishlistItem::factory()->create(['product_id' => $productId]);
+        WishlistItem::factory()->create(['productId' => $productId]);
         WishlistItem::factory()->count(3)->create();
 
         $response = $this->actingAs($admin, 'sanctum')

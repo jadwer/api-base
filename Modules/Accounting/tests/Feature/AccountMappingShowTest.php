@@ -28,7 +28,7 @@ class AccountMappingShowTest extends TestCase
                 'type',
                 'attributes' => [
                         'mappingType',
-                        'account_id',
+                        'accountId',
                         'version',
                         'effectiveFrom',
                         'effectiveTo',
@@ -60,7 +60,7 @@ class AccountMappingShowTest extends TestCase
                 'type',
                 'attributes' => [
                         'mappingType',
-                        'account_id',
+                        'accountId',
                         'version',
                         'effectiveFrom',
                         'effectiveTo',

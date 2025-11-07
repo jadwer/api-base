@@ -52,7 +52,7 @@ class StoreCampaignTest extends TestCase
 
         $this->assertDatabaseHas('campaigns', [
             'name' => 'Q4 2024 Email Campaign',
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
     }
 
@@ -293,7 +293,7 @@ class StoreCampaignTest extends TestCase
             ->post('/api/v1/campaigns');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['user_id']);
+        $response->assertJsonValidationErrors(['userId']);
     }
 
     public function test_start_date_is_required(): void

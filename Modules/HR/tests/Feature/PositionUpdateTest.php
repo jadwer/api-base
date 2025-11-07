@@ -14,7 +14,7 @@ class PositionUpdateTest extends TestCase
 
         $department = Department::factory()->create();
         $position = Position::factory()->create([
-            'department_id' => $department->id,
+            'departmentId' => $department->id,
             'title' => 'Old Title',
             'description' => 'Old description'
         ]);
@@ -55,7 +55,7 @@ class PositionUpdateTest extends TestCase
 
         $department = Department::factory()->create();
         $position = Position::factory()->create([
-            'department_id' => $department->id,
+            'departmentId' => $department->id,
             'min_salary' => 30000.00,
             'max_salary' => 50000.00
         ]);
@@ -85,7 +85,7 @@ class PositionUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->active()->create(['department_id' => $department->id]);
+        $position = Position::factory()->active()->create(['departmentId' => $department->id]);
 
         $data = [
             'type' => 'positions',
@@ -110,7 +110,7 @@ class PositionUpdateTest extends TestCase
         $tech = $this->getTechUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
 
         $data = [
             'type' => 'positions',
@@ -135,7 +135,7 @@ class PositionUpdateTest extends TestCase
         $customer = $this->getCustomerUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
 
         $data = [
             'type' => 'positions',
@@ -157,7 +157,7 @@ class PositionUpdateTest extends TestCase
     public function test_guest_cannot_update_position(): void
     {
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
 
         $data = [
             'type' => 'positions',
@@ -201,7 +201,7 @@ class PositionUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
 
         $data = [
             'type' => 'positions',
@@ -228,7 +228,7 @@ class PositionUpdateTest extends TestCase
 
         $department = Department::factory()->create();
         $position = Position::factory()->create([
-            'department_id' => $department->id,
+            'departmentId' => $department->id,
             'title' => 'Original Title',
             'description' => 'Original description',
             'min_salary' => 30000.00,
@@ -262,13 +262,13 @@ class PositionUpdateTest extends TestCase
 
         $department1 = Department::factory()->create();
         $department2 = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department1->id]);
+        $position = Position::factory()->create(['departmentId' => $department1->id]);
 
         $data = [
             'type' => 'positions',
             'id' => (string) $position->id,
             'attributes' => [
-                'department_id' => $department2->id
+                'departmentId' => $department2->id
             ]
         ];
 

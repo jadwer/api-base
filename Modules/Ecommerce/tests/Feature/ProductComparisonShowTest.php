@@ -27,7 +27,7 @@ class ProductComparisonShowTest extends TestCase
                 'attributes' => [
                     'name' => $comparison->name,
                     'isPublic' => $comparison->is_public,
-                    'user_id' => $comparison->user_id,
+                    'userId' => $comparison->user_id,
                 ],
             ],
         ]);
@@ -51,7 +51,7 @@ class ProductComparisonShowTest extends TestCase
     public function customer_can_view_their_own_comparison()
     {
         $customer = User::role('customer')->first();
-        $comparison = ProductComparison::factory()->create(['user_id' => $customer->id]);
+        $comparison = ProductComparison::factory()->create(['userId' => $customer->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
@@ -64,7 +64,7 @@ class ProductComparisonShowTest extends TestCase
                 'type' => 'product-comparisons',
                 'id' => (string) $comparison->id,
                 'attributes' => [
-                    'user_id' => $customer->id,
+                    'userId' => $customer->id,
                 ],
             ],
         ]);
@@ -75,7 +75,7 @@ class ProductComparisonShowTest extends TestCase
     {
         $customer = User::role('customer')->first();
         $otherUser = User::factory()->create();
-        $comparison = ProductComparison::factory()->public()->create(['user_id' => $otherUser->id]);
+        $comparison = ProductComparison::factory()->public()->create(['userId' => $otherUser->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
@@ -98,7 +98,7 @@ class ProductComparisonShowTest extends TestCase
     {
         $customer = User::role('customer')->first();
         $otherUser = User::factory()->create();
-        $comparison = ProductComparison::factory()->private()->create(['user_id' => $otherUser->id]);
+        $comparison = ProductComparison::factory()->private()->create(['userId' => $otherUser->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()

@@ -29,8 +29,8 @@ class ShoppingCartIndexTest extends TestCase
                     'id',
                     'type',
                     'attributes' => [
-                        'session_id',
-                        'user_id',
+                        'sessionId',
+                        'userId',
                         'status',
                         'expiresAt',
                         'totalAmount',

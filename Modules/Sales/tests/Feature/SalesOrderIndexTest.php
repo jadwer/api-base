@@ -17,7 +17,7 @@ class SalesOrderIndexTest extends TestCase
         $admin = $this->getAdminUser();
         
         $customer = Contact::factory()->customer()->create();
-        SalesOrder::factory()->count(3)->create(['contact_id' => $customer->id]);
+        SalesOrder::factory()->count(3)->create(['contactId' => $customer->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -34,11 +34,11 @@ class SalesOrderIndexTest extends TestCase
 
         $customer = Contact::factory()->customer()->create();
         SalesOrder::factory()->create([
-            'contact_id' => $customer->id,
+            'contactId' => $customer->id,
             'orderNumber' => 'SO-2024-ZZZ' // Will sort last
         ]);
         SalesOrder::factory()->create([
-            'contact_id' => $customer->id,
+            'contactId' => $customer->id,
             'orderNumber' => 'SO-2024-AAA' // Will sort first
         ]);
 
@@ -70,11 +70,11 @@ class SalesOrderIndexTest extends TestCase
         
         $customer = Contact::factory()->customer()->create();
         SalesOrder::factory()->count(2)->create([
-            'contact_id' => $customer->id,
+            'contactId' => $customer->id,
             'status' => 'confirmed'
         ]);
         SalesOrder::factory()->count(1)->create([
-            'contact_id' => $customer->id,
+            'contactId' => $customer->id,
             'status' => 'draft'
         ]);
 
@@ -94,8 +94,8 @@ class SalesOrderIndexTest extends TestCase
         $customer1 = Contact::factory()->customer()->create();
         $customer2 = Contact::factory()->customer()->create();
         
-        SalesOrder::factory()->count(2)->create(['contact_id' => $customer1->id]);
-        SalesOrder::factory()->count(1)->create(['contact_id' => $customer2->id]);
+        SalesOrder::factory()->count(2)->create(['contactId' => $customer1->id]);
+        SalesOrder::factory()->count(1)->create(['contactId' => $customer2->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -111,7 +111,7 @@ class SalesOrderIndexTest extends TestCase
         $tech = $this->getTechUser();
         
         $customer = Contact::factory()->customer()->create();
-        SalesOrder::factory()->count(2)->create(['contact_id' => $customer->id]);
+        SalesOrder::factory()->count(2)->create(['contactId' => $customer->id]);
 
         $response = $this->actingAs($tech, 'sanctum')
             ->jsonApi()
@@ -127,7 +127,7 @@ class SalesOrderIndexTest extends TestCase
         $customer = $this->getCustomerUser();
         
         $customerModel = Contact::factory()->customer()->create();
-        SalesOrder::factory()->count(2)->create(['contact_id' => $customerModel->id]);
+        SalesOrder::factory()->count(2)->create(['contactId' => $customerModel->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
@@ -152,7 +152,7 @@ class SalesOrderIndexTest extends TestCase
         $admin = $this->getAdminUser();
         
         $customer = Contact::factory()->customer()->create();
-        SalesOrder::factory()->count(25)->create(['contact_id' => $customer->id]);
+        SalesOrder::factory()->count(25)->create(['contactId' => $customer->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -179,11 +179,11 @@ class SalesOrderIndexTest extends TestCase
         
         $customer = Contact::factory()->customer()->create();
         SalesOrder::factory()->create([
-            'contact_id' => $customer->id,
+            'contactId' => $customer->id,
             'orderNumber' => 'SO-SEARCH-001'
         ]);
         SalesOrder::factory()->create([
-            'contact_id' => $customer->id,
+            'contactId' => $customer->id,
             'orderNumber' => 'SO-OTHER-002'
         ]);
 

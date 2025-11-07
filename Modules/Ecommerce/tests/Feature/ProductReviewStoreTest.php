@@ -79,7 +79,7 @@ class ProductReviewStoreTest extends TestCase
                 'data' => [
                     'type' => 'product-reviews',
                     'attributes' => [
-                        'user_id' => $customer->id,
+                        'userId' => $customer->id,
                         'rating' => 5,
                         'title' => 'Great product!',
                         'comment' => 'I really love this product.',
@@ -89,8 +89,8 @@ class ProductReviewStoreTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('product_reviews', [
-            'product_id' => $product->id,
-            'user_id' => $customer->id,
+            'productId' => $product->id,
+            'userId' => $customer->id,
             'rating' => 5,
             'title' => 'Great product!',
             'status' => 'pending',
@@ -132,8 +132,8 @@ class ProductReviewStoreTest extends TestCase
         $response->assertCreated();
 
         $this->assertDatabaseHas('product_reviews', [
-            'product_id' => $product->id,
-            'user_id' => $admin->id,
+            'productId' => $product->id,
+            'userId' => $admin->id,
             'rating' => 4,
         ]);
     }
@@ -193,7 +193,7 @@ class ProductReviewStoreTest extends TestCase
             ->post('/api/v1/product-reviews');
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['product_id']);
+            ->assertJsonValidationErrors(['productId']);
     }
 
     /**
@@ -457,8 +457,8 @@ class ProductReviewStoreTest extends TestCase
         $response->assertCreated();
 
         $this->assertDatabaseHas('product_reviews', [
-            'product_id' => $product->id,
-            'user_id' => $customer->id,
+            'productId' => $product->id,
+            'userId' => $customer->id,
         ]);
     }
 }

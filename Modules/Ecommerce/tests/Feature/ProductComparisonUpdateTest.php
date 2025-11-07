@@ -50,7 +50,7 @@ class ProductComparisonUpdateTest extends TestCase
     {
         $customer = User::role('customer')->first();
         $comparison = ProductComparison::factory()->create([
-            'user_id' => $customer->id,
+            'userId' => $customer->id,
             'name' => 'My Comparison',
         ]);
 
@@ -83,7 +83,7 @@ class ProductComparisonUpdateTest extends TestCase
     {
         $customer = User::role('customer')->first();
         $otherUser = User::factory()->create();
-        $comparison = ProductComparison::factory()->create(['user_id' => $otherUser->id]);
+        $comparison = ProductComparison::factory()->create(['userId' => $otherUser->id]);
 
         $data = [
             'type' => 'product-comparisons',
@@ -150,7 +150,7 @@ class ProductComparisonUpdateTest extends TestCase
     public function can_update_is_public_field()
     {
         $customer = User::role('customer')->first();
-        $comparison = ProductComparison::factory()->private()->create(['user_id' => $customer->id]);
+        $comparison = ProductComparison::factory()->private()->create(['userId' => $customer->id]);
 
         $data = [
             'type' => 'product-comparisons',
@@ -185,7 +185,7 @@ class ProductComparisonUpdateTest extends TestCase
     public function can_make_public_comparison_private()
     {
         $customer = User::role('customer')->first();
-        $comparison = ProductComparison::factory()->public()->create(['user_id' => $customer->id]);
+        $comparison = ProductComparison::factory()->public()->create(['userId' => $customer->id]);
 
         $data = [
             'type' => 'product-comparisons',

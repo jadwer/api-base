@@ -62,7 +62,7 @@ class WishlistUpdateTest extends TestCase
         $customer = User::role('customer')->first();
 
         $wishlist = Wishlist::factory()->create([
-            'user_id' => $customer->id,
+            'userId' => $customer->id,
             'name' => 'Original Wishlist',
             'isDefault' => false,
             'is_public' => false,
@@ -100,7 +100,7 @@ class WishlistUpdateTest extends TestCase
         $customer = User::role('customer')->first();
 
         $otherUser = User::factory()->create();
-        $wishlist = Wishlist::factory()->create(['user_id' => $otherUser->id]);
+        $wishlist = Wishlist::factory()->create(['userId' => $otherUser->id]);
 
         $data = [
             'type' => 'wishlists',
@@ -170,7 +170,7 @@ class WishlistUpdateTest extends TestCase
         $customer = User::role('customer')->first();
 
         $wishlist = Wishlist::factory()->create([
-            'user_id' => $customer->id,
+            'userId' => $customer->id,
             'name' => 'Original',
             'isDefault' => false,
             'is_public' => false,
@@ -206,7 +206,7 @@ class WishlistUpdateTest extends TestCase
         $customer = User::role('customer')->first();
 
         $wishlist = Wishlist::factory()->create([
-            'user_id' => $customer->id,
+            'userId' => $customer->id,
             'isDefault' => false,
         ]);
 
@@ -238,7 +238,7 @@ class WishlistUpdateTest extends TestCase
         $customer = User::role('customer')->first();
 
         $wishlist = Wishlist::factory()->create([
-            'user_id' => $customer->id,
+            'userId' => $customer->id,
             'is_public' => false,
         ]);
 

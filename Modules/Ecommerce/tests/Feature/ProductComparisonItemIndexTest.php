@@ -27,8 +27,8 @@ class ProductComparisonItemIndexTest extends TestCase
                     'type',
                     'id',
                     'attributes' => [
-                        'comparison_id',
-                        'product_id',
+                        'comparisonId',
+                        'productId',
                         'position',
                         'createdAt',
                         'updatedAt',
@@ -58,7 +58,7 @@ class ProductComparisonItemIndexTest extends TestCase
         $customer = User::role('customer')->first();
 
         // Create comparison owned by customer
-        $ownComparison = ProductComparison::factory()->create(['user_id' => $customer->id]);
+        $ownComparison = ProductComparison::factory()->create(['userId' => $customer->id]);
         ProductComparisonItem::factory()->count(2)->create(['comparison_id' => $ownComparison->id]);
 
         // Create public comparison from others

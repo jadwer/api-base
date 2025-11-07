@@ -14,10 +14,10 @@ class EmployeeUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
             'firstName' => 'Old',
             'lastName' => 'Name',
             'salary' => 40000.00
@@ -58,10 +58,10 @@ class EmployeeUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->active()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
 
         $data = [
@@ -87,10 +87,10 @@ class EmployeeUpdateTest extends TestCase
         $tech = $this->getTechUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
 
         $data = [
@@ -116,10 +116,10 @@ class EmployeeUpdateTest extends TestCase
         $customer = $this->getCustomerUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
 
         $data = [
@@ -142,10 +142,10 @@ class EmployeeUpdateTest extends TestCase
     public function test_guest_cannot_update_employee(): void
     {
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
 
         $data = [
@@ -190,10 +190,10 @@ class EmployeeUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id
+            'departmentId' => $department->id,
+            'positionId' => $position->id
         ]);
 
         $data = [
@@ -218,10 +218,10 @@ class EmployeeUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position->id,
+            'departmentId' => $department->id,
+            'positionId' => $position->id,
             'firstName' => 'Original',
             'lastName' => 'Name',
             'salary' => 40000.00,
@@ -254,18 +254,18 @@ class EmployeeUpdateTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position1 = Position::factory()->create(['department_id' => $department->id]);
-        $position2 = Position::factory()->create(['department_id' => $department->id]);
+        $position1 = Position::factory()->create(['departmentId' => $department->id]);
+        $position2 = Position::factory()->create(['departmentId' => $department->id]);
         $employee = Employee::factory()->create([
-            'department_id' => $department->id,
-            'position_id' => $position1->id
+            'departmentId' => $department->id,
+            'positionId' => $position1->id
         ]);
 
         $data = [
             'type' => 'employees',
             'id' => (string) $employee->id,
             'attributes' => [
-                'position_id' => $position2->id
+                'positionId' => $position2->id
             ]
         ];
 
@@ -285,20 +285,20 @@ class EmployeeUpdateTest extends TestCase
 
         $department1 = Department::factory()->create();
         $department2 = Department::factory()->create();
-        $position1 = Position::factory()->create(['department_id' => $department1->id]);
-        $position2 = Position::factory()->create(['department_id' => $department2->id]);
+        $position1 = Position::factory()->create(['departmentId' => $department1->id]);
+        $position2 = Position::factory()->create(['departmentId' => $department2->id]);
 
         $employee = Employee::factory()->create([
-            'department_id' => $department1->id,
-            'position_id' => $position1->id
+            'departmentId' => $department1->id,
+            'positionId' => $position1->id
         ]);
 
         $data = [
             'type' => 'employees',
             'id' => (string) $employee->id,
             'attributes' => [
-                'department_id' => $department2->id,
-                'position_id' => $position2->id
+                'departmentId' => $department2->id,
+                'positionId' => $position2->id
             ]
         ];
 

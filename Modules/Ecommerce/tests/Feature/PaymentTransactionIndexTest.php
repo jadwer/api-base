@@ -25,7 +25,7 @@ class PaymentTransactionIndexTest extends TestCase
                     'type',
                     'attributes' => [
                         'checkoutSessionId',
-                        'transaction_id',
+                        'transactionId',
                         'paymentGateway',
                         'status',
                         'amount',

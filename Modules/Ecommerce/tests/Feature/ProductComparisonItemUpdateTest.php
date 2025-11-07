@@ -50,7 +50,7 @@ class ProductComparisonItemUpdateTest extends TestCase
     public function customer_can_update_item_in_their_own_comparison()
     {
         $customer = User::role('customer')->first();
-        $comparison = ProductComparison::factory()->create(['user_id' => $customer->id]);
+        $comparison = ProductComparison::factory()->create(['userId' => $customer->id]);
         $item = ProductComparisonItem::factory()->create([
             'comparison_id' => $comparison->id,
             'position' => 0,
@@ -85,7 +85,7 @@ class ProductComparisonItemUpdateTest extends TestCase
     {
         $customer = User::role('customer')->first();
         $otherUser = User::factory()->create();
-        $comparison = ProductComparison::factory()->create(['user_id' => $otherUser->id]);
+        $comparison = ProductComparison::factory()->create(['userId' => $otherUser->id]);
         $item = ProductComparisonItem::factory()->create(['comparison_id' => $comparison->id]);
 
         $data = [
@@ -153,7 +153,7 @@ class ProductComparisonItemUpdateTest extends TestCase
     public function can_reorder_items_by_updating_position()
     {
         $customer = User::role('customer')->first();
-        $comparison = ProductComparison::factory()->create(['user_id' => $customer->id]);
+        $comparison = ProductComparison::factory()->create(['userId' => $customer->id]);
         $item1 = ProductComparisonItem::factory()->create(['comparison_id' => $comparison->id, 'position' => 0]);
         $item2 = ProductComparisonItem::factory()->create(['comparison_id' => $comparison->id, 'position' => 1]);
         $item3 = ProductComparisonItem::factory()->create(['comparison_id' => $comparison->id, 'position' => 2]);

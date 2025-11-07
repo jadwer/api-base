@@ -15,7 +15,7 @@ class IndexLeadsTest extends TestCase
         $user = User::factory()->create();
 
         Lead::factory()->count(3)->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -34,7 +34,7 @@ class IndexLeadsTest extends TestCase
         $user = User::factory()->create();
 
         Lead::factory()->count(25)->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -55,11 +55,11 @@ class IndexLeadsTest extends TestCase
 
         Lead::factory()->create([
             'title' => 'Alpha Lead',
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
         Lead::factory()->create([
             'title' => 'Beta Lead',
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -79,10 +79,10 @@ class IndexLeadsTest extends TestCase
         $user = User::factory()->create();
 
         Lead::factory()->count(2)->qualified()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
         Lead::factory()->count(1)->new()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -105,10 +105,10 @@ class IndexLeadsTest extends TestCase
         $user = User::factory()->create();
 
         Lead::factory()->count(2)->hot()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
         Lead::factory()->count(1)->cold()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -131,7 +131,7 @@ class IndexLeadsTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -150,7 +150,7 @@ class IndexLeadsTest extends TestCase
         $user = User::factory()->create();
 
         Lead::factory()->count(2)->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $response = $this->actingAs($tech, 'sanctum')

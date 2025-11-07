@@ -15,7 +15,7 @@ class UpdateLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
             'title' => 'Original Title',
         ]);
 
@@ -57,7 +57,7 @@ class UpdateLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->statusNew()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $data = [
@@ -88,7 +88,7 @@ class UpdateLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->warm()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $data = [
@@ -119,7 +119,7 @@ class UpdateLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
             'estimated_value' => 10000.00,
         ]);
 
@@ -151,7 +151,7 @@ class UpdateLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
             'metadata' => [
                 'industry' => 'Technology',
             ],
@@ -189,7 +189,7 @@ class UpdateLeadTest extends TestCase
         $user2 = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'user_id' => $user1->id,
+            'userId' => $user1->id,
         ]);
 
         $data = [
@@ -214,7 +214,7 @@ class UpdateLeadTest extends TestCase
         $response->assertOk();
         $this->assertDatabaseHas('leads', [
             'id' => $lead->id,
-            'user_id' => $user2->id,
+            'userId' => $user2->id,
         ]);
     }
 
@@ -225,7 +225,7 @@ class UpdateLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $data = [
@@ -253,7 +253,7 @@ class UpdateLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $data = [
@@ -281,7 +281,7 @@ class UpdateLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $data = [
@@ -308,7 +308,7 @@ class UpdateLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $data = [
@@ -333,7 +333,7 @@ class UpdateLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $data = [
@@ -381,11 +381,11 @@ class UpdateLeadTest extends TestCase
 
         $lead1 = Lead::factory()->create([
             'title' => 'Lead 1',
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
         $lead2 = Lead::factory()->create([
             'title' => 'Lead 2',
-            'user_id' => $user->id,
+            'userId' => $user->id,
         ]);
 
         $data = [
