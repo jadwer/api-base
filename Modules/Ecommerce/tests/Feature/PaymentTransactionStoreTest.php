@@ -17,7 +17,7 @@ class PaymentTransactionStoreTest extends TestCase
             'type' => 'payment-transactions',
             'attributes' => [
                 'checkoutSessionId' => $session->id,
-                'transactionId' => 'ch_test123',
+                'transaction_id' => 'ch_test123',
                 'paymentGateway' => 'stripe',
                 'paymentMethod' => 'credit_card',
                 'status' => 'pending',
@@ -49,7 +49,7 @@ class PaymentTransactionStoreTest extends TestCase
             'type' => 'payment-transactions',
             'attributes' => [
                 'checkoutSessionId' => $session->id,
-                'transactionId' => 'ch_test123',
+                'transaction_id' => 'ch_test123',
                 'paymentGateway' => 'stripe',
                 'status' => 'pending',
                 'amount' => 100.00,
@@ -74,7 +74,7 @@ class PaymentTransactionStoreTest extends TestCase
             'type' => 'payment-transactions',
             'attributes' => [
                 'checkoutSessionId' => $session->id,
-                'transactionId' => 'ch_test123',
+                'transaction_id' => 'ch_test123',
                 'status' => 'pending',
                 'amount' => 100.00,
             ]

@@ -62,7 +62,7 @@ class WishlistItemUpdateTest extends TestCase
     {
         $customer = User::role('customer')->first();
 
-        $wishlist = Wishlist::factory()->create(['userId' => $customer->id]);
+        $wishlist = Wishlist::factory()->create(['user_id' => $customer->id]);
         $item = WishlistItem::factory()->create([
             'wishlist_id' => $wishlist->id,
             'quantity' => 1,
@@ -101,7 +101,7 @@ class WishlistItemUpdateTest extends TestCase
         $customer = User::role('customer')->first();
 
         $otherUser = User::factory()->create();
-        $wishlist = Wishlist::factory()->create(['userId' => $otherUser->id]);
+        $wishlist = Wishlist::factory()->create(['user_id' => $otherUser->id]);
         $item = WishlistItem::factory()->create(['wishlist_id' => $wishlist->id]);
 
         $data = [
@@ -171,7 +171,7 @@ class WishlistItemUpdateTest extends TestCase
     {
         $customer = User::role('customer')->first();
 
-        $wishlist = Wishlist::factory()->create(['userId' => $customer->id]);
+        $wishlist = Wishlist::factory()->create(['user_id' => $customer->id]);
         $item = WishlistItem::factory()->create([
             'wishlist_id' => $wishlist->id,
             'quantity' => 1,
@@ -206,7 +206,7 @@ class WishlistItemUpdateTest extends TestCase
     {
         $customer = User::role('customer')->first();
 
-        $wishlist = Wishlist::factory()->create(['userId' => $customer->id]);
+        $wishlist = Wishlist::factory()->create(['user_id' => $customer->id]);
         $item = WishlistItem::factory()->create([
             'wishlist_id' => $wishlist->id,
             'quantity' => 2,
@@ -241,7 +241,7 @@ class WishlistItemUpdateTest extends TestCase
     {
         $customer = User::role('customer')->first();
 
-        $wishlist = Wishlist::factory()->create(['userId' => $customer->id]);
+        $wishlist = Wishlist::factory()->create(['user_id' => $customer->id]);
         $item = WishlistItem::factory()->create([
             'wishlist_id' => $wishlist->id,
             'notes' => 'Old notes',
@@ -328,7 +328,7 @@ class WishlistItemUpdateTest extends TestCase
     {
         $customer = User::role('customer')->first();
 
-        $wishlist = Wishlist::factory()->create(['userId' => $customer->id]);
+        $wishlist = Wishlist::factory()->create(['user_id' => $customer->id]);
         $item = WishlistItem::factory()->create([
             'wishlist_id' => $wishlist->id,
             'notes' => 'Some notes',

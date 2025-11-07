@@ -18,8 +18,8 @@ class ProductReviewShowTest extends TestCase
         $user = User::factory()->create();
 
         $review = ProductReview::factory()->approved()->create([
-            'productId' => $product->id,
-            'userId' => $user->id,
+            'product_id' => $product->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->jsonApi()
@@ -48,8 +48,8 @@ class ProductReviewShowTest extends TestCase
         $user = User::factory()->create();
 
         $review = ProductReview::factory()->pending()->create([
-            'productId' => $product->id,
-            'userId' => $user->id,
+            'product_id' => $product->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->jsonApi()
@@ -68,8 +68,8 @@ class ProductReviewShowTest extends TestCase
         $user = User::factory()->create();
 
         $review = ProductReview::factory()->rejected()->create([
-            'productId' => $product->id,
-            'userId' => $user->id,
+            'product_id' => $product->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->jsonApi()
@@ -88,7 +88,7 @@ class ProductReviewShowTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->pending()->create([
-            'productId' => $product->id,
+            'product_id' => $product->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -114,8 +114,8 @@ class ProductReviewShowTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->pending()->create([
-            'productId' => $product->id,
-            'userId' => $customer->id,
+            'product_id' => $product->id,
+            'user_id' => $customer->id,
         ]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -145,8 +145,8 @@ class ProductReviewShowTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->pending()->create([
-            'productId' => $product->id,
-            'userId' => $otherUser->id,
+            'product_id' => $product->id,
+            'user_id' => $otherUser->id,
         ]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -166,7 +166,7 @@ class ProductReviewShowTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->approved()->create([
-            'productId' => $product->id,
+            'product_id' => $product->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -196,8 +196,8 @@ class ProductReviewShowTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->approved()->create([
-            'productId' => $product->id,
-            'userId' => $user->id,
+            'product_id' => $product->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -227,8 +227,8 @@ class ProductReviewShowTest extends TestCase
         $user = User::factory()->create();
 
         $review = ProductReview::factory()->approved()->create([
-            'productId' => $product->id,
-            'userId' => $user->id,
+            'product_id' => $product->id,
+            'user_id' => $user->id,
             'rating' => 5,
             'title' => 'Great product!',
             'comment' => 'I really love this product.',
@@ -247,8 +247,8 @@ class ProductReviewShowTest extends TestCase
                     'type' => 'product-reviews',
                     'id' => (string) $review->id,
                     'attributes' => [
-                        'productId' => $product->id,
-                        'userId' => $user->id,
+                        'product_id' => $product->id,
+                        'user_id' => $user->id,
                         'rating' => 5,
                         'title' => 'Great product!',
                         'comment' => 'I really love this product.',

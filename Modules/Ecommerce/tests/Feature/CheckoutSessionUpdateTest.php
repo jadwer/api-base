@@ -69,7 +69,7 @@ class CheckoutSessionUpdateTest extends TestCase
     {
         $customer = $this->getCustomerUser();
         $session = CheckoutSession::factory()->create([
-            'userId' => $customer->id,
+            'user_id' => $customer->id,
             'status' => 'initiated',
         ]);
 
@@ -95,7 +95,7 @@ class CheckoutSessionUpdateTest extends TestCase
     {
         $customer = $this->getCustomerUser();
         $otherUser = $this->getAdminUser();
-        $session = CheckoutSession::factory()->create(['userId' => $otherUser->id]);
+        $session = CheckoutSession::factory()->create(['user_id' => $otherUser->id]);
 
         $data = [
             'type' => 'checkout-sessions',

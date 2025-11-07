@@ -13,7 +13,7 @@ class PositionIndexTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        Position::factory()->count(3)->create(['departmentId' => $department->id]);
+        Position::factory()->count(3)->create(['department_id' => $department->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -30,11 +30,11 @@ class PositionIndexTest extends TestCase
 
         $department = Department::factory()->create();
         Position::factory()->create([
-            'departmentId' => $department->id,
+            'department_id' => $department->id,
             'title' => 'Zulu Position'
         ]);
         Position::factory()->create([
-            'departmentId' => $department->id,
+            'department_id' => $department->id,
             'title' => 'Alpha Position'
         ]);
 
@@ -62,8 +62,8 @@ class PositionIndexTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        Position::factory()->count(2)->active()->create(['departmentId' => $department->id]);
-        Position::factory()->count(1)->inactive()->create(['departmentId' => $department->id]);
+        Position::factory()->count(2)->active()->create(['department_id' => $department->id]);
+        Position::factory()->count(1)->inactive()->create(['department_id' => $department->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -81,8 +81,8 @@ class PositionIndexTest extends TestCase
         $department1 = Department::factory()->create();
         $department2 = Department::factory()->create();
 
-        Position::factory()->count(2)->create(['departmentId' => $department1->id]);
-        Position::factory()->count(1)->create(['departmentId' => $department2->id]);
+        Position::factory()->count(2)->create(['department_id' => $department1->id]);
+        Position::factory()->count(1)->create(['department_id' => $department2->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -98,7 +98,7 @@ class PositionIndexTest extends TestCase
         $tech = $this->getTechUser();
 
         $department = Department::factory()->create();
-        Position::factory()->count(2)->create(['departmentId' => $department->id]);
+        Position::factory()->count(2)->create(['department_id' => $department->id]);
 
         $response = $this->actingAs($tech, 'sanctum')
             ->jsonApi()
@@ -114,7 +114,7 @@ class PositionIndexTest extends TestCase
         $customer = $this->getCustomerUser();
 
         $department = Department::factory()->create();
-        Position::factory()->count(2)->create(['departmentId' => $department->id]);
+        Position::factory()->count(2)->create(['department_id' => $department->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
@@ -138,7 +138,7 @@ class PositionIndexTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        Position::factory()->count(25)->create(['departmentId' => $department->id]);
+        Position::factory()->count(25)->create(['department_id' => $department->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -160,7 +160,7 @@ class PositionIndexTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        Position::factory()->create(['departmentId' => $department->id]);
+        Position::factory()->create(['department_id' => $department->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

@@ -62,7 +62,7 @@ class StoreLeadTest extends TestCase
 
         $this->assertDatabaseHas('leads', [
             'title' => 'New Business Opportunity',
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
     }
 
@@ -143,7 +143,7 @@ class StoreLeadTest extends TestCase
         $response->assertCreated();
         $this->assertDatabaseHas('leads', [
             'title' => 'Unlinked Lead',
-            'contactId' => null,
+            'contact_id' => null,
         ]);
     }
 
@@ -265,7 +265,7 @@ class StoreLeadTest extends TestCase
             ->post('/api/v1/leads');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['userId']);
+        $response->assertJsonValidationErrors(['user_id']);
     }
 
     public function test_estimated_value_must_be_numeric(): void

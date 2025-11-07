@@ -14,7 +14,7 @@ class EmployeeStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
 
         $data = [
             'type' => 'employees',
@@ -24,8 +24,8 @@ class EmployeeStoreTest extends TestCase
                 'email' => 'john.smith@example.com',
                 'phone' => '+1234567890',
                 'hireDate' => '2024-01-15',
-                'positionId' => $position->id,
-                'departmentId' => $department->id,
+                'position_id' => $position->id,
+                'department_id' => $department->id,
                 'salary' => 55000.00,
                 'status' => 'active',
                 'employment_type' => 'full-time'
@@ -56,7 +56,7 @@ class EmployeeStoreTest extends TestCase
         $tech = $this->getTechUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
 
         $data = [
             'type' => 'employees',
@@ -65,8 +65,8 @@ class EmployeeStoreTest extends TestCase
                 'lastName' => 'Doe',
                 'email' => 'jane.doe@example.com',
                 'hireDate' => '2024-02-01',
-                'positionId' => $position->id,
-                'departmentId' => $department->id,
+                'position_id' => $position->id,
+                'department_id' => $department->id,
                 'salary' => 48000.00,
                 'status' => 'active',
                 'employment_type' => 'full-time'
@@ -88,7 +88,7 @@ class EmployeeStoreTest extends TestCase
         $customer = $this->getCustomerUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
 
         $data = [
             'type' => 'employees',
@@ -97,8 +97,8 @@ class EmployeeStoreTest extends TestCase
                 'lastName' => 'NotCreate',
                 'email' => 'test@example.com',
                 'hireDate' => '2024-01-01',
-                'positionId' => $position->id,
-                'departmentId' => $department->id,
+                'position_id' => $position->id,
+                'department_id' => $department->id,
                 'salary' => 40000.00
             ]
         ];
@@ -115,7 +115,7 @@ class EmployeeStoreTest extends TestCase
     public function test_guest_cannot_create_employee(): void
     {
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
 
         $data = [
             'type' => 'employees',
@@ -124,8 +124,8 @@ class EmployeeStoreTest extends TestCase
                 'lastName' => 'User',
                 'email' => 'guest@example.com',
                 'hireDate' => '2024-01-01',
-                'positionId' => $position->id,
-                'departmentId' => $department->id,
+                'position_id' => $position->id,
+                'department_id' => $department->id,
                 'salary' => 40000.00
             ]
         ];
@@ -143,7 +143,7 @@ class EmployeeStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
 
         $data = [
             'type' => 'employees',
@@ -151,8 +151,8 @@ class EmployeeStoreTest extends TestCase
                 'lastName' => 'Smith',
                 'email' => 'test@example.com',
                 'hireDate' => '2024-01-01',
-                'positionId' => $position->id,
-                'departmentId' => $department->id,
+                'position_id' => $position->id,
+                'department_id' => $department->id,
                 'salary' => 40000.00
             ]
         ];
@@ -171,7 +171,7 @@ class EmployeeStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
 
         $data = [
             'type' => 'employees',
@@ -179,8 +179,8 @@ class EmployeeStoreTest extends TestCase
                 'firstName' => 'John',
                 'email' => 'test@example.com',
                 'hireDate' => '2024-01-01',
-                'positionId' => $position->id,
-                'departmentId' => $department->id,
+                'position_id' => $position->id,
+                'department_id' => $department->id,
                 'salary' => 40000.00
             ]
         ];
@@ -199,7 +199,7 @@ class EmployeeStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
 
         $data = [
             'type' => 'employees',
@@ -207,8 +207,8 @@ class EmployeeStoreTest extends TestCase
                 'firstName' => 'John',
                 'lastName' => 'Smith',
                 'hireDate' => '2024-01-01',
-                'positionId' => $position->id,
-                'departmentId' => $department->id,
+                'position_id' => $position->id,
+                'department_id' => $department->id,
                 'salary' => 40000.00
             ]
         ];
@@ -227,10 +227,10 @@ class EmployeeStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
             'email' => 'existing@example.com'
         ]);
 
@@ -241,8 +241,8 @@ class EmployeeStoreTest extends TestCase
                 'lastName' => 'Smith',
                 'email' => 'existing@example.com',
                 'hireDate' => '2024-01-01',
-                'positionId' => $position->id,
-                'departmentId' => $department->id,
+                'position_id' => $position->id,
+                'department_id' => $department->id,
                 'salary' => 40000.00
             ]
         ];
@@ -261,7 +261,7 @@ class EmployeeStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
 
         $data = [
             'type' => 'employees',
@@ -270,8 +270,8 @@ class EmployeeStoreTest extends TestCase
                 'lastName' => 'Smith',
                 'email' => 'test@example.com',
                 'hireDate' => '2024-01-01',
-                'positionId' => $position->id,
-                'departmentId' => $department->id
+                'position_id' => $position->id,
+                'department_id' => $department->id
             ]
         ];
 
@@ -289,7 +289,7 @@ class EmployeeStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
 
         $data = [
             'type' => 'employees',
@@ -298,8 +298,8 @@ class EmployeeStoreTest extends TestCase
                 'lastName' => 'Smith',
                 'email' => 'test@example.com',
                 'hireDate' => '2024-01-01',
-                'positionId' => $position->id,
-                'departmentId' => $department->id,
+                'position_id' => $position->id,
+                'department_id' => $department->id,
                 'salary' => 'not_a_number'
             ]
         ];
@@ -318,7 +318,7 @@ class EmployeeStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
 
         $data = [
             'type' => 'employees',
@@ -327,8 +327,8 @@ class EmployeeStoreTest extends TestCase
                 'lastName' => 'Smith',
                 'email' => 'test@example.com',
                 'hireDate' => '2024-01-01',
-                'positionId' => $position->id,
-                'departmentId' => $department->id,
+                'position_id' => $position->id,
+                'department_id' => $department->id,
                 'salary' => 40000.00,
                 'status' => 'invalid_status'
             ]
@@ -348,7 +348,7 @@ class EmployeeStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
 
         $data = [
             'type' => 'employees',
@@ -357,8 +357,8 @@ class EmployeeStoreTest extends TestCase
                 'lastName' => 'Smith',
                 'email' => 'test@example.com',
                 'hireDate' => '2024-01-01',
-                'positionId' => $position->id,
-                'departmentId' => $department->id,
+                'position_id' => $position->id,
+                'department_id' => $department->id,
                 'salary' => 40000.00,
                 'employment_type' => 'invalid_type'
             ]

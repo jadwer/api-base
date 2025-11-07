@@ -15,7 +15,7 @@ class DestroyLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -37,7 +37,7 @@ class DestroyLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->statusNew()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -56,7 +56,7 @@ class DestroyLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->qualified()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -75,7 +75,7 @@ class DestroyLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->converted()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -94,7 +94,7 @@ class DestroyLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->hot()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -113,7 +113,7 @@ class DestroyLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->withoutContact()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -132,7 +132,7 @@ class DestroyLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($tech, 'sanctum')
@@ -151,7 +151,7 @@ class DestroyLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -168,7 +168,7 @@ class DestroyLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->jsonApi()
@@ -199,11 +199,11 @@ class DestroyLeadTest extends TestCase
 
         $lead1 = Lead::factory()->create([
             'title' => 'Lead 1',
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
         $lead2 = Lead::factory()->create([
             'title' => 'Lead 2',
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -223,7 +223,7 @@ class DestroyLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -243,7 +243,7 @@ class DestroyLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

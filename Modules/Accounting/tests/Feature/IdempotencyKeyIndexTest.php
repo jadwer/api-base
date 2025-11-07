@@ -29,7 +29,7 @@ class IdempotencyKeyIndexTest extends TestCase
                     'id',
                     'type',
                     'attributes' => [
-                        'userId',
+                        'user_id',
                         'endpoint',
                         'idempotencyKey',
                         'requestHash',

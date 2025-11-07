@@ -100,7 +100,7 @@ class SalesOrderItemShowTest extends TestCase
         $admin = $this->getAdminUser();
         $product = Product::factory()->create();
         $item = SalesOrderItem::factory()->create([
-            'productId' => $product->id
+            'product_id' => $product->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -112,7 +112,7 @@ class SalesOrderItemShowTest extends TestCase
         $response->assertJson([
             'data' => [
                 'attributes' => [
-                    'productId' => $product->id
+                    'product_id' => $product->id
                 ]
             ]
         ]);
@@ -125,7 +125,7 @@ class SalesOrderItemShowTest extends TestCase
         $product = Product::factory()->create();
         $item = SalesOrderItem::factory()->create([
             'sales_order_id' => $salesOrder->id,
-            'productId' => $product->id
+            'product_id' => $product->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -138,7 +138,7 @@ class SalesOrderItemShowTest extends TestCase
             'data' => [
                 'attributes' => [
                     'salesOrderId' => $salesOrder->id,
-                    'productId' => $product->id
+                    'product_id' => $product->id
                 ]
             ]
         ]);
@@ -149,13 +149,13 @@ class SalesOrderItemShowTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create(['name' => 'Test Customer']);
         $salesOrder = SalesOrder::factory()->create([
-            'contactId' => $customer->id,
+            'contact_id' => $customer->id,
             'orderNumber' => 'SO-REL-001'
         ]);
         $product = Product::factory()->create(['name' => 'Test Product']);
         $item = SalesOrderItem::factory()->create([
             'sales_order_id' => $salesOrder->id,
-            'productId' => $product->id,
+            'product_id' => $product->id,
             'quantity' => 2.0,
             'unitPrice' => 50.0,
             'total' => 100.0
@@ -212,13 +212,13 @@ class SalesOrderItemShowTest extends TestCase
         ]);
         
         $salesOrder = SalesOrder::factory()->create([
-            'contactId' => $customer->id,
+            'contact_id' => $customer->id,
             'orderNumber' => 'SO-NESTED-001'
         ]);
         $product = Product::factory()->create(['name' => 'Nested Product']);
         $item = SalesOrderItem::factory()->create([
             'sales_order_id' => $salesOrder->id,
-            'productId' => $product->id,
+            'product_id' => $product->id,
             'quantity' => 3.0,
             'unitPrice' => 75.0,
             'total' => 225.0

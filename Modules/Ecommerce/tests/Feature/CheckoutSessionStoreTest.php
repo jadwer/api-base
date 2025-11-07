@@ -73,7 +73,7 @@ class CheckoutSessionStoreTest extends TestCase
     public function test_customer_user_can_create_checkout_session(): void
     {
         $customer = $this->getCustomerUser();
-        $cart = ShoppingCart::factory()->create(['userId' => $customer->id]);
+        $cart = ShoppingCart::factory()->create(['user_id' => $customer->id]);
 
         $data = [
             'type' => 'checkout-sessions',

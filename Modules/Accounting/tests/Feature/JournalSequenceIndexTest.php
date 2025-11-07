@@ -29,7 +29,7 @@ class JournalSequenceIndexTest extends TestCase
                     'id',
                     'type',
                     'attributes' => [
-                        'journalId',
+                        'journal_id',
                         'fiscalYear',
                         'currentNumber',
                         'metadata',

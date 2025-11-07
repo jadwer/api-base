@@ -48,8 +48,8 @@ class ProductComparisonItemStoreTest extends TestCase
             'data' => [
                 'type' => 'product-comparison-items',
                 'attributes' => [
-                    'comparisonId' => $comparison->id,
-                    'productId' => $product->id,
+                    'comparison_id' => $comparison->id,
+                    'product_id' => $product->id,
                     'position' => 0,
                 ],
             ],
@@ -57,7 +57,7 @@ class ProductComparisonItemStoreTest extends TestCase
 
         $this->assertDatabaseHas('product_comparison_items', [
             'comparison_id' => $comparison->id,
-            'productId' => $product->id,
+            'product_id' => $product->id,
             'position' => 0,
         ]);
     }
@@ -66,7 +66,7 @@ class ProductComparisonItemStoreTest extends TestCase
     public function customer_can_add_item_to_their_own_comparison()
     {
         $customer = User::role('customer')->first();
-        $comparison = ProductComparison::factory()->create(['userId' => $customer->id]);
+        $comparison = ProductComparison::factory()->create(['user_id' => $customer->id]);
         $product = Product::factory()->create();
 
         $data = [
@@ -104,7 +104,7 @@ class ProductComparisonItemStoreTest extends TestCase
     {
         $customer = User::role('customer')->first();
         $otherUser = User::factory()->create();
-        $comparison = ProductComparison::factory()->create(['userId' => $otherUser->id]);
+        $comparison = ProductComparison::factory()->create(['user_id' => $otherUser->id]);
         $product = Product::factory()->create();
 
         $data = [

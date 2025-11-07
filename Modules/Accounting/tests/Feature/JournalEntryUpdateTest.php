@@ -12,7 +12,7 @@ class JournalEntryUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $period = FiscalPeriod::factory()->open()->create();
-        $entity = JournalEntry::factory()->create(['fiscalPeriodId' => $period->id, 'status' => 'draft']);
+        $entity = JournalEntry::factory()->create(['fiscal_period_id' => $period->id, 'status' => 'draft']);
 
         $data = [
             'type' => 'journal-entries',
@@ -36,7 +36,7 @@ class JournalEntryUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $period = FiscalPeriod::factory()->open()->create();
-        $entity = JournalEntry::factory()->create(['fiscalPeriodId' => $period->id, 'status' => 'draft']);
+        $entity = JournalEntry::factory()->create(['fiscal_period_id' => $period->id, 'status' => 'draft']);
 
         $data = [
             'type' => 'journal-entries',

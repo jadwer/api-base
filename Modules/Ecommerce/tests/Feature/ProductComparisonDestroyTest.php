@@ -30,7 +30,7 @@ class ProductComparisonDestroyTest extends TestCase
     public function customer_can_delete_their_own_comparison()
     {
         $customer = User::role('customer')->first();
-        $comparison = ProductComparison::factory()->create(['userId' => $customer->id]);
+        $comparison = ProductComparison::factory()->create(['user_id' => $customer->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
@@ -49,7 +49,7 @@ class ProductComparisonDestroyTest extends TestCase
     {
         $customer = User::role('customer')->first();
         $otherUser = User::factory()->create();
-        $comparison = ProductComparison::factory()->create(['userId' => $otherUser->id]);
+        $comparison = ProductComparison::factory()->create(['user_id' => $otherUser->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
@@ -132,7 +132,7 @@ class ProductComparisonDestroyTest extends TestCase
     public function customer_can_delete_public_comparison_they_own()
     {
         $customer = User::role('customer')->first();
-        $comparison = ProductComparison::factory()->public()->create(['userId' => $customer->id]);
+        $comparison = ProductComparison::factory()->public()->create(['user_id' => $customer->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
@@ -151,7 +151,7 @@ class ProductComparisonDestroyTest extends TestCase
     {
         $customer = User::role('customer')->first();
         $otherUser = User::factory()->create();
-        $comparison = ProductComparison::factory()->public()->create(['userId' => $otherUser->id]);
+        $comparison = ProductComparison::factory()->public()->create(['user_id' => $otherUser->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()

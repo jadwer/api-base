@@ -30,7 +30,7 @@ class CartItemIndexTest extends TestCase
                     'type',
                     'attributes' => [
                         'shoppingCartId',
-                        'productId',
+                        'product_id',
                         'quantity',
                         'unitPrice',
                         'originalPrice',

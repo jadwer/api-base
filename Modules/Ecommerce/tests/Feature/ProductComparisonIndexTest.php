@@ -26,7 +26,7 @@ class ProductComparisonIndexTest extends TestCase
                     'type',
                     'id',
                     'attributes' => [
-                        'userId',
+                        'user_id',
                         'name',
                         'isPublic',
                         'createdAt',
@@ -57,7 +57,7 @@ class ProductComparisonIndexTest extends TestCase
         $customer = User::role('customer')->first();
 
         // Create customer's own comparisons
-        ProductComparison::factory()->count(2)->create(['userId' => $customer->id]);
+        ProductComparison::factory()->count(2)->create(['user_id' => $customer->id]);
 
         // Create public comparisons from other users
         ProductComparison::factory()->public()->count(2)->create();
@@ -89,7 +89,7 @@ class ProductComparisonIndexTest extends TestCase
         $admin = User::role('admin')->first();
         $user = User::factory()->create();
 
-        ProductComparison::factory()->count(2)->create(['userId' => $user->id]);
+        ProductComparison::factory()->count(2)->create(['user_id' => $user->id]);
         ProductComparison::factory()->count(3)->create();
 
         $response = $this->actingAs($admin, 'sanctum')

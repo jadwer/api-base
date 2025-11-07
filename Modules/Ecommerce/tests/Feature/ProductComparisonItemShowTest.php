@@ -26,8 +26,8 @@ class ProductComparisonItemShowTest extends TestCase
                 'type' => 'product-comparison-items',
                 'id' => (string) $item->id,
                 'attributes' => [
-                    'comparisonId' => $item->comparison_id,
-                    'productId' => $item->product_id,
+                    'comparison_id' => $item->comparison_id,
+                    'product_id' => $item->product_id,
                     'position' => $item->position,
                 ],
             ],
@@ -52,7 +52,7 @@ class ProductComparisonItemShowTest extends TestCase
     public function customer_can_view_item_from_their_own_comparison()
     {
         $customer = User::role('customer')->first();
-        $comparison = ProductComparison::factory()->create(['userId' => $customer->id]);
+        $comparison = ProductComparison::factory()->create(['user_id' => $customer->id]);
         $item = ProductComparisonItem::factory()->create(['comparison_id' => $comparison->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -83,7 +83,7 @@ class ProductComparisonItemShowTest extends TestCase
     {
         $customer = User::role('customer')->first();
         $otherUser = User::factory()->create();
-        $comparison = ProductComparison::factory()->private()->create(['userId' => $otherUser->id]);
+        $comparison = ProductComparison::factory()->private()->create(['user_id' => $otherUser->id]);
         $item = ProductComparisonItem::factory()->create(['comparison_id' => $comparison->id]);
 
         $response = $this->actingAs($customer, 'sanctum')

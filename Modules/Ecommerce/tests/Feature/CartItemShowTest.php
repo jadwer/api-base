@@ -28,7 +28,7 @@ class CartItemShowTest extends TestCase
                 'type',
                 'attributes' => [
                         'shoppingCartId',
-                        'productId',
+                        'product_id',
                         'quantity',
                         'unitPrice',
                         'originalPrice',
@@ -63,7 +63,7 @@ class CartItemShowTest extends TestCase
                 'type',
                 'attributes' => [
                         'shoppingCartId',
-                        'productId',
+                        'product_id',
                         'quantity',
                         'unitPrice',
                         'originalPrice',

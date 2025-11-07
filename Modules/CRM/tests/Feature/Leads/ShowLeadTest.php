@@ -15,7 +15,7 @@ class ShowLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -44,7 +44,7 @@ class ShowLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->qualified()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
             'source' => 'website',
             'companyName' => 'Acme Corporation',
             'estimated_value' => 50000.00,
@@ -89,7 +89,7 @@ class ShowLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -109,7 +109,7 @@ class ShowLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($tech, 'sanctum')
@@ -127,7 +127,7 @@ class ShowLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -143,7 +143,7 @@ class ShowLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->jsonApi()
@@ -172,7 +172,7 @@ class ShowLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->converted()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -198,7 +198,7 @@ class ShowLeadTest extends TestCase
         $user = User::factory()->create();
 
         $lead = Lead::factory()->withoutContact()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

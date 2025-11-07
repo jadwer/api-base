@@ -92,8 +92,8 @@ class SalesOrderItemIndexTest extends TestCase
         $product1 = Product::factory()->create();
         $product2 = Product::factory()->create();
         
-        SalesOrderItem::factory()->count(2)->create(['productId' => $product1->id]);
-        SalesOrderItem::factory()->count(1)->create(['productId' => $product2->id]);
+        SalesOrderItem::factory()->count(2)->create(['product_id' => $product1->id]);
+        SalesOrderItem::factory()->count(1)->create(['product_id' => $product2->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

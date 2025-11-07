@@ -27,7 +27,7 @@ class JournalSequenceShowTest extends TestCase
                 'id',
                 'type',
                 'attributes' => [
-                        'journalId',
+                        'journal_id',
                         'fiscalYear',
                         'currentNumber',
                         'metadata',
@@ -55,7 +55,7 @@ class JournalSequenceShowTest extends TestCase
                 'id',
                 'type',
                 'attributes' => [
-                        'journalId',
+                        'journal_id',
                         'fiscalYear',
                         'currentNumber',
                         'metadata',

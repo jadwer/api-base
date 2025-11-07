@@ -17,7 +17,7 @@ class SalesOrderUpdateTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contactId' => $customer->id,
+            'contact_id' => $customer->id,
             'orderNumber' => 'SO-UPDATE-001',
             'status' => 'draft',
             'totalAmount' => 1000.00
@@ -62,7 +62,7 @@ class SalesOrderUpdateTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contactId' => $customer->id,
+            'contact_id' => $customer->id,
             'status' => 'draft'
         ]);
 
@@ -94,7 +94,7 @@ class SalesOrderUpdateTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contactId' => $customer->id,
+            'contact_id' => $customer->id,
             'metadata' => ['priority' => 'low']
         ]);
 
@@ -131,7 +131,7 @@ class SalesOrderUpdateTest extends TestCase
         $tech = $this->getTechUser();
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contactId' => $customer->id,
+            'contact_id' => $customer->id,
             'orderNumber' => 'SO-TECH-UPDATE'
         ]);
 
@@ -158,7 +158,7 @@ class SalesOrderUpdateTest extends TestCase
         $customer = $this->getCustomerUser();
         $customerModel = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contactId' => $customerModel->id
+            'contact_id' => $customerModel->id
         ]);
 
         $data = [
@@ -183,7 +183,7 @@ class SalesOrderUpdateTest extends TestCase
     {
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contactId' => $customer->id
+            'contact_id' => $customer->id
         ]);
 
         $data = [
@@ -228,7 +228,7 @@ class SalesOrderUpdateTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contactId' => $customer->id
+            'contact_id' => $customer->id
         ]);
 
         $data = [
@@ -261,11 +261,11 @@ class SalesOrderUpdateTest extends TestCase
         
         // Crear dos sales orders
         $salesOrder1 = SalesOrder::factory()->create([
-            'contactId' => $customer->id,
+            'contact_id' => $customer->id,
             'orderNumber' => 'SO-EXISTING-001'
         ]);
         $salesOrder2 = SalesOrder::factory()->create([
-            'contactId' => $customer->id,
+            'contact_id' => $customer->id,
             'orderNumber' => 'SO-TO-UPDATE-001'
         ]);
 
@@ -298,7 +298,7 @@ class SalesOrderUpdateTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contactId' => $customer->id,
+            'contact_id' => $customer->id,
             'orderNumber' => 'SO-SAME-001'
         ]);
 

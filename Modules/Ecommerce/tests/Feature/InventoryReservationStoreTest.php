@@ -22,9 +22,9 @@ class InventoryReservationStoreTest extends TestCase
             'type' => 'inventory-reservations',
             'attributes' => [
                 'checkoutSessionId' => $session->id,
-                'stockId' => $stock->id,
-                'productId' => $product->id,
-                'warehouseId' => $warehouse->id,
+                'stock_id' => $stock->id,
+                'product_id' => $product->id,
+                'warehouse_id' => $warehouse->id,
                 'quantityReserved' => 5,
                 'status' => 'active',
                 'expiresAt' => now()->addHours(2)->toIso8601String(),

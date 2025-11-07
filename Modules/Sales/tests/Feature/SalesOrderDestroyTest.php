@@ -17,7 +17,7 @@ class SalesOrderDestroyTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contactId' => $customer->id,
+            'contact_id' => $customer->id,
             'orderNumber' => 'SO-DELETE-001',
             'status' => 'draft'
         ]);
@@ -40,7 +40,7 @@ class SalesOrderDestroyTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->draft()->create([
-            'contactId' => $customer->id,
+            'contact_id' => $customer->id,
             'orderNumber' => 'SO-DRAFT-DELETE'
         ]);
 
@@ -60,7 +60,7 @@ class SalesOrderDestroyTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contactId' => $customer->id,
+            'contact_id' => $customer->id,
             'status' => 'cancelled'
         ]);
 
@@ -80,7 +80,7 @@ class SalesOrderDestroyTest extends TestCase
         $tech = $this->getTechUser();
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contactId' => $customer->id,
+            'contact_id' => $customer->id,
             'status' => 'draft'
         ]);
 
@@ -100,7 +100,7 @@ class SalesOrderDestroyTest extends TestCase
         $customer = $this->getCustomerUser();
         $customerModel = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contactId' => $customerModel->id
+            'contact_id' => $customerModel->id
         ]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -121,7 +121,7 @@ class SalesOrderDestroyTest extends TestCase
     {
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contactId' => $customer->id
+            'contact_id' => $customer->id
         ]);
 
         $response = $this->jsonApi()
@@ -153,7 +153,7 @@ class SalesOrderDestroyTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create(['name' => 'Customer Should Remain']);
         $salesOrder = SalesOrder::factory()->create([
-            'contactId' => $customer->id
+            'contact_id' => $customer->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -180,7 +180,7 @@ class SalesOrderDestroyTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contactId' => $customer->id,
+            'contact_id' => $customer->id,
             'metadata' => [
                 'priority' => 'high',
                 'source' => 'website',
@@ -204,7 +204,7 @@ class SalesOrderDestroyTest extends TestCase
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contactId' => $customer->id
+            'contact_id' => $customer->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
