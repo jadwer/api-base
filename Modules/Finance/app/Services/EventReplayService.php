@@ -2,7 +2,6 @@
 
 namespace Modules\Finance\Services;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Modules\Sales\Models\SalesOrder;
@@ -133,7 +132,7 @@ class EventReplayService
                     'purchase_order_id' => $purchaseOrder->id,
                     'order_number' => $purchaseOrder->order_number,
                     'error' => $e->getMessage(),
-                ]);
+                ];
 
                 Log::error('Procure-to-Pay event replay failed', [
                     'purchase_order_id' => $purchaseOrder->id,
@@ -154,7 +153,7 @@ class EventReplayService
     public function replayARInvoicePosted(?Carbon $since = null): array
     {
         $query = ARInvoice::where('status', 'posted')
-            ->whereDoesntHave('journalEntries', function ($q) {
+            ->whereDoesntHave('journalEntry', function ($q) {
                 $q->where('status', 'posted');
             });
 
@@ -215,7 +214,7 @@ class EventReplayService
     public function replayAPInvoicePosted(?Carbon $since = null): array
     {
         $query = APInvoice::where('status', 'posted')
-            ->whereDoesntHave('journalEntries', function ($q) {
+            ->whereDoesntHave('journalEntry', function ($q) {
                 $q->where('status', 'posted');
             });
 
@@ -323,11 +322,11 @@ class EventReplayService
             'gl_integration' => [
                 'posted_ar_invoices' => ARInvoice::where('status', 'posted')->count(),
                 'ar_with_journal_entries' => ARInvoice::where('status', 'posted')
-                    ->has('journalEntries')
+                    ->has('journalEntry')
                     ->count(),
                 'posted_ap_invoices' => APInvoice::where('status', 'posted')->count(),
                 'ap_with_journal_entries' => APInvoice::where('status', 'posted')
-                    ->has('journalEntries')
+                    ->has('journalEntry')
                     ->count(),
             ],
         ];

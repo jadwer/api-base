@@ -82,6 +82,11 @@ class SalesOrder extends Model
         return $this->hasMany(SalesOrderItem::class);
     }
 
+    public function arInvoices(): HasMany
+    {
+        return $this->hasMany(\Modules\Finance\Models\ARInvoice::class, 'sales_order_id');
+    }
+
     // Factory
     protected static function newFactory()
     {

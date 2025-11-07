@@ -99,6 +99,14 @@ class PurchaseOrder extends Model
         return $this->belongsTo(APInvoice::class, 'ap_invoice_id');
     }
 
+    /**
+     * Get all AP invoices generated from this purchase order.
+     */
+    public function apInvoices(): HasMany
+    {
+        return $this->hasMany(APInvoice::class, 'purchase_order_id');
+    }
+
     // ========== SCOPES ==========
 
     /**
