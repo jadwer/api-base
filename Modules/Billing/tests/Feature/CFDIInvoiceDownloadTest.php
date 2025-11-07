@@ -18,7 +18,7 @@ class CFDIInvoiceDownloadTest extends TestCase
     {
         $user = $this->getAdminUser();
 
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
@@ -43,7 +43,7 @@ class CFDIInvoiceDownloadTest extends TestCase
     {
         $user = $this->getTechUser();
 
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
@@ -67,7 +67,7 @@ class CFDIInvoiceDownloadTest extends TestCase
     {
         $user = $this->getCustomerUser();
 
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
@@ -89,7 +89,7 @@ class CFDIInvoiceDownloadTest extends TestCase
 
     public function test_guest_cannot_download_cfdi_pdf()
     {
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $settings->id,
         ]);
@@ -103,7 +103,7 @@ class CFDIInvoiceDownloadTest extends TestCase
     {
         $user = $this->getAdminUser();
 
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
@@ -126,7 +126,7 @@ class CFDIInvoiceDownloadTest extends TestCase
     {
         $user = $this->getAdminUser();
 
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
@@ -151,7 +151,7 @@ class CFDIInvoiceDownloadTest extends TestCase
     {
         $user = $this->getAdminUser();
 
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
@@ -176,7 +176,7 @@ class CFDIInvoiceDownloadTest extends TestCase
     {
         $user = $this->getTechUser();
 
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
@@ -200,7 +200,7 @@ class CFDIInvoiceDownloadTest extends TestCase
     {
         $user = $this->getCustomerUser();
 
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
@@ -222,7 +222,7 @@ class CFDIInvoiceDownloadTest extends TestCase
 
     public function test_guest_cannot_preview_cfdi_pdf()
     {
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $settings->id,
         ]);
@@ -238,7 +238,7 @@ class CFDIInvoiceDownloadTest extends TestCase
     {
         $user = $this->getAdminUser();
 
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
@@ -264,7 +264,7 @@ class CFDIInvoiceDownloadTest extends TestCase
     {
         $user = $this->getTechUser();
 
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
@@ -288,7 +288,7 @@ class CFDIInvoiceDownloadTest extends TestCase
     {
         $user = $this->getCustomerUser();
 
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
@@ -310,7 +310,7 @@ class CFDIInvoiceDownloadTest extends TestCase
 
     public function test_guest_cannot_download_cfdi_xml()
     {
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $settings->id,
         ]);

@@ -19,7 +19,7 @@ class CompanySettingUpdateTest extends TestCase
             'type' => 'company-settings',
             'id' => (string) $setting->id,
             'attributes' => [
-                'companyName' => 'Updated Company Name',
+                'company_name' => 'Updated Company Name',
             ]
         ];
 
@@ -33,14 +33,14 @@ class CompanySettingUpdateTest extends TestCase
             ->assertJson([
                 'data' => [
                     'attributes' => [
-                        'companyName' => 'Updated Company Name'
+                        'company_name' => 'Updated Company Name'
                     ]
                 ]
             ]);
 
         $this->assertDatabaseHas('company_settings', [
             'id' => $setting->id,
-            'companyName' => 'Updated Company Name',
+            'company_name' => 'Updated Company Name',
         ]);
     }
 
@@ -53,7 +53,7 @@ class CompanySettingUpdateTest extends TestCase
             'type' => 'company-settings',
             'id' => (string) $setting->id,
             'attributes' => [
-                'companyName' => 'Updated Name',
+                'company_name' => 'Updated Name',
             ]
         ];
 
@@ -75,7 +75,7 @@ class CompanySettingUpdateTest extends TestCase
             'type' => 'company-settings',
             'id' => (string) $setting->id,
             'attributes' => [
-                'companyName' => 'Updated Name',
+                'company_name' => 'Updated Name',
             ]
         ];
 
@@ -96,7 +96,7 @@ class CompanySettingUpdateTest extends TestCase
             'type' => 'company-settings',
             'id' => (string) $setting->id,
             'attributes' => [
-                'companyName' => 'Updated Name',
+                'company_name' => 'Updated Name',
             ]
         ];
 
@@ -283,7 +283,7 @@ class CompanySettingUpdateTest extends TestCase
             'type' => 'company-settings',
             'id' => (string) $setting->id,
             'attributes' => [
-                'isActive' => true,
+                'is_active' => true,
             ]
         ];
 
@@ -297,7 +297,7 @@ class CompanySettingUpdateTest extends TestCase
             ->assertJson([
                 'data' => [
                     'attributes' => [
-                        'isActive' => true
+                        'is_active' => true
                     ]
                 ]
             ]);
@@ -312,7 +312,7 @@ class CompanySettingUpdateTest extends TestCase
             'type' => 'company-settings',
             'id' => (string) $setting->id,
             'attributes' => [
-                'isActive' => false,
+                'is_active' => false,
             ]
         ];
 
@@ -326,7 +326,7 @@ class CompanySettingUpdateTest extends TestCase
             ->assertJson([
                 'data' => [
                     'attributes' => [
-                        'isActive' => false
+                        'is_active' => false
                     ]
                 ]
             ]);

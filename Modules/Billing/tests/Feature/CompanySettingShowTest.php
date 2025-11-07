@@ -26,7 +26,7 @@ class CompanySettingShowTest extends TestCase
                     'type' => 'company-settings',
                     'id' => (string) $setting->id,
                     'attributes' => [
-                        'companyName' => $setting->company_name,
+                        'company_name' => $setting->company_name,
                         'rfc' => $setting->rfc,
                     ]
                 ]
@@ -102,7 +102,7 @@ class CompanySettingShowTest extends TestCase
             ->assertJsonStructure([
                 'data' => [
                     'attributes' => [
-                        'companyName',
+                        'company_name',
                         'rfc',
                         'taxRegime',
                         'postalCode',
@@ -117,7 +117,7 @@ class CompanySettingShowTest extends TestCase
                         'keyFile',
                         'logoPath',
                         'additionalSettings',
-                        'isActive',
+                        'is_active',
                         'createdAt',
                         'updatedAt',
                     ]
@@ -154,7 +154,7 @@ class CompanySettingShowTest extends TestCase
             ->assertJson([
                 'data' => [
                     'attributes' => [
-                        'isActive' => true
+                        'is_active' => true
                     ]
                 ]
             ]);
@@ -174,7 +174,7 @@ class CompanySettingShowTest extends TestCase
             ->assertJson([
                 'data' => [
                     'attributes' => [
-                        'isActive' => false
+                        'is_active' => false
                     ]
                 ]
             ]);
