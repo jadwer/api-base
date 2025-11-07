@@ -66,7 +66,7 @@ class SalesOrderItemDestroyTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $product = Product::factory()->create();
-        $item = SalesOrderItem::factory()->create(['productId' => $product->id]);
+        $item = SalesOrderItem::factory()->create(['product_id' => $product->id]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

@@ -31,7 +31,7 @@ class ShippingMethodIndexTest extends TestCase
                         'costPerKg',
                         'estimatedDaysMin',
                         'estimatedDaysMax',
-                        'isActive',
+                        'is_active',
                         'availableCountries',
                     ]
                 ]
@@ -70,7 +70,7 @@ class ShippingMethodIndexTest extends TestCase
     public function test_admin_can_filter_active_shipping_methods(): void
     {
         $admin = $this->getAdminUser();
-        ShippingMethod::factory()->create(['isActive' => true]);
+        ShippingMethod::factory()->create(['is_active' => true]);
         ShippingMethod::factory()->inactive()->create();
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -97,7 +97,7 @@ class ShippingMethodIndexTest extends TestCase
     public function test_customer_can_list_active_shipping_methods(): void
     {
         $customer = $this->getCustomerUser();
-        ShippingMethod::factory()->create(['isActive' => true]);
+        ShippingMethod::factory()->create(['is_active' => true]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()

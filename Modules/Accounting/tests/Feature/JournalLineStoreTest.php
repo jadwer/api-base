@@ -20,7 +20,7 @@ class JournalLineStoreTest extends TestCase
             'type' => 'journal-lines',
             'attributes' => [
                 'journalEntryId' => $journalEntry->id,
-                'accountId' => $account->id,
+                'account_id' => $account->id,
                 'debit' => 100.00,
                 'credit' => 0,
                 'description' => 'Test journal line'
@@ -47,7 +47,7 @@ class JournalLineStoreTest extends TestCase
             'type' => 'journal-lines',
             'attributes' => [
                 'journalEntryId' => $journalEntry->id,
-                'accountId' => $account->id,
+                'account_id' => $account->id,
                 'debit' => 100.00,
                 'credit' => 0,
                 'description' => 'Test journal line'

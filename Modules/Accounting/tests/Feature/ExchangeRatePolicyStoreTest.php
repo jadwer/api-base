@@ -19,7 +19,7 @@ class ExchangeRatePolicyStoreTest extends TestCase
                 'scope' => 'global',
                 'maxAgeDays' => 30,
                 'tolerancePercentage' => 5.0,
-                'isActive' => true
+                'is_active' => true
 ]
         ];
 
@@ -44,7 +44,7 @@ class ExchangeRatePolicyStoreTest extends TestCase
                 'scope' => 'global',
                 'maxAgeDays' => 30,
                 'tolerancePercentage' => 5.0,
-                'isActive' => true
+                'is_active' => true
 ]
         ];
 

@@ -23,7 +23,7 @@ class SalesOrderItemStoreTest extends TestCase
             'type' => 'sales-order-items',
             'attributes' => [
                 'salesOrderId' => $salesOrder->id,
-                'productId' => $product->id,
+                'product_id' => $product->id,
                 'quantity' => 5.0,
                 'unitPrice' => 100.0,
                 'discount' => 10.0,
@@ -46,7 +46,7 @@ class SalesOrderItemStoreTest extends TestCase
         $this->assertDatabaseHas('sales_order_items', [
             'id' => $id,
             'sales_order_id' => $salesOrder->id,
-            'productId' => $product->id,
+            'product_id' => $product->id,
             'quantity' => 5.0,
             'unitPrice' => 100.0,
             'discount' => 10.0,
@@ -64,7 +64,7 @@ class SalesOrderItemStoreTest extends TestCase
             'type' => 'sales-order-items',
             'attributes' => [
                 'salesOrderId' => $salesOrder->id,
-                'productId' => $product->id,
+                'product_id' => $product->id,
                 'quantity' => 2.0,
                 'unitPrice' => 50.0,
                 'total' => 100.0
@@ -83,7 +83,7 @@ class SalesOrderItemStoreTest extends TestCase
         $this->assertDatabaseHas('sales_order_items', [
             'id' => $id,
             'sales_order_id' => $salesOrder->id,
-            'productId' => $product->id,
+            'product_id' => $product->id,
             'quantity' => 2.0,
             'unitPrice' => 50.0,
             'discount' => 0.0, // Default value
@@ -101,7 +101,7 @@ class SalesOrderItemStoreTest extends TestCase
             'type' => 'sales-order-items',
             'attributes' => [
                 'salesOrderId' => $salesOrder->id,
-                'productId' => $product->id,
+                'product_id' => $product->id,
                 'quantity' => 1.0,
                 'unitPrice' => 100.0,
                 'total' => 100.0
@@ -126,7 +126,7 @@ class SalesOrderItemStoreTest extends TestCase
             'type' => 'sales-order-items',
             'attributes' => [
                 'salesOrderId' => $salesOrder->id,
-                'productId' => $product->id,
+                'product_id' => $product->id,
                 'quantity' => 1.0,
                 'unitPrice' => 100.0,
                 'total' => 100.0
@@ -177,7 +177,7 @@ class SalesOrderItemStoreTest extends TestCase
             'type' => 'sales-order-items',
             'attributes' => [
                 'salesOrderId' => $salesOrder->id,
-                'productId' => $product->id,
+                'product_id' => $product->id,
                 'quantity' => -1.0,
                 'unitPrice' => 100.0,
                 'total' => 100.0
@@ -207,7 +207,7 @@ class SalesOrderItemStoreTest extends TestCase
             'type' => 'sales-order-items',
             'attributes' => [
                 'salesOrderId' => $salesOrder->id,
-                'productId' => $product->id,
+                'product_id' => $product->id,
                 'quantity' => 1.0,
                 'unitPrice' => -50.0,
                 'total' => 100.0
@@ -237,7 +237,7 @@ class SalesOrderItemStoreTest extends TestCase
             'type' => 'sales-order-items',
             'attributes' => [
                 'salesOrderId' => $salesOrder->id,
-                'productId' => $product->id,
+                'product_id' => $product->id,
                 'quantity' => 1.0,
                 'unitPrice' => 100.0,
                 'discount' => -10.0,
@@ -268,7 +268,7 @@ class SalesOrderItemStoreTest extends TestCase
             'type' => 'sales-order-items',
             'attributes' => [
                 'salesOrderId' => $salesOrder->id,
-                'productId' => $product->id,
+                'product_id' => $product->id,
                 'quantity' => 1.0,
                 'unitPrice' => 100.0,
                 'total' => 100.0
@@ -287,7 +287,7 @@ class SalesOrderItemStoreTest extends TestCase
         $this->assertDatabaseHas('sales_order_items', [
             'id' => $id,
             'sales_order_id' => $salesOrder->id,
-            'productId' => $product->id,
+            'product_id' => $product->id,
             'quantity' => 1.0,
             'unitPrice' => 100.0,
             'total' => 100.0

@@ -14,10 +14,10 @@ class EmployeeDestroyTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -37,10 +37,10 @@ class EmployeeDestroyTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->active()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -57,10 +57,10 @@ class EmployeeDestroyTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->terminated()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -77,10 +77,10 @@ class EmployeeDestroyTest extends TestCase
         $tech = $this->getTechUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
 
         $response = $this->actingAs($tech, 'sanctum')
@@ -97,10 +97,10 @@ class EmployeeDestroyTest extends TestCase
         $customer = $this->getCustomerUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -115,10 +115,10 @@ class EmployeeDestroyTest extends TestCase
     public function test_guest_cannot_delete_employee(): void
     {
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
 
         $response = $this->jsonApi()
@@ -146,10 +146,10 @@ class EmployeeDestroyTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -166,10 +166,10 @@ class EmployeeDestroyTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -186,15 +186,15 @@ class EmployeeDestroyTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
 
         $employee1 = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
         $employee2 = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

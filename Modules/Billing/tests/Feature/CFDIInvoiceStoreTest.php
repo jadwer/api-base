@@ -22,7 +22,7 @@ class CFDIInvoiceStoreTest extends TestCase
             'type' => 'cfdi-invoices',
             'attributes' => [
                 'companySettingId' => $companySetting->id,
-                'contactId' => $contact->id,
+                'contact_id' => $contact->id,
                 'series' => 'F',
                 'folio' => 1001,
                 'tipoComprobante' => 'I',
@@ -72,7 +72,7 @@ class CFDIInvoiceStoreTest extends TestCase
             'type' => 'cfdi-invoices',
             'attributes' => [
                 'companySettingId' => $companySetting->id,
-                'contactId' => $contact->id,
+                'contact_id' => $contact->id,
                 'series' => 'F',
                 'folio' => 1001,
                 'receptorRfc' => 'XAXX010101000',
@@ -102,7 +102,7 @@ class CFDIInvoiceStoreTest extends TestCase
             'type' => 'cfdi-invoices',
             'attributes' => [
                 'companySettingId' => $companySetting->id,
-                'contactId' => $contact->id,
+                'contact_id' => $contact->id,
                 'series' => 'F',
                 'folio' => 1001,
                 'receptorRfc' => 'XAXX010101000',
@@ -131,7 +131,7 @@ class CFDIInvoiceStoreTest extends TestCase
             'type' => 'cfdi-invoices',
             'attributes' => [
                 'companySettingId' => $companySetting->id,
-                'contactId' => $contact->id,
+                'contact_id' => $contact->id,
                 'series' => 'F',
                 'folio' => 1001,
                 'receptorRfc' => 'XAXX010101000',
@@ -158,7 +158,7 @@ class CFDIInvoiceStoreTest extends TestCase
         $data = [
             'type' => 'cfdi-invoices',
             'attributes' => [
-                'contactId' => $contact->id,
+                'contact_id' => $contact->id,
                 'series' => 'F',
                 'folio' => 1001,
                 'receptorRfc' => 'XAXX010101000',
@@ -216,7 +216,7 @@ class CFDIInvoiceStoreTest extends TestCase
             'type' => 'cfdi-invoices',
             'attributes' => [
                 'companySettingId' => $companySetting->id,
-                'contactId' => $contact->id,
+                'contact_id' => $contact->id,
                 'series' => 'F',
                 'folio' => 1001,
                 'receptorNombre' => 'Cliente Test',
@@ -245,7 +245,7 @@ class CFDIInvoiceStoreTest extends TestCase
             'type' => 'cfdi-invoices',
             'attributes' => [
                 'companySettingId' => $companySetting->id,
-                'contactId' => $contact->id,
+                'contact_id' => $contact->id,
                 'series' => 'F',
                 'folio' => 1001,
                 'receptorRfc' => 'SHORT',
@@ -275,7 +275,7 @@ class CFDIInvoiceStoreTest extends TestCase
             'type' => 'cfdi-invoices',
             'attributes' => [
                 'companySettingId' => $companySetting->id,
-                'contactId' => $contact->id,
+                'contact_id' => $contact->id,
                 'series' => 'F',
                 'folio' => 1001,
                 'receptorRfc' => 'XAXX010101000',
@@ -304,7 +304,7 @@ class CFDIInvoiceStoreTest extends TestCase
             'type' => 'cfdi-invoices',
             'attributes' => [
                 'companySettingId' => $companySetting->id,
-                'contactId' => $contact->id,
+                'contact_id' => $contact->id,
                 'series' => 'F',
                 'folio' => 1001,
                 'receptorRfc' => 'XAXX010101000',
@@ -333,7 +333,7 @@ class CFDIInvoiceStoreTest extends TestCase
             'type' => 'cfdi-invoices',
             'attributes' => [
                 'companySettingId' => $companySetting->id,
-                'contactId' => $contact->id,
+                'contact_id' => $contact->id,
                 'series' => 'N',
                 'folio' => 101,
                 'tipoComprobante' => 'E',
@@ -365,7 +365,7 @@ class CFDIInvoiceStoreTest extends TestCase
             'type' => 'cfdi-invoices',
             'attributes' => [
                 'companySettingId' => $companySetting->id,
-                'contactId' => $contact->id,
+                'contact_id' => $contact->id,
                 'series' => 'F',
                 'folio' => 1002,
                 'receptorRfc' => 'XAXX010101000',

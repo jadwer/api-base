@@ -18,10 +18,10 @@ class AccountMappingStoreTest extends TestCase
             'type' => 'account-mappings',
             'attributes' => [
                 'mappingType' => 'test-type',
-                'accountId' => $account->id,
+                'account_id' => $account->id,
                 'version' => 1,
                 'effectiveFrom' => '2024-01-01',
-                'isActive' => true,
+                'is_active' => true,
                 'createdById' => $admin->id
 ]
         ];
@@ -45,10 +45,10 @@ class AccountMappingStoreTest extends TestCase
             'type' => 'account-mappings',
             'attributes' => [
                 'mappingType' => 'test-type',
-                'accountId' => $account->id,
+                'account_id' => $account->id,
                 'version' => 1,
                 'effectiveFrom' => '2024-01-01',
-                'isActive' => true,
+                'is_active' => true,
                 'createdById' => $admin->id
 ]
         ];

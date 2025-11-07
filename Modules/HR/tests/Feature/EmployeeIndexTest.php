@@ -14,10 +14,10 @@ class EmployeeIndexTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         Employee::factory()->count(3)->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -34,17 +34,17 @@ class EmployeeIndexTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
 
         Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
             'firstName' => 'John',
             'lastName' => 'Zulu'
         ]);
         Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
             'firstName' => 'Jane',
             'lastName' => 'Alpha'
         ]);
@@ -73,15 +73,15 @@ class EmployeeIndexTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
 
         Employee::factory()->count(2)->active()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
         Employee::factory()->count(1)->terminated()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -99,16 +99,16 @@ class EmployeeIndexTest extends TestCase
 
         $department1 = Department::factory()->create();
         $department2 = Department::factory()->create();
-        $position1 = Position::factory()->create(['departmentId' => $department1->id]);
-        $position2 = Position::factory()->create(['departmentId' => $department2->id]);
+        $position1 = Position::factory()->create(['department_id' => $department1->id]);
+        $position2 = Position::factory()->create(['department_id' => $department2->id]);
 
         Employee::factory()->count(2)->create([
-            'departmentId' => $department1->id,
-            'positionId' => $position1->id
+            'department_id' => $department1->id,
+            'position_id' => $position1->id
         ]);
         Employee::factory()->count(1)->create([
-            'departmentId' => $department2->id,
-            'positionId' => $position2->id
+            'department_id' => $department2->id,
+            'position_id' => $position2->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -125,15 +125,15 @@ class EmployeeIndexTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
 
         Employee::factory()->count(2)->fullTime()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
         Employee::factory()->count(1)->contract()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -150,10 +150,10 @@ class EmployeeIndexTest extends TestCase
         $tech = $this->getTechUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         Employee::factory()->count(2)->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
 
         $response = $this->actingAs($tech, 'sanctum')
@@ -170,10 +170,10 @@ class EmployeeIndexTest extends TestCase
         $customer = $this->getCustomerUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         Employee::factory()->count(2)->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -198,10 +198,10 @@ class EmployeeIndexTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         Employee::factory()->count(25)->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -224,10 +224,10 @@ class EmployeeIndexTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -252,10 +252,10 @@ class EmployeeIndexTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

@@ -20,7 +20,7 @@ class SalesOrderStoreTest extends TestCase
         $data = [
             'type' => 'sales-orders',
             'attributes' => [
-                'contactId' => $customer->id,
+                'contact_id' => $customer->id,
                 'orderNumber' => 'SO-NEW-001',
                 'status' => 'draft',
                 'orderDate' => '2024-01-15',
@@ -68,7 +68,7 @@ class SalesOrderStoreTest extends TestCase
         // Verificar que se guardó en base de datos
         $this->assertDatabaseHas('sales_orders', [
             'orderNumber' => 'SO-NEW-001',
-            'contactId' => $customer->id,
+            'contact_id' => $customer->id,
             'status' => 'draft',
             'totalAmount' => 1050.00
         ]);
@@ -82,7 +82,7 @@ class SalesOrderStoreTest extends TestCase
         $data = [
             'type' => 'sales-orders',
             'attributes' => [
-                'contactId' => $customer->id,
+                'contact_id' => $customer->id,
                 'orderNumber' => 'SO-CONFIRMED-001',
                 'status' => 'confirmed',
                 'orderDate' => '2024-01-15',
@@ -112,7 +112,7 @@ class SalesOrderStoreTest extends TestCase
         $data = [
             'type' => 'sales-orders',
             'attributes' => [
-                'contactId' => $customer->id,
+                'contact_id' => $customer->id,
                 'orderNumber' => 'SO-TECH-001',
                 'status' => 'draft',
                 'orderDate' => '2024-01-15',
@@ -140,7 +140,7 @@ class SalesOrderStoreTest extends TestCase
         $data = [
             'type' => 'sales-orders',
             'attributes' => [
-                'contactId' => $customerModel->id,
+                'contact_id' => $customerModel->id,
                 'orderNumber' => 'SO-CUSTOMER-001',
                 'status' => 'draft',
                 'orderDate' => '2024-01-15',
@@ -165,7 +165,7 @@ class SalesOrderStoreTest extends TestCase
         $data = [
             'type' => 'sales-orders',
             'attributes' => [
-                'contactId' => $customer->id,
+                'contact_id' => $customer->id,
                 'orderNumber' => 'SO-GUEST-001',
                 'status' => 'draft',
                 'totalAmount' => 100.00
@@ -188,7 +188,7 @@ class SalesOrderStoreTest extends TestCase
         $data = [
             'type' => 'sales-orders',
             'attributes' => [
-                'contactId' => $customer->id,
+                'contact_id' => $customer->id,
                 'status' => 'draft',
                 'orderDate' => '2024-01-15',
                 'totalAmount' => 100.00
@@ -237,7 +237,7 @@ class SalesOrderStoreTest extends TestCase
         $errors = $response->json('errors');
         $this->assertNotEmpty($errors);
         $contactIdError = collect($errors)->first(function ($error) {
-            return str_contains($error['source']['pointer'] ?? '', 'contactId');
+            return str_contains($error['source']['pointer'] ?? '', 'contact_id');
         });
         $this->assertNotNull($contactIdError, 'Expected contact_id validation error');
     }
@@ -250,7 +250,7 @@ class SalesOrderStoreTest extends TestCase
         $data = [
             'type' => 'sales-orders',
             'attributes' => [
-                'contactId' => $customer->id,
+                'contact_id' => $customer->id,
                 'orderNumber' => 'SO-INVALID-STATUS',
                 'status' => 'invalid_status',
                 'orderDate' => '2024-01-15',
@@ -281,7 +281,7 @@ class SalesOrderStoreTest extends TestCase
         $data = [
             'type' => 'sales-orders',
             'attributes' => [
-                'contactId' => $customer->id,
+                'contact_id' => $customer->id,
                 'orderNumber' => 'SO-INVALID-AMOUNT',
                 'status' => 'draft',
                 'orderDate' => '2024-01-15',
@@ -318,7 +318,7 @@ class SalesOrderStoreTest extends TestCase
         $data = [
             'type' => 'sales-orders',
             'attributes' => [
-                'contactId' => $customer->id,
+                'contact_id' => $customer->id,
                 'orderNumber' => 'SO-METADATA-001',
                 'status' => 'draft',
                 'orderDate' => '2024-01-15',

@@ -41,13 +41,13 @@ class ShippingMethodUpdateTest extends TestCase
     public function test_admin_can_deactivate_shipping_method(): void
     {
         $admin = $this->getAdminUser();
-        $method = ShippingMethod::factory()->create(['isActive' => true]);
+        $method = ShippingMethod::factory()->create(['is_active' => true]);
 
         $data = [
             'type' => 'shipping-methods',
             'id' => (string) $method->id,
             'attributes' => [
-                'isActive' => false,
+                'is_active' => false,
             ]
         ];
 
@@ -60,7 +60,7 @@ class ShippingMethodUpdateTest extends TestCase
         $response->assertOk();
         $this->assertDatabaseHas('shipping_methods', [
             'id' => $method->id,
-            'isActive' => false,
+            'is_active' => false,
         ]);
     }
 

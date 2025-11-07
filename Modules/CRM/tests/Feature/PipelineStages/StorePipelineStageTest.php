@@ -18,7 +18,7 @@ class StorePipelineStageTest extends TestCase
                 'type' => 'opportunity',
                 'probability' => 25,
                 'sortOrder' => 1,
-                'isActive' => true,
+                'is_active' => true,
                 'isClosedWon' => false,
                 'isClosedLost' => false
             ]
@@ -40,7 +40,7 @@ class StorePipelineStageTest extends TestCase
                     'type',
                     'probability',
                     'sortOrder',
-                    'isActive'
+                    'is_active'
                 ]
             ]
         ]);
@@ -66,7 +66,7 @@ class StorePipelineStageTest extends TestCase
                 'type' => 'lead',
                 'probability' => 10,
                 'sortOrder' => 1,
-                'isActive' => true
+                'is_active' => true
             ]
         ];
 
@@ -91,7 +91,7 @@ class StorePipelineStageTest extends TestCase
                 'type' => 'opportunity',
                 'probability' => 100,
                 'sortOrder' => 5,
-                'isActive' => true,
+                'is_active' => true,
                 'isClosedWon' => true,
                 'isClosedLost' => false
             ]

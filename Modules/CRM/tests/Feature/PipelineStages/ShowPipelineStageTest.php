@@ -16,7 +16,7 @@ class ShowPipelineStageTest extends TestCase
             'type' => 'opportunity',
             'probability' => 25,
             'sort_order' => 1,
-            'isActive' => true
+            'is_active' => true
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -34,7 +34,7 @@ class ShowPipelineStageTest extends TestCase
                     'type',
                     'probability',
                     'sortOrder',
-                    'isActive',
+                    'is_active',
                     'isClosedWon',
                     'isClosedLost'
                 ]

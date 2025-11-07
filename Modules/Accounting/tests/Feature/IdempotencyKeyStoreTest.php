@@ -14,7 +14,7 @@ class IdempotencyKeyStoreTest extends TestCase
         $data = [
             'type' => 'idempotency-keys',
             'attributes' => [
-                'userId' => 1,
+                'user_id' => 1,
                 'endpoint' => 'test_endpoint',
                 'idempotencyKey' => 'test-key-123',
                 'requestHash' => 'abc123',
@@ -39,7 +39,7 @@ class IdempotencyKeyStoreTest extends TestCase
         $data = [
             'type' => 'idempotency-keys',
             'attributes' => [
-                'userId' => 1,
+                'user_id' => 1,
                 'endpoint' => 'test',
                 'idempotencyKey' => 'test-key',
                 'requestHash' => 'hash',
@@ -64,7 +64,7 @@ class IdempotencyKeyStoreTest extends TestCase
         $data = [
             'type' => 'idempotency-keys',
             'attributes' => [
-                'userId' => 1,
+                'user_id' => 1,
                 'endpoint' => 'test',
                 'idempotencyKey' => 'test-key',
                 'requestHash' => 'hash',
@@ -89,7 +89,7 @@ class IdempotencyKeyStoreTest extends TestCase
         $data = [
             'type' => 'idempotency-keys',
             'attributes' => [
-                'userId' => 1,
+                'user_id' => 1,
                 'endpoint' => 'test',
                 'idempotencyKey' => 'test-key',
                 'requestHash' => 'hash',
@@ -112,7 +112,7 @@ class IdempotencyKeyStoreTest extends TestCase
         $data = [
             'type' => 'idempotency-keys',
             'attributes' => [
-                'userId' => 1,
+                'user_id' => 1,
                 'endpoint' => 'test',
                 'idempotencyKey' => 'test-key',
                 'requestHash' => 'hash',
@@ -136,7 +136,7 @@ class IdempotencyKeyStoreTest extends TestCase
         $data = [
             'type' => 'idempotency-keys',
             'attributes' => [
-                'userId' => 1
+                'user_id' => 1
             ]
         ];
 
@@ -156,7 +156,7 @@ class IdempotencyKeyStoreTest extends TestCase
         $data = [
             'type' => 'idempotency-keys',
             'attributes' => [
-                'userId' => 'invalid_data_type'
+                'user_id' => 'invalid_data_type'
             ]
         ];
 

@@ -15,14 +15,14 @@ class PerformanceReviewStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
 
         $data = [
@@ -66,7 +66,7 @@ class PerformanceReviewStoreTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('performance_reviews', [
-            'employeeId' => $employee->id,
+            'employee_id' => $employee->id,
             'reviewer_id' => $reviewer->id,
             'overall_rating' => 4,
         ]);
@@ -77,14 +77,14 @@ class PerformanceReviewStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
 
         $data = [
@@ -134,14 +134,14 @@ class PerformanceReviewStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
 
         $data = [
@@ -181,7 +181,7 @@ class PerformanceReviewStoreTest extends TestCase
 
         $response->assertCreated();
         $this->assertDatabaseHas('performance_reviews', [
-            'employeeId' => $employee->id,
+            'employee_id' => $employee->id,
             'overall_rating' => 5,
             'goals_rating' => 5,
             'skills_rating' => 5,
@@ -194,14 +194,14 @@ class PerformanceReviewStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
 
         $data = [
@@ -241,7 +241,7 @@ class PerformanceReviewStoreTest extends TestCase
 
         $response->assertCreated();
         $this->assertDatabaseHas('performance_reviews', [
-            'employeeId' => $employee->id,
+            'employee_id' => $employee->id,
             'overall_rating' => 2,
             'goals_rating' => 2,
             'skills_rating' => 1,
@@ -254,14 +254,14 @@ class PerformanceReviewStoreTest extends TestCase
         $tech = $this->getTechUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
 
         $data = [
@@ -307,14 +307,14 @@ class PerformanceReviewStoreTest extends TestCase
         $customer = $this->getCustomerUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
 
         $data = [
@@ -357,14 +357,14 @@ class PerformanceReviewStoreTest extends TestCase
     public function test_guest_cannot_create_performance_review(): void
     {
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
 
         $data = [
@@ -408,10 +408,10 @@ class PerformanceReviewStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $reviewer = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
 
         $data = [
@@ -450,10 +450,10 @@ class PerformanceReviewStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
 
         $data = [
@@ -492,14 +492,14 @@ class PerformanceReviewStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
 
         $data = [
@@ -543,14 +543,14 @@ class PerformanceReviewStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
 
         $data = [
@@ -593,14 +593,14 @@ class PerformanceReviewStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
 
         $data = [
@@ -642,14 +642,14 @@ class PerformanceReviewStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
 
         $data = [
@@ -694,14 +694,14 @@ class PerformanceReviewStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
 
         $data = [
@@ -746,14 +746,14 @@ class PerformanceReviewStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
 
         $data = [
@@ -798,14 +798,14 @@ class PerformanceReviewStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
         $reviewer = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id,
+            'department_id' => $department->id,
+            'position_id' => $position->id,
         ]);
 
         $data = [
@@ -844,7 +844,7 @@ class PerformanceReviewStoreTest extends TestCase
 
         $response->assertCreated();
         $this->assertDatabaseHas('performance_reviews', [
-            'employeeId' => $employee->id,
+            'employee_id' => $employee->id,
             'reviewer_id' => $reviewer->id,
             'comments' => null,
         ]);

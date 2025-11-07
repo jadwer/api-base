@@ -16,15 +16,15 @@ class PayrollItemDestroyTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
         $period = PayrollPeriod::factory()->create();
         $payrollItem = PayrollItem::factory()->create([
-            'employeeId' => $employee->id,
-            'payrollPeriodId' => $period->id
+            'employee_id' => $employee->id,
+            'payroll_period_id' => $period->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -44,15 +44,15 @@ class PayrollItemDestroyTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
         $period = PayrollPeriod::factory()->create();
         $payrollItem = PayrollItem::factory()->draft()->create([
-            'employeeId' => $employee->id,
-            'payrollPeriodId' => $period->id
+            'employee_id' => $employee->id,
+            'payroll_period_id' => $period->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -69,15 +69,15 @@ class PayrollItemDestroyTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
         $period = PayrollPeriod::factory()->create();
         $payrollItem = PayrollItem::factory()->pending()->create([
-            'employeeId' => $employee->id,
-            'payrollPeriodId' => $period->id
+            'employee_id' => $employee->id,
+            'payroll_period_id' => $period->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -94,15 +94,15 @@ class PayrollItemDestroyTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
         $period = PayrollPeriod::factory()->create();
         $payrollItem = PayrollItem::factory()->paid()->create([
-            'employeeId' => $employee->id,
-            'payrollPeriodId' => $period->id
+            'employee_id' => $employee->id,
+            'payroll_period_id' => $period->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -119,15 +119,15 @@ class PayrollItemDestroyTest extends TestCase
         $tech = $this->getTechUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
         $period = PayrollPeriod::factory()->create();
         $payrollItem = PayrollItem::factory()->create([
-            'employeeId' => $employee->id,
-            'payrollPeriodId' => $period->id
+            'employee_id' => $employee->id,
+            'payroll_period_id' => $period->id
         ]);
 
         $response = $this->actingAs($tech, 'sanctum')
@@ -144,15 +144,15 @@ class PayrollItemDestroyTest extends TestCase
         $customer = $this->getCustomerUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
         $period = PayrollPeriod::factory()->create();
         $payrollItem = PayrollItem::factory()->create([
-            'employeeId' => $employee->id,
-            'payrollPeriodId' => $period->id
+            'employee_id' => $employee->id,
+            'payroll_period_id' => $period->id
         ]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -167,15 +167,15 @@ class PayrollItemDestroyTest extends TestCase
     public function test_guest_cannot_delete_payroll_item(): void
     {
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
         $period = PayrollPeriod::factory()->create();
         $payrollItem = PayrollItem::factory()->create([
-            'employeeId' => $employee->id,
-            'payrollPeriodId' => $period->id
+            'employee_id' => $employee->id,
+            'payroll_period_id' => $period->id
         ]);
 
         $response = $this->jsonApi()
@@ -203,15 +203,15 @@ class PayrollItemDestroyTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
         $period = PayrollPeriod::factory()->create();
         $payrollItem = PayrollItem::factory()->create([
-            'employeeId' => $employee->id,
-            'payrollPeriodId' => $period->id
+            'employee_id' => $employee->id,
+            'payroll_period_id' => $period->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -228,20 +228,20 @@ class PayrollItemDestroyTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $employee = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
         $period = PayrollPeriod::factory()->create();
 
         $payrollItem1 = PayrollItem::factory()->create([
-            'employeeId' => $employee->id,
-            'payrollPeriodId' => $period->id
+            'employee_id' => $employee->id,
+            'payroll_period_id' => $period->id
         ]);
         $payrollItem2 = PayrollItem::factory()->create([
-            'employeeId' => $employee->id,
-            'payrollPeriodId' => $period->id
+            'employee_id' => $employee->id,
+            'payroll_period_id' => $period->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

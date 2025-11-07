@@ -33,7 +33,7 @@ class ExchangeRatePolicyShowTest extends TestCase
                         'maxAgeDays',
                         'tolerancePercentage',
                         'requireApprovalOver',
-                        'isActive',
+                        'is_active',
                     'createdAt',
                     'updatedAt'
                 ]
@@ -45,7 +45,7 @@ class ExchangeRatePolicyShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $exchangeRatePolicy = ExchangeRatePolicy::factory()->create(['currency' => 'test string', 'source' => 'test string', 'scope' => 'test string', 'max_age_days' => 100, 'tolerance_percentage' => 99.99, 'require_approval_over' => 99.99, 'isActive' => true]);
+        $exchangeRatePolicy = ExchangeRatePolicy::factory()->create(['currency' => 'test string', 'source' => 'test string', 'scope' => 'test string', 'max_age_days' => 100, 'tolerance_percentage' => 99.99, 'require_approval_over' => 99.99, 'is_active' => true]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -64,7 +64,7 @@ class ExchangeRatePolicyShowTest extends TestCase
                         'maxAgeDays',
                         'tolerancePercentage',
                         'requireApprovalOver',
-                        'isActive',
+                        'is_active',
                     'createdAt',
                     'updatedAt'
                 ]

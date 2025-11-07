@@ -24,9 +24,9 @@ class InventoryReservationIndexTest extends TestCase
                     'id',
                     'type',
                     'attributes' => [
-                        'checkoutSessionId',
-                        'productId',
-                        'warehouseId',
+                        'checkout_session_id',
+                        'product_id',
+                        'warehouse_id',
                         'quantityReserved',
                         'status',
                     ]

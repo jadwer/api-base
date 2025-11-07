@@ -27,8 +27,8 @@ class WishlistItemShowTest extends TestCase
                 'type',
                 'id',
                 'attributes' => [
-                    'wishlistId',
-                    'productId',
+                    'wishlist_id',
+                    'product_id',
                     'quantity',
                     'priority',
                     'notes',
@@ -59,7 +59,7 @@ class WishlistItemShowTest extends TestCase
     {
         $customer = User::role('customer')->first();
 
-        $wishlist = Wishlist::factory()->create(['userId' => $customer->id]);
+        $wishlist = Wishlist::factory()->create(['user_id' => $customer->id]);
         $item = WishlistItem::factory()->create(['wishlist_id' => $wishlist->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -73,8 +73,8 @@ class WishlistItemShowTest extends TestCase
                 'type' => 'wishlist-items',
                 'id' => (string) $item->id,
                 'attributes' => [
-                    'wishlistId' => $wishlist->id,
-                    'productId' => $item->product_id,
+                    'wishlist_id' => $wishlist->id,
+                    'product_id' => $item->product_id,
                     'quantity' => $item->quantity,
                     'priority' => $item->priority,
                 ],
@@ -88,7 +88,7 @@ class WishlistItemShowTest extends TestCase
         $customer = User::role('customer')->first();
 
         $otherUser = User::factory()->create();
-        $wishlist = Wishlist::factory()->private()->create(['userId' => $otherUser->id]);
+        $wishlist = Wishlist::factory()->private()->create(['user_id' => $otherUser->id]);
         $item = WishlistItem::factory()->create(['wishlist_id' => $wishlist->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -105,7 +105,7 @@ class WishlistItemShowTest extends TestCase
         $customer = User::role('customer')->first();
 
         $otherUser = User::factory()->create();
-        $wishlist = Wishlist::factory()->public()->create(['userId' => $otherUser->id]);
+        $wishlist = Wishlist::factory()->public()->create(['user_id' => $otherUser->id]);
         $item = WishlistItem::factory()->create(['wishlist_id' => $wishlist->id]);
 
         $response = $this->actingAs($customer, 'sanctum')

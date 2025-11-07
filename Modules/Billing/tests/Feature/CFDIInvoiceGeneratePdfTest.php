@@ -17,7 +17,7 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
         $user = $this->getAdminUser();
 
         // Create company settings
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
 
         // Create invoice with items
         $invoice = CFDIInvoice::factory()
@@ -57,7 +57,7 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
     {
         $user = $this->getAdminUser();
 
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
@@ -86,7 +86,7 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
     {
         $user = $this->getAdminUser();
 
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()
             ->valid()
             ->has(CFDIItem::factory()->count(1), 'items')
@@ -109,7 +109,7 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
     {
         $user = $this->getAdminUser();
 
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()
             ->draft()
             ->has(CFDIItem::factory()->count(1), 'items')
@@ -130,7 +130,7 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
     {
         $user = $this->getTechUser();
 
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $settings->id,
         ]);
@@ -148,7 +148,7 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
     {
         $user = $this->getCustomerUser();
 
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $settings->id,
         ]);
@@ -164,7 +164,7 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
 
     public function test_guest_cannot_generate_pdf()
     {
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $settings->id,
         ]);
@@ -179,7 +179,7 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
         $user = $this->getAdminUser();
 
         // Deactivate all company settings
-        CompanySetting::query()->update(['isActive' => false]);
+        CompanySetting::query()->update(['is_active' => false]);
 
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
@@ -198,7 +198,7 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
     {
         $user = $this->getAdminUser();
 
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
@@ -222,7 +222,7 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
     {
         $user = $this->getAdminUser();
 
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()
             ->withDiscount()
             ->has(CFDIItem::factory()->count(1), 'items')
@@ -243,7 +243,7 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
     {
         $user = $this->getAdminUser();
 
-        $settings = CompanySetting::factory()->create(['isActive' => true]);
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->withTaxes()->count(2), 'items')
             ->create([

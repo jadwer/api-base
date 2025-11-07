@@ -28,7 +28,7 @@ class ShoppingCartShowTest extends TestCase
                 'type',
                 'attributes' => [
                         'sessionId',
-                        'userId',
+                        'user_id',
                         'status',
                         'expiresAt',
                         'totalAmount',
@@ -73,7 +73,7 @@ class ShoppingCartShowTest extends TestCase
                 'type',
                 'attributes' => [
                         'sessionId',
-                        'userId',
+                        'user_id',
                         'status',
                         'expiresAt',
                         'totalAmount',

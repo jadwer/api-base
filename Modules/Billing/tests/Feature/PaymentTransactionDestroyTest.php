@@ -174,7 +174,7 @@ class PaymentTransactionDestroyTest extends TestCase
         $salesOrder = \Modules\Sales\Models\SalesOrder::factory()->create();
 
         $transaction = PaymentTransaction::factory()->create([
-            'checkoutSessionId' => $checkoutSession->id,
+            'checkout_session_id' => $checkoutSession->id,
             'sales_order_id' => $salesOrder->id,
         ]);
 

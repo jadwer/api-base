@@ -35,7 +35,7 @@ class ExchangeRatePolicyIndexTest extends TestCase
                         'maxAgeDays',
                         'tolerancePercentage',
                         'requireApprovalOver',
-                        'isActive',
+                        'is_active',
                     ]
                 ]
             ]
@@ -61,8 +61,8 @@ class ExchangeRatePolicyIndexTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        ExchangeRatePolicy::factory()->create(['isActive' => true]);
-        ExchangeRatePolicy::factory()->create(['isActive' => true]);
+        ExchangeRatePolicy::factory()->create(['is_active' => true]);
+        ExchangeRatePolicy::factory()->create(['is_active' => true]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

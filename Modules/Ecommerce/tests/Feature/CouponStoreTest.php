@@ -29,7 +29,7 @@ class CouponStoreTest extends TestCase
                 'usedCount' => 0,
                 'startsAt' => '2025-01-01T00:00:00Z',
                 'expiresAt' => '2025-12-31T23:59:59Z',
-                'isActive' => true,
+                'is_active' => true,
                 'customerIds' => [1, 2, 3],
                 'productIds' => [4, 5, 6],
                 'categoryIds' => [7, 8, 9]
@@ -54,7 +54,7 @@ class CouponStoreTest extends TestCase
             'max_amount' => 100.00,
             'max_uses' => 100,
             'used_count' => 0,
-            'isActive' => true
+            'is_active' => true
         ]);
     }
 
@@ -70,7 +70,7 @@ class CouponStoreTest extends TestCase
                 'couponType' => 'fixed_amount',
                 'value' => 5.00,
                 'usedCount' => 0,
-                'isActive' => true
+                'is_active' => true
             ]
         ];
 
@@ -95,7 +95,7 @@ class CouponStoreTest extends TestCase
                 'couponType' => 'percentage',
                 'value' => 10,
                 'usedCount' => 0,
-                'isActive' => true
+                'is_active' => true
             ]
         ];
 
@@ -118,7 +118,7 @@ class CouponStoreTest extends TestCase
                 'couponType' => 'percentage',
                 'value' => 15,
                 'usedCount' => 0,
-                'isActive' => true
+                'is_active' => true
             ]
         ];
 
@@ -162,7 +162,7 @@ class CouponStoreTest extends TestCase
                 'couponType' => '',
                 'value' => -5, // Negative value
                 'usedCount' => 0,
-                'isActive' => 'not_boolean' // Invalid boolean
+                'is_active' => 'not_boolean' // Invalid boolean
             ]
         ];
 

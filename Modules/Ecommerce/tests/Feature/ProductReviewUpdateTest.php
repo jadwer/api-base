@@ -18,8 +18,8 @@ class ProductReviewUpdateTest extends TestCase
         $user = User::factory()->create();
 
         $review = ProductReview::factory()->approved()->create([
-            'productId' => $product->id,
-            'userId' => $user->id,
+            'product_id' => $product->id,
+            'user_id' => $user->id,
         ]);
 
         $data = [
@@ -48,8 +48,8 @@ class ProductReviewUpdateTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->pending()->create([
-            'productId' => $product->id,
-            'userId' => $customer->id,
+            'product_id' => $product->id,
+            'user_id' => $customer->id,
             'rating' => 3,
             'title' => 'Original title',
         ]);
@@ -101,8 +101,8 @@ class ProductReviewUpdateTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->pending()->create([
-            'productId' => $product->id,
-            'userId' => $otherUser->id,
+            'product_id' => $product->id,
+            'user_id' => $otherUser->id,
         ]);
 
         $data = [
@@ -133,8 +133,8 @@ class ProductReviewUpdateTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->pending()->create([
-            'productId' => $product->id,
-            'userId' => $user->id,
+            'product_id' => $product->id,
+            'user_id' => $user->id,
             'status' => 'pending',
         ]);
 
@@ -177,8 +177,8 @@ class ProductReviewUpdateTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->create([
-            'productId' => $product->id,
-            'userId' => $customer->id,
+            'product_id' => $product->id,
+            'user_id' => $customer->id,
             'rating' => 3,
             'title' => 'Original title',
         ]);
@@ -216,8 +216,8 @@ class ProductReviewUpdateTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->create([
-            'productId' => $product->id,
-            'userId' => $customer->id,
+            'product_id' => $product->id,
+            'user_id' => $customer->id,
         ]);
 
         // Test rating too low
@@ -262,8 +262,8 @@ class ProductReviewUpdateTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->create([
-            'productId' => $product->id,
-            'userId' => $customer->id,
+            'product_id' => $product->id,
+            'user_id' => $customer->id,
         ]);
 
         $data = [
@@ -294,7 +294,7 @@ class ProductReviewUpdateTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->pending()->create([
-            'productId' => $product->id,
+            'product_id' => $product->id,
         ]);
 
         $data = [
@@ -328,7 +328,7 @@ class ProductReviewUpdateTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->pending()->create([
-            'productId' => $product->id,
+            'product_id' => $product->id,
         ]);
 
         $data = [
@@ -363,7 +363,7 @@ class ProductReviewUpdateTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->pending()->create([
-            'productId' => $product->id,
+            'product_id' => $product->id,
         ]);
 
         $data = [
@@ -394,7 +394,7 @@ class ProductReviewUpdateTest extends TestCase
         $product = Product::factory()->create();
 
         $review = ProductReview::factory()->approved()->create([
-            'productId' => $product->id,
+            'product_id' => $product->id,
             'helpful_count' => 5,
         ]);
 

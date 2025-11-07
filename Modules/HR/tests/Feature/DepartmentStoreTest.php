@@ -18,7 +18,7 @@ class DepartmentStoreTest extends TestCase
             'attributes' => [
                 'name' => 'Engineering Department',
                 'description' => 'Software development and IT infrastructure',
-                'isActive' => true
+                'is_active' => true
             ]
         ];
 
@@ -36,7 +36,7 @@ class DepartmentStoreTest extends TestCase
                 'attributes' => [
                     'name',
                     'description',
-                    'isActive'
+                    'is_active'
                 ]
             ]
         ]);
@@ -47,7 +47,7 @@ class DepartmentStoreTest extends TestCase
 
         $this->assertDatabaseHas('departments', [
             'name' => 'Engineering Department',
-            'isActive' => true
+            'is_active' => true
         ]);
     }
 
@@ -56,10 +56,10 @@ class DepartmentStoreTest extends TestCase
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['departmentId' => $department->id]);
+        $position = Position::factory()->create(['department_id' => $department->id]);
         $manager = Employee::factory()->create([
-            'departmentId' => $department->id,
-            'positionId' => $position->id
+            'department_id' => $department->id,
+            'position_id' => $position->id
         ]);
 
         $data = [
@@ -68,7 +68,7 @@ class DepartmentStoreTest extends TestCase
                 'name' => 'Sales Department',
                 'description' => 'Sales and business development',
                 'manager_id' => $manager->id,
-                'isActive' => true
+                'is_active' => true
             ]
         ];
 
@@ -92,7 +92,7 @@ class DepartmentStoreTest extends TestCase
             'attributes' => [
                 'name' => 'HR Department',
                 'description' => 'Human resources management',
-                'isActive' => true
+                'is_active' => true
             ]
         ];
 
@@ -114,7 +114,7 @@ class DepartmentStoreTest extends TestCase
             'type' => 'departments',
             'attributes' => [
                 'name' => 'Should Not Create',
-                'isActive' => true
+                'is_active' => true
             ]
         ];
 
@@ -133,7 +133,7 @@ class DepartmentStoreTest extends TestCase
             'type' => 'departments',
             'attributes' => [
                 'name' => 'Should Not Create',
-                'isActive' => true
+                'is_active' => true
             ]
         ];
 
@@ -153,7 +153,7 @@ class DepartmentStoreTest extends TestCase
             'type' => 'departments',
             'attributes' => [
                 'description' => 'Missing name field',
-                'isActive' => true
+                'is_active' => true
             ]
         ];
 
@@ -178,7 +178,7 @@ class DepartmentStoreTest extends TestCase
             'type' => 'departments',
             'attributes' => [
                 'name' => 'Marketing Department',
-                'isActive' => true
+                'is_active' => true
             ]
         ];
 
@@ -224,7 +224,7 @@ class DepartmentStoreTest extends TestCase
             'attributes' => [
                 'name' => 'Archived Department',
                 'description' => 'Old department',
-                'isActive' => false
+                'is_active' => false
             ]
         ];
 
@@ -246,7 +246,7 @@ class DepartmentStoreTest extends TestCase
             'type' => 'departments',
             'attributes' => [
                 'name' => 'Operations Department',
-                'isActive' => true
+                'is_active' => true
             ]
         ];
 

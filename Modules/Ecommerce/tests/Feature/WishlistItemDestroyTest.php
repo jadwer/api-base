@@ -33,7 +33,7 @@ class WishlistItemDestroyTest extends TestCase
     {
         $customer = User::role('customer')->first();
 
-        $wishlist = Wishlist::factory()->create(['userId' => $customer->id]);
+        $wishlist = Wishlist::factory()->create(['user_id' => $customer->id]);
         $item = WishlistItem::factory()->create(['wishlist_id' => $wishlist->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -54,7 +54,7 @@ class WishlistItemDestroyTest extends TestCase
         $customer = User::role('customer')->first();
 
         $otherUser = User::factory()->create();
-        $wishlist = Wishlist::factory()->create(['userId' => $otherUser->id]);
+        $wishlist = Wishlist::factory()->create(['user_id' => $otherUser->id]);
         $item = WishlistItem::factory()->create(['wishlist_id' => $wishlist->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -122,7 +122,7 @@ class WishlistItemDestroyTest extends TestCase
     {
         $customer = User::role('customer')->first();
 
-        $wishlist = Wishlist::factory()->create(['userId' => $customer->id]);
+        $wishlist = Wishlist::factory()->create(['user_id' => $customer->id]);
         $item = WishlistItem::factory()->highPriority()->create(['wishlist_id' => $wishlist->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -142,7 +142,7 @@ class WishlistItemDestroyTest extends TestCase
     {
         $customer = User::role('customer')->first();
 
-        $wishlist = Wishlist::factory()->create(['userId' => $customer->id]);
+        $wishlist = Wishlist::factory()->create(['user_id' => $customer->id]);
         $item = WishlistItem::factory()->withNotes()->create(['wishlist_id' => $wishlist->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -162,7 +162,7 @@ class WishlistItemDestroyTest extends TestCase
     {
         $customer = User::role('customer')->first();
 
-        $wishlist = Wishlist::factory()->create(['userId' => $customer->id]);
+        $wishlist = Wishlist::factory()->create(['user_id' => $customer->id]);
         $item = WishlistItem::factory()->create(['wishlist_id' => $wishlist->id]);
         $productId = $item->product_id;
 
@@ -184,7 +184,7 @@ class WishlistItemDestroyTest extends TestCase
     {
         $customer = User::role('customer')->first();
 
-        $wishlist = Wishlist::factory()->create(['userId' => $customer->id]);
+        $wishlist = Wishlist::factory()->create(['user_id' => $customer->id]);
         $item = WishlistItem::factory()->create(['wishlist_id' => $wishlist->id]);
 
         $response = $this->actingAs($customer, 'sanctum')

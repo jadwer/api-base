@@ -30,11 +30,11 @@ class AccountMappingIndexTest extends TestCase
                     'type',
                     'attributes' => [
                         'mappingType',
-                        'accountId',
+                        'account_id',
                         'version',
                         'effectiveFrom',
                         'effectiveTo',
-                        'isActive',
+                        'is_active',
                         'createdById',
                         'notes',
                     ]
@@ -62,8 +62,8 @@ class AccountMappingIndexTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        AccountMapping::factory()->create(['isActive' => true]);
-        AccountMapping::factory()->create(['isActive' => true]);
+        AccountMapping::factory()->create(['is_active' => true]);
+        AccountMapping::factory()->create(['is_active' => true]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

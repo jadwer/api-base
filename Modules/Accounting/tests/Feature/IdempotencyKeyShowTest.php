@@ -27,7 +27,7 @@ class IdempotencyKeyShowTest extends TestCase
                 'id',
                 'type',
                 'attributes' => [
-                        'userId',
+                        'user_id',
                         'endpoint',
                         'idempotencyKey',
                         'requestHash',
@@ -58,7 +58,7 @@ class IdempotencyKeyShowTest extends TestCase
                 'id',
                 'type',
                 'attributes' => [
-                        'userId',
+                        'user_id',
                         'endpoint',
                         'idempotencyKey',
                         'requestHash',

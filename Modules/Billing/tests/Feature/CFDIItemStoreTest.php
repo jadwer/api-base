@@ -303,7 +303,7 @@ class CFDIItemStoreTest extends TestCase
             'type' => 'cfdi-items',
             'attributes' => [
                 'cfdiInvoiceId' => $invoice->id,
-                'productId' => $product->id,
+                'product_id' => $product->id,
                 'numeroLinea' => 1,
                 'claveProdServ' => '01010101',
                 'cantidad' => 2.0,

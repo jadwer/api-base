@@ -15,7 +15,7 @@ class IndexCampaignsTest extends TestCase
         $user = User::factory()->create();
 
         Campaign::factory()->count(3)->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -34,7 +34,7 @@ class IndexCampaignsTest extends TestCase
         $user = User::factory()->create();
 
         Campaign::factory()->count(25)->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -55,11 +55,11 @@ class IndexCampaignsTest extends TestCase
 
         Campaign::factory()->create([
             'name' => 'Alpha Campaign',
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
         Campaign::factory()->create([
             'name' => 'Beta Campaign',
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -81,12 +81,12 @@ class IndexCampaignsTest extends TestCase
         Campaign::factory()->create([
             'name' => 'Old Campaign',
             'startDate' => now()->subMonth(),
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
         Campaign::factory()->create([
             'name' => 'New Campaign',
             'startDate' => now(),
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -106,10 +106,10 @@ class IndexCampaignsTest extends TestCase
         $user = User::factory()->create();
 
         Campaign::factory()->count(2)->active()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
         Campaign::factory()->count(1)->planning()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -132,10 +132,10 @@ class IndexCampaignsTest extends TestCase
         $user = User::factory()->create();
 
         Campaign::factory()->count(2)->email()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
         Campaign::factory()->count(1)->socialMedia()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -159,10 +159,10 @@ class IndexCampaignsTest extends TestCase
         $user2 = User::factory()->create();
 
         Campaign::factory()->count(2)->create([
-            'userId' => $user1->id,
+            'user_id' => $user1->id,
         ]);
         Campaign::factory()->count(1)->create([
-            'userId' => $user2->id,
+            'user_id' => $user2->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -181,7 +181,7 @@ class IndexCampaignsTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -200,7 +200,7 @@ class IndexCampaignsTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -219,7 +219,7 @@ class IndexCampaignsTest extends TestCase
         $user = User::factory()->create();
 
         Campaign::factory()->count(2)->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($tech, 'sanctum')

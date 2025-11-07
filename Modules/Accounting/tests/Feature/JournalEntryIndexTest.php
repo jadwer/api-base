@@ -30,7 +30,7 @@ class JournalEntryIndexTest extends TestCase
                     'type',
                     'attributes' => [
                         'journalId',
-                        'fiscalPeriodId',
+                        'fiscal_period_id',
                         'number',
                         'date',
                         'reference',

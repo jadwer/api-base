@@ -22,7 +22,7 @@ class ShippingMethodStoreTest extends TestCase
                 'costPerKg' => 25.00,
                 'estimatedDaysMin' => 2,
                 'estimatedDaysMax' => 4,
-                'isActive' => true,
+                'is_active' => true,
                 'availableCountries' => ['MX', 'US'],
                 'metadata' => [
                     'tracking_available' => true,
@@ -42,7 +42,7 @@ class ShippingMethodStoreTest extends TestCase
             'name' => 'Express Delivery',
             'code' => 'express-001',
             'carrier' => 'DHL',
-            'isActive' => true,
+            'is_active' => true,
         ]);
     }
 
@@ -60,7 +60,7 @@ class ShippingMethodStoreTest extends TestCase
                 'costPerKg' => 0.00,
                 'estimatedDaysMin' => 7,
                 'estimatedDaysMax' => 15,
-                'isActive' => true,
+                'is_active' => true,
             ]
         ];
 

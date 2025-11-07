@@ -22,7 +22,7 @@ class CouponUpdateTest extends TestCase
             'attributes' => [
                 'name' => 'Updated Coupon',
                 'description' => 'Updated description',
-                'isActive' => false
+                'is_active' => false
             ]
         ];
 
@@ -38,7 +38,7 @@ class CouponUpdateTest extends TestCase
             'id' => $coupon->id,
             'name' => 'Updated Coupon',
             'description' => 'Updated description',
-            'isActive' => false
+            'is_active' => false
         ]);
     }
 
@@ -177,7 +177,7 @@ class CouponUpdateTest extends TestCase
             'id' => (string) $coupon->id,
             'attributes' => [
                 'name' => '', // Empty name
-                'isActive' => 'invalid_boolean'
+                'is_active' => 'invalid_boolean'
             ]
         ];
 

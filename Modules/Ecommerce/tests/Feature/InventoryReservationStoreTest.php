@@ -21,10 +21,10 @@ class InventoryReservationStoreTest extends TestCase
         $data = [
             'type' => 'inventory-reservations',
             'attributes' => [
-                'checkoutSessionId' => $session->id,
+                'checkout_session_id' => $session->id,
                 'stockId' => $stock->id,
-                'productId' => $product->id,
-                'warehouseId' => $warehouse->id,
+                'product_id' => $product->id,
+                'warehouse_id' => $warehouse->id,
                 'quantityReserved' => 5,
                 'status' => 'active',
                 'expiresAt' => now()->addHours(2)->toIso8601String(),
@@ -39,7 +39,7 @@ class InventoryReservationStoreTest extends TestCase
 
         $response->assertCreated();
         $this->assertDatabaseHas('inventory_reservations', [
-            'checkoutSessionId' => $session->id,
+            'checkout_session_id' => $session->id,
             'quantity_reserved' => 5,
             'status' => 'active',
         ]);
@@ -53,7 +53,7 @@ class InventoryReservationStoreTest extends TestCase
         $data = [
             'type' => 'inventory-reservations',
             'attributes' => [
-                'checkoutSessionId' => $session->id,
+                'checkout_session_id' => $session->id,
                 'quantityReserved' => 5,
                 'status' => 'active',
             ]
@@ -75,7 +75,7 @@ class InventoryReservationStoreTest extends TestCase
         $data = [
             'type' => 'inventory-reservations',
             'attributes' => [
-                'checkoutSessionId' => $session->id,
+                'checkout_session_id' => $session->id,
                 'quantityReserved' => 5,
             ]
         ];

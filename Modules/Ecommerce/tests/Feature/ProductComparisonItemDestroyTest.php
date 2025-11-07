@@ -31,7 +31,7 @@ class ProductComparisonItemDestroyTest extends TestCase
     public function customer_can_delete_item_from_their_own_comparison()
     {
         $customer = User::role('customer')->first();
-        $comparison = ProductComparison::factory()->create(['userId' => $customer->id]);
+        $comparison = ProductComparison::factory()->create(['user_id' => $customer->id]);
         $item = ProductComparisonItem::factory()->create(['comparison_id' => $comparison->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -51,7 +51,7 @@ class ProductComparisonItemDestroyTest extends TestCase
     {
         $customer = User::role('customer')->first();
         $otherUser = User::factory()->create();
-        $comparison = ProductComparison::factory()->create(['userId' => $otherUser->id]);
+        $comparison = ProductComparison::factory()->create(['user_id' => $otherUser->id]);
         $item = ProductComparisonItem::factory()->create(['comparison_id' => $comparison->id]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -157,7 +157,7 @@ class ProductComparisonItemDestroyTest extends TestCase
     public function can_delete_all_items_from_comparison()
     {
         $customer = User::role('customer')->first();
-        $comparison = ProductComparison::factory()->hasItems(3)->create(['userId' => $customer->id]);
+        $comparison = ProductComparison::factory()->hasItems(3)->create(['user_id' => $customer->id]);
 
         foreach ($comparison->items as $item) {
             $response = $this->actingAs($customer, 'sanctum')

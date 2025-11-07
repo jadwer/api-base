@@ -16,7 +16,7 @@ class DestroyCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -38,7 +38,7 @@ class DestroyCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->planning()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -57,7 +57,7 @@ class DestroyCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->active()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -76,7 +76,7 @@ class DestroyCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->completed()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -95,7 +95,7 @@ class DestroyCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->cancelled()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -114,7 +114,7 @@ class DestroyCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->email()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -133,7 +133,7 @@ class DestroyCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->socialMedia()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -152,7 +152,7 @@ class DestroyCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->event()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -171,11 +171,11 @@ class DestroyCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
-        $lead1 = Lead::factory()->create(['userId' => $user->id]);
-        $lead2 = Lead::factory()->create(['userId' => $user->id]);
+        $lead1 = Lead::factory()->create(['user_id' => $user->id]);
+        $lead2 = Lead::factory()->create(['user_id' => $user->id]);
 
         // Attach leads to campaign
         $campaign->leads()->attach([$lead1->id, $lead2->id]);
@@ -216,7 +216,7 @@ class DestroyCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($tech, 'sanctum')
@@ -235,7 +235,7 @@ class DestroyCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -252,7 +252,7 @@ class DestroyCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->jsonApi()
@@ -283,11 +283,11 @@ class DestroyCampaignTest extends TestCase
 
         $campaign1 = Campaign::factory()->create([
             'name' => 'Campaign 1',
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
         $campaign2 = Campaign::factory()->create([
             'name' => 'Campaign 2',
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -307,7 +307,7 @@ class DestroyCampaignTest extends TestCase
         $user = User::factory()->create();
 
         $campaign = Campaign::factory()->create([
-            'userId' => $user->id,
+            'user_id' => $user->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

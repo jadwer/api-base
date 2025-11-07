@@ -34,13 +34,13 @@ class ProductComparisonStoreTest extends TestCase
                 'attributes' => [
                     'name' => 'Laptop Comparison',
                     'isPublic' => false,
-                    'userId' => $admin->id,
+                    'user_id' => $admin->id,
                 ],
             ],
         ]);
 
         $this->assertDatabaseHas('product_comparisons', [
-            'userId' => $admin->id,
+            'user_id' => $admin->id,
             'name' => 'Laptop Comparison',
             'is_public' => false,
         ]);
@@ -72,7 +72,7 @@ class ProductComparisonStoreTest extends TestCase
                 'attributes' => [
                     'name' => 'Phone Comparison',
                     'isPublic' => true,
-                    'userId' => $customer->id,
+                    'user_id' => $customer->id,
                 ],
             ],
         ]);
@@ -170,7 +170,7 @@ class ProductComparisonStoreTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('product_comparisons', [
-            'userId' => $customer->id,
+            'user_id' => $customer->id,
             'is_public' => true,
         ]);
     }

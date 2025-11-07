@@ -16,7 +16,7 @@ class PaymentTransactionStoreTest extends TestCase
         $data = [
             'type' => 'payment-transactions',
             'attributes' => [
-                'checkoutSessionId' => $session->id,
+                'checkout_session_id' => $session->id,
                 'transactionId' => 'ch_test123',
                 'paymentGateway' => 'stripe',
                 'paymentMethod' => 'credit_card',
@@ -34,7 +34,7 @@ class PaymentTransactionStoreTest extends TestCase
 
         $response->assertCreated();
         $this->assertDatabaseHas('payment_transactions', [
-            'checkoutSessionId' => $session->id,
+            'checkout_session_id' => $session->id,
             'transaction_id' => 'ch_test123',
             'amount' => 100.00,
         ]);
@@ -48,7 +48,7 @@ class PaymentTransactionStoreTest extends TestCase
         $data = [
             'type' => 'payment-transactions',
             'attributes' => [
-                'checkoutSessionId' => $session->id,
+                'checkout_session_id' => $session->id,
                 'transactionId' => 'ch_test123',
                 'paymentGateway' => 'stripe',
                 'status' => 'pending',
@@ -73,7 +73,7 @@ class PaymentTransactionStoreTest extends TestCase
         $data = [
             'type' => 'payment-transactions',
             'attributes' => [
-                'checkoutSessionId' => $session->id,
+                'checkout_session_id' => $session->id,
                 'transactionId' => 'ch_test123',
                 'status' => 'pending',
                 'amount' => 100.00,
