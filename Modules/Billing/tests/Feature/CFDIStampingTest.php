@@ -55,7 +55,7 @@ class CFDIStampingTest extends TestCase
         // Create company setting
         $this->companySetting = CompanySetting::factory()->create([
             'rfc' => 'XAXX010101000',
-            'company_name' => 'Test Company SA de CV',
+            'companyName' => 'Test Company SA de CV',
         ]);
 
         // Create contact
