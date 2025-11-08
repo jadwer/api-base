@@ -22,9 +22,9 @@ class AttendanceShowTest extends TestCase
         ]);
         $attendance = Attendance::factory()->create([
             'employee_id' => $employee->id,
-            'attendanceDate' => '2024-01-15',
-            'checkInTime' => '09:00:00',
-            'checkOutTime' => '17:00:00',
+            'date' => '2024-01-15',
+            'check_in' => '09:00:00',
+            'check_out' => '17:00:00',
             'status' => 'present'
         ]);
 
@@ -159,9 +159,9 @@ class AttendanceShowTest extends TestCase
         ]);
         $attendance = Attendance::factory()->create([
             'employee_id' => $employee->id,
-            'attendanceDate' => '2024-01-15',
-            'checkInTime' => '09:00:00',
-            'checkOutTime' => '17:30:00'
+            'date' => '2024-01-15',
+            'check_in' => '09:00:00',
+            'check_out' => '17:30:00'
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

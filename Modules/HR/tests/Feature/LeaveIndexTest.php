@@ -51,12 +51,12 @@ class LeaveIndexTest extends TestCase
         Leave::factory()->create([
             'employee_id' => $employee->id,
             'leave_type_id' => $leaveType->id,
-            'startDate' => '2024-02-15'
+            'start_date' => '2024-02-15'
         ]);
         Leave::factory()->create([
             'employee_id' => $employee->id,
             'leave_type_id' => $leaveType->id,
-            'startDate' => '2024-01-10'
+            'start_date' => '2024-01-10'
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

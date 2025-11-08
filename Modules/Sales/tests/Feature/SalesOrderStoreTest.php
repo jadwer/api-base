@@ -67,10 +67,10 @@ class SalesOrderStoreTest extends TestCase
 
         // Verificar que se guardó en base de datos
         $this->assertDatabaseHas('sales_orders', [
-            'orderNumber' => 'SO-NEW-001',
+            'order_number' => 'SO-NEW-001',
             'contact_id' => $customer->id,
             'status' => 'draft',
-            'totalAmount' => 1050.00
+            'total_amount' => 1050.00
         ]);
     }
 

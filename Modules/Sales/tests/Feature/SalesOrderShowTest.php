@@ -19,9 +19,9 @@ class SalesOrderShowTest extends TestCase
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
-            'orderNumber' => 'SO-TEST-001',
+            'order_number' => 'SO-TEST-001',
             'status' => 'confirmed',
-            'totalAmount' => 1500.00,
+            'total_amount' => 1500.00,
             'discount_total' => 150.00
         ]);
 
@@ -214,21 +214,21 @@ class SalesOrderShowTest extends TestCase
         $customer = Contact::factory()->customer()->create(['name' => 'Test Customer']);
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
-            'orderNumber' => 'SO-ITEMS-001'
+            'order_number' => 'SO-ITEMS-001'
         ]);
         
         // Crear 2 items para el SalesOrder
         $item1 = \Modules\Sales\Models\SalesOrderItem::factory()->create([
             'sales_order_id' => $salesOrder->id,
             'quantity' => 1.0,
-            'unitPrice' => 100.0,
+            'unit_price' => 100.0,
             'total' => 100.0
         ]);
         
         $item2 = \Modules\Sales\Models\SalesOrderItem::factory()->create([
             'sales_order_id' => $salesOrder->id,
             'quantity' => 2.0,
-            'unitPrice' => 50.0,
+            'unit_price' => 50.0,
             'total' => 100.0
         ]);
 
@@ -268,7 +268,7 @@ class SalesOrderShowTest extends TestCase
         $contact = \Modules\Contacts\Models\Contact::factory()->create(['name' => 'Nested Contact']);
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $contact->id,
-            'orderNumber' => 'SO-NESTED-PROD-001'
+            'order_number' => 'SO-NESTED-PROD-001'
         ]);
         
         // Crear 2 productos diferentes
@@ -280,7 +280,7 @@ class SalesOrderShowTest extends TestCase
             'sales_order_id' => $salesOrder->id,
             'product_id' => $product1->id,
             'quantity' => 1.0,
-            'unitPrice' => 100.0,
+            'unit_price' => 100.0,
             'total' => 100.0
         ]);
         
@@ -288,7 +288,7 @@ class SalesOrderShowTest extends TestCase
             'sales_order_id' => $salesOrder->id,
             'product_id' => $product2->id,
             'quantity' => 2.0,
-            'unitPrice' => 50.0,
+            'unit_price' => 50.0,
             'total' => 100.0
         ]);
 
@@ -343,7 +343,7 @@ class SalesOrderShowTest extends TestCase
         $contact = \Modules\Contacts\Models\Contact::factory()->create(['name' => 'Hybrid Contact']);
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $contact->id,
-            'orderNumber' => 'SO-HYBRID-001'
+            'order_number' => 'SO-HYBRID-001'
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

@@ -35,11 +35,11 @@ class SalesOrderIndexTest extends TestCase
         $customer = Contact::factory()->customer()->create();
         SalesOrder::factory()->create([
             'contact_id' => $customer->id,
-            'orderNumber' => 'SO-2024-ZZZ' // Will sort last
+            'order_number' => 'SO-2024-ZZZ' // Will sort last
         ]);
         SalesOrder::factory()->create([
             'contact_id' => $customer->id,
-            'orderNumber' => 'SO-2024-AAA' // Will sort first
+            'order_number' => 'SO-2024-AAA' // Will sort first
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -180,11 +180,11 @@ class SalesOrderIndexTest extends TestCase
         $customer = Contact::factory()->customer()->create();
         SalesOrder::factory()->create([
             'contact_id' => $customer->id,
-            'orderNumber' => 'SO-SEARCH-001'
+            'order_number' => 'SO-SEARCH-001'
         ]);
         SalesOrder::factory()->create([
             'contact_id' => $customer->id,
-            'orderNumber' => 'SO-OTHER-002'
+            'order_number' => 'SO-OTHER-002'
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

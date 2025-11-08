@@ -48,9 +48,9 @@ class APInvoiceUpdateTest extends TestCase
         
         $this->assertDatabaseHas('ap_invoices', [
             'id' => $aPInvoice->id,
-            'invoiceNumber' => 'Updated APInvoice',
+            'invoice_number' => 'Updated APInvoice',
             'notes' => 'Updated description',
-            'isActive' => false
+            'is_active' => false
         ]);
     }
 
@@ -58,7 +58,7 @@ class APInvoiceUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $aPInvoice = APInvoice::factory()->create([
-            'invoiceNumber' => 'Original Name',
+            'invoice_number' => 'Original Name',
             'notes' => 'Original Description'
         ]);
 
@@ -81,7 +81,7 @@ class APInvoiceUpdateTest extends TestCase
         
         $this->assertDatabaseHas('ap_invoices', [
             'id' => $aPInvoice->id,
-            'invoiceNumber' => 'Partially Updated Name',
+            'invoice_number' => 'Partially Updated Name',
             'notes' => 'Original Description'
         ]);
     }

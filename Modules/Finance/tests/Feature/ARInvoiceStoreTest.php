@@ -57,11 +57,11 @@ class ARInvoiceStoreTest extends TestCase
         $response->assertCreated();
 
         $this->assertDatabaseHas('ar_invoices', [
-            'invoiceNumber' => 'INV-AR-001',
-            'contactId' => $customer->id,
+            'invoice_number' => 'INV-AR-001',
+            'contact_id' => $customer->id,
             'currency' => 'USD',
             'status' => 'pending',
-            'isActive' => true
+            'is_active' => true
         ]);
     }
 

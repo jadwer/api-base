@@ -18,9 +18,9 @@ class SalesOrderUpdateTest extends TestCase
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
-            'orderNumber' => 'SO-UPDATE-001',
+            'order_number' => 'SO-UPDATE-001',
             'status' => 'draft',
-            'totalAmount' => 1000.00
+            'total_amount' => 1000.00
         ]);
 
         $data = [
@@ -45,9 +45,9 @@ class SalesOrderUpdateTest extends TestCase
         // Verificar que se actualizó en base de datos
         $this->assertDatabaseHas('sales_orders', [
             'id' => $salesOrder->id,
-            'orderNumber' => 'SO-UPDATED-001',
+            'order_number' => 'SO-UPDATED-001',
             'status' => 'confirmed',
-            'totalAmount' => 1500.00,
+            'total_amount' => 1500.00,
             'notes' => 'Updated order notes'
         ]);
 
@@ -132,7 +132,7 @@ class SalesOrderUpdateTest extends TestCase
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
-            'orderNumber' => 'SO-TECH-UPDATE'
+            'order_number' => 'SO-TECH-UPDATE'
         ]);
 
         $data = [
@@ -262,11 +262,11 @@ class SalesOrderUpdateTest extends TestCase
         // Crear dos sales orders
         $salesOrder1 = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
-            'orderNumber' => 'SO-EXISTING-001'
+            'order_number' => 'SO-EXISTING-001'
         ]);
         $salesOrder2 = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
-            'orderNumber' => 'SO-TO-UPDATE-001'
+            'order_number' => 'SO-TO-UPDATE-001'
         ]);
 
         // Intentar actualizar el segundo order con el número del primero
@@ -299,7 +299,7 @@ class SalesOrderUpdateTest extends TestCase
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
-            'orderNumber' => 'SO-SAME-001'
+            'order_number' => 'SO-SAME-001'
         ]);
 
         // Actualizar el order number al mismo valor (debería permitirse)

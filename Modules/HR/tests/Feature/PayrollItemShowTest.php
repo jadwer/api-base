@@ -25,7 +25,7 @@ class PayrollItemShowTest extends TestCase
         $payrollItem = PayrollItem::factory()->create([
             'employee_id' => $employee->id,
             'payroll_period_id' => $period->id,
-            'basicSalary' => 3000.00,
+            'basic_salary' => 3000.00,
             'overtime_pay' => 500.00,
             'bonuses' => 200.00,
             'deductions' => 300.00
@@ -213,7 +213,7 @@ class PayrollItemShowTest extends TestCase
         $payrollItem = PayrollItem::factory()->create([
             'employee_id' => $employee->id,
             'payroll_period_id' => $period->id,
-            'basicSalary' => 3000.00,
+            'basic_salary' => 3000.00,
             'overtime_pay' => 500.00,
             'bonuses' => 200.00,
             'deductions' => 300.00

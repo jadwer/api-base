@@ -48,7 +48,7 @@ class BankAccountUpdateTest extends TestCase
         $this->assertDatabaseHas('bank_accounts', [
             'id' => $bankAccount->id,
             'account_name' => 'Updated BankAccount',
-            'isActive' => false
+            'is_active' => false
         ]);
     }
 

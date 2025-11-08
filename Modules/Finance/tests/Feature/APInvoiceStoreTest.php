@@ -57,11 +57,11 @@ class APInvoiceStoreTest extends TestCase
         $response->assertCreated();
 
         $this->assertDatabaseHas('ap_invoices', [
-            'invoiceNumber' => 'INV-AP-001',
-            'contactId' => $supplier->id,
+            'invoice_number' => 'INV-AP-001',
+            'contact_id' => $supplier->id,
             'currency' => 'USD',
             'status' => 'pending',
-            'isActive' => true
+            'is_active' => true
         ]);
     }
 

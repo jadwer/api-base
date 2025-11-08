@@ -48,9 +48,9 @@ class ARInvoiceUpdateTest extends TestCase
         
         $this->assertDatabaseHas('ar_invoices', [
             'id' => $aRInvoice->id,
-            'invoiceNumber' => 'Updated ARInvoice',
+            'invoice_number' => 'Updated ARInvoice',
             'notes' => 'Updated description',
-            'isActive' => false
+            'is_active' => false
         ]);
     }
 
@@ -58,7 +58,7 @@ class ARInvoiceUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $aRInvoice = ARInvoice::factory()->create([
-            'invoiceNumber' => 'Original Name',
+            'invoice_number' => 'Original Name',
             'notes' => 'Original Description'
         ]);
 
@@ -81,7 +81,7 @@ class ARInvoiceUpdateTest extends TestCase
         
         $this->assertDatabaseHas('ar_invoices', [
             'id' => $aRInvoice->id,
-            'invoiceNumber' => 'Partially Updated Name',
+            'invoice_number' => 'Partially Updated Name',
             'notes' => 'Original Description'
         ]);
     }

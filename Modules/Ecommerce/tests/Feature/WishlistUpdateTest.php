@@ -15,7 +15,7 @@ class WishlistUpdateTest extends TestCase
 
         $wishlist = Wishlist::factory()->create([
             'name' => 'Original Name',
-            'isDefault' => false,
+            'is_default' => false,
             'is_public' => false,
         ]);
 
@@ -51,7 +51,7 @@ class WishlistUpdateTest extends TestCase
         $this->assertDatabaseHas('wishlists', [
             'id' => $wishlist->id,
             'name' => 'Updated Name',
-            'isDefault' => true,
+            'is_default' => true,
             'is_public' => true,
         ]);
     }
@@ -64,7 +64,7 @@ class WishlistUpdateTest extends TestCase
         $wishlist = Wishlist::factory()->create([
             'user_id' => $customer->id,
             'name' => 'Original Wishlist',
-            'isDefault' => false,
+            'is_default' => false,
             'is_public' => false,
         ]);
 
@@ -172,7 +172,7 @@ class WishlistUpdateTest extends TestCase
         $wishlist = Wishlist::factory()->create([
             'user_id' => $customer->id,
             'name' => 'Original',
-            'isDefault' => false,
+            'is_default' => false,
             'is_public' => false,
         ]);
 
@@ -195,7 +195,7 @@ class WishlistUpdateTest extends TestCase
         $this->assertDatabaseHas('wishlists', [
             'id' => $wishlist->id,
             'name' => 'Only Name Changed',
-            'isDefault' => false,
+            'is_default' => false,
             'is_public' => false,
         ]);
     }
@@ -207,7 +207,7 @@ class WishlistUpdateTest extends TestCase
 
         $wishlist = Wishlist::factory()->create([
             'user_id' => $customer->id,
-            'isDefault' => false,
+            'is_default' => false,
         ]);
 
         $data = [
@@ -228,7 +228,7 @@ class WishlistUpdateTest extends TestCase
 
         $this->assertDatabaseHas('wishlists', [
             'id' => $wishlist->id,
-            'isDefault' => true,
+            'is_default' => true,
         ]);
     }
 

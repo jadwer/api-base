@@ -26,7 +26,7 @@ class WishlistIndexTest extends TestCase
                     'type',
                     'id',
                     'attributes' => [
-                        'user_id',
+                        'userId',
                         'name',
                         'isDefault',
                         'isPublic',
@@ -107,7 +107,7 @@ class WishlistIndexTest extends TestCase
         $admin = User::role('admin')->first();
 
         Wishlist::factory()->default()->count(1)->create();
-        Wishlist::factory()->count(3)->create(['isDefault' => false]);
+        Wishlist::factory()->count(3)->create(['is_default' => false]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

@@ -86,7 +86,7 @@ class ShoppingCartStoreTest extends TestCase
         
         $this->assertDatabaseHas('shopping_carts', [
             'status' => 'active',
-            'totalAmount' => 50.00,
+            'total_amount' => 50.00,
             'currency' => 'USD'
         ]);
     }

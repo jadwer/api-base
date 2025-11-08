@@ -45,7 +45,7 @@ class AttendanceStoreTest extends TestCase
 
         $this->assertDatabaseHas('attendances', [
             'employee_id' => $employee->id,
-            'attendanceDate' => '2024-01-15',
+            'date' => '2024-01-15',
             'status' => 'present'
         ]);
     }

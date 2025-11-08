@@ -42,10 +42,10 @@ class ShoppingCartUpdateTest extends TestCase
         $this->assertDatabaseHas('shopping_carts', [
             'id' => $shoppingCart->id,
             'status' => 'inactive',
-            'totalAmount' => 150.00,
+            'total_amount' => 150.00,
             'currency' => 'EUR',
             'coupon_code' => 'UPDATED123',
-            'discountAmount' => 15.00,
+            'discount_amount' => 15.00,
             'notes' => 'Updated shopping cart'
         ]);
     }
@@ -55,7 +55,7 @@ class ShoppingCartUpdateTest extends TestCase
         $admin = $this->getAdminUser();
         $shoppingCart = ShoppingCart::factory()->create([
             'status' => 'active',
-            'totalAmount' => 100.00,
+            'total_amount' => 100.00,
             'currency' => 'USD',
             'notes' => 'Original Notes'
         ]);
@@ -82,7 +82,7 @@ class ShoppingCartUpdateTest extends TestCase
         
         $this->assertDatabaseHas('shopping_carts', [
             'id' => $shoppingCart->id,
-            'totalAmount' => 200.00,
+            'total_amount' => 200.00,
             'status' => 'active',
             'currency' => 'USD',
             'notes' => 'Original Notes'

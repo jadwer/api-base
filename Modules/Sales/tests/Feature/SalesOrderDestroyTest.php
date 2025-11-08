@@ -18,7 +18,7 @@ class SalesOrderDestroyTest extends TestCase
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
-            'orderNumber' => 'SO-DELETE-001',
+            'order_number' => 'SO-DELETE-001',
             'status' => 'draft'
         ]);
 

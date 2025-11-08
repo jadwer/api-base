@@ -19,7 +19,7 @@ class SalesOrderItemShowTest extends TestCase
         $admin = $this->getAdminUser();
         $item = SalesOrderItem::factory()->create([
             'quantity' => 5.0,
-            'unitPrice' => 100.0,
+            'unit_price' => 100.0,
             'discount' => 10.0,
             'total' => 490.0
         ]);
@@ -150,14 +150,14 @@ class SalesOrderItemShowTest extends TestCase
         $customer = Contact::factory()->customer()->create(['name' => 'Test Customer']);
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
-            'orderNumber' => 'SO-REL-001'
+            'order_number' => 'SO-REL-001'
         ]);
         $product = Product::factory()->create(['name' => 'Test Product']);
         $item = SalesOrderItem::factory()->create([
             'sales_order_id' => $salesOrder->id,
             'product_id' => $product->id,
             'quantity' => 2.0,
-            'unitPrice' => 50.0,
+            'unit_price' => 50.0,
             'total' => 100.0
         ]);
 
@@ -213,14 +213,14 @@ class SalesOrderItemShowTest extends TestCase
         
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
-            'orderNumber' => 'SO-NESTED-001'
+            'order_number' => 'SO-NESTED-001'
         ]);
         $product = Product::factory()->create(['name' => 'Nested Product']);
         $item = SalesOrderItem::factory()->create([
             'sales_order_id' => $salesOrder->id,
             'product_id' => $product->id,
             'quantity' => 3.0,
-            'unitPrice' => 75.0,
+            'unit_price' => 75.0,
             'total' => 225.0
         ]);
 

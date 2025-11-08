@@ -28,6 +28,20 @@ class Wishlist extends Model
     ];
 
     /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($wishlist) {
+            if (!$wishlist->user_id && auth()->check()) {
+                $wishlist->user_id = auth()->id();
+            }
+        });
+    }
+
+    /**
      * User who owns the wishlist
      */
     public function user(): BelongsTo

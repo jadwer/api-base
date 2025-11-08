@@ -76,7 +76,7 @@ class CFDIStampingTest extends TestCase
 
         // Create CFDI invoice
         $invoice = CFDIInvoice::factory()->create([
-            'companySettingId' => $this->companySetting->id,
+            'company_setting_id' => $this->companySetting->id,
             'contact_id' => $this->contact->id,
             'receptorRfc' => $this->contact->taxId,
             'status' => 'draft',
@@ -101,7 +101,7 @@ class CFDIStampingTest extends TestCase
 
         // Create already stamped CFDI invoice
         $invoice = CFDIInvoice::factory()->create([
-            'companySettingId' => $this->companySetting->id,
+            'company_setting_id' => $this->companySetting->id,
             'contact_id' => $this->contact->id,
             'receptorRfc' => $this->contact->taxId,
             'status' => 'valid',
@@ -129,7 +129,7 @@ class CFDIStampingTest extends TestCase
 
         // Create stamped CFDI invoice
         $invoice = CFDIInvoice::factory()->create([
-            'companySettingId' => $this->companySetting->id,
+            'company_setting_id' => $this->companySetting->id,
             'contact_id' => $this->contact->id,
             'receptorRfc' => $this->contact->taxId,
             'status' => 'valid',
@@ -155,7 +155,7 @@ class CFDIStampingTest extends TestCase
 
         // Create draft CFDI invoice
         $invoice = CFDIInvoice::factory()->create([
-            'companySettingId' => $this->companySetting->id,
+            'company_setting_id' => $this->companySetting->id,
             'contact_id' => $this->contact->id,
             'receptorRfc' => $this->contact->taxId,
             'status' => 'draft',
@@ -179,7 +179,7 @@ class CFDIStampingTest extends TestCase
 
         // Create stamped CFDI invoice
         $invoice = CFDIInvoice::factory()->create([
-            'companySettingId' => $this->companySetting->id,
+            'company_setting_id' => $this->companySetting->id,
             'contact_id' => $this->contact->id,
             'receptorRfc' => $this->contact->taxId,
             'status' => 'valid',
@@ -206,7 +206,7 @@ class CFDIStampingTest extends TestCase
         Sanctum::actingAs($techUser);
 
         $invoice = CFDIInvoice::factory()->create([
-            'companySettingId' => $this->companySetting->id,
+            'company_setting_id' => $this->companySetting->id,
             'contact_id' => $this->contact->id,
             'receptorRfc' => $this->contact->taxId,
             'status' => 'draft',
@@ -221,7 +221,7 @@ class CFDIStampingTest extends TestCase
     public function webhook_can_update_invoice_status_on_stamp()
     {
         $invoice = CFDIInvoice::factory()->create([
-            'companySettingId' => $this->companySetting->id,
+            'company_setting_id' => $this->companySetting->id,
             'contact_id' => $this->contact->id,
             'series' => 'F',
             'folio' => 123,
@@ -250,7 +250,7 @@ class CFDIStampingTest extends TestCase
     public function webhook_can_update_invoice_status_on_cancel()
     {
         $invoice = CFDIInvoice::factory()->create([
-            'companySettingId' => $this->companySetting->id,
+            'company_setting_id' => $this->companySetting->id,
             'contact_id' => $this->contact->id,
             'status' => 'valid',
             'uuid' => 'A1B2C3D4-E5F6-7890-ABCD-EF1234567890',

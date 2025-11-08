@@ -188,7 +188,7 @@ class UpdateCampaignTest extends TestCase
 
         $campaign = Campaign::factory()->create([
             'user_id' => $user->id,
-            'startDate' => now(),
+            'start_date' => now(),
         ]);
 
         $newStartDate = now()->addMonth()->format('Y-m-d');
@@ -212,7 +212,7 @@ class UpdateCampaignTest extends TestCase
         $response->assertOk();
         $this->assertDatabaseHas('campaigns', [
             'id' => $campaign->id,
-            'startDate' => $newStartDate,
+            'start_date' => $newStartDate,
             'endDate' => $newEndDate,
         ]);
     }

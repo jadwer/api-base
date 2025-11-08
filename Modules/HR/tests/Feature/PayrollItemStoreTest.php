@@ -67,7 +67,7 @@ class PayrollItemStoreTest extends TestCase
         $this->assertDatabaseHas('payroll_items', [
             'employee_id' => $employee->id,
             'payroll_period_id' => $period->id,
-            'basicSalary' => 3000.00,
+            'basic_salary' => 3000.00,
             'status' => 'draft'
         ]);
     }

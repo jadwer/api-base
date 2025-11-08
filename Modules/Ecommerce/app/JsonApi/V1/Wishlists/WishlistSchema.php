@@ -36,8 +36,8 @@ class WishlistSchema extends Schema
         return [
             ID::make(),
 
-            // Foreign Keys
-            Number::make('userId', 'user_id'),
+            // Foreign Keys (auto-assigned from authenticated user)
+            Number::make('userId', 'user_id')->readOnly(),
 
             // Wishlist Details
             Str::make('name')->sortable(),

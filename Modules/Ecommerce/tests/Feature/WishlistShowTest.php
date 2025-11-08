@@ -26,7 +26,7 @@ class WishlistShowTest extends TestCase
                 'type',
                 'id',
                 'attributes' => [
-                    'user_id',
+                    'userId',
                     'name',
                     'isDefault',
                     'isPublic',
@@ -70,7 +70,7 @@ class WishlistShowTest extends TestCase
                 'type' => 'wishlists',
                 'id' => (string) $wishlist->id,
                 'attributes' => [
-                    'user_id' => $customer->id,
+                    'userId' => $customer->id,
                     'name' => $wishlist->name,
                 ],
             ],

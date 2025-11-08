@@ -37,7 +37,7 @@ class CartItemUpdateTest extends TestCase
         $this->assertDatabaseHas('cart_items', [
             'id' => $cartItem->id,
             'quantity' => 5.0,
-            'unitPrice' => 25.99,
+            'unit_price' => 25.99,
             'status' => 'inactive'
         ]);
     }

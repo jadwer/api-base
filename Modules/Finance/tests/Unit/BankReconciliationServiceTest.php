@@ -33,7 +33,7 @@ class BankReconciliationServiceTest extends TestCase
             'code' => '1010',
             'name' => 'Banco Principal',
             'account_type' => 'asset',
-            'isActive' => true,
+            'is_active' => true,
         ]);
 
         // Create bank account
@@ -42,14 +42,14 @@ class BankReconciliationServiceTest extends TestCase
             'account_name' => 'Main Bank Account',
             'bank_name' => 'Banco Test',
             'current_balance' => 100000,
-            'isActive' => true,
+            'is_active' => true,
         ]);
 
         // Create fiscal period
         $this->fiscalPeriod = FiscalPeriod::factory()->create([
             'year' => now()->year,
             'month' => now()->month,
-            'startDate' => now()->startOfMonth(),
+            'start_date' => now()->startOfMonth(),
             'endDate' => now()->endOfMonth(),
             'status' => 'open',
         ]);

@@ -48,7 +48,7 @@ class SalesOrderItemStoreTest extends TestCase
             'sales_order_id' => $salesOrder->id,
             'product_id' => $product->id,
             'quantity' => 5.0,
-            'unitPrice' => 100.0,
+            'unit_price' => 100.0,
             'discount' => 10.0,
             'total' => 490.0
         ]);
@@ -85,7 +85,7 @@ class SalesOrderItemStoreTest extends TestCase
             'sales_order_id' => $salesOrder->id,
             'product_id' => $product->id,
             'quantity' => 2.0,
-            'unitPrice' => 50.0,
+            'unit_price' => 50.0,
             'discount' => 0.0, // Default value
             'total' => 100.0
         ]);
@@ -289,7 +289,7 @@ class SalesOrderItemStoreTest extends TestCase
             'sales_order_id' => $salesOrder->id,
             'product_id' => $product->id,
             'quantity' => 1.0,
-            'unitPrice' => 100.0,
+            'unit_price' => 100.0,
             'total' => 100.0
         ]);
     }

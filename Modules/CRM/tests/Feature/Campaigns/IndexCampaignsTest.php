@@ -80,12 +80,12 @@ class IndexCampaignsTest extends TestCase
 
         Campaign::factory()->create([
             'name' => 'Old Campaign',
-            'startDate' => now()->subMonth(),
+            'start_date' => now()->subMonth(),
             'user_id' => $user->id,
         ]);
         Campaign::factory()->create([
             'name' => 'New Campaign',
-            'startDate' => now(),
+            'start_date' => now(),
             'user_id' => $user->id,
         ]);
 

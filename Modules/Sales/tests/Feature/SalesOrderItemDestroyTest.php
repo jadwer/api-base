@@ -166,7 +166,7 @@ class SalesOrderItemDestroyTest extends TestCase
         $admin = $this->getAdminUser();
         $item = SalesOrderItem::factory()->create([
             'quantity' => 1000.0,
-            'unitPrice' => 5000.0,
+            'unit_price' => 5000.0,
             'total' => 5000000.0
         ]);
 

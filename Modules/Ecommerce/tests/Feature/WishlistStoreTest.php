@@ -33,10 +33,10 @@ class WishlistStoreTest extends TestCase
             'data' => [
                 'type' => 'wishlists',
                 'attributes' => [
+                    'userId' => $admin->id,
                     'name' => 'My Favorite Products',
                     'isDefault' => true,
                     'isPublic' => false,
-                    'user_id' => $admin->id,
                 ],
             ],
         ]);
@@ -44,7 +44,7 @@ class WishlistStoreTest extends TestCase
         $this->assertDatabaseHas('wishlists', [
             'user_id' => $admin->id,
             'name' => 'My Favorite Products',
-            'isDefault' => true,
+            'is_default' => true,
             'is_public' => false,
         ]);
     }
@@ -74,10 +74,10 @@ class WishlistStoreTest extends TestCase
             'data' => [
                 'type' => 'wishlists',
                 'attributes' => [
+                    'userId' => $customer->id,
                     'name' => 'Christmas Gifts',
                     'isDefault' => false,
                     'isPublic' => true,
-                    'user_id' => $customer->id,
                 ],
             ],
         ]);
@@ -218,7 +218,7 @@ class WishlistStoreTest extends TestCase
 
         $this->assertDatabaseHas('wishlists', [
             'user_id' => $customer->id,
-            'isDefault' => true,
+            'is_default' => true,
         ]);
     }
 

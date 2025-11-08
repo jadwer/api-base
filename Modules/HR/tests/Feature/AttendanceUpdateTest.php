@@ -22,8 +22,8 @@ class AttendanceUpdateTest extends TestCase
         ]);
         $attendance = Attendance::factory()->create([
             'employee_id' => $employee->id,
-            'checkInTime' => '09:00:00',
-            'checkOutTime' => '17:00:00',
+            'check_in' => '09:00:00',
+            'check_out' => '17:00:00',
             'status' => 'present'
         ]);
 
@@ -193,8 +193,8 @@ class AttendanceUpdateTest extends TestCase
         ]);
         $attendance = Attendance::factory()->create([
             'employee_id' => $employee->id,
-            'checkInTime' => '09:00:00',
-            'checkOutTime' => '17:00:00'
+            'check_in' => '09:00:00',
+            'check_out' => '17:00:00'
         ]);
 
         $data = [

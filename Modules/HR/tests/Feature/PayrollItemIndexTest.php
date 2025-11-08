@@ -51,7 +51,7 @@ class PayrollItemIndexTest extends TestCase
         PayrollItem::factory()->create([
             'employee_id' => $employee->id,
             'payroll_period_id' => $period->id,
-            'basicSalary' => 1000.00,
+            'basic_salary' => 1000.00,
             'overtime_pay' => 0,
             'bonuses' => 0,
             'deductions' => 0
@@ -59,7 +59,7 @@ class PayrollItemIndexTest extends TestCase
         PayrollItem::factory()->create([
             'employee_id' => $employee->id,
             'payroll_period_id' => $period->id,
-            'basicSalary' => 5000.00,
+            'basic_salary' => 5000.00,
             'overtime_pay' => 0,
             'bonuses' => 0,
             'deductions' => 0

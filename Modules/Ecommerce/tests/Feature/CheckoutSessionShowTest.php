@@ -31,7 +31,7 @@ class CheckoutSessionShowTest extends TestCase
         $admin = $this->getAdminUser();
         $session = CheckoutSession::factory()->create([
             'status' => 'initiated',
-            'totalAmount' => 1500.00,
+            'total_amount' => 1500.00,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

@@ -25,7 +25,7 @@ class PayrollItemUpdateTest extends TestCase
         $payrollItem = PayrollItem::factory()->create([
             'employee_id' => $employee->id,
             'payroll_period_id' => $period->id,
-            'basicSalary' => 2000.00,
+            'basic_salary' => 2000.00,
             'status' => 'draft'
         ]);
 
@@ -55,7 +55,7 @@ class PayrollItemUpdateTest extends TestCase
 
         $this->assertDatabaseHas('payroll_items', [
             'id' => $payrollItem->id,
-            'basicSalary' => 3500.00,
+            'basic_salary' => 3500.00,
             'status' => 'pending'
         ]);
     }
@@ -262,7 +262,7 @@ class PayrollItemUpdateTest extends TestCase
         $payrollItem = PayrollItem::factory()->create([
             'employee_id' => $employee->id,
             'payroll_period_id' => $period->id,
-            'basicSalary' => 2000.00,
+            'basic_salary' => 2000.00,
             'overtime_pay' => 0,
             'bonuses' => 0,
             'deductions' => 0
@@ -307,7 +307,7 @@ class PayrollItemUpdateTest extends TestCase
         $payrollItem = PayrollItem::factory()->create([
             'employee_id' => $employee->id,
             'payroll_period_id' => $period->id,
-            'basicSalary' => 3000.00,
+            'basic_salary' => 3000.00,
             'status' => 'draft'
         ]);
 

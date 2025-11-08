@@ -38,9 +38,9 @@ class CheckoutSessionStoreTest extends TestCase
 
         $response->assertCreated();
         $this->assertDatabaseHas('checkout_sessions', [
-            'shoppingCartId' => $cart->id,
+            'shopping_cart_id' => $cart->id,
             'status' => 'initiated',
-            'totalAmount' => 126.00,
+            'total_amount' => 126.00,
         ]);
     }
 
@@ -95,8 +95,8 @@ class CheckoutSessionStoreTest extends TestCase
 
         $response->assertCreated();
         $this->assertDatabaseHas('checkout_sessions', [
-            'shoppingCartId' => $cart->id,
-            'totalAmount' => 200.00,
+            'shopping_cart_id' => $cart->id,
+            'total_amount' => 200.00,
         ]);
     }
 
