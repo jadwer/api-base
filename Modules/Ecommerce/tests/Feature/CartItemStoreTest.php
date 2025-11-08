@@ -54,7 +54,7 @@ class CartItemStoreTest extends TestCase
 
         $response->assertCreated();
         
-        $this->assertDatabaseHas('cart_items', ['quantity' => 99.99, 'unitPrice' => 99.99, 'original_price' => 99.99, 'discount_percent' => 99.99, 'discountAmount' => 99.99, 'subtotal' => 99.99, 'tax_rate' => 99.99, 'taxAmount' => 99.99, 'total' => 99.99]);
+        $this->assertDatabaseHas('cart_items', ['quantity' => 99.99, 'unit_price' => 99.99, 'original_price' => 99.99, 'discount_percent' => 99.99, 'discount_amount' => 99.99, 'subtotal' => 99.99, 'tax_rate' => 99.99, 'tax_amount' => 99.99, 'total' => 99.99]);
     }
 
     public function test_admin_can_create_CartItem_with_minimal_data(): void

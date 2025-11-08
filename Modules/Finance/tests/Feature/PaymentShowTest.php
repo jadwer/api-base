@@ -65,7 +65,7 @@ class PaymentShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $payment = Payment::factory()->create(['payment_number' => 'test string', 'paymentDate' => now(), 'amount' => 99.99, 'currency' => 'test string', 'applied_amount' => 99.99, 'unapplied_amount' => 99.99, 'status' => 'active', 'reference' => 'test string', 'notes' => 'test description', 'metadata' => 'test value', 'isActive' => true]);
+        $payment = Payment::factory()->create(['payment_number' => 'test string', 'payment_date' => now(), 'amount' => 99.99, 'currency' => 'test string', 'applied_amount' => 99.99, 'unapplied_amount' => 99.99, 'status' => 'active', 'reference' => 'test string', 'notes' => 'test description', 'metadata' => 'test value', 'is_active' => true]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

@@ -60,7 +60,7 @@ class BankAccountShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $bankAccount = BankAccount::factory()->create(['account_number' => 'test string', 'account_name' => 'Test Name', 'bank_name' => 'Test Name', 'currency' => 'test string', 'current_balance' => 99.99, 'opening_balance' => 99.99, 'status' => 'active', 'metadata' => 'test value', 'isActive' => true]);
+        $bankAccount = BankAccount::factory()->create(['account_number' => 'test string', 'account_name' => 'Test Name', 'bank_name' => 'Test Name', 'currency' => 'test string', 'current_balance' => 99.99, 'opening_balance' => 99.99, 'status' => 'active', 'metadata' => 'test value', 'is_active' => true]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

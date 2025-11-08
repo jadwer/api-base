@@ -55,7 +55,7 @@ class PaymentMethodShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $paymentMethod = PaymentMethod::factory()->create(['code' => 'TEST123', 'name' => 'Test Name', 'type' => 'test string', 'requires_reference' => true, 'isActive' => true]);
+        $paymentMethod = PaymentMethod::factory()->create(['code' => 'TEST123', 'name' => 'Test Name', 'type' => 'test string', 'requires_reference' => true, 'is_active' => true]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

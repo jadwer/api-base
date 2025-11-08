@@ -45,7 +45,7 @@ class PaymentMethodStoreTest extends TestCase
 
         $response->assertCreated();
         
-        $this->assertDatabaseHas('payment_methods', ['code' => 'TEST123', 'name' => 'Test Name', 'requires_reference' => true, 'isActive' => true]);
+        $this->assertDatabaseHas('payment_methods', ['code' => 'TEST123', 'name' => 'Test Name', 'requires_reference' => true, 'is_active' => true]);
     }
 
     public function test_admin_can_create_PaymentMethod_with_minimal_data(): void

@@ -10,7 +10,7 @@ class LeaveTypeUpdateTest extends TestCase
     public function test_admin_can_update_leave_type(): void
     {
         $admin = $this->getAdminUser();
-        $leaveType = LeaveType::factory()->create(['name' => 'Old Name', 'daysAllowed' => 10]);
+        $leaveType = LeaveType::factory()->create(['name' => 'Old Name', 'days_allowed' => 10]);
 
         $data = [
             'type' => 'leave-types',

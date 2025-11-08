@@ -85,7 +85,7 @@ class ProductRecommendationEndpointsTest extends TestCase
         $product = Product::factory()->create(['is_active' => true]);
         $relatedProduct = Product::factory()->create(['is_active' => true]);
 
-        $order = SalesOrder::factory()->create(['customer_id' => $customer->id]);
+        $order = SalesOrder::factory()->create(['contact_id' => $customer->id]);
         SalesOrderItem::factory()->create([
             'sales_order_id' => $order->id,
             'product_id' => $product->id,
@@ -121,7 +121,7 @@ class ProductRecommendationEndpointsTest extends TestCase
 
         // Create recent sales
         $order = SalesOrder::factory()->create([
-            'customer_id' => $customer->id,
+            'contact_id' => $customer->id,
             'created_at' => Carbon::now()->subDays(5),
         ]);
         SalesOrderItem::factory()->create([
@@ -208,7 +208,7 @@ class ProductRecommendationEndpointsTest extends TestCase
             'is_active' => true,
         ]);
 
-        $order = SalesOrder::factory()->create(['customer_id' => $customer->id]);
+        $order = SalesOrder::factory()->create(['contact_id' => $customer->id]);
         SalesOrderItem::factory()->create([
             'sales_order_id' => $order->id,
             'product_id' => $purchasedProduct->id,

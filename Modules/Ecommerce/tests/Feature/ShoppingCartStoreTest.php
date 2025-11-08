@@ -38,7 +38,7 @@ class ShoppingCartStoreTest extends TestCase
 
         $response->assertCreated();
         
-        $this->assertDatabaseHas('shopping_carts', ['status' => 'active', 'totalAmount' => 99.99, 'currency' => 'USD', 'coupon_code' => 'TEST123', 'discountAmount' => 10.00, 'taxAmount' => 8.99, 'shipping_amount' => 5.99, 'notes' => 'Test shopping cart']);
+        $this->assertDatabaseHas('shopping_carts', ['status' => 'active', 'total_amount' => 99.99, 'currency' => 'USD', 'coupon_code' => 'TEST123', 'discount_amount' => 10.00, 'tax_amount' => 8.99, 'shipping_amount' => 5.99, 'notes' => 'Test shopping cart']);
     }
 
     public function test_admin_can_create_ShoppingCart_with_minimal_data(): void

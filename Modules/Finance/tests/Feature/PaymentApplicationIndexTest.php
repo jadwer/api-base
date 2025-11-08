@@ -72,8 +72,8 @@ class PaymentApplicationIndexTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        PaymentApplication::factory()->create(['isActive' => true]);
-        PaymentApplication::factory()->create(['isActive' => true]);
+        PaymentApplication::factory()->create(['is_active' => true]);
+        PaymentApplication::factory()->create(['is_active' => true]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

@@ -110,7 +110,7 @@ class RecommendationEngineTest extends TestCase
 
         // Create 3 orders where baseProduct is bought with productA
         for ($i = 0; $i < 3; $i++) {
-            $order = SalesOrder::factory()->create(['customer_id' => $customer->id]);
+            $order = SalesOrder::factory()->create(['contact_id' => $customer->id]);
             SalesOrderItem::factory()->create([
                 'sales_order_id' => $order->id,
                 'product_id' => $baseProduct->id,
@@ -123,7 +123,7 @@ class RecommendationEngineTest extends TestCase
 
         // Create 2 orders where baseProduct is bought with productB
         for ($i = 0; $i < 2; $i++) {
-            $order = SalesOrder::factory()->create(['customer_id' => $customer->id]);
+            $order = SalesOrder::factory()->create(['contact_id' => $customer->id]);
             SalesOrderItem::factory()->create([
                 'sales_order_id' => $order->id,
                 'product_id' => $baseProduct->id,
@@ -135,7 +135,7 @@ class RecommendationEngineTest extends TestCase
         }
 
         // ProductC is never bought with baseProduct
-        $order = SalesOrder::factory()->create(['customer_id' => $customer->id]);
+        $order = SalesOrder::factory()->create(['contact_id' => $customer->id]);
         SalesOrderItem::factory()->create([
             'sales_order_id' => $order->id,
             'product_id' => $productC->id,
@@ -163,7 +163,7 @@ class RecommendationEngineTest extends TestCase
             'is_active' => true,
         ]);
 
-        $order = SalesOrder::factory()->create(['customer_id' => $customer->id]);
+        $order = SalesOrder::factory()->create(['contact_id' => $customer->id]);
         SalesOrderItem::factory()->create([
             'sales_order_id' => $order->id,
             'product_id' => $purchasedProduct->id,
@@ -218,7 +218,7 @@ class RecommendationEngineTest extends TestCase
         // Create recent sales for trending product (within 30 days)
         for ($i = 0; $i < 5; $i++) {
             $order = SalesOrder::factory()->create([
-                'customer_id' => $customer->id,
+                'contact_id' => $customer->id,
                 'created_at' => Carbon::now()->subDays(10),
             ]);
             SalesOrderItem::factory()->create([
@@ -229,7 +229,7 @@ class RecommendationEngineTest extends TestCase
 
         // Create old sales (more than 30 days ago)
         $oldOrder = SalesOrder::factory()->create([
-            'customer_id' => $customer->id,
+            'contact_id' => $customer->id,
             'created_at' => Carbon::now()->subDays(45),
         ]);
         SalesOrderItem::factory()->create([

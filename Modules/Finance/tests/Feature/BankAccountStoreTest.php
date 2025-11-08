@@ -51,7 +51,7 @@ class BankAccountStoreTest extends TestCase
 
         $response->assertCreated();
         
-        $this->assertDatabaseHas('bank_accounts', ['account_number' => 'test string', 'account_name' => 'Test Name', 'bank_name' => 'Test Name', 'currency' => 'test string', 'gl_account_id' => 1, 'current_balance' => 99.99, 'opening_balance' => 99.99, 'status' => 'active', 'isActive' => true]);
+        $this->assertDatabaseHas('bank_accounts', ['account_number' => 'test string', 'account_name' => 'Test Name', 'bank_name' => 'Test Name', 'currency' => 'test string', 'gl_account_id' => 1, 'current_balance' => 99.99, 'opening_balance' => 99.99, 'status' => 'active', 'is_active' => true]);
     }
 
     public function test_admin_can_create_BankAccount_with_minimal_data(): void
