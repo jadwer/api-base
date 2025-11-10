@@ -23,7 +23,7 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(2), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
             ]);
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
@@ -61,7 +61,7 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
             ]);
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
@@ -91,7 +91,7 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
             ->valid()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
             ]);
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
@@ -114,7 +114,7 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
             ->draft()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
             ]);
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
@@ -202,7 +202,7 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
                 'pdf_path' => 'cfdi/invoices/old/old-file.pdf',
             ]);
 
@@ -227,7 +227,7 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
             ->withDiscount()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
             ]);
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
@@ -247,7 +247,7 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->withTaxes()->count(2), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
             ]);
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)

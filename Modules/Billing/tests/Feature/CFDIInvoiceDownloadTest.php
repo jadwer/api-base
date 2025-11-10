@@ -22,7 +22,7 @@ class CFDIInvoiceDownloadTest extends TestCase
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
             ]);
 
         // Generate PDF first
@@ -47,7 +47,7 @@ class CFDIInvoiceDownloadTest extends TestCase
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
             ]);
 
         // Generate PDF as admin
@@ -71,7 +71,7 @@ class CFDIInvoiceDownloadTest extends TestCase
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
             ]);
 
         // Generate PDF as admin
@@ -107,7 +107,7 @@ class CFDIInvoiceDownloadTest extends TestCase
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
                 'pdf_path' => null, // No PDF exists yet
             ]);
 
@@ -130,7 +130,7 @@ class CFDIInvoiceDownloadTest extends TestCase
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
                 'series' => 'A',
                 'folio' => 123,
             ]);
@@ -155,7 +155,7 @@ class CFDIInvoiceDownloadTest extends TestCase
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
             ]);
 
         // Generate PDF first
@@ -180,7 +180,7 @@ class CFDIInvoiceDownloadTest extends TestCase
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
             ]);
 
         // Generate PDF as admin
@@ -204,7 +204,7 @@ class CFDIInvoiceDownloadTest extends TestCase
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
             ]);
 
         // Generate PDF as admin
@@ -242,7 +242,7 @@ class CFDIInvoiceDownloadTest extends TestCase
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
             ]);
 
         // Generate XML first
@@ -268,7 +268,7 @@ class CFDIInvoiceDownloadTest extends TestCase
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
             ]);
 
         // Generate XML as admin
@@ -292,7 +292,7 @@ class CFDIInvoiceDownloadTest extends TestCase
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
             ]);
 
         // Generate XML as admin

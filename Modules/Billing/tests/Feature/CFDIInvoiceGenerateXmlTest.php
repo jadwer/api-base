@@ -22,7 +22,7 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(2), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
             ]);
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
@@ -54,7 +54,7 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
             ]);
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
@@ -94,7 +94,7 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->withTaxes()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
             ]);
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
@@ -186,7 +186,7 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
             ->withDiscount()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
             ]);
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
@@ -207,7 +207,7 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
             ->egreso()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
             ]);
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
@@ -228,7 +228,7 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
-                'companySettingId' => $settings->id,
+                'company_setting_id' => $settings->id,
                 'xml_original' => '<?xml version="1.0"?><old>data</old>',
             ]);
 
