@@ -27,8 +27,8 @@ class WishlistItemIndexTest extends TestCase
                     'type',
                     'id',
                     'attributes' => [
-                        'wishlist_id',
-                        'product_id',
+                        'wishlistId',
+                        'productId',
                         'quantity',
                         'priority',
                         'notes',

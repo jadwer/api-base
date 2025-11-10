@@ -31,7 +31,7 @@ class ShippingMethodIndexTest extends TestCase
                         'costPerKg',
                         'estimatedDaysMin',
                         'estimatedDaysMax',
-                        'is_active',
+                        'isActive',
                         'availableCountries',
                     ]
                 ]

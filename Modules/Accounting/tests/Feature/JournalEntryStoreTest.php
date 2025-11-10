@@ -19,7 +19,7 @@ class JournalEntryStoreTest extends TestCase
             'type' => 'journal-entries',
             'attributes' => [
                 'journalId' => $journal->id,
-                'fiscal_period_id' => $fiscalPeriod->id,
+                'fiscalPeriodId' => $fiscalPeriod->id,
                 'date' => '2024-01-01',
                 'totalDebit' => 100.00,
                 'totalCredit' => 100.00,
@@ -46,7 +46,7 @@ class JournalEntryStoreTest extends TestCase
             'type' => 'journal-entries',
             'attributes' => [
                 'journalId' => $journal->id,
-                'fiscal_period_id' => $fiscalPeriod->id,
+                'fiscalPeriodId' => $fiscalPeriod->id,
                 'date' => '2024-01-01',
                 'totalDebit' => 100.00,
                 'totalCredit' => 100.00,

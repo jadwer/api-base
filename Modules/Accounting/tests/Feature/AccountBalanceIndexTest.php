@@ -29,7 +29,7 @@ class AccountBalanceIndexTest extends TestCase
                     'id',
                     'type',
                     'attributes' => [
-                        'account_id',
+                        'accountId',
                         'fiscalYear',
                         'fiscalMonth',
                         'openingBalance',

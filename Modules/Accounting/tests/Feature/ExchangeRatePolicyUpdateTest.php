@@ -16,7 +16,7 @@ class ExchangeRatePolicyUpdateTest extends TestCase
             'type' => 'exchange-rate-policies',
             'id' => (string) $entity->id,
             'attributes' => [
-                'is_active' => false,
+                'isActive' => false,
 ]
         ];
 
@@ -38,7 +38,7 @@ class ExchangeRatePolicyUpdateTest extends TestCase
             'type' => 'exchange-rate-policies',
             'id' => (string) $entity->id,
             'attributes' => [
-                'is_active' => false
+                'isActive' => false
 ]
         ];
 
@@ -92,7 +92,7 @@ class ExchangeRatePolicyUpdateTest extends TestCase
             'type' => 'exchange-rate-policies',
             'id' => (string) $entity->id,
             'attributes' => [
-                'is_active' => false
+                'isActive' => false
 ]
         ];
 
@@ -114,7 +114,7 @@ class ExchangeRatePolicyUpdateTest extends TestCase
             'type' => 'exchange-rate-policies',
             'id' => (string) $entity->id,
             'attributes' => [
-                'is_active' => false
+                'isActive' => false
 ]
         ];
 

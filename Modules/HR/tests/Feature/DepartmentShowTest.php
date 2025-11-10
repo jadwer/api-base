@@ -32,7 +32,7 @@ class DepartmentShowTest extends TestCase
                 'attributes' => [
                     'name',
                     'description',
-                    'is_active'
+                    'isActive'
                 ]
             ]
         ]);

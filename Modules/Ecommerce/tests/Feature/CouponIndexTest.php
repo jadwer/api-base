@@ -40,7 +40,7 @@ class CouponIndexTest extends TestCase
                         'usedCount',
                         'startsAt',
                         'expiresAt',
-                        'is_active',
+                        'isActive',
                         'customerIds',
                         'productIds',
                         'categoryIds',

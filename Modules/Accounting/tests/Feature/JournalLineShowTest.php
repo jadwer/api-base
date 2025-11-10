@@ -28,8 +28,8 @@ class JournalLineShowTest extends TestCase
                 'type',
                 'attributes' => [
                         'journalEntryId',
-                        'account_id',
-                        'contact_id',
+                        'accountId',
+                        'contactId',
                         'debit',
                         'credit',
                         'description',
@@ -60,8 +60,8 @@ class JournalLineShowTest extends TestCase
                 'type',
                 'attributes' => [
                         'journalEntryId',
-                        'account_id',
-                        'contact_id',
+                        'accountId',
+                        'contactId',
                         'debit',
                         'credit',
                         'description',

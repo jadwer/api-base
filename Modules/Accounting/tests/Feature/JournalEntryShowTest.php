@@ -28,7 +28,7 @@ class JournalEntryShowTest extends TestCase
                 'type',
                 'attributes' => [
                         'journalId',
-                        'fiscal_period_id',
+                        'fiscalPeriodId',
                         'number',
                         'date',
                         'reference',
@@ -68,7 +68,7 @@ class JournalEntryShowTest extends TestCase
                 'type',
                 'attributes' => [
                         'journalId',
-                        'fiscal_period_id',
+                        'fiscalPeriodId',
                         'number',
                         'date',
                         'reference',

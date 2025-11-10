@@ -30,7 +30,7 @@ class JournalEntryIndexTest extends TestCase
                     'type',
                     'attributes' => [
                         'journalId',
-                        'fiscal_period_id',
+                        'fiscalPeriodId',
                         'number',
                         'date',
                         'reference',
@@ -54,9 +54,9 @@ class JournalEntryIndexTest extends TestCase
     public function test_admin_can_sort_JournalEntries_by_status(): void
     {
         $admin = $this->getAdminUser();
-        
-        JournalEntry::factory()->create(['status' => 'active']);
-        JournalEntry::factory()->create(['status' => 'active']);
+
+        JournalEntry::factory()->create(['status' => 'draft']);
+        JournalEntry::factory()->create(['status' => 'draft']);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

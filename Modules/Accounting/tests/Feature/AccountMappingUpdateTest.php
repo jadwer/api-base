@@ -16,7 +16,7 @@ class AccountMappingUpdateTest extends TestCase
             'type' => 'account-mappings',
             'id' => (string) $entity->id,
             'attributes' => [
-                'is_active' => false,
+                'isActive' => false,
                 'notes' => 'Updated mapping'
 ]
         ];
@@ -39,7 +39,7 @@ class AccountMappingUpdateTest extends TestCase
             'type' => 'account-mappings',
             'id' => (string) $entity->id,
             'attributes' => [
-                'is_active' => false
+                'isActive' => false
 ]
         ];
 
@@ -93,7 +93,7 @@ class AccountMappingUpdateTest extends TestCase
             'type' => 'account-mappings',
             'id' => (string) $entity->id,
             'attributes' => [
-                'is_active' => false
+                'isActive' => false
 ]
         ];
 
@@ -115,7 +115,7 @@ class AccountMappingUpdateTest extends TestCase
             'type' => 'account-mappings',
             'id' => (string) $entity->id,
             'attributes' => [
-                'is_active' => false
+                'isActive' => false
 ]
         ];
 
@@ -136,7 +136,7 @@ class AccountMappingUpdateTest extends TestCase
             'type' => 'account-mappings',
             'id' => (string) $entity->id,
             'attributes' => [
-                'is_active' => false
+                'isActive' => false
             ]
         ];
 
@@ -156,7 +156,7 @@ class AccountMappingUpdateTest extends TestCase
             'type' => 'account-mappings',
             'id' => '999999',
             'attributes' => [
-                'is_active' => false
+                'isActive' => false
             ]
         ];
 
@@ -178,7 +178,7 @@ class AccountMappingUpdateTest extends TestCase
             'type' => 'account-mappings',
             'id' => (string) $entity->id,
             'attributes' => [
-                'is_active' => false
+                'isActive' => false
             ]
         ];
 

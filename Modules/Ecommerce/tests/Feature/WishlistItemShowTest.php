@@ -27,8 +27,8 @@ class WishlistItemShowTest extends TestCase
                 'type',
                 'id',
                 'attributes' => [
-                    'wishlist_id',
-                    'product_id',
+                    'wishlistId',
+                    'productId',
                     'quantity',
                     'priority',
                     'notes',
@@ -73,8 +73,8 @@ class WishlistItemShowTest extends TestCase
                 'type' => 'wishlist-items',
                 'id' => (string) $item->id,
                 'attributes' => [
-                    'wishlist_id' => $wishlist->id,
-                    'product_id' => $item->product_id,
+                    'wishlistId' => $wishlist->id,
+                    'productId' => $item->product_id,
                     'quantity' => $item->quantity,
                     'priority' => $item->priority,
                 ],

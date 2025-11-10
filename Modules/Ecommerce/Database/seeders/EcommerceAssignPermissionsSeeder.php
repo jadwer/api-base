@@ -47,22 +47,22 @@ class EcommerceAssignPermissionsSeeder extends Seeder
         if ($customerRole) {
             $customerPermissions = Permission::where('guard_name', 'api')
                 ->whereIn('name', [
-                    // Shopping Carts - NO index (can't list all carts), but can manage their own via Authorizer
-                    'ecommerce.shopping-carts.show',
-                    'ecommerce.shopping-carts.store',
-                    'ecommerce.shopping-carts.update',
-                    'ecommerce.shopping-carts.destroy',
-                    // Cart Items - NO index (can't list all items), but can manage their own via Authorizer
-                    'ecommerce.cart-items.show',
-                    'ecommerce.cart-items.store',
-                    'ecommerce.cart-items.update',
-                    'ecommerce.cart-items.destroy',
+                    // Shopping Carts - NO access (admin/tech only)
+                    // 'ecommerce.shopping-carts.show',
+                    // 'ecommerce.shopping-carts.store',
+                    // 'ecommerce.shopping-carts.update',
+                    // 'ecommerce.shopping-carts.destroy',
+                    // Cart Items - NO access (admin/tech only)
+                    // 'ecommerce.cart-items.show',
+                    // 'ecommerce.cart-items.store',
+                    // 'ecommerce.cart-items.update',
+                    // 'ecommerce.cart-items.destroy',
                     // Coupons - read only
                     'ecommerce.coupons.index',
                     'ecommerce.coupons.show',
-                    // Checkout - full access for their own checkouts
-                    'ecommerce.checkout-sessions.index',
-                    'ecommerce.checkout-sessions.show',
+                    // Checkout - NO access (admin/tech only)
+                    // 'ecommerce.checkout-sessions.index',
+                    // 'ecommerce.checkout-sessions.show',
                     'ecommerce.checkout-sessions.store',
                     'ecommerce.checkout-sessions.update',
                     // Payments - read only for their own payments

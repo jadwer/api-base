@@ -34,7 +34,7 @@ class ShowPipelineStageTest extends TestCase
                     'type',
                     'probability',
                     'sortOrder',
-                    'is_active',
+                    'isActive',
                     'isClosedWon',
                     'isClosedLost'
                 ]

@@ -38,7 +38,7 @@ class PositionShowTest extends TestCase
                     'description',
                     'minSalary',
                     'maxSalary',
-                    'is_active'
+                    'isActive'
                 ]
             ]
         ]);

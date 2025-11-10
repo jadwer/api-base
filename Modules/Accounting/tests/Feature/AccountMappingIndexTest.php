@@ -30,11 +30,11 @@ class AccountMappingIndexTest extends TestCase
                     'type',
                     'attributes' => [
                         'mappingType',
-                        'account_id',
+                        'accountId',
                         'version',
                         'effectiveFrom',
                         'effectiveTo',
-                        'is_active',
+                        'isActive',
                         'createdById',
                         'notes',
                     ]

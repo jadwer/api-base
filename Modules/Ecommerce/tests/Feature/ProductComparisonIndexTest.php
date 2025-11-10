@@ -26,7 +26,6 @@ class ProductComparisonIndexTest extends TestCase
                     'type',
                     'id',
                     'attributes' => [
-                        'user_id',
                         'name',
                         'isPublic',
                         'createdAt',

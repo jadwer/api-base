@@ -32,7 +32,7 @@ class AuditLogIndexTest extends TestCase
                         'modelType',
                         'modelId',
                         'action',
-                        'user_id',
+                        'userId',
                         'changes',
                         'ipAddress',
                         'userAgent',

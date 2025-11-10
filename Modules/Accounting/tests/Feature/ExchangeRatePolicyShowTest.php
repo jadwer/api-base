@@ -33,7 +33,7 @@ class ExchangeRatePolicyShowTest extends TestCase
                         'maxAgeDays',
                         'tolerancePercentage',
                         'requireApprovalOver',
-                        'is_active',
+                        'isActive',
                     'createdAt',
                     'updatedAt'
                 ]
@@ -64,7 +64,7 @@ class ExchangeRatePolicyShowTest extends TestCase
                         'maxAgeDays',
                         'tolerancePercentage',
                         'requireApprovalOver',
-                        'is_active',
+                        'isActive',
                     'createdAt',
                     'updatedAt'
                 ]

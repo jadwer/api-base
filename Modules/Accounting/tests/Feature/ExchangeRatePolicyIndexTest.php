@@ -35,7 +35,7 @@ class ExchangeRatePolicyIndexTest extends TestCase
                         'maxAgeDays',
                         'tolerancePercentage',
                         'requireApprovalOver',
-                        'is_active',
+                        'isActive',
                     ]
                 ]
             ]

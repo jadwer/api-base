@@ -27,7 +27,7 @@ class CheckoutSessionIndexTest extends TestCase
                     'type',
                     'attributes' => [
                         'shoppingCartId',
-                        'user_id',
+                        'userId',
                         'status',
                         'step',
                         'totalAmount',

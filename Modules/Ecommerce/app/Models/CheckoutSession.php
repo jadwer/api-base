@@ -77,7 +77,7 @@ class CheckoutSession extends Model
             return null;
         }
 
-        return now()->diffInMinutes($this->expires_at);
+        return (int) now()->diffInMinutes($this->expires_at);
     }
 
     // Business Logic Methods

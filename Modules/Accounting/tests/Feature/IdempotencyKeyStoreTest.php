@@ -14,7 +14,7 @@ class IdempotencyKeyStoreTest extends TestCase
         $data = [
             'type' => 'idempotency-keys',
             'attributes' => [
-                'user_id' => 1,
+                'userId' => $admin->id,
                 'endpoint' => 'test_endpoint',
                 'idempotencyKey' => 'test-key-123',
                 'requestHash' => 'abc123',
@@ -39,7 +39,7 @@ class IdempotencyKeyStoreTest extends TestCase
         $data = [
             'type' => 'idempotency-keys',
             'attributes' => [
-                'user_id' => 1,
+                'userId' => $admin->id,
                 'endpoint' => 'test',
                 'idempotencyKey' => 'test-key',
                 'requestHash' => 'hash',
@@ -64,7 +64,7 @@ class IdempotencyKeyStoreTest extends TestCase
         $data = [
             'type' => 'idempotency-keys',
             'attributes' => [
-                'user_id' => 1,
+                'userId' => $tech->id,
                 'endpoint' => 'test',
                 'idempotencyKey' => 'test-key',
                 'requestHash' => 'hash',
@@ -89,7 +89,7 @@ class IdempotencyKeyStoreTest extends TestCase
         $data = [
             'type' => 'idempotency-keys',
             'attributes' => [
-                'user_id' => 1,
+                'userId' => $customer->id,
                 'endpoint' => 'test',
                 'idempotencyKey' => 'test-key',
                 'requestHash' => 'hash',
@@ -109,10 +109,12 @@ class IdempotencyKeyStoreTest extends TestCase
 
     public function test_guest_cannot_create_idempotency_keies(): void
     {
+        $admin = $this->getAdminUser();
+
         $data = [
             'type' => 'idempotency-keys',
             'attributes' => [
-                'user_id' => 1,
+                'userId' => $admin->id,
                 'endpoint' => 'test',
                 'idempotencyKey' => 'test-key',
                 'requestHash' => 'hash',
@@ -136,7 +138,7 @@ class IdempotencyKeyStoreTest extends TestCase
         $data = [
             'type' => 'idempotency-keys',
             'attributes' => [
-                'user_id' => 1
+                'userId' => $admin->id
             ]
         ];
 
@@ -156,7 +158,7 @@ class IdempotencyKeyStoreTest extends TestCase
         $data = [
             'type' => 'idempotency-keys',
             'attributes' => [
-                'user_id' => 'invalid_data_type'
+                'userId' => 'invalid_data_type'
             ]
         ];
 
