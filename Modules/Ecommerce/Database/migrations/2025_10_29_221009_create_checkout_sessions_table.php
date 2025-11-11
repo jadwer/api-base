@@ -39,7 +39,7 @@ return new class extends Migration
             $table->json('shipping_address')->nullable();
 
             // Contact Information
-            $table->string('contact_email');
+            $table->string('contact_email')->nullable();
             $table->string('contact_phone')->nullable();
 
             // Payment Information

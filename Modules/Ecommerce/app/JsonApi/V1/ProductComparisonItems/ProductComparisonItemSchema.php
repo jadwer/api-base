@@ -27,9 +27,17 @@ class ProductComparisonItemSchema extends Schema
     {
         return [
             ID::make(),
+
+            // Foreign key IDs (for creation/updates)
+            Number::make('comparisonId', 'comparison_id'),
+            Number::make('productId', 'product_id'),
+
             Number::make('position')->sortable(),
-            BelongsTo::make('comparison', 'comparison')->type('product-comparisons'),
-            BelongsTo::make('product')->type('products'),
+
+            // Relationships (for includes)
+            BelongsTo::make('comparison')->type('product-comparisons')->readOnly(),
+            BelongsTo::make('product')->type('products')->readOnly(),
+
             DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
             DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
         ];

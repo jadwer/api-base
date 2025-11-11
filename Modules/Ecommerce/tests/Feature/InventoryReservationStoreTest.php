@@ -21,10 +21,10 @@ class InventoryReservationStoreTest extends TestCase
         $data = [
             'type' => 'inventory-reservations',
             'attributes' => [
-                'checkout_session_id' => $session->id,
+                'checkoutSessionId' => $session->id,
                 'stockId' => $stock->id,
-                'product_id' => $product->id,
-                'warehouse_id' => $warehouse->id,
+                'productId' => $product->id,
+                'warehouseId' => $warehouse->id,
                 'quantityReserved' => 5,
                 'status' => 'active',
                 'expiresAt' => now()->addHours(2)->toIso8601String(),
@@ -53,7 +53,7 @@ class InventoryReservationStoreTest extends TestCase
         $data = [
             'type' => 'inventory-reservations',
             'attributes' => [
-                'checkout_session_id' => $session->id,
+                'checkoutSessionId' => $session->id,
                 'quantityReserved' => 5,
                 'status' => 'active',
             ]
@@ -75,7 +75,7 @@ class InventoryReservationStoreTest extends TestCase
         $data = [
             'type' => 'inventory-reservations',
             'attributes' => [
-                'checkout_session_id' => $session->id,
+                'checkoutSessionId' => $session->id,
                 'quantityReserved' => 5,
             ]
         ];

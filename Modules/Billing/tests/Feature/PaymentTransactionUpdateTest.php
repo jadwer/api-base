@@ -51,9 +51,9 @@ class PaymentTransactionUpdateTest extends TestCase
     }
 
     /**
-     * Test tech can update a payment transaction.
+     * Test tech cannot update a payment transaction.
      */
-    public function test_tech_can_update_payment_transaction(): void
+    public function test_tech_cannot_update_payment_transaction(): void
     {
         $user = $this->getTechUser();
         $transaction = PaymentTransaction::factory()->create();
@@ -72,7 +72,7 @@ class PaymentTransactionUpdateTest extends TestCase
             ->withData($data)
             ->patch('/api/v1/payment-transactions/' . $transaction->id);
 
-        $response->assertSuccessful();
+        $response->assertStatus(403);
     }
 
     /**

@@ -20,7 +20,7 @@ class PaymentTransactionStoreTest extends TestCase
         $data = [
             'type' => 'payment-transactions',
             'attributes' => [
-                'checkout_session_id' => $checkoutSession->id,
+                'checkoutSessionId' => $checkoutSession->id,
                 'gateway' => 'stripe',
                 'paymentIntentId' => 'pi_test_' . uniqid(),
                 'amount' => 1500.00,

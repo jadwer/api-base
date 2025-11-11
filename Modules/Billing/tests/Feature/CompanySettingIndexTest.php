@@ -114,7 +114,7 @@ class CompanySettingIndexTest extends TestCase
         $response = $this->jsonApi()
             ->expects('company-settings')
             ->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
-            ->filter(['is_active' => true])
+            ->filter(['isActive' => true])
             ->get('/api/v1/company-settings');
 
         $response->assertSuccessful()
@@ -148,14 +148,14 @@ class CompanySettingIndexTest extends TestCase
         $response = $this->jsonApi()
             ->expects('company-settings')
             ->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
-            ->sort('company_name')
+            ->sort('companyName')
             ->get('/api/v1/company-settings');
 
         $response->assertSuccessful()
             ->assertJson([
                 'data' => [
-                    ['attributes' => ['company_name' => 'Alpha Corp']],
-                    ['attributes' => ['company_name' => 'Beta Inc']],
+                    ['attributes' => ['companyName' => 'Alpha Corp']],
+                    ['attributes' => ['companyName' => 'Beta Inc']],
                 ]
             ]);
     }

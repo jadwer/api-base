@@ -47,16 +47,18 @@ class EcommerceAssignPermissionsSeeder extends Seeder
         if ($customerRole) {
             $customerPermissions = Permission::where('guard_name', 'api')
                 ->whereIn('name', [
-                    // Shopping Carts - NO access (admin/tech only)
-                    // 'ecommerce.shopping-carts.show',
-                    // 'ecommerce.shopping-carts.store',
-                    // 'ecommerce.shopping-carts.update',
-                    // 'ecommerce.shopping-carts.destroy',
-                    // Cart Items - NO access (admin/tech only)
-                    // 'ecommerce.cart-items.show',
-                    // 'ecommerce.cart-items.store',
-                    // 'ecommerce.cart-items.update',
-                    // 'ecommerce.cart-items.destroy',
+                    // Shopping Carts - full CRUD for their own cart
+                    'ecommerce.shopping-carts.index',
+                    'ecommerce.shopping-carts.show',
+                    'ecommerce.shopping-carts.store',
+                    'ecommerce.shopping-carts.update',
+                    'ecommerce.shopping-carts.destroy',
+                    // Cart Items - full CRUD for their own cart items
+                    'ecommerce.cart-items.index',
+                    'ecommerce.cart-items.show',
+                    'ecommerce.cart-items.store',
+                    'ecommerce.cart-items.update',
+                    'ecommerce.cart-items.destroy',
                     // Coupons - read only
                     'ecommerce.coupons.index',
                     'ecommerce.coupons.show',

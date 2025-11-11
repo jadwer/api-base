@@ -49,7 +49,7 @@ class ProductComparisonItemStoreTest extends TestCase
                 'type' => 'product-comparison-items',
                 'attributes' => [
                     'comparisonId' => $comparison->id,
-                    'product_id' => $product->id,
+                    'productId' => $product->id,
                     'position' => 0,
                 ],
             ],

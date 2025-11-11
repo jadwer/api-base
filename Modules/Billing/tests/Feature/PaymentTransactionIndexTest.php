@@ -22,8 +22,7 @@ class PaymentTransactionIndexTest extends TestCase
             ->get('/api/v1/payment-transactions');
 
         $response->assertSuccessful()
-            
-            ->assertJsonApiHas(3);
+            ->assertJsonCount(3, 'data');
     }
 
     /**
@@ -40,8 +39,7 @@ class PaymentTransactionIndexTest extends TestCase
             ->get('/api/v1/payment-transactions');
 
         $response->assertSuccessful()
-            
-            ->assertJsonApiHas(2);
+            ->assertJsonCount(2, 'data');
     }
 
     /**
@@ -92,8 +90,7 @@ class PaymentTransactionIndexTest extends TestCase
             ->get('/api/v1/payment-transactions');
 
         $response->assertSuccessful()
-            
-            ->assertJsonApiHas(2);
+            ->assertJsonCount(2, 'data');
     }
 
     /**
@@ -112,8 +109,7 @@ class PaymentTransactionIndexTest extends TestCase
             ->get('/api/v1/payment-transactions');
 
         $response->assertSuccessful()
-            
-            ->assertJsonApiHas(3);
+            ->assertJsonCount(3, 'data');
     }
 
     /**
@@ -132,8 +128,7 @@ class PaymentTransactionIndexTest extends TestCase
             ->get('/api/v1/payment-transactions');
 
         $response->assertSuccessful()
-            
-            ->assertJsonApiHas(2);
+            ->assertJsonCount(2, 'data');
     }
 
     /**
@@ -152,8 +147,7 @@ class PaymentTransactionIndexTest extends TestCase
             ->get('/api/v1/payment-transactions');
 
         $response->assertSuccessful()
-            
-            ->assertJsonApiHas(3);
+            ->assertJsonCount(3, 'data');
     }
 
     /**
@@ -220,7 +214,6 @@ class PaymentTransactionIndexTest extends TestCase
             ->get('/api/v1/payment-transactions');
 
         $response->assertSuccessful()
-            
             ->assertJsonApiIncluded([
                 ['type' => 'checkout-sessions', 'id' => (string)$checkoutSession->id],
             ]);
@@ -241,7 +234,6 @@ class PaymentTransactionIndexTest extends TestCase
             ->get('/api/v1/payment-transactions');
 
         $response->assertSuccessful()
-            
             ->assertJson([
                 'meta' => [
                     'page' => [

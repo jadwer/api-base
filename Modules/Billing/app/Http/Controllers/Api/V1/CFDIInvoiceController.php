@@ -12,6 +12,7 @@ use Modules\Billing\Exceptions\PacException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Support\Facades\Gate;
 
 class CFDIInvoiceController
@@ -95,9 +96,9 @@ class CFDIInvoiceController
      *
      * @param CFDIInvoice $cfdiInvoice
      * @param CFDIPDFGenerator $pdfGenerator
-     * @return Response
+     * @return StreamedResponse
      */
-    public function downloadPdf(CFDIInvoice $cfdiInvoice, CFDIPDFGenerator $pdfGenerator): Response
+    public function downloadPdf(CFDIInvoice $cfdiInvoice, CFDIPDFGenerator $pdfGenerator): StreamedResponse
     {
         // Check permission
         if (Gate::denies('billing.cfdi-invoices.download-pdf')) {
@@ -116,9 +117,9 @@ class CFDIInvoiceController
      *
      * @param CFDIInvoice $cfdiInvoice
      * @param CFDIPDFGenerator $pdfGenerator
-     * @return Response
+     * @return StreamedResponse
      */
-    public function previewPdf(CFDIInvoice $cfdiInvoice, CFDIPDFGenerator $pdfGenerator): Response
+    public function previewPdf(CFDIInvoice $cfdiInvoice, CFDIPDFGenerator $pdfGenerator): StreamedResponse
     {
         // Check permission
         if (Gate::denies('billing.cfdi-invoices.preview-pdf')) {

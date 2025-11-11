@@ -28,9 +28,9 @@ class PaymentTransactionDestroyTest extends TestCase
     }
 
     /**
-     * Test tech can delete a payment transaction.
+     * Test tech cannot delete a payment transaction.
      */
-    public function test_tech_can_delete_payment_transaction(): void
+    public function test_tech_cannot_delete_payment_transaction(): void
     {
         $user = $this->getTechUser();
         $transaction = PaymentTransaction::factory()->create();
@@ -40,9 +40,9 @@ class PaymentTransactionDestroyTest extends TestCase
             ->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
             ->delete('/api/v1/payment-transactions/' . $transaction->id);
 
-        $response->assertNoContent();
+        $response->assertStatus(403);
 
-        $this->assertDatabaseMissing('payment_transactions', [
+        $this->assertDatabaseHas('payment_transactions', [
             'id' => $transaction->id,
         ]);
     }
