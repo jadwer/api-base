@@ -18,15 +18,14 @@ class BalanceSheetAuthorizer implements Authorizer
      */
     public function index(Request $request, string $modelClass): bool|Response
     {
-        Log::info('BalanceSheetAuthorizer@index called', [
-            'user_id' => $request->user()?->id,
-            'model_class' => $modelClass,
-        ]);
-
         $user = $request->user();
 
-        // Only admin, finance, and tech roles can view financial reports
-        return $user?->hasAnyRole(['god', 'admin', 'tech']) ?? false;
+        if (!$user) {
+            return Response::deny('Unauthenticated', 401);
+        }
+
+        // Only users with permission can view balance sheets
+        return $user->hasPermissionTo('reports.balance-sheets.index');
     }
 
     /**
@@ -40,8 +39,12 @@ class BalanceSheetAuthorizer implements Authorizer
     {
         $user = $request->user();
 
-        // Only admin, finance, and tech roles can view financial reports
-        return $user?->hasAnyRole(['god', 'admin', 'tech']) ?? false;
+        if (!$user) {
+            return Response::deny('Unauthenticated', 401);
+        }
+
+        // Only users with permission can view balance sheets
+        return $user->hasPermissionTo('reports.balance-sheets.show');
     }
 
     /**

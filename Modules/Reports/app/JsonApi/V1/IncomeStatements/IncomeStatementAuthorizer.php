@@ -11,12 +11,24 @@ class IncomeStatementAuthorizer implements Authorizer
 {
     public function index(Request $request, string $modelClass): bool|Response
     {
-        return $request->user()?->hasAnyRole(['god', 'admin', 'tech']) ?? false;
+        $user = $request->user();
+
+        if (!$user) {
+            return Response::deny('Unauthenticated', 401);
+        }
+
+        return $user->hasPermissionTo('reports.income-statements.index');
     }
 
     public function show(Request $request, object $model): bool|Response
     {
-        return $request->user()?->hasAnyRole(['god', 'admin', 'tech']) ?? false;
+        $user = $request->user();
+
+        if (!$user) {
+            return Response::deny('Unauthenticated', 401);
+        }
+
+        return $user->hasPermissionTo('reports.income-statements.show');
     }
 
     public function store(Request $request, string $modelClass): bool|Response

@@ -18,15 +18,13 @@ class PurchaseByProductReportAuthorizer implements Authorizer
      */
     public function index(Request $request, string $modelClass): bool|Response
     {
-        Log::info('PurchaseByProductReportAuthorizer@index called', [
-            'user_id' => $request->user()?->id,
-            'model_class' => $modelClass,
-        ]);
-
         $user = $request->user();
 
-        // Only admin, finance, and tech roles can view financial reports
-        return $user?->hasAnyRole(['god', 'admin', 'tech']) ?? false;
+        if (!$user) {
+            return Response::deny('Unauthenticated', 401);
+        }
+
+        return $user->hasPermissionTo('reports.purchase-by-product-reports.index');
     }
 
     /**
@@ -40,8 +38,11 @@ class PurchaseByProductReportAuthorizer implements Authorizer
     {
         $user = $request->user();
 
-        // Only admin, finance, and tech roles can view financial reports
-        return $user?->hasAnyRole(['god', 'admin', 'tech']) ?? false;
+        if (!$user) {
+            return Response::deny('Unauthenticated', 401);
+        }
+
+        return $user->hasPermissionTo('reports.purchase-by-product-reports.show');
     }
 
     /**
