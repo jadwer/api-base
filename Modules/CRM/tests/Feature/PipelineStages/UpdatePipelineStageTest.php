@@ -22,7 +22,7 @@ class UpdatePipelineStageTest extends TestCase
             'attributes' => [
                 'name' => 'Updated Name',
                 'probability' => 50,
-                'is_active' => false
+                'isActive' => false
             ]
         ];
 
@@ -85,7 +85,7 @@ class UpdatePipelineStageTest extends TestCase
             'type' => 'pipeline-stages',
             'id' => (string) $stage->id,
             'attributes' => [
-                'is_active' => false
+                'isActive' => false
             ]
         ];
 

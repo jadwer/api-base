@@ -15,10 +15,10 @@ class StorePipelineStageTest extends TestCase
             'type' => 'pipeline-stages',
             'attributes' => [
                 'name' => 'Prospecting',
-                'type' => 'opportunity',
+                'stageType' => 'opportunity',
                 'probability' => 25,
                 'sortOrder' => 1,
-                'is_active' => true,
+                'isActive' => true,
                 'isClosedWon' => false,
                 'isClosedLost' => false
             ]
@@ -40,7 +40,7 @@ class StorePipelineStageTest extends TestCase
                     'type',
                     'probability',
                     'sortOrder',
-                    'is_active'
+                    'isActive'
                 ]
             ]
         ]);
@@ -63,10 +63,10 @@ class StorePipelineStageTest extends TestCase
             'type' => 'pipeline-stages',
             'attributes' => [
                 'name' => 'New Lead',
-                'type' => 'lead',
+                'stageType' => 'lead',
                 'probability' => 10,
                 'sortOrder' => 1,
-                'is_active' => true
+                'isActive' => true
             ]
         ];
 
@@ -88,10 +88,10 @@ class StorePipelineStageTest extends TestCase
             'type' => 'pipeline-stages',
             'attributes' => [
                 'name' => 'Closed Won',
-                'type' => 'opportunity',
+                'stageType' => 'opportunity',
                 'probability' => 100,
                 'sortOrder' => 5,
-                'is_active' => true,
+                'isActive' => true,
                 'isClosedWon' => true,
                 'isClosedLost' => false
             ]
@@ -116,7 +116,7 @@ class StorePipelineStageTest extends TestCase
             'type' => 'pipeline-stages',
             'attributes' => [
                 'name' => 'Should Not Create',
-                'type' => 'opportunity',
+                'stageType' => 'opportunity',
                 'probability' => 50,
                 'sortOrder' => 1
             ]
@@ -139,7 +139,7 @@ class StorePipelineStageTest extends TestCase
             'type' => 'pipeline-stages',
             'attributes' => [
                 'name' => 'Should Not Create',
-                'type' => 'opportunity',
+                'stageType' => 'opportunity',
                 'probability' => 50,
                 'sortOrder' => 1
             ]
@@ -160,7 +160,7 @@ class StorePipelineStageTest extends TestCase
             'type' => 'pipeline-stages',
             'attributes' => [
                 'name' => 'Should Not Create',
-                'type' => 'opportunity',
+                'stageType' => 'opportunity',
                 'probability' => 50,
                 'sortOrder' => 1
             ]
@@ -181,7 +181,7 @@ class StorePipelineStageTest extends TestCase
         $data = [
             'type' => 'pipeline-stages',
             'attributes' => [
-                'type' => 'opportunity',
+                'stageType' => 'opportunity',
                 'probability' => 50,
                 'sortOrder' => 1
             ]
@@ -230,7 +230,7 @@ class StorePipelineStageTest extends TestCase
             'type' => 'pipeline-stages',
             'attributes' => [
                 'name' => 'Test Stage',
-                'type' => 'invalid_type',
+                'stageType' => 'invalid_type',
                 'probability' => 50,
                 'sortOrder' => 1
             ]
@@ -255,7 +255,7 @@ class StorePipelineStageTest extends TestCase
             'type' => 'pipeline-stages',
             'attributes' => [
                 'name' => 'Test Stage',
-                'type' => 'opportunity',
+                'stageType' => 'opportunity',
                 'probability' => 150,
                 'sortOrder' => 1
             ]
@@ -280,7 +280,7 @@ class StorePipelineStageTest extends TestCase
             'type' => 'pipeline-stages',
             'attributes' => [
                 'name' => 'Test Stage',
-                'type' => 'opportunity',
+                'stageType' => 'opportunity',
                 'probability' => 50
             ]
         ];

@@ -14,11 +14,13 @@ class PipelineStageRequest extends ResourceRequest
      */
     public function rules(): array
     {
+        $isCreating = $this->isMethod('POST');
+
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'type' => ['required', Rule::in(['lead', 'opportunity'])],
-            'probability' => ['required', 'integer', 'min:0', 'max:100'],
-            'sortOrder' => ['required', 'integer', 'min:0'],
+            'name' => $isCreating ? ['required', 'string', 'max:255'] : ['sometimes', 'string', 'max:255'],
+            'stageType' => $isCreating ? ['required', Rule::in(['lead', 'opportunity'])] : ['sometimes', Rule::in(['lead', 'opportunity'])],
+            'probability' => $isCreating ? ['required', 'integer', 'min:0', 'max:100'] : ['sometimes', 'integer', 'min:0', 'max:100'],
+            'sortOrder' => $isCreating ? ['required', 'integer', 'min:0'] : ['sometimes', 'integer', 'min:0'],
             'isActive' => ['sometimes', 'boolean'],
             'isClosedWon' => ['sometimes', 'boolean'],
             'isClosedLost' => ['sometimes', 'boolean'],
@@ -36,8 +38,8 @@ class PipelineStageRequest extends ResourceRequest
             'name.required' => 'El nombre es obligatorio.',
             'name.string' => 'El nombre debe ser texto.',
             'name.max' => 'El nombre no debe exceder 255 caracteres.',
-            'type.required' => 'El tipo es obligatorio.',
-            'type.in' => 'El tipo debe ser "lead" u "opportunity".',
+            'stageType.required' => 'El tipo es obligatorio.',
+            'stageType.in' => 'El tipo debe ser "lead" u "opportunity".',
             'probability.required' => 'La probabilidad es obligatoria.',
             'probability.integer' => 'La probabilidad debe ser un número entero.',
             'probability.min' => 'La probabilidad debe ser al menos 0.',

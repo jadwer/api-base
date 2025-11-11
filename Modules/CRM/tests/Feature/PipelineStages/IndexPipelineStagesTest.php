@@ -58,7 +58,7 @@ class IndexPipelineStagesTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('pipeline-stages')
-            ->get('/api/v1/pipeline-stages?filter[type]=lead');
+            ->get('/api/v1/pipeline-stages?filter[stageType]=lead');
 
         $response->assertOk();
         $this->assertGreaterThanOrEqual(2, count($response->json('data')));

@@ -33,7 +33,7 @@ class PipelineStageSchema extends Schema
         return [
             ID::make(),
             Str::make('name')->sortable(),
-            Str::make('type')->sortable(),
+            Str::make('stageType', 'type')->sortable(),
             Number::make('probability')->sortable(),
             Number::make('sortOrder', 'sort_order')->sortable(),
             Boolean::make('isActive', 'is_active')->sortable(),
@@ -54,7 +54,7 @@ class PipelineStageSchema extends Schema
         return [
             WhereIdIn::make($this),
             Where::make('name'),
-            Where::make('type'),
+            Where::make('stageType', 'type'),
             Where::make('isActive', 'is_active'),
             Where::make('isClosedWon', 'is_closed_won'),
             Where::make('isClosedLost', 'is_closed_lost'),
