@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Contacts\JsonApi\V1\ContactPersons;
+namespace Modules\Contacts\JsonApi\V1\ContactPeople;
 
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
