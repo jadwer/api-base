@@ -31,7 +31,7 @@ class ShowCampaignTest extends TestCase
                 'attributes' => [
                     'name' => $campaign->name,
                     'status' => $campaign->status,
-                    'type' => $campaign->type,
+                    'campaignType' => $campaign->type,
                 ],
             ],
         ]);
@@ -257,7 +257,7 @@ class ShowCampaignTest extends TestCase
         $response->assertJson([
             'data' => [
                 'attributes' => [
-                    'type' => 'email',
+                    'campaignType' => 'email',
                 ],
             ],
         ]);
@@ -282,7 +282,7 @@ class ShowCampaignTest extends TestCase
         $response->assertJson([
             'data' => [
                 'attributes' => [
-                    'type' => 'social_media',
+                    'campaignType' => 'social_media',
                 ],
             ],
         ]);

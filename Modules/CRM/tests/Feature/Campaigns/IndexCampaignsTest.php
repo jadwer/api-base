@@ -147,7 +147,7 @@ class IndexCampaignsTest extends TestCase
         $this->assertGreaterThanOrEqual(2, count($response->json('data')));
 
         foreach ($response->json('data') as $campaign) {
-            $this->assertEquals('email', $campaign['attributes']['type']);
+            $this->assertEquals('email', $campaign['attributes']['campaignType']);
         }
     }
 

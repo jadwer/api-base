@@ -25,7 +25,7 @@ class CampaignSchema extends Schema
         return [
             ID::make(),
             Str::make('name')->sortable(),
-            Str::make('type')->sortable(),
+            Str::make('campaignType', 'type')->sortable(),
             Str::make('status')->sortable(),
             Str::make('startDate', 'start_date')->sortable(),
             Str::make('endDate', 'end_date')->sortable(),
@@ -55,7 +55,7 @@ class CampaignSchema extends Schema
         return [
             WhereIdIn::make($this)->delimiter(','),
             Where::make('name'),
-            Where::make('type'),
+            Where::make('campaignType', 'type'),
             Where::make('status'),
             Where::make('userId', 'user_id'),
             Where::make('startDate', 'start_date'),

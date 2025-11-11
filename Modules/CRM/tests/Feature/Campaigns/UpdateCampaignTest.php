@@ -95,7 +95,7 @@ class UpdateCampaignTest extends TestCase
             'type' => 'campaigns',
             'id' => (string) $campaign->id,
             'attributes' => [
-                'type' => 'social_media',
+                'campaignType' => 'social_media',
             ],
         ];
 
@@ -108,7 +108,7 @@ class UpdateCampaignTest extends TestCase
         $response->assertOk();
         $this->assertDatabaseHas('campaigns', [
             'id' => $campaign->id,
-            'type' => 'social_media',
+            'campaignType' => 'social_media',
         ]);
     }
 
@@ -333,7 +333,7 @@ class UpdateCampaignTest extends TestCase
             'type' => 'campaigns',
             'id' => (string) $campaign->id,
             'attributes' => [
-                'type' => 'invalid-type',
+                'campaignType' => 'invalid-type',
             ],
         ];
 
@@ -344,7 +344,7 @@ class UpdateCampaignTest extends TestCase
             ->patch("/api/v1/campaigns/{$campaign->id}");
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['type']);
+        $response->assertJsonValidationErrors(['campaignType']);
     }
 
     public function test_end_date_must_be_after_or_equal_start_date_when_updating(): void

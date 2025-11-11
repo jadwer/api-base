@@ -20,7 +20,7 @@ class CampaignRequest extends ResourceRequest
 
         return [
             'name' => [$isCreating ? 'required' : 'sometimes', 'string', 'max:255'],
-            'type' => [$isCreating ? 'required' : 'sometimes', Rule::in(['email', 'social_media', 'event', 'webinar', 'direct_mail', 'telemarketing'])],
+            'campaignType' => [$isCreating ? 'required' : 'sometimes', Rule::in(['email', 'social_media', 'event', 'webinar', 'direct_mail', 'telemarketing'])],
             'status' => ['sometimes', Rule::in(['planning', 'active', 'paused', 'completed', 'cancelled'])],
             'userId' => [$isCreating ? 'required' : 'sometimes', JsonApiRule::toOne()],
             'startDate' => [$isCreating ? 'required' : 'sometimes', 'date'],
@@ -47,8 +47,8 @@ class CampaignRequest extends ResourceRequest
             'name.string' => 'El nombre debe ser una cadena de texto.',
             'name.max' => 'El nombre no puede exceder 255 caracteres.',
 
-            'type.required' => 'El tipo de campaña es obligatorio.',
-            'type.in' => 'El tipo debe ser: email, social_media, event, webinar, direct_mail o telemarketing.',
+            'campaignType.required' => 'El tipo de campaña es obligatorio.',
+            'campaignType.in' => 'El tipo debe ser: email, social_media, event, webinar, direct_mail o telemarketing.',
 
             'status.in' => 'El estado debe ser: planning, active, paused, completed o cancelled.',
 

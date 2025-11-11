@@ -18,7 +18,7 @@ class StoreCampaignTest extends TestCase
             'type' => 'campaigns',
             'attributes' => [
                 'name' => 'Q4 2024 Email Campaign',
-                'type' => 'email',
+                'campaignType' => 'email',
                 'status' => 'planning',
                 'startDate' => now()->addWeek()->format('Y-m-d'),
             ],
@@ -44,7 +44,7 @@ class StoreCampaignTest extends TestCase
                 'type' => 'campaigns',
                 'attributes' => [
                     'name' => 'Q4 2024 Email Campaign',
-                    'type' => 'email',
+                    'campaignType' => 'email',
                     'status' => 'planning',
                 ],
             ],
@@ -66,7 +66,7 @@ class StoreCampaignTest extends TestCase
             'type' => 'campaigns',
             'attributes' => [
                 'name' => 'Complete Campaign',
-                'type' => 'social_media',
+                'campaignType' => 'social_media',
                 'status' => 'active',
                 'startDate' => now()->format('Y-m-d'),
                 'endDate' => now()->addMonth()->format('Y-m-d'),
@@ -109,7 +109,7 @@ class StoreCampaignTest extends TestCase
             'type' => 'campaigns',
             'attributes' => [
                 'name' => 'Campaign with Metadata',
-                'type' => 'event',
+                'campaignType' => 'event',
                 'startDate' => now()->format('Y-m-d'),
                 'metadata' => [
                     'platform' => 'Event',
@@ -151,7 +151,7 @@ class StoreCampaignTest extends TestCase
         $data = [
             'type' => 'campaigns',
             'attributes' => [
-                'type' => 'email',
+                'campaignType' => 'email',
                 'startDate' => now()->format('Y-m-d'),
             ],
             'relationships' => [
@@ -203,7 +203,7 @@ class StoreCampaignTest extends TestCase
             ->post('/api/v1/campaigns');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['type']);
+        $response->assertJsonValidationErrors(['campaignType']);
     }
 
     public function test_type_must_be_valid_enum(): void
@@ -216,7 +216,7 @@ class StoreCampaignTest extends TestCase
             'type' => 'campaigns',
             'attributes' => [
                 'name' => 'Test Campaign',
-                'type' => 'invalid-type',
+                'campaignType' => 'invalid-type',
                 'startDate' => now()->format('Y-m-d'),
             ],
             'relationships' => [
@@ -236,7 +236,7 @@ class StoreCampaignTest extends TestCase
             ->post('/api/v1/campaigns');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['type']);
+        $response->assertJsonValidationErrors(['campaignType']);
     }
 
     public function test_status_must_be_valid_enum(): void
@@ -249,7 +249,7 @@ class StoreCampaignTest extends TestCase
             'type' => 'campaigns',
             'attributes' => [
                 'name' => 'Test Campaign',
-                'type' => 'email',
+                'campaignType' => 'email',
                 'status' => 'invalid-status',
                 'startDate' => now()->format('Y-m-d'),
             ],
@@ -281,7 +281,7 @@ class StoreCampaignTest extends TestCase
             'type' => 'campaigns',
             'attributes' => [
                 'name' => 'Test Campaign',
-                'type' => 'email',
+                'campaignType' => 'email',
                 'startDate' => now()->format('Y-m-d'),
             ],
         ];
@@ -306,7 +306,7 @@ class StoreCampaignTest extends TestCase
             'type' => 'campaigns',
             'attributes' => [
                 'name' => 'Test Campaign',
-                'type' => 'email',
+                'campaignType' => 'email',
             ],
             'relationships' => [
                 'user' => [
@@ -338,7 +338,7 @@ class StoreCampaignTest extends TestCase
             'type' => 'campaigns',
             'attributes' => [
                 'name' => 'Test Campaign',
-                'type' => 'email',
+                'campaignType' => 'email',
                 'startDate' => now()->format('Y-m-d'),
                 'endDate' => now()->subDay()->format('Y-m-d'),
             ],
@@ -372,7 +372,7 @@ class StoreCampaignTest extends TestCase
             'type' => 'campaigns',
             'attributes' => [
                 'name' => 'Test Campaign',
-                'type' => 'email',
+                'campaignType' => 'email',
                 'startDate' => now()->format('Y-m-d'),
                 'budget' => 'not-a-number',
             ],
@@ -406,7 +406,7 @@ class StoreCampaignTest extends TestCase
             'type' => 'campaigns',
             'attributes' => [
                 'name' => 'Test Campaign',
-                'type' => 'email',
+                'campaignType' => 'email',
                 'startDate' => now()->format('Y-m-d'),
                 'budget' => -5000,
             ],
@@ -440,7 +440,7 @@ class StoreCampaignTest extends TestCase
             'type' => 'campaigns',
             'attributes' => [
                 'name' => 'Test Campaign',
-                'type' => 'email',
+                'campaignType' => 'email',
                 'startDate' => now()->format('Y-m-d'),
                 'expectedRevenue' => 'not-a-number',
             ],
@@ -474,7 +474,7 @@ class StoreCampaignTest extends TestCase
             'type' => 'campaigns',
             'attributes' => [
                 'name' => 'Test Campaign',
-                'type' => 'email',
+                'campaignType' => 'email',
                 'startDate' => now()->format('Y-m-d'),
             ],
             'relationships' => [
@@ -506,7 +506,7 @@ class StoreCampaignTest extends TestCase
             'type' => 'campaigns',
             'attributes' => [
                 'name' => 'Test Campaign',
-                'type' => 'email',
+                'campaignType' => 'email',
                 'startDate' => now()->format('Y-m-d'),
             ],
             'relationships' => [
@@ -536,7 +536,7 @@ class StoreCampaignTest extends TestCase
             'type' => 'campaigns',
             'attributes' => [
                 'name' => 'Test Campaign',
-                'type' => 'email',
+                'campaignType' => 'email',
                 'startDate' => now()->format('Y-m-d'),
             ],
             'relationships' => [
