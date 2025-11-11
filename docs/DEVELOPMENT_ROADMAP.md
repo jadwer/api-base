@@ -1484,3 +1484,235 @@ All features implemented and tested. Configure `.env` with SW Sapien credentials
 **Test Coverage:** 1,100+ assertions across 100+ test suites
 **Modules Complete:** 10 (Product, Inventory, Sales, Purchase, Ecommerce, Finance, Accounting, Reports, HR, Billing)
 **Modules In Progress:** 1 (CRM - 75% complete)
+
+---
+
+## 📋 Technical Debt & Pending Features (Identified: 2025-11-11)
+
+**Status:** 🔴 **CRITICAL** for 3 modules
+**Audit Document:** `docs/DOCUMENTATION_AUDIT_2025_11_11.md` (Complete findings)
+**Last Review:** 2025-11-11
+
+### Priority 1: CRITICAL - Finance Module Calculated Fields
+
+**Module:** Finance (ARInvoice, APInvoice)
+**Severity:** 🔴 **HIGH** - Documentation claims features don't exist
+**Impact:** Frontend integration will fail
+**Effort:** 2-3 days
+**Assignee:** TBD
+
+#### Problem:
+Documentation claims `paidAmount` and `remainingBalance` are auto-calculated from payment applications, but:
+- `paidAmount` is a writable database field (in fillable array)
+- `remainingBalance` field does NOT exist anywhere in code
+- No accessor methods or calculation logic implemented
+
+#### Current State:
+```php
+// Modules/Finance/app/Models/ARInvoice.php
+protected $fillable = [
+    // ...
+    'paid_amount',  // ❌ Writable, not calculated
+    // ...
+];
+// No remainingBalance field exists
+```
+
+#### Required Implementation:
+```php
+// Remove from fillable
+protected $appends = ['paidAmount', 'remainingBalance'];
+
+// Add accessors
+public function getPaidAmountAttribute(): float
+{
+    return $this->paymentApplications()->sum('amount') ?? 0.00;
+}
+
+public function getRemainingBalanceAttribute(): float
+{
+    return $this->total_amount - $this->getPaidAmountAttribute();
+}
+```
+
+#### Tasks:
+- [ ] Create model accessors for `paidAmount` and `remainingBalance`
+- [ ] Remove `paid_amount` from fillable array
+- [ ] Add fields to `$appends` array
+- [ ] Update schema to mark as `readOnly()`
+- [ ] Update tests (20+ test files affected)
+- [ ] Validate payment application calculations
+
+#### Success Criteria:
+- `paidAmount` auto-calculated from payment_applications sum
+- `remainingBalance` = total_amount - paidAmount
+- Fields are read-only in API
+- All tests passing
+
+---
+
+### Priority 2: HIGH - Inventory Module Calculated Fields
+
+**Module:** Inventory (Stock entity)
+**Severity:** 🔴 **HIGH** - Misleading schema configuration
+**Impact:** Fields marked readOnly but actually writable
+**Effort:** 4-6 hours
+**Assignee:** TBD
+
+#### Problem:
+Fields `availableQuantity` and `totalValue` are marked as `readOnly()` in schema but have no calculation logic:
+- `availableQuantity` should be `quantity - reserved_quantity`
+- `totalValue` should be `quantity * unit_cost`
+- Both are writable database columns
+
+#### Current State:
+```php
+// Modules/Inventory/app/Models/Stock.php
+protected $casts = [
+    'available_quantity' => 'decimal:4',  // ❌ No accessor
+    'total_value' => 'decimal:4',          // ❌ No accessor
+];
+```
+
+#### Required Implementation:
+```php
+// Remove from database column, add as accessors
+protected $appends = ['availableQuantity', 'totalValue'];
+
+public function getAvailableQuantityAttribute(): float
+{
+    return $this->quantity - $this->reserved_quantity;
+}
+
+public function getTotalValueAttribute(): float
+{
+    return $this->quantity * $this->unit_cost;
+}
+```
+
+#### Tasks:
+- [ ] Create migration to drop `available_quantity` and `total_value` columns
+- [ ] Create model accessors
+- [ ] Add to `$appends` array
+- [ ] Verify schema `readOnly()` markers are correct
+- [ ] Update 88+ tests
+
+#### Success Criteria:
+- `availableQuantity` calculated on-the-fly
+- `totalValue` calculated on-the-fly
+- Fields are truly read-only
+- Stock movements don't break
+
+---
+
+### Priority 3: MEDIUM - Product Module Missing Fields
+
+**Module:** Product
+**Severity:** ⚠️ **MEDIUM** - Incomplete schema
+**Impact:** Missing fields not available to frontend
+**Effort:** 2-3 hours
+**Assignee:** TBD
+
+#### Problem:
+Documentation references `isActive` field that doesn't exist in schema:
+- Field is in docs, used in filters, but NOT in Product schema
+- Missing `fullDescription`, `imgPath`, `datasheetPath` from docs
+
+#### Fields Exist but Not Documented:
+- `fullDescription` (Str) - Extended product description
+- `imgPath` (Str) - Product image path
+- `datasheetPath` (Str) - Product datasheet/manual path
+
+#### Fields Documented but Don't Exist:
+- `isActive` (Boolean) - Product active/inactive toggle
+
+#### Required Implementation:
+
+**Option A (Add isActive):**
+```php
+// Migration
+$table->boolean('is_active')->default(true)->after('iva');
+
+// Schema
+Boolean::make('isActive', 'is_active')->sortable(),
+
+// Add filter
+Where::make('is_active'),
+```
+
+**Option B (Remove from docs):**
+Remove all `isActive` references from documentation.
+
+#### Tasks:
+- [ ] Decide: implement `isActive` or remove from docs
+- [ ] Add missing fields to documentation: `fullDescription`, `imgPath`, `datasheetPath`
+- [ ] Update TypeScript interfaces
+- [ ] Update examples to remove/fix `isActive` usage
+- [ ] Add field mappings table entries
+
+#### Success Criteria:
+- Documentation matches schema 100%
+- All fields documented
+- No phantom fields in examples
+
+---
+
+### Recommended Implementation Order
+
+1. **Finance Module** (2-3 days) - CRITICAL for presentation
+   - Most impactful
+   - Required for accurate frontend integration
+   - Affects 40+ API endpoints
+
+2. **Product Module** (2-3 hours) - Quick win
+   - Easiest to fix
+   - Low risk
+   - High visibility (catalog functionality)
+
+3. **Inventory Module** (4-6 hours) - Medium priority
+   - More complex (requires migration)
+   - Lower immediate impact
+   - Can be scheduled post-presentation
+
+### Total Effort Estimate
+
+| Module | Priority | Effort | Risk |
+|--------|----------|--------|------|
+| Finance | P1 | 2-3 days | Medium |
+| Product | P3 | 2-3 hours | Low |
+| Inventory | P2 | 4-6 hours | Medium |
+| **TOTAL** | - | **3-4 days** | - |
+
+### Dependencies
+
+**Finance Module:**
+- Requires understanding of payment application flow
+- Must not break existing payment processing
+- Needs coordination with Accounting module
+
+**Inventory Module:**
+- Requires database migration (drop columns)
+- Must test stock movements thoroughly
+- Coordinate with Ecommerce reservation system
+
+**Product Module:**
+- No dependencies
+- Can be done independently
+- Quick documentation fix
+
+---
+
+## 📚 Related Documentation
+
+- **Complete Audit Report:** `docs/DOCUMENTATION_AUDIT_2025_11_11.md`
+- **Finance Module:** `docs/modules/FINANCE_FRONTEND_GUIDE.md`
+- **Inventory Module:** `docs/modules/INVENTORY_FRONTEND_GUIDE.md`
+- **Product Module:** `docs/modules/PRODUCT_FRONTEND_GUIDE.md`
+- **HR Module (Reference):** `docs/modules/HR_FRONTEND_GUIDE.md` (Correctly implemented calculated fields)
+- **Ecommerce Module (Reference):** `docs/modules/ECOMMERCE_FRONTEND_GUIDE.md` (Correctly implemented calculated fields)
+
+---
+
+**Last Updated:** 2025-11-11
+**Next Review:** After implementing fixes (2-3 weeks post-presentation)
+

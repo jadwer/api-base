@@ -9,7 +9,7 @@
 
 The Finance module manages accounts receivable (AR) and accounts payable (AP) including invoices, payments, and payment applications. It integrates with Sales/Purchase modules for invoice generation and Accounting module for GL posting.
 
-**IMPORTANT:** ARInvoice and APInvoice include calculated fields `paidAmount` and `remainingBalance` computed from payment applications.
+**⚠️ IMPLEMENTATION NOTE:** This documentation reflects the **CURRENT implementation** as of 2025-11-11. Some fields like `paidAmount` are currently writable database fields. Future enhancements will add auto-calculated fields. See `DEVELOPMENT_ROADMAP.md` for planned features.
 
 ## Entities
 
@@ -35,18 +35,28 @@ interface ARInvoice {
   taxAmount: number;
   totalAmount: number;
 
-  // CALCULATED FIELDS (read-only, computed from payment applications)
-  paidAmount: number;
-  remainingBalance: number; // totalAmount - paidAmount
-
+  // Payment tracking (writable fields)
+  paidAmount: number;          // ⚠️ Currently writable, not auto-calculated
   paidDate: string | null;
+
   status: InvoiceStatus;
   journalEntryId: number | null;
+  fiscalPeriodId: number | null;
+
+  // Refund/void handling
+  isRefund: boolean;
+  refundOfInvoiceId: number | null;
+  voidedAt: string | null;
+  voidedById: number | null;
+  voidReason: string | null;
+
   notes: string | null;
   metadata: Record<string, any> | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+
+  // NOTE: Calculate remaining balance on frontend: totalAmount - paidAmount
 }
 ```
 
@@ -63,10 +73,16 @@ interface ARInvoice {
 | `subtotal` | `subtotal` | number | Yes | Yes | No |
 | `taxAmount` | `tax_amount` | number | Yes | No | No |
 | `totalAmount` | `total_amount` | number | Yes | Yes | No |
-| `paidAmount` | `paid_amount` | number | Yes | Yes | ✅ Yes |
-| `remainingBalance` | - | number | - | No | ✅ Yes |
+| `paidAmount` | `paid_amount` | number | Yes | Yes | No |
+| `paidDate` | `paid_date` | date | No | Yes | No |
 | `status` | `status` | string | Yes | Yes | No |
 | `journalEntryId` | `journal_entry_id` | number | No | Yes | No |
+| `fiscalPeriodId` | `fiscal_period_id` | number | No | Yes | No |
+| `isRefund` | `is_refund` | boolean | No | No | No |
+| `refundOfInvoiceId` | `refund_of_invoice_id` | number | No | Yes | No |
+| `voidedAt` | `voided_at` | datetime | No | Yes | No |
+| `voidedById` | `voided_by_id` | number | No | No | No |
+| `voidReason` | `void_reason` | string | No | No | No |
 
 #### Relationships
 
@@ -105,7 +121,7 @@ const response = await fetch('/api/v1/ar-invoices', {
 });
 ```
 
-**Get Invoice with Calculated Fields:**
+**Get Invoice and Calculate Balance:**
 ```javascript
 const response = await fetch(
   '/api/v1/ar-invoices/123?include=contact,paymentApplications',
@@ -113,13 +129,17 @@ const response = await fetch(
 );
 
 const invoice = await response.json();
-console.log(invoice.data.attributes);
-// {
-//   totalAmount: 1160.00,
-//   paidAmount: 500.00,        // ✅ Calculated from payment applications
-//   remainingBalance: 660.00,  // ✅ Calculated: totalAmount - paidAmount
-//   status: "partial"
-// }
+const { totalAmount, paidAmount } = invoice.data.attributes;
+
+// Calculate remaining balance on frontend
+const remainingBalance = totalAmount - (paidAmount || 0);
+
+console.log({
+  totalAmount,
+  paidAmount,
+  remainingBalance,  // Calculated on frontend
+  status: invoice.data.attributes.status
+});
 ```
 
 ---
@@ -144,17 +164,28 @@ interface APInvoice {
   taxAmount: number;
   totalAmount: number;
 
-  // CALCULATED FIELDS (read-only)
-  paidAmount: number;
-  remainingBalance: number;
+  // Payment tracking (writable fields)
+  paidAmount: number;          // ⚠️ Currently writable, not auto-calculated
+  paidDate: string | null;
 
   status: InvoiceStatus;
   journalEntryId: number | null;
+  fiscalPeriodId: number | null;
+
+  // Refund/void handling
+  isRefund: boolean;
+  refundOfInvoiceId: number | null;
+  voidedAt: string | null;
+  voidedById: number | null;
+  voidReason: string | null;
+
   notes: string | null;
   metadata: Record<string, any> | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+
+  // NOTE: Calculate remaining balance on frontend: totalAmount - paidAmount
 }
 ```
 
@@ -306,14 +337,17 @@ interface PaymentMethod {
 
 ```javascript
 async function processInvoicePayment(invoiceId, paymentAmount) {
-  // 1. Get invoice details with current balance
+  // 1. Get invoice details and calculate balance
   const invoiceResponse = await fetch(
     `/api/v1/ar-invoices/${invoiceId}?include=paymentApplications`,
     { headers }
   );
   const invoice = await invoiceResponse.json();
 
-  console.log('Invoice Balance:', invoice.data.attributes.remainingBalance);
+  const { totalAmount, paidAmount } = invoice.data.attributes;
+  const remainingBalance = totalAmount - (paidAmount || 0);
+
+  console.log('Invoice Balance:', remainingBalance);
 
   // 2. Create payment
   const paymentPayload = {
@@ -351,7 +385,7 @@ async function processInvoicePayment(invoiceId, paymentAmount) {
       attributes: {
         paymentId: parseInt(paymentId),
         arInvoiceId: parseInt(invoiceId),
-        appliedAmount: Math.min(paymentAmount, invoice.data.attributes.remainingBalance),
+        appliedAmount: Math.min(paymentAmount, remainingBalance),
         notes: "Invoice payment"
       }
     }
@@ -363,14 +397,18 @@ async function processInvoicePayment(invoiceId, paymentAmount) {
     body: JSON.stringify(applicationPayload)
   });
 
-  // 4. Get updated invoice to see new balance
+  // 4. Get updated invoice and calculate new balance
   const updatedInvoice = await fetch(`/api/v1/ar-invoices/${invoiceId}`, { headers });
   const finalInvoice = await updatedInvoice.json();
 
+  const updatedTotalAmount = finalInvoice.data.attributes.totalAmount;
+  const updatedPaidAmount = finalInvoice.data.attributes.paidAmount || 0;
+  const newBalance = updatedTotalAmount - updatedPaidAmount;
+
   return {
     payment: payment.data,
-    newBalance: finalInvoice.data.attributes.remainingBalance,
-    fullyPaid: finalInvoice.data.attributes.remainingBalance === 0
+    newBalance,
+    fullyPaid: newBalance === 0
   };
 }
 ```
@@ -388,14 +426,19 @@ async function getOutstandingARInvoices(customerId = null) {
   const response = await fetch(url, { headers });
   const data = await response.json();
 
-  return data.data.map(invoice => ({
-    id: invoice.id,
-    invoiceNumber: invoice.attributes.invoiceNumber,
-    dueDate: invoice.attributes.dueDate,
-    totalAmount: invoice.attributes.totalAmount,
-    remainingBalance: invoice.attributes.remainingBalance, // ✅ Calculated field
-    isOverdue: new Date(invoice.attributes.dueDate) < new Date()
-  }));
+  return data.data.map(invoice => {
+    const { totalAmount, paidAmount } = invoice.attributes;
+    const remainingBalance = totalAmount - (paidAmount || 0);
+
+    return {
+      id: invoice.id,
+      invoiceNumber: invoice.attributes.invoiceNumber,
+      dueDate: invoice.attributes.dueDate,
+      totalAmount,
+      remainingBalance,  // Calculated on frontend
+      isOverdue: new Date(invoice.attributes.dueDate) < new Date()
+    };
+  });
 }
 ```
 
@@ -417,7 +460,8 @@ async function applyPartialPayment(paymentAmount, invoiceIds) {
 
     const invoice = await fetch(`/api/v1/ar-invoices/${invoiceId}`, { headers });
     const invoiceData = await invoice.json();
-    const balance = invoiceData.data.attributes.remainingBalance;
+    const { totalAmount, paidAmount } = invoiceData.data.attributes;
+    const balance = totalAmount - (paidAmount || 0);
 
     const amountToApply = Math.min(remainingAmount, balance);
 
@@ -468,7 +512,8 @@ async function getInvoiceAgingData() {
   invoices.data.forEach(invoice => {
     const dueDate = new Date(invoice.attributes.dueDate);
     const daysOverdue = Math.floor((today - dueDate) / (1000 * 60 * 60 * 24));
-    const balance = invoice.attributes.remainingBalance; // ✅ Calculated
+    const { totalAmount, paidAmount } = invoice.attributes;
+    const balance = totalAmount - (paidAmount || 0);
 
     if (daysOverdue <= 30) aging.current += balance;
     else if (daysOverdue <= 60) aging.days30 += balance;
@@ -498,17 +543,17 @@ async function getInvoiceAgingData() {
 ## Quick Reference
 
 **Available Endpoints:**
-- `GET /api/v1/ar-invoices` - List AR invoices (with calculated balances)
-- `GET /api/v1/ap-invoices` - List AP invoices (with calculated balances)
+- `GET /api/v1/ar-invoices` - List AR invoices
+- `GET /api/v1/ap-invoices` - List AP invoices
 - `GET /api/v1/payments` - List payments
 - `GET /api/v1/payment-applications` - List applications
 - `GET /api/v1/bank-accounts` - List bank accounts
 - `GET /api/v1/payment-methods` - List payment methods
 
-**Calculated Fields (Important!):**
-- **paidAmount**: Automatically calculated from sum of payment applications
-- **remainingBalance**: Automatically calculated as totalAmount - paidAmount
-- These fields are **read-only** and should NOT be sent in POST/PATCH requests
+**Important Frontend Calculations:**
+- **remainingBalance**: NOT provided by API - calculate as `totalAmount - paidAmount`
+- **paidAmount**: Currently a writable field (future: will be auto-calculated from payment applications)
+- For accurate balances, always calculate `remainingBalance` on the frontend
 
 **Related Modules:**
 - [Sales Module](SALES_FRONTEND_GUIDE.md) - AR invoice generation from sales orders

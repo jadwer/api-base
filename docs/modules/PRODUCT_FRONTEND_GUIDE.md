@@ -9,6 +9,8 @@
 
 The Product module manages your product catalog including products, categories, brands, and units of measure.
 
+**⚠️ IMPLEMENTATION NOTE:** This documentation reflects the **CURRENT implementation** as of 2025-11-11. Some fields previously documented (like `isActive`) do not exist. See `DEVELOPMENT_ROADMAP.md` for planned features.
+
 ## Entities
 
 ### 1. Product
@@ -24,10 +26,12 @@ interface Product {
   name: string;
   sku: string;
   description: string | null;
+  fullDescription: string | null;
   price: number;
   cost: number;
   iva: boolean;
-  isActive: boolean;
+  imgPath: string | null;
+  datasheetPath: string | null;
   unitId: number;
   categoryId: number | null;
   brandId: number | null;
@@ -43,10 +47,12 @@ interface Product {
 | `name` | `name` | string | Yes | Yes | Yes |
 | `sku` | `sku` | string | Yes | Yes | Yes |
 | `description` | `description` | string | No | No | No |
+| `fullDescription` | `full_description` | string | No | No | No |
 | `price` | `price` | number | Yes | Yes | Yes |
-| `cost` | `cost` | number | Yes | No | No |
+| `cost` | `cost` | number | Yes | Yes | No |
 | `iva` | `iva` | boolean | No | No | No |
-| `isActive` | `is_active` | boolean | No | No | Yes |
+| `imgPath` | `img_path` | string | No | No | No |
+| `datasheetPath` | `datasheet_path` | string | No | No | No |
 | `unitId` | `unit_id` | number | Yes | No | Yes |
 | `categoryId` | `category_id` | number | No | No | Yes |
 | `brandId` | `brand_id` | number | No | No | Yes |
@@ -64,7 +70,7 @@ interface Product {
 **List Products with Filters:**
 ```javascript
 const response = await fetch(
-  '/api/v1/products?filter[isActive]=true&filter[categoryId]=5&sort=-createdAt&include=unit,category,brand',
+  '/api/v1/products?filter[category_id]=5&sort=-createdAt&include=unit,category,brand',
   { headers }
 );
 ```
@@ -78,10 +84,12 @@ const payload = {
       name: "Laptop Dell XPS 15",
       sku: "DELL-XPS15-001",
       description: "High-performance laptop",
+      fullDescription: "15.6-inch display, Intel Core i7, 16GB RAM, 512GB SSD",
       price: 1499.99,
       cost: 1099.99,
       iva: true,
-      isActive: true,
+      imgPath: "/images/products/dell-xps15.jpg",
+      datasheetPath: "/documents/products/dell-xps15-specs.pdf",
       unitId: 1,
       categoryId: 5,
       brandId: 3
@@ -223,7 +231,6 @@ const payload = {
 ```javascript
 async function getProductCatalog(filters = {}) {
   const params = new URLSearchParams({
-    'filter[isActive]': 'true',
     'include': 'unit,category,brand',
     'sort': 'name',
     ...filters
@@ -235,8 +242,8 @@ async function getProductCatalog(filters = {}) {
 
 // Usage
 const products = await getProductCatalog({
-  'filter[categoryId]': '5',
-  'filter[name]': 'laptop'
+  'filter[category_id]': '5',
+  'filter[search_name]': 'laptop'
 });
 ```
 
@@ -264,10 +271,12 @@ async function createProduct(productData) {
         name: productData.name,
         sku: productData.sku,
         description: productData.description,
+        fullDescription: productData.fullDescription || null,
         price: parseFloat(productData.price),
         cost: parseFloat(productData.cost),
         iva: productData.iva === true,
-        isActive: productData.isActive !== false,
+        imgPath: productData.imgPath || null,
+        datasheetPath: productData.datasheetPath || null,
         unitId: parseInt(productData.unitId),
         categoryId: productData.categoryId ? parseInt(productData.categoryId) : null,
         brandId: productData.brandId ? parseInt(productData.brandId) : null

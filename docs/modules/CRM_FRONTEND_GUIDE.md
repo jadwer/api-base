@@ -103,41 +103,38 @@ interface PipelineStage {
   type: 'pipeline-stages';
   attributes: {
     name: string;                    // Nombre de la etapa
-    order: number;                   // Orden de visualización (1-100)
+    stageType: 'lead' | 'opportunity'; // Tipo de etapa (lead u opportunity)
     probability: number;             // Probabilidad de cierre (0-100)
+    sortOrder: number;               // Orden de visualización (entero >= 0)
     isActive: boolean;               // Estado activo/inactivo
-    color?: string;                  // Color hex para UI (#RRGGBB)
-    description?: string;            // Descripción de la etapa
-    metadata?: Record<string, any>;  // Datos adicionales
+    isClosedWon: boolean;            // Marca como etapa cerrada ganada
+    isClosedLost: boolean;           // Marca como etapa cerrada perdida
     createdAt: string;               // ISO 8601
     updatedAt: string;               // ISO 8601
-  };
-  relationships?: {
-    leads: {
-      data: Array<{ type: 'leads'; id: string }>;
-    };
   };
 }
 ```
 
 #### Validaciones
 
-- **name:** Requerido, máximo 255 caracteres
-- **order:** Requerido, número entre 1 y 100
-- **probability:** Requerido, número entre 0 y 100
-- **isActive:** Booleano, default: true
-- **color:** Opcional, formato hex (#RRGGBB)
+- **name:** Requerido en creación, máximo 255 caracteres. Opcional en actualización
+- **stageType:** Requerido en creación, valores permitidos: 'lead' o 'opportunity'. Opcional en actualización
+- **probability:** Requerido en creación, número entero entre 0 y 100. Opcional en actualización
+- **sortOrder:** Requerido en creación, número entero >= 0. Opcional en actualización
+- **isActive:** Opcional, booleano (default: true)
+- **isClosedWon:** Opcional, booleano (default: false)
+- **isClosedLost:** Opcional, booleano (default: false)
 
 #### Ejemplos de Etapas Típicas
 
 ```javascript
 const defaultStages = [
-  { name: 'Prospección', order: 1, probability: 10, color: '#6B7280' },
-  { name: 'Calificación', order: 2, probability: 25, color: '#3B82F6' },
-  { name: 'Propuesta', order: 3, probability: 50, color: '#8B5CF6' },
-  { name: 'Negociación', order: 4, probability: 75, color: '#F59E0B' },
-  { name: 'Cerrado Ganado', order: 5, probability: 100, color: '#10B981' },
-  { name: 'Cerrado Perdido', order: 6, probability: 0, color: '#EF4444', isActive: false }
+  { name: 'Prospección', stageType: 'opportunity', sortOrder: 1, probability: 10, isActive: true },
+  { name: 'Calificación', stageType: 'opportunity', sortOrder: 2, probability: 25, isActive: true },
+  { name: 'Propuesta', stageType: 'opportunity', sortOrder: 3, probability: 50, isActive: true },
+  { name: 'Negociación', stageType: 'opportunity', sortOrder: 4, probability: 75, isActive: true },
+  { name: 'Cerrado Ganado', stageType: 'opportunity', sortOrder: 5, probability: 100, isActive: true, isClosedWon: true },
+  { name: 'Cerrado Perdido', stageType: 'opportunity', sortOrder: 6, probability: 0, isActive: false, isClosedLost: true }
 ];
 ```
 
@@ -155,37 +152,27 @@ interface Lead {
     title: string;                   // Título del lead (ej: "Implementación ERP")
     status: LeadStatus;              // Estado del lead
     rating: LeadRating;              // Calificación (temperatura)
-    source?: string;                 // Origen del lead
+    source?: string;                 // Origen del lead (website, referral, cold call, etc.)
     companyName?: string;            // Nombre de la empresa
+    contactPerson?: string;          // Nombre de la persona de contacto
     email?: string;                  // Email de contacto
     phone?: string;                  // Teléfono de contacto
     estimatedValue?: number;         // Valor estimado (float)
-    expectedCloseDate?: string;      // Fecha estimada de cierre (YYYY-MM-DD)
-    actualCloseDate?: string;        // Fecha real de cierre (YYYY-MM-DD)
+    estimatedCloseDate?: string;     // Fecha estimada de cierre (YYYY-MM-DD)
     convertedAt?: string;            // Fecha de conversión (ISO 8601)
-    lostReason?: string;             // Razón de pérdida
-    notes?: string;                  // Notas adicionales
-    metadata?: Record<string, any>;  // Datos personalizados
+    notes?: string;                  // Notas adicionales (text)
+    metadata?: Record<string, any>;  // Datos personalizados (JSON)
     createdAt: string;               // ISO 8601
     updatedAt: string;               // ISO 8601
   };
   relationships?: {
-    user: {                          // Usuario asignado
+    user: {                          // Usuario asignado (requerido)
       data: { type: 'users'; id: string };
-    };
-    contact?: {                      // Contacto relacionado (opcional)
-      data: { type: 'contacts'; id: string };
-    };
-    pipelineStage?: {                // Etapa actual
-      data: { type: 'pipeline-stages'; id: string };
-    };
-    campaigns?: {                    // Campañas asociadas
-      data: Array<{ type: 'campaigns'; id: string }>;
     };
   };
 }
 
-type LeadStatus = 'new' | 'contacted' | 'qualified' | 'proposal' | 'negotiation' | 'converted' | 'lost';
+type LeadStatus = 'new' | 'contacted' | 'qualified' | 'unqualified' | 'converted';
 
 type LeadRating = 'hot' | 'warm' | 'cold';
 ```
@@ -193,11 +180,20 @@ type LeadRating = 'hot' | 'warm' | 'cold';
 #### Validaciones
 
 - **title:** Requerido, máximo 255 caracteres
-- **status:** Opcional, valores: new, contacted, qualified, proposal, negotiation, converted, lost (default: 'new')
-- **rating:** Opcional, valores: hot, warm, cold (default: 'warm')
-- **email:** Opcional, debe ser email válido
-- **estimatedValue:** Opcional, número >= 0
+- **status:** Requerido, valores: new, contacted, qualified, unqualified, converted
+- **rating:** Requerido, valores: hot, warm, cold
 - **userId:** Requerido (relación con User)
+- **source:** Opcional, máximo 255 caracteres
+- **contactId:** Opcional, debe existir en tabla contacts
+- **companyName:** Opcional, máximo 255 caracteres
+- **contactPerson:** Opcional, máximo 255 caracteres
+- **email:** Opcional, debe ser email válido, máximo 255 caracteres
+- **phone:** Opcional, máximo 255 caracteres
+- **estimatedValue:** Opcional, número >= 0
+- **estimatedCloseDate:** Opcional, formato fecha (YYYY-MM-DD)
+- **convertedAt:** Opcional, formato fecha (YYYY-MM-DD)
+- **notes:** Opcional, texto
+- **metadata:** Opcional, objeto JSON
 
 #### Estados del Lead (status)
 
@@ -205,11 +201,9 @@ type LeadRating = 'hot' | 'warm' | 'cold';
 |--------|-------------|----------------|
 | **new** | Lead recién creado | Contactar |
 | **contacted** | Primer contacto realizado | Calificar |
-| **qualified** | Lead calificado como válido | Enviar propuesta |
-| **proposal** | Propuesta enviada | Negociar |
-| **negotiation** | En proceso de negociación | Cerrar |
+| **qualified** | Lead calificado como válido | Convertir |
+| **unqualified** | Lead no calificado | - |
 | **converted** | Convertido a oportunidad/cliente | - |
-| **lost** | Perdido (no convertido) | - |
 
 #### Calificaciones (rating)
 
@@ -231,7 +225,7 @@ interface Campaign {
   type: 'campaigns';
   attributes: {
     name: string;                    // Nombre de la campaña
-    type: CampaignType;              // Tipo de campaña
+    campaignType: CampaignType;      // Tipo de campaña
     status: CampaignStatus;          // Estado actual
     startDate: string;               // Fecha inicio (YYYY-MM-DD)
     endDate?: string;                // Fecha fin (YYYY-MM-DD)
@@ -279,7 +273,7 @@ type CampaignStatus =
 #### Validaciones
 
 - **name:** Requerido, máximo 255 caracteres
-- **type:** Requerido, valores: email, social_media, event, webinar, direct_mail, telemarketing
+- **campaignType:** Requerido, valores: email, social_media, event, webinar, direct_mail, telemarketing
 - **status:** Opcional, valores: planning, active, paused, completed, cancelled (default: 'planning')
 - **startDate:** Requerido, formato YYYY-MM-DD
 - **endDate:** Opcional, debe ser >= startDate
@@ -339,9 +333,11 @@ GET /api/v1/pipeline-stages
 ```
 
 **Query Parameters:**
-- `sort=order` - Ordenar por orden
+- `sort=sortOrder` - Ordenar por orden
 - `sort=-createdAt` - Ordenar por fecha (desc)
 - `filter[isActive]=true` - Solo activas
+- `filter[stageType]=opportunity` - Filtrar por tipo
+- `filter[isClosedWon]=true` - Solo cerradas ganadas
 - `filter[name]=Prospección` - Buscar por nombre
 - `page[size]=20` - Tamaño de página
 - `page[number]=1` - Número de página
@@ -351,7 +347,7 @@ GET /api/v1/pipeline-stages
 ```javascript
 async function getPipelineStages() {
   const response = await fetch(
-    '/api/v1/pipeline-stages?sort=order&filter[isActive]=true',
+    '/api/v1/pipeline-stages?sort=sortOrder&filter[isActive]=true',
     { headers }
   );
 
@@ -374,11 +370,10 @@ const newStage = {
     type: 'pipeline-stages',
     attributes: {
       name: 'Calificación',
-      order: 2,
+      stageType: 'opportunity',
       probability: 25,
-      isActive: true,
-      color: '#3B82F6',
-      description: 'Etapa de calificación de leads'
+      sortOrder: 2,
+      isActive: true
     }
   }
 };
@@ -496,15 +491,12 @@ const newLead = {
       email: 'contacto@abc.com',
       phone: '+52 55 1234 5678',
       estimatedValue: 250000.00,
-      expectedCloseDate: '2025-12-31',
+      estimatedCloseDate: '2025-12-31',
       notes: 'Contacto inicial vía formulario web. Interés en módulos de ventas e inventario.'
     },
     relationships: {
       user: {
         data: { type: 'users', id: '3' }
-      },
-      pipelineStage: {
-        data: { type: 'pipeline-stages', id: '1' }
       }
     }
   }
@@ -558,7 +550,7 @@ const convertLead = {
     id: '15',
     attributes: {
       status: 'converted',
-      actualCloseDate: new Date().toISOString().split('T')[0]
+      convertedAt: new Date().toISOString().split('T')[0]
     }
   }
 };
@@ -739,7 +731,7 @@ function LeadsKanban() {
     try {
       // Cargar etapas y leads en paralelo
       const [stagesRes, leadsRes] = await Promise.all([
-        fetch('/api/v1/pipeline-stages?sort=order&filter[isActive]=true', { headers }),
+        fetch('/api/v1/pipeline-stages?sort=sortOrder&filter[isActive]=true', { headers }),
         fetch('/api/v1/leads?include=pipelineStage,user&filter[status]=new,contacted,qualified', { headers })
       ]);
 
@@ -828,7 +820,7 @@ function CreateLeadForm({ onSuccess }) {
   async function loadFormOptions() {
     const [usersRes, stagesRes] = await Promise.all([
       fetch('/api/v1/users?filter[role]=admin,tech', { headers }),
-      fetch('/api/v1/pipeline-stages?sort=order&filter[isActive]=true', { headers })
+      fetch('/api/v1/pipeline-stages?sort=sortOrder&filter[isActive]=true', { headers })
     ]);
 
     const { data: usersData } = await usersRes.json();

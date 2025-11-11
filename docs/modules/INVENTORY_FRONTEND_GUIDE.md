@@ -9,6 +9,8 @@
 
 The Inventory module manages warehouse locations, stock levels, product batches, and inventory movements across multiple warehouses.
 
+**⚠️ IMPLEMENTATION NOTE:** This documentation reflects the **CURRENT implementation** as of 2025-11-11. Fields like `availableQuantity` and `totalValue` are currently writable database fields, not auto-calculated. See `DEVELOPMENT_ROADMAP.md` for planned enhancements.
+
 ## Entities
 
 ### 1. Warehouse
@@ -88,21 +90,26 @@ interface Stock {
   id: string;
   productId: number;
   warehouseId: number;
+  warehouseLocationId: number | null;
   quantity: number;
   reservedQuantity: number;
-  availableQuantity: number; // Calculated: quantity - reservedQuantity
-  minimumQuantity: number;
-  maximumQuantity: number;
+  availableQuantity: number;     // ⚠️ Currently writable, not auto-calculated
+  minimumStock: number;
+  maximumStock: number | null;
   reorderPoint: number;
-  locationId: number | null;
+  unitCost: number;
+  totalValue: number;            // ⚠️ Currently writable, not auto-calculated
+  status: string;
+  lastMovementDate: string | null;
+  lastMovementType: string | null;
+  batchInfo: Record<string, any> | null;
+  metadata: Record<string, any> | null;
   createdAt: string;
   updatedAt: string;
+
+  // NOTE: Calculate available on frontend if needed: quantity - reservedQuantity
+  // NOTE: Calculate total value on frontend if needed: quantity * unitCost
 }
-```
-
-#### Calculated Fields
-
-- **availableQuantity**: Automatically calculated as `quantity - reservedQuantity`
 
 #### Relationships
 
@@ -119,14 +126,19 @@ const response = await fetch(
 );
 
 const stock = await response.json();
-console.log(stock.data[0].attributes);
-// {
-//   quantity: 100,
-//   reservedQuantity: 20,
-//   availableQuantity: 80, // Calculated field
-//   minimumQuantity: 10,
-//   reorderPoint: 15
-// }
+const stockData = stock.data[0].attributes;
+
+// Calculate available if API value is not accurate
+const calculatedAvailable = stockData.quantity - stockData.reservedQuantity;
+
+console.log({
+  quantity: stockData.quantity,
+  reservedQuantity: stockData.reservedQuantity,
+  availableQuantity: stockData.availableQuantity,  // From database
+  calculatedAvailable,                             // Calculated on frontend
+  minimumStock: stockData.minimumStock,
+  reorderPoint: stockData.reorderPoint
+});
 ```
 
 ---
@@ -288,9 +300,13 @@ async function checkStockAvailability(productId, warehouseId) {
   }
 
   const stock = data.data[0].attributes;
+
+  // Calculate available quantity
+  const availableQty = stock.quantity - stock.reservedQuantity;
+
   return {
-    available: stock.availableQuantity > 0,
-    quantity: stock.availableQuantity,
+    available: availableQty > 0,
+    quantity: availableQty,
     needsReorder: stock.quantity <= stock.reorderPoint
   };
 }
