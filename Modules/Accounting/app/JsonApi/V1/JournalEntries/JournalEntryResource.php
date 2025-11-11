@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Accounting\JsonApi\V1\JournalEntrys;
+namespace Modules\Accounting\JsonApi\V1\JournalEntries;
 
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Accounting\JsonApi\V1\ExchangeRatePolicys;
+namespace Modules\Accounting\JsonApi\V1\ExchangeRatePolicies;
 
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
