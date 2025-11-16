@@ -32,14 +32,15 @@ class ProductSchema extends Schema
             Number::make('price')->sortable(),
             Number::make('cost')->sortable(),
             Boolean::make('iva'),
+            Boolean::make('isActive', 'is_active')->sortable(),
             Str::make('imgPath', 'img_path'),
             Str::make('datasheetPath', 'datasheet_path'),
-            
+
             // Relaciones
             BelongsTo::make('unit')->type('units'),
             BelongsTo::make('category')->type('categories'),
             BelongsTo::make('brand')->type('brands'),
-            
+
             DateTime::make('createdAt', 'created_at')->readOnly()->sortable(),
             DateTime::make('updatedAt', 'updated_at')->readOnly(),
         ];
@@ -64,6 +65,7 @@ class ProductSchema extends Schema
             Where::make('unit_id'),
             Where::make('category_id'),
             Where::make('brand_id'),
+            Where::make('is_active'),
             WhereIn::make('brands', 'brand_id')->delimiter(','),
             WhereIn::make('categories', 'category_id')->delimiter(','),
             WhereIn::make('units', 'unit_id')->delimiter(','),

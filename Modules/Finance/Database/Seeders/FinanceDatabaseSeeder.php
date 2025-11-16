@@ -19,15 +19,15 @@ class FinanceDatabaseSeeder extends Seeder
             FinanceAssignPermissionsSeeder::class,
 
             // Luego: Configuración básica (GL Accounts y Payment Methods)
-            GLAccountsSeeder::class,
-            PaymentMethodsSeeder::class,
+            GLAccountsSeeder::class,       // ✅ GL account mappings (ESSENTIAL)
+            PaymentMethodsSeeder::class,   // ✅ Payment methods (ESSENTIAL)
 
-            // Luego: Datos de prueba (solo si es necesario)
-            // ARInvoiceSeeder::class,
-            // APInvoiceSeeder::class,
-            // PaymentSeeder::class,
-            // PaymentApplicationSeeder::class,
-            // BankAccountSeeder::class,
+            // ❌ DEMO DATA - Commented for presentation
+            // BankAccountSeeder::class,            // Sample bank accounts
+            // ARInvoiceSeeder::class,              // Sample AR invoices
+            // APInvoiceSeeder::class,              // Sample AP invoices
+            // PaymentSeeder::class,                // Sample payments
+            // PaymentApplicationSeeder::class,     // Sample payment applications
         ]);
 
         $this->command->info('🎉 Finance module seeded successfully!');

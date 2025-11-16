@@ -45,14 +45,14 @@ class WarehouseLocationSeeder extends Seeder
                 $zones = ['A', 'B', 'C'];
                 $aisles = [1, 2, 3, 4];
                 $racks = [1, 2, 3];
-                
+
                 foreach ($zones as $zone) {
                     foreach ($aisles as $aisle) {
                         foreach ($racks as $rack) {
                             $locations[] = [
                                 'warehouse_id' => $warehouse->id,
                                 'name' => "Zona {$zone} - Pasillo {$aisle} - Estante {$rack}",
-                                'code' => "{$zone}-{$aisle}-{$rack}",
+                                'code' => "{$warehouse->code}-{$zone}-{$aisle}-{$rack}",
                                 'location_type' => 'rack',
                                 'is_active' => true,
                             ];
@@ -65,13 +65,13 @@ class WarehouseLocationSeeder extends Seeder
                 // Almacén secundario más simple
                 $aisles = [1, 2];
                 $shelves = ['A', 'B', 'C'];
-                
+
                 foreach ($aisles as $aisle) {
                     foreach ($shelves as $shelf) {
                         $locations[] = [
                             'warehouse_id' => $warehouse->id,
                             'name' => "Pasillo {$aisle} - Estante {$shelf}",
-                            'code' => "P{$aisle}-E{$shelf}",
+                            'code' => "{$warehouse->code}-P{$aisle}-E{$shelf}",
                             'location_type' => 'shelf',
                             'is_active' => true,
                         ];
@@ -83,13 +83,13 @@ class WarehouseLocationSeeder extends Seeder
                 // Centro de distribución con bahías
                 $bays = [1, 2, 3, 4, 5];
                 $zones = ['Loading', 'Sorting', 'Dispatch'];
-                
+
                 foreach ($zones as $zone) {
                     foreach ($bays as $bay) {
                         $locations[] = [
                             'warehouse_id' => $warehouse->id,
                             'name' => "{$zone} - Bahía {$bay}",
-                            'code' => strtoupper(substr($zone, 0, 3)) . "-B{$bay}",
+                            'code' => "{$warehouse->code}-" . strtoupper(substr($zone, 0, 3)) . "-B{$bay}",
                             'location_type' => 'bay',
                             'is_active' => true,
                         ];
@@ -101,13 +101,13 @@ class WarehouseLocationSeeder extends Seeder
                 // Almacén de devoluciones con bins
                 $areas = ['Inspection', 'Repair', 'Disposal'];
                 $bins = [1, 2, 3];
-                
+
                 foreach ($areas as $area) {
                     foreach ($bins as $bin) {
                         $locations[] = [
                             'warehouse_id' => $warehouse->id,
                             'name' => "{$area} - Contenedor {$bin}",
-                            'code' => strtoupper(substr($area, 0, 3)) . "-C{$bin}",
+                            'code' => "{$warehouse->code}-" . strtoupper(substr($area, 0, 3)) . "-C{$bin}",
                             'location_type' => 'bin',
                             'is_active' => true,
                         ];

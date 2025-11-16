@@ -9,7 +9,7 @@
 
 The Product module manages your product catalog including products, categories, brands, and units of measure.
 
-**⚠️ IMPLEMENTATION NOTE:** This documentation reflects the **CURRENT implementation** as of 2025-11-11. Some fields previously documented (like `isActive`) do not exist. See `DEVELOPMENT_ROADMAP.md` for planned features.
+**Last Updated:** 2025-11-15 - Added `isActive` field to Product schema
 
 ## Entities
 
@@ -30,6 +30,7 @@ interface Product {
   price: number;
   cost: number;
   iva: boolean;
+  isActive: boolean;
   imgPath: string | null;
   datasheetPath: string | null;
   unitId: number;
@@ -51,6 +52,7 @@ interface Product {
 | `price` | `price` | number | Yes | Yes | Yes |
 | `cost` | `cost` | number | Yes | Yes | No |
 | `iva` | `iva` | boolean | No | No | No |
+| `isActive` | `is_active` | boolean | No | Yes | Yes |
 | `imgPath` | `img_path` | string | No | No | No |
 | `datasheetPath` | `datasheet_path` | string | No | No | No |
 | `unitId` | `unit_id` | number | Yes | No | Yes |
@@ -69,8 +71,9 @@ interface Product {
 
 **List Products with Filters:**
 ```javascript
+// Get all active products from a specific category
 const response = await fetch(
-  '/api/v1/products?filter[category_id]=5&sort=-createdAt&include=unit,category,brand',
+  '/api/v1/products?filter[category_id]=5&filter[is_active]=true&sort=-createdAt&include=unit,category,brand',
   { headers }
 );
 ```
@@ -88,6 +91,7 @@ const payload = {
       price: 1499.99,
       cost: 1099.99,
       iva: true,
+      isActive: true,
       imgPath: "/images/products/dell-xps15.jpg",
       datasheetPath: "/documents/products/dell-xps15-specs.pdf",
       unitId: 1,

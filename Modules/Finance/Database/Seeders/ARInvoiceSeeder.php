@@ -4,7 +4,6 @@ namespace Modules\Finance\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Finance\Models\ARInvoice;
-use Modules\Sales\Models\Customer;
 
 class ARInvoiceSeeder extends Seeder
 {
@@ -14,21 +13,21 @@ class ARInvoiceSeeder extends Seeder
     public function run(): void
     {
         $this->command->info('🌱 Seeding ARInvoice...');
-        
-        // Get existing Customer records
-        $customers = \Modules\Sales\Models\Customer::all();
-        
+
+        // Get existing Customer contacts (using Contact model with is_customer flag)
+        $customers = \Modules\Contacts\Models\Contact::where('is_customer', true)->get();
+
         if ($customers->isEmpty()) {
-            $this->command->warn('No Customer records found. Skipping customer_id seeding.');
+            $this->command->warn('No Customer contacts found. Skipping contact_id seeding.');
             return;
         }
 
         // Create sample ARInvoice records
-        // Create ARInvoice records using existing Customer records
-        $customers->take(5)->each(function ($parent) {
+        // Create ARInvoice records using existing Customer contacts
+        $customers->take(5)->each(function ($contact) {
             ARInvoice::factory()
                 ->count(rand(1, 3))
-                ->create(['customer_id' => $parent->id]);
+                ->create(['contact_id' => $contact->id]);
         });
 
         // Create some active records
@@ -37,7 +36,7 @@ class ARInvoiceSeeder extends Seeder
         // Create some inactive records
         ARInvoice::factory()->inactive()->count(2)->create();
 
-        
+
         $this->command->info('✅ ARInvoice seeded successfully!');
     }
 }

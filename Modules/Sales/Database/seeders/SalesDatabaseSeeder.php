@@ -18,7 +18,8 @@ class SalesDatabaseSeeder extends Seeder
         $this->call([
             SalesPermissionSeeder::class,
             SalesAssignPermissionsSeeder::class,
-            // SalesOrderSeeder::class, // Commented for performance - creates test data
+            // ❌ DEMO DATA - Commented for presentation
+            // SalesOrderSeeder::class, // Sample sales orders
         ]);
     }
 }

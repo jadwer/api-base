@@ -12,15 +12,16 @@ class ContactsDatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->command->info('🏪 Seeding Contacts module...');
-        
+
         $this->call([
             PermissionsSeeder::class,
-            ContactSeeder::class,
-            ContactDocumentSeeder::class,
-            ContactAddressSeeder::class,
-            ContactPersonSeeder::class,
+            // ❌ DEMO DATA - Commented for presentation
+            // ContactSeeder::class,           // Sample contacts
+            // ContactDocumentSeeder::class,   // Sample documents
+            // ContactAddressSeeder::class,    // Sample addresses
+            // ContactPersonSeeder::class,     // Sample contact persons
         ]);
-        
+
         $this->command->info('🎉 Contacts module seeded successfully!');
     }
 }

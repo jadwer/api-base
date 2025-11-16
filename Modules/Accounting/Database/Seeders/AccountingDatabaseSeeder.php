@@ -15,20 +15,19 @@ class AccountingDatabaseSeeder extends Seeder
 
         $this->call([
             PermissionsSeeder::class,
-            // IdempotencyKeySeeder::class, // Commented for performance - not needed for tests
-            // AccountMappingSeeder::class, // Commented for performance - not needed for tests
-            // AccountBalanceSeeder::class, // Commented for performance - creates test data
-            // ExchangeRatePolicySeeder::class, // Commented for performance - not needed for tests
-            // AuditLogSeeder::class, // Commented for performance - creates test data
-            AccountSeeder::class,
-            FiscalPeriodSeeder::class,
-            JournalSeeder::class,
-            JournalSequenceSeeder::class,
-            // JournalEntrySeeder::class, // Commented for performance - creates 17 test records
-            JournalLineSeeder::class, // Already skipped internally
-            ExchangeRateSeeder::class, // Needed for currency conversion
+            CatalogoCuentasMexicanoSeeder::class, // ✅ Mexican Chart of Accounts (ESSENTIAL)
+            FiscalPeriodSeeder::class,            // ✅ Fiscal periods (ESSENTIAL)
+            JournalSeeder::class,                 // ✅ Journal types (ESSENTIAL)
+            JournalSequenceSeeder::class,         // ✅ Sequence numbering (ESSENTIAL)
+            ExchangeRateSeeder::class,            // ✅ Exchange rates (ESSENTIAL)
+            // ❌ DEMO DATA - Commented for presentation
+            // JournalEntrySeeder::class,         // Sample journal entries
+            // JournalLineSeeder::class,          // Sample journal lines (skipped internally)
+            // AccountBalanceSeeder::class,       // Sample account balances
+            // IdempotencyKeySeeder::class,       // Sample idempotency tracking
+            // AccountMappingSeeder::class,       // Sample account mappings
         ]);
-        
+
         $this->command->info('🎉 Accounting module seeded successfully!');
     }
 }

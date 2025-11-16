@@ -16,6 +16,15 @@ class CatalogoCuentasMexicanoSeeder extends Seeder
         $accounts = $this->getChartOfAccounts();
 
         foreach ($accounts as $accountData) {
+            // Resolve parent_code to parent_id
+            if (isset($accountData['parent_code'])) {
+                $parentAccount = Account::where('code', $accountData['parent_code'])
+                    ->where('company_id', 1)
+                    ->first();
+                $accountData['parent_id'] = $parentAccount ? $parentAccount->id : null;
+                unset($accountData['parent_code']);
+            }
+
             Account::firstOrCreate(
                 ['code' => $accountData['code'], 'company_id' => 1],
                 $accountData

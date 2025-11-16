@@ -4,7 +4,6 @@ namespace Modules\Finance\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Finance\Models\APInvoice;
-use Modules\Purchase\Models\Supplier;
 
 class APInvoiceSeeder extends Seeder
 {
@@ -14,21 +13,21 @@ class APInvoiceSeeder extends Seeder
     public function run(): void
     {
         $this->command->info('🌱 Seeding APInvoice...');
-        
-        // Get existing Supplier records
-        $suppliers = \Modules\Purchase\Models\Supplier::all();
-        
+
+        // Get existing Supplier contacts (using Contact model with is_supplier flag)
+        $suppliers = \Modules\Contacts\Models\Contact::where('is_supplier', true)->get();
+
         if ($suppliers->isEmpty()) {
-            $this->command->warn('No Supplier records found. Skipping supplier_id seeding.');
+            $this->command->warn('No Supplier contacts found. Skipping contact_id seeding.');
             return;
         }
 
         // Create sample APInvoice records
-        // Create APInvoice records using existing Supplier records
-        $suppliers->take(5)->each(function ($parent) {
+        // Create APInvoice records using existing Supplier contacts
+        $suppliers->take(5)->each(function ($contact) {
             APInvoice::factory()
                 ->count(rand(1, 3))
-                ->create(['supplier_id' => $parent->id]);
+                ->create(['contact_id' => $contact->id]);
         });
 
         // Create some active records
@@ -37,7 +36,7 @@ class APInvoiceSeeder extends Seeder
         // Create some inactive records
         APInvoice::factory()->inactive()->count(2)->create();
 
-        
+
         $this->command->info('✅ APInvoice seeded successfully!');
     }
 }
