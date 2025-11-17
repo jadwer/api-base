@@ -45,6 +45,7 @@ class InventoryServiceProvider extends ServiceProvider
     {
         $this->commands([
             \Modules\Inventory\Console\RepostInventoryGLCommand::class,
+            \Modules\Inventory\Console\Commands\CheckStockReorderAlerts::class,
         ]);
     }
 

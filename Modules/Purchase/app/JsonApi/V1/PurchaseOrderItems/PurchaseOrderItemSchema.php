@@ -44,6 +44,7 @@ class PurchaseOrderItemSchema extends Schema
             
             // Numeric fields
             Number::make('quantity')->sortable(),
+            Number::make('receivedQuantity', 'received_quantity')->sortable(),
             Number::make('unitPrice', 'unit_price')->sortable(),
             Number::make('discount')->sortable(),
             Number::make('subtotal')->sortable(),
@@ -73,6 +74,7 @@ class PurchaseOrderItemSchema extends Schema
             Where::make('purchaseOrderId', 'purchase_order_id'),
             Where::make('productId', 'product_id'),
             Where::make('quantity'),
+            Where::make('receivedQuantity', 'received_quantity'),
             Where::make('unitPrice', 'unit_price'),
             Where::make('discount'),
             Where::make('subtotal'),

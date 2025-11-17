@@ -25,6 +25,19 @@ class CreditManagementService
             throw new \Exception("Contact #{$contact->id} is not a customer");
         }
 
+        // FI-M003: Validate credit status (hold/blocked)
+        if ($contact->credit_status === 'hold') {
+            throw new \Exception(
+                "Customer is on credit hold. Reason: {$contact->credit_hold_reason}"
+            );
+        }
+
+        if ($contact->credit_status === 'blocked') {
+            throw new \Exception(
+                "Customer account is blocked. Contact finance for resolution."
+            );
+        }
+
         $currentBalance = $this->getCurrentARBalance($contact);
         $totalExposure = $currentBalance + $newAmount;
 

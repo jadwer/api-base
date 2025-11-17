@@ -14,7 +14,7 @@ class Contact extends Model
     protected $table = 'contacts';
     
     protected $fillable = [
-        'type', 'name', 'legal_name', 'tax_id', 'email', 'phone', 'website', 'status', 'is_customer', 'is_supplier', 'credit_limit', 'minimum_payment_score', 'current_credit', 'classification', 'payment_terms', 'notes', 'metadata'
+        'type', 'name', 'legal_name', 'tax_id', 'email', 'phone', 'website', 'status', 'is_customer', 'is_supplier', 'credit_limit', 'credit_status', 'credit_hold_at', 'credit_hold_reason', 'minimum_payment_score', 'current_credit', 'classification', 'payment_terms', 'notes', 'metadata'
     ];
 
     protected $casts = [
@@ -23,6 +23,7 @@ class Contact extends Model
         'credit_limit' => 'float',
         'minimum_payment_score' => 'float',
         'current_credit' => 'float',
+        'credit_hold_at' => 'datetime',
         'metadata' => 'array'
     ];
 
@@ -241,6 +242,11 @@ class Contact extends Model
     public function purchaseOrders()
     {
         return $this->hasMany(\Modules\Purchase\Models\PurchaseOrder::class);
+    }
+
+    public function arInvoices()
+    {
+        return $this->hasMany(\Modules\Finance\Models\ARInvoice::class, 'contact_id');
     }
 
     // Factory

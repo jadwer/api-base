@@ -23,10 +23,11 @@ class PurchaseOrderItemRequest extends ResourceRequest
             'quantity' => ['required', 'numeric', 'min:0.01'],
             'unitPrice' => ['required', 'numeric', 'min:0'],
             'discount' => ['sometimes', 'numeric', 'min:0'],
+            'receivedQuantity' => ['sometimes', 'numeric', 'min:0'],
             'subtotal' => ['sometimes', 'numeric', 'min:0'],
             'total' => ['sometimes', 'numeric', 'min:0'],
             'metadata' => ['sometimes', 'array'],
-            
+
             // Validaciones para relaciones
             'purchaseOrder' => JsonApiRule::toOne(),
             'product' => JsonApiRule::toOne(),
@@ -51,6 +52,8 @@ class PurchaseOrderItemRequest extends ResourceRequest
             'unitPrice.min' => 'El precio unitario debe ser mayor o igual a 0.',
             'discount.numeric' => 'El descuento debe ser un número válido.',
             'discount.min' => 'El descuento debe ser mayor o igual a 0.',
+            'receivedQuantity.numeric' => 'La cantidad recibida debe ser un número válido.',
+            'receivedQuantity.min' => 'La cantidad recibida debe ser mayor o igual a 0.',
             'subtotal.numeric' => 'El subtotal debe ser un número válido.',
             'subtotal.min' => 'El subtotal debe ser mayor o igual a 0.',
             'total.numeric' => 'El total debe ser un número válido.',

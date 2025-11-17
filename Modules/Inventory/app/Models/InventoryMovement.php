@@ -80,6 +80,9 @@ class InventoryMovement extends Model
         'gl_posting_status' => 'string',
         'cost_per_unit' => 'float',
         'total_cost' => 'float',
+        'quality_checked' => 'boolean',
+        'quality_checked_at' => 'datetime',
+        'quality_checked_by' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -115,6 +118,37 @@ class InventoryMovement extends Model
     protected static function boot()
     {
         parent::boot();
+
+        static::creating(function ($movement) {
+            // IV-009: Quality check validation for exits and transfers
+            if ($movement->requiresQualityCheck() && $movement->status === self::STATUS_COMPLETED && !$movement->quality_checked) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'quality_checked' => sprintf(
+                        'Los movimientos de tipo "%s" requieren verificación de calidad antes de completarse.',
+                        $movement->movement_type
+                    )
+                ]);
+            }
+        });
+
+        static::updating(function ($movement) {
+            // IV-009: Quality check validation when updating to completed status
+            if ($movement->isDirty('status') && $movement->status === self::STATUS_COMPLETED) {
+                if ($movement->requiresQualityCheck() && !$movement->quality_checked) {
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        'quality_checked' => sprintf(
+                            'Los movimientos de tipo "%s" requieren verificación de calidad antes de completarse.',
+                            $movement->movement_type
+                        )
+                    ]);
+                }
+            }
+
+            // Auto-set quality_checked_at when quality_checked changes to true
+            if ($movement->isDirty('quality_checked') && $movement->quality_checked && !$movement->quality_checked_at) {
+                $movement->quality_checked_at = now();
+            }
+        });
 
         static::created(function ($movement) {
             // Dispatch event for GL integration
@@ -232,6 +266,21 @@ class InventoryMovement extends Model
     }
 
     /**
+     * Determine if this movement type requires quality check
+     *
+     * IV-009: Exits and transfers require quality check before completion
+     *
+     * @return bool
+     */
+    public function requiresQualityCheck(): bool
+    {
+        return in_array($this->movement_type, [
+            self::MOVEMENT_TYPE_EXIT,
+            self::MOVEMENT_TYPE_TRANSFER,
+        ]);
+    }
+
+    /**
      * El movimiento pertenece a un producto.
      */
     public function product(): BelongsTo
@@ -277,6 +326,14 @@ class InventoryMovement extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(\Modules\User\Models\User::class);
+    }
+
+    /**
+     * El movimiento puede tener un usuario que verificó la calidad.
+     */
+    public function qualityChecker(): BelongsTo
+    {
+        return $this->belongsTo(\Modules\User\Models\User::class, 'quality_checked_by');
     }
 
     /**

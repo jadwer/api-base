@@ -37,6 +37,7 @@ class PurchaseOrderItem extends Model
             'discount' => 'float',
             'subtotal' => 'float',
             'total' => 'float',
+            'received_quantity' => 'float',
             'metadata' => 'array',
             'ap_invoice_line_id' => 'integer',
             'invoiced_quantity' => 'float',
@@ -50,12 +51,36 @@ class PurchaseOrderItem extends Model
     protected static function boot()
     {
         parent::boot();
-        
+
         // Calcular subtotal y total automáticamente antes de guardar
         static::saving(function ($item) {
             if ($item->quantity && $item->unit_price) {
                 $item->subtotal = $item->quantity * $item->unit_price;
                 $item->total = $item->subtotal - ($item->discount ?? 0);
+            }
+
+            // PU-005: Validate received quantity with tolerance
+            if ($item->received_quantity !== null && $item->quantity) {
+                $tolerance = config('purchase.receiving_tolerance_percent', 5);
+                $maxAllowed = $item->quantity * (1 + ($tolerance / 100));
+
+                if ($item->received_quantity > $maxAllowed) {
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        'received_quantity' => sprintf(
+                            'La cantidad recibida (%.2f) excede la cantidad ordenada (%.2f) más la tolerancia del %d%%. Máximo permitido: %.2f',
+                            $item->received_quantity,
+                            $item->quantity,
+                            $tolerance,
+                            $maxAllowed
+                        )
+                    ]);
+                }
+
+                if ($item->received_quantity < 0) {
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        'received_quantity' => 'La cantidad recibida no puede ser negativa.'
+                    ]);
+                }
             }
         });
     }

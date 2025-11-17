@@ -6,6 +6,7 @@ use LaravelJsonApi\Eloquent\Schema;
 use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Fields\Number;
+use LaravelJsonApi\Eloquent\Fields\Boolean;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\ArrayHash;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
@@ -59,6 +60,12 @@ class InventoryMovementSchema extends Schema
             Str::make('status')->sortable(),
             Number::make('previousStock', 'previous_stock'),
             Number::make('newStock', 'new_stock'),
+
+            // Quality check fields (IV-009)
+            Boolean::make('qualityChecked', 'quality_checked')->sortable(),
+            DateTime::make('qualityCheckedAt', 'quality_checked_at')->sortable(),
+            Number::make('qualityCheckedBy', 'quality_checked_by'),
+            Str::make('qualityCheckNotes', 'quality_check_notes'),
             
             // Campos JSON
             ArrayHash::make('batchInfo', 'batch_info'),
@@ -89,7 +96,10 @@ class InventoryMovementSchema extends Schema
                      
             BelongsTo::make('user')
                      ->type('users'),
-            
+
+            BelongsTo::make('qualityChecker')
+                     ->type('users'),
+
             // Timestamps
             DateTime::make('createdAt', 'created_at')->readOnly()->sortable(),
             DateTime::make('updatedAt', 'updated_at')->readOnly()->sortable(),

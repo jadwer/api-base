@@ -4,6 +4,7 @@ namespace Modules\Accounting\JsonApi\V1\JournalEntries;
 
 use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
 use Illuminate\Validation\Rule;
+use Modules\Accounting\Models\JournalEntry;
 
 class JournalEntryRequest extends ResourceRequest
 {
@@ -12,7 +13,7 @@ class JournalEntryRequest extends ResourceRequest
         $journalentry = $this->model();
         $isUpdate = $journalentry && $journalentry->exists;
 
-        
+
         return [
             'journalId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
             'fiscalPeriodId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
@@ -26,11 +27,74 @@ class JournalEntryRequest extends ResourceRequest
             'approved_by_id' => ['nullable', 'string'],
             'postedAt' => ['nullable', 'string'],
             'postedById' => ['nullable', 'integer'],
-            'reversal_of_id' => ['nullable', 'string'],
+            'reversal_of_id' => [
+                'nullable',
+                'integer',
+                'exists:journal_entries,id',
+                function ($attribute, $value, $fail) use ($journalentry) {
+                    if ($value && $this->wouldCreateCircularReference($journalentry, $value)) {
+                        $fail('No se puede crear una referencia circular en las reversiones de asientos contables.');
+                    }
+                }
+            ],
             'reversal_reason' => ['nullable', 'string'],
             'metadata' => ['nullable', 'array'],
             'metadata' => ['nullable', 'array'],
         ];
+    }
+
+    /**
+     * Check if setting reversal_of_id would create a circular reference
+     *
+     * AC-007: Prevent circular references in journal reversals
+     *
+     * @param JournalEntry|null $currentEntry
+     * @param int $proposedReversalId
+     * @return bool
+     */
+    protected function wouldCreateCircularReference(?JournalEntry $currentEntry, int $proposedReversalId): bool
+    {
+        // If creating a new entry, just check if proposed reversal exists
+        if (!$currentEntry || !$currentEntry->exists) {
+            return false;
+        }
+
+        // Cannot reverse itself
+        if ($currentEntry->id === $proposedReversalId) {
+            return true;
+        }
+
+        // Check if the proposed reversal is already a reversal of the current entry
+        // This would create a direct circular reference: A -> B and B -> A
+        $proposedEntry = JournalEntry::find($proposedReversalId);
+        if ($proposedEntry && $proposedEntry->reversal_of_id === $currentEntry->id) {
+            return true;
+        }
+
+        // Check if the proposed reversal is a descendant of the current entry
+        // This prevents chains like: A -> B -> C, then trying to set C -> A
+        $visited = [];
+        $checkId = $proposedReversalId;
+
+        while ($checkId !== null) {
+            // Prevent infinite loops in case there are existing circular references
+            if (in_array($checkId, $visited)) {
+                return true;
+            }
+
+            $visited[] = $checkId;
+
+            // If we reach the current entry, it's circular
+            if ($checkId === $currentEntry->id) {
+                return true;
+            }
+
+            // Move up the chain
+            $entry = JournalEntry::find($checkId);
+            $checkId = $entry?->reversal_of_id;
+        }
+
+        return false;
     }
 
     public function messages(): array
