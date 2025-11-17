@@ -48,7 +48,9 @@ class FinanceServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        // $this->commands([]);
+        $this->commands([
+            \Modules\Finance\Console\Commands\CheckOverdueInvoices::class,
+        ]);
     }
 
     /**
