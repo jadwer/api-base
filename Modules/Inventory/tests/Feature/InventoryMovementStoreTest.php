@@ -76,7 +76,17 @@ class InventoryMovementStoreTest extends TestCase
         $admin = $this->getAdminUser();
         $product = Product::factory()->create();
         $warehouse = Warehouse::factory()->create();
-        
+
+        // Create initial stock to allow exit movement
+        \Modules\Inventory\Models\Stock::factory()->create([
+            'product_id' => $product->id,
+            'warehouse_id' => $warehouse->id,
+            'quantity' => 100.0, // Enough stock for the exit
+            'reserved_quantity' => 0,
+            'unit_cost' => 25.75,
+            'status' => 'active'
+        ]);
+
         $data = [
             'type' => 'inventory-movements',
             'attributes' => [
@@ -100,12 +110,19 @@ class InventoryMovementStoreTest extends TestCase
             ->post('/api/v1/inventory-movements');
 
         $response->assertCreated();
-        
+
         $this->assertDatabaseHas('inventory_movements', [
             'movement_type' => 'exit',
             'reference_type' => 'sale',
             'reference_id' => 123,
             'quantity' => 50.0000
+        ]);
+
+        // Verify stock was updated
+        $this->assertDatabaseHas('stock', [
+            'product_id' => $product->id,
+            'warehouse_id' => $warehouse->id,
+            'quantity' => 50.0000 // 100 - 50 = 50
         ]);
     }
 
@@ -115,7 +132,17 @@ class InventoryMovementStoreTest extends TestCase
         $product = Product::factory()->create();
         $sourceWarehouse = Warehouse::factory()->create(['name' => 'Source Warehouse']);
         $destinationWarehouse = Warehouse::factory()->create(['name' => 'Destination Warehouse']);
-        
+
+        // Create initial stock in source warehouse to allow transfer
+        \Modules\Inventory\Models\Stock::factory()->create([
+            'product_id' => $product->id,
+            'warehouse_id' => $sourceWarehouse->id,
+            'quantity' => 100.0, // Enough stock for the transfer
+            'reserved_quantity' => 0,
+            'unit_cost' => 15.50,
+            'status' => 'active'
+        ]);
+
         $data = [
             'type' => 'inventory-movements',
             'attributes' => [
@@ -138,12 +165,26 @@ class InventoryMovementStoreTest extends TestCase
             ->post('/api/v1/inventory-movements');
 
         $response->assertCreated();
-        
+
         $this->assertDatabaseHas('inventory_movements', [
             'movement_type' => 'transfer',
             'warehouse_id' => $sourceWarehouse->id,
             'destination_warehouse_id' => $destinationWarehouse->id,
             'quantity' => 75.0000
+        ]);
+
+        // Verify stock was updated in source warehouse (decreased)
+        $this->assertDatabaseHas('stock', [
+            'product_id' => $product->id,
+            'warehouse_id' => $sourceWarehouse->id,
+            'quantity' => 25.0000 // 100 - 75 = 25
+        ]);
+
+        // Verify stock was created/updated in destination warehouse (increased)
+        $this->assertDatabaseHas('stock', [
+            'product_id' => $product->id,
+            'warehouse_id' => $destinationWarehouse->id,
+            'quantity' => 75.0000 // 0 + 75 = 75
         ]);
     }
 
