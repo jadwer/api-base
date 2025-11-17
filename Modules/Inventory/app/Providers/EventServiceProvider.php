@@ -16,6 +16,11 @@ class EventServiceProvider extends ServiceProvider
         \Modules\Purchase\Events\PurchaseOrderReceived::class => [
             \Modules\Inventory\Listeners\PurchaseOrderReceivedListener::class,
         ],
+
+        // IV-010: Listen to inventory movements for GL integration
+        \Modules\Inventory\Events\InventoryMovementCreated::class => [
+            \Modules\Inventory\Listeners\PostInventoryMovementToGL::class,
+        ],
     ];
 
     /**

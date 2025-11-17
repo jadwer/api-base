@@ -47,6 +47,22 @@ class SalesOrderItem extends Model
         'updated_at' => 'datetime',
     ];
 
+    /**
+     * Boot the model.
+     * Auto-calculate total when quantity, unit_price, or discount changes
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Auto-calculate total before saving
+        static::saving(function ($item) {
+            if ($item->quantity && $item->unit_price) {
+                $item->total = ($item->quantity * $item->unit_price) - ($item->discount ?? 0);
+            }
+        });
+    }
+
     // Activity Log configuration
     public function getActivitylogOptions(): LogOptions
     {

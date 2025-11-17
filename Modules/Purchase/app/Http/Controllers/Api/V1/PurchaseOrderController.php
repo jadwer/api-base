@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use LaravelJsonApi\Laravel\Http\Controllers\Actions;
 use Modules\Purchase\Models\PurchaseOrder;
+use Modules\Purchase\Services\PurchaseOrderApprovalService;
 use Modules\Contacts\Models\Contact;
 use Carbon\Carbon;
 
@@ -135,5 +136,124 @@ class PurchaseOrderController extends Controller
                 'generated_at' => now()->toISOString(),
             ]
         ]);
+    }
+
+    /**
+     * Approve a purchase order
+     * POST /api/v1/purchase-orders/{id}/approve
+     */
+    public function approve(Request $request, PurchaseOrder $purchaseOrder, PurchaseOrderApprovalService $approvalService): JsonResponse
+    {
+        $request->validate([
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        try {
+            $userId = $request->user()->id;
+            $notes = $request->input('notes', '');
+
+            // Check if user has permission to approve this order
+            $requiredApprovers = $approvalService->getRequiredApprovers($purchaseOrder);
+            $userPermissions = $request->user()->getAllPermissions()->pluck('name');
+
+            $canApprove = $requiredApprovers->contains(function ($approver) use ($userPermissions) {
+                return $userPermissions->contains($approver['permission']);
+            });
+
+            if (!$canApprove) {
+                return response()->json([
+                    'errors' => [
+                        [
+                            'status' => '403',
+                            'title' => 'Forbidden',
+                            'detail' => 'You do not have permission to approve this purchase order.',
+                        ]
+                    ]
+                ], 403);
+            }
+
+            // Approve the order
+            $allApproved = $approvalService->approve($purchaseOrder, $userId, $notes);
+
+            $purchaseOrder->refresh();
+
+            return response()->json([
+                'data' => [
+                    'id' => (string) $purchaseOrder->id,
+                    'type' => 'purchase-orders',
+                    'attributes' => [
+                        'approval_status' => $purchaseOrder->approval_status,
+                        'approved_at' => $purchaseOrder->approved_at?->toISOString(),
+                        'approved_by_id' => $purchaseOrder->approved_by_id,
+                        'all_approved' => $allApproved,
+                        'approval_history' => $approvalService->getApprovalHistory($purchaseOrder)->toArray(),
+                        'required_approvers' => $requiredApprovers->toArray(),
+                    ]
+                ],
+                'meta' => [
+                    'message' => $allApproved
+                        ? 'Purchase order has been fully approved.'
+                        : 'Your approval has been recorded. Additional approvals are required.',
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => [
+                    [
+                        'status' => '400',
+                        'title' => 'Approval Failed',
+                        'detail' => $e->getMessage(),
+                    ]
+                ]
+            ], 400);
+        }
+    }
+
+    /**
+     * Reject a purchase order
+     * POST /api/v1/purchase-orders/{id}/reject
+     */
+    public function reject(Request $request, PurchaseOrder $purchaseOrder, PurchaseOrderApprovalService $approvalService): JsonResponse
+    {
+        $request->validate([
+            'reason' => 'required|string|max:500',
+        ]);
+
+        try {
+            $userId = $request->user()->id;
+            $reason = $request->input('reason');
+
+            // Reject the order
+            $approvalService->reject($purchaseOrder, $userId, $reason);
+
+            $purchaseOrder->refresh();
+
+            return response()->json([
+                'data' => [
+                    'id' => (string) $purchaseOrder->id,
+                    'type' => 'purchase-orders',
+                    'attributes' => [
+                        'approval_status' => $purchaseOrder->approval_status,
+                        'status' => $purchaseOrder->status,
+                        'rejection_reason' => $reason,
+                    ]
+                ],
+                'meta' => [
+                    'message' => 'Purchase order has been rejected.',
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => [
+                    [
+                        'status' => '400',
+                        'title' => 'Rejection Failed',
+                        'detail' => $e->getMessage(),
+                    ]
+                ]
+            ], 400);
+        }
     }
 }

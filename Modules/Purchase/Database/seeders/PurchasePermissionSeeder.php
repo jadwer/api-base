@@ -36,6 +36,12 @@ class PurchasePermissionSeeder extends Seeder
             'purchase-order-items.store',
             'purchase-order-items.update',
             'purchase-order-items.destroy',
+
+            // Purchase Order Approval permissions (PU-001)
+            'purchase.approve-tier1',        // Procurement Manager: >50K
+            'purchase.approve-tier2',        // Finance Director: >250K
+            'purchase.approve-tier3',        // CFO: >1M
+            'purchase.approve-new-supplier', // Approve first-time suppliers
         ];
 
         $this->bulkCreatePermissions($permissions);

@@ -5,6 +5,7 @@ namespace Modules\Ecommerce\Services;
 use Modules\Ecommerce\Models\CheckoutSession;
 use Modules\Ecommerce\Models\InventoryReservation;
 use Modules\Inventory\Models\Stock;
+use Modules\Inventory\Models\ProductBatch;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -31,33 +32,42 @@ class InventoryReservationService
 
         DB::transaction(function () use ($session, $cart, &$reservations) {
             foreach ($cart->cartItems as $item) {
-                // Find available stock
-                $stock = Stock::where('product_id', $item->product_id)
-                    ->where('quantity_on_hand', '>=', $item->quantity)
-                    ->lockForUpdate() // Pessimistic locking to prevent race conditions
-                    ->first();
+                // Try to reserve from batch using FEFO strategy first
+                $batch = $this->selectBatchFEFO($item->product_id, $item->quantity);
 
-                if (!$stock) {
-                    throw new \Exception("Insufficient stock for product: {$item->product->name}");
+                if ($batch) {
+                    // Reserve from batch (FEFO strategy)
+                    $reservation = $this->reserveFromBatch($session, $item, $batch);
+                    $reservations[] = $reservation;
+                } else {
+                    // Fallback to Stock if no batches available
+                    $stock = Stock::where('product_id', $item->product_id)
+                        ->where('quantity_on_hand', '>=', $item->quantity)
+                        ->lockForUpdate() // Pessimistic locking to prevent race conditions
+                        ->first();
+
+                    if (!$stock) {
+                        throw new \Exception("Insufficient stock for product: {$item->product->name}");
+                    }
+
+                    // Create reservation
+                    $reservation = InventoryReservation::create([
+                        'checkout_session_id' => $session->id,
+                        'stock_id' => $stock->id,
+                        'product_id' => $item->product_id,
+                        'warehouse_id' => $stock->warehouse_id,
+                        'quantity_reserved' => $item->quantity,
+                        'status' => 'active',
+                        'expires_at' => now()->addMinutes(30), // Same as checkout session
+                        'notes' => "Reserved for checkout session #{$session->id}",
+                    ]);
+
+                    // Update stock (reduce available)
+                    $stock->decrement('quantity_on_hand', $item->quantity);
+                    $stock->increment('quantity_reserved', $item->quantity);
+
+                    $reservations[] = $reservation;
                 }
-
-                // Create reservation
-                $reservation = InventoryReservation::create([
-                    'checkout_session_id' => $session->id,
-                    'stock_id' => $stock->id,
-                    'product_id' => $item->product_id,
-                    'warehouse_id' => $stock->warehouse_id,
-                    'quantity_reserved' => $item->quantity,
-                    'status' => 'active',
-                    'expires_at' => now()->addMinutes(30), // Same as checkout session
-                    'notes' => "Reserved for checkout session #{$session->id}",
-                ]);
-
-                // Update stock (reduce available)
-                $stock->decrement('quantity_on_hand', $item->quantity);
-                $stock->increment('quantity_reserved', $item->quantity);
-
-                $reservations[] = $reservation;
             }
         });
 
@@ -238,5 +248,73 @@ class InventoryReservationService
         $reservation->update([
             'expires_at' => $newExpirationTime,
         ]);
+    }
+
+    /**
+     * Select batch using FEFO (First Expired First Out) strategy
+     *
+     * IV-002: FEFO Strategy - Select batches with earliest expiration
+     *
+     * @param int $productId
+     * @param float $quantity
+     * @param int|null $warehouseId
+     * @return ProductBatch|null
+     */
+    public function selectBatchFEFO(int $productId, float $quantity, ?int $warehouseId = null): ?ProductBatch
+    {
+        $query = ProductBatch::where('product_id', $productId)
+            ->where('status', 'active')
+            ->where('available_quantity', '>=', $quantity);
+
+        if ($warehouseId) {
+            $query->where('warehouse_id', $warehouseId);
+        }
+
+        // FEFO: Order by expiration_date ASC (earliest first)
+        // Batches without expiration date go last
+        return $query
+            ->orderByRaw('CASE WHEN expiration_date IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('expiration_date', 'ASC')
+            ->lockForUpdate()
+            ->first();
+    }
+
+    /**
+     * Reserve from batch using FEFO strategy
+     *
+     * @param CheckoutSession $session
+     * @param object $cartItem
+     * @param ProductBatch $batch
+     * @return InventoryReservation
+     */
+    private function reserveFromBatch(CheckoutSession $session, $cartItem, ProductBatch $batch): InventoryReservation
+    {
+        // Prepare notes with batch information
+        $batchInfo = json_encode([
+            'batch_id' => $batch->id,
+            'batch_number' => $batch->batch_number,
+            'expiration_date' => $batch->expiration_date?->format('Y-m-d'),
+        ]);
+        $notes = "Reserved from batch #{$batch->batch_number} (FEFO) for checkout #{$session->id}. Batch info: {$batchInfo}";
+
+        // Create reservation
+        // Note: stock_id is nullable, so we can skip it for batch-based reservations
+        $reservation = InventoryReservation::create([
+            'checkout_session_id' => $session->id,
+            'stock_id' => null, // Batch-based reservation doesn't use stock_id
+            'product_id' => $cartItem->product_id,
+            'warehouse_id' => $batch->warehouse_id,
+            'quantity_reserved' => $cartItem->quantity,
+            'status' => 'active',
+            'expires_at' => now()->addMinutes(30),
+            'notes' => $notes,
+        ]);
+
+        // Update batch quantities
+        $batch->decrement('current_quantity', $cartItem->quantity);
+        $batch->increment('reserved_quantity', $cartItem->quantity);
+        // available_quantity is auto-calculated: current_quantity - reserved_quantity
+
+        return $reservation;
     }
 }

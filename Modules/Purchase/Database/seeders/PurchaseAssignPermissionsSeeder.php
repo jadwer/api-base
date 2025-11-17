@@ -33,6 +33,10 @@ class PurchaseAssignPermissionsSeeder extends Seeder
             'purchase-order-items.store',
             'purchase-order-items.update',
             'purchase-order-items.destroy',
+            'purchase.approve-tier1',
+            'purchase.approve-tier2',
+            'purchase.approve-tier3',
+            'purchase.approve-new-supplier',
         ];
 
         foreach ($permissions as $permissionName) {

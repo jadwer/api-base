@@ -13,6 +13,8 @@ use Spatie\Activitylog\LogOptions;
 use Modules\Purchase\Database\Factories\PurchaseOrderFactory;
 use Modules\Contacts\Models\Contact;
 use Modules\Finance\Models\APInvoice;
+use Modules\User\Models\User;
+use Modules\Purchase\Services\PurchaseOrderApprovalService;
 
 class PurchaseOrder extends Model
 {
@@ -40,6 +42,10 @@ class PurchaseOrder extends Model
             'ap_invoice_id' => 'integer',
             'invoicing_status' => 'string',
             'financial_status' => 'string',
+            'approval_status' => 'string',
+            'approved_at' => 'datetime',
+            'approved_by_id' => 'integer',
+            'metadata' => 'array',
         ];
     }
 
@@ -63,6 +69,30 @@ class PurchaseOrder extends Model
     protected static function newFactory(): PurchaseOrderFactory
     {
         return PurchaseOrderFactory::new();
+    }
+
+    /**
+     * Boot method to set initial approval status
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // PU-001: Automatically set approval status on creation
+        static::creating(function ($order) {
+            if (!isset($order->approval_status)) {
+                // Simple check during creation based on amount threshold only
+                // Full approval check (including first-time supplier, high-value items)
+                // should be done explicitly via requiresApproval() method
+                $threshold = config('purchase.approval_threshold', 50000);
+
+                if ($order->total_amount > $threshold) {
+                    $order->approval_status = 'pending';
+                } else {
+                    $order->approval_status = 'not_required';
+                }
+            }
+        });
     }
 
     // ========== RELATIONSHIPS ==========
@@ -105,6 +135,66 @@ class PurchaseOrder extends Model
     public function apInvoices(): HasMany
     {
         return $this->hasMany(APInvoice::class, 'purchase_order_id');
+    }
+
+    /**
+     * Get the user who approved this order.
+     */
+    public function approvedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approved_by_id');
+    }
+
+    // ========== APPROVAL METHODS (PU-001) ==========
+
+    /**
+     * Check if this purchase order requires approval
+     *
+     * @return bool
+     */
+    public function requiresApproval(): bool
+    {
+        $approvalService = app(PurchaseOrderApprovalService::class);
+        return $approvalService->requiresApproval($this);
+    }
+
+    /**
+     * Approve this purchase order
+     *
+     * @param int $userId
+     * @param string $notes
+     * @return bool
+     * @throws \Exception
+     */
+    public function approve(int $userId, string $notes = ''): bool
+    {
+        $approvalService = app(PurchaseOrderApprovalService::class);
+        return $approvalService->approve($this, $userId, $notes);
+    }
+
+    /**
+     * Reject this purchase order
+     *
+     * @param int $userId
+     * @param string $reason
+     * @return bool
+     * @throws \Exception
+     */
+    public function reject(int $userId, string $reason): bool
+    {
+        $approvalService = app(PurchaseOrderApprovalService::class);
+        return $approvalService->reject($this, $userId, $reason);
+    }
+
+    /**
+     * Get approval history for this order
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getApprovalHistory(): \Illuminate\Support\Collection
+    {
+        $approvalService = app(PurchaseOrderApprovalService::class);
+        return $approvalService->getApprovalHistory($this);
     }
 
     // ========== SCOPES ==========

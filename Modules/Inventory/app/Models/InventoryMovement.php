@@ -109,6 +109,20 @@ class InventoryMovement extends Model
     public const REFERENCE_TYPE_MANUAL = 'manual';
 
     /**
+     * Boot method to dispatch events
+     * IV-010: Trigger GL posting when movement is created
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($movement) {
+            // Dispatch event for GL integration
+            event(new \Modules\Inventory\Events\InventoryMovementCreated($movement));
+        });
+    }
+
+    /**
      * Configuración de Activity Log
      */
     public function getActivitylogOptions(): LogOptions

@@ -4,7 +4,9 @@ namespace Modules\Sales\Services;
 
 use Modules\Sales\Models\SalesOrder;
 use Modules\Ecommerce\Services\Notifications\OrderNotificationService;
+use Modules\Inventory\Models\Stock;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class OrderStatusService
@@ -22,7 +24,7 @@ class OrderStatusService
      * @var array
      */
     private array $validTransitions = [
-        'draft' => ['pending', 'cancelled'],
+        'draft' => ['pending', 'confirmed', 'cancelled'],
         'pending' => ['confirmed', 'cancelled'],
         'confirmed' => ['processing', 'cancelled'],
         'processing' => ['shipped', 'cancelled'],
@@ -176,6 +178,11 @@ class OrderStatusService
     private function handleStatusChange(SalesOrder $order, string $newStatus): void
     {
         switch ($newStatus) {
+            case 'confirmed':
+                // SA-004: Reserve inventory when order confirmed
+                $this->reserveInventory($order);
+                break;
+
             case 'shipped':
                 // Generate tracking number if not exists
                 if (!$order->tracking_number) {
@@ -206,6 +213,9 @@ class OrderStatusService
                 break;
 
             case 'cancelled':
+                // SA-004: Release inventory when order cancelled
+                $this->releaseInventory($order);
+
                 // Mark as cancelled
                 $order->update([
                     'metadata' => array_merge(
@@ -286,5 +296,143 @@ class OrderStatusService
         $random = strtoupper(substr(md5(uniqid()), 0, 8));
 
         return "{$prefix}-{$date}-{$random}";
+    }
+
+    /**
+     * Reserve inventory for sales order (SA-004)
+     *
+     * Increments Stock.reserved_quantity and decrements Stock.quantity
+     * when order is confirmed.
+     *
+     * @param SalesOrder $order
+     * @return void
+     */
+    private function reserveInventory(SalesOrder $order): void
+    {
+        // Load items if not already loaded
+        if (!$order->relationLoaded('items')) {
+            $order->load('items');
+        }
+
+        // Get warehouse ID from order metadata or use default
+        $warehouseId = $order->metadata['warehouse_id'] ?? null;
+
+        foreach ($order->items as $item) {
+            try {
+                // Find stock record
+                $stockQuery = Stock::where('product_id', $item->product_id);
+
+                if ($warehouseId) {
+                    $stockQuery->where('warehouse_id', $warehouseId);
+                }
+
+                $stock = $stockQuery->lockForUpdate()->first();
+
+                if (!$stock) {
+                    Log::warning('Stock not found for reservation', [
+                        'order_id' => $order->id,
+                        'product_id' => $item->product_id,
+                        'warehouse_id' => $warehouseId,
+                    ]);
+                    continue;
+                }
+
+                // Check if sufficient quantity available
+                if ($stock->quantity < $item->quantity) {
+                    Log::error('Insufficient stock for reservation', [
+                        'order_id' => $order->id,
+                        'product_id' => $item->product_id,
+                        'required' => $item->quantity,
+                        'available' => $stock->quantity,
+                    ]);
+                    throw new \Exception("Insufficient stock for product ID: {$item->product_id}");
+                }
+
+                // Reserve inventory
+                $stock->decrement('quantity', $item->quantity);
+                $stock->increment('reserved_quantity', $item->quantity);
+
+                Log::info('Inventory reserved for sales order', [
+                    'order_id' => $order->id,
+                    'order_number' => $order->order_number,
+                    'product_id' => $item->product_id,
+                    'quantity' => $item->quantity,
+                    'stock_id' => $stock->id,
+                ]);
+
+            } catch (\Exception $e) {
+                Log::error('Failed to reserve inventory for sales order', [
+                    'order_id' => $order->id,
+                    'product_id' => $item->product_id,
+                    'error' => $e->getMessage(),
+                ]);
+
+                // Re-throw to rollback transaction
+                throw $e;
+            }
+        }
+    }
+
+    /**
+     * Release inventory reservation for sales order (SA-004)
+     *
+     * Decrements Stock.reserved_quantity and increments Stock.quantity
+     * when order is cancelled.
+     *
+     * @param SalesOrder $order
+     * @return void
+     */
+    private function releaseInventory(SalesOrder $order): void
+    {
+        // Load items if not already loaded
+        if (!$order->relationLoaded('items')) {
+            $order->load('items');
+        }
+
+        // Get warehouse ID from order metadata or use default
+        $warehouseId = $order->metadata['warehouse_id'] ?? null;
+
+        foreach ($order->items as $item) {
+            try {
+                // Find stock record
+                $stockQuery = Stock::where('product_id', $item->product_id);
+
+                if ($warehouseId) {
+                    $stockQuery->where('warehouse_id', $warehouseId);
+                }
+
+                $stock = $stockQuery->lockForUpdate()->first();
+
+                if (!$stock) {
+                    Log::warning('Stock not found for release', [
+                        'order_id' => $order->id,
+                        'product_id' => $item->product_id,
+                        'warehouse_id' => $warehouseId,
+                    ]);
+                    continue;
+                }
+
+                // Release reservation
+                $stock->increment('quantity', $item->quantity);
+                $stock->decrement('reserved_quantity', $item->quantity);
+
+                Log::info('Inventory reservation released for sales order', [
+                    'order_id' => $order->id,
+                    'order_number' => $order->order_number,
+                    'product_id' => $item->product_id,
+                    'quantity' => $item->quantity,
+                    'stock_id' => $stock->id,
+                ]);
+
+            } catch (\Exception $e) {
+                Log::error('Failed to release inventory for sales order', [
+                    'order_id' => $order->id,
+                    'product_id' => $item->product_id,
+                    'error' => $e->getMessage(),
+                ]);
+
+                // Log error but don't throw - allow cancellation to proceed
+            }
+        }
     }
 }
