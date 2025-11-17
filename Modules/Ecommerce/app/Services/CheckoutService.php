@@ -283,6 +283,9 @@ class CheckoutService
             // Fulfill inventory reservations
             $this->fulfillInventoryReservations($session);
 
+            // Emit event for Finance integration (AR Invoice creation)
+            event(new \Modules\Sales\Events\SalesOrderCompleted($order));
+
             return $order;
         });
     }
