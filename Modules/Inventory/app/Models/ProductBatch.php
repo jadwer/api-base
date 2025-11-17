@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property float $unit_cost
  * @property float $total_value
  * @property string $status
+ * @property string $quality_status IV-009: Quality control status (pending|in_testing|passed|failed|quarantine)
  * @property string|null $supplier_name
  * @property string|null $supplier_batch
  * @property string|null $quality_notes

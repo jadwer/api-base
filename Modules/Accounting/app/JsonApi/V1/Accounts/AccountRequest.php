@@ -4,6 +4,7 @@ namespace Modules\Accounting\JsonApi\V1\Accounts;
 
 use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
 use Illuminate\Validation\Rule;
+use Modules\Accounting\Services\AccountHierarchyService;
 
 class AccountRequest extends ResourceRequest
 {
@@ -57,5 +58,43 @@ class AccountRequest extends ResourceRequest
             'status.max' => 'El campo Status no puede tener más de 255 caracteres.',
             'metadata.array' => 'El campo Metadata debe ser un arreglo.',
         ];
+    }
+
+    /**
+     * AC-007: Validate account hierarchy to prevent circular references
+     *
+     * @param \Illuminate\Validation\Validator $validator
+     * @return void
+     */
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            $data = $validator->validated();
+
+            // Only validate if parentId is being set
+            if (!isset($data['parentId'])) {
+                return;
+            }
+
+            $account = $this->model();
+            $accountId = $account?->id;
+
+            // Skip validation if creating a new account (no ID yet)
+            if (!$accountId) {
+                return;
+            }
+
+            $hierarchyService = app(AccountHierarchyService::class);
+
+            try {
+                // Validate no circular reference
+                $hierarchyService->validateNoCircularReference($accountId, $data['parentId']);
+
+                // Validate max depth (5 levels)
+                $hierarchyService->validateMaxDepth($accountId, 5);
+            } catch (\Exception $e) {
+                $validator->errors()->add('parentId', $e->getMessage());
+            }
+        });
     }
 }

@@ -130,6 +130,113 @@ class ARInvoiceService
     }
 
     /**
+     * Create AR Invoice from Sales Order
+     *
+     * SA-M001: Automatically generates an AR Invoice when a Sales Order is delivered
+     *
+     * @param \Modules\Sales\Models\SalesOrder $salesOrder
+     * @return ARInvoice
+     * @throws \Exception
+     */
+    public function createFromSalesOrder($salesOrder): ARInvoice
+    {
+        // Validate sales order is delivered
+        if ($salesOrder->status !== 'delivered') {
+            throw new \Exception("Sales Order #{$salesOrder->order_number} must be delivered before invoicing.");
+        }
+
+        // Check if invoice already exists for this order
+        if ($this->invoiceExistsForOrder($salesOrder->id)) {
+            throw new \Exception("AR Invoice already exists for Sales Order #{$salesOrder->order_number}.");
+        }
+
+        // Validate customer is active
+        if (!$salesOrder->contact || !$salesOrder->contact->isActive()) {
+            throw new \Exception("Customer must be active to create invoice.");
+        }
+
+        // Calculate due date based on payment terms (default 30 days)
+        $paymentTerms = $salesOrder->contact->payment_terms ?? 30;
+        $dueDate = now()->addDays($paymentTerms);
+
+        // Prepare data for invoice creation
+        $invoiceData = [
+            'invoiceDate' => now(),
+            'dueDate' => $dueDate,
+            'contactId' => $salesOrder->contact_id,
+            'currency' => 'MXN',
+            'subtotal' => $salesOrder->total_amount - ($salesOrder->discount_total ?? 0),
+            'taxAmount' => 0, // TODO: Calculate tax if needed
+            'totalAmount' => $salesOrder->total_amount,
+            'notes' => "Auto-generated from Sales Order #{$salesOrder->order_number}",
+            'metadata' => [
+                'auto_generated' => true,
+                'generated_at' => now()->toDateTimeString(),
+                'source_order' => $salesOrder->order_number,
+                'sales_order_id' => $salesOrder->id,
+            ],
+        ];
+
+        // Create invoice using existing service method
+        $arInvoice = $this->createInvoice($invoiceData);
+
+        // Update sales order with invoice reference
+        $salesOrder->update([
+            'ar_invoice_id' => $arInvoice->id,
+            'invoicing_status' => 'invoiced',
+        ]);
+
+        Log::info('AR Invoice auto-created from Sales Order', [
+            'invoice_id' => $arInvoice->id,
+            'invoice_number' => $arInvoice->invoice_number,
+            'sales_order_id' => $salesOrder->id,
+            'sales_order_number' => $salesOrder->order_number,
+            'amount' => $arInvoice->total_amount,
+        ]);
+
+        return $arInvoice;
+    }
+
+    /**
+     * Check if an AR Invoice already exists for a given Sales Order
+     *
+     * @param int $salesOrderId
+     * @return bool
+     */
+    public function invoiceExistsForOrder(int $salesOrderId): bool
+    {
+        return ARInvoice::where('sales_order_id', $salesOrderId)
+            ->where('is_active', true)
+            ->exists();
+    }
+
+    /**
+     * Determine if an invoice can be generated for a Sales Order
+     *
+     * @param \Modules\Sales\Models\SalesOrder $salesOrder
+     * @return bool
+     */
+    public function canGenerateInvoice($salesOrder): bool
+    {
+        // Must be delivered
+        if ($salesOrder->status !== 'delivered') {
+            return false;
+        }
+
+        // Must not already have an invoice
+        if ($this->invoiceExistsForOrder($salesOrder->id)) {
+            return false;
+        }
+
+        // Customer must be active
+        if (!$salesOrder->contact || !$salesOrder->contact->isActive()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Actualizar AR Invoice
      *
      * NOTA: No actualiza el GL entry existente. Para eso se debe crear un reversal + nuevo entry.

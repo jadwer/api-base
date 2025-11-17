@@ -40,7 +40,14 @@ class APInvoiceSchema extends Schema
             Str::make('notes'),
             ArrayHash::make('metadata'),
             Boolean::make('isActive')->sortable(),
-            
+
+            // PU-M002: Reconciliation fields
+            Str::make('reconciliationStatus')->sortable(),
+            DateTime::make('reconciledAt')->sortable(),
+            Number::make('reconciledBy')->sortable(),
+            Str::make('reconciliationNotes'),
+            ArrayHash::make('discrepancies'),
+
             // Timestamps
             DateTime::make('createdAt')->sortable()->readOnly(),
             DateTime::make('updatedAt')->sortable()->readOnly(),
@@ -49,6 +56,7 @@ class APInvoiceSchema extends Schema
             BelongsTo::make('contact'),
             BelongsTo::make('purchaseOrder'),
             BelongsTo::make('journalEntry'),
+            BelongsTo::make('reconciledBy', 'reconciledBy')->type('users'),
         ];
     }
 
@@ -63,6 +71,8 @@ class APInvoiceSchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('status'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('journal_entry_id'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('is_active'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('reconciliation_status'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('reconciled_by'),
         ];
     }
 
@@ -72,6 +82,7 @@ class APInvoiceSchema extends Schema
             'contact',
             'purchaseOrder',
             'journalEntry',
+            'reconciledBy',
         ];
     }
 

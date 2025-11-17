@@ -16,18 +16,21 @@ class APInvoice extends Model
     protected $table = 'ap_invoices';
 
     protected $fillable = [
-        'invoice_number', 'invoice_date', 'due_date', 'contact_id', 'purchase_order_id', 'currency', 'subtotal', 'tax_amount', 'total_amount', 'paid_amount', 'status', 'journal_entry_id', 'fiscal_period_id', 'notes', 'metadata', 'is_active'
+        'invoice_number', 'invoice_date', 'due_date', 'contact_id', 'purchase_order_id', 'currency', 'subtotal', 'tax_amount', 'total_amount', 'paid_amount', 'status', 'journal_entry_id', 'fiscal_period_id', 'notes', 'metadata', 'is_active',
+        'reconciliation_status', 'reconciled_at', 'reconciled_by', 'reconciliation_notes', 'discrepancies'
     ];
 
     protected $casts = [
-                'invoice_date' => 'date',
+        'invoice_date' => 'date',
         'due_date' => 'date',
         'subtotal' => 'float',
         'tax_amount' => 'float',
         'total_amount' => 'float',
         'paid_amount' => 'float',
         'metadata' => 'array',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
+        'reconciled_at' => 'datetime',
+        'discrepancies' => 'array'
     ];
 
     // Scopes
@@ -49,6 +52,11 @@ class APInvoice extends Model
     public function journalEntry()
     {
         return $this->belongsTo(JournalEntry::class);
+    }
+
+    public function reconciledBy()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'reconciled_by');
     }
 
     // Legacy alias for backward compatibility

@@ -27,6 +27,9 @@ class SalesServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'Database/migrations'));
+
+        // SA-M001: Register SalesOrder observer for auto-invoicing
+        \Modules\Sales\Models\SalesOrder::observe(\Modules\Sales\Observers\SalesOrderObserver::class);
     }
 
     /**

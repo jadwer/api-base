@@ -83,6 +83,8 @@ class InventoryMovement extends Model
         'quality_checked' => 'boolean',
         'quality_checked_at' => 'datetime',
         'quality_checked_by' => 'integer',
+        'approved_by' => 'integer',
+        'approved_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -334,6 +336,94 @@ class InventoryMovement extends Model
     public function qualityChecker(): BelongsTo
     {
         return $this->belongsTo(\Modules\User\Models\User::class, 'quality_checked_by');
+    }
+
+    /**
+     * IV-007: El movimiento puede tener un usuario que aprobó el ajuste.
+     */
+    public function approvedBy(): BelongsTo
+    {
+        return $this->belongsTo(\Modules\User\Models\User::class, 'approved_by');
+    }
+
+    /**
+     * IV-007: Approve adjustment movement
+     *
+     * Only adjustments require approval. This method updates the approval status
+     * and marks the movement as approved.
+     *
+     * @param int $userId User ID performing the approval
+     * @param string|null $notes Optional approval notes
+     * @return bool
+     * @throws \Exception If movement is not an adjustment or already approved
+     */
+    public function approve(int $userId, ?string $notes = null): bool
+    {
+        if (!$this->isAdjustment()) {
+            throw new \Exception('Only adjustment movements require approval');
+        }
+
+        if ($this->approval_status === 'approved') {
+            return true; // Already approved
+        }
+
+        if ($this->approval_status === 'rejected') {
+            throw new \Exception('Cannot approve a rejected movement');
+        }
+
+        $this->update([
+            'approval_status' => 'approved',
+            'approved_by' => $userId,
+            'approved_at' => now(),
+            'approval_notes' => $notes,
+        ]);
+
+        \Illuminate\Support\Facades\Log::info('Inventory adjustment approved', [
+            'movement_id' => $this->id,
+            'movement_type' => $this->movement_type,
+            'product_id' => $this->product_id,
+            'quantity' => $this->quantity,
+            'approved_by' => $userId,
+        ]);
+
+        return true;
+    }
+
+    /**
+     * IV-007: Reject adjustment movement
+     *
+     * @param int $userId User ID performing the rejection
+     * @param string $reason Rejection reason
+     * @return bool
+     * @throws \Exception If movement is not an adjustment
+     */
+    public function reject(int $userId, string $reason): bool
+    {
+        if (!$this->isAdjustment()) {
+            throw new \Exception('Only adjustment movements can be rejected');
+        }
+
+        if ($this->approval_status === 'approved') {
+            throw new \Exception('Cannot reject an approved movement');
+        }
+
+        $this->update([
+            'approval_status' => 'rejected',
+            'approved_by' => $userId,
+            'approved_at' => now(),
+            'approval_notes' => $reason,
+        ]);
+
+        \Illuminate\Support\Facades\Log::warning('Inventory adjustment rejected', [
+            'movement_id' => $this->id,
+            'movement_type' => $this->movement_type,
+            'product_id' => $this->product_id,
+            'quantity' => $this->quantity,
+            'rejected_by' => $userId,
+            'reason' => $reason,
+        ]);
+
+        return true;
     }
 
     /**

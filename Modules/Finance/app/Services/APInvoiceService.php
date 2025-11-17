@@ -23,7 +23,8 @@ use Illuminate\Support\Facades\Log;
 class APInvoiceService
 {
     public function __construct(
-        private AccountingService $accountingService
+        private AccountingService $accountingService,
+        private APInvoiceReconciliationService $reconciliationService
     ) {}
 
     /**
@@ -57,6 +58,7 @@ class APInvoiceService
                 'invoice_date' => $data['invoiceDate'],
                 'due_date' => $data['dueDate'],
                 'contact_id' => $data['contactId'],
+                'purchase_order_id' => $data['purchaseOrderId'] ?? null,
                 'currency' => $data['currency'] ?? 'MXN',
                 'subtotal' => $data['subtotal'],
                 'tax_amount' => $data['taxAmount'],
@@ -104,6 +106,25 @@ class APInvoiceService
                 // 6. Dispatch event for listeners (status sync, etc.)
                 event(new APInvoicePosted($invoice));
 
+                // 7. PU-M002: Auto-reconcile if linked to Purchase Order
+                if ($invoice->purchase_order_id && config('purchase.auto_reconcile_invoices', true)) {
+                    try {
+                        $this->reconciliationService->reconcileInvoice($invoice, $data['userId'] ?? null);
+                        Log::info("AP Invoice auto-reconciled with Purchase Order", [
+                            'invoice_id' => $invoice->id,
+                            'invoice_number' => $invoiceNumber,
+                            'purchase_order_id' => $invoice->purchase_order_id,
+                        ]);
+                    } catch (\Exception $e) {
+                        Log::warning("Failed to auto-reconcile AP Invoice", [
+                            'invoice_id' => $invoice->id,
+                            'invoice_number' => $invoiceNumber,
+                            'error' => $e->getMessage(),
+                        ]);
+                        // Don't throw - reconciliation can be done manually later
+                    }
+                }
+
             } catch (\Exception $e) {
                 Log::error("Failed to create GL entry for AP Invoice", [
                     'invoice_number' => $invoiceNumber,
@@ -112,8 +133,8 @@ class APInvoiceService
                 throw new \Exception("Failed to create GL entry: " . $e->getMessage());
             }
 
-            // 7. Retornar invoice con relaciones cargadas
-            return $invoice->fresh(['journalEntry', 'contact']);
+            // 8. Retornar invoice con relaciones cargadas
+            return $invoice->fresh(['journalEntry', 'contact', 'purchaseOrder']);
         });
     }
 
