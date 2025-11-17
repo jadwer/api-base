@@ -73,8 +73,13 @@ class PurchaseOrderReceivedListener
     private function createAPInvoiceFromPurchaseOrder($purchaseOrder): APInvoice
     {
         // Calculate totals from purchase order items
-        $subtotal = $purchaseOrder->items->sum(fn($item) => $item->quantity * $item->unit_price);
-        $taxAmount = $purchaseOrder->items->sum('tax_amount');
+        // Load purchase order items if not already loaded
+        if (!$purchaseOrder->relationLoaded('purchaseOrderItems')) {
+            $purchaseOrder->load('purchaseOrderItems');
+        }
+
+        $subtotal = $purchaseOrder->purchaseOrderItems->sum(fn($item) => $item->quantity * $item->unit_price);
+        $taxAmount = $purchaseOrder->purchaseOrderItems->sum('tax_amount');
         $totalAmount = $subtotal + $taxAmount;
 
         // Create AP Invoice using service

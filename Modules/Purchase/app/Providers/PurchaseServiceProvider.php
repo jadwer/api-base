@@ -27,6 +27,15 @@ class PurchaseServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'Database/migrations'));
+        $this->registerObservers();
+    }
+
+    /**
+     * Register model observers.
+     */
+    protected function registerObservers(): void
+    {
+        \Modules\Purchase\Models\PurchaseOrder::observe(\Modules\Purchase\Observers\PurchaseOrderObserver::class);
     }
 
     /**
