@@ -197,6 +197,84 @@ class PurchaseOrder extends Model
         return $approvalService->getApprovalHistory($this);
     }
 
+    // ========== RECEIVING METHODS (PU-005) ==========
+
+    /**
+     * Receive items for this purchase order
+     *
+     * @param array $items Array of ['id' => item_id, 'quantity' => received_quantity]
+     * @return void
+     * @throws \Exception
+     */
+    public function receive(array $items): void
+    {
+        \DB::transaction(function () use ($items) {
+            foreach ($items as $itemData) {
+                $item = $this->purchaseOrderItems()->find($itemData['id']);
+
+                if (!$item) {
+                    throw new \Exception("Purchase order item {$itemData['id']} not found");
+                }
+
+                $newReceived = $item->received_quantity + $itemData['quantity'];
+                $tolerance = $item->quantity * 1.05; // +5% tolerance
+
+                if ($newReceived > $tolerance) {
+                    throw new \Exception(
+                        "Over-receiving beyond 5% tolerance for item {$item->id}. " .
+                        "Ordered: {$item->quantity}, Already received: {$item->received_quantity}, " .
+                        "Attempting to receive: {$itemData['quantity']}, Total: {$newReceived}, Max allowed: {$tolerance}"
+                    );
+                }
+
+                $item->update(['received_quantity' => $newReceived]);
+
+                \Log::info('Purchase order item received', [
+                    'purchase_order_id' => $this->id,
+                    'item_id' => $item->id,
+                    'product_id' => $item->product_id,
+                    'quantity_received' => $itemData['quantity'],
+                    'total_received' => $newReceived,
+                    'quantity_ordered' => $item->quantity,
+                ]);
+            }
+
+            // Check if fully received
+            if ($this->isFullyReceived()) {
+                $this->update(['status' => 'received']);
+
+                \Log::info('Purchase order fully received', [
+                    'purchase_order_id' => $this->id,
+                    'order_date' => $this->order_date,
+                ]);
+
+                // Dispatch event if needed
+                // event(new PurchaseOrderReceived($this));
+            }
+        });
+    }
+
+    /**
+     * Check if all items have been fully received
+     *
+     * @return bool
+     */
+    public function isFullyReceived(): bool
+    {
+        // Load items if not loaded
+        if (!$this->relationLoaded('purchaseOrderItems')) {
+            $this->load('purchaseOrderItems');
+        }
+
+        foreach ($this->purchaseOrderItems as $item) {
+            if ($item->received_quantity < $item->quantity) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     // ========== SCOPES ==========
 
     /**

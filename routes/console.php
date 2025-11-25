@@ -10,3 +10,6 @@ Artisan::command('inspire', function () {
 
 // FI-002: Schedule daily overdue invoice check
 Schedule::command('finance:check-overdue')->daily();
+
+// IV-M002: Schedule daily stock reorder alerts check
+Schedule::command('inventory:check-reorder-alerts')->daily();
