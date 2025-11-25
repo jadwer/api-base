@@ -49,4 +49,43 @@ return [
     |
     */
     'auto_reconcile_invoices' => env('PURCHASE_AUTO_RECONCILE', true),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Purchase Order Approval Configuration
+    |--------------------------------------------------------------------------
+    |
+    | PU-001: Three-tier approval workflow configuration for purchase orders.
+    | Orders exceeding these thresholds require approval from designated roles.
+    |
+    */
+    'approval' => [
+        /*
+        | Amount thresholds for each approval tier
+        */
+        'thresholds' => [
+            'tier_1' => env('PURCHASE_APPROVAL_TIER1', 50000),    // Procurement Manager
+            'tier_2' => env('PURCHASE_APPROVAL_TIER2', 250000),   // Finance Director
+            'tier_3' => env('PURCHASE_APPROVAL_TIER3', 1000000),  // CFO
+        ],
+
+        /*
+        | Additional approval triggers
+        */
+        'triggers' => [
+            'first_time_supplier' => env('PURCHASE_APPROVAL_FIRST_TIME_SUPPLIER', true),
+            'high_value_item_threshold' => env('PURCHASE_APPROVAL_HIGH_VALUE_ITEM', 100000),
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Simple Approval Threshold (Legacy)
+    |--------------------------------------------------------------------------
+    |
+    | Fallback threshold used during PO creation (boot method).
+    | For full approval logic, use the 'approval.thresholds' configuration above.
+    |
+    */
+    'approval_threshold' => env('PURCHASE_APPROVAL_THRESHOLD', 50000),
 ];

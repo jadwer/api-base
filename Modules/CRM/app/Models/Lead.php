@@ -62,11 +62,10 @@ class Lead extends Model
     // }
     // TODO: Enable when Campaign entity is implemented
 
-    // public function activities()
-    // {
-    //     return $this->morphMany(Activity::class, 'activityable');
-    // }
-    // TODO: Enable when Activity entity is implemented
+    public function activities()
+    {
+        return $this->hasMany(Activity::class);
+    }
 
     // public function opportunity()
     // {

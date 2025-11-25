@@ -33,7 +33,7 @@ JsonApiRoute::server('v1')
         // $server->resource('quote-items', JsonApiController::class);
 
         // Activities - Interaction tracking (calls, emails, meetings)
-        // $server->resource('activities', JsonApiController::class);
+        $server->resource('activities', \Modules\CRM\Http\Controllers\Api\V1\ActivityController::class);
 
         // Campaigns - Marketing campaigns
         $server->resource('campaigns', \Modules\CRM\Http\Controllers\Api\V1\CampaignController::class);

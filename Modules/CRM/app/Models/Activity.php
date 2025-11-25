@@ -1,0 +1,155 @@
+<?php
+
+namespace Modules\CRM\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\CRM\Database\Factories\ActivityFactory;
+use Modules\User\Models\User;
+// use Modules\Contacts\Models\Contact; // Will be enabled when Contact module is implemented
+
+class Activity extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'type',
+        'subject',
+        'description',
+        'activity_date',
+        'duration',
+        'outcome',
+        'status',
+        'user_id',
+        'lead_id',
+        'contact_id',
+        'campaign_id',
+        'metadata',
+    ];
+
+    protected $casts = [
+        'activity_date' => 'datetime',
+        'duration' => 'integer',
+        'metadata' => 'array',
+    ];
+
+    /**
+     * Relationships
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function lead()
+    {
+        return $this->belongsTo(Lead::class);
+    }
+
+    public function campaign()
+    {
+        return $this->belongsTo(Campaign::class);
+    }
+
+    // public function contact()
+    // {
+    //     return $this->belongsTo(Contact::class);
+    // }
+    // TODO: Enable when Contact module is implemented
+
+    /**
+     * Scopes
+     */
+    public function scopeByType($query, string $type)
+    {
+        return $query->where('type', $type);
+    }
+
+    public function scopeCalls($query)
+    {
+        return $query->where('type', 'call');
+    }
+
+    public function scopeEmails($query)
+    {
+        return $query->where('type', 'email');
+    }
+
+    public function scopeMeetings($query)
+    {
+        return $query->where('type', 'meeting');
+    }
+
+    public function scopeNotes($query)
+    {
+        return $query->where('type', 'note');
+    }
+
+    public function scopeTasks($query)
+    {
+        return $query->where('type', 'task');
+    }
+
+    public function scopeByStatus($query, string $status)
+    {
+        return $query->where('status', $status);
+    }
+
+    public function scopeScheduled($query)
+    {
+        return $query->where('status', 'scheduled');
+    }
+
+    public function scopeCompleted($query)
+    {
+        return $query->where('status', 'completed');
+    }
+
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
+
+    public function scopeCancelled($query)
+    {
+        return $query->where('status', 'cancelled');
+    }
+
+    public function scopeForLead($query, int $leadId)
+    {
+        return $query->where('lead_id', $leadId);
+    }
+
+    public function scopeForCampaign($query, int $campaignId)
+    {
+        return $query->where('campaign_id', $campaignId);
+    }
+
+    public function scopeForUser($query, int $userId)
+    {
+        return $query->where('user_id', $userId);
+    }
+
+    public function scopeUpcoming($query)
+    {
+        return $query->where('activity_date', '>=', now())
+            ->where('status', 'scheduled')
+            ->orderBy('activity_date', 'asc');
+    }
+
+    public function scopePast($query)
+    {
+        return $query->where('activity_date', '<', now())
+            ->orderBy('activity_date', 'desc');
+    }
+
+    public function scopeToday($query)
+    {
+        return $query->whereDate('activity_date', today());
+    }
+
+    protected static function newFactory()
+    {
+        return ActivityFactory::new();
+    }
+}

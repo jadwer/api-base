@@ -55,6 +55,11 @@ class Campaign extends Model
         )->withTimestamps();
     }
 
+    public function activities()
+    {
+        return $this->hasMany(Activity::class);
+    }
+
     /**
      * Scopes
      */

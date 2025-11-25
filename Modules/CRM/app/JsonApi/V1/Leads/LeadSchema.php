@@ -57,10 +57,9 @@ class LeadSchema extends Schema
             //     ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
             // TODO: Enable when Campaign entity is implemented
 
-            // HasMany::make('activities')
-            //     ->type('activities')
-            //     ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
-            // TODO: Enable when Activity entity is implemented
+            HasMany::make('activities')
+                ->type('activities')
+                ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
 
             // HasOne::make('opportunity')
             //     ->type('opportunities')
