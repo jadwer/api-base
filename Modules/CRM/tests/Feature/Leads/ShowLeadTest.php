@@ -66,7 +66,7 @@ class ShowLeadTest extends TestCase
                 'id' => (string) $lead->id,
                 'attributes' => [
                     'source' => 'website',
-                    'company_name' => 'Acme Corporation',
+                    'companyName' => 'Acme Corporation',
                     'estimatedValue' => 50000.00,
                     'metadata' => [
                         'industry' => 'Technology',

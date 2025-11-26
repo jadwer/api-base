@@ -243,7 +243,7 @@ class UpdateLeadTest extends TestCase
             ->patch("/api/v1/leads/{$lead->id}");
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['status']);
+        $response->assertJsonFragment(['pointer' => '/data/attributes/status']);
     }
 
     public function test_rating_must_be_valid_enum_when_updating(): void
@@ -271,7 +271,7 @@ class UpdateLeadTest extends TestCase
             ->patch("/api/v1/leads/{$lead->id}");
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['rating']);
+        $response->assertJsonFragment(['pointer' => '/data/attributes/rating']);
     }
 
     public function test_tech_user_cannot_update_lead(): void

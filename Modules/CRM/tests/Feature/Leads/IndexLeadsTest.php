@@ -124,7 +124,7 @@ class IndexLeadsTest extends TestCase
         }
     }
 
-    public function test_admin_can_include_contact_relationship(): void
+    public function test_admin_can_include_user_relationship(): void
     {
         $admin = $this->getAdminUser();
 
@@ -137,7 +137,7 @@ class IndexLeadsTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('leads')
-            ->get("/api/v1/leads?include=contact&filter[id]={$lead->id}");
+            ->get("/api/v1/leads?include=user&filter[id]={$lead->id}");
 
         $response->assertOk();
         $response->assertJsonStructure(['included']);

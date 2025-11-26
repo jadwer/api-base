@@ -14,8 +14,6 @@ class LeadRequest extends ResourceRequest
             'source' => ['sometimes', 'nullable', 'string', 'max:255'],
             'status' => ['required', Rule::in(['new', 'contacted', 'qualified', 'unqualified', 'converted'])],
             'rating' => ['required', Rule::in(['hot', 'warm', 'cold'])],
-            'contactId' => ['sometimes', 'nullable', 'integer', 'exists:contacts,id'],
-            'userId' => ['required', 'integer', 'exists:users,id'],
             'companyName' => ['sometimes', 'nullable', 'string', 'max:255'],
             'contactPerson' => ['sometimes', 'nullable', 'string', 'max:255'],
             'email' => ['sometimes', 'nullable', 'email', 'max:255'],
@@ -25,6 +23,8 @@ class LeadRequest extends ResourceRequest
             'convertedAt' => ['sometimes', 'nullable', 'date'],
             'notes' => ['sometimes', 'nullable', 'string'],
             'metadata' => ['sometimes', 'nullable', 'array'],
+            'user' => 'required',
+            'contact' => 'nullable',
         ];
     }
 
@@ -43,13 +43,6 @@ class LeadRequest extends ResourceRequest
 
             'rating.required' => 'La calificación es obligatoria.',
             'rating.in' => 'La calificación debe ser: hot, warm, o cold.',
-
-            'contactId.integer' => 'El ID de contacto debe ser un número entero.',
-            'contactId.exists' => 'El contacto seleccionado no existe.',
-
-            'userId.required' => 'El representante asignado es obligatorio.',
-            'userId.integer' => 'El ID de usuario debe ser un número entero.',
-            'userId.exists' => 'El usuario seleccionado no existe.',
 
             'companyName.string' => 'El nombre de la empresa debe ser una cadena de texto.',
             'companyName.max' => 'El nombre de la empresa no debe exceder 255 caracteres.',

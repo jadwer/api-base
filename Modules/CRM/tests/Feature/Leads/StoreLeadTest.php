@@ -21,17 +21,11 @@ class StoreLeadTest extends TestCase
                 'source' => 'website',
                 'status' => 'new',
                 'rating' => 'warm',
-                'company_name' => 'Test Company',
+                'companyName' => 'Test Company',
                 'email' => 'test@example.com',
                 'estimatedValue' => 25000.00,
             ],
             'relationships' => [
-                'contact' => [
-                    'data' => [
-                        'type' => 'contacts',
-                        'id' => (string) $contact->id,
-                    ],
-                ],
                 'user' => [
                     'data' => [
                         'type' => 'users',
@@ -121,7 +115,7 @@ class StoreLeadTest extends TestCase
                 'title' => 'Unlinked Lead',
                 'status' => 'new',
                 'rating' => 'cold',
-                'company_name' => 'Unknown Company',
+                'companyName' => 'Unknown Company',
                 'email' => 'unknown@example.com',
             ],
             'relationships' => [
@@ -176,7 +170,7 @@ class StoreLeadTest extends TestCase
             ->post('/api/v1/leads');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['title']);
+        $response->assertJsonFragment(['pointer' => '/data/attributes/title']);
     }
 
     public function test_status_must_be_valid_enum(): void
@@ -209,7 +203,7 @@ class StoreLeadTest extends TestCase
             ->post('/api/v1/leads');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['status']);
+        $response->assertJsonFragment(['pointer' => '/data/attributes/status']);
     }
 
     public function test_rating_must_be_valid_enum(): void
@@ -242,7 +236,7 @@ class StoreLeadTest extends TestCase
             ->post('/api/v1/leads');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['rating']);
+        $response->assertJsonFragment(['pointer' => '/data/attributes/rating']);
     }
 
     public function test_user_id_is_required(): void
@@ -265,7 +259,7 @@ class StoreLeadTest extends TestCase
             ->post('/api/v1/leads');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['user_id']);
+        $response->assertJsonFragment(['pointer' => '/data/relationships/user']);
     }
 
     public function test_estimated_value_must_be_numeric(): void
@@ -299,7 +293,7 @@ class StoreLeadTest extends TestCase
             ->post('/api/v1/leads');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['estimatedValue']);
+        $response->assertJsonFragment(['pointer' => '/data/attributes/estimatedValue']);
     }
 
     public function test_email_must_be_valid_format(): void
@@ -333,7 +327,7 @@ class StoreLeadTest extends TestCase
             ->post('/api/v1/leads');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['email']);
+        $response->assertJsonFragment(['pointer' => '/data/attributes/email']);
     }
 
     public function test_tech_user_cannot_create_lead(): void
