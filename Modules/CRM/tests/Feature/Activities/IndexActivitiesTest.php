@@ -61,13 +61,13 @@ class IndexActivitiesTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('activities')
-            ->get('/api/v1/activities?filter[type]=call');
+            ->get('/api/v1/activities?filter[activityType]=call');
 
         $response->assertOk();
         $this->assertGreaterThanOrEqual(2, count($response->json('data')));
 
         foreach ($response->json('data') as $activity) {
-            $this->assertEquals('call', $activity['attributes']['type']);
+            $this->assertEquals('call', $activity['attributes']['activityType']);
         }
     }
 

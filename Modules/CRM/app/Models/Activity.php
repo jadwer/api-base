@@ -13,7 +13,7 @@ class Activity extends Model
     use HasFactory;
 
     protected $fillable = [
-        'type',
+        'activity_type',
         'subject',
         'description',
         'activity_date',
@@ -62,32 +62,32 @@ class Activity extends Model
      */
     public function scopeByType($query, string $type)
     {
-        return $query->where('type', $type);
+        return $query->where('activity_type', $type);
     }
 
     public function scopeCalls($query)
     {
-        return $query->where('type', 'call');
+        return $query->where('activity_type', 'call');
     }
 
     public function scopeEmails($query)
     {
-        return $query->where('type', 'email');
+        return $query->where('activity_type', 'email');
     }
 
     public function scopeMeetings($query)
     {
-        return $query->where('type', 'meeting');
+        return $query->where('activity_type', 'meeting');
     }
 
     public function scopeNotes($query)
     {
-        return $query->where('type', 'note');
+        return $query->where('activity_type', 'note');
     }
 
     public function scopeTasks($query)
     {
-        return $query->where('type', 'task');
+        return $query->where('activity_type', 'task');
     }
 
     public function scopeByStatus($query, string $status)

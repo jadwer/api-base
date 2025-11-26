@@ -17,7 +17,7 @@ class ActivityFactory extends Factory
         $type = $this->faker->randomElement(['call', 'email', 'meeting', 'note', 'task']);
 
         return [
-            'type' => $type,
+            'activity_type' => $type,
             'subject' => $this->getSubjectByType($type),
             'description' => $this->faker->optional(0.7)->paragraph(),
             'activity_date' => $this->faker->dateTimeBetween('-30 days', '+30 days'),
@@ -48,7 +48,7 @@ class ActivityFactory extends Factory
     public function call(): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => 'call',
+            'activity_type' => 'call',
             'subject' => $this->getSubjectByType('call'),
             'duration' => $this->faker->numberBetween(5, 60),
         ]);
@@ -57,7 +57,7 @@ class ActivityFactory extends Factory
     public function email(): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => 'email',
+            'activity_type' => 'email',
             'subject' => $this->getSubjectByType('email'),
             'duration' => null,
         ]);
@@ -66,7 +66,7 @@ class ActivityFactory extends Factory
     public function meeting(): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => 'meeting',
+            'activity_type' => 'meeting',
             'subject' => $this->getSubjectByType('meeting'),
             'duration' => $this->faker->numberBetween(30, 240),
         ]);
@@ -75,7 +75,7 @@ class ActivityFactory extends Factory
     public function note(): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => 'note',
+            'activity_type' => 'note',
             'subject' => $this->getSubjectByType('note'),
             'duration' => null,
         ]);
@@ -84,7 +84,7 @@ class ActivityFactory extends Factory
     public function task(): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => 'task',
+            'activity_type' => 'task',
             'subject' => $this->getSubjectByType('task'),
             'duration' => null,
         ]);

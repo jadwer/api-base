@@ -171,7 +171,7 @@ class StoreCampaignTest extends TestCase
             ->post('/api/v1/campaigns');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['name']);
+        $response->assertJsonFragment(['pointer' => '/data/attributes/name']);
     }
 
     public function test_type_is_required(): void
@@ -203,7 +203,7 @@ class StoreCampaignTest extends TestCase
             ->post('/api/v1/campaigns');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['campaignType']);
+        $response->assertJsonFragment(['pointer' => '/data/attributes/campaignType']);
     }
 
     public function test_type_must_be_valid_enum(): void
@@ -236,7 +236,7 @@ class StoreCampaignTest extends TestCase
             ->post('/api/v1/campaigns');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['campaignType']);
+        $response->assertJsonFragment(['pointer' => '/data/attributes/campaignType']);
     }
 
     public function test_status_must_be_valid_enum(): void
@@ -270,7 +270,7 @@ class StoreCampaignTest extends TestCase
             ->post('/api/v1/campaigns');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['status']);
+        $response->assertJsonFragment(['pointer' => '/data/attributes/status']);
     }
 
     public function test_user_id_is_required(): void
@@ -293,7 +293,7 @@ class StoreCampaignTest extends TestCase
             ->post('/api/v1/campaigns');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['user_id']);
+        $response->assertJsonFragment(['pointer' => '/data/relationships/user']);
     }
 
     public function test_start_date_is_required(): void
@@ -325,7 +325,7 @@ class StoreCampaignTest extends TestCase
             ->post('/api/v1/campaigns');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['startDate']);
+        $response->assertJsonFragment(['pointer' => '/data/attributes/startDate']);
     }
 
     public function test_end_date_must_be_after_or_equal_start_date(): void
@@ -359,7 +359,7 @@ class StoreCampaignTest extends TestCase
             ->post('/api/v1/campaigns');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['endDate']);
+        $response->assertJsonFragment(['pointer' => '/data/attributes/endDate']);
     }
 
     public function test_budget_must_be_numeric(): void
@@ -393,7 +393,7 @@ class StoreCampaignTest extends TestCase
             ->post('/api/v1/campaigns');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['budget']);
+        $response->assertJsonFragment(['pointer' => '/data/attributes/budget']);
     }
 
     public function test_budget_cannot_be_negative(): void
@@ -427,7 +427,7 @@ class StoreCampaignTest extends TestCase
             ->post('/api/v1/campaigns');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['budget']);
+        $response->assertJsonFragment(['pointer' => '/data/attributes/budget']);
     }
 
     public function test_expected_revenue_must_be_numeric(): void
@@ -461,7 +461,7 @@ class StoreCampaignTest extends TestCase
             ->post('/api/v1/campaigns');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['expectedRevenue']);
+        $response->assertJsonFragment(['pointer' => '/data/attributes/expectedRevenue']);
     }
 
     public function test_tech_user_cannot_create_campaign(): void

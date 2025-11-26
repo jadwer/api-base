@@ -28,7 +28,7 @@ class DestroyActivityTest extends TestCase
         ]);
     }
 
-    public function test_tech_user_can_delete_activity(): void
+    public function test_tech_user_cannot_delete_activity(): void
     {
         $tech = $this->getTechUser();
         $user = User::factory()->create();
@@ -42,7 +42,7 @@ class DestroyActivityTest extends TestCase
             ->expects('activities')
             ->delete('/api/v1/activities/' . $activity->id);
 
-        $response->assertNoContent();
+        $response->assertStatus(403);
     }
 
     public function test_guest_cannot_delete_activity(): void

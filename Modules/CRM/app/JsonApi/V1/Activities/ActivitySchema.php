@@ -23,7 +23,7 @@ class ActivitySchema extends Schema
     {
         return [
             ID::make(),
-            Str::make('type')->sortable(),
+            Str::make('activityType', 'activity_type')->sortable(),
             Str::make('subject')->sortable(),
             Str::make('description'),
             DateTime::make('activityDate', 'activity_date')->sortable(),
@@ -58,7 +58,7 @@ class ActivitySchema extends Schema
     {
         return [
             WhereIdIn::make($this),
-            Where::make('type'),
+            Where::make('activityType', 'activity_type'),
             Where::make('subject'),
             Where::make('status'),
             Where::make('userId', 'user_id'),

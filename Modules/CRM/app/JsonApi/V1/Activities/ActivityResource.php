@@ -16,7 +16,7 @@ class ActivityResource extends JsonApiResource
     public function attributes($request): array
     {
         return [
-            'type' => $this->type,
+            'activityType' => $this->activity_type,
             'subject' => $this->subject,
             'description' => $this->description,
             'activityDate' => $this->activity_date,

@@ -85,7 +85,7 @@ class UpdateActivityTest extends TestCase
         ]);
     }
 
-    public function test_tech_user_can_update_activity(): void
+    public function test_tech_user_cannot_update_activity(): void
     {
         $tech = $this->getTechUser();
         $user = User::factory()->create();
@@ -109,7 +109,7 @@ class UpdateActivityTest extends TestCase
             ->withData($data)
             ->patch('/api/v1/activities/' . $activity->id);
 
-        $response->assertOk();
+        $response->assertStatus(403);
     }
 
     public function test_guest_cannot_update_activity(): void

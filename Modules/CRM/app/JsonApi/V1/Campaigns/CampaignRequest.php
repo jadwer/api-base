@@ -15,15 +15,11 @@ class CampaignRequest extends ResourceRequest
      */
     public function rules(): array
     {
-        $campaignId = $this->route('campaign');
-        $isCreating = $this->isCreating();
-
         return [
-            'name' => [$isCreating ? 'required' : 'sometimes', 'string', 'max:255'],
-            'campaignType' => [$isCreating ? 'required' : 'sometimes', Rule::in(['email', 'social_media', 'event', 'webinar', 'direct_mail', 'telemarketing'])],
+            'name' => ['required', 'string', 'max:255'],
+            'campaignType' => ['required', Rule::in(['email', 'social_media', 'event', 'webinar', 'direct_mail', 'telemarketing'])],
             'status' => ['sometimes', Rule::in(['planning', 'active', 'paused', 'completed', 'cancelled'])],
-            'userId' => [$isCreating ? 'required' : 'sometimes', JsonApiRule::toOne()],
-            'startDate' => [$isCreating ? 'required' : 'sometimes', 'date'],
+            'startDate' => ['required', 'date'],
             'endDate' => ['nullable', 'date', 'after_or_equal:startDate'],
             'budget' => ['nullable', 'numeric', 'min:0'],
             'actualCost' => ['nullable', 'numeric', 'min:0'],
@@ -32,6 +28,8 @@ class CampaignRequest extends ResourceRequest
             'targetAudience' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'metadata' => ['nullable', 'array'],
+            'user' => 'required',
+            'leads' => 'nullable',
         ];
     }
 

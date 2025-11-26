@@ -141,7 +141,7 @@ class IndexCampaignsTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('campaigns')
-            ->get('/api/v1/campaigns?filter[type]=email');
+            ->get('/api/v1/campaigns?filter[campaignType]=email');
 
         $response->assertOk();
         $this->assertGreaterThanOrEqual(2, count($response->json('data')));

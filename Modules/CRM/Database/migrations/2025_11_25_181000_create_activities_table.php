@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             // Activity type and content
-            $table->enum('type', ['call', 'email', 'meeting', 'note', 'task'])->default('note');
+            $table->enum('activity_type', ['call', 'email', 'meeting', 'note', 'task'])->default('note');
             $table->string('subject');
             $table->text('description')->nullable();
 
@@ -39,10 +39,10 @@ return new class extends Migration
             $table->timestamps();
 
             // Indexes for performance
-            $table->index(['type', 'activity_date']);
+            $table->index(['activity_type', 'activity_date']);
             $table->index(['user_id', 'activity_date']);
-            $table->index(['lead_id', 'type']);
-            $table->index(['campaign_id', 'type']);
+            $table->index(['lead_id', 'activity_type']);
+            $table->index(['campaign_id', 'activity_type']);
             $table->index(['status', 'activity_date']);
             $table->index('activity_date');
         });

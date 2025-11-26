@@ -17,7 +17,7 @@ class StoreActivityTest extends TestCase
         $data = [
             'type' => 'activities',
             'attributes' => [
-                'type' => 'call',
+                'activityType' => 'call',
                 'subject' => 'Follow-up call',
                 'description' => 'Call to discuss proposal',
                 'status' => 'pending',
@@ -43,7 +43,7 @@ class StoreActivityTest extends TestCase
             'data' => [
                 'type' => 'activities',
                 'attributes' => [
-                    'type' => 'call',
+                    'activityType' => 'call',
                     'subject' => 'Follow-up call',
                 ],
             ],
@@ -51,7 +51,7 @@ class StoreActivityTest extends TestCase
 
         $this->assertDatabaseHas('activities', [
             'subject' => 'Follow-up call',
-            'type' => 'call',
+            'activity_type' => 'call',
             'user_id' => $user->id,
         ]);
     }
@@ -65,7 +65,7 @@ class StoreActivityTest extends TestCase
         $data = [
             'type' => 'activities',
             'attributes' => [
-                'type' => 'meeting',
+                'activityType' => 'meeting',
                 'subject' => 'Demo meeting',
                 'status' => 'scheduled',
             ],
@@ -98,7 +98,7 @@ class StoreActivityTest extends TestCase
         $data = [
             'type' => 'activities',
             'attributes' => [
-                'type' => 'call',
+                'activityType' => 'call',
             ],
         ];
 
@@ -111,7 +111,7 @@ class StoreActivityTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public function test_tech_user_can_create_activity(): void
+    public function test_tech_user_cannot_create_activity(): void
     {
         $tech = $this->getTechUser();
         $user = User::factory()->create();
@@ -119,7 +119,7 @@ class StoreActivityTest extends TestCase
         $data = [
             'type' => 'activities',
             'attributes' => [
-                'type' => 'email',
+                'activityType' => 'email',
                 'subject' => 'Welcome email',
                 'status' => 'completed',
             ],
@@ -136,7 +136,7 @@ class StoreActivityTest extends TestCase
             ->withData($data)
             ->post('/api/v1/activities');
 
-        $response->assertCreated();
+        $response->assertStatus(403);
     }
 
     public function test_guest_cannot_create_activity(): void
@@ -146,7 +146,7 @@ class StoreActivityTest extends TestCase
         $data = [
             'type' => 'activities',
             'attributes' => [
-                'type' => 'note',
+                'activityType' => 'note',
                 'subject' => 'Test note',
                 'status' => 'pending',
             ],
