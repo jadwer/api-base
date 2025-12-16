@@ -20,12 +20,12 @@ class AccountingDatabaseSeeder extends Seeder
             JournalSeeder::class,                 // ✅ Journal types (ESSENTIAL)
             JournalSequenceSeeder::class,         // ✅ Sequence numbering (ESSENTIAL)
             ExchangeRateSeeder::class,            // ✅ Exchange rates (ESSENTIAL)
-            // ❌ DEMO DATA - Commented for presentation
-            // JournalEntrySeeder::class,         // Sample journal entries
-            // JournalLineSeeder::class,          // Sample journal lines (skipped internally)
-            // AccountBalanceSeeder::class,       // Sample account balances
-            // IdempotencyKeySeeder::class,       // Sample idempotency tracking
-            // AccountMappingSeeder::class,       // Sample account mappings
+            // ✅ DEMO DATA - Enabled for presentation
+            JournalEntrySeeder::class,         // Sample journal entries
+            // JournalLineSeeder::class,          // Skipped - created by JournalEntrySeeder
+            AccountBalanceSeeder::class,       // Sample account balances
+            // IdempotencyKeySeeder::class,       // Skipped - internal tracking
+            AccountMappingSeeder::class,       // Sample account mappings
         ]);
 
         $this->command->info('🎉 Accounting module seeded successfully!');

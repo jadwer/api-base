@@ -18,10 +18,10 @@ class EcommerceDatabaseSeeder extends Seeder
             EcommerceAssignPermissionsSeeder::class,
             CurrencySeeder::class,        // ✅ Multi-currency support (ESSENTIAL)
             ShippingMethodSeeder::class,  // ✅ Shipping methods (ESSENTIAL)
-            // ❌ DEMO DATA - Commented for presentation
-            // ShoppingCartSeeder::class,   // Sample shopping carts
-            // CartItemSeeder::class,       // Sample cart items
-            // CouponSeeder::class,         // Sample coupons
+            // ✅ DEMO DATA - Enabled for presentation
+            ShoppingCartSeeder::class,   // Sample shopping carts
+            CartItemSeeder::class,       // Sample cart items
+            CouponSeeder::class,         // Sample coupons
         ]);
 
         $this->command->info('🎉 Ecommerce module seeded successfully!');

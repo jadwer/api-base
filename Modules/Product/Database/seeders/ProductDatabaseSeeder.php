@@ -17,8 +17,8 @@ class ProductDatabaseSeeder extends Seeder
             UnitSeeder::class,     // ✅ Units of measure (ESSENTIAL)
             BrandSeeder::class,    // ✅ Base brands (ESSENTIAL)
             CategorySeeder::class, // ✅ Product categories (ESSENTIAL)
-            // ❌ DEMO DATA - Commented for presentation
-            // ProductSeeder::class, // Sample products (100+ items)
+            // ✅ DEMO DATA - Enabled for presentation
+            ProductSeeder::class, // Sample products (100+ items)
         ]);
     }
 }

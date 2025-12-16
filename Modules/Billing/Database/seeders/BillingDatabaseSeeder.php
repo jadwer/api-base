@@ -11,9 +11,15 @@ class BillingDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->command->info('💰 Seeding Billing module...');
+
         $this->call([
             PermissionsSeeder::class,
             BillingAssignPermissionsSeeder::class,
+            // ✅ DEMO DATA - Enabled for presentation
+            BillingDemoDataSeeder::class, // Company settings, CFDI invoices
         ]);
+
+        $this->command->info('🎉 Billing module seeded successfully!');
     }
 }

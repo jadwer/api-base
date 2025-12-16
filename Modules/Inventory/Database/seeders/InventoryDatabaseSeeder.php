@@ -14,12 +14,12 @@ class InventoryDatabaseSeeder extends Seeder
         $this->call([
             InventoryPermissionSeeder::class,
             InventoryAssignPermissionsSeeder::class,
-            // ❌ DEMO DATA - Commented for presentation
-            // WarehouseSeeder::class,          // Sample warehouses
-            // WarehouseLocationSeeder::class,  // Sample warehouse locations
-            // ProductBatchSeeder::class,       // Sample product batches
-            // StockSeeder::class,              // Sample stock records
-            // InventoryMovementSeeder::class,  // Sample inventory movements
+            // ✅ DEMO DATA - Enabled for presentation
+            WarehouseSeeder::class,          // Sample warehouses
+            WarehouseLocationSeeder::class,  // Sample warehouse locations
+            ProductBatchSeeder::class,       // Sample product batches
+            StockSeeder::class,              // Sample stock records
+            InventoryMovementSeeder::class,  // Sample inventory movements
         ]);
     }
 }

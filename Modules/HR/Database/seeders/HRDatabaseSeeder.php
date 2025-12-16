@@ -11,9 +11,15 @@ class HRDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->command->info('🏢 Seeding HR module...');
+
         $this->call([
             PermissionsSeeder::class,
             HRAssignPermissionsSeeder::class,
+            // ✅ DEMO DATA - Enabled for presentation
+            HRDemoDataSeeder::class, // Departments, Employees, Payroll, etc.
         ]);
+
+        $this->command->info('🎉 HR module seeded successfully!');
     }
 }
