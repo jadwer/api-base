@@ -2,8 +2,8 @@
 
 **Módulo CRM - Guía Completa para Integración Frontend**
 
-**Versión:** Phase 1 (3/4 entidades completadas)
-**Última actualización:** 2025-11-05
+**Versión:** Phase 2.1 (5 entidades implementadas)
+**Última actualización:** 2025-12-16
 
 ---
 
@@ -27,17 +27,20 @@ El módulo CRM (Customer Relationship Management) gestiona las relaciones con cl
 
 | Entidad | Endpoint | Estado | Tests |
 |---------|----------|--------|-------|
-| **PipelineStage** | `/api/v1/pipeline-stages` | ✅ 100% | 65 tests ✓ |
-| **Lead** | `/api/v1/leads` | ✅ 100% | 60+ tests ✓ |
-| **Campaign** | `/api/v1/campaigns` | ✅ 100% | 45+ tests ✓ |
-| **Activity** | `/api/v1/activities` | ⏳ Pendiente | - |
+| **PipelineStage** | `/api/v1/pipeline-stages` | ✅ 100% | 51 tests ✓ |
+| **Lead** | `/api/v1/leads` | ✅ 100% | 56 tests ✓ |
+| **Campaign** | `/api/v1/campaigns` | ✅ 100% | 29 tests ✓ |
+| **Activity** | `/api/v1/activities` | ✅ 100% | 26 tests ✓ |
+| **Opportunity** | `/api/v1/opportunities` | ✅ 100% | 50+ tests ✓ |
 
 ### Características Principales
 
 - **Gestión de Leads:** Seguimiento completo del ciclo de vida de prospectos
 - **Pipeline de Ventas:** Etapas configurables del proceso de ventas
 - **Campañas de Marketing:** 6 tipos de campañas con métricas financieras
-- **Relaciones:** Leads vinculados a campañas (many-to-many)
+- **Actividades:** Registro de llamadas, emails, reuniones, notas y tareas
+- **Oportunidades:** Gestión de deals con forecasting automático de ingresos
+- **Relaciones:** Leads vinculados a campañas (many-to-many), Activities a Leads/Opportunities
 - **Validación en Español:** Todos los mensajes de error en español
 - **JSON:API 1.1:** Cumplimiento completo del estándar
 
@@ -87,6 +90,20 @@ const headers = {
 'crm.campaigns.store'
 'crm.campaigns.update'
 'crm.campaigns.destroy'
+
+// Activities
+'crm.activities.index'
+'crm.activities.show'
+'crm.activities.store'
+'crm.activities.update'
+'crm.activities.destroy'
+
+// Opportunities
+'crm.opportunities.index'
+'crm.opportunities.show'
+'crm.opportunities.store'
+'crm.opportunities.update'
+'crm.opportunities.destroy'
 ```
 
 ---
@@ -318,6 +335,207 @@ function calculateCampaignROI(campaign) {
 // Ejemplo:
 // budget: 50000, actualCost: 48000, actualRevenue: 125000
 // ROI = ((125000 - 48000) / 48000) * 100 = 160.42%
+```
+
+---
+
+### 4. Activity (Actividad)
+
+#### Estructura de Datos
+
+```typescript
+interface Activity {
+  id: string;
+  type: 'activities';
+  attributes: {
+    subject: string;                 // Asunto de la actividad
+    activityType: ActivityType;      // Tipo de actividad
+    status: ActivityStatus;          // Estado de la actividad
+    description?: string;            // Descripción detallada
+    activityDate: string;            // Fecha de la actividad (YYYY-MM-DD)
+    dueDate?: string;                // Fecha límite (YYYY-MM-DD)
+    completedAt?: string;            // Fecha de completado (ISO 8601)
+    duration?: number;               // Duración en minutos
+    outcome?: string;                // Resultado de la actividad
+    priority?: ActivityPriority;     // Prioridad
+    metadata?: Record<string, any>;  // Datos personalizados (JSON)
+    createdAt: string;               // ISO 8601
+    updatedAt: string;               // ISO 8601
+  };
+  relationships?: {
+    user: {                          // Usuario responsable (requerido)
+      data: { type: 'users'; id: string };
+    };
+    lead?: {                         // Lead asociado (opcional)
+      data: { type: 'leads'; id: string } | null;
+    };
+    campaign?: {                     // Campaña asociada (opcional)
+      data: { type: 'campaigns'; id: string } | null;
+    };
+    opportunity?: {                  // Oportunidad asociada (opcional)
+      data: { type: 'opportunities'; id: string } | null;
+    };
+  };
+}
+
+type ActivityType = 'call' | 'email' | 'meeting' | 'note' | 'task';
+
+type ActivityStatus = 'pending' | 'in_progress' | 'completed' | 'cancelled';
+
+type ActivityPriority = 'low' | 'medium' | 'high';
+```
+
+#### Validaciones
+
+- **subject:** Requerido, máximo 255 caracteres
+- **activityType:** Requerido, valores: call, email, meeting, note, task
+- **status:** Requerido, valores: pending, in_progress, completed, cancelled
+- **activityDate:** Requerido, formato YYYY-MM-DD
+- **dueDate:** Opcional, formato YYYY-MM-DD
+- **duration:** Opcional, número entero >= 0 (minutos)
+- **priority:** Opcional, valores: low, medium, high
+- **userId:** Requerido (relación con User)
+- **leadId, campaignId, opportunityId:** Opcionales
+
+#### Tipos de Actividad
+
+| Tipo | Descripción | Campos Típicos |
+|------|-------------|----------------|
+| **call** | Llamada telefónica | duration, outcome |
+| **email** | Correo electrónico | subject, description |
+| **meeting** | Reunión presencial o virtual | duration, location (en metadata) |
+| **note** | Nota o comentario | description |
+| **task** | Tarea pendiente | dueDate, priority |
+
+#### Estados de Actividad
+
+| Estado | Descripción | Transiciones Permitidas |
+|--------|-------------|------------------------|
+| **pending** | Pendiente de realizar | → in_progress, completed, cancelled |
+| **in_progress** | En progreso | → completed, cancelled |
+| **completed** | Completada | - |
+| **cancelled** | Cancelada | - |
+
+---
+
+### 5. Opportunity (Oportunidad)
+
+#### Estructura de Datos
+
+```typescript
+interface Opportunity {
+  id: string;
+  type: 'opportunities';
+  attributes: {
+    name: string;                    // Nombre del deal
+    description?: string;            // Descripción detallada
+
+    // Financiero
+    amount: number;                  // Valor del deal
+    probability: number;             // Probabilidad de cierre (0-100)
+    expectedRevenue?: number;        // Ingreso esperado (auto-calculado: amount * probability / 100)
+    actualRevenue?: number;          // Ingreso real (cuando se cierra)
+
+    // Fechas
+    closeDate: string;               // Fecha esperada de cierre (YYYY-MM-DD)
+    wonAt?: string;                  // Fecha de cierre ganado (ISO 8601)
+    lostAt?: string;                 // Fecha de cierre perdido (ISO 8601)
+
+    // Pipeline
+    status: OpportunityStatus;       // Estado actual
+    stage: string;                   // Etapa del pipeline
+    forecastCategory: ForecastCategory; // Categoría de forecast
+
+    // Información adicional
+    source?: string;                 // Origen de la oportunidad
+    nextStep?: string;               // Próximo paso
+    lossReason?: string;             // Razón de pérdida
+    metadata?: Record<string, any>;  // Datos personalizados
+
+    createdAt: string;               // ISO 8601
+    updatedAt: string;               // ISO 8601
+  };
+  relationships?: {
+    user: {                          // Usuario responsable (requerido)
+      data: { type: 'users'; id: string };
+    };
+    lead?: {                         // Lead origen (opcional)
+      data: { type: 'leads'; id: string } | null;
+    };
+    pipelineStage?: {                // Etapa del pipeline (opcional)
+      data: { type: 'pipeline-stages'; id: string } | null;
+    };
+    activities?: {                   // Actividades relacionadas
+      data: Array<{ type: 'activities'; id: string }>;
+    };
+  };
+}
+
+type OpportunityStatus = 'open' | 'won' | 'lost' | 'abandoned';
+
+type ForecastCategory = 'pipeline' | 'best_case' | 'commit' | 'closed';
+```
+
+#### Validaciones
+
+- **name:** Requerido, máximo 255 caracteres
+- **amount:** Requerido, número >= 0
+- **probability:** Requerido, número entero entre 0 y 100
+- **closeDate:** Requerido, formato YYYY-MM-DD
+- **status:** Requerido, valores: open, won, lost, abandoned
+- **stage:** Requerido, máximo 255 caracteres
+- **forecastCategory:** Requerido, valores: pipeline, best_case, commit, closed
+- **userId:** Requerido (relación con User)
+
+#### Estados de Oportunidad
+
+| Estado | Descripción | Acciones |
+|--------|-------------|----------|
+| **open** | Oportunidad activa | Avanzar, Cerrar Ganado, Cerrar Perdido |
+| **won** | Cerrada ganada | Ver detalles, wonAt se auto-completa |
+| **lost** | Cerrada perdida | Ver razón, lostAt se auto-completa |
+| **abandoned** | Abandonada | Reabrir |
+
+#### Categorías de Forecast
+
+| Categoría | Descripción | Probabilidad Típica |
+|-----------|-------------|---------------------|
+| **pipeline** | En pipeline, etapa inicial | 0-25% |
+| **best_case** | Posible cierre, optimista | 25-50% |
+| **commit** | Alta probabilidad de cierre | 75-95% |
+| **closed** | Cerrado (ganado o perdido) | 100% o 0% |
+
+#### Auto-cálculos
+
+```javascript
+// El sistema calcula automáticamente:
+
+// 1. expectedRevenue (al crear/actualizar)
+expectedRevenue = amount * probability / 100;
+
+// 2. wonAt (cuando status cambia a 'won')
+if (status === 'won' && !wonAt) {
+  wonAt = new Date().toISOString();
+  forecastCategory = 'closed';
+}
+
+// 3. lostAt (cuando status cambia a 'lost')
+if (status === 'lost' && !lostAt) {
+  lostAt = new Date().toISOString();
+}
+```
+
+#### Etapas de Pipeline Típicas
+
+```javascript
+const opportunityStages = [
+  { name: 'qualification', label: 'Calificación', probability: 10 },
+  { name: 'needs_analysis', label: 'Análisis de Necesidades', probability: 25 },
+  { name: 'proposal', label: 'Propuesta', probability: 50 },
+  { name: 'negotiation', label: 'Negociación', probability: 75 },
+  { name: 'closed_won', label: 'Cerrado Ganado', probability: 100 },
+  { name: 'closed_lost', label: 'Cerrado Perdido', probability: 0 }
+];
 ```
 
 ---
@@ -706,6 +924,307 @@ await fetch(`/api/v1/campaigns/8/relationships/leads`, {
   headers,
   body: JSON.stringify({ data: [{ type: 'leads', id: '12' }] })
 });
+```
+
+---
+
+### Activities
+
+#### Listar Actividades
+
+```http
+GET /api/v1/activities
+```
+
+**Query Parameters:**
+- `sort=activityDate` - Ordenar por fecha
+- `sort=-createdAt` - Más recientes primero
+- `filter[activityType]=call` - Por tipo de actividad
+- `filter[status]=pending` - Por estado
+- `filter[userId]=5` - Por usuario responsable
+- `filter[leadId]=10` - Por lead asociado
+- `filter[opportunityId]=3` - Por oportunidad asociada
+- `include=user,lead,opportunity` - Incluir relaciones
+- `page[size]=20` - Tamaño de página
+
+**Ejemplo JavaScript:**
+
+```javascript
+async function getActivities(filters = {}) {
+  const params = new URLSearchParams({
+    'sort': '-activityDate',
+    'include': 'user,lead',
+    'page[size]': '20',
+    ...filters
+  });
+
+  const response = await fetch(`/api/v1/activities?${params}`, { headers });
+  return response.json();
+}
+
+// Obtener actividades pendientes de hoy
+const today = new Date().toISOString().split('T')[0];
+const pendingToday = await getActivities({
+  'filter[status]': 'pending',
+  'filter[activityDate]': today
+});
+```
+
+#### Crear Actividad
+
+```http
+POST /api/v1/activities
+```
+
+```javascript
+const newActivity = {
+  data: {
+    type: 'activities',
+    attributes: {
+      subject: 'Llamada de seguimiento',
+      activityType: 'call',
+      status: 'pending',
+      activityDate: '2025-12-20',
+      dueDate: '2025-12-20',
+      duration: 30,
+      description: 'Seguimiento sobre propuesta enviada',
+      priority: 'high'
+    },
+    relationships: {
+      user: {
+        data: { type: 'users', id: '3' }
+      },
+      lead: {
+        data: { type: 'leads', id: '15' }
+      }
+    }
+  }
+};
+
+const response = await fetch('/api/v1/activities', {
+  method: 'POST',
+  headers,
+  body: JSON.stringify(newActivity)
+});
+```
+
+#### Completar Actividad
+
+```javascript
+const completeActivity = {
+  data: {
+    type: 'activities',
+    id: '25',
+    attributes: {
+      status: 'completed',
+      completedAt: new Date().toISOString(),
+      outcome: 'Cliente interesado, programar demo para próxima semana',
+      duration: 45
+    }
+  }
+};
+
+await fetch(`/api/v1/activities/25`, {
+  method: 'PATCH',
+  headers,
+  body: JSON.stringify(completeActivity)
+});
+```
+
+---
+
+### Opportunities
+
+#### Listar Oportunidades
+
+```http
+GET /api/v1/opportunities
+```
+
+**Query Parameters:**
+- `sort=name` - Ordenar por nombre
+- `sort=-amount` - Por valor (mayor primero)
+- `sort=closeDate` - Por fecha de cierre
+- `filter[status]=open` - Solo abiertas
+- `filter[stage]=proposal` - Por etapa
+- `filter[forecastCategory]=commit` - Por categoría de forecast
+- `filter[userId]=5` - Por usuario responsable
+- `include=user,lead,pipelineStage,activities` - Incluir relaciones
+- `page[size]=20` - Tamaño de página
+
+**Ejemplo JavaScript:**
+
+```javascript
+async function getOpportunities(filters = {}) {
+  const params = new URLSearchParams({
+    'sort': '-amount',
+    'include': 'user,pipelineStage',
+    'page[size]': '50',
+    ...filters
+  });
+
+  const response = await fetch(`/api/v1/opportunities?${params}`, { headers });
+  return response.json();
+}
+
+// Obtener oportunidades abiertas de alto valor
+const highValueDeals = await getOpportunities({
+  'filter[status]': 'open'
+});
+
+// Filtrar por valor en cliente
+const filtered = highValueDeals.data.filter(opp => opp.attributes.amount >= 100000);
+```
+
+#### Crear Oportunidad
+
+```http
+POST /api/v1/opportunities
+```
+
+```javascript
+const newOpportunity = {
+  data: {
+    type: 'opportunities',
+    attributes: {
+      name: 'Implementación ERP Empresa XYZ',
+      description: 'Implementación completa de módulos de ventas, inventario y contabilidad',
+      amount: 350000.00,
+      probability: 60,
+      closeDate: '2026-03-31',
+      status: 'open',
+      stage: 'proposal',
+      forecastCategory: 'best_case',
+      source: 'referral',
+      nextStep: 'Enviar propuesta técnica'
+    },
+    relationships: {
+      user: {
+        data: { type: 'users', id: '3' }
+      },
+      lead: {
+        data: { type: 'leads', id: '15' }  // Convertido desde lead
+      }
+    }
+  }
+};
+
+const response = await fetch('/api/v1/opportunities', {
+  method: 'POST',
+  headers,
+  body: JSON.stringify(newOpportunity)
+});
+
+const { data } = await response.json();
+// expectedRevenue se calcula automáticamente: 350000 * 60 / 100 = 210000
+console.log('Expected Revenue:', data.attributes.expectedRevenue); // 210000
+```
+
+#### Avanzar Etapa de Oportunidad
+
+```javascript
+const advanceStage = {
+  data: {
+    type: 'opportunities',
+    id: '42',
+    attributes: {
+      stage: 'negotiation',
+      probability: 75,
+      forecastCategory: 'commit',
+      nextStep: 'Revisar contrato con legal'
+    }
+  }
+};
+
+await fetch(`/api/v1/opportunities/42`, {
+  method: 'PATCH',
+  headers,
+  body: JSON.stringify(advanceStage)
+});
+```
+
+#### Cerrar Oportunidad Ganada
+
+```javascript
+const closeWon = {
+  data: {
+    type: 'opportunities',
+    id: '42',
+    attributes: {
+      status: 'won',
+      actualRevenue: 375000.00,  // Puede ser diferente al amount original
+      stage: 'closed_won'
+    }
+  }
+};
+
+await fetch(`/api/v1/opportunities/42`, {
+  method: 'PATCH',
+  headers,
+  body: JSON.stringify(closeWon)
+});
+
+// El sistema automáticamente:
+// - Establece wonAt = fecha actual
+// - Cambia forecastCategory = 'closed'
+```
+
+#### Cerrar Oportunidad Perdida
+
+```javascript
+const closeLost = {
+  data: {
+    type: 'opportunities',
+    id: '42',
+    attributes: {
+      status: 'lost',
+      stage: 'closed_lost',
+      lossReason: 'Presupuesto insuficiente del cliente'
+    }
+  }
+};
+
+await fetch(`/api/v1/opportunities/42`, {
+  method: 'PATCH',
+  headers,
+  body: JSON.stringify(closeLost)
+});
+
+// El sistema automáticamente establece lostAt = fecha actual
+```
+
+#### Dashboard de Oportunidades (Pipeline)
+
+```javascript
+async function getOpportunitiesPipeline() {
+  const response = await fetch(
+    '/api/v1/opportunities?filter[status]=open&sort=closeDate&include=user',
+    { headers }
+  );
+
+  const { data, included } = await response.json();
+
+  // Agrupar por etapa
+  const pipeline = data.reduce((acc, opp) => {
+    const stage = opp.attributes.stage;
+    if (!acc[stage]) {
+      acc[stage] = { opportunities: [], totalAmount: 0, expectedRevenue: 0 };
+    }
+    acc[stage].opportunities.push(opp);
+    acc[stage].totalAmount += opp.attributes.amount || 0;
+    acc[stage].expectedRevenue += opp.attributes.expectedRevenue || 0;
+    return acc;
+  }, {});
+
+  // Calcular métricas totales
+  const totals = {
+    totalOpportunities: data.length,
+    totalPipelineValue: data.reduce((sum, opp) => sum + (opp.attributes.amount || 0), 0),
+    totalExpectedRevenue: data.reduce((sum, opp) => sum + (opp.attributes.expectedRevenue || 0), 0)
+  };
+
+  return { pipeline, totals };
+}
 ```
 
 ---
@@ -1321,41 +1840,67 @@ function isValidEmail(email) {
 
 ## Próximos Pasos
 
-### Entidad Pendiente: Activity
+### Entidad Pendiente: Quote (Cotización)
 
-La entidad Activity (Actividades) está planificada para Phase 1 del módulo CRM. Permitirá:
+La siguiente entidad a implementar es Quote (Cotizaciones/Propuestas). Permitirá:
 
-- Registrar interacciones con leads (llamadas, emails, reuniones, notas)
-- Historial completo de actividades
-- Programación de tareas futuras
-- Vinculación con leads, contacts y campaigns
+- Generar cotizaciones desde oportunidades
+- Gestionar líneas de cotización (QuoteItems)
+- Workflow de aprobación de cotizaciones
+- Conversión de Quote a Order (Sales Order)
 
 **Estructura preliminar:**
 
 ```typescript
-interface Activity {
-  type: 'call' | 'email' | 'meeting' | 'note' | 'task';
-  subject: string;
-  description?: string;
-  activityDate: string;
-  duration?: number; // minutos
-  outcome?: string;
-  userId: string; // responsable
-  leadId?: string;
-  contactId?: string;
-  campaignId?: string;
+interface Quote {
+  quoteNumber: string;
+  name: string;
+  status: 'draft' | 'sent' | 'accepted' | 'rejected' | 'expired';
+  validUntil: string;           // Fecha de validez
+  subtotal: number;
+  discount?: number;
+  tax?: number;
+  total: number;
+  terms?: string;               // Términos y condiciones
+  notes?: string;
+  opportunityId: string;        // Oportunidad origen
+  userId: string;               // Responsable
+}
+
+interface QuoteItem {
+  quoteId: string;
+  productId?: string;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  discount?: number;
+  total: number;
 }
 ```
 
 ### Roadmap CRM Module
 
-- [x] **Phase 1.1:** PipelineStage (Completado - 65 tests)
-- [x] **Phase 1.2:** Lead (Completado - 60+ tests)
-- [x] **Phase 1.3:** Campaign (Completado - 45+ tests)
-- [ ] **Phase 1.4:** Activity (Pendiente)
-- [ ] **Phase 2:** Opportunities (Oportunidades de venta)
-- [ ] **Phase 3:** Quotes (Cotizaciones/Propuestas)
-- [ ] **Phase 4:** Custom actions (convertir lead, cerrar oportunidad, etc.)
+- [x] **Phase 1.1:** PipelineStage (Completado - 51 tests)
+- [x] **Phase 1.2:** Lead (Completado - 56 tests)
+- [x] **Phase 1.3:** Campaign (Completado - 29 tests)
+- [x] **Phase 1.4:** Activity (Completado - 26 tests)
+- [x] **Phase 2.1:** Opportunity (Completado - 50+ tests)
+- [ ] **Phase 2.2:** Quote (Pendiente)
+- [ ] **Phase 2.3:** QuoteItem (Pendiente)
+- [ ] **Phase 3:** Custom actions (convertir lead, cerrar oportunidad, aceptar quote, etc.)
+
+### Flujo Completo de Ventas CRM
+
+```
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│    Lead     │───▶│ Opportunity │───▶│    Quote    │───▶│ Sales Order │
+│  (Prospecto)│    │   (Deal)    │    │(Cotización) │    │   (Pedido)  │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+       │                  │                  │
+       ▼                  ▼                  ▼
+  Activities         Activities         Activities
+  (Seguimiento)      (Negociación)      (Cierre)
+```
 
 ---
 
@@ -1385,6 +1930,6 @@ Si encuentras errores o inconsistencias:
 
 ---
 
-**Última actualización:** 2025-11-05
-**Versión del módulo:** Phase 1 (3/4 entidades)
-**Estado:** En desarrollo activo
+**Última actualización:** 2025-12-16
+**Versión del módulo:** Phase 2.1 (5 entidades implementadas)
+**Estado:** En desarrollo activo - Próximo: Quotes
