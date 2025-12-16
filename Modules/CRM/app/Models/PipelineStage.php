@@ -29,6 +29,14 @@ class PipelineStage extends Model
     ];
 
     /**
+     * Relationships
+     */
+    public function opportunities()
+    {
+        return $this->hasMany(Opportunity::class);
+    }
+
+    /**
      * Scope to filter active stages.
      */
     public function scopeActive($query)

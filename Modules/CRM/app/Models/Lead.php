@@ -67,11 +67,10 @@ class Lead extends Model
         return $this->hasMany(Activity::class);
     }
 
-    // public function opportunity()
-    // {
-    //     return $this->hasOne(Opportunity::class);
-    // }
-    // TODO: Enable when Opportunity entity is implemented
+    public function opportunity()
+    {
+        return $this->hasOne(Opportunity::class);
+    }
 
     /**
      * Scopes

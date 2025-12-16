@@ -11,10 +11,16 @@ class CRMDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->command->info('📊 Seeding CRM module...');
+
         $this->call([
             PermissionsSeeder::class,
             CRMAssignPermissionsSeeder::class,
             PipelineStageSeeder::class,
+            // ✅ DEMO DATA - Enabled for presentation
+            CRMDemoDataSeeder::class, // Campaigns, Leads, Activities, Opportunities
         ]);
+
+        $this->command->info('🎉 CRM module seeded successfully!');
     }
 }

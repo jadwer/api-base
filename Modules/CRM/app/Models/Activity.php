@@ -22,6 +22,7 @@ class Activity extends Model
         'status',
         'user_id',
         'lead_id',
+        'opportunity_id',
         'contact_id',
         'campaign_id',
         'metadata',
@@ -49,6 +50,11 @@ class Activity extends Model
     public function campaign()
     {
         return $this->belongsTo(Campaign::class);
+    }
+
+    public function opportunity()
+    {
+        return $this->belongsTo(Opportunity::class);
     }
 
     // public function contact()
@@ -123,6 +129,11 @@ class Activity extends Model
     public function scopeForCampaign($query, int $campaignId)
     {
         return $query->where('campaign_id', $campaignId);
+    }
+
+    public function scopeForOpportunity($query, int $opportunityId)
+    {
+        return $query->where('opportunity_id', $opportunityId);
     }
 
     public function scopeForUser($query, int $userId)

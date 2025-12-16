@@ -24,7 +24,7 @@ JsonApiRoute::server('v1')
         $server->resource('leads', \Modules\CRM\Http\Controllers\Api\V1\LeadController::class);
 
         // Opportunities - Sales opportunities
-        // $server->resource('opportunities', JsonApiController::class);
+        $server->resource('opportunities', \Modules\CRM\Http\Controllers\Api\V1\OpportunityController::class);
 
         // Quotes - Sales quotes/proposals
         // $server->resource('quotes', JsonApiController::class);
