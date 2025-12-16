@@ -104,6 +104,7 @@ class InventoryMovementSeeder extends Seeder
                 InventoryMovement::factory()
                     ->exit()
                     ->completed()
+                    ->qualityChecked() // Required for exit movements
                     ->create([
                         'product_id' => $product->id,
                         'warehouse_id' => $warehouse->id,
@@ -121,6 +122,7 @@ class InventoryMovementSeeder extends Seeder
                     InventoryMovement::factory()
                         ->exit()
                         ->completed()
+                        ->qualityChecked() // Required for exit movements
                         ->create([
                             'product_id' => $product->id,
                             'warehouse_id' => $warehouse->id,
@@ -157,6 +159,7 @@ class InventoryMovementSeeder extends Seeder
             InventoryMovement::factory()
                 ->transfer()
                 ->completed()
+                ->qualityChecked() // Required for transfer movements
                 ->create([
                     'product_id' => $product->id,
                     'warehouse_id' => $sourceWarehouse->id,
@@ -214,13 +217,15 @@ class InventoryMovementSeeder extends Seeder
      */
     private function createRandomMovements($products, $warehouses, $users): void
     {
-        // Crear movimientos aleatorios adicionales
+        // Crear movimientos aleatorios adicionales (solo entradas completadas para evitar validación)
         foreach (range(1, 30) as $i) {
             $product = $products->random();
             $warehouse = $warehouses->random();
             $user = $users->random();
 
             InventoryMovement::factory()
+                ->entry()
+                ->completed()
                 ->create([
                     'product_id' => $product->id,
                     'warehouse_id' => $warehouse->id,
@@ -229,7 +234,7 @@ class InventoryMovementSeeder extends Seeder
                 ]);
         }
 
-        // Crear algunos movimientos pendientes
+        // Crear algunos movimientos pendientes (no requieren quality check)
         foreach (range(1, 10) as $i) {
             $product = $products->random();
             $warehouse = $warehouses->random();

@@ -216,4 +216,17 @@ class InventoryMovementFactory extends Factory
             'user_id' => $userId,
         ]);
     }
+
+    /**
+     * Indicate that the movement has been quality checked.
+     * Required for exit and transfer movements that are completed.
+     */
+    public function qualityChecked(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'quality_checked' => true,
+            'quality_checked_at' => now(),
+            'quality_checked_by' => $attributes['user_id'] ?? null,
+        ]);
+    }
 }

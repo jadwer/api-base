@@ -80,7 +80,7 @@ class PostInventoryMovementToGL
             $metadata['last_attempt_at'] = now()->toDateTimeString();
 
             $movement->update([
-                'gl_posting_status' => 'failed',
+                'gl_posting_status' => 'error',
                 'gl_posting_notes' => "GL Posting Failed (Attempt $retryAttempts): {$e->getMessage()}",
                 'metadata' => $metadata,
             ]);
@@ -277,7 +277,7 @@ class PostInventoryMovementToGL
         ]);
 
         $movement->update([
-            'gl_posting_status' => 'not_required',
+            'gl_posting_status' => 'posted', // Transfers don't require GL posting
             'gl_posting_notes' => 'Internal transfer - no GL posting required',
         ]);
 

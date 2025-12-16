@@ -44,8 +44,8 @@ class RetryGLPosting implements ShouldQueue
             return;
         }
 
-        // Only retry if still in failed status
-        if ($movement->gl_posting_status !== 'failed') {
+        // Only retry if still in error status
+        if ($movement->gl_posting_status !== 'error') {
             Log::info('Inventory movement GL status changed, skipping retry', [
                 'movement_id' => $this->movementId,
                 'status' => $movement->gl_posting_status,
