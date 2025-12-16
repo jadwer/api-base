@@ -17,7 +17,7 @@ class TrialBalanceService
      */
     public function generate(Carbon $asOfDate, string $currency = 'MXN'): array
     {
-        $accounts = Account::where('active', true)
+        $accounts = Account::where('status', 'active')
             ->orderBy('code')
             ->get()
             ->map(function ($account) use ($asOfDate) {
@@ -26,7 +26,7 @@ class TrialBalanceService
                 return [
                     'code' => $account->code,
                     'name' => $account->name,
-                    'type' => $account->type,
+                    'type' => $account->account_type,
                     'debit' => $balances['debit'],
                     'credit' => $balances['credit'],
                 ];
@@ -75,17 +75,17 @@ class TrialBalanceService
     {
         $debits = JournalLine::where('account_id', $account->id)
             ->whereHas('journalEntry', function ($query) use ($asOfDate) {
-                $query->where('entry_date', '<=', $asOfDate)
+                $query->where('accounting_date', '<=', $asOfDate)
                     ->where('status', 'posted');
             })
-            ->sum('debit_amount');
+            ->sum('debit');
 
         $credits = JournalLine::where('account_id', $account->id)
             ->whereHas('journalEntry', function ($query) use ($asOfDate) {
-                $query->where('entry_date', '<=', $asOfDate)
+                $query->where('accounting_date', '<=', $asOfDate)
                     ->where('status', 'posted');
             })
-            ->sum('credit_amount');
+            ->sum('credit');
 
         return [
             'debit' => round((float) $debits, 2),

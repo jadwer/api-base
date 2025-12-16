@@ -3,12 +3,10 @@
 namespace Modules\Reports\Http\Controllers\Api\V1;
 
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Collection;
-use LaravelJsonApi\Core\Responses\DataResponse;
 use Modules\Reports\Services\FinancialStatements\BalanceSheetService;
-use Modules\Reports\JsonApi\V1\BalanceSheets\BalanceSheetRequest;
-use Modules\Reports\JsonApi\V1\BalanceSheets\BalanceSheetResource;
 
 class BalanceSheetController extends Controller
 {
@@ -20,65 +18,99 @@ class BalanceSheetController extends Controller
     }
 
     /**
-     * Fetch balance sheets (list view)
+     * Fetch balance sheet
      *
-     * GET /api/v1/reports/balance-sheets
+     * GET /api/v1/reports/balance-sheet
      *
-     * @param BalanceSheetRequest $request
-     * @return DataResponse
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function index(BalanceSheetRequest $request): DataResponse
+    public function index(Request $request): JsonResponse
     {
-        // Get filter parameters
-        $asOfDate = $request->input('filter.asOfDate')
-            ? Carbon::parse($request->input('filter.asOfDate'))
-            : Carbon::now();
+        $asOfDate = $request->input('asOfDate') ?? $request->input('filter.asOfDate');
+        $asOfDate = $asOfDate ? Carbon::parse($asOfDate) : Carbon::now();
 
-        $currency = $request->input('filter.currency') ?? 'MXN';
+        $currency = $request->input('currency') ?? $request->input('filter.currency') ?? 'MXN';
 
-        // Generate balance sheet using service
         $balanceSheetData = $this->balanceSheetService->generate($asOfDate, $currency);
 
-        // Convert to stdClass with ID for JSON:API compliance
-        $balanceSheet = (object) array_merge(['id' => '1'], $balanceSheetData);
-
-        // Wrap in collection for JSON:API response
-        $collection = collect([$balanceSheet]);
-
-        // Return JSON:API response
-        return DataResponse::make($collection)
-            ->withResources(BalanceSheetResource::collection($collection));
+        return response()->json([
+            'data' => $balanceSheetData,
+            'meta' => [
+                'reportType' => 'Balance General',
+                'asOfDate' => $asOfDate->toDateString(),
+                'currency' => $currency,
+                'generatedAt' => now()->toIso8601String(),
+            ],
+        ]);
     }
 
     /**
-     * Fetch a single balance sheet
+     * Fetch comparative balance sheet
      *
-     * GET /api/v1/reports/balance-sheets/{id}
+     * GET /api/v1/reports/balance-sheet/comparative
      *
-     * @param string $id
-     * @param BalanceSheetRequest $request
-     * @return DataResponse
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function show(string $id, BalanceSheetRequest $request): DataResponse
+    public function comparative(Request $request): JsonResponse
     {
-        // For reports, ID doesn't matter much - we generate based on filters
-        // But we support it for JSON:API compliance
-
-        // Get filter parameters
-        $asOfDate = $request->input('filter.asOfDate')
-            ? Carbon::parse($request->input('filter.asOfDate'))
+        $currentDate = $request->input('currentDate')
+            ? Carbon::parse($request->input('currentDate'))
             : Carbon::now();
 
-        $currency = $request->input('filter.currency') ?? 'MXN';
+        $previousDate = $request->input('previousDate')
+            ? Carbon::parse($request->input('previousDate'))
+            : $currentDate->copy()->subYear();
 
-        // Generate balance sheet using service
-        $balanceSheetData = $this->balanceSheetService->generate($asOfDate, $currency);
+        $currency = $request->input('currency') ?? 'MXN';
 
-        // Convert to stdClass with ID for JSON:API compliance
-        $balanceSheet = (object) array_merge(['id' => $id], $balanceSheetData);
+        $currentData = $this->balanceSheetService->generate($currentDate, $currency);
+        $previousData = $this->balanceSheetService->generate($previousDate, $currency);
 
-        // Return JSON:API response
-        return DataResponse::make($balanceSheet)
-            ->withResource(new BalanceSheetResource($balanceSheet));
+        return response()->json([
+            'data' => [
+                'current' => $currentData,
+                'previous' => $previousData,
+                'variance' => $this->calculateVariance($currentData, $previousData),
+            ],
+            'meta' => [
+                'reportType' => 'Balance General Comparativo',
+                'currentPeriod' => $currentDate->toDateString(),
+                'previousPeriod' => $previousDate->toDateString(),
+                'currency' => $currency,
+                'generatedAt' => now()->toIso8601String(),
+            ],
+        ]);
+    }
+
+    /**
+     * Calculate variance between two periods
+     */
+    private function calculateVariance(array $current, array $previous): array
+    {
+        $currentAssets = $current['totalAssets'] ?? 0;
+        $previousAssets = $previous['totalAssets'] ?? 0;
+        $assetsChange = $currentAssets - $previousAssets;
+        $assetsChangePercent = $previousAssets != 0 ? ($assetsChange / $previousAssets) * 100 : 0;
+
+        $currentLiabilities = $current['totalLiabilities'] ?? 0;
+        $previousLiabilities = $previous['totalLiabilities'] ?? 0;
+        $liabilitiesChange = $currentLiabilities - $previousLiabilities;
+        $liabilitiesChangePercent = $previousLiabilities != 0 ? ($liabilitiesChange / $previousLiabilities) * 100 : 0;
+
+        $currentEquity = $current['totalEquity'] ?? 0;
+        $previousEquity = $previous['totalEquity'] ?? 0;
+        $equityChange = $currentEquity - $previousEquity;
+        $equityChangePercent = $previousEquity != 0 ? ($equityChange / $previousEquity) * 100 : 0;
+
+        return [
+            'totalAssetsChange' => round($assetsChange, 2),
+            'totalAssetsChangePercent' => round($assetsChangePercent, 2),
+            'totalLiabilitiesChange' => round($liabilitiesChange, 2),
+            'totalLiabilitiesChangePercent' => round($liabilitiesChangePercent, 2),
+            'totalEquityChange' => round($equityChange, 2),
+            'totalEquityChangePercent' => round($equityChangePercent, 2),
+        ];
     }
 }

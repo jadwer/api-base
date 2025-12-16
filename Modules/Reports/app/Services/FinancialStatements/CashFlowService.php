@@ -21,7 +21,7 @@ class CashFlowService
         // Get cash and bank accounts
         $cashAccounts = Account::where('account_type', 'asset')
             ->where('code', 'LIKE', '1%') // Assuming cash accounts start with 1
-            ->where('active', true)
+            ->where('status', 'active')
             ->pluck('id')
             ->toArray();
 
@@ -55,21 +55,21 @@ class CashFlowService
         // Simplified: Sum of debits - credits to cash accounts from operating activities
         $debits = JournalLine::whereIn('account_id', $cashAccounts)
             ->whereHas('journalEntry', function ($query) use ($startDate, $endDate) {
-                $query->whereBetween('entry_date', [$startDate, $endDate])
+                $query->whereBetween('accounting_date', [$startDate, $endDate])
                     ->where('status', 'posted')
                     ->where('description', 'NOT LIKE', '%investment%')
                     ->where('description', 'NOT LIKE', '%loan%');
             })
-            ->sum('debit_amount');
+            ->sum('debit');
 
         $credits = JournalLine::whereIn('account_id', $cashAccounts)
             ->whereHas('journalEntry', function ($query) use ($startDate, $endDate) {
-                $query->whereBetween('entry_date', [$startDate, $endDate])
+                $query->whereBetween('accounting_date', [$startDate, $endDate])
                     ->where('status', 'posted')
                     ->where('description', 'NOT LIKE', '%investment%')
                     ->where('description', 'NOT LIKE', '%loan%');
             })
-            ->sum('credit_amount');
+            ->sum('credit');
 
         return (float) ($debits - $credits);
     }
@@ -90,17 +90,17 @@ class CashFlowService
     {
         $debits = JournalLine::whereIn('account_id', $cashAccounts)
             ->whereHas('journalEntry', function ($query) use ($asOfDate) {
-                $query->where('entry_date', '<', $asOfDate)
+                $query->where('accounting_date', '<', $asOfDate)
                     ->where('status', 'posted');
             })
-            ->sum('debit_amount');
+            ->sum('debit');
 
         $credits = JournalLine::whereIn('account_id', $cashAccounts)
             ->whereHas('journalEntry', function ($query) use ($asOfDate) {
-                $query->where('entry_date', '<', $asOfDate)
+                $query->where('accounting_date', '<', $asOfDate)
                     ->where('status', 'posted');
             })
-            ->sum('credit_amount');
+            ->sum('credit');
 
         return (float) ($debits - $credits);
     }

@@ -5,7 +5,6 @@ namespace Modules\Reports\Services\FinancialStatements;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Accounting\Models\Account;
-use Modules\Accounting\Models\AccountBalance;
 use Modules\Accounting\Models\JournalLine;
 
 class BalanceSheetService
@@ -57,7 +56,7 @@ class BalanceSheetService
     protected function getAccountsByType(string $type, Carbon $asOfDate, string $currency)
     {
         return Account::where('account_type', $type)
-            ->where('active', true)
+            ->where('status', 'active')
             ->orderBy('code')
             ->get()
             ->map(function ($account) use ($asOfDate, $currency) {
@@ -66,7 +65,7 @@ class BalanceSheetService
                 return [
                     'code' => $account->code,
                     'name' => $account->name,
-                    'account_type' => $account->type,
+                    'account_type' => $account->account_type,
                     'balance' => $balance,
                 ];
             })
@@ -86,34 +85,23 @@ class BalanceSheetService
      */
     protected function getAccountBalance(Account $account, Carbon $asOfDate, string $currency): float
     {
-        // Try to get from AccountBalance first (for performance)
-        $accountBalance = AccountBalance::where('account_id', $account->id)
-            ->where('currency', $currency)
-            ->where('as_of_date', '<=', $asOfDate)
-            ->orderBy('as_of_date', 'desc')
-            ->first();
-
-        if ($accountBalance) {
-            return (float) $accountBalance->balance;
-        }
-
-        // Fallback: Calculate from JournalLines
+        // Calculate from JournalLines
         $debits = JournalLine::where('account_id', $account->id)
             ->whereHas('journalEntry', function ($query) use ($asOfDate) {
-                $query->where('entry_date', '<=', $asOfDate)
+                $query->where('accounting_date', '<=', $asOfDate)
                     ->where('status', 'posted');
             })
-            ->sum('debit_amount');
+            ->sum('debit');
 
         $credits = JournalLine::where('account_id', $account->id)
             ->whereHas('journalEntry', function ($query) use ($asOfDate) {
-                $query->where('entry_date', '<=', $asOfDate)
+                $query->where('accounting_date', '<=', $asOfDate)
                     ->where('status', 'posted');
             })
-            ->sum('credit_amount');
+            ->sum('credit');
 
         // Balance depends on account type
-        if (in_array($account->type, ['asset', 'expense'])) {
+        if (in_array($account->account_type, ['asset', 'expense'])) {
             return (float) ($debits - $credits);
         } else {
             return (float) ($credits - $debits);

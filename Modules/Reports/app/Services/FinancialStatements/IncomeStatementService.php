@@ -52,7 +52,7 @@ class IncomeStatementService
     protected function getAccountsByType(string $type, Carbon $startDate, Carbon $endDate, string $currency)
     {
         return Account::where('account_type', $type)
-            ->where('active', true)
+            ->where('status', 'active')
             ->orderBy('code')
             ->get()
             ->map(function ($account) use ($startDate, $endDate, $currency) {
@@ -61,7 +61,7 @@ class IncomeStatementService
                 return [
                     'code' => $account->code,
                     'name' => $account->name,
-                    'account_type' => $account->type,
+                    'account_type' => $account->account_type,
                     'amount' => $activity,
                 ];
             })
@@ -84,25 +84,25 @@ class IncomeStatementService
     {
         $debits = JournalLine::where('account_id', $account->id)
             ->whereHas('journalEntry', function ($query) use ($startDate, $endDate) {
-                $query->whereBetween('entry_date', [$startDate, $endDate])
+                $query->whereBetween('accounting_date', [$startDate, $endDate])
                     ->where('status', 'posted');
             })
-            ->sum('debit_amount');
+            ->sum('debit');
 
         $credits = JournalLine::where('account_id', $account->id)
             ->whereHas('journalEntry', function ($query) use ($startDate, $endDate) {
-                $query->whereBetween('entry_date', [$startDate, $endDate])
+                $query->whereBetween('accounting_date', [$startDate, $endDate])
                     ->where('status', 'posted');
             })
-            ->sum('credit_amount');
+            ->sum('credit');
 
         // Revenue accounts: credits increase, debits decrease
-        if ($account->type === 'revenue') {
+        if ($account->account_type === 'revenue') {
             return (float) ($credits - $debits);
         }
 
         // Expense accounts: debits increase, credits decrease
-        if ($account->type === 'expense') {
+        if ($account->account_type === 'expense') {
             return (float) ($debits - $credits);
         }
 
