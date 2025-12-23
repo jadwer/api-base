@@ -52,9 +52,9 @@ class SalesOrderUpdateTest extends TestCase
         ]);
 
         // Verificar respuesta
-        $this->assertEquals('SO-UPDATED-001', $response->json('data.attributes.order_number'));
+        $this->assertEquals('SO-UPDATED-001', $response->json('data.attributes.orderNumber'));
         $this->assertEquals('confirmed', $response->json('data.attributes.status'));
-        $this->assertEquals(1500.00, $response->json('data.attributes.total_amount'));
+        $this->assertEquals(1500.00, $response->json('data.attributes.totalAmount'));
     }
 
     public function test_admin_can_update_sales_order_status(): void
@@ -319,7 +319,7 @@ class SalesOrderUpdateTest extends TestCase
             ->patch("/api/v1/sales-orders/{$salesOrder->id}");
 
         $response->assertOk();
-        $this->assertEquals('SO-SAME-001', $response->json('data.attributes.order_number'));
+        $this->assertEquals('SO-SAME-001', $response->json('data.attributes.orderNumber'));
         $this->assertEquals('Updated notes', $response->json('data.attributes.notes'));
     }
 }

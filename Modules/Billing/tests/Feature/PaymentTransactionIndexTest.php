@@ -214,9 +214,12 @@ class PaymentTransactionIndexTest extends TestCase
             ->get('/api/v1/payment-transactions');
 
         $response->assertSuccessful()
-            ->assertJsonApiIncluded([
-                ['type' => 'checkout-sessions', 'id' => (string)$checkoutSession->id],
-            ]);
+            ->assertJsonStructure(['included']);
+
+        $included = $response->json('included');
+        $checkoutSessionIncluded = collect($included)->firstWhere('type', 'checkout-sessions');
+        $this->assertNotNull($checkoutSessionIncluded);
+        $this->assertEquals((string)$checkoutSession->id, $checkoutSessionIncluded['id']);
     }
 
     /**

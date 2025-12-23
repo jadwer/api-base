@@ -3,33 +3,9 @@
 namespace Modules\Reports\Tests\Feature\APAgingReports;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class APAgingReportIndexTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->seed(\Database\Seeders\DatabaseSeeder::class);
-    }
-
-    protected function getAdminUser(): User
-    {
-        return User::role('admin')->first();
-    }
-
-    protected function getTechUser(): User
-    {
-        return User::role('tech')->first();
-    }
-
-    protected function getCustomerUser(): User
-    {
-        return User::role('customer')->first();
-    }
 
     /** @test */
     public function admin_can_fetch_ap_aging_reports()
@@ -50,13 +26,8 @@ class APAgingReportIndexTest extends TestCase
                     'attributes' => [
                         'asOfDate',
                         'currency',
-                        'balanced',
-                        'assets',
-                        'liabilities',
-                        'equity',
-                        'totalAssets',
-                        'totalLiabilities',
-                        'totalEquity',
+                        'agingBuckets',
+                        'totals',
                         'generatedAt',
                     ],
                 ],
@@ -101,7 +72,7 @@ class APAgingReportIndexTest extends TestCase
     }
 
     /** @test */
-    public function can_filter_balance_sheet_by_date()
+    public function can_filter_ap_aging_report_by_date()
     {
         $admin = $this->getAdminUser();
 
@@ -116,7 +87,7 @@ class APAgingReportIndexTest extends TestCase
     }
 
     /** @test */
-    public function balance_sheet_includes_all_sections()
+    public function ap_aging_report_includes_all_sections()
     {
         $admin = $this->getAdminUser();
 
@@ -129,16 +100,14 @@ class APAgingReportIndexTest extends TestCase
 
         $data = $response->json('data.0.attributes');
 
-        $this->assertArrayHasKey('assets', $data);
-        $this->assertArrayHasKey('liabilities', $data);
-        $this->assertArrayHasKey('equity', $data);
-        $this->assertIsArray($data['assets']);
-        $this->assertIsArray($data['liabilities']);
-        $this->assertIsArray($data['equity']);
+        $this->assertArrayHasKey('agingBuckets', $data);
+        $this->assertArrayHasKey('totals', $data);
+        $this->assertIsArray($data['agingBuckets']);
+        $this->assertIsArray($data['totals']);
     }
 
     /** @test */
-    public function balance_sheet_includes_totals()
+    public function ap_aging_report_includes_totals()
     {
         $admin = $this->getAdminUser();
 
@@ -151,11 +120,9 @@ class APAgingReportIndexTest extends TestCase
 
         $data = $response->json('data.0.attributes');
 
-        $this->assertArrayHasKey('totalAssets', $data);
-        $this->assertArrayHasKey('totalLiabilities', $data);
-        $this->assertArrayHasKey('totalEquity', $data);
-        $this->assertIsNumeric($data['totalAssets']);
-        $this->assertIsNumeric($data['totalLiabilities']);
-        $this->assertIsNumeric($data['totalEquity']);
+        $this->assertArrayHasKey('totals', $data);
+        $this->assertIsArray($data['totals']);
+        $this->assertArrayHasKey('current', $data['totals']);
+        $this->assertArrayHasKey('total', $data['totals']);
     }
 }

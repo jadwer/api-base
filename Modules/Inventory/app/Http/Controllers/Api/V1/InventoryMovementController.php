@@ -64,6 +64,10 @@ class InventoryMovementController extends Controller
             'user_id' => $validated['userId'],
             'batch_info' => $validated['batchInfo'] ?? [],
             'metadata' => $validated['metadata'] ?? [],
+            // Quality check fields
+            'quality_checked' => $validated['qualityChecked'] ?? false,
+            'quality_checked_by' => $validated['qualityCheckedBy'] ?? null,
+            'quality_check_notes' => $validated['qualityCheckNotes'] ?? null,
         ];
 
         // Use service to create movement with atomic transaction

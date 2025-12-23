@@ -32,7 +32,7 @@ class LeaveUpdateTest extends TestCase
             'id' => (string) $leave->id,
             'attributes' => [
                 'status' => 'approved',
-                'approver_comments' => 'Approved by admin'
+                'notes' => 'Approved by admin'
             ]
         ];
 
@@ -73,7 +73,7 @@ class LeaveUpdateTest extends TestCase
             'id' => (string) $leave->id,
             'attributes' => [
                 'status' => 'rejected',
-                'approver_comments' => 'Staff shortage during this period'
+                'notes' => 'Staff shortage during this period'
             ]
         ];
 
@@ -287,7 +287,7 @@ class LeaveUpdateTest extends TestCase
             'employee_id' => $employee->id,
             'leave_type_id' => $leaveType->id,
             'status' => 'pending',
-            'daysRequested' => 5
+            'days_requested' => 5
         ]);
 
         $data = [

@@ -18,15 +18,44 @@ class TrialBalanceController extends Controller
     }
 
     /**
+     * Check if user has permission for reports
+     */
+    private function authorize(Request $request, string $permission): ?JsonResponse
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '401', 'title' => 'Unauthenticated']],
+            ], 401);
+        }
+
+        if (!$user->hasPermissionTo($permission)) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '403', 'title' => 'Forbidden']],
+            ], 403);
+        }
+
+        return null;
+    }
+
+    /**
      * Fetch trial balance (Balanza de Comprobación)
      *
-     * GET /api/v1/reports/trial-balance
+     * GET /api/v1/reports/trial-balances
      *
      * @param Request $request
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
+        // Check authorization
+        if ($error = $this->authorize($request, 'reports.trial-balances.index')) {
+            return $error;
+        }
+
         // Get filter parameters - support both direct and filter.* formats
         $asOfDate = $request->input('asOfDate') ?? $request->input('filter.asOfDate');
         $asOfDate = $asOfDate ? Carbon::parse($asOfDate) : Carbon::now();
@@ -36,14 +65,67 @@ class TrialBalanceController extends Controller
         // Generate trial balance using service
         $trialBalanceData = $this->trialBalanceService->generate($asOfDate, $currency);
 
-        // Return simple JSON response
+        // Return JSON:API formatted response
         return response()->json([
-            'data' => $trialBalanceData,
-            'meta' => [
-                'reportType' => 'Balanza de Comprobación',
-                'asOfDate' => $asOfDate->toDateString(),
-                'currency' => $currency,
-                'generatedAt' => now()->toIso8601String(),
+            'jsonapi' => ['version' => '1.0'],
+            'data' => [
+                [
+                    'type' => 'trial-balances',
+                    'id' => '1',
+                    'attributes' => [
+                        'asOfDate' => $trialBalanceData['asOfDate'],
+                        'currency' => $trialBalanceData['currency'],
+                        'accounts' => $trialBalanceData['accounts'],
+                        'totals' => $trialBalanceData['totals'],
+                        'summaryByType' => $trialBalanceData['summaryByType'],
+                        'balanced' => $trialBalanceData['balanced'],
+                        'generatedAt' => $trialBalanceData['generatedAt'],
+                    ],
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Fetch a single trial balance
+     *
+     * GET /api/v1/reports/trial-balances/{id}
+     *
+     * @param string $id
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function show(string $id, Request $request): JsonResponse
+    {
+        // Check authorization
+        if ($error = $this->authorize($request, 'reports.trial-balances.show')) {
+            return $error;
+        }
+
+        // Get filter parameters
+        $asOfDate = $request->input('asOfDate') ?? $request->input('filter.asOfDate');
+        $asOfDate = $asOfDate ? Carbon::parse($asOfDate) : Carbon::now();
+
+        $currency = $request->input('currency') ?? $request->input('filter.currency') ?? 'MXN';
+
+        // Generate trial balance using service
+        $trialBalanceData = $this->trialBalanceService->generate($asOfDate, $currency);
+
+        // Return JSON:API formatted response
+        return response()->json([
+            'jsonapi' => ['version' => '1.0'],
+            'data' => [
+                'type' => 'trial-balances',
+                'id' => $id,
+                'attributes' => [
+                    'asOfDate' => $trialBalanceData['asOfDate'],
+                    'currency' => $trialBalanceData['currency'],
+                    'accounts' => $trialBalanceData['accounts'],
+                    'totals' => $trialBalanceData['totals'],
+                    'summaryByType' => $trialBalanceData['summaryByType'],
+                    'balanced' => $trialBalanceData['balanced'],
+                    'generatedAt' => $trialBalanceData['generatedAt'],
+                ],
             ],
         ]);
     }

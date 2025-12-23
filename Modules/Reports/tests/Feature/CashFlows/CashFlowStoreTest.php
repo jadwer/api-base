@@ -3,23 +3,9 @@
 namespace Modules\Reports\Tests\Feature\CashFlows;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CashFlowStoreTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->seed(\Database\Seeders\DatabaseSeeder::class);
-    }
-
-    protected function getAdminUser(): User
-    {
-        return User::role('admin')->first();
-    }
 
     /** @test */
     public function cannot_create_balance_sheets_directly()

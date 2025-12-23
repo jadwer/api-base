@@ -24,13 +24,20 @@ class AttendanceStoreTest extends TestCase
         $data = [
             'type' => 'attendances',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'attendanceDate' => '2024-01-15',
-                'checkInTime' => '09:00:00',
-                'checkOutTime' => '17:30:00',
+                'date' => '2024-01-15',
+                'checkIn' => '09:00',
+                'checkOut' => '17:30',
                 'overtimeHours' => 0,
                 'status' => 'present',
                 'notes' => 'Regular day'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ]
             ]
         ];
 
@@ -64,11 +71,18 @@ class AttendanceStoreTest extends TestCase
         $data = [
             'type' => 'attendances',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'attendanceDate' => '2024-01-16',
-                'checkInTime' => '08:30:00',
-                'checkOutTime' => '17:00:00',
+                'date' => '2024-01-16',
+                'checkIn' => '08:30',
+                'checkOut' => '17:00',
                 'status' => 'present'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ]
             ]
         ];
 
@@ -95,10 +109,17 @@ class AttendanceStoreTest extends TestCase
         $data = [
             'type' => 'attendances',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'attendanceDate' => '2024-01-15',
-                'checkInTime' => '09:00:00',
+                'date' => '2024-01-15',
+                'checkIn' => '09:00',
                 'status' => 'present'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ]
             ]
         ];
 
@@ -123,10 +144,17 @@ class AttendanceStoreTest extends TestCase
         $data = [
             'type' => 'attendances',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'attendanceDate' => '2024-01-15',
-                'checkInTime' => '09:00:00',
+                'date' => '2024-01-15',
+                'checkIn' => '09:00',
                 'status' => 'present'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ]
             ]
         ];
 
@@ -138,15 +166,15 @@ class AttendanceStoreTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_employee_id_is_required(): void
+    public function test_employee_is_required(): void
     {
         $admin = $this->getAdminUser();
 
         $data = [
             'type' => 'attendances',
             'attributes' => [
-                'attendanceDate' => '2024-01-15',
-                'checkInTime' => '09:00:00',
+                'date' => '2024-01-15',
+                'checkIn' => '09:00',
                 'status' => 'present'
             ]
         ];
@@ -160,7 +188,7 @@ class AttendanceStoreTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public function test_attendance_date_is_required(): void
+    public function test_date_is_required(): void
     {
         $admin = $this->getAdminUser();
 
@@ -174,9 +202,16 @@ class AttendanceStoreTest extends TestCase
         $data = [
             'type' => 'attendances',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'checkInTime' => '09:00:00',
+                'checkIn' => '09:00',
                 'status' => 'present'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ]
             ]
         ];
 
@@ -189,7 +224,7 @@ class AttendanceStoreTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public function test_check_in_time_is_required(): void
+    public function test_status_is_required(): void
     {
         $admin = $this->getAdminUser();
 
@@ -203,9 +238,16 @@ class AttendanceStoreTest extends TestCase
         $data = [
             'type' => 'attendances',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'attendanceDate' => '2024-01-15',
-                'status' => 'present'
+                'date' => '2024-01-15',
+                'checkIn' => '09:00'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ]
             ]
         ];
 
@@ -232,10 +274,17 @@ class AttendanceStoreTest extends TestCase
         $data = [
             'type' => 'attendances',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'attendanceDate' => '2024-01-15',
-                'checkInTime' => '09:00:00',
+                'date' => '2024-01-15',
+                'checkIn' => '09:00',
                 'status' => 'invalid_status'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ]
             ]
         ];
 
@@ -262,11 +311,18 @@ class AttendanceStoreTest extends TestCase
         $data = [
             'type' => 'attendances',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'attendanceDate' => '2024-01-15',
-                'checkInTime' => '09:00:00',
-                'checkOutTime' => '17:00:00',
+                'date' => '2024-01-15',
+                'checkIn' => '09:00',
+                'checkOut' => '17:00',
                 'status' => 'present'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ]
             ]
         ];
 
@@ -281,7 +337,7 @@ class AttendanceStoreTest extends TestCase
         $this->assertNotNull($response->json('data.attributes.hoursWorked'));
     }
 
-    public function test_check_out_time_is_optional(): void
+    public function test_check_in_is_optional(): void
     {
         $admin = $this->getAdminUser();
 
@@ -295,10 +351,53 @@ class AttendanceStoreTest extends TestCase
         $data = [
             'type' => 'attendances',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'attendanceDate' => '2024-01-15',
-                'checkInTime' => '09:00:00',
+                'date' => '2024-01-15',
+                'status' => 'absent'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ]
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('attendances')
+            ->withData($data)
+            ->post('/api/v1/attendances');
+
+        $response->assertCreated();
+    }
+
+    public function test_check_out_is_optional(): void
+    {
+        $admin = $this->getAdminUser();
+
+        $department = Department::factory()->create();
+        $position = Position::factory()->create(['department_id' => $department->id]);
+        $employee = Employee::factory()->create([
+            'department_id' => $department->id,
+            'position_id' => $position->id
+        ]);
+
+        $data = [
+            'type' => 'attendances',
+            'attributes' => [
+                'date' => '2024-01-15',
+                'checkIn' => '09:00',
                 'status' => 'present'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ]
             ]
         ];
 

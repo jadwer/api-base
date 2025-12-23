@@ -33,14 +33,14 @@ class AgingAnalysisServiceTest extends TestCase
         $invoice1 = ARInvoice::create([
             'currency' => 'MXN',
             'subtotal' => 0,
-            'taxAmount' => 0,
-            'isActive' => true,
-            'contactId' => $customer->id,
-            'invoiceNumber' => 'AR-001',
-            'invoiceDate' => now()->subDays(75),
-            'dueDate' => now()->subDays(45),
-            'totalAmount' => 1000.00,
-            'paidAmount' => 0,
+            'tax_amount' => 0,
+            'is_active' => true,
+            'contact_id' => $customer->id,
+            'invoice_number' => 'AR-001',
+            'invoice_date' => now()->subDays(75),
+            'due_date' => now()->subDays(45),
+            'total_amount' => 1000.00,
+            'paid_amount' => 0,
             'status' => 'posted',
         ]);
 
@@ -48,14 +48,14 @@ class AgingAnalysisServiceTest extends TestCase
         $invoice2 = ARInvoice::create([
             'currency' => 'MXN',
             'subtotal' => 0,
-            'taxAmount' => 0,
-            'isActive' => true,
-            'contactId' => $customer->id,
-            'invoiceNumber' => 'AR-002',
-            'invoiceDate' => now()->subDays(45),
-            'dueDate' => now()->subDays(15),
-            'totalAmount' => 500.00,
-            'paidAmount' => 0,
+            'tax_amount' => 0,
+            'is_active' => true,
+            'contact_id' => $customer->id,
+            'invoice_number' => 'AR-002',
+            'invoice_date' => now()->subDays(45),
+            'due_date' => now()->subDays(15),
+            'total_amount' => 500.00,
+            'paid_amount' => 0,
             'status' => 'posted',
         ]);
 
@@ -63,14 +63,14 @@ class AgingAnalysisServiceTest extends TestCase
         $invoice3 = ARInvoice::create([
             'currency' => 'MXN',
             'subtotal' => 0,
-            'taxAmount' => 0,
-            'isActive' => true,
-            'contactId' => $customer->id,
-            'invoiceNumber' => 'AR-003',
-            'invoiceDate' => now()->subDays(10),
-            'dueDate' => now()->addDays(20),
-            'totalAmount' => 300.00,
-            'paidAmount' => 0,
+            'tax_amount' => 0,
+            'is_active' => true,
+            'contact_id' => $customer->id,
+            'invoice_number' => 'AR-003',
+            'invoice_date' => now()->subDays(10),
+            'due_date' => now()->addDays(20),
+            'total_amount' => 300.00,
+            'paid_amount' => 0,
             'status' => 'posted',
         ]);
 
@@ -81,15 +81,15 @@ class AgingAnalysisServiceTest extends TestCase
         $this->assertCount(3, $aging);
 
         // Assert: Verificar aging buckets
-        $invoice1Data = $aging->firstWhere('invoiceNumber', 'AR-001');
+        $invoice1Data = $aging->firstWhere('invoice_number', 'AR-001');
         $this->assertEquals('31-60', $invoice1Data['aging_bucket']);
         $this->assertEquals(45, $invoice1Data['days_overdue']);
 
-        $invoice2Data = $aging->firstWhere('invoiceNumber', 'AR-002');
+        $invoice2Data = $aging->firstWhere('invoice_number', 'AR-002');
         $this->assertEquals('1-30', $invoice2Data['aging_bucket']);
         $this->assertEquals(15, $invoice2Data['days_overdue']);
 
-        $invoice3Data = $aging->firstWhere('invoiceNumber', 'AR-003');
+        $invoice3Data = $aging->firstWhere('invoice_number', 'AR-003');
         $this->assertEquals('current', $invoice3Data['aging_bucket']);
         $this->assertEquals(-20, $invoice3Data['days_overdue']);
     }
@@ -103,14 +103,14 @@ class AgingAnalysisServiceTest extends TestCase
         ARInvoice::create([
             'currency' => 'MXN',
             'subtotal' => 0,
-            'taxAmount' => 0,
-            'isActive' => true,
-            'contactId' => $customer->id,
-            'invoiceNumber' => 'AR-001',
-            'invoiceDate' => now()->subDays(30),
-            'dueDate' => now()->subDays(10),
-            'totalAmount' => 1000.00,
-            'paidAmount' => 0,
+            'tax_amount' => 0,
+            'is_active' => true,
+            'contact_id' => $customer->id,
+            'invoice_number' => 'AR-001',
+            'invoice_date' => now()->subDays(30),
+            'due_date' => now()->subDays(10),
+            'total_amount' => 1000.00,
+            'paid_amount' => 0,
             'status' => 'posted',
         ]);
 
@@ -118,14 +118,14 @@ class AgingAnalysisServiceTest extends TestCase
         ARInvoice::create([
             'currency' => 'MXN',
             'subtotal' => 0,
-            'taxAmount' => 0,
-            'isActive' => true,
-            'contactId' => $customer->id,
-            'invoiceNumber' => 'AR-002',
-            'invoiceDate' => now()->subDays(20),
-            'dueDate' => now()->subDays(5),
-            'totalAmount' => 500.00,
-            'paidAmount' => 500.00,
+            'tax_amount' => 0,
+            'is_active' => true,
+            'contact_id' => $customer->id,
+            'invoice_number' => 'AR-002',
+            'invoice_date' => now()->subDays(20),
+            'due_date' => now()->subDays(5),
+            'total_amount' => 500.00,
+            'paid_amount' => 500.00,
             'status' => 'paid',
         ]);
 
@@ -134,7 +134,7 @@ class AgingAnalysisServiceTest extends TestCase
 
         // Assert: Solo 1 invoice (la no pagada)
         $this->assertCount(1, $aging);
-        $this->assertEquals('AR-001', $aging->first()['invoiceNumber']);
+        $this->assertEquals('AR-001', $aging->first()['invoice_number']);
     }
 
     public function test_ar_aging_calculates_balance_correctly(): void
@@ -145,14 +145,14 @@ class AgingAnalysisServiceTest extends TestCase
         ARInvoice::create([
             'currency' => 'MXN',
             'subtotal' => 0,
-            'taxAmount' => 0,
-            'isActive' => true,
-            'contactId' => $customer->id,
-            'invoiceNumber' => 'AR-001',
-            'invoiceDate' => now()->subDays(30),
-            'dueDate' => now()->subDays(10),
-            'totalAmount' => 1000.00,
-            'paidAmount' => 300.00,
+            'tax_amount' => 0,
+            'is_active' => true,
+            'contact_id' => $customer->id,
+            'invoice_number' => 'AR-001',
+            'invoice_date' => now()->subDays(30),
+            'due_date' => now()->subDays(10),
+            'total_amount' => 1000.00,
+            'paid_amount' => 300.00,
             'status' => 'partial',
         ]);
 
@@ -173,28 +173,28 @@ class AgingAnalysisServiceTest extends TestCase
         ARInvoice::create([
             'currency' => 'MXN',
             'subtotal' => 0,
-            'taxAmount' => 0,
-            'isActive' => true,
-            'contactId' => $customer1->id,
-            'invoiceNumber' => 'AR-SUM-001',
-            'invoiceDate' => now()->subDays(45),
-            'dueDate' => now()->subDays(15),
-            'totalAmount' => 1000.00,
-            'paidAmount' => 0,
+            'tax_amount' => 0,
+            'is_active' => true,
+            'contact_id' => $customer1->id,
+            'invoice_number' => 'AR-SUM-001',
+            'invoice_date' => now()->subDays(45),
+            'due_date' => now()->subDays(15),
+            'total_amount' => 1000.00,
+            'paid_amount' => 0,
             'status' => 'posted',
         ]);
 
         ARInvoice::create([
             'currency' => 'MXN',
             'subtotal' => 0,
-            'taxAmount' => 0,
-            'isActive' => true,
-            'contactId' => $customer1->id,
-            'invoiceNumber' => 'AR-SUM-002',
-            'invoiceDate' => now()->subDays(75),
-            'dueDate' => now()->subDays(45),
-            'totalAmount' => 500.00,
-            'paidAmount' => 0,
+            'tax_amount' => 0,
+            'is_active' => true,
+            'contact_id' => $customer1->id,
+            'invoice_number' => 'AR-SUM-002',
+            'invoice_date' => now()->subDays(75),
+            'due_date' => now()->subDays(45),
+            'total_amount' => 500.00,
+            'paid_amount' => 0,
             'status' => 'posted',
         ]);
 
@@ -202,14 +202,14 @@ class AgingAnalysisServiceTest extends TestCase
         ARInvoice::create([
             'currency' => 'MXN',
             'subtotal' => 0,
-            'taxAmount' => 0,
-            'isActive' => true,
-            'contactId' => $customer2->id,
-            'invoiceNumber' => 'AR-SUM-003',
-            'invoiceDate' => now()->subDays(40),
-            'dueDate' => now()->subDays(10),
-            'totalAmount' => 2000.00,
-            'paidAmount' => 0,
+            'tax_amount' => 0,
+            'is_active' => true,
+            'contact_id' => $customer2->id,
+            'invoice_number' => 'AR-SUM-003',
+            'invoice_date' => now()->subDays(40),
+            'due_date' => now()->subDays(10),
+            'total_amount' => 2000.00,
+            'paid_amount' => 0,
             'status' => 'posted',
         ]);
 
@@ -220,11 +220,11 @@ class AgingAnalysisServiceTest extends TestCase
         $this->assertCount(2, $summary);
 
         // Assert: Customer 2 primero (mayor balance)
-        $this->assertEquals($customer2->id, $summary->first()['contactId']);
+        $this->assertEquals($customer2->id, $summary->first()['contact_id']);
         $this->assertEquals(2000.00, $summary->first()['total_balance']);
 
         // Assert: Customer 1 segundo
-        $customer1Summary = $summary->firstWhere('contactId', $customer1->id);
+        $customer1Summary = $summary->firstWhere('contact_id', $customer1->id);
         $this->assertEquals(1500.00, $customer1Summary['total_balance']);
         $this->assertEquals(2, $customer1Summary['invoice_count']);
     }
@@ -238,14 +238,14 @@ class AgingAnalysisServiceTest extends TestCase
         APInvoice::create([
             'currency' => 'MXN',
             'subtotal' => 0,
-            'taxAmount' => 0,
-            'isActive' => true,
-            'contactId' => $supplier->id,
-            'invoiceNumber' => 'AP-001',
-            'invoiceDate' => now()->subDays(125),
-            'dueDate' => now()->subDays(95),
-            'totalAmount' => 5000.00,
-            'paidAmount' => 0,
+            'tax_amount' => 0,
+            'is_active' => true,
+            'contact_id' => $supplier->id,
+            'invoice_number' => 'AP-001',
+            'invoice_date' => now()->subDays(125),
+            'due_date' => now()->subDays(95),
+            'total_amount' => 5000.00,
+            'paid_amount' => 0,
             'status' => 'posted',
         ]);
 
@@ -253,14 +253,14 @@ class AgingAnalysisServiceTest extends TestCase
         APInvoice::create([
             'currency' => 'MXN',
             'subtotal' => 0,
-            'taxAmount' => 0,
-            'isActive' => true,
-            'contactId' => $supplier->id,
-            'invoiceNumber' => 'AP-002',
-            'invoiceDate' => now()->subDays(10),
-            'dueDate' => now()->addDays(20),
-            'totalAmount' => 1000.00,
-            'paidAmount' => 0,
+            'tax_amount' => 0,
+            'is_active' => true,
+            'contact_id' => $supplier->id,
+            'invoice_number' => 'AP-002',
+            'invoice_date' => now()->subDays(10),
+            'due_date' => now()->addDays(20),
+            'total_amount' => 1000.00,
+            'paid_amount' => 0,
             'status' => 'posted',
         ]);
 
@@ -270,11 +270,11 @@ class AgingAnalysisServiceTest extends TestCase
         // Assert
         $this->assertCount(2, $aging);
 
-        $invoice1Data = $aging->firstWhere('invoiceNumber', 'AP-001');
+        $invoice1Data = $aging->firstWhere('invoice_number', 'AP-001');
         $this->assertEquals('90+', $invoice1Data['aging_bucket']);
         $this->assertEquals(95, $invoice1Data['days_overdue']);
 
-        $invoice2Data = $aging->firstWhere('invoiceNumber', 'AP-002');
+        $invoice2Data = $aging->firstWhere('invoice_number', 'AP-002');
         $this->assertEquals('current', $invoice2Data['aging_bucket']);
     }
 
@@ -286,14 +286,14 @@ class AgingAnalysisServiceTest extends TestCase
         ARInvoice::create([
             'currency' => 'MXN',
             'subtotal' => 0,
-            'taxAmount' => 0,
-            'isActive' => true,
-            'contactId' => $customer->id,
-            'invoiceNumber' => 'AR-001',
-            'invoiceDate' => now()->subDays(20),
-            'dueDate' => now()->addDays(10),
-            'totalAmount' => 1000.00,
-            'paidAmount' => 0,
+            'tax_amount' => 0,
+            'is_active' => true,
+            'contact_id' => $customer->id,
+            'invoice_number' => 'AR-001',
+            'invoice_date' => now()->subDays(20),
+            'due_date' => now()->addDays(10),
+            'total_amount' => 1000.00,
+            'paid_amount' => 0,
             'status' => 'posted',
         ]);
 
@@ -315,28 +315,28 @@ class AgingAnalysisServiceTest extends TestCase
         ARInvoice::create([
             'currency' => 'MXN',
             'subtotal' => 0,
-            'taxAmount' => 0,
-            'isActive' => true,
-            'contactId' => $customer1->id,
-            'invoiceNumber' => 'AR-001',
-            'invoiceDate' => now()->subDays(30),
-            'dueDate' => now()->subDays(10),
-            'totalAmount' => 1000.00,
-            'paidAmount' => 0,
+            'tax_amount' => 0,
+            'is_active' => true,
+            'contact_id' => $customer1->id,
+            'invoice_number' => 'AR-001',
+            'invoice_date' => now()->subDays(30),
+            'due_date' => now()->subDays(10),
+            'total_amount' => 1000.00,
+            'paid_amount' => 0,
             'status' => 'posted',
         ]);
 
         ARInvoice::create([
             'currency' => 'MXN',
             'subtotal' => 0,
-            'taxAmount' => 0,
-            'isActive' => true,
-            'contactId' => $customer2->id,
-            'invoiceNumber' => 'AR-002',
-            'invoiceDate' => now()->subDays(20),
-            'dueDate' => now()->addDays(5),
-            'totalAmount' => 500.00,
-            'paidAmount' => 0,
+            'tax_amount' => 0,
+            'is_active' => true,
+            'contact_id' => $customer2->id,
+            'invoice_number' => 'AR-002',
+            'invoice_date' => now()->subDays(20),
+            'due_date' => now()->addDays(5),
+            'total_amount' => 500.00,
+            'paid_amount' => 0,
             'status' => 'posted',
         ]);
 
@@ -345,8 +345,8 @@ class AgingAnalysisServiceTest extends TestCase
 
         // Assert: Solo 1 invoice (del customer 1)
         $this->assertCount(1, $aging);
-        $this->assertEquals('AR-001', $aging->first()['invoiceNumber']);
-        $this->assertEquals($customer1->id, $aging->first()['contactId']);
+        $this->assertEquals('AR-001', $aging->first()['invoice_number']);
+        $this->assertEquals($customer1->id, $aging->first()['contact_id']);
     }
 
     public function test_get_total_ar_balance(): void
@@ -357,28 +357,28 @@ class AgingAnalysisServiceTest extends TestCase
         ARInvoice::create([
             'currency' => 'MXN',
             'subtotal' => 0,
-            'taxAmount' => 0,
-            'isActive' => true,
-            'contactId' => $customer->id,
-            'invoiceNumber' => 'AR-BAL-001',
-            'invoiceDate' => now()->subDays(30),
-            'dueDate' => now()->subDays(10),
-            'totalAmount' => 1000.00,
-            'paidAmount' => 300.00,
+            'tax_amount' => 0,
+            'is_active' => true,
+            'contact_id' => $customer->id,
+            'invoice_number' => 'AR-BAL-001',
+            'invoice_date' => now()->subDays(30),
+            'due_date' => now()->subDays(10),
+            'total_amount' => 1000.00,
+            'paid_amount' => 300.00,
             'status' => 'partial',
         ]);
 
         ARInvoice::create([
             'currency' => 'MXN',
             'subtotal' => 0,
-            'taxAmount' => 0,
-            'isActive' => true,
-            'contactId' => $customer->id,
-            'invoiceNumber' => 'AR-BAL-002',
-            'invoiceDate' => now()->subDays(20),
-            'dueDate' => now()->addDays(5),
-            'totalAmount' => 500.00,
-            'paidAmount' => 0,
+            'tax_amount' => 0,
+            'is_active' => true,
+            'contact_id' => $customer->id,
+            'invoice_number' => 'AR-BAL-002',
+            'invoice_date' => now()->subDays(20),
+            'due_date' => now()->addDays(5),
+            'total_amount' => 500.00,
+            'paid_amount' => 0,
             'status' => 'posted',
         ]);
 
@@ -386,14 +386,14 @@ class AgingAnalysisServiceTest extends TestCase
         ARInvoice::create([
             'currency' => 'MXN',
             'subtotal' => 0,
-            'taxAmount' => 0,
-            'isActive' => true,
-            'contactId' => $customer->id,
-            'invoiceNumber' => 'AR-BAL-003',
-            'invoiceDate' => now()->subDays(15),
-            'dueDate' => now()->subDays(5),
-            'totalAmount' => 200.00,
-            'paidAmount' => 200.00,
+            'tax_amount' => 0,
+            'is_active' => true,
+            'contact_id' => $customer->id,
+            'invoice_number' => 'AR-BAL-003',
+            'invoice_date' => now()->subDays(15),
+            'due_date' => now()->subDays(5),
+            'total_amount' => 200.00,
+            'paid_amount' => 200.00,
             'status' => 'paid',
         ]);
 
@@ -413,28 +413,28 @@ class AgingAnalysisServiceTest extends TestCase
         ARInvoice::create([
             'currency' => 'MXN',
             'subtotal' => 0,
-            'taxAmount' => 0,
-            'isActive' => true,
-            'contactId' => $customer1->id,
-            'invoiceNumber' => 'AR-CONT-001',
-            'invoiceDate' => now()->subDays(30),
-            'dueDate' => now()->subDays(10),
-            'totalAmount' => 1000.00,
-            'paidAmount' => 200.00,
+            'tax_amount' => 0,
+            'is_active' => true,
+            'contact_id' => $customer1->id,
+            'invoice_number' => 'AR-CONT-001',
+            'invoice_date' => now()->subDays(30),
+            'due_date' => now()->subDays(10),
+            'total_amount' => 1000.00,
+            'paid_amount' => 200.00,
             'status' => 'partial',
         ]);
 
         ARInvoice::create([
             'currency' => 'MXN',
             'subtotal' => 0,
-            'taxAmount' => 0,
-            'isActive' => true,
-            'contactId' => $customer2->id,
-            'invoiceNumber' => 'AR-CONT-002',
-            'invoiceDate' => now()->subDays(20),
-            'dueDate' => now()->subDays(5),
-            'totalAmount' => 500.00,
-            'paidAmount' => 0,
+            'tax_amount' => 0,
+            'is_active' => true,
+            'contact_id' => $customer2->id,
+            'invoice_number' => 'AR-CONT-002',
+            'invoice_date' => now()->subDays(20),
+            'due_date' => now()->subDays(5),
+            'total_amount' => 500.00,
+            'paid_amount' => 0,
             'status' => 'posted',
         ]);
 

@@ -3,36 +3,12 @@
 namespace Modules\Reports\Tests\Feature\TrialBalances;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TrialBalanceIndexTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->seed(\Database\Seeders\DatabaseSeeder::class);
-    }
-
-    protected function getAdminUser(): User
-    {
-        return User::role('admin')->first();
-    }
-
-    protected function getTechUser(): User
-    {
-        return User::role('tech')->first();
-    }
-
-    protected function getCustomerUser(): User
-    {
-        return User::role('customer')->first();
-    }
 
     /** @test */
-    public function admin_can_fetch_balance_sheets()
+    public function admin_can_fetch_trial_balances()
     {
         $admin = $this->getAdminUser();
 
@@ -50,13 +26,10 @@ class TrialBalanceIndexTest extends TestCase
                     'attributes' => [
                         'asOfDate',
                         'currency',
+                        'accounts',
+                        'totals',
+                        'summaryByType',
                         'balanced',
-                        'assets',
-                        'liabilities',
-                        'equity',
-                        'totalAssets',
-                        'totalLiabilities',
-                        'totalEquity',
                         'generatedAt',
                     ],
                 ],
@@ -65,7 +38,7 @@ class TrialBalanceIndexTest extends TestCase
     }
 
     /** @test */
-    public function tech_user_can_fetch_balance_sheets()
+    public function tech_user_can_fetch_trial_balances()
     {
         $tech = $this->getTechUser();
 
@@ -78,7 +51,7 @@ class TrialBalanceIndexTest extends TestCase
     }
 
     /** @test */
-    public function customer_cannot_fetch_balance_sheets()
+    public function customer_cannot_fetch_trial_balances()
     {
         $customer = $this->getCustomerUser();
 
@@ -91,7 +64,7 @@ class TrialBalanceIndexTest extends TestCase
     }
 
     /** @test */
-    public function guest_cannot_fetch_balance_sheets()
+    public function guest_cannot_fetch_trial_balances()
     {
         $response = $this->jsonApi()
             ->expects('trial-balances')
@@ -101,7 +74,7 @@ class TrialBalanceIndexTest extends TestCase
     }
 
     /** @test */
-    public function can_filter_balance_sheet_by_date()
+    public function can_filter_trial_balance_by_date()
     {
         $admin = $this->getAdminUser();
 
@@ -116,7 +89,7 @@ class TrialBalanceIndexTest extends TestCase
     }
 
     /** @test */
-    public function balance_sheet_includes_all_sections()
+    public function trial_balance_includes_all_sections()
     {
         $admin = $this->getAdminUser();
 
@@ -129,16 +102,16 @@ class TrialBalanceIndexTest extends TestCase
 
         $data = $response->json('data.0.attributes');
 
-        $this->assertArrayHasKey('assets', $data);
-        $this->assertArrayHasKey('liabilities', $data);
-        $this->assertArrayHasKey('equity', $data);
-        $this->assertIsArray($data['assets']);
-        $this->assertIsArray($data['liabilities']);
-        $this->assertIsArray($data['equity']);
+        $this->assertArrayHasKey('accounts', $data);
+        $this->assertArrayHasKey('totals', $data);
+        $this->assertArrayHasKey('summaryByType', $data);
+        $this->assertIsArray($data['accounts']);
+        $this->assertIsArray($data['totals']);
+        $this->assertIsArray($data['summaryByType']);
     }
 
     /** @test */
-    public function balance_sheet_includes_totals()
+    public function trial_balance_includes_totals()
     {
         $admin = $this->getAdminUser();
 
@@ -151,11 +124,9 @@ class TrialBalanceIndexTest extends TestCase
 
         $data = $response->json('data.0.attributes');
 
-        $this->assertArrayHasKey('totalAssets', $data);
-        $this->assertArrayHasKey('totalLiabilities', $data);
-        $this->assertArrayHasKey('totalEquity', $data);
-        $this->assertIsNumeric($data['totalAssets']);
-        $this->assertIsNumeric($data['totalLiabilities']);
-        $this->assertIsNumeric($data['totalEquity']);
+        $this->assertArrayHasKey('totals', $data);
+        $this->assertArrayHasKey('balanced', $data);
+        $this->assertIsArray($data['totals']);
+        $this->assertIsBool($data['balanced']);
     }
 }

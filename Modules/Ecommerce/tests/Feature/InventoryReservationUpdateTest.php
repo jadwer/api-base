@@ -16,7 +16,7 @@ class InventoryReservationUpdateTest extends TestCase
             'type' => 'inventory-reservations',
             'id' => (string) $reservation->id,
             'attributes' => [
-                'status' => 'fulfilled',
+                'status' => 'released',
             ]
         ];
 
@@ -29,7 +29,7 @@ class InventoryReservationUpdateTest extends TestCase
         $response->assertOk();
         $this->assertDatabaseHas('inventory_reservations', [
             'id' => $reservation->id,
-            'status' => 'fulfilled',
+            'status' => 'released',
         ]);
     }
 

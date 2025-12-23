@@ -3,23 +3,9 @@
 namespace Modules\Reports\Tests\Feature\APAgingReports;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class APAgingReportDestroyTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->seed(\Database\Seeders\DatabaseSeeder::class);
-    }
-
-    protected function getAdminUser(): User
-    {
-        return User::role('admin')->first();
-    }
 
     /** @test */
     public function cannot_delete_ap_aging_reports()

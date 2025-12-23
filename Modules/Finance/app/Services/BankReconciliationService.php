@@ -170,7 +170,7 @@ class BankReconciliationService
     private function getGLAmount(JournalLine $gl): float
     {
         // For bank accounts, debits are increases, credits are decreases
-        return $gl->debit_amount - $gl->credit_amount;
+        return $gl->debit - $gl->credit;
     }
 
     /**

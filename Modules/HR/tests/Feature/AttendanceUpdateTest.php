@@ -31,7 +31,7 @@ class AttendanceUpdateTest extends TestCase
             'type' => 'attendances',
             'id' => (string) $attendance->id,
             'attributes' => [
-                'checkOutTime' => '18:00:00',
+                'checkOut' => '18:00',
                 'overtimeHours' => 1.0,
                 'notes' => 'Worked overtime'
             ]
@@ -201,7 +201,7 @@ class AttendanceUpdateTest extends TestCase
             'type' => 'attendances',
             'id' => (string) $attendance->id,
             'attributes' => [
-                'checkOutTime' => '19:00:00'
+                'checkOut' => '19:00'
             ]
         ];
 

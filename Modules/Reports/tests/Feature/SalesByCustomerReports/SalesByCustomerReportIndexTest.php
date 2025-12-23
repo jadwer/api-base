@@ -3,33 +3,9 @@
 namespace Modules\Reports\Tests\Feature\SalesByCustomerReports;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class SalesByCustomerReportIndexTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->seed(\Database\Seeders\DatabaseSeeder::class);
-    }
-
-    protected function getAdminUser(): User
-    {
-        return User::role('admin')->first();
-    }
-
-    protected function getTechUser(): User
-    {
-        return User::role('tech')->first();
-    }
-
-    protected function getCustomerUser(): User
-    {
-        return User::role('customer')->first();
-    }
 
     /** @test */
     public function admin_can_fetch_sales_by_customer_reports()
@@ -48,15 +24,11 @@ class SalesByCustomerReportIndexTest extends TestCase
                     'id',
                     'type',
                     'attributes' => [
-                        'asOfDate',
+                        'startDate',
+                        'endDate',
                         'currency',
-                        'balanced',
-                        'assets',
-                        'liabilities',
-                        'equity',
-                        'totalAssets',
-                        'totalLiabilities',
-                        'totalEquity',
+                        'salesByCustomer',
+                        'summary',
                         'generatedAt',
                     ],
                 ],
@@ -101,22 +73,23 @@ class SalesByCustomerReportIndexTest extends TestCase
     }
 
     /** @test */
-    public function can_filter_balance_sheet_by_date()
+    public function can_filter_sales_by_customer_report_by_date()
     {
         $admin = $this->getAdminUser();
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('sales-by-customer-reports')
-            ->filter(['asOfDate' => '2025-10-30'])
+            ->filter(['startDate' => '2025-10-01', 'endDate' => '2025-10-30'])
             ->get('/api/v1/reports/sales-by-customer-reports');
 
         $response->assertOk();
-        $response->assertJsonPath('data.0.attributes.asOfDate', '2025-10-30');
+        $response->assertJsonPath('data.0.attributes.startDate', '2025-10-01');
+        $response->assertJsonPath('data.0.attributes.endDate', '2025-10-30');
     }
 
     /** @test */
-    public function balance_sheet_includes_all_sections()
+    public function sales_by_customer_report_includes_all_sections()
     {
         $admin = $this->getAdminUser();
 
@@ -129,16 +102,14 @@ class SalesByCustomerReportIndexTest extends TestCase
 
         $data = $response->json('data.0.attributes');
 
-        $this->assertArrayHasKey('assets', $data);
-        $this->assertArrayHasKey('liabilities', $data);
-        $this->assertArrayHasKey('equity', $data);
-        $this->assertIsArray($data['assets']);
-        $this->assertIsArray($data['liabilities']);
-        $this->assertIsArray($data['equity']);
+        $this->assertArrayHasKey('salesByCustomer', $data);
+        $this->assertArrayHasKey('summary', $data);
+        $this->assertIsArray($data['salesByCustomer']);
+        $this->assertIsArray($data['summary']);
     }
 
     /** @test */
-    public function balance_sheet_includes_totals()
+    public function sales_by_customer_report_includes_summary()
     {
         $admin = $this->getAdminUser();
 
@@ -151,11 +122,7 @@ class SalesByCustomerReportIndexTest extends TestCase
 
         $data = $response->json('data.0.attributes');
 
-        $this->assertArrayHasKey('totalAssets', $data);
-        $this->assertArrayHasKey('totalLiabilities', $data);
-        $this->assertArrayHasKey('totalEquity', $data);
-        $this->assertIsNumeric($data['totalAssets']);
-        $this->assertIsNumeric($data['totalLiabilities']);
-        $this->assertIsNumeric($data['totalEquity']);
+        $this->assertArrayHasKey('summary', $data);
+        $this->assertIsArray($data['summary']);
     }
 }

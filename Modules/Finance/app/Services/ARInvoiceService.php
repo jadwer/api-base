@@ -48,15 +48,17 @@ class ARInvoiceService
             }
 
             // 1. Validar que existan las cuentas GL requeridas
-            $customerAccount = Account::where('code', '1100')->where('is_postable', true)->first();
-            $revenueAccount = Account::where('code', '4100')->where('is_postable', true)->first();
+            // 1104 = Clientes (cuenta postable bajo 1100 Activo Circulante)
+            // 4101 = Ventas (cuenta postable bajo 4100 Ingresos por Ventas)
+            $customerAccount = Account::where('code', '1104')->where('is_postable', true)->first();
+            $revenueAccount = Account::where('code', '4101')->where('is_postable', true)->first();
 
             if (!$customerAccount) {
-                throw new \Exception('GL Account for Customers (1100) not found or not postable. Please configure the chart of accounts.');
+                throw new \Exception('GL Account for Customers (1104) not found or not postable. Please configure the chart of accounts.');
             }
 
             if (!$revenueAccount) {
-                throw new \Exception('GL Account for Revenue (4100) not found or not postable. Please configure the chart of accounts.');
+                throw new \Exception('GL Account for Revenue (4101) not found or not postable. Please configure the chart of accounts.');
             }
 
             // 2. Generar invoice number secuencial

@@ -17,7 +17,7 @@ class CompanySettingStoreTest extends TestCase
         $data = [
             'type' => 'company-settings',
             'attributes' => [
-                'company_name' => 'Test Company SA de CV',
+                'companyName' => 'Test Company SA de CV',
                 'rfc' => 'TEST010101ABC',
                 'taxRegime' => '612',
                 'postalCode' => '01000',
@@ -25,7 +25,7 @@ class CompanySettingStoreTest extends TestCase
                 'creditNoteSeries' => 'N',
                 'nextInvoiceFolio' => 1,
                 'nextCreditNoteFolio' => 1,
-                'is_active' => true,
+                'isActive' => true,
             ]
         ];
 
@@ -40,7 +40,7 @@ class CompanySettingStoreTest extends TestCase
                 'data' => [
                     'type' => 'company-settings',
                     'attributes' => [
-                        'company_name' => 'Test Company SA de CV',
+                        'companyName' => 'Test Company SA de CV',
                         'rfc' => 'TEST010101ABC',
                         'taxRegime' => '612',
                     ]
@@ -48,7 +48,7 @@ class CompanySettingStoreTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('company_settings', [
-            'company_name' => 'Test Company SA de CV',
+            'companyName' => 'Test Company SA de CV',
             'rfc' => 'TEST010101ABC',
         ]);
     }
@@ -60,7 +60,7 @@ class CompanySettingStoreTest extends TestCase
         $data = [
             'type' => 'company-settings',
             'attributes' => [
-                'company_name' => 'Test Company',
+                'companyName' => 'Test Company',
                 'rfc' => 'TEST010101ABC',
                 'taxRegime' => '612',
                 'postalCode' => '01000',
@@ -83,7 +83,7 @@ class CompanySettingStoreTest extends TestCase
         $data = [
             'type' => 'company-settings',
             'attributes' => [
-                'company_name' => 'Test Company',
+                'companyName' => 'Test Company',
                 'rfc' => 'TEST010101ABC',
                 'taxRegime' => '612',
                 'postalCode' => '01000',
@@ -104,7 +104,7 @@ class CompanySettingStoreTest extends TestCase
         $data = [
             'type' => 'company-settings',
             'attributes' => [
-                'company_name' => 'Test Company',
+                'companyName' => 'Test Company',
                 'rfc' => 'TEST010101ABC',
                 'taxRegime' => '612',
                 'postalCode' => '01000',
@@ -149,7 +149,7 @@ class CompanySettingStoreTest extends TestCase
         $data = [
             'type' => 'company-settings',
             'attributes' => [
-                'company_name' => 'Test Company',
+                'companyName' => 'Test Company',
                 'taxRegime' => '612',
                 'postalCode' => '01000',
             ]
@@ -172,7 +172,7 @@ class CompanySettingStoreTest extends TestCase
         $data = [
             'type' => 'company-settings',
             'attributes' => [
-                'company_name' => 'Test Company',
+                'companyName' => 'Test Company',
                 'rfc' => 'SHORT',
                 'taxRegime' => '612',
                 'postalCode' => '01000',
@@ -196,7 +196,7 @@ class CompanySettingStoreTest extends TestCase
         $data = [
             'type' => 'company-settings',
             'attributes' => [
-                'company_name' => 'Test Company',
+                'companyName' => 'Test Company',
                 'rfc' => '1234567890123',
                 'taxRegime' => '612',
                 'postalCode' => '01000',
@@ -221,7 +221,7 @@ class CompanySettingStoreTest extends TestCase
         $data = [
             'type' => 'company-settings',
             'attributes' => [
-                'company_name' => 'Another Company',
+                'companyName' => 'Another Company',
                 'rfc' => 'TEST010101ABC',
                 'taxRegime' => '612',
                 'postalCode' => '01000',
@@ -245,7 +245,7 @@ class CompanySettingStoreTest extends TestCase
         $data = [
             'type' => 'company-settings',
             'attributes' => [
-                'company_name' => 'Test Company',
+                'companyName' => 'Test Company',
                 'rfc' => 'TEST010101ABC',
                 'postalCode' => '01000',
             ]
@@ -268,7 +268,7 @@ class CompanySettingStoreTest extends TestCase
         $data = [
             'type' => 'company-settings',
             'attributes' => [
-                'company_name' => 'Test Company',
+                'companyName' => 'Test Company',
                 'rfc' => 'TEST010101ABC',
                 'taxRegime' => '612',
             ]
@@ -291,7 +291,7 @@ class CompanySettingStoreTest extends TestCase
         $data = [
             'type' => 'company-settings',
             'attributes' => [
-                'company_name' => 'Test Company',
+                'companyName' => 'Test Company',
                 'rfc' => 'TEST010101ABC',
                 'taxRegime' => '612',
                 'postalCode' => '123',
@@ -315,7 +315,7 @@ class CompanySettingStoreTest extends TestCase
         $data = [
             'type' => 'company-settings',
             'attributes' => [
-                'company_name' => 'Test Company',
+                'companyName' => 'Test Company',
                 'rfc' => 'TEST010101ABC',
                 'taxRegime' => '612',
                 'postalCode' => '01000',
@@ -351,7 +351,7 @@ class CompanySettingStoreTest extends TestCase
         $data = [
             'type' => 'company-settings',
             'attributes' => [
-                'company_name' => 'Test Company',
+                'companyName' => 'Test Company',
                 'rfc' => 'TEST010101ABC',
                 'taxRegime' => '612',
                 'postalCode' => '01000',
@@ -376,7 +376,7 @@ class CompanySettingStoreTest extends TestCase
         $data = [
             'type' => 'company-settings',
             'attributes' => [
-                'company_name' => 'Test Company',
+                'companyName' => 'Test Company',
                 'rfc' => 'TEST010101ABC',
                 'taxRegime' => '612',
                 'postalCode' => '01000',
@@ -411,7 +411,7 @@ class CompanySettingStoreTest extends TestCase
         $data = [
             'type' => 'company-settings',
             'attributes' => [
-                'company_name' => 'Test Company',
+                'companyName' => 'Test Company',
                 'rfc' => 'TEST010101ABC',
                 'taxRegime' => '612',
                 'postalCode' => '01000',

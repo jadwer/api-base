@@ -56,6 +56,11 @@ class InventoryMovementRequest extends ResourceRequest
             'locationId' => ['nullable', 'integer', 'exists:warehouse_locations,id'],
             'destinationWarehouseId' => ['nullable', 'integer', 'exists:warehouses,id'],
             'destinationLocationId' => ['nullable', 'integer', 'exists:warehouse_locations,id'],
+
+            // Quality check fields
+            'qualityChecked' => ['nullable', 'boolean'],
+            'qualityCheckedBy' => ['nullable', 'integer', 'exists:users,id'],
+            'qualityCheckNotes' => ['nullable', 'string', 'max:1000'],
         ];
     }
 

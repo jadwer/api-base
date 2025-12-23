@@ -38,15 +38,17 @@ class APInvoiceService
     {
         return DB::transaction(function () use ($data) {
             // 1. Validar que existan las cuentas GL requeridas
-            $expenseAccount = Account::where('code', '5100')->where('is_postable', true)->first();
-            $supplierAccount = Account::where('code', '2100')->where('is_postable', true)->first();
+            // 5101 = Costo de Ventas (cuenta postable bajo 5100 Costo de Ventas)
+            // 2101 = Proveedores (cuenta postable bajo 2100 Pasivo Circulante)
+            $expenseAccount = Account::where('code', '5101')->where('is_postable', true)->first();
+            $supplierAccount = Account::where('code', '2101')->where('is_postable', true)->first();
 
             if (!$expenseAccount) {
-                throw new \Exception('GL Account for Expenses (5100) not found or not postable. Please configure the chart of accounts.');
+                throw new \Exception('GL Account for Expenses (5101) not found or not postable. Please configure the chart of accounts.');
             }
 
             if (!$supplierAccount) {
-                throw new \Exception('GL Account for Suppliers/Accounts Payable (2100) not found or not postable. Please configure the chart of accounts.');
+                throw new \Exception('GL Account for Suppliers/Accounts Payable (2101) not found or not postable. Please configure the chart of accounts.');
             }
 
             // 2. Generar invoice number secuencial

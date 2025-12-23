@@ -24,7 +24,7 @@ class CreditManagementServiceTest extends TestCase
     public function test_validates_credit_within_limit(): void
     {
         $customer = Contact::factory()->customer()->create([
-            'creditLimit' => 10000,
+            'credit_limit' => 10000,
             'current_credit' => 0, // Start with zero current credit
         ]);
 
@@ -32,9 +32,9 @@ class CreditManagementServiceTest extends TestCase
         ARInvoice::factory()->create([
             'contact_id' => $customer->id,
             'total_amount' => 5000,
-            'paidAmount' => 0,
+            'paid_amount' => 0,
             'status' => 'posted',
-            'dueDate' => now()->addDays(30)->toDateString(),
+            'due_date' => now()->addDays(30)->toDateString(),
         ]);
 
         // Should allow 4000 more (total 9000 < 10000 limit)
@@ -46,7 +46,7 @@ class CreditManagementServiceTest extends TestCase
     public function test_blocks_credit_exceeding_limit(): void
     {
         $customer = Contact::factory()->customer()->create([
-            'creditLimit' => 10000,
+            'credit_limit' => 10000,
             'current_credit' => 0,
         ]);
 
@@ -54,9 +54,9 @@ class CreditManagementServiceTest extends TestCase
         ARInvoice::factory()->create([
             'contact_id' => $customer->id,
             'total_amount' => 8000,
-            'paidAmount' => 0,
+            'paid_amount' => 0,
             'status' => 'posted',
-            'dueDate' => now()->addDays(30)->toDateString(),
+            'due_date' => now()->addDays(30)->toDateString(),
         ]);
 
         // Should block 5000 more (total 13000 > 10000 limit)
@@ -69,7 +69,7 @@ class CreditManagementServiceTest extends TestCase
     public function test_blocks_customer_with_overdue_invoices(): void
     {
         $customer = Contact::factory()->customer()->create([
-            'creditLimit' => 10000,
+            'credit_limit' => 10000,
             'current_credit' => 0,
         ]);
 
@@ -77,9 +77,9 @@ class CreditManagementServiceTest extends TestCase
         ARInvoice::factory()->create([
             'contact_id' => $customer->id,
             'total_amount' => 2000,
-            'paidAmount' => 0,
+            'paid_amount' => 0,
             'status' => 'posted',
-            'dueDate' => now()->subDays(10)->toDateString(), // Overdue
+            'due_date' => now()->subDays(10)->toDateString(), // Overdue
         ]);
 
         $this->expectException(\Exception::class);
@@ -91,7 +91,7 @@ class CreditManagementServiceTest extends TestCase
     public function test_blocks_customer_with_poor_payment_history(): void
     {
         $customer = Contact::factory()->customer()->create([
-            'creditLimit' => 10000,
+            'credit_limit' => 10000,
             'current_credit' => 0,
             'minimum_payment_score' => 70,
         ]);
@@ -101,9 +101,9 @@ class CreditManagementServiceTest extends TestCase
             ARInvoice::factory()->create([
                 'contact_id' => $customer->id,
                 'total_amount' => 1000,
-                'paidAmount' => 1000,
+                'paid_amount' => 1000,
                 'status' => 'paid',
-                'dueDate' => now()->subDays(30),
+                'due_date' => now()->subDays(30),
                 'paid_date' => now()->subDays(30), // Paid on time
             ]);
         }
@@ -112,9 +112,9 @@ class CreditManagementServiceTest extends TestCase
             ARInvoice::factory()->create([
                 'contact_id' => $customer->id,
                 'total_amount' => 1000,
-                'paidAmount' => 1000,
+                'paid_amount' => 1000,
                 'status' => 'paid',
-                'dueDate' => now()->subDays(30),
+                'due_date' => now()->subDays(30),
                 'paid_date' => now()->subDays(20), // Paid late
             ]);
         }
@@ -133,14 +133,14 @@ class CreditManagementServiceTest extends TestCase
         ARInvoice::factory()->create([
             'contact_id' => $customer->id,
             'total_amount' => 5000,
-            'paidAmount' => 2000,
+            'paid_amount' => 2000,
             'status' => 'partial',
         ]);
 
         ARInvoice::factory()->create([
             'contact_id' => $customer->id,
             'total_amount' => 3000,
-            'paidAmount' => 0,
+            'paid_amount' => 0,
             'status' => 'posted',
         ]);
 
@@ -158,18 +158,18 @@ class CreditManagementServiceTest extends TestCase
         ARInvoice::factory()->create([
             'contact_id' => $customer->id,
             'total_amount' => 2000,
-            'paidAmount' => 0,
+            'paid_amount' => 0,
             'status' => 'posted',
-            'dueDate' => now()->subDays(10)->toDateString(),
+            'due_date' => now()->subDays(10)->toDateString(),
         ]);
 
         // Current invoice (not overdue)
         ARInvoice::factory()->create([
             'contact_id' => $customer->id,
             'total_amount' => 3000,
-            'paidAmount' => 0,
+            'paid_amount' => 0,
             'status' => 'posted',
-            'dueDate' => now()->addDays(10)->toDateString(),
+            'due_date' => now()->addDays(10)->toDateString(),
         ]);
 
         $overdueAmount = $this->service->getOverdueAmount($customer);
@@ -186,9 +186,9 @@ class CreditManagementServiceTest extends TestCase
             ARInvoice::factory()->create([
                 'contact_id' => $customer->id,
                 'total_amount' => 1000,
-                'paidAmount' => 1000,
+                'paid_amount' => 1000,
                 'status' => 'paid',
-                'dueDate' => now()->subDays(30),
+                'due_date' => now()->subDays(30),
                 'paid_date' => now()->subDays(30), // Paid on time
             ]);
         }
@@ -197,9 +197,9 @@ class CreditManagementServiceTest extends TestCase
             ARInvoice::factory()->create([
                 'contact_id' => $customer->id,
                 'total_amount' => 1000,
-                'paidAmount' => 1000,
+                'paid_amount' => 1000,
                 'status' => 'paid',
-                'dueDate' => now()->subDays(30),
+                'due_date' => now()->subDays(30),
                 'paid_date' => now()->subDays(20), // Paid 10 days late
             ]);
         }
@@ -223,21 +223,21 @@ class CreditManagementServiceTest extends TestCase
     public function test_generates_credit_analysis_report(): void
     {
         $customer = Contact::factory()->customer()->create([
-            'creditLimit' => 10000,
+            'credit_limit' => 10000,
             'current_credit' => 0,
         ]);
 
         ARInvoice::factory()->create([
             'contact_id' => $customer->id,
             'total_amount' => 6000,
-            'paidAmount' => 0,
+            'paid_amount' => 0,
             'status' => 'posted',
-            'dueDate' => now()->addDays(30)->toDateString(),
+            'due_date' => now()->addDays(30)->toDateString(),
         ]);
 
         $analysis = $this->service->getCreditAnalysis($customer);
 
-        $this->assertEquals(10000, $analysis['creditLimit']);
+        $this->assertEquals(10000, $analysis['credit_limit']);
         $this->assertEquals(6000, $analysis['current_balance']);
         $this->assertEquals(4000, $analysis['available_credit']);
         $this->assertEquals(60.0, $analysis['credit_utilization_percent']);
@@ -254,27 +254,27 @@ class CreditManagementServiceTest extends TestCase
         ARInvoice::factory()->create([
             'contact_id' => $customer->id,
             'total_amount' => 1000,
-            'paidAmount' => 0,
+            'paid_amount' => 0,
             'status' => 'posted',
-            'dueDate' => now()->addDays(10)->toDateString(),
+            'due_date' => now()->addDays(10)->toDateString(),
         ]);
 
         // 1-30 days overdue
         ARInvoice::factory()->create([
             'contact_id' => $customer->id,
             'total_amount' => 2000,
-            'paidAmount' => 0,
+            'paid_amount' => 0,
             'status' => 'posted',
-            'dueDate' => now()->subDays(15)->toDateString(),
+            'due_date' => now()->subDays(15)->toDateString(),
         ]);
 
         // 31-60 days overdue
         ARInvoice::factory()->create([
             'contact_id' => $customer->id,
             'total_amount' => 3000,
-            'paidAmount' => 0,
+            'paid_amount' => 0,
             'status' => 'posted',
-            'dueDate' => now()->subDays(45)->toDateString(),
+            'due_date' => now()->subDays(45)->toDateString(),
         ]);
 
         $aging = $this->service->getAgingSummary($customer);
@@ -287,7 +287,7 @@ class CreditManagementServiceTest extends TestCase
     public function test_updates_customer_credit_status(): void
     {
         $customer = Contact::factory()->customer()->create([
-            'creditLimit' => 10000,
+            'credit_limit' => 10000,
             'current_credit' => 0,
             'metadata' => [],
         ]);
@@ -295,9 +295,9 @@ class CreditManagementServiceTest extends TestCase
         ARInvoice::factory()->create([
             'contact_id' => $customer->id,
             'total_amount' => 9000,
-            'paidAmount' => 0,
+            'paid_amount' => 0,
             'status' => 'posted',
-            'dueDate' => now()->addDays(30)->toDateString(),
+            'due_date' => now()->addDays(30)->toDateString(),
         ]);
 
         $this->service->updateCreditStatus($customer->id);

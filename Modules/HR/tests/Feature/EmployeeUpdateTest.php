@@ -18,8 +18,8 @@ class EmployeeUpdateTest extends TestCase
         $employee = Employee::factory()->create([
             'department_id' => $department->id,
             'position_id' => $position->id,
-            'firstName' => 'Old',
-            'lastName' => 'Name',
+            'first_name' => 'Old',
+            'last_name' => 'Name',
             'salary' => 40000.00
         ]);
 
@@ -30,7 +30,7 @@ class EmployeeUpdateTest extends TestCase
                 'firstName' => 'Updated',
                 'lastName' => 'Employee',
                 'salary' => 55000.00,
-                'status' => 'inactive'
+                'status' => 'suspended'
             ]
         ];
 
@@ -44,11 +44,11 @@ class EmployeeUpdateTest extends TestCase
         $this->assertEquals('Updated', $response->json('data.attributes.firstName'));
         $this->assertEquals('Employee', $response->json('data.attributes.lastName'));
         $this->assertEquals(55000.00, $response->json('data.attributes.salary'));
-        $this->assertEquals('inactive', $response->json('data.attributes.status'));
+        $this->assertEquals('suspended', $response->json('data.attributes.status'));
 
         $this->assertDatabaseHas('employees', [
             'id' => $employee->id,
-            'firstName' => 'Updated',
+            'first_name' => 'Updated',
             'salary' => 55000.00
         ]);
     }
@@ -222,8 +222,8 @@ class EmployeeUpdateTest extends TestCase
         $employee = Employee::factory()->create([
             'department_id' => $department->id,
             'position_id' => $position->id,
-            'firstName' => 'Original',
-            'lastName' => 'Name',
+            'first_name' => 'Original',
+            'last_name' => 'Name',
             'salary' => 40000.00,
             'status' => 'active'
         ]);
@@ -264,8 +264,13 @@ class EmployeeUpdateTest extends TestCase
         $data = [
             'type' => 'employees',
             'id' => (string) $employee->id,
-            'attributes' => [
-                'position_id' => $position2->id
+            'relationships' => [
+                'position' => [
+                    'data' => [
+                        'type' => 'positions',
+                        'id' => (string) $position2->id
+                    ]
+                ]
             ]
         ];
 
@@ -276,7 +281,11 @@ class EmployeeUpdateTest extends TestCase
             ->patch("/api/v1/employees/{$employee->id}");
 
         $response->assertOk();
-        $this->assertEquals($position2->id, $response->json('data.attributes.positionId'));
+
+        $this->assertDatabaseHas('employees', [
+            'id' => $employee->id,
+            'position_id' => $position2->id
+        ]);
     }
 
     public function test_can_change_employee_department(): void
@@ -296,9 +305,19 @@ class EmployeeUpdateTest extends TestCase
         $data = [
             'type' => 'employees',
             'id' => (string) $employee->id,
-            'attributes' => [
-                'department_id' => $department2->id,
-                'position_id' => $position2->id
+            'relationships' => [
+                'department' => [
+                    'data' => [
+                        'type' => 'departments',
+                        'id' => (string) $department2->id
+                    ]
+                ],
+                'position' => [
+                    'data' => [
+                        'type' => 'positions',
+                        'id' => (string) $position2->id
+                    ]
+                ]
             ]
         ];
 
@@ -309,6 +328,11 @@ class EmployeeUpdateTest extends TestCase
             ->patch("/api/v1/employees/{$employee->id}");
 
         $response->assertOk();
-        $this->assertEquals($department2->id, $response->json('data.attributes.departmentId'));
+
+        $this->assertDatabaseHas('employees', [
+            'id' => $employee->id,
+            'department_id' => $department2->id,
+            'position_id' => $position2->id
+        ]);
     }
 }

@@ -41,7 +41,7 @@ class SalesOrderDestroyTest extends TestCase
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->draft()->create([
             'contact_id' => $customer->id,
-            'orderNumber' => 'SO-DRAFT-DELETE'
+            'order_number' => 'SO-DRAFT-DELETE'
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

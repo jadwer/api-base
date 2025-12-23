@@ -18,15 +18,44 @@ class IncomeStatementController extends Controller
     }
 
     /**
+     * Check if user has permission for reports
+     */
+    private function authorize(Request $request, string $permission): ?JsonResponse
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '401', 'title' => 'Unauthenticated']],
+            ], 401);
+        }
+
+        if (!$user->hasPermissionTo($permission)) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '403', 'title' => 'Forbidden']],
+            ], 403);
+        }
+
+        return null;
+    }
+
+    /**
      * Fetch income statement (Estado de Resultados)
      *
-     * GET /api/v1/reports/income-statement
+     * GET /api/v1/reports/income-statements
      *
      * @param Request $request
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
+        // Check authorization
+        if ($error = $this->authorize($request, 'reports.income-statements.index')) {
+            return $error;
+        }
+
         // Get filter parameters - support both direct and filter.* formats
         $startDate = $request->input('startDate') ?? $request->input('filter.startDate');
         $startDate = $startDate ? Carbon::parse($startDate) : Carbon::now()->startOfMonth();
@@ -37,17 +66,76 @@ class IncomeStatementController extends Controller
         $currency = $request->input('currency') ?? $request->input('filter.currency') ?? 'MXN';
 
         // Generate income statement using service
-        $incomeStatementData = $this->incomeStatementService->generate($startDate, $endDate, $currency);
+        $data = $this->incomeStatementService->generate($startDate, $endDate, $currency);
 
-        // Return simple JSON response
+        // Return JSON:API formatted response
         return response()->json([
-            'data' => $incomeStatementData,
-            'meta' => [
-                'reportType' => 'Estado de Resultados',
-                'startDate' => $startDate->toDateString(),
-                'endDate' => $endDate->toDateString(),
-                'currency' => $currency,
-                'generatedAt' => now()->toIso8601String(),
+            'jsonapi' => ['version' => '1.0'],
+            'data' => [
+                [
+                    'type' => 'income-statements',
+                    'id' => '1',
+                    'attributes' => [
+                        'startDate' => $data['startDate'],
+                        'endDate' => $data['endDate'],
+                        'currency' => $data['currency'],
+                        'revenues' => $data['revenues'],
+                        'totalRevenues' => $data['totalRevenues'],
+                        'expenses' => $data['expenses'],
+                        'totalExpenses' => $data['totalExpenses'],
+                        'netIncome' => $data['netIncome'],
+                        'generatedAt' => $data['generatedAt'],
+                    ],
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Fetch a single income statement
+     *
+     * GET /api/v1/reports/income-statements/{id}
+     *
+     * @param string $id
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function show(string $id, Request $request): JsonResponse
+    {
+        // Check authorization
+        if ($error = $this->authorize($request, 'reports.income-statements.show')) {
+            return $error;
+        }
+
+        // Get filter parameters
+        $startDate = $request->input('startDate') ?? $request->input('filter.startDate');
+        $startDate = $startDate ? Carbon::parse($startDate) : Carbon::now()->startOfMonth();
+
+        $endDate = $request->input('endDate') ?? $request->input('filter.endDate');
+        $endDate = $endDate ? Carbon::parse($endDate) : Carbon::now();
+
+        $currency = $request->input('currency') ?? $request->input('filter.currency') ?? 'MXN';
+
+        // Generate income statement using service
+        $data = $this->incomeStatementService->generate($startDate, $endDate, $currency);
+
+        // Return JSON:API formatted response
+        return response()->json([
+            'jsonapi' => ['version' => '1.0'],
+            'data' => [
+                'type' => 'income-statements',
+                'id' => $id,
+                'attributes' => [
+                    'startDate' => $data['startDate'],
+                    'endDate' => $data['endDate'],
+                    'currency' => $data['currency'],
+                    'revenues' => $data['revenues'],
+                    'totalRevenues' => $data['totalRevenues'],
+                    'expenses' => $data['expenses'],
+                    'totalExpenses' => $data['totalExpenses'],
+                    'netIncome' => $data['netIncome'],
+                    'generatedAt' => $data['generatedAt'],
+                ],
             ],
         ]);
     }

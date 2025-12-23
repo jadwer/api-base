@@ -50,9 +50,9 @@ class SalesOrderItemIndexTest extends TestCase
     public function test_admin_can_sort_sales_order_items_by_total_desc(): void
     {
         $admin = $this->getAdminUser();
-        
-        SalesOrderItem::factory()->create(['total' => 100.0]);
-        SalesOrderItem::factory()->create(['total' => 200.0]);
+
+        // Create items - factory generates calculated totals
+        SalesOrderItem::factory()->count(3)->create();
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -60,10 +60,14 @@ class SalesOrderItemIndexTest extends TestCase
             ->get('/api/v1/sales-order-items?sort=-total');
 
         $response->assertOk();
-        $totals = collect($response->json('data'))->pluck('attributes.total')->filter(function($t) {
-            return in_array($t, [100.0, 200.0]);
-        })->sort()->reverse()->values();
-        $this->assertGreaterThanOrEqual(2, $totals->count());
+        $totals = collect($response->json('data'))->pluck('attributes.total');
+        $this->assertGreaterThanOrEqual(3, $totals->count());
+
+        // Verify sorting is descending
+        $totalsArray = $totals->toArray();
+        for ($i = 1; $i < count($totalsArray); $i++) {
+            $this->assertGreaterThanOrEqual($totalsArray[$i], $totalsArray[$i-1]);
+        }
     }
 
     public function test_admin_can_filter_sales_order_items_by_sales_order(): void

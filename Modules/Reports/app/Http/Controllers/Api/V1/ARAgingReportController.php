@@ -3,12 +3,10 @@
 namespace Modules\Reports\Http\Controllers\Api\V1;
 
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Collection;
-use LaravelJsonApi\Core\Responses\DataResponse;
 use Modules\Reports\Services\AgingReports\ARAgingReportService;
-use Modules\Reports\JsonApi\V1\ARAgingReports\ARAgingReportRequest;
-use Modules\Reports\JsonApi\V1\ARAgingReports\ARAgingReportResource;
 
 class ARAgingReportController extends Controller
 {
@@ -20,65 +18,111 @@ class ARAgingReportController extends Controller
     }
 
     /**
-     * Fetch AR aging reports (list view)
-     *
-     * GET /api/v1/reports/ar-aging-reports
-     *
-     * @param ARAgingReportRequest $request
-     * @return DataResponse
+     * Check if user has permission for reports
      */
-    public function index(ARAgingReportRequest $request): DataResponse
+    private function authorize(Request $request, string $permission): ?JsonResponse
     {
-        // Get filter parameters
-        $asOfDate = $request->input('filter.asOfDate')
-            ? Carbon::parse($request->input('filter.asOfDate'))
-            : Carbon::now();
+        $user = $request->user();
 
-        $currency = $request->input('filter.currency') ?? 'MXN';
+        if (!$user) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '401', 'title' => 'Unauthenticated']],
+            ], 401);
+        }
 
-        // Generate AR aging report using service
-        $arAgingReportData = $this->arAgingReportService->generate($asOfDate, $currency);
+        if (!$user->hasPermissionTo($permission)) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '403', 'title' => 'Forbidden']],
+            ], 403);
+        }
 
-        // Convert to stdClass with ID for JSON:API compliance
-        $arAgingReport = (object) array_merge(['id' => '1'], $arAgingReportData);
-
-        // Wrap in collection for JSON:API response
-        $collection = collect([$arAgingReport]);
-
-        // Return JSON:API response
-        return DataResponse::make($collection)
-            ->withResources(ARAgingReportResource::collection($collection));
+        return null;
     }
 
     /**
-     * Fetch a single balance sheet
+     * Fetch AR aging reports
+     *
+     * GET /api/v1/reports/ar-aging-reports
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function index(Request $request): JsonResponse
+    {
+        // Check authorization
+        if ($error = $this->authorize($request, 'reports.ar-aging-reports.index')) {
+            return $error;
+        }
+
+        // Get filter parameters
+        $asOfDate = $request->input('asOfDate') ?? $request->input('filter.asOfDate');
+        $asOfDate = $asOfDate ? Carbon::parse($asOfDate) : Carbon::now();
+
+        $currency = $request->input('currency') ?? $request->input('filter.currency') ?? 'MXN';
+
+        // Generate AR aging report using service
+        $data = $this->arAgingReportService->generate($asOfDate, $currency);
+
+        // Return JSON:API formatted response
+        return response()->json([
+            'jsonapi' => ['version' => '1.0'],
+            'data' => [
+                [
+                    'type' => 'ar-aging-reports',
+                    'id' => '1',
+                    'attributes' => [
+                        'asOfDate' => $data['asOfDate'],
+                        'currency' => $data['currency'],
+                        'agingBuckets' => $data['agingBuckets'],
+                        'totals' => $data['totals'],
+                        'generatedAt' => $data['generatedAt'],
+                    ],
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Fetch a single AR aging report
      *
      * GET /api/v1/reports/ar-aging-reports/{id}
      *
      * @param string $id
-     * @param ARAgingReportRequest $request
-     * @return DataResponse
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function show(string $id, ARAgingReportRequest $request): DataResponse
+    public function show(string $id, Request $request): JsonResponse
     {
-        // For reports, ID doesn't matter much - we generate based on filters
-        // But we support it for JSON:API compliance
+        // Check authorization
+        if ($error = $this->authorize($request, 'reports.ar-aging-reports.show')) {
+            return $error;
+        }
 
         // Get filter parameters
-        $asOfDate = $request->input('filter.asOfDate')
-            ? Carbon::parse($request->input('filter.asOfDate'))
-            : Carbon::now();
+        $asOfDate = $request->input('asOfDate') ?? $request->input('filter.asOfDate');
+        $asOfDate = $asOfDate ? Carbon::parse($asOfDate) : Carbon::now();
 
-        $currency = $request->input('filter.currency') ?? 'MXN';
+        $currency = $request->input('currency') ?? $request->input('filter.currency') ?? 'MXN';
 
         // Generate AR aging report using service
-        $arAgingReportData = $this->arAgingReportService->generate($asOfDate, $currency);
+        $data = $this->arAgingReportService->generate($asOfDate, $currency);
 
-        // Convert to stdClass with ID for JSON:API compliance
-        $arAgingReport = (object) array_merge(['id' => $id], $arAgingReportData);
-
-        // Return JSON:API response
-        return DataResponse::make($arAgingReport)
-            ->withResource(new ARAgingReportResource($arAgingReport));
+        // Return JSON:API formatted response
+        return response()->json([
+            'jsonapi' => ['version' => '1.0'],
+            'data' => [
+                'type' => 'ar-aging-reports',
+                'id' => $id,
+                'attributes' => [
+                    'asOfDate' => $data['asOfDate'],
+                    'currency' => $data['currency'],
+                    'agingBuckets' => $data['agingBuckets'],
+                    'totals' => $data['totals'],
+                    'generatedAt' => $data['generatedAt'],
+                ],
+            ],
+        ]);
     }
 }

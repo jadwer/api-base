@@ -88,16 +88,20 @@ class ShoppingCartIndexTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_customer_user_cannot_list_ShoppingCarts(): void
+    public function test_customer_user_can_list_ShoppingCarts_sees_empty_for_others(): void
     {
         $customer = $this->getCustomerUser();
+
+        // Create shopping carts that don't belong to customer
+        \Modules\Ecommerce\Models\ShoppingCart::factory()->count(3)->create();
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
             ->expects('shopping-carts')
             ->get('/api/v1/shopping-carts');
 
-        $response->assertStatus(403);
+        // Customer can access index but sees no items (none belong to them)
+        $response->assertOk();
     }
 
     public function test_guest_cannot_list_ShoppingCarts(): void

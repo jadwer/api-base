@@ -112,7 +112,7 @@ class SalesOrderItemShowTest extends TestCase
         $response->assertJson([
             'data' => [
                 'attributes' => [
-                    'product_id' => $product->id
+                    'productId' => $product->id
                 ]
             ]
         ]);
@@ -138,7 +138,7 @@ class SalesOrderItemShowTest extends TestCase
             'data' => [
                 'attributes' => [
                     'salesOrderId' => $salesOrder->id,
-                    'product_id' => $product->id
+                    'productId' => $product->id
                 ]
             ]
         ]);
@@ -203,7 +203,7 @@ class SalesOrderItemShowTest extends TestCase
             'name' => 'Nested Customer',
             'email' => 'nested@customer.com',
             'classification' => 'minorista',
-            'creditLimit' => 10000.00,
+            'credit_limit' => 10000.00,
             'current_credit' => 0.00,
             'is_customer' => true,
             'is_supplier' => false,

@@ -53,8 +53,6 @@ class SalesOrderSchema extends Schema
             DateTime::make('deliveredAt', 'delivered_at')->sortable(),
 
             // Campos de montos
-            Number::make('subtotalAmount', 'subtotal_amount')->sortable(),
-            Number::make('taxAmount', 'tax_amount'),
             Number::make('discountTotal', 'discount_total'),
             Number::make('totalAmount', 'total_amount')->sortable(),
             

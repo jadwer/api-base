@@ -3,33 +3,9 @@
 namespace Modules\Reports\Tests\Feature\BalanceSheets;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class BalanceSheetIndexTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->seed(\Database\Seeders\DatabaseSeeder::class);
-    }
-
-    protected function getAdminUser(): User
-    {
-        return User::role('admin')->first();
-    }
-
-    protected function getTechUser(): User
-    {
-        return User::role('tech')->first();
-    }
-
-    protected function getCustomerUser(): User
-    {
-        return User::role('customer')->first();
-    }
 
     /** @test */
     public function admin_can_fetch_balance_sheets()

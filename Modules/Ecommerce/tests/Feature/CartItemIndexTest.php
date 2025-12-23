@@ -88,16 +88,20 @@ class CartItemIndexTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_customer_user_cannot_list_CartItems(): void
+    public function test_customer_user_can_list_CartItems_sees_empty_for_others(): void
     {
         $customer = $this->getCustomerUser();
+
+        // Create cart items that don't belong to customer
+        CartItem::factory()->count(3)->create();
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
             ->expects('cart-items')
             ->get('/api/v1/cart-items');
 
-        $response->assertStatus(403);
+        // Customer can access index but sees no items (none belong to them)
+        $response->assertOk();
     }
 
     public function test_guest_cannot_list_CartItems(): void

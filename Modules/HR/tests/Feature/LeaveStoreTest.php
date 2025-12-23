@@ -26,13 +26,25 @@ class LeaveStoreTest extends TestCase
         $data = [
             'type' => 'leaves',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'leave_type_id' => $leaveType->id,
                 'startDate' => '2024-02-15',
                 'endDate' => '2024-02-20',
                 'daysRequested' => 5,
                 'status' => 'pending',
                 'reason' => 'Annual vacation'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ],
+                'leaveType' => [
+                    'data' => [
+                        'type' => 'leave-types',
+                        'id' => (string) $leaveType->id
+                    ]
+                ]
             ]
         ];
 
@@ -68,12 +80,24 @@ class LeaveStoreTest extends TestCase
         $data = [
             'type' => 'leaves',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'leave_type_id' => $leaveType->id,
                 'startDate' => '2024-03-01',
                 'endDate' => '2024-03-05',
                 'daysRequested' => 4,
                 'status' => 'pending'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ],
+                'leaveType' => [
+                    'data' => [
+                        'type' => 'leave-types',
+                        'id' => (string) $leaveType->id
+                    ]
+                ]
             ]
         ];
 
@@ -101,12 +125,24 @@ class LeaveStoreTest extends TestCase
         $data = [
             'type' => 'leaves',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'leave_type_id' => $leaveType->id,
                 'startDate' => '2024-02-15',
                 'endDate' => '2024-02-20',
                 'daysRequested' => 5,
                 'status' => 'pending'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ],
+                'leaveType' => [
+                    'data' => [
+                        'type' => 'leave-types',
+                        'id' => (string) $leaveType->id
+                    ]
+                ]
             ]
         ];
 
@@ -132,12 +168,24 @@ class LeaveStoreTest extends TestCase
         $data = [
             'type' => 'leaves',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'leave_type_id' => $leaveType->id,
                 'startDate' => '2024-02-15',
                 'endDate' => '2024-02-20',
                 'daysRequested' => 5,
                 'status' => 'pending'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ],
+                'leaveType' => [
+                    'data' => [
+                        'type' => 'leave-types',
+                        'id' => (string) $leaveType->id
+                    ]
+                ]
             ]
         ];
 
@@ -149,7 +197,7 @@ class LeaveStoreTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_employee_id_is_required(): void
+    public function test_employee_is_required(): void
     {
         $admin = $this->getAdminUser();
 
@@ -158,11 +206,18 @@ class LeaveStoreTest extends TestCase
         $data = [
             'type' => 'leaves',
             'attributes' => [
-                'leave_type_id' => $leaveType->id,
                 'startDate' => '2024-02-15',
                 'endDate' => '2024-02-20',
                 'daysRequested' => 5,
                 'status' => 'pending'
+            ],
+            'relationships' => [
+                'leaveType' => [
+                    'data' => [
+                        'type' => 'leave-types',
+                        'id' => (string) $leaveType->id
+                    ]
+                ]
             ]
         ];
 
@@ -175,7 +230,7 @@ class LeaveStoreTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public function test_leave_type_id_is_required(): void
+    public function test_leave_type_is_required(): void
     {
         $admin = $this->getAdminUser();
 
@@ -189,11 +244,18 @@ class LeaveStoreTest extends TestCase
         $data = [
             'type' => 'leaves',
             'attributes' => [
-                'employee_id' => $employee->id,
                 'startDate' => '2024-02-15',
                 'endDate' => '2024-02-20',
                 'daysRequested' => 5,
                 'status' => 'pending'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ]
             ]
         ];
 
@@ -221,11 +283,23 @@ class LeaveStoreTest extends TestCase
         $data = [
             'type' => 'leaves',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'leave_type_id' => $leaveType->id,
                 'endDate' => '2024-02-20',
                 'daysRequested' => 5,
                 'status' => 'pending'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ],
+                'leaveType' => [
+                    'data' => [
+                        'type' => 'leave-types',
+                        'id' => (string) $leaveType->id
+                    ]
+                ]
             ]
         ];
 
@@ -253,11 +327,23 @@ class LeaveStoreTest extends TestCase
         $data = [
             'type' => 'leaves',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'leave_type_id' => $leaveType->id,
                 'startDate' => '2024-02-15',
                 'daysRequested' => 5,
                 'status' => 'pending'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ],
+                'leaveType' => [
+                    'data' => [
+                        'type' => 'leave-types',
+                        'id' => (string) $leaveType->id
+                    ]
+                ]
             ]
         ];
 
@@ -285,11 +371,23 @@ class LeaveStoreTest extends TestCase
         $data = [
             'type' => 'leaves',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'leave_type_id' => $leaveType->id,
                 'startDate' => '2024-02-15',
                 'endDate' => '2024-02-20',
                 'status' => 'pending'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ],
+                'leaveType' => [
+                    'data' => [
+                        'type' => 'leave-types',
+                        'id' => (string) $leaveType->id
+                    ]
+                ]
             ]
         ];
 
@@ -317,12 +415,24 @@ class LeaveStoreTest extends TestCase
         $data = [
             'type' => 'leaves',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'leave_type_id' => $leaveType->id,
                 'startDate' => '2024-02-15',
                 'endDate' => '2024-02-20',
                 'daysRequested' => 5,
                 'status' => 'invalid_status'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ],
+                'leaveType' => [
+                    'data' => [
+                        'type' => 'leave-types',
+                        'id' => (string) $leaveType->id
+                    ]
+                ]
             ]
         ];
 

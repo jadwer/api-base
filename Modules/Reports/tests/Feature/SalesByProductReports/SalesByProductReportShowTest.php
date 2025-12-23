@@ -3,36 +3,12 @@
 namespace Modules\Reports\Tests\Feature\SalesByProductReports;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class SalesByProductReportShowTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->seed(\Database\Seeders\DatabaseSeeder::class);
-    }
-
-    protected function getAdminUser(): User
-    {
-        return User::role('admin')->first();
-    }
-
-    protected function getTechUser(): User
-    {
-        return User::role('tech')->first();
-    }
-
-    protected function getCustomerUser(): User
-    {
-        return User::role('customer')->first();
-    }
 
     /** @test */
-    public function admin_can_show_balance_sheet()
+    public function admin_can_show_sales_by_product_report()
     {
         $admin = $this->getAdminUser();
 
@@ -47,15 +23,11 @@ class SalesByProductReportShowTest extends TestCase
                 'id',
                 'type',
                 'attributes' => [
-                    'asOfDate',
+                    'startDate',
+                    'endDate',
                     'currency',
-                    'balanced',
-                    'assets',
-                    'liabilities',
-                    'equity',
-                    'totalAssets',
-                    'totalLiabilities',
-                    'totalEquity',
+                    'salesByProduct',
+                    'summary',
                     'generatedAt',
                 ],
             ],
@@ -63,7 +35,7 @@ class SalesByProductReportShowTest extends TestCase
     }
 
     /** @test */
-    public function tech_user_can_show_balance_sheet()
+    public function tech_user_can_show_sales_by_product_report()
     {
         $tech = $this->getTechUser();
 
@@ -76,7 +48,7 @@ class SalesByProductReportShowTest extends TestCase
     }
 
     /** @test */
-    public function customer_cannot_show_balance_sheet()
+    public function customer_cannot_show_sales_by_product_report()
     {
         $customer = $this->getCustomerUser();
 
@@ -89,7 +61,7 @@ class SalesByProductReportShowTest extends TestCase
     }
 
     /** @test */
-    public function guest_cannot_show_balance_sheet()
+    public function guest_cannot_show_sales_by_product_report()
     {
         $response = $this->jsonApi()
             ->expects('sales-by-product-reports')
@@ -99,22 +71,23 @@ class SalesByProductReportShowTest extends TestCase
     }
 
     /** @test */
-    public function can_show_balance_sheet_with_date_filter()
+    public function can_show_sales_by_product_report_with_date_filter()
     {
         $admin = $this->getAdminUser();
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('sales-by-product-reports')
-            ->filter(['asOfDate' => '2025-10-30'])
+            ->filter(['startDate' => '2025-10-01', 'endDate' => '2025-10-30'])
             ->get('/api/v1/reports/sales-by-product-reports/1');
 
         $response->assertOk();
-        $response->assertJsonPath('data.attributes.asOfDate', '2025-10-30');
+        $response->assertJsonPath('data.attributes.startDate', '2025-10-01');
+        $response->assertJsonPath('data.attributes.endDate', '2025-10-30');
     }
 
     /** @test */
-    public function balance_sheet_show_includes_all_required_fields()
+    public function sales_by_product_report_show_includes_all_required_fields()
     {
         $admin = $this->getAdminUser();
 
@@ -127,15 +100,11 @@ class SalesByProductReportShowTest extends TestCase
 
         $data = $response->json('data.attributes');
 
-        $this->assertArrayHasKey('asOfDate', $data);
+        $this->assertArrayHasKey('startDate', $data);
+        $this->assertArrayHasKey('endDate', $data);
         $this->assertArrayHasKey('currency', $data);
-        $this->assertArrayHasKey('balanced', $data);
-        $this->assertArrayHasKey('assets', $data);
-        $this->assertArrayHasKey('liabilities', $data);
-        $this->assertArrayHasKey('equity', $data);
-        $this->assertArrayHasKey('totalAssets', $data);
-        $this->assertArrayHasKey('totalLiabilities', $data);
-        $this->assertArrayHasKey('totalEquity', $data);
+        $this->assertArrayHasKey('salesByProduct', $data);
+        $this->assertArrayHasKey('summary', $data);
         $this->assertArrayHasKey('generatedAt', $data);
     }
 }

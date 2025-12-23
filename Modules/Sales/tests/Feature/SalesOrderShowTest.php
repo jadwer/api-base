@@ -41,16 +41,16 @@ class SalesOrderShowTest extends TestCase
                     'orderNumber',
                     'status',
                     'totalAmount',
-                    'discount_total',
+                    'discountTotal',
                 ]
             ]
         ]);
 
         // Verificar datos específicos
-        $this->assertEquals('SO-TEST-001', $response->json('data.attributes.order_number'));
+        $this->assertEquals('SO-TEST-001', $response->json('data.attributes.orderNumber'));
         $this->assertEquals('confirmed', $response->json('data.attributes.status'));
-        $this->assertEquals(1500.00, $response->json('data.attributes.total_amount'));
-        $this->assertEquals(150.00, $response->json('data.attributes.discount_total'));
+        $this->assertEquals(1500.00, $response->json('data.attributes.totalAmount'));
+        $this->assertEquals(150.00, $response->json('data.attributes.discountTotal'));
     }
 
     public function test_admin_can_view_sales_order_with_relationships(): void
@@ -87,7 +87,7 @@ class SalesOrderShowTest extends TestCase
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->draft()->create([
             'contact_id' => $customer->id,
-            'orderNumber' => 'SO-DRAFT-001'
+            'order_number' => 'SO-DRAFT-001'
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -97,7 +97,7 @@ class SalesOrderShowTest extends TestCase
 
         $response->assertOk();
         $this->assertEquals('draft', $response->json('data.attributes.status'));
-        $this->assertEquals('SO-DRAFT-001', $response->json('data.attributes.order_number'));
+        $this->assertEquals('SO-DRAFT-001', $response->json('data.attributes.orderNumber'));
     }
 
     public function test_tech_user_can_view_sales_order_with_permission(): void
@@ -174,9 +174,9 @@ class SalesOrderShowTest extends TestCase
             ->get("/api/v1/sales-orders/{$salesOrder->id}");
 
         $response->assertOk();
-        
-        $this->assertNotNull($response->json('data.attributes.created_at'));
-        $this->assertNotNull($response->json('data.attributes.updated_at'));
+
+        $this->assertNotNull($response->json('data.attributes.createdAt'));
+        $this->assertNotNull($response->json('data.attributes.updatedAt'));
     }
 
     public function test_metadata_is_properly_formatted(): void
@@ -313,11 +313,7 @@ class SalesOrderShowTest extends TestCase
         
         // Verificar que los datos están en included
         $included = $response->json('included');
-        
-        // Debug: Ver qué tipos hay en included
-        dump('Included types:', collect($included)->pluck('type')->toArray());
-        dump('Included count:', count($included));
-        
+
         $this->assertCount(5, $included); // 2 items + 2 products + 1 contact
         
         // Buscar cada tipo en included
@@ -353,31 +349,29 @@ class SalesOrderShowTest extends TestCase
             ->get("/api/v1/sales-orders/{$salesOrder->id}");
 
         $response->assertOk();
-        
+
         // Verificar que tenemos BOTH el campo directo Y la relación
         $data = $response->json('data');
-        
-        // Campo directo contactId (BOTH snake_case AND camelCase)
-        $this->assertArrayHasKey('contact_id', $data['attributes']);
-        $this->assertArrayHasKey('contact_id', $data['attributes']);
-        $this->assertEquals($contact->id, $data['attributes']['contact_id']);
-        $this->assertEquals($contact->id, $data['attributes']['contact_id']);
-        
+
+        // Campo directo contactId en camelCase
+        $this->assertArrayHasKey('contactId', $data['attributes']);
+        $this->assertEquals($contact->id, $data['attributes']['contactId']);
+
         // Relación contact en relationships
         $this->assertArrayHasKey('contact', $data['relationships']);
         $this->assertEquals((string) $contact->id, $data['relationships']['contact']['data']['id']);
         $this->assertEquals('contacts', $data['relationships']['contact']['data']['type']);
-        
-        // Customer en included
+
+        // Contact en included
         $included = $response->json('included');
         $contactIncluded = collect($included)->firstWhere('type', 'contacts');
         $this->assertNotNull($contactIncluded);
         $this->assertEquals((string) $contact->id, $contactIncluded['id']);
-        
-        // Verificar que campos están en snake_case (compatibilidad existente)
+
+        // Verificar que campos están en camelCase
         $this->assertArrayHasKey('orderNumber', $data['attributes']);
         $this->assertArrayHasKey('totalAmount', $data['attributes']);
-        $this->assertArrayHasKey('created_at', $data['attributes']);
-        $this->assertArrayHasKey('updated_at', $data['attributes']);
+        $this->assertArrayHasKey('createdAt', $data['attributes']);
+        $this->assertArrayHasKey('updatedAt', $data['attributes']);
     }
 }

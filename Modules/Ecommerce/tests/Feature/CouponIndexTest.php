@@ -93,16 +93,19 @@ class CouponIndexTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_customer_user_cannot_list_Coupons(): void
+    public function test_customer_user_can_list_Coupons(): void
     {
         $customer = $this->getCustomerUser();
+
+        // Customers can view available coupons (read-only access)
+        \Modules\Ecommerce\Models\Coupon::factory()->count(3)->create();
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
             ->expects('coupons')
             ->get('/api/v1/coupons');
 
-        $response->assertStatus(403);
+        $response->assertOk();
     }
 
     public function test_guest_cannot_list_Coupons(): void

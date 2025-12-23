@@ -15,15 +15,20 @@ class PaymentTransactionRequest extends ResourceRequest
                 'integer',
                 Rule::exists('checkout_sessions', 'id'),
             ],
-            'paymentGateway' => [
+            'transactionId' => [
                 $this->isCreating() ? 'required' : 'sometimes',
                 'string',
-                Rule::in(['mock', 'stripe', 'paypal']),
+                'max:255',
+            ],
+            'gateway' => [
+                $this->isCreating() ? 'required' : 'sometimes',
+                'string',
+                'max:50',
             ],
             'paymentMethod' => [
                 $this->isCreating() ? 'required' : 'sometimes',
                 'string',
-                Rule::in(['card', 'bank_transfer', 'paypal', 'cash_on_delivery']),
+                'max:50',
             ],
             'amount' => [
                 $this->isCreating() ? 'required' : 'sometimes',
@@ -52,8 +57,6 @@ class PaymentTransactionRequest extends ResourceRequest
     {
         return [
             'checkoutSessionId.required' => 'Checkout session is required.',
-            'paymentGateway.in' => 'Invalid payment gateway selected.',
-            'paymentMethod.in' => 'Invalid payment method selected.',
             'amount.min' => 'Payment amount must be greater than zero.',
             'currency.size' => 'Currency code must be 3 characters.',
         ];

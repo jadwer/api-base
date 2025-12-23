@@ -3,36 +3,12 @@
 namespace Modules\Reports\Tests\Feature\ARAgingReports;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ARAgingReportShowTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->seed(\Database\Seeders\DatabaseSeeder::class);
-    }
-
-    protected function getAdminUser(): User
-    {
-        return User::role('admin')->first();
-    }
-
-    protected function getTechUser(): User
-    {
-        return User::role('tech')->first();
-    }
-
-    protected function getCustomerUser(): User
-    {
-        return User::role('customer')->first();
-    }
 
     /** @test */
-    public function admin_can_show_balance_sheet()
+    public function admin_can_show_ar_aging_report()
     {
         $admin = $this->getAdminUser();
 
@@ -49,13 +25,8 @@ class ARAgingReportShowTest extends TestCase
                 'attributes' => [
                     'asOfDate',
                     'currency',
-                    'balanced',
-                    'assets',
-                    'liabilities',
-                    'equity',
-                    'totalAssets',
-                    'totalLiabilities',
-                    'totalEquity',
+                    'agingBuckets',
+                    'totals',
                     'generatedAt',
                 ],
             ],
@@ -63,7 +34,7 @@ class ARAgingReportShowTest extends TestCase
     }
 
     /** @test */
-    public function tech_user_can_show_balance_sheet()
+    public function tech_user_can_show_ar_aging_report()
     {
         $tech = $this->getTechUser();
 
@@ -76,7 +47,7 @@ class ARAgingReportShowTest extends TestCase
     }
 
     /** @test */
-    public function customer_cannot_show_balance_sheet()
+    public function customer_cannot_show_ar_aging_report()
     {
         $customer = $this->getCustomerUser();
 
@@ -89,7 +60,7 @@ class ARAgingReportShowTest extends TestCase
     }
 
     /** @test */
-    public function guest_cannot_show_balance_sheet()
+    public function guest_cannot_show_ar_aging_report()
     {
         $response = $this->jsonApi()
             ->expects('ar-aging-reports')
@@ -99,7 +70,7 @@ class ARAgingReportShowTest extends TestCase
     }
 
     /** @test */
-    public function can_show_balance_sheet_with_date_filter()
+    public function can_show_ar_aging_report_with_date_filter()
     {
         $admin = $this->getAdminUser();
 
@@ -114,7 +85,7 @@ class ARAgingReportShowTest extends TestCase
     }
 
     /** @test */
-    public function balance_sheet_show_includes_all_required_fields()
+    public function ar_aging_report_show_includes_all_required_fields()
     {
         $admin = $this->getAdminUser();
 
@@ -129,13 +100,8 @@ class ARAgingReportShowTest extends TestCase
 
         $this->assertArrayHasKey('asOfDate', $data);
         $this->assertArrayHasKey('currency', $data);
-        $this->assertArrayHasKey('balanced', $data);
-        $this->assertArrayHasKey('assets', $data);
-        $this->assertArrayHasKey('liabilities', $data);
-        $this->assertArrayHasKey('equity', $data);
-        $this->assertArrayHasKey('totalAssets', $data);
-        $this->assertArrayHasKey('totalLiabilities', $data);
-        $this->assertArrayHasKey('totalEquity', $data);
+        $this->assertArrayHasKey('agingBuckets', $data);
+        $this->assertArrayHasKey('totals', $data);
         $this->assertArrayHasKey('generatedAt', $data);
     }
 }

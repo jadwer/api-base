@@ -192,8 +192,8 @@ class PaymentApplicationIntegrationTest extends TestCase
         $bankAccount = BankAccount::factory()->create();
         $paymentMethod = PaymentMethod::factory()->create();
 
-        $bankGLAccount = Account::where('code', '1020')->first();
-        $customerGLAccount = Account::where('code', '1100')->first();
+        $bankGLAccount = Account::where('code', '1102')->first();
+        $customerGLAccount = Account::where('code', '1104')->first();
 
         $invoice = $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->format('Y-m-d'),

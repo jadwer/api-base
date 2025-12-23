@@ -3,36 +3,12 @@
 namespace Modules\Reports\Tests\Feature\CashFlows;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CashFlowIndexTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->seed(\Database\Seeders\DatabaseSeeder::class);
-    }
-
-    protected function getAdminUser(): User
-    {
-        return User::role('admin')->first();
-    }
-
-    protected function getTechUser(): User
-    {
-        return User::role('tech')->first();
-    }
-
-    protected function getCustomerUser(): User
-    {
-        return User::role('customer')->first();
-    }
 
     /** @test */
-    public function admin_can_fetch_balance_sheets()
+    public function admin_can_fetch_cash_flows()
     {
         $admin = $this->getAdminUser();
 
@@ -49,14 +25,14 @@ class CashFlowIndexTest extends TestCase
                     'type',
                     'attributes' => [
                         'startDate',
+                        'endDate',
                         'currency',
-                        'balanced',
-                        'assets',
-                        'liabilities',
-                        'equity',
-                        'totalAssets',
-                        'totalLiabilities',
-                        'totalEquity',
+                        'beginningCash',
+                        'operatingActivities',
+                        'investingActivities',
+                        'financingActivities',
+                        'netCashFlow',
+                        'endingCash',
                         'generatedAt',
                     ],
                 ],
@@ -65,7 +41,7 @@ class CashFlowIndexTest extends TestCase
     }
 
     /** @test */
-    public function tech_user_can_fetch_balance_sheets()
+    public function tech_user_can_fetch_cash_flows()
     {
         $tech = $this->getTechUser();
 
@@ -78,7 +54,7 @@ class CashFlowIndexTest extends TestCase
     }
 
     /** @test */
-    public function customer_cannot_fetch_balance_sheets()
+    public function customer_cannot_fetch_cash_flows()
     {
         $customer = $this->getCustomerUser();
 
@@ -91,7 +67,7 @@ class CashFlowIndexTest extends TestCase
     }
 
     /** @test */
-    public function guest_cannot_fetch_balance_sheets()
+    public function guest_cannot_fetch_cash_flows()
     {
         $response = $this->jsonApi()
             ->expects('cash-flows')
@@ -101,22 +77,22 @@ class CashFlowIndexTest extends TestCase
     }
 
     /** @test */
-    public function can_filter_balance_sheet_by_date()
+    public function can_filter_cash_flow_by_date()
     {
         $admin = $this->getAdminUser();
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('cash-flows')
-            ->filter(['startDate' => '2025-10-30'])
+            ->filter(['startDate' => '2025-10-01'])
             ->get('/api/v1/reports/cash-flows');
 
         $response->assertOk();
-        $response->assertJsonPath('data.0.attributes.startDate', '2025-10-30');
+        $response->assertJsonPath('data.0.attributes.startDate', '2025-10-01');
     }
 
     /** @test */
-    public function balance_sheet_includes_all_sections()
+    public function cash_flow_includes_all_sections()
     {
         $admin = $this->getAdminUser();
 
@@ -129,16 +105,16 @@ class CashFlowIndexTest extends TestCase
 
         $data = $response->json('data.0.attributes');
 
-        $this->assertArrayHasKey('assets', $data);
-        $this->assertArrayHasKey('liabilities', $data);
-        $this->assertArrayHasKey('equity', $data);
-        $this->assertIsArray($data['assets']);
-        $this->assertIsArray($data['liabilities']);
-        $this->assertIsArray($data['equity']);
+        $this->assertArrayHasKey('operatingActivities', $data);
+        $this->assertArrayHasKey('investingActivities', $data);
+        $this->assertArrayHasKey('financingActivities', $data);
+        $this->assertIsNumeric($data['operatingActivities']);
+        $this->assertIsNumeric($data['investingActivities']);
+        $this->assertIsNumeric($data['financingActivities']);
     }
 
     /** @test */
-    public function balance_sheet_includes_totals()
+    public function cash_flow_includes_totals()
     {
         $admin = $this->getAdminUser();
 
@@ -151,11 +127,11 @@ class CashFlowIndexTest extends TestCase
 
         $data = $response->json('data.0.attributes');
 
-        $this->assertArrayHasKey('totalAssets', $data);
-        $this->assertArrayHasKey('totalLiabilities', $data);
-        $this->assertArrayHasKey('totalEquity', $data);
-        $this->assertIsNumeric($data['totalAssets']);
-        $this->assertIsNumeric($data['totalLiabilities']);
-        $this->assertIsNumeric($data['totalEquity']);
+        $this->assertArrayHasKey('beginningCash', $data);
+        $this->assertArrayHasKey('netCashFlow', $data);
+        $this->assertArrayHasKey('endingCash', $data);
+        $this->assertIsNumeric($data['beginningCash']);
+        $this->assertIsNumeric($data['netCashFlow']);
+        $this->assertIsNumeric($data['endingCash']);
     }
 }

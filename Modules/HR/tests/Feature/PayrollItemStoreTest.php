@@ -26,14 +26,26 @@ class PayrollItemStoreTest extends TestCase
         $data = [
             'type' => 'payroll-items',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'payroll_period_id' => $period->id,
                 'basicSalary' => 3000.00,
-                'overtime_pay' => 500.00,
+                'overtimePay' => 500.00,
                 'bonuses' => 200.00,
                 'deductions' => 300.00,
                 'status' => 'draft',
                 'notes' => 'Test payroll item creation'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ],
+                'payrollPeriod' => [
+                    'data' => [
+                        'type' => 'payroll-periods',
+                        'id' => (string) $period->id
+                    ]
+                ]
             ]
         ];
 
@@ -87,14 +99,26 @@ class PayrollItemStoreTest extends TestCase
         $data = [
             'type' => 'payroll-items',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'payroll_period_id' => $period->id,
                 'basicSalary' => 2500.00,
-                'overtime_pay' => 0,
+                'overtimePay' => 0,
                 'bonuses' => 0,
                 'deductions' => 0,
                 'status' => 'paid',
-                'paid_at' => '2024-01-31 10:00:00'
+                'paidAt' => '2024-01-31 10:00:00'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ],
+                'payrollPeriod' => [
+                    'data' => [
+                        'type' => 'payroll-periods',
+                        'id' => (string) $period->id
+                    ]
+                ]
             ]
         ];
 
@@ -124,13 +148,25 @@ class PayrollItemStoreTest extends TestCase
         $data = [
             'type' => 'payroll-items',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'payroll_period_id' => $period->id,
                 'basicSalary' => 2000.00,
-                'overtime_pay' => 0,
+                'overtimePay' => 0,
                 'bonuses' => 0,
                 'deductions' => 0,
                 'status' => 'draft'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ],
+                'payrollPeriod' => [
+                    'data' => [
+                        'type' => 'payroll-periods',
+                        'id' => (string) $period->id
+                    ]
+                ]
             ]
         ];
 
@@ -159,10 +195,22 @@ class PayrollItemStoreTest extends TestCase
         $data = [
             'type' => 'payroll-items',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'payroll_period_id' => $period->id,
                 'basicSalary' => 1000.00,
                 'status' => 'draft'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ],
+                'payrollPeriod' => [
+                    'data' => [
+                        'type' => 'payroll-periods',
+                        'id' => (string) $period->id
+                    ]
+                ]
             ]
         ];
 
@@ -188,10 +236,22 @@ class PayrollItemStoreTest extends TestCase
         $data = [
             'type' => 'payroll-items',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'payroll_period_id' => $period->id,
                 'basicSalary' => 1000.00,
                 'status' => 'draft'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ],
+                'payrollPeriod' => [
+                    'data' => [
+                        'type' => 'payroll-periods',
+                        'id' => (string) $period->id
+                    ]
+                ]
             ]
         ];
 
@@ -203,7 +263,7 @@ class PayrollItemStoreTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_employee_id_is_required(): void
+    public function test_employee_is_required(): void
     {
         $admin = $this->getAdminUser();
 
@@ -212,9 +272,16 @@ class PayrollItemStoreTest extends TestCase
         $data = [
             'type' => 'payroll-items',
             'attributes' => [
-                'payroll_period_id' => $period->id,
                 'basicSalary' => 1000.00,
                 'status' => 'draft'
+            ],
+            'relationships' => [
+                'payrollPeriod' => [
+                    'data' => [
+                        'type' => 'payroll-periods',
+                        'id' => (string) $period->id
+                    ]
+                ]
             ]
         ];
 
@@ -229,7 +296,7 @@ class PayrollItemStoreTest extends TestCase
         $this->assertNotEmpty($errors);
     }
 
-    public function test_payroll_period_id_is_required(): void
+    public function test_payroll_period_is_required(): void
     {
         $admin = $this->getAdminUser();
 
@@ -243,9 +310,16 @@ class PayrollItemStoreTest extends TestCase
         $data = [
             'type' => 'payroll-items',
             'attributes' => [
-                'employee_id' => $employee->id,
                 'basicSalary' => 1000.00,
                 'status' => 'draft'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ]
             ]
         ];
 
@@ -275,9 +349,21 @@ class PayrollItemStoreTest extends TestCase
         $data = [
             'type' => 'payroll-items',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'payroll_period_id' => $period->id,
                 'status' => 'draft'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ],
+                'payrollPeriod' => [
+                    'data' => [
+                        'type' => 'payroll-periods',
+                        'id' => (string) $period->id
+                    ]
+                ]
             ]
         ];
 
@@ -307,10 +393,22 @@ class PayrollItemStoreTest extends TestCase
         $data = [
             'type' => 'payroll-items',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'payroll_period_id' => $period->id,
                 'basicSalary' => 'not_a_number',
                 'status' => 'draft'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ],
+                'payrollPeriod' => [
+                    'data' => [
+                        'type' => 'payroll-periods',
+                        'id' => (string) $period->id
+                    ]
+                ]
             ]
         ];
 
@@ -340,10 +438,22 @@ class PayrollItemStoreTest extends TestCase
         $data = [
             'type' => 'payroll-items',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'payroll_period_id' => $period->id,
                 'basicSalary' => 1000.00,
                 'status' => 'invalid_status'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ],
+                'payrollPeriod' => [
+                    'data' => [
+                        'type' => 'payroll-periods',
+                        'id' => (string) $period->id
+                    ]
+                ]
             ]
         ];
 
@@ -373,13 +483,25 @@ class PayrollItemStoreTest extends TestCase
         $data = [
             'type' => 'payroll-items',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'payroll_period_id' => $period->id,
                 'basicSalary' => 5000.00,
-                'overtime_pay' => 1000.00,
+                'overtimePay' => 1000.00,
                 'bonuses' => 500.00,
                 'deductions' => 800.00,
                 'status' => 'draft'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ],
+                'payrollPeriod' => [
+                    'data' => [
+                        'type' => 'payroll-periods',
+                        'id' => (string) $period->id
+                    ]
+                ]
             ]
         ];
 
@@ -409,10 +531,22 @@ class PayrollItemStoreTest extends TestCase
         $data = [
             'type' => 'payroll-items',
             'attributes' => [
-                'employee_id' => $employee->id,
-                'payroll_period_id' => $period->id,
                 'basicSalary' => 2000.00,
                 'status' => 'draft'
+            ],
+            'relationships' => [
+                'employee' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $employee->id
+                    ]
+                ],
+                'payrollPeriod' => [
+                    'data' => [
+                        'type' => 'payroll-periods',
+                        'id' => (string) $period->id
+                    ]
+                ]
             ]
         ];
 

@@ -90,8 +90,8 @@ class ARInvoiceGLPostingTest extends TestCase
     {
         // Arrange
         $customer = Contact::factory()->customer()->create();
-        $customerAccount = Account::where('code', '1100')->first();
-        $revenueAccount = Account::where('code', '4100')->first();
+        $customerAccount = Account::where('code', '1104')->first();
+        $revenueAccount = Account::where('code', '4101')->first();
 
         // Act
         $invoice = $this->arInvoiceService->createInvoice([
@@ -151,13 +151,13 @@ class ARInvoiceGLPostingTest extends TestCase
     public function test_creating_invoice_without_gl_accounts_fails(): void
     {
         // Arrange: Eliminar las GL accounts requeridas
-        Account::where('code', '1100')->delete();
+        Account::where('code', '1104')->delete();
 
         $customer = Contact::factory()->customer()->create();
 
         // Act & Assert: Debe fallar con mensaje claro
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('GL Account for Customers (1100) not found');
+        $this->expectExceptionMessage('GL Account for Customers (1104) not found');
 
         $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->format('Y-m-d'),
@@ -175,7 +175,7 @@ class ARInvoiceGLPostingTest extends TestCase
         // Arrange
         $customer = Contact::factory()->customer()->create();
 
-        // Act: Crear 3 invoices
+        // Act: Crear 3 invoices (todas en el mismo mes para evitar problemas con fiscal periods)
         $invoice1 = $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->format('Y-m-d'),
             'dueDate' => now()->addDays(30)->format('Y-m-d'),
@@ -187,8 +187,8 @@ class ARInvoiceGLPostingTest extends TestCase
         ]);
 
         $invoice2 = $this->arInvoiceService->createInvoice([
-            'invoiceDate' => now()->addMonth()->format('Y-m-d'),
-            'dueDate' => now()->addMonth()->addDays(30)->format('Y-m-d'),
+            'invoiceDate' => now()->format('Y-m-d'),
+            'dueDate' => now()->addDays(45)->format('Y-m-d'),
             'contactId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 2000.00,
@@ -197,8 +197,8 @@ class ARInvoiceGLPostingTest extends TestCase
         ]);
 
         $invoice3 = $this->arInvoiceService->createInvoice([
-            'invoiceDate' => now()->addMonths(2)->format('Y-m-d'),
-            'dueDate' => now()->addMonths(2)->addDays(30)->format('Y-m-d'),
+            'invoiceDate' => now()->format('Y-m-d'),
+            'dueDate' => now()->addDays(60)->format('Y-m-d'),
             'contactId' => $customer->id,
             'currency' => 'MXN',
             'subtotal' => 500.00,
@@ -244,7 +244,8 @@ class ARInvoiceGLPostingTest extends TestCase
         $this->assertFalse($this->arInvoiceService->isOverdue($invoice));
 
         // Act: Simular pago parcial
-        $invoice->update(['paidAmount' => 500.00]);
+        $invoice->update(['paid_amount' => 500.00]);
+        $invoice->refresh();
 
         // Assert: Remaining balance debe actualizarse
         $remainingBalance = $this->arInvoiceService->calculateRemainingBalance($invoice);
@@ -252,7 +253,8 @@ class ARInvoiceGLPostingTest extends TestCase
         $this->assertFalse($this->arInvoiceService->isFullyPaid($invoice));
 
         // Act: Simular pago completo
-        $invoice->update(['paidAmount' => 1160.00]);
+        $invoice->update(['paid_amount' => 1160.00]);
+        $invoice->refresh();
 
         // Assert: Debe estar fully paid
         $this->assertTrue($this->arInvoiceService->isFullyPaid($invoice));

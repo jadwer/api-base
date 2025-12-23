@@ -31,7 +31,7 @@ class InventoryReservationRequest extends ResourceRequest
                 'integer',
                 Rule::exists('product_batches', 'id'),
             ],
-            'quantity' => [
+            'quantityReserved' => [
                 $this->isCreating() ? 'required' : 'sometimes',
                 'integer',
                 'min:1',
@@ -39,7 +39,11 @@ class InventoryReservationRequest extends ResourceRequest
             'status' => [
                 'sometimes',
                 'string',
-                Rule::in(['active', 'committed', 'released', 'expired']),
+                Rule::in(['active', 'released', 'fulfilled', 'expired']),
+            ],
+            'expiresAt' => [
+                $this->isCreating() ? 'required' : 'sometimes',
+                'date',
             ],
             'metadata' => [
                 'sometimes',

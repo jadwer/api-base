@@ -14,7 +14,6 @@ class InventoryReservationStoreTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $session = CheckoutSession::factory()->create();
-        $stock = Stock::factory()->create();
         $product = Product::factory()->create();
         $warehouse = Warehouse::factory()->create();
 
@@ -22,7 +21,6 @@ class InventoryReservationStoreTest extends TestCase
             'type' => 'inventory-reservations',
             'attributes' => [
                 'checkoutSessionId' => $session->id,
-                'stockId' => $stock->id,
                 'productId' => $product->id,
                 'warehouseId' => $warehouse->id,
                 'quantityReserved' => 5,

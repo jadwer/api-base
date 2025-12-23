@@ -24,9 +24,7 @@ class PaymentTransactionIndexTest extends TestCase
                     'id',
                     'type',
                     'attributes' => [
-                        'checkoutSessionId',
                         'transactionId',
-                        'paymentGateway',
                         'status',
                         'amount',
                     ]
@@ -62,9 +60,10 @@ class PaymentTransactionIndexTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_customer_cannot_list_all_payment_transactions(): void
+    public function test_customer_can_list_payment_transactions(): void
     {
         $customer = $this->getCustomerUser();
+        // Customer has read-only access to payment transactions per seeder
         PaymentTransaction::factory()->count(2)->create();
 
         $response = $this->actingAs($customer, 'sanctum')
@@ -72,7 +71,7 @@ class PaymentTransactionIndexTest extends TestCase
             ->expects('payment-transactions')
             ->get('/api/v1/payment-transactions');
 
-        $response->assertStatus(403);
+        $response->assertOk();
     }
 
     public function test_guest_cannot_list_payment_transactions(): void

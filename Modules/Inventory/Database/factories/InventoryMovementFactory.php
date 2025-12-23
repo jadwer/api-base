@@ -23,11 +23,15 @@ class InventoryMovementFactory extends Factory
     {
         $movementType = $this->faker->randomElement(['entry', 'exit', 'transfer', 'adjustment']);
         $quantity = $this->faker->randomFloat(4, 1, 500);
-        
+        $status = $this->faker->randomElement(['pending', 'completed', 'cancelled']);
+
         // Make exits negative
         if ($movementType === 'exit') {
             $quantity = -$quantity;
         }
+
+        // IV-009: Auto-set quality_checked for exit and transfer with completed status
+        $requiresQualityCheck = in_array($movementType, ['exit', 'transfer']) && $status === 'completed';
 
         return [
             'movement_type' => $movementType,
@@ -35,7 +39,7 @@ class InventoryMovementFactory extends Factory
             'reference_id' => $this->faker->optional(0.7)->numberBetween(1, 1000),
             'movement_date' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'description' => $this->faker->optional(0.6)->sentence(),
-            
+
             // Relaciones (se establecerán en el seeder)
             'product_id' => Product::factory(),
             'warehouse_id' => Warehouse::factory(),
@@ -43,20 +47,43 @@ class InventoryMovementFactory extends Factory
             'destination_warehouse_id' => null, // Solo para transfers
             'destination_location_id' => null, // Solo para transfers
             'user_id' => User::factory(),
-            
+
             // Cantidades y costos
             'quantity' => $quantity,
             'unit_cost' => $this->faker->randomFloat(2, 5, 200),
-            
+
             // Estado
-            'status' => $this->faker->randomElement(['pending', 'completed', 'cancelled']),
+            'status' => $status,
             'previous_stock' => $this->faker->optional(0.8)->randomFloat(4, 0, 1000),
             'new_stock' => $this->faker->optional(0.8)->randomFloat(4, 0, 1000),
-            
+
             // Campos JSON
             'batch_info' => $this->generateBatchInfo(),
             'metadata' => $this->generateMetadata(),
+
+            // Quality check fields (IV-009)
+            'quality_checked' => $requiresQualityCheck,
+            'quality_checked_at' => $requiresQualityCheck ? now() : null,
+            'quality_checked_by' => null, // Se establecerá después
         ];
+    }
+
+    /**
+     * Configure the model factory.
+     * IV-009: Auto-set quality_checked for exit/transfer with completed status
+     */
+    public function configure(): static
+    {
+        return $this->afterMaking(function (InventoryMovement $movement) {
+            $requiresQualityCheck = in_array($movement->movement_type, ['exit', 'transfer']) &&
+                                   $movement->status === 'completed';
+
+            if ($requiresQualityCheck && !$movement->quality_checked) {
+                $movement->quality_checked = true;
+                $movement->quality_checked_at = now();
+                $movement->quality_checked_by = $movement->user_id;
+            }
+        });
     }
 
     /**

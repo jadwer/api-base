@@ -3,36 +3,12 @@
 namespace Modules\Reports\Tests\Feature\CashFlows;
 
 use Tests\TestCase;
-use Modules\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CashFlowShowTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->seed(\Database\Seeders\DatabaseSeeder::class);
-    }
-
-    protected function getAdminUser(): User
-    {
-        return User::role('admin')->first();
-    }
-
-    protected function getTechUser(): User
-    {
-        return User::role('tech')->first();
-    }
-
-    protected function getCustomerUser(): User
-    {
-        return User::role('customer')->first();
-    }
 
     /** @test */
-    public function admin_can_show_balance_sheet()
+    public function admin_can_show_cash_flow()
     {
         $admin = $this->getAdminUser();
 
@@ -48,14 +24,14 @@ class CashFlowShowTest extends TestCase
                 'type',
                 'attributes' => [
                     'startDate',
+                    'endDate',
                     'currency',
-                    'balanced',
-                    'assets',
-                    'liabilities',
-                    'equity',
-                    'totalAssets',
-                    'totalLiabilities',
-                    'totalEquity',
+                    'beginningCash',
+                    'operatingActivities',
+                    'investingActivities',
+                    'financingActivities',
+                    'netCashFlow',
+                    'endingCash',
                     'generatedAt',
                 ],
             ],
@@ -63,7 +39,7 @@ class CashFlowShowTest extends TestCase
     }
 
     /** @test */
-    public function tech_user_can_show_balance_sheet()
+    public function tech_user_can_show_cash_flow()
     {
         $tech = $this->getTechUser();
 
@@ -76,7 +52,7 @@ class CashFlowShowTest extends TestCase
     }
 
     /** @test */
-    public function customer_cannot_show_balance_sheet()
+    public function customer_cannot_show_cash_flow()
     {
         $customer = $this->getCustomerUser();
 
@@ -89,7 +65,7 @@ class CashFlowShowTest extends TestCase
     }
 
     /** @test */
-    public function guest_cannot_show_balance_sheet()
+    public function guest_cannot_show_cash_flow()
     {
         $response = $this->jsonApi()
             ->expects('cash-flows')
@@ -99,22 +75,22 @@ class CashFlowShowTest extends TestCase
     }
 
     /** @test */
-    public function can_show_balance_sheet_with_date_filter()
+    public function can_show_cash_flow_with_date_filter()
     {
         $admin = $this->getAdminUser();
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('cash-flows')
-            ->filter(['startDate' => '2025-10-30'])
+            ->filter(['startDate' => '2025-10-01'])
             ->get('/api/v1/reports/cash-flows/1');
 
         $response->assertOk();
-        $response->assertJsonPath('data.attributes.startDate', '2025-10-30');
+        $response->assertJsonPath('data.attributes.startDate', '2025-10-01');
     }
 
     /** @test */
-    public function balance_sheet_show_includes_all_required_fields()
+    public function cash_flow_show_includes_all_required_fields()
     {
         $admin = $this->getAdminUser();
 
@@ -128,14 +104,14 @@ class CashFlowShowTest extends TestCase
         $data = $response->json('data.attributes');
 
         $this->assertArrayHasKey('startDate', $data);
+        $this->assertArrayHasKey('endDate', $data);
         $this->assertArrayHasKey('currency', $data);
-        $this->assertArrayHasKey('balanced', $data);
-        $this->assertArrayHasKey('assets', $data);
-        $this->assertArrayHasKey('liabilities', $data);
-        $this->assertArrayHasKey('equity', $data);
-        $this->assertArrayHasKey('totalAssets', $data);
-        $this->assertArrayHasKey('totalLiabilities', $data);
-        $this->assertArrayHasKey('totalEquity', $data);
+        $this->assertArrayHasKey('beginningCash', $data);
+        $this->assertArrayHasKey('operatingActivities', $data);
+        $this->assertArrayHasKey('investingActivities', $data);
+        $this->assertArrayHasKey('financingActivities', $data);
+        $this->assertArrayHasKey('netCashFlow', $data);
+        $this->assertArrayHasKey('endingCash', $data);
         $this->assertArrayHasKey('generatedAt', $data);
     }
 }

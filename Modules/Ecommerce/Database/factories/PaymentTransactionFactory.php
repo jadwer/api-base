@@ -14,7 +14,7 @@ class PaymentTransactionFactory extends Factory
 
     public function definition(): array
     {
-        $gateway = $this->faker->randomElement(['stripe', 'paypal', 'mercadopago']);
+        $gateway = $this->faker->randomElement(['stripe', 'paypal', 'conekta']);
         $method = $this->faker->randomElement(['credit_card', 'debit_card', 'bank_transfer', 'paypal', 'oxxo']);
 
         return [
@@ -207,14 +207,14 @@ class PaymentTransactionFactory extends Factory
     }
 
     /**
-     * Indicate that the transaction uses MercadoPago.
+     * Indicate that the transaction uses Conekta.
      */
-    public function mercadopago(): static
+    public function conekta(): static
     {
         return $this->state(function (array $attributes) {
             return [
-                'gateway' => 'mercadopago',
-                'transaction_id' => $this->faker->numerify('##########'),
+                'gateway' => 'conekta',
+                'transaction_id' => $this->faker->numerify('ord_##########'),
                 'payment_method' => $this->faker->randomElement(['credit_card', 'debit_card', 'oxxo']),
             ];
         });

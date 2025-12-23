@@ -18,7 +18,7 @@ class LeaveTypeStoreTest extends TestCase
                 'code' => 'SICK',
                 'description' => 'Medical leave',
                 'daysAllowed' => 10,
-                'requires_approval' => true,
+                'requiresApproval' => true,
                 'paid' => true,
                 'active' => true
             ]
@@ -72,6 +72,7 @@ class LeaveTypeStoreTest extends TestCase
             'type' => 'leave-types',
             'attributes' => [
                 'name' => 'Should Not Create',
+                'code' => 'SNC',
                 'daysAllowed' => 5,
                 'active' => true
             ]
@@ -92,6 +93,7 @@ class LeaveTypeStoreTest extends TestCase
             'type' => 'leave-types',
             'attributes' => [
                 'name' => 'Should Not Create',
+                'code' => 'SNC',
                 'daysAllowed' => 5,
                 'active' => true
             ]
@@ -112,6 +114,7 @@ class LeaveTypeStoreTest extends TestCase
         $data = [
             'type' => 'leave-types',
             'attributes' => [
+                'code' => 'TST',
                 'daysAllowed' => 10,
                 'active' => true
             ]
@@ -126,17 +129,62 @@ class LeaveTypeStoreTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public function test_name_must_be_unique(): void
+    public function test_code_is_required(): void
     {
         $admin = $this->getAdminUser();
-
-        LeaveType::factory()->create(['name' => 'Existing Leave']);
 
         $data = [
             'type' => 'leave-types',
             'attributes' => [
-                'name' => 'Existing Leave',
+                'name' => 'Test Leave',
                 'daysAllowed' => 10,
+                'active' => true
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('leave-types')
+            ->withData($data)
+            ->post('/api/v1/leave-types');
+
+        $response->assertStatus(422);
+    }
+
+    public function test_code_must_be_unique(): void
+    {
+        $admin = $this->getAdminUser();
+
+        LeaveType::factory()->create(['code' => 'EXIST']);
+
+        $data = [
+            'type' => 'leave-types',
+            'attributes' => [
+                'name' => 'New Leave',
+                'code' => 'EXIST',
+                'daysAllowed' => 10,
+                'active' => true
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('leave-types')
+            ->withData($data)
+            ->post('/api/v1/leave-types');
+
+        $response->assertStatus(422);
+    }
+
+    public function test_days_allowed_is_required(): void
+    {
+        $admin = $this->getAdminUser();
+
+        $data = [
+            'type' => 'leave-types',
+            'attributes' => [
+                'name' => 'Test Leave',
+                'code' => 'TST',
                 'active' => true
             ]
         ];
@@ -158,6 +206,7 @@ class LeaveTypeStoreTest extends TestCase
             'type' => 'leave-types',
             'attributes' => [
                 'name' => 'Test Leave',
+                'code' => 'TST',
                 'daysAllowed' => 'not_a_number',
                 'active' => true
             ]

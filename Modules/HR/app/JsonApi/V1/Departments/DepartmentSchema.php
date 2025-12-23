@@ -39,7 +39,7 @@ class DepartmentSchema extends Schema
             Boolean::make('isActive', 'is_active')->sortable(),
 
             // Relationships
-            BelongsTo::make('manager')->type('employees')->readOnly(),
+            BelongsTo::make('manager')->type('employees'),
             HasMany::make('employees')->type('employees')->readOnly(),
             HasMany::make('positions')->type('positions')->readOnly(),
 

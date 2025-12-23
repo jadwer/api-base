@@ -202,15 +202,17 @@ class PaymentApplicationService
     private function createPaymentGLEntry(Payment $payment): void
     {
         // Validar cuentas GL
-        $bankAccount = Account::where('code', '1020')->where('is_postable', true)->first();
-        $customerAccount = Account::where('code', '1100')->where('is_postable', true)->first();
+        // 1102 = Bancos (cuenta postable bajo 1100 Activo Circulante)
+        // 1104 = Clientes (cuenta postable bajo 1100 Activo Circulante)
+        $bankAccount = Account::where('code', '1102')->where('is_postable', true)->first();
+        $customerAccount = Account::where('code', '1104')->where('is_postable', true)->first();
 
         if (!$bankAccount) {
-            throw new \Exception('GL Account for Bank (1020) not found or not postable.');
+            throw new \Exception('GL Account for Bank (1102) not found or not postable.');
         }
 
         if (!$customerAccount) {
-            throw new \Exception('GL Account for Customers (1100) not found or not postable.');
+            throw new \Exception('GL Account for Customers (1104) not found or not postable.');
         }
 
         try {

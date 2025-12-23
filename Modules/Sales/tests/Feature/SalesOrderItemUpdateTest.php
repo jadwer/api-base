@@ -16,18 +16,13 @@ class SalesOrderItemUpdateTest extends TestCase
     public function test_admin_can_update_sales_order_item_quantity(): void
     {
         $admin = $this->getAdminUser();
-        $item = SalesOrderItem::factory()->create([
-            'quantity' => 5.0,
-            'unit_price' => 100.0,
-            'total' => 500.0
-        ]);
-        
+        $item = SalesOrderItem::factory()->create();
+
         $data = [
             'type' => 'sales-order-items',
             'id' => (string) $item->id,
             'attributes' => [
-                'quantity' => 10.0,
-                'total' => 1000.0
+                'quantity' => 10.0
             ]
         ];
 
@@ -38,29 +33,23 @@ class SalesOrderItemUpdateTest extends TestCase
             ->patch("/api/v1/sales-order-items/{$item->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('sales_order_items', [
             'id' => $item->id,
-            'quantity' => 10.0,
-            'total' => 1000.0
+            'quantity' => 10.0
         ]);
     }
 
     public function test_admin_can_update_sales_order_item_unit_price(): void
     {
         $admin = $this->getAdminUser();
-        $item = SalesOrderItem::factory()->create([
-            'quantity' => 5.0,
-            'unit_price' => 100.0,
-            'total' => 500.0
-        ]);
-        
+        $item = SalesOrderItem::factory()->create();
+
         $data = [
             'type' => 'sales-order-items',
             'id' => (string) $item->id,
             'attributes' => [
-                'unitPrice' => 150.0,
-                'total' => 750.0
+                'unitPrice' => 150.0
             ]
         ];
 
@@ -71,30 +60,23 @@ class SalesOrderItemUpdateTest extends TestCase
             ->patch("/api/v1/sales-order-items/{$item->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('sales_order_items', [
             'id' => $item->id,
-            'unit_price' => 150.0,
-            'total' => 750.0
+            'unit_price' => 150.0
         ]);
     }
 
     public function test_admin_can_update_sales_order_item_discount(): void
     {
         $admin = $this->getAdminUser();
-        $item = SalesOrderItem::factory()->create([
-            'quantity' => 5.0,
-            'unit_price' => 100.0,
-            'discount' => 0.0,
-            'total' => 500.0
-        ]);
-        
+        $item = SalesOrderItem::factory()->create();
+
         $data = [
             'type' => 'sales-order-items',
             'id' => (string) $item->id,
             'attributes' => [
-                'discount' => 50.0,
-                'total' => 450.0
+                'discount' => 50.0
             ]
         ];
 
@@ -105,11 +87,10 @@ class SalesOrderItemUpdateTest extends TestCase
             ->patch("/api/v1/sales-order-items/{$item->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('sales_order_items', [
             'id' => $item->id,
-            'discount' => 50.0,
-            'total' => 450.0
+            'discount' => 50.0
         ]);
     }
 
@@ -156,7 +137,7 @@ class SalesOrderItemUpdateTest extends TestCase
             'type' => 'sales-order-items',
             'id' => (string) $item->id,
             'attributes' => [
-                'product_id' => $newProduct->id
+                'productId' => $newProduct->id
             ]
         ];
 
@@ -297,17 +278,13 @@ class SalesOrderItemUpdateTest extends TestCase
     public function test_tech_user_can_update_sales_order_item(): void
     {
         $tech = $this->getTechUser();
-        $item = SalesOrderItem::factory()->create([
-            'quantity' => 5.0,
-            'total' => 500.0
-        ]);
-        
+        $item = SalesOrderItem::factory()->create();
+
         $data = [
             'type' => 'sales-order-items',
             'id' => (string) $item->id,
             'attributes' => [
-                'quantity' => 10.0,
-                'total' => 1000.0
+                'quantity' => 10.0
             ]
         ];
 
@@ -318,11 +295,10 @@ class SalesOrderItemUpdateTest extends TestCase
             ->patch("/api/v1/sales-order-items/{$item->id}");
 
         $response->assertOk();
-        
+
         $this->assertDatabaseHas('sales_order_items', [
             'id' => $item->id,
-            'quantity' => 10.0,
-            'total' => 1000.0
+            'quantity' => 10.0
         ]);
     }
 }

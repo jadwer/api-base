@@ -99,7 +99,8 @@ class InventoryMovementStoreTest extends TestCase
                 'quantity' => 50,
                 'unitCost' => 25.75,
                 'referenceType' => 'sale',
-                'referenceId' => 123
+                'referenceId' => 123,
+                'qualityChecked' => true
             ]
         ];
 
@@ -154,7 +155,8 @@ class InventoryMovementStoreTest extends TestCase
                 'movementDate' => '2024-08-13T10:00:00Z',
                 'description' => 'Test transfer movement',
                 'quantity' => 75,
-                'unitCost' => 15.50
+                'unitCost' => 15.50,
+                'qualityChecked' => true
             ]
         ];
 

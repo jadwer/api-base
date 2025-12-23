@@ -4,6 +4,7 @@ namespace Modules\HR\JsonApi\V1\Employees;
 
 use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
 use LaravelJsonApi\Validation\Rule as JsonApiRule;
+use Illuminate\Validation\Rule;
 
 class EmployeeRequest extends ResourceRequest
 {
@@ -19,7 +20,7 @@ class EmployeeRequest extends ResourceRequest
                 'required',
                 'string',
                 'max:50',
-                JsonApiRule::unique('employees', 'employee_code')->ignore($employeeId),
+                Rule::unique('employees', 'employee_code')->ignore($employeeId),
             ],
             'firstName' => [
                 'required',
@@ -35,7 +36,7 @@ class EmployeeRequest extends ResourceRequest
                 'required',
                 'email',
                 'max:255',
-                JsonApiRule::unique('employees', 'email')->ignore($employeeId),
+                Rule::unique('employees', 'email')->ignore($employeeId),
             ],
             'phone' => [
                 'nullable',

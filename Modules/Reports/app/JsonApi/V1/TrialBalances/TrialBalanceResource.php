@@ -11,13 +11,13 @@ class TrialBalanceResource extends JsonApiResource
         $data = is_object($this->resource) ? (array) $this->resource : $this->resource;
 
         return [
-            'asOfDate' => $data['as_of_date'] ?? null,
+            'asOfDate' => $data['asOfDate'] ?? $data['as_of_date'] ?? null,
             'currency' => $data['currency'] ?? 'MXN',
             'accounts' => $data['accounts'] ?? [],
             'totals' => $data['totals'] ?? [],
-            'summaryByType' => $data['summary_by_type'] ?? [],
-            'balanced' => $data['totals']['balanced'] ?? false,
-            'generatedAt' => now()->toISOString(),
+            'summaryByType' => $data['summaryByType'] ?? $data['summary_by_type'] ?? [],
+            'balanced' => $data['balanced'] ?? false,
+            'generatedAt' => $data['generatedAt'] ?? now()->toISOString(),
         ];
     }
 

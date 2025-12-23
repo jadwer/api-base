@@ -4,6 +4,7 @@ namespace Modules\Accounting\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Accounting\Models\FiscalPeriod;
+use App\Models\User;
 
 class FiscalPeriodFactory extends Factory
 {
@@ -34,7 +35,7 @@ class FiscalPeriodFactory extends Factory
             'month' => $month,
             'start_date' => $startDate->format('Y-m-d'),
             'end_date' => $endDate->format('Y-m-d'),
-            'status' => $this->faker->randomElement(['open', 'closed', 'locked']),
+            'status' => 'open', // Default to open - use closed() state for closed periods
             'closed_at' => null,
             'closed_by_id' => null,
             'closing_entry_id' => null,
@@ -55,14 +56,32 @@ class FiscalPeriodFactory extends Factory
     }
 
     /**
-     * Closed FiscalPeriod
+     * Closed FiscalPeriod - creates a user for closed_by_id
      */
     public function closed(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'status' => 'closed',
-            'closed_at' => $this->faker->dateTimeBetween('-30 days', 'now'),
-            'closed_by_id' => 1,
-        ]);
+        return $this->state(function (array $attributes) {
+            $user = User::first() ?? User::factory()->create();
+            return [
+                'status' => 'closed',
+                'closed_at' => $this->faker->dateTimeBetween('-30 days', 'now'),
+                'closed_by_id' => $user->id,
+            ];
+        });
+    }
+
+    /**
+     * Locked FiscalPeriod
+     */
+    public function locked(): static
+    {
+        return $this->state(function (array $attributes) {
+            $user = User::first() ?? User::factory()->create();
+            return [
+                'status' => 'locked',
+                'closed_at' => $this->faker->dateTimeBetween('-60 days', '-30 days'),
+                'closed_by_id' => $user->id,
+            ];
+        });
     }
 }

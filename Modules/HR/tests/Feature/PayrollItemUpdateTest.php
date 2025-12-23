@@ -34,7 +34,7 @@ class PayrollItemUpdateTest extends TestCase
             'id' => (string) $payrollItem->id,
             'attributes' => [
                 'basicSalary' => 3500.00,
-                'overtime_pay' => 500.00,
+                'overtimePay' => 500.00,
                 'bonuses' => 300.00,
                 'deductions' => 200.00,
                 'status' => 'pending',
@@ -81,7 +81,7 @@ class PayrollItemUpdateTest extends TestCase
             'id' => (string) $payrollItem->id,
             'attributes' => [
                 'status' => 'paid',
-                'paid_at' => '2024-02-01 14:30:00'
+                'paidAt' => '2024-02-01T14:30:00Z'
             ]
         ];
 
@@ -275,7 +275,7 @@ class PayrollItemUpdateTest extends TestCase
             'type' => 'payroll-items',
             'id' => (string) $payrollItem->id,
             'attributes' => [
-                'overtime_pay' => 500.00,
+                'overtimePay' => 500.00,
                 'bonuses' => 300.00,
                 'deductions' => 100.00
             ]

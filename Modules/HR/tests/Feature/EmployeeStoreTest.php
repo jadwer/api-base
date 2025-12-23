@@ -19,16 +19,28 @@ class EmployeeStoreTest extends TestCase
         $data = [
             'type' => 'employees',
             'attributes' => [
+                'employeeCode' => 'EMP-001',
                 'firstName' => 'John',
                 'lastName' => 'Smith',
                 'email' => 'john.smith@example.com',
                 'phone' => '+1234567890',
                 'hireDate' => '2024-01-15',
-                'position_id' => $position->id,
-                'department_id' => $department->id,
                 'salary' => 55000.00,
-                'status' => 'active',
-                'employment_type' => 'full-time'
+                'status' => 'active'
+            ],
+            'relationships' => [
+                'department' => [
+                    'data' => [
+                        'type' => 'departments',
+                        'id' => (string) $department->id
+                    ]
+                ],
+                'position' => [
+                    'data' => [
+                        'type' => 'positions',
+                        'id' => (string) $position->id
+                    ]
+                ]
             ]
         ];
 
@@ -44,8 +56,8 @@ class EmployeeStoreTest extends TestCase
         $this->assertEquals(55000.00, $response->json('data.attributes.salary'));
 
         $this->assertDatabaseHas('employees', [
-            'firstName' => 'John',
-            'lastName' => 'Smith',
+            'first_name' => 'John',
+            'last_name' => 'Smith',
             'email' => 'john.smith@example.com',
             'status' => 'active'
         ]);
@@ -61,15 +73,27 @@ class EmployeeStoreTest extends TestCase
         $data = [
             'type' => 'employees',
             'attributes' => [
+                'employeeCode' => 'EMP-002',
                 'firstName' => 'Jane',
                 'lastName' => 'Doe',
                 'email' => 'jane.doe@example.com',
                 'hireDate' => '2024-02-01',
-                'position_id' => $position->id,
-                'department_id' => $department->id,
                 'salary' => 48000.00,
-                'status' => 'active',
-                'employment_type' => 'full-time'
+                'status' => 'active'
+            ],
+            'relationships' => [
+                'department' => [
+                    'data' => [
+                        'type' => 'departments',
+                        'id' => (string) $department->id
+                    ]
+                ],
+                'position' => [
+                    'data' => [
+                        'type' => 'positions',
+                        'id' => (string) $position->id
+                    ]
+                ]
             ]
         ];
 
@@ -93,13 +117,27 @@ class EmployeeStoreTest extends TestCase
         $data = [
             'type' => 'employees',
             'attributes' => [
+                'employeeCode' => 'EMP-003',
                 'firstName' => 'Should',
                 'lastName' => 'NotCreate',
                 'email' => 'test@example.com',
                 'hireDate' => '2024-01-01',
-                'position_id' => $position->id,
-                'department_id' => $department->id,
-                'salary' => 40000.00
+                'salary' => 40000.00,
+                'status' => 'active'
+            ],
+            'relationships' => [
+                'department' => [
+                    'data' => [
+                        'type' => 'departments',
+                        'id' => (string) $department->id
+                    ]
+                ],
+                'position' => [
+                    'data' => [
+                        'type' => 'positions',
+                        'id' => (string) $position->id
+                    ]
+                ]
             ]
         ];
 
@@ -120,13 +158,27 @@ class EmployeeStoreTest extends TestCase
         $data = [
             'type' => 'employees',
             'attributes' => [
+                'employeeCode' => 'EMP-004',
                 'firstName' => 'Guest',
                 'lastName' => 'User',
                 'email' => 'guest@example.com',
                 'hireDate' => '2024-01-01',
-                'position_id' => $position->id,
-                'department_id' => $department->id,
-                'salary' => 40000.00
+                'salary' => 40000.00,
+                'status' => 'active'
+            ],
+            'relationships' => [
+                'department' => [
+                    'data' => [
+                        'type' => 'departments',
+                        'id' => (string) $department->id
+                    ]
+                ],
+                'position' => [
+                    'data' => [
+                        'type' => 'positions',
+                        'id' => (string) $position->id
+                    ]
+                ]
             ]
         ];
 
@@ -148,12 +200,26 @@ class EmployeeStoreTest extends TestCase
         $data = [
             'type' => 'employees',
             'attributes' => [
+                'employeeCode' => 'EMP-005',
                 'lastName' => 'Smith',
                 'email' => 'test@example.com',
                 'hireDate' => '2024-01-01',
-                'position_id' => $position->id,
-                'department_id' => $department->id,
-                'salary' => 40000.00
+                'salary' => 40000.00,
+                'status' => 'active'
+            ],
+            'relationships' => [
+                'department' => [
+                    'data' => [
+                        'type' => 'departments',
+                        'id' => (string) $department->id
+                    ]
+                ],
+                'position' => [
+                    'data' => [
+                        'type' => 'positions',
+                        'id' => (string) $position->id
+                    ]
+                ]
             ]
         ];
 
@@ -176,12 +242,26 @@ class EmployeeStoreTest extends TestCase
         $data = [
             'type' => 'employees',
             'attributes' => [
+                'employeeCode' => 'EMP-006',
                 'firstName' => 'John',
                 'email' => 'test@example.com',
                 'hireDate' => '2024-01-01',
-                'position_id' => $position->id,
-                'department_id' => $department->id,
-                'salary' => 40000.00
+                'salary' => 40000.00,
+                'status' => 'active'
+            ],
+            'relationships' => [
+                'department' => [
+                    'data' => [
+                        'type' => 'departments',
+                        'id' => (string) $department->id
+                    ]
+                ],
+                'position' => [
+                    'data' => [
+                        'type' => 'positions',
+                        'id' => (string) $position->id
+                    ]
+                ]
             ]
         ];
 
@@ -204,12 +284,26 @@ class EmployeeStoreTest extends TestCase
         $data = [
             'type' => 'employees',
             'attributes' => [
+                'employeeCode' => 'EMP-007',
                 'firstName' => 'John',
                 'lastName' => 'Smith',
                 'hireDate' => '2024-01-01',
-                'position_id' => $position->id,
-                'department_id' => $department->id,
-                'salary' => 40000.00
+                'salary' => 40000.00,
+                'status' => 'active'
+            ],
+            'relationships' => [
+                'department' => [
+                    'data' => [
+                        'type' => 'departments',
+                        'id' => (string) $department->id
+                    ]
+                ],
+                'position' => [
+                    'data' => [
+                        'type' => 'positions',
+                        'id' => (string) $position->id
+                    ]
+                ]
             ]
         ];
 
@@ -237,13 +331,27 @@ class EmployeeStoreTest extends TestCase
         $data = [
             'type' => 'employees',
             'attributes' => [
+                'employeeCode' => 'EMP-008',
                 'firstName' => 'John',
                 'lastName' => 'Smith',
                 'email' => 'existing@example.com',
                 'hireDate' => '2024-01-01',
-                'position_id' => $position->id,
-                'department_id' => $department->id,
-                'salary' => 40000.00
+                'salary' => 40000.00,
+                'status' => 'active'
+            ],
+            'relationships' => [
+                'department' => [
+                    'data' => [
+                        'type' => 'departments',
+                        'id' => (string) $department->id
+                    ]
+                ],
+                'position' => [
+                    'data' => [
+                        'type' => 'positions',
+                        'id' => (string) $position->id
+                    ]
+                ]
             ]
         ];
 
@@ -266,12 +374,26 @@ class EmployeeStoreTest extends TestCase
         $data = [
             'type' => 'employees',
             'attributes' => [
+                'employeeCode' => 'EMP-009',
                 'firstName' => 'John',
                 'lastName' => 'Smith',
                 'email' => 'test@example.com',
                 'hireDate' => '2024-01-01',
-                'position_id' => $position->id,
-                'department_id' => $department->id
+                'status' => 'active'
+            ],
+            'relationships' => [
+                'department' => [
+                    'data' => [
+                        'type' => 'departments',
+                        'id' => (string) $department->id
+                    ]
+                ],
+                'position' => [
+                    'data' => [
+                        'type' => 'positions',
+                        'id' => (string) $position->id
+                    ]
+                ]
             ]
         ];
 
@@ -294,13 +416,27 @@ class EmployeeStoreTest extends TestCase
         $data = [
             'type' => 'employees',
             'attributes' => [
+                'employeeCode' => 'EMP-010',
                 'firstName' => 'John',
                 'lastName' => 'Smith',
                 'email' => 'test@example.com',
                 'hireDate' => '2024-01-01',
-                'position_id' => $position->id,
-                'department_id' => $department->id,
-                'salary' => 'not_a_number'
+                'salary' => 'not_a_number',
+                'status' => 'active'
+            ],
+            'relationships' => [
+                'department' => [
+                    'data' => [
+                        'type' => 'departments',
+                        'id' => (string) $department->id
+                    ]
+                ],
+                'position' => [
+                    'data' => [
+                        'type' => 'positions',
+                        'id' => (string) $position->id
+                    ]
+                ]
             ]
         ];
 
@@ -323,14 +459,27 @@ class EmployeeStoreTest extends TestCase
         $data = [
             'type' => 'employees',
             'attributes' => [
+                'employeeCode' => 'EMP-011',
                 'firstName' => 'John',
                 'lastName' => 'Smith',
                 'email' => 'test@example.com',
                 'hireDate' => '2024-01-01',
-                'position_id' => $position->id,
-                'department_id' => $department->id,
                 'salary' => 40000.00,
                 'status' => 'invalid_status'
+            ],
+            'relationships' => [
+                'department' => [
+                    'data' => [
+                        'type' => 'departments',
+                        'id' => (string) $department->id
+                    ]
+                ],
+                'position' => [
+                    'data' => [
+                        'type' => 'positions',
+                        'id' => (string) $position->id
+                    ]
+                ]
             ]
         ];
 
@@ -343,7 +492,7 @@ class EmployeeStoreTest extends TestCase
         $response->assertStatus(422);
     }
 
-    public function test_employment_type_must_be_valid_enum(): void
+    public function test_department_is_required(): void
     {
         $admin = $this->getAdminUser();
 
@@ -353,14 +502,57 @@ class EmployeeStoreTest extends TestCase
         $data = [
             'type' => 'employees',
             'attributes' => [
+                'employeeCode' => 'EMP-012',
                 'firstName' => 'John',
                 'lastName' => 'Smith',
                 'email' => 'test@example.com',
                 'hireDate' => '2024-01-01',
-                'position_id' => $position->id,
-                'department_id' => $department->id,
                 'salary' => 40000.00,
-                'employment_type' => 'invalid_type'
+                'status' => 'active'
+            ],
+            'relationships' => [
+                'position' => [
+                    'data' => [
+                        'type' => 'positions',
+                        'id' => (string) $position->id
+                    ]
+                ]
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('employees')
+            ->withData($data)
+            ->post('/api/v1/employees');
+
+        $response->assertStatus(422);
+    }
+
+    public function test_position_is_required(): void
+    {
+        $admin = $this->getAdminUser();
+
+        $department = Department::factory()->create();
+
+        $data = [
+            'type' => 'employees',
+            'attributes' => [
+                'employeeCode' => 'EMP-013',
+                'firstName' => 'John',
+                'lastName' => 'Smith',
+                'email' => 'test@example.com',
+                'hireDate' => '2024-01-01',
+                'salary' => 40000.00,
+                'status' => 'active'
+            ],
+            'relationships' => [
+                'department' => [
+                    'data' => [
+                        'type' => 'departments',
+                        'id' => (string) $department->id
+                    ]
+                ]
             ]
         ];
 

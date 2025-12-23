@@ -24,7 +24,7 @@ class DepartmentUpdateTest extends TestCase
             'attributes' => [
                 'name' => 'New Department Name',
                 'description' => 'Updated description',
-                'is_active' => false
+                'isActive' => false
             ]
         ];
 
@@ -60,8 +60,13 @@ class DepartmentUpdateTest extends TestCase
         $data = [
             'type' => 'departments',
             'id' => (string) $department->id,
-            'attributes' => [
-                'manager_id' => $manager->id
+            'relationships' => [
+                'manager' => [
+                    'data' => [
+                        'type' => 'employees',
+                        'id' => (string) $manager->id
+                    ]
+                ]
             ]
         ];
 
@@ -72,7 +77,11 @@ class DepartmentUpdateTest extends TestCase
             ->patch("/api/v1/departments/{$department->id}");
 
         $response->assertOk();
-        $this->assertEquals($manager->id, $response->json('data.attributes.managerId'));
+
+        $this->assertDatabaseHas('departments', [
+            'id' => $department->id,
+            'manager_id' => $manager->id
+        ]);
     }
 
     public function test_admin_can_deactivate_department(): void
@@ -85,7 +94,7 @@ class DepartmentUpdateTest extends TestCase
             'type' => 'departments',
             'id' => (string) $department->id,
             'attributes' => [
-                'is_active' => false
+                'isActive' => false
             ]
         ];
 
@@ -258,8 +267,10 @@ class DepartmentUpdateTest extends TestCase
         $data = [
             'type' => 'departments',
             'id' => (string) $department->id,
-            'attributes' => [
-                'manager_id' => null
+            'relationships' => [
+                'manager' => [
+                    'data' => null
+                ]
             ]
         ];
 
@@ -270,6 +281,10 @@ class DepartmentUpdateTest extends TestCase
             ->patch("/api/v1/departments/{$department->id}");
 
         $response->assertOk();
-        $this->assertNull($response->json('data.attributes.managerId'));
+
+        $this->assertDatabaseHas('departments', [
+            'id' => $department->id,
+            'manager_id' => null
+        ]);
     }
 }

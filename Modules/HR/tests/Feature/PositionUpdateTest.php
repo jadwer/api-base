@@ -25,8 +25,8 @@ class PositionUpdateTest extends TestCase
             'attributes' => [
                 'title' => 'New Title',
                 'description' => 'Updated description',
-                'min_salary' => 45000.00,
-                'max_salary' => 75000.00
+                'minSalary' => 45000.00,
+                'maxSalary' => 75000.00
             ]
         ];
 
@@ -64,8 +64,8 @@ class PositionUpdateTest extends TestCase
             'type' => 'positions',
             'id' => (string) $position->id,
             'attributes' => [
-                'min_salary' => 40000.00,
-                'max_salary' => 65000.00
+                'minSalary' => 40000.00,
+                'maxSalary' => 65000.00
             ]
         ];
 
@@ -91,7 +91,7 @@ class PositionUpdateTest extends TestCase
             'type' => 'positions',
             'id' => (string) $position->id,
             'attributes' => [
-                'is_active' => false
+                'isActive' => false
             ]
         ];
 
@@ -207,7 +207,7 @@ class PositionUpdateTest extends TestCase
             'type' => 'positions',
             'id' => (string) $position->id,
             'attributes' => [
-                'min_salary' => 'invalid_salary'
+                'minSalary' => 'invalid_salary'
             ]
         ];
 
@@ -267,8 +267,13 @@ class PositionUpdateTest extends TestCase
         $data = [
             'type' => 'positions',
             'id' => (string) $position->id,
-            'attributes' => [
-                'department_id' => $department2->id
+            'relationships' => [
+                'department' => [
+                    'data' => [
+                        'type' => 'departments',
+                        'id' => (string) $department2->id
+                    ]
+                ]
             ]
         ];
 
@@ -279,6 +284,10 @@ class PositionUpdateTest extends TestCase
             ->patch("/api/v1/positions/{$position->id}");
 
         $response->assertOk();
-        $this->assertEquals($department2->id, $response->json('data.attributes.departmentId'));
+
+        $this->assertDatabaseHas('positions', [
+            'id' => $position->id,
+            'department_id' => $department2->id
+        ]);
     }
 }

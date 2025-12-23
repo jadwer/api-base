@@ -153,9 +153,12 @@ class PaymentTransactionShowTest extends TestCase
             ->get('/api/v1/payment-transactions/' . $transaction->id);
 
         $response->assertSuccessful()
-            ->assertJsonApiIncluded([
-                ['type' => 'checkout-sessions', 'id' => (string)$checkoutSession->id],
-            ]);
+            ->assertJsonStructure(['included']);
+
+        $included = $response->json('included');
+        $checkoutSessionIncluded = collect($included)->firstWhere('type', 'checkout-sessions');
+        $this->assertNotNull($checkoutSessionIncluded);
+        $this->assertEquals((string)$checkoutSession->id, $checkoutSessionIncluded['id']);
     }
 
     /**
@@ -176,9 +179,12 @@ class PaymentTransactionShowTest extends TestCase
             ->get('/api/v1/payment-transactions/' . $transaction->id);
 
         $response->assertSuccessful()
-            ->assertJsonApiIncluded([
-                ['type' => 'sales-orders', 'id' => (string)$salesOrder->id],
-            ]);
+            ->assertJsonStructure(['included']);
+
+        $included = $response->json('included');
+        $salesOrderIncluded = collect($included)->firstWhere('type', 'sales-orders');
+        $this->assertNotNull($salesOrderIncluded);
+        $this->assertEquals((string)$salesOrder->id, $salesOrderIncluded['id']);
     }
 
     /**

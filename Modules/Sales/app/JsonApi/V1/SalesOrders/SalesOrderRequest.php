@@ -16,24 +16,24 @@ class SalesOrderRequest extends ResourceRequest
         $isCreating = $this->isCreating();
         
         return [
-            'contact_id' => $isCreating 
+            'contactId' => $isCreating
                 ? ['required', 'exists:contacts,id']
                 : ['sometimes', 'exists:contacts,id'],
-            'order_number' => [
-                $isCreating ? 'required' : 'sometimes', 
-                'string', 
-                'max:50', 
+            'orderNumber' => [
+                $isCreating ? 'required' : 'sometimes',
+                'string',
+                'max:50',
                 Rule::unique('sales_orders', 'order_number')->ignore($order?->id)
             ],
             'status' => [
-                $isCreating ? 'required' : 'sometimes', 
+                $isCreating ? 'required' : 'sometimes',
                 Rule::in(['draft', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'])
             ],
-            'order_date' => [$isCreating ? 'required' : 'sometimes', 'date'],
-            'approved_at' => ['nullable', 'date'],
-            'delivered_at' => ['nullable', 'date'],
-            'total_amount' => [$isCreating ? 'required' : 'sometimes', 'numeric', 'min:0'],
-            'discount_total' => ['nullable', 'numeric', 'min:0'],
+            'orderDate' => [$isCreating ? 'required' : 'sometimes', 'date'],
+            'approvedAt' => ['nullable', 'date'],
+            'deliveredAt' => ['nullable', 'date'],
+            'discountTotal' => ['nullable', 'numeric', 'min:0'],
+            'totalAmount' => [$isCreating ? 'required' : 'sometimes', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string', 'max:1000'],
             'metadata' => ['nullable', 'array'],
         ];
@@ -45,19 +45,19 @@ class SalesOrderRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'contact_id.required' => 'Contact is required.',
-            'contact_id.exists' => 'The selected contact does not exist.',
-            'order_number.required' => 'Order number is required.',
-            'order_number.unique' => 'This order number is already taken.',
+            'contactId.required' => 'Contact is required.',
+            'contactId.exists' => 'The selected contact does not exist.',
+            'orderNumber.required' => 'Order number is required.',
+            'orderNumber.unique' => 'This order number is already taken.',
             'status.required' => 'Order status is required.',
             'status.in' => 'Invalid order status.',
-            'order_date.required' => 'Order date is required.',
-            'order_date.date' => 'Order date must be a valid date.',
-            'total_amount.required' => 'Total amount is required.',
-            'total_amount.numeric' => 'Total amount must be a number.',
-            'total_amount.min' => 'Total amount must be at least 0.',
-            'discount_total.numeric' => 'Discount total must be a number.',
-            'discount_total.min' => 'Discount total must be at least 0.',
+            'orderDate.required' => 'Order date is required.',
+            'orderDate.date' => 'Order date must be a valid date.',
+            'totalAmount.required' => 'Total amount is required.',
+            'totalAmount.numeric' => 'Total amount must be a number.',
+            'totalAmount.min' => 'Total amount must be at least 0.',
+            'discountTotal.numeric' => 'Discount total must be a number.',
+            'discountTotal.min' => 'Discount total must be at least 0.',
             'notes.max' => 'Notes cannot exceed 1000 characters.',
         ];
     }

@@ -14,13 +14,10 @@ class PermissionsSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->command->info('🔐 Seeding permissions...');
+        $this->command->info('🔐 Seeding HR permissions...');
 
-        $permissions = [
-            'god',
-            'admin',
-            'tech',
-            'customer',
+        // HR module specific permissions
+        $hrPermissions = [
             'hr.departments.index',
             'hr.departments.show',
             'hr.departments.store',
@@ -68,8 +65,9 @@ class PermissionsSeeder extends Seeder
             'hr.performance-reviews.destroy',
         ];
 
-        $this->bulkCreatePermissions($permissions);
+        // Create permissions and assign to god, admin, and tech roles
+        $this->bulkCreateAndAssignPermissions($hrPermissions, ['god', 'admin', 'tech']);
 
-        $this->command->info('✅ Permissions seeded successfully!');
+        $this->command->info('✅ HR permissions seeded and assigned successfully!');
     }
 }

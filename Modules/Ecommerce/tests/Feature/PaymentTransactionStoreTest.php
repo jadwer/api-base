@@ -16,10 +16,10 @@ class PaymentTransactionStoreTest extends TestCase
         $data = [
             'type' => 'payment-transactions',
             'attributes' => [
-                'checkout_session_id' => $session->id,
+                'checkoutSessionId' => $session->id,
                 'transactionId' => 'ch_test123',
-                'paymentGateway' => 'stripe',
-                'paymentMethod' => 'credit_card',
+                'gateway' => 'stripe',
+                'paymentMethod' => 'card',
                 'status' => 'pending',
                 'amount' => 100.00,
                 'currency' => 'MXN',
@@ -36,6 +36,8 @@ class PaymentTransactionStoreTest extends TestCase
         $this->assertDatabaseHas('payment_transactions', [
             'checkout_session_id' => $session->id,
             'transaction_id' => 'ch_test123',
+            'gateway' => 'stripe',
+            'payment_method' => 'card',
             'amount' => 100.00,
         ]);
     }
@@ -48,9 +50,10 @@ class PaymentTransactionStoreTest extends TestCase
         $data = [
             'type' => 'payment-transactions',
             'attributes' => [
-                'checkout_session_id' => $session->id,
+                'checkoutSessionId' => $session->id,
                 'transactionId' => 'ch_test123',
-                'paymentGateway' => 'stripe',
+                'gateway' => 'stripe',
+                'paymentMethod' => 'card',
                 'status' => 'pending',
                 'amount' => 100.00,
                 'currency' => 'MXN',
@@ -73,8 +76,10 @@ class PaymentTransactionStoreTest extends TestCase
         $data = [
             'type' => 'payment-transactions',
             'attributes' => [
-                'checkout_session_id' => $session->id,
+                'checkoutSessionId' => $session->id,
                 'transactionId' => 'ch_test123',
+                'gateway' => 'stripe',
+                'paymentMethod' => 'card',
                 'status' => 'pending',
                 'amount' => 100.00,
             ]

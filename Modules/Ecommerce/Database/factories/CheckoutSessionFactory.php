@@ -31,7 +31,7 @@ class CheckoutSessionFactory extends Factory
                 'city' => $this->faker->city(),
                 'state' => $this->faker->state(),
                 'postal_code' => $this->faker->postcode(),
-                'country' => 'México',
+                'country' => 'MX',
             ],
             'shipping_address' => null,
             'contact_email' => $this->faker->safeEmail(),
@@ -68,7 +68,7 @@ class CheckoutSessionFactory extends Factory
                     'city' => $this->faker->city(),
                     'state' => $this->faker->state(),
                     'postal_code' => $this->faker->postcode(),
-                    'country' => 'México',
+                    'country' => 'MX',
                 ],
                 'shipping_method_id' => ShippingMethod::factory(),
             ];
@@ -89,7 +89,7 @@ class CheckoutSessionFactory extends Factory
                     'city' => $this->faker->city(),
                     'state' => $this->faker->state(),
                     'postal_code' => $this->faker->postcode(),
-                    'country' => 'México',
+                    'country' => 'MX',
                 ],
                 'shipping_method_id' => ShippingMethod::factory(),
             ];
@@ -112,7 +112,7 @@ class CheckoutSessionFactory extends Factory
                     'city' => $this->faker->city(),
                     'state' => $this->faker->state(),
                     'postal_code' => $this->faker->postcode(),
-                    'country' => 'México',
+                    'country' => 'MX',
                 ],
                 'shipping_method_id' => ShippingMethod::factory(),
             ];
@@ -135,7 +135,7 @@ class CheckoutSessionFactory extends Factory
                     'city' => $this->faker->city(),
                     'state' => $this->faker->state(),
                     'postal_code' => $this->faker->postcode(),
-                    'country' => 'México',
+                    'country' => 'MX',
                 ],
                 'shipping_method_id' => ShippingMethod::factory(),
             ];
@@ -160,7 +160,7 @@ class CheckoutSessionFactory extends Factory
                     'city' => $this->faker->city(),
                     'state' => $this->faker->state(),
                     'postal_code' => $this->faker->postcode(),
-                    'country' => 'México',
+                    'country' => 'MX',
                 ],
                 'shipping_method_id' => ShippingMethod::factory(),
                 'completed_at' => $completedAt,

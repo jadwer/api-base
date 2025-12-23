@@ -63,8 +63,21 @@ class ARInvoiceShowTest extends TestCase
     public function test_admin_can_view_ARInvoice_with_specific_data(): void
     {
         $admin = $this->getAdminUser();
-        
-        $aRInvoice = ARInvoice::factory()->create(['invoice_number' => 'test string', 'invoiceDate' => now(), 'dueDate' => now(), 'currency' => 'test string', 'subtotal' => 99.99, 'tax_amount' => 99.99, 'total_amount' => 99.99, 'paidAmount' => 99.99, 'status' => 'active', 'notes' => 'test description', 'metadata' => 'test value', 'is_active' => true]);
+
+        $aRInvoice = ARInvoice::factory()->create([
+            'invoice_number' => 'AR-TEST001',
+            'invoice_date' => now(),
+            'due_date' => now()->addDays(30),
+            'currency' => 'MXN',
+            'subtotal' => 99.99,
+            'tax_amount' => 15.99,
+            'total_amount' => 115.98,
+            'paid_amount' => 0.00,
+            'status' => 'draft',
+            'notes' => 'test description',
+            'metadata' => [],
+            'is_active' => true,
+        ]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -77,24 +90,24 @@ class ARInvoiceShowTest extends TestCase
                 'id',
                 'type',
                 'attributes' => [
-                        'invoiceNumber',
-                        'invoiceDate',
-                        'dueDate',
-                        'contactId',
-                        'currency',
-                        'subtotal',
-                        'taxAmount',
-                        'totalAmount',
-                        'paidAmount',
-                        'status',
-                        'journalEntryId',
-                        'notes',
-                        'metadata',
-                        'isActive',
+                    'invoiceNumber',
+                    'invoiceDate',
+                    'dueDate',
+                    'contactId',
+                    'currency',
+                    'subtotal',
+                    'taxAmount',
+                    'totalAmount',
+                    'paidAmount',
+                    'status',
+                    'journalEntryId',
+                    'notes',
+                    'metadata',
+                    'isActive',
                     'createdAt',
-                    'updatedAt'
-                ]
-            ]
+                    'updatedAt',
+                ],
+            ],
         ]);
     }
 

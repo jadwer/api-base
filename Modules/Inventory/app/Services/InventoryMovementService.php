@@ -150,6 +150,11 @@ class InventoryMovementService
                 'new_stock' => $newStock,
                 'batch_info' => $data['batch_info'] ?? [],
                 'metadata' => $data['metadata'] ?? [],
+                // Quality check fields (IV-009)
+                'quality_checked' => $data['quality_checked'] ?? false,
+                'quality_checked_at' => ($data['quality_checked'] ?? false) ? now() : null,
+                'quality_checked_by' => $data['quality_checked_by'] ?? $data['user_id'],
+                'quality_check_notes' => $data['quality_check_notes'] ?? null,
             ]);
 
             Log::info('Inventory exit created', [
@@ -274,6 +279,11 @@ class InventoryMovementService
                     'destination_previous_stock' => $previousDestinationStock,
                     'destination_new_stock' => $newDestinationStock,
                 ]),
+                // Quality check fields (IV-009)
+                'quality_checked' => $data['quality_checked'] ?? false,
+                'quality_checked_at' => ($data['quality_checked'] ?? false) ? now() : null,
+                'quality_checked_by' => $data['quality_checked_by'] ?? $data['user_id'],
+                'quality_check_notes' => $data['quality_check_notes'] ?? null,
             ]);
 
             Log::info('Inventory transfer created atomically', [
