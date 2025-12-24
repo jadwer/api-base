@@ -6,8 +6,7 @@ use Tests\TestCase;
 
 class BalanceSheetStoreTest extends TestCase
 {
-    /** @test */
-    public function cannot_create_balance_sheets_directly()
+    public function test_cannot_create_balance_sheets_directly()
     {
         $admin = $this->getAdminUser();
 
@@ -30,8 +29,7 @@ class BalanceSheetStoreTest extends TestCase
         $this->assertContains($response->status(), [403, 405]);
     }
 
-    /** @test */
-    public function admin_cannot_create_balance_sheet()
+    public function test_admin_cannot_create_balance_sheet()
     {
         $admin = $this->getAdminUser();
 

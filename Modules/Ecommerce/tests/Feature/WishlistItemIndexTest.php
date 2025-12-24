@@ -9,8 +9,7 @@ use Tests\TestCase;
 
 class WishlistItemIndexTest extends TestCase
 {
-    /** @test */
-    public function admin_can_list_all_wishlist_items()
+    public function test_admin_can_list_all_wishlist_items()
     {
         $admin = User::role('admin')->first();
 
@@ -40,8 +39,7 @@ class WishlistItemIndexTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function tech_user_can_list_wishlist_items()
+    public function test_tech_user_can_list_wishlist_items()
     {
         $tech = User::role('tech')->first();
 
@@ -54,8 +52,7 @@ class WishlistItemIndexTest extends TestCase
         $response->assertSuccessful();
     }
 
-    /** @test */
-    public function customer_can_list_wishlist_items()
+    public function test_customer_can_list_wishlist_items()
     {
         $customer = User::role('customer')->first();
 
@@ -68,8 +65,7 @@ class WishlistItemIndexTest extends TestCase
         $response->assertSuccessful();
     }
 
-    /** @test */
-    public function guest_cannot_list_wishlist_items()
+    public function test_guest_cannot_list_wishlist_items()
     {
         WishlistItem::factory()->count(3)->create();
 
@@ -79,8 +75,7 @@ class WishlistItemIndexTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function can_filter_wishlist_items_by_wishlist_id()
+    public function test_can_filter_wishlist_items_by_wishlist_id()
     {
         $admin = User::role('admin')->first();
 
@@ -96,8 +91,7 @@ class WishlistItemIndexTest extends TestCase
         $response->assertJsonCount(2, 'data');
     }
 
-    /** @test */
-    public function can_filter_wishlist_items_by_product_id()
+    public function test_can_filter_wishlist_items_by_product_id()
     {
         $admin = User::role('admin')->first();
 
@@ -115,8 +109,7 @@ class WishlistItemIndexTest extends TestCase
         $response->assertJsonCount(2, 'data');
     }
 
-    /** @test */
-    public function can_filter_wishlist_items_by_priority()
+    public function test_can_filter_wishlist_items_by_priority()
     {
         $admin = User::role('admin')->first();
 
@@ -132,8 +125,7 @@ class WishlistItemIndexTest extends TestCase
         $response->assertJsonCount(2, 'data');
     }
 
-    /** @test */
-    public function can_sort_wishlist_items_by_quantity()
+    public function test_can_sort_wishlist_items_by_quantity()
     {
         $admin = User::role('admin')->first();
 
@@ -151,8 +143,7 @@ class WishlistItemIndexTest extends TestCase
         $this->assertEquals([1, 3, 5], $quantities);
     }
 
-    /** @test */
-    public function can_sort_wishlist_items_by_priority()
+    public function test_can_sort_wishlist_items_by_priority()
     {
         $admin = User::role('admin')->first();
 
@@ -170,8 +161,7 @@ class WishlistItemIndexTest extends TestCase
         $this->assertEquals(['high', 'low', 'medium'], $priorities);
     }
 
-    /** @test */
-    public function can_include_wishlist_relationship()
+    public function test_can_include_wishlist_relationship()
     {
         $admin = User::role('admin')->first();
 
@@ -194,8 +184,7 @@ class WishlistItemIndexTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function can_include_product_relationship()
+    public function test_can_include_product_relationship()
     {
         $admin = User::role('admin')->first();
 

@@ -7,8 +7,7 @@ use Tests\TestCase;
 class PurchaseBySupplierReportIndexTest extends TestCase
 {
 
-    /** @test */
-    public function admin_can_fetch_purchase_by_supplier_reports()
+    public function test_admin_can_fetch_purchase_by_supplier_reports()
     {
         $admin = $this->getAdminUser();
 
@@ -36,8 +35,7 @@ class PurchaseBySupplierReportIndexTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function tech_user_can_fetch_purchase_by_supplier_reports()
+    public function test_tech_user_can_fetch_purchase_by_supplier_reports()
     {
         $tech = $this->getTechUser();
 
@@ -49,8 +47,7 @@ class PurchaseBySupplierReportIndexTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
-    public function customer_cannot_fetch_purchase_by_supplier_reports()
+    public function test_customer_cannot_fetch_purchase_by_supplier_reports()
     {
         $customer = $this->getCustomerUser();
 
@@ -62,8 +59,7 @@ class PurchaseBySupplierReportIndexTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function guest_cannot_fetch_purchase_by_supplier_reports()
+    public function test_guest_cannot_fetch_purchase_by_supplier_reports()
     {
         $response = $this->jsonApi()
             ->expects('purchase-by-supplier-reports')
@@ -72,8 +68,7 @@ class PurchaseBySupplierReportIndexTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function can_filter_purchase_by_supplier_report_by_date()
+    public function test_can_filter_purchase_by_supplier_report_by_date()
     {
         $admin = $this->getAdminUser();
 
@@ -88,8 +83,7 @@ class PurchaseBySupplierReportIndexTest extends TestCase
         $response->assertJsonPath('data.0.attributes.endDate', '2025-10-30');
     }
 
-    /** @test */
-    public function purchase_by_supplier_report_includes_all_sections()
+    public function test_purchase_by_supplier_report_includes_all_sections()
     {
         $admin = $this->getAdminUser();
 
@@ -108,8 +102,7 @@ class PurchaseBySupplierReportIndexTest extends TestCase
         $this->assertIsArray($data['summary']);
     }
 
-    /** @test */
-    public function purchase_by_supplier_report_includes_summary()
+    public function test_purchase_by_supplier_report_includes_summary()
     {
         $admin = $this->getAdminUser();
 

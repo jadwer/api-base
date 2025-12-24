@@ -8,8 +8,7 @@ use Tests\TestCase;
 
 class ProductComparisonDestroyTest extends TestCase
 {
-    /** @test */
-    public function admin_can_delete_any_comparison()
+    public function test_admin_can_delete_any_comparison()
     {
         $admin = User::role('admin')->first();
         $comparison = ProductComparison::factory()->create();
@@ -26,8 +25,7 @@ class ProductComparisonDestroyTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function customer_can_delete_their_own_comparison()
+    public function test_customer_can_delete_their_own_comparison()
     {
         $customer = User::role('customer')->first();
         $comparison = ProductComparison::factory()->create(['user_id' => $customer->id]);
@@ -44,8 +42,7 @@ class ProductComparisonDestroyTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function customer_cannot_delete_other_users_comparison()
+    public function test_customer_cannot_delete_other_users_comparison()
     {
         $customer = User::role('customer')->first();
         $otherUser = User::factory()->create();
@@ -63,8 +60,7 @@ class ProductComparisonDestroyTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function tech_user_cannot_delete_comparison()
+    public function test_tech_user_cannot_delete_comparison()
     {
         $tech = User::role('tech')->first();
         $comparison = ProductComparison::factory()->create();
@@ -81,8 +77,7 @@ class ProductComparisonDestroyTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function guest_cannot_delete_comparison()
+    public function test_guest_cannot_delete_comparison()
     {
         $comparison = ProductComparison::factory()->create();
 
@@ -97,8 +92,7 @@ class ProductComparisonDestroyTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function returns_404_for_non_existent_comparison()
+    public function test_returns_404_for_non_existent_comparison()
     {
         $admin = User::role('admin')->first();
 
@@ -110,8 +104,7 @@ class ProductComparisonDestroyTest extends TestCase
         $response->assertStatus(404);
     }
 
-    /** @test */
-    public function deleting_comparison_cascades_to_items()
+    public function test_deleting_comparison_cascades_to_items()
     {
         $admin = User::role('admin')->first();
         $comparison = ProductComparison::factory()->hasItems(3)->create();
@@ -128,8 +121,7 @@ class ProductComparisonDestroyTest extends TestCase
         $this->assertDatabaseCount('product_comparison_items', 0);
     }
 
-    /** @test */
-    public function customer_can_delete_public_comparison_they_own()
+    public function test_customer_can_delete_public_comparison_they_own()
     {
         $customer = User::role('customer')->first();
         $comparison = ProductComparison::factory()->public()->create(['user_id' => $customer->id]);
@@ -146,8 +138,7 @@ class ProductComparisonDestroyTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function customer_cannot_delete_public_comparison_from_others()
+    public function test_customer_cannot_delete_public_comparison_from_others()
     {
         $customer = User::role('customer')->first();
         $otherUser = User::factory()->create();

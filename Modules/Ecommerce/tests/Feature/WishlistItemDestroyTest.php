@@ -9,8 +9,7 @@ use Tests\TestCase;
 
 class WishlistItemDestroyTest extends TestCase
 {
-    /** @test */
-    public function admin_can_delete_any_wishlist_item()
+    public function test_admin_can_delete_any_wishlist_item()
     {
         $admin = User::role('admin')->first();
 
@@ -28,8 +27,7 @@ class WishlistItemDestroyTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function customer_can_delete_item_from_their_wishlist()
+    public function test_customer_can_delete_item_from_their_wishlist()
     {
         $customer = User::role('customer')->first();
 
@@ -48,8 +46,7 @@ class WishlistItemDestroyTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function customer_cannot_delete_item_from_other_users_wishlist()
+    public function test_customer_cannot_delete_item_from_other_users_wishlist()
     {
         $customer = User::role('customer')->first();
 
@@ -69,8 +66,7 @@ class WishlistItemDestroyTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function tech_user_cannot_delete_wishlist_item()
+    public function test_tech_user_cannot_delete_wishlist_item()
     {
         $tech = User::role('tech')->first();
 
@@ -88,8 +84,7 @@ class WishlistItemDestroyTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function guest_cannot_delete_wishlist_item()
+    public function test_guest_cannot_delete_wishlist_item()
     {
         $item = WishlistItem::factory()->create();
 
@@ -104,8 +99,7 @@ class WishlistItemDestroyTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function returns_404_for_non_existent_wishlist_item()
+    public function test_returns_404_for_non_existent_wishlist_item()
     {
         $admin = User::role('admin')->first();
 
@@ -117,8 +111,7 @@ class WishlistItemDestroyTest extends TestCase
         $response->assertStatus(404);
     }
 
-    /** @test */
-    public function can_delete_high_priority_item()
+    public function test_can_delete_high_priority_item()
     {
         $customer = User::role('customer')->first();
 
@@ -137,8 +130,7 @@ class WishlistItemDestroyTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function can_delete_item_with_notes()
+    public function test_can_delete_item_with_notes()
     {
         $customer = User::role('customer')->first();
 
@@ -157,8 +149,7 @@ class WishlistItemDestroyTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function deleting_item_does_not_delete_product()
+    public function test_deleting_item_does_not_delete_product()
     {
         $customer = User::role('customer')->first();
 
@@ -179,8 +170,7 @@ class WishlistItemDestroyTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function deleting_item_does_not_delete_wishlist()
+    public function test_deleting_item_does_not_delete_wishlist()
     {
         $customer = User::role('customer')->first();
 

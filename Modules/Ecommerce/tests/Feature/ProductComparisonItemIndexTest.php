@@ -9,8 +9,7 @@ use Tests\TestCase;
 
 class ProductComparisonItemIndexTest extends TestCase
 {
-    /** @test */
-    public function admin_can_list_all_comparison_items()
+    public function test_admin_can_list_all_comparison_items()
     {
         $admin = User::role('admin')->first();
 
@@ -38,8 +37,7 @@ class ProductComparisonItemIndexTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function tech_user_can_list_comparison_items()
+    public function test_tech_user_can_list_comparison_items()
     {
         $tech = User::role('tech')->first();
 
@@ -52,8 +50,7 @@ class ProductComparisonItemIndexTest extends TestCase
         $response->assertSuccessful();
     }
 
-    /** @test */
-    public function customer_can_list_items_from_accessible_comparisons()
+    public function test_customer_can_list_items_from_accessible_comparisons()
     {
         $customer = User::role('customer')->first();
 
@@ -76,8 +73,7 @@ class ProductComparisonItemIndexTest extends TestCase
         $response->assertSuccessful();
     }
 
-    /** @test */
-    public function guest_cannot_list_comparison_items()
+    public function test_guest_cannot_list_comparison_items()
     {
         ProductComparisonItem::factory()->count(3)->create();
 
@@ -87,8 +83,7 @@ class ProductComparisonItemIndexTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function can_filter_items_by_comparison_id()
+    public function test_can_filter_items_by_comparison_id()
     {
         $admin = User::role('admin')->first();
         $comparison1 = ProductComparison::factory()->create();
@@ -105,8 +100,7 @@ class ProductComparisonItemIndexTest extends TestCase
         $response->assertJsonCount(2, 'data');
     }
 
-    /** @test */
-    public function can_sort_items_by_position()
+    public function test_can_sort_items_by_position()
     {
         $admin = User::role('admin')->first();
         $comparison = ProductComparison::factory()->create();
@@ -125,8 +119,7 @@ class ProductComparisonItemIndexTest extends TestCase
         $this->assertEquals([0, 1, 2], $positions);
     }
 
-    /** @test */
-    public function can_include_comparison_relationship()
+    public function test_can_include_comparison_relationship()
     {
         $admin = User::role('admin')->first();
 
@@ -149,8 +142,7 @@ class ProductComparisonItemIndexTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function can_include_product_relationship()
+    public function test_can_include_product_relationship()
     {
         $admin = User::role('admin')->first();
 
@@ -173,8 +165,7 @@ class ProductComparisonItemIndexTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function can_include_multiple_relationships()
+    public function test_can_include_multiple_relationships()
     {
         $admin = User::role('admin')->first();
 

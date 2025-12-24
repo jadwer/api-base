@@ -7,8 +7,7 @@ use Tests\TestCase;
 class CashFlowDestroyTest extends TestCase
 {
 
-    /** @test */
-    public function cannot_delete_balance_sheets()
+    public function test_cannot_delete_balance_sheets()
     {
         $admin = $this->getAdminUser();
 
@@ -22,8 +21,7 @@ class CashFlowDestroyTest extends TestCase
         $this->assertContains($response->status(), [403, 405]);
     }
 
-    /** @test */
-    public function admin_cannot_delete_balance_sheet()
+    public function test_admin_cannot_delete_balance_sheet()
     {
         $admin = $this->getAdminUser();
 

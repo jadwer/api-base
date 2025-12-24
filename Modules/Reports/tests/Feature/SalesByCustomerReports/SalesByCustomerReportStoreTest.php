@@ -7,8 +7,7 @@ use Tests\TestCase;
 class SalesByCustomerReportStoreTest extends TestCase
 {
 
-    /** @test */
-    public function cannot_create_sales_by_customer_reports_directly()
+    public function test_cannot_create_sales_by_customer_reports_directly()
     {
         $admin = $this->getAdminUser();
 
@@ -31,8 +30,7 @@ class SalesByCustomerReportStoreTest extends TestCase
         $this->assertContains($response->status(), [403, 405]);
     }
 
-    /** @test */
-    public function admin_cannot_create_balance_sheet()
+    public function test_admin_cannot_create_balance_sheet()
     {
         $admin = $this->getAdminUser();
 

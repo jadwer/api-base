@@ -9,8 +9,7 @@ use Tests\TestCase;
 
 class ProductComparisonItemStoreTest extends TestCase
 {
-    /** @test */
-    public function admin_can_create_comparison_item()
+    public function test_admin_can_create_comparison_item()
     {
         $admin = User::role('admin')->first();
         $comparison = ProductComparison::factory()->create();
@@ -62,8 +61,7 @@ class ProductComparisonItemStoreTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function customer_can_add_item_to_their_own_comparison()
+    public function test_customer_can_add_item_to_their_own_comparison()
     {
         $customer = User::role('customer')->first();
         $comparison = ProductComparison::factory()->create(['user_id' => $customer->id]);
@@ -99,8 +97,7 @@ class ProductComparisonItemStoreTest extends TestCase
         $response->assertCreated();
     }
 
-    /** @test */
-    public function customer_cannot_add_item_to_other_users_comparison()
+    public function test_customer_cannot_add_item_to_other_users_comparison()
     {
         $customer = User::role('customer')->first();
         $otherUser = User::factory()->create();
@@ -137,8 +134,7 @@ class ProductComparisonItemStoreTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function tech_user_cannot_create_comparison_item()
+    public function test_tech_user_cannot_create_comparison_item()
     {
         $tech = User::role('tech')->first();
         $comparison = ProductComparison::factory()->create();
@@ -174,8 +170,7 @@ class ProductComparisonItemStoreTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function guest_cannot_create_comparison_item()
+    public function test_guest_cannot_create_comparison_item()
     {
         $comparison = ProductComparison::factory()->create();
         $product = Product::factory()->create();
@@ -209,8 +204,7 @@ class ProductComparisonItemStoreTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function comparison_relationship_is_required()
+    public function test_comparison_relationship_is_required()
     {
         $admin = User::role('admin')->first();
         $product = Product::factory()->create();
@@ -240,8 +234,7 @@ class ProductComparisonItemStoreTest extends TestCase
         $response->assertJsonValidationErrors(['comparison']);
     }
 
-    /** @test */
-    public function product_relationship_is_required()
+    public function test_product_relationship_is_required()
     {
         $admin = User::role('admin')->first();
         $comparison = ProductComparison::factory()->create();
@@ -271,8 +264,7 @@ class ProductComparisonItemStoreTest extends TestCase
         $response->assertJsonValidationErrors(['product']);
     }
 
-    /** @test */
-    public function position_defaults_to_zero()
+    public function test_position_defaults_to_zero()
     {
         $admin = User::role('admin')->first();
         $comparison = ProductComparison::factory()->create();
@@ -312,8 +304,7 @@ class ProductComparisonItemStoreTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function position_must_be_integer()
+    public function test_position_must_be_integer()
     {
         $admin = User::role('admin')->first();
         $comparison = ProductComparison::factory()->create();
@@ -350,8 +341,7 @@ class ProductComparisonItemStoreTest extends TestCase
         $response->assertJsonValidationErrors(['position']);
     }
 
-    /** @test */
-    public function position_cannot_be_negative()
+    public function test_position_cannot_be_negative()
     {
         $admin = User::role('admin')->first();
         $comparison = ProductComparison::factory()->create();

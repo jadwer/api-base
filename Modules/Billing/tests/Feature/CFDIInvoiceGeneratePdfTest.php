@@ -36,13 +36,13 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
         $response->assertSuccessful()
             ->assertJson([
                 'message' => 'PDF CFDI generado correctamente',
-                'invoiceId' => $invoice->id,
+                'invoice_id' => $invoice->id,
             ])
             ->assertJsonStructure([
                 'message',
                 'pdf_path',
                 'pdf_url',
-                'invoiceId',
+                'invoice_id',
             ]);
 
         // Verify PDF path was stored in database
@@ -126,40 +126,40 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
         $this->assertStringContainsString('DRAFT', $invoice->pdf_path);
     }
 
-    public function test_tech_cannot_generate_pdf()
+    public function test_tech_can_generate_pdf()
     {
+        // Tech has billing.cfdi-invoices.generate-pdf permission per PermissionsSeeder
         $user = $this->getTechUser();
 
         $settings = CompanySetting::factory()->create(['is_active' => true]);
-        $invoice = CFDIInvoice::factory()->create([
-            'company_setting_id' => $settings->id,
-        ]);
+        $invoice = CFDIInvoice::factory()
+            ->has(CFDIItem::factory()->count(1), 'items')
+            ->create([
+                'company_setting_id' => $settings->id,
+            ]);
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
             ->postJson('/api/v1/cfdi-invoices/' . $invoice->id . '/generate-pdf');
 
-        $response->assertStatus(403)
-            ->assertJson([
-                'message' => 'No tiene permisos para generar PDF CFDI',
-            ]);
+        $response->assertSuccessful();
     }
 
-    public function test_customer_cannot_generate_pdf()
+    public function test_customer_can_generate_pdf()
     {
+        // Customer has billing.cfdi-invoices.generate-pdf permission per PermissionsSeeder
         $user = $this->getCustomerUser();
 
         $settings = CompanySetting::factory()->create(['is_active' => true]);
-        $invoice = CFDIInvoice::factory()->create([
-            'company_setting_id' => $settings->id,
-        ]);
+        $invoice = CFDIInvoice::factory()
+            ->has(CFDIItem::factory()->count(1), 'items')
+            ->create([
+                'company_setting_id' => $settings->id,
+            ]);
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
             ->postJson('/api/v1/cfdi-invoices/' . $invoice->id . '/generate-pdf');
 
-        $response->assertStatus(403)
-            ->assertJson([
-                'message' => 'No tiene permisos para generar PDF CFDI',
-            ]);
+        $response->assertSuccessful();
     }
 
     public function test_guest_cannot_generate_pdf()

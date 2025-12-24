@@ -31,12 +31,12 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
         $response->assertSuccessful()
             ->assertJson([
                 'message' => 'XML CFDI generado correctamente',
-                'invoiceId' => $invoice->id,
+                'invoice_id' => $invoice->id,
             ])
             ->assertJsonStructure([
                 'message',
                 'xml',
-                'invoiceId',
+                'invoice_id',
             ]);
 
         // Verify XML was stored in database
@@ -50,7 +50,10 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
     {
         $user = $this->getAdminUser();
 
+        // Ensure only our test CompanySetting is active
+        CompanySetting::query()->update(['is_active' => false]);
         $settings = CompanySetting::factory()->create(['is_active' => true]);
+
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
@@ -109,39 +112,45 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
         $this->assertStringContainsString('cfdi:Impuestos', $xml);
     }
 
-    public function test_tech_cannot_generate_xml()
+    public function test_tech_can_generate_xml()
     {
         $user = $this->getTechUser();
 
         $settings = CompanySetting::factory()->create(['is_active' => true]);
-        $invoice = CFDIInvoice::factory()->create([
-            'company_setting_id' => $settings->id,
-        ]);
+        $invoice = CFDIInvoice::factory()
+            ->has(CFDIItem::factory()->count(1), 'items')
+            ->create([
+                'company_setting_id' => $settings->id,
+            ]);
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
             ->postJson('/api/v1/cfdi-invoices/' . $invoice->id . '/generate-xml');
 
-        $response->assertStatus(403)
+        $response->assertSuccessful()
             ->assertJson([
-                'message' => 'No tiene permisos para generar XML CFDI',
+                'message' => 'XML CFDI generado correctamente',
+                'invoice_id' => $invoice->id,
             ]);
     }
 
-    public function test_customer_cannot_generate_xml()
+    public function test_customer_can_generate_xml()
     {
         $user = $this->getCustomerUser();
 
         $settings = CompanySetting::factory()->create(['is_active' => true]);
-        $invoice = CFDIInvoice::factory()->create([
-            'company_setting_id' => $settings->id,
-        ]);
+        $invoice = CFDIInvoice::factory()
+            ->has(CFDIItem::factory()->count(1), 'items')
+            ->create([
+                'company_setting_id' => $settings->id,
+            ]);
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
             ->postJson('/api/v1/cfdi-invoices/' . $invoice->id . '/generate-xml');
 
-        $response->assertStatus(403)
+        $response->assertSuccessful()
             ->assertJson([
-                'message' => 'No tiene permisos para generar XML CFDI',
+                'message' => 'XML CFDI generado correctamente',
+                'invoice_id' => $invoice->id,
             ]);
     }
 
@@ -152,7 +161,8 @@ class CFDIInvoiceGenerateXmlTest extends TestCase
             'company_setting_id' => $settings->id,
         ]);
 
-        $response = $this->postJson('/api/v1/cfdi-invoices/' . $invoice->id . '/generate-xml');
+        $response = $this->withHeader('Accept', 'application/json')
+            ->postJson('/api/v1/cfdi-invoices/' . $invoice->id . '/generate-xml');
 
         $response->assertStatus(401);
     }

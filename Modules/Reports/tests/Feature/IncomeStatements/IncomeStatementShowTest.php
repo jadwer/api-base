@@ -7,8 +7,7 @@ use Tests\TestCase;
 class IncomeStatementShowTest extends TestCase
 {
 
-    /** @test */
-    public function admin_can_show_income_statement()
+    public function test_admin_can_show_income_statement()
     {
         $admin = $this->getAdminUser();
 
@@ -37,8 +36,7 @@ class IncomeStatementShowTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function tech_user_can_show_income_statement()
+    public function test_tech_user_can_show_income_statement()
     {
         $tech = $this->getTechUser();
 
@@ -50,8 +48,7 @@ class IncomeStatementShowTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
-    public function customer_cannot_show_income_statement()
+    public function test_customer_cannot_show_income_statement()
     {
         $customer = $this->getCustomerUser();
 
@@ -63,8 +60,7 @@ class IncomeStatementShowTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function guest_cannot_show_income_statement()
+    public function test_guest_cannot_show_income_statement()
     {
         $response = $this->jsonApi()
             ->expects('income-statements')
@@ -73,8 +69,7 @@ class IncomeStatementShowTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function can_show_income_statement_with_date_filter()
+    public function test_can_show_income_statement_with_date_filter()
     {
         $admin = $this->getAdminUser();
 
@@ -88,8 +83,7 @@ class IncomeStatementShowTest extends TestCase
         $response->assertJsonPath('data.attributes.startDate', '2025-10-01');
     }
 
-    /** @test */
-    public function income_statement_show_includes_all_required_fields()
+    public function test_income_statement_show_includes_all_required_fields()
     {
         $admin = $this->getAdminUser();
 

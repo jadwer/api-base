@@ -7,8 +7,7 @@ use Tests\TestCase;
 class ARAgingReportStoreTest extends TestCase
 {
 
-    /** @test */
-    public function cannot_create_ar_aging_reports_directly()
+    public function test_cannot_create_ar_aging_reports_directly()
     {
         $admin = $this->getAdminUser();
 
@@ -31,8 +30,7 @@ class ARAgingReportStoreTest extends TestCase
         $this->assertContains($response->status(), [403, 405]);
     }
 
-    /** @test */
-    public function admin_cannot_create_balance_sheet()
+    public function test_admin_cannot_create_balance_sheet()
     {
         $admin = $this->getAdminUser();
 

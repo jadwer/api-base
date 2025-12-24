@@ -60,12 +60,11 @@ class CFDIStampingTest extends TestCase
 
         // Create contact
         $this->contact = Contact::factory()->create([
-            'taxId' => 'XEXX010101000',
+            'tax_id' => 'XEXX010101000',
         ]);
     }
 
-    /** @test */
-    public function admin_can_stamp_cfdi_invoice_when_pac_enabled()
+    public function test_admin_can_stamp_cfdi_invoice_when_pac_enabled()
     {
         // Skip if PAC is not enabled
         if (!config('billing.sw_pac.enabled')) {
@@ -78,7 +77,7 @@ class CFDIStampingTest extends TestCase
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $this->companySetting->id,
             'contact_id' => $this->contact->id,
-            'receptorRfc' => $this->contact->taxId,
+            'receptor_rfc' => $this->contact->tax_id,
             'status' => 'draft',
             'uuid' => null,
         ]);
@@ -94,8 +93,7 @@ class CFDIStampingTest extends TestCase
         );
     }
 
-    /** @test */
-    public function admin_cannot_stamp_already_stamped_invoice()
+    public function test_admin_cannot_stamp_already_stamped_invoice()
     {
         Sanctum::actingAs($this->adminUser);
 
@@ -103,7 +101,7 @@ class CFDIStampingTest extends TestCase
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $this->companySetting->id,
             'contact_id' => $this->contact->id,
-            'receptorRfc' => $this->contact->taxId,
+            'receptor_rfc' => $this->contact->tax_id,
             'status' => 'valid',
             'uuid' => 'A1B2C3D4-E5F6-7890-ABCD-EF1234567890',
             'fecha_timbrado' => now(),
@@ -117,8 +115,7 @@ class CFDIStampingTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function admin_can_cancel_stamped_invoice_when_pac_enabled()
+    public function test_admin_can_cancel_stamped_invoice_when_pac_enabled()
     {
         // Skip if PAC is not enabled
         if (!config('billing.sw_pac.enabled')) {
@@ -131,7 +128,7 @@ class CFDIStampingTest extends TestCase
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $this->companySetting->id,
             'contact_id' => $this->contact->id,
-            'receptorRfc' => $this->contact->taxId,
+            'receptor_rfc' => $this->contact->tax_id,
             'status' => 'valid',
             'uuid' => 'A1B2C3D4-E5F6-7890-ABCD-EF1234567890',
             'fecha_timbrado' => now(),
@@ -148,8 +145,7 @@ class CFDIStampingTest extends TestCase
         );
     }
 
-    /** @test */
-    public function admin_cannot_cancel_draft_invoice()
+    public function test_admin_cannot_cancel_draft_invoice()
     {
         Sanctum::actingAs($this->adminUser);
 
@@ -157,7 +153,7 @@ class CFDIStampingTest extends TestCase
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $this->companySetting->id,
             'contact_id' => $this->contact->id,
-            'receptorRfc' => $this->contact->taxId,
+            'receptor_rfc' => $this->contact->tax_id,
             'status' => 'draft',
             'uuid' => null,
         ]);
@@ -172,8 +168,7 @@ class CFDIStampingTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function cancellation_with_motive_01_requires_uuid_sustitucion()
+    public function test_cancellation_with_motive_01_requires_uuid_sustitucion()
     {
         Sanctum::actingAs($this->adminUser);
 
@@ -181,7 +176,7 @@ class CFDIStampingTest extends TestCase
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $this->companySetting->id,
             'contact_id' => $this->contact->id,
-            'receptorRfc' => $this->contact->taxId,
+            'receptor_rfc' => $this->contact->tax_id,
             'status' => 'valid',
             'uuid' => 'A1B2C3D4-E5F6-7890-ABCD-EF1234567890',
             'fecha_timbrado' => now(),
@@ -197,8 +192,7 @@ class CFDIStampingTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function user_without_permission_cannot_stamp_invoice()
+    public function test_user_without_permission_cannot_stamp_invoice()
     {
         // Use existing tech user from seeders
         $techUser = User::where('email', 'tech@example.com')->first();
@@ -208,7 +202,7 @@ class CFDIStampingTest extends TestCase
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $this->companySetting->id,
             'contact_id' => $this->contact->id,
-            'receptorRfc' => $this->contact->taxId,
+            'receptor_rfc' => $this->contact->tax_id,
             'status' => 'draft',
         ]);
 
@@ -217,8 +211,7 @@ class CFDIStampingTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function webhook_can_update_invoice_status_on_stamp()
+    public function test_webhook_can_update_invoice_status_on_stamp()
     {
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $this->companySetting->id,
@@ -246,8 +239,7 @@ class CFDIStampingTest extends TestCase
         $this->assertNotNull($invoice->fecha_timbrado);
     }
 
-    /** @test */
-    public function webhook_can_update_invoice_status_on_cancel()
+    public function test_webhook_can_update_invoice_status_on_cancel()
     {
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $this->companySetting->id,

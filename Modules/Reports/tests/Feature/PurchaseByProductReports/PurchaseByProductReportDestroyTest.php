@@ -7,8 +7,7 @@ use Tests\TestCase;
 class PurchaseByProductReportDestroyTest extends TestCase
 {
 
-    /** @test */
-    public function cannot_delete_purchase_by_product_reports()
+    public function test_cannot_delete_purchase_by_product_reports()
     {
         $admin = $this->getAdminUser();
 
@@ -22,8 +21,7 @@ class PurchaseByProductReportDestroyTest extends TestCase
         $this->assertContains($response->status(), [403, 405]);
     }
 
-    /** @test */
-    public function admin_cannot_delete_balance_sheet()
+    public function test_admin_cannot_delete_balance_sheet()
     {
         $admin = $this->getAdminUser();
 

@@ -7,8 +7,7 @@ use Tests\TestCase;
 class IncomeStatementIndexTest extends TestCase
 {
 
-    /** @test */
-    public function admin_can_fetch_income_statements()
+    public function test_admin_can_fetch_income_statements()
     {
         $admin = $this->getAdminUser();
 
@@ -39,8 +38,7 @@ class IncomeStatementIndexTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function tech_user_can_fetch_income_statements()
+    public function test_tech_user_can_fetch_income_statements()
     {
         $tech = $this->getTechUser();
 
@@ -52,8 +50,7 @@ class IncomeStatementIndexTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
-    public function customer_cannot_fetch_income_statements()
+    public function test_customer_cannot_fetch_income_statements()
     {
         $customer = $this->getCustomerUser();
 
@@ -65,8 +62,7 @@ class IncomeStatementIndexTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function guest_cannot_fetch_income_statements()
+    public function test_guest_cannot_fetch_income_statements()
     {
         $response = $this->jsonApi()
             ->expects('income-statements')
@@ -75,8 +71,7 @@ class IncomeStatementIndexTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function can_filter_income_statement_by_date()
+    public function test_can_filter_income_statement_by_date()
     {
         $admin = $this->getAdminUser();
 
@@ -90,8 +85,7 @@ class IncomeStatementIndexTest extends TestCase
         $response->assertJsonPath('data.0.attributes.startDate', '2025-10-01');
     }
 
-    /** @test */
-    public function income_statement_includes_all_sections()
+    public function test_income_statement_includes_all_sections()
     {
         $admin = $this->getAdminUser();
 
@@ -111,8 +105,7 @@ class IncomeStatementIndexTest extends TestCase
         $this->assertIsArray($data['expenses']);
     }
 
-    /** @test */
-    public function income_statement_includes_totals()
+    public function test_income_statement_includes_totals()
     {
         $admin = $this->getAdminUser();
 

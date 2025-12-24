@@ -7,8 +7,7 @@ use Tests\TestCase;
 class BalanceSheetIndexTest extends TestCase
 {
 
-    /** @test */
-    public function admin_can_fetch_balance_sheets()
+    public function test_admin_can_fetch_balance_sheets()
     {
         $admin = $this->getAdminUser();
 
@@ -40,8 +39,7 @@ class BalanceSheetIndexTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function tech_user_can_fetch_balance_sheets()
+    public function test_tech_user_can_fetch_balance_sheets()
     {
         $tech = $this->getTechUser();
 
@@ -53,8 +51,7 @@ class BalanceSheetIndexTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
-    public function customer_cannot_fetch_balance_sheets()
+    public function test_customer_cannot_fetch_balance_sheets()
     {
         $customer = $this->getCustomerUser();
 
@@ -66,8 +63,7 @@ class BalanceSheetIndexTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function guest_cannot_fetch_balance_sheets()
+    public function test_guest_cannot_fetch_balance_sheets()
     {
         $response = $this->jsonApi()
             ->expects('balance-sheets')
@@ -76,8 +72,7 @@ class BalanceSheetIndexTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function can_filter_balance_sheet_by_date()
+    public function test_can_filter_balance_sheet_by_date()
     {
         $admin = $this->getAdminUser();
 
@@ -91,8 +86,7 @@ class BalanceSheetIndexTest extends TestCase
         $response->assertJsonPath('data.0.attributes.asOfDate', '2025-10-30');
     }
 
-    /** @test */
-    public function balance_sheet_includes_all_sections()
+    public function test_balance_sheet_includes_all_sections()
     {
         $admin = $this->getAdminUser();
 
@@ -113,8 +107,7 @@ class BalanceSheetIndexTest extends TestCase
         $this->assertIsArray($data['equity']);
     }
 
-    /** @test */
-    public function balance_sheet_includes_totals()
+    public function test_balance_sheet_includes_totals()
     {
         $admin = $this->getAdminUser();
 

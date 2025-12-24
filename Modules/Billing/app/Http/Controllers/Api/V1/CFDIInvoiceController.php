@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Illuminate\Support\Facades\Gate;
 
 class CFDIInvoiceController
@@ -117,9 +118,9 @@ class CFDIInvoiceController
      *
      * @param CFDIInvoice $cfdiInvoice
      * @param CFDIPDFGenerator $pdfGenerator
-     * @return StreamedResponse
+     * @return BinaryFileResponse
      */
-    public function previewPdf(CFDIInvoice $cfdiInvoice, CFDIPDFGenerator $pdfGenerator): StreamedResponse
+    public function previewPdf(CFDIInvoice $cfdiInvoice, CFDIPDFGenerator $pdfGenerator): BinaryFileResponse
     {
         // Check permission
         if (Gate::denies('billing.cfdi-invoices.preview-pdf')) {

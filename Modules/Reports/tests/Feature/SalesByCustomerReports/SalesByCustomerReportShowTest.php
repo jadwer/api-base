@@ -7,8 +7,7 @@ use Tests\TestCase;
 class SalesByCustomerReportShowTest extends TestCase
 {
 
-    /** @test */
-    public function admin_can_show_sales_by_customer_report()
+    public function test_admin_can_show_sales_by_customer_report()
     {
         $admin = $this->getAdminUser();
 
@@ -34,8 +33,7 @@ class SalesByCustomerReportShowTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function tech_user_can_show_sales_by_customer_report()
+    public function test_tech_user_can_show_sales_by_customer_report()
     {
         $tech = $this->getTechUser();
 
@@ -47,8 +45,7 @@ class SalesByCustomerReportShowTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
-    public function customer_cannot_show_sales_by_customer_report()
+    public function test_customer_cannot_show_sales_by_customer_report()
     {
         $customer = $this->getCustomerUser();
 
@@ -60,8 +57,7 @@ class SalesByCustomerReportShowTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function guest_cannot_show_sales_by_customer_report()
+    public function test_guest_cannot_show_sales_by_customer_report()
     {
         $response = $this->jsonApi()
             ->expects('sales-by-customer-reports')
@@ -70,8 +66,7 @@ class SalesByCustomerReportShowTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function can_show_sales_by_customer_report_with_date_filter()
+    public function test_can_show_sales_by_customer_report_with_date_filter()
     {
         $admin = $this->getAdminUser();
 
@@ -86,8 +81,7 @@ class SalesByCustomerReportShowTest extends TestCase
         $response->assertJsonPath('data.attributes.endDate', '2025-10-30');
     }
 
-    /** @test */
-    public function sales_by_customer_report_show_includes_all_required_fields()
+    public function test_sales_by_customer_report_show_includes_all_required_fields()
     {
         $admin = $this->getAdminUser();
 

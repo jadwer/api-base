@@ -16,45 +16,66 @@ class CFDIInvoiceIndexTest extends TestCase
     {
         $user = $this->getAdminUser();
 
-        CFDIInvoice::factory()->count(3)->create();
+        $invoices = CFDIInvoice::factory()->count(3)->create();
 
         $response = $this->jsonApi()
             ->expects('cfdi-invoices')
             ->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
             ->get('/api/v1/cfdi-invoices');
 
-        $response->assertSuccessful()
-            ->assertJsonCount(3, 'data');
+        $response->assertSuccessful();
+
+        // Verify our created invoices are in the response
+        $data = $response->json('data');
+        $this->assertGreaterThanOrEqual(3, count($data));
+        $ids = collect($data)->pluck('id')->toArray();
+        foreach ($invoices as $invoice) {
+            $this->assertContains((string)$invoice->id, $ids);
+        }
     }
 
     public function test_tech_can_list_cfdi_invoices()
     {
         $user = $this->getTechUser();
 
-        CFDIInvoice::factory()->count(2)->create();
+        $invoices = CFDIInvoice::factory()->count(2)->create();
 
         $response = $this->jsonApi()
             ->expects('cfdi-invoices')
             ->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
             ->get('/api/v1/cfdi-invoices');
 
-        $response->assertSuccessful()
-            ->assertJsonCount(2, 'data');
+        $response->assertSuccessful();
+
+        // Verify our created invoices are in the response
+        $data = $response->json('data');
+        $this->assertGreaterThanOrEqual(2, count($data));
+        $ids = collect($data)->pluck('id')->toArray();
+        foreach ($invoices as $invoice) {
+            $this->assertContains((string)$invoice->id, $ids);
+        }
     }
 
     public function test_customer_can_list_cfdi_invoices()
     {
         $user = $this->getCustomerUser();
 
-        CFDIInvoice::factory()->count(2)->create();
+        $invoices = CFDIInvoice::factory()->count(2)->create();
 
         $response = $this->jsonApi()
             ->expects('cfdi-invoices')
             ->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
             ->get('/api/v1/cfdi-invoices');
 
-        $response->assertSuccessful()
-            ->assertJsonCount(2, 'data');
+        $response->assertSuccessful();
+
+        // Verify our created invoices are in the response
+        $data = $response->json('data');
+        $this->assertGreaterThanOrEqual(2, count($data));
+        $ids = collect($data)->pluck('id')->toArray();
+        foreach ($invoices as $invoice) {
+            $this->assertContains((string)$invoice->id, $ids);
+        }
     }
 
     public function test_guest_cannot_list_cfdi_invoices()
@@ -72,17 +93,23 @@ class CFDIInvoiceIndexTest extends TestCase
     {
         $user = $this->getAdminUser();
 
-        $invoice1 = CFDIInvoice::factory()->create(['series' => 'F']);
-        $invoice2 = CFDIInvoice::factory()->create(['series' => 'A']);
+        // Use unique series values unlikely to exist
+        $uniqueSeries = 'X' . substr(md5(uniqid()), 0, 4);
+        $invoice1 = CFDIInvoice::factory()->create(['series' => $uniqueSeries]);
+        $invoice2 = CFDIInvoice::factory()->create(['series' => 'ZZZZ']);
 
         $response = $this->jsonApi()
             ->expects('cfdi-invoices')
             ->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
-            ->filter(['series' => 'F'])
+            ->filter(['series' => $uniqueSeries])
             ->get('/api/v1/cfdi-invoices');
 
-        $response->assertSuccessful()
-            ->assertJsonCount(1, 'data');
+        $response->assertSuccessful();
+
+        // Verify invoice1 is in results and invoice2 is not
+        $ids = collect($response->json('data'))->pluck('id')->toArray();
+        $this->assertContains((string)$invoice1->id, $ids);
+        $this->assertNotContains((string)$invoice2->id, $ids);
     }
 
     public function test_can_filter_by_status()
@@ -98,8 +125,12 @@ class CFDIInvoiceIndexTest extends TestCase
             ->filter(['status' => 'valid'])
             ->get('/api/v1/cfdi-invoices');
 
-        $response->assertSuccessful()
-            ->assertJsonCount(1, 'data');
+        $response->assertSuccessful();
+
+        // Verify valid invoice is included, draft is not
+        $ids = collect($response->json('data'))->pluck('id')->toArray();
+        $this->assertContains((string)$valid->id, $ids);
+        $this->assertNotContains((string)$draft->id, $ids);
     }
 
     public function test_can_filter_by_tipo_comprobante()
@@ -115,25 +146,35 @@ class CFDIInvoiceIndexTest extends TestCase
             ->filter(['tipoComprobante' => 'I'])
             ->get('/api/v1/cfdi-invoices');
 
-        $response->assertSuccessful()
-            ->assertJsonCount(1, 'data');
+        $response->assertSuccessful();
+
+        // Verify ingreso is included, egreso is not
+        $ids = collect($response->json('data'))->pluck('id')->toArray();
+        $this->assertContains((string)$ingreso->id, $ids);
+        $this->assertNotContains((string)$egreso->id, $ids);
     }
 
     public function test_can_filter_by_receptor_rfc()
     {
         $user = $this->getAdminUser();
 
-        $invoice1 = CFDIInvoice::factory()->create(['receptor_rfc' => 'XAXX010101000']);
+        // Use unique RFC values
+        $uniqueRfc = 'TEST' . substr(md5(uniqid()), 0, 8);
+        $invoice1 = CFDIInvoice::factory()->create(['receptor_rfc' => $uniqueRfc]);
         $invoice2 = CFDIInvoice::factory()->create(['receptor_rfc' => 'YAYY020202000']);
 
         $response = $this->jsonApi()
             ->expects('cfdi-invoices')
             ->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
-            ->filter(['receptorRfc' => 'XAXX010101000'])
+            ->filter(['receptorRfc' => $uniqueRfc])
             ->get('/api/v1/cfdi-invoices');
 
-        $response->assertSuccessful()
-            ->assertJsonCount(1, 'data');
+        $response->assertSuccessful();
+
+        // Verify invoice1 is included, invoice2 is not
+        $ids = collect($response->json('data'))->pluck('id')->toArray();
+        $this->assertContains((string)$invoice1->id, $ids);
+        $this->assertNotContains((string)$invoice2->id, $ids);
     }
 
     public function test_can_sort_by_fecha_emision()
@@ -149,8 +190,12 @@ class CFDIInvoiceIndexTest extends TestCase
             ->sort('fechaEmision')
             ->get('/api/v1/cfdi-invoices');
 
-        $response->assertSuccessful()
-            ->assertJsonCount(2, 'data');
+        $response->assertSuccessful();
+
+        // Verify both invoices are in the response
+        $ids = collect($response->json('data'))->pluck('id')->toArray();
+        $this->assertContains((string)$older->id, $ids);
+        $this->assertContains((string)$newer->id, $ids);
     }
 
     public function test_can_sort_by_total_descending()
@@ -166,8 +211,12 @@ class CFDIInvoiceIndexTest extends TestCase
             ->sort('-total')
             ->get('/api/v1/cfdi-invoices');
 
-        $response->assertSuccessful()
-            ->assertJsonCount(2, 'data');
+        $response->assertSuccessful();
+
+        // Verify both invoices are in the response
+        $ids = collect($response->json('data'))->pluck('id')->toArray();
+        $this->assertContains((string)$lower->id, $ids);
+        $this->assertContains((string)$higher->id, $ids);
     }
 
     public function test_includes_pagination_meta()

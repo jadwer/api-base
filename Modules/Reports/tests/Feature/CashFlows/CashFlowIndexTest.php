@@ -7,8 +7,7 @@ use Tests\TestCase;
 class CashFlowIndexTest extends TestCase
 {
 
-    /** @test */
-    public function admin_can_fetch_cash_flows()
+    public function test_admin_can_fetch_cash_flows()
     {
         $admin = $this->getAdminUser();
 
@@ -40,8 +39,7 @@ class CashFlowIndexTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function tech_user_can_fetch_cash_flows()
+    public function test_tech_user_can_fetch_cash_flows()
     {
         $tech = $this->getTechUser();
 
@@ -53,8 +51,7 @@ class CashFlowIndexTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
-    public function customer_cannot_fetch_cash_flows()
+    public function test_customer_cannot_fetch_cash_flows()
     {
         $customer = $this->getCustomerUser();
 
@@ -66,8 +63,7 @@ class CashFlowIndexTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function guest_cannot_fetch_cash_flows()
+    public function test_guest_cannot_fetch_cash_flows()
     {
         $response = $this->jsonApi()
             ->expects('cash-flows')
@@ -76,8 +72,7 @@ class CashFlowIndexTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function can_filter_cash_flow_by_date()
+    public function test_can_filter_cash_flow_by_date()
     {
         $admin = $this->getAdminUser();
 
@@ -91,8 +86,7 @@ class CashFlowIndexTest extends TestCase
         $response->assertJsonPath('data.0.attributes.startDate', '2025-10-01');
     }
 
-    /** @test */
-    public function cash_flow_includes_all_sections()
+    public function test_cash_flow_includes_all_sections()
     {
         $admin = $this->getAdminUser();
 
@@ -113,8 +107,7 @@ class CashFlowIndexTest extends TestCase
         $this->assertIsNumeric($data['financingActivities']);
     }
 
-    /** @test */
-    public function cash_flow_includes_totals()
+    public function test_cash_flow_includes_totals()
     {
         $admin = $this->getAdminUser();
 

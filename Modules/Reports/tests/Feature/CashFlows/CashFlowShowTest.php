@@ -7,8 +7,7 @@ use Tests\TestCase;
 class CashFlowShowTest extends TestCase
 {
 
-    /** @test */
-    public function admin_can_show_cash_flow()
+    public function test_admin_can_show_cash_flow()
     {
         $admin = $this->getAdminUser();
 
@@ -38,8 +37,7 @@ class CashFlowShowTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function tech_user_can_show_cash_flow()
+    public function test_tech_user_can_show_cash_flow()
     {
         $tech = $this->getTechUser();
 
@@ -51,8 +49,7 @@ class CashFlowShowTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
-    public function customer_cannot_show_cash_flow()
+    public function test_customer_cannot_show_cash_flow()
     {
         $customer = $this->getCustomerUser();
 
@@ -64,8 +61,7 @@ class CashFlowShowTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function guest_cannot_show_cash_flow()
+    public function test_guest_cannot_show_cash_flow()
     {
         $response = $this->jsonApi()
             ->expects('cash-flows')
@@ -74,8 +70,7 @@ class CashFlowShowTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function can_show_cash_flow_with_date_filter()
+    public function test_can_show_cash_flow_with_date_filter()
     {
         $admin = $this->getAdminUser();
 
@@ -89,8 +84,7 @@ class CashFlowShowTest extends TestCase
         $response->assertJsonPath('data.attributes.startDate', '2025-10-01');
     }
 
-    /** @test */
-    public function cash_flow_show_includes_all_required_fields()
+    public function test_cash_flow_show_includes_all_required_fields()
     {
         $admin = $this->getAdminUser();
 

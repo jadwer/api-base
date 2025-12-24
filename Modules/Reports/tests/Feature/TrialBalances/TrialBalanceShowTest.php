@@ -7,8 +7,7 @@ use Tests\TestCase;
 class TrialBalanceShowTest extends TestCase
 {
 
-    /** @test */
-    public function admin_can_show_trial_balance()
+    public function test_admin_can_show_trial_balance()
     {
         $admin = $this->getAdminUser();
 
@@ -35,8 +34,7 @@ class TrialBalanceShowTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function tech_user_can_show_trial_balance()
+    public function test_tech_user_can_show_trial_balance()
     {
         $tech = $this->getTechUser();
 
@@ -48,8 +46,7 @@ class TrialBalanceShowTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
-    public function customer_cannot_show_trial_balance()
+    public function test_customer_cannot_show_trial_balance()
     {
         $customer = $this->getCustomerUser();
 
@@ -61,8 +58,7 @@ class TrialBalanceShowTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function guest_cannot_show_trial_balance()
+    public function test_guest_cannot_show_trial_balance()
     {
         $response = $this->jsonApi()
             ->expects('trial-balances')
@@ -71,8 +67,7 @@ class TrialBalanceShowTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function can_show_trial_balance_with_date_filter()
+    public function test_can_show_trial_balance_with_date_filter()
     {
         $admin = $this->getAdminUser();
 
@@ -86,8 +81,7 @@ class TrialBalanceShowTest extends TestCase
         $response->assertJsonPath('data.attributes.asOfDate', '2025-10-30');
     }
 
-    /** @test */
-    public function trial_balance_show_includes_all_required_fields()
+    public function test_trial_balance_show_includes_all_required_fields()
     {
         $admin = $this->getAdminUser();
 

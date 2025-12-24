@@ -12,7 +12,7 @@ class CFDIInvoiceDownloadTest extends TestCase
 {
     // NO RefreshDatabase - violates Mandamiento #5
 
-    /** @test PDF Download Tests */
+    // === PDF Download Tests ===
 
     public function test_admin_can_download_cfdi_pdf()
     {
@@ -94,7 +94,8 @@ class CFDIInvoiceDownloadTest extends TestCase
             'company_setting_id' => $settings->id,
         ]);
 
-        $response = $this->get('/api/v1/cfdi-invoices/' . $invoice->id . '/download-pdf');
+        $response = $this->withHeader('Accept', 'application/json')
+            ->get('/api/v1/cfdi-invoices/' . $invoice->id . '/download-pdf');
 
         $response->assertStatus(401);
     }
@@ -145,7 +146,7 @@ class CFDIInvoiceDownloadTest extends TestCase
         $this->assertStringContainsString('.pdf', $contentDisposition);
     }
 
-    /** @test PDF Preview Tests */
+    // === PDF Preview Tests ===
 
     public function test_admin_can_preview_cfdi_pdf()
     {
@@ -227,12 +228,13 @@ class CFDIInvoiceDownloadTest extends TestCase
             'company_setting_id' => $settings->id,
         ]);
 
-        $response = $this->get('/api/v1/cfdi-invoices/' . $invoice->id . '/preview-pdf');
+        $response = $this->withHeader('Accept', 'application/json')
+            ->get('/api/v1/cfdi-invoices/' . $invoice->id . '/preview-pdf');
 
         $response->assertStatus(401);
     }
 
-    /** @test XML Download Tests */
+    // === XML Download Tests ===
 
     public function test_admin_can_download_cfdi_xml()
     {
@@ -315,7 +317,8 @@ class CFDIInvoiceDownloadTest extends TestCase
             'company_setting_id' => $settings->id,
         ]);
 
-        $response = $this->get('/api/v1/cfdi-invoices/' . $invoice->id . '/download-xml');
+        $response = $this->withHeader('Accept', 'application/json')
+            ->get('/api/v1/cfdi-invoices/' . $invoice->id . '/download-xml');
 
         $response->assertStatus(401);
     }

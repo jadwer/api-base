@@ -14,8 +14,7 @@ use Tests\TestCase;
 
 class ProductRecommendationEndpointsTest extends TestCase
 {
-    /** @test */
-    public function public_can_access_related_products_endpoint()
+    public function test_public_can_access_related_products_endpoint()
     {
         $category = Category::factory()->create();
 
@@ -54,8 +53,7 @@ class ProductRecommendationEndpointsTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function related_products_respects_limit_parameter()
+    public function test_related_products_respects_limit_parameter()
     {
         $category = Category::factory()->create();
 
@@ -77,8 +75,7 @@ class ProductRecommendationEndpointsTest extends TestCase
         $this->assertCount(3, $response->json('data'));
     }
 
-    /** @test */
-    public function public_can_access_frequently_bought_together_endpoint()
+    public function test_public_can_access_frequently_bought_together_endpoint()
     {
         $customer = User::factory()->create();
 
@@ -112,8 +109,7 @@ class ProductRecommendationEndpointsTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function public_can_access_trending_products_endpoint()
+    public function test_public_can_access_trending_products_endpoint()
     {
         $customer = User::factory()->create();
 
@@ -146,8 +142,7 @@ class ProductRecommendationEndpointsTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function public_can_access_popular_products_endpoint()
+    public function test_public_can_access_popular_products_endpoint()
     {
         Product::factory()->create([
             'is_active' => true,
@@ -172,8 +167,7 @@ class ProductRecommendationEndpointsTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function public_can_access_new_arrivals_endpoint()
+    public function test_public_can_access_new_arrivals_endpoint()
     {
         Product::factory()->create([
             'is_active' => true,
@@ -197,8 +191,7 @@ class ProductRecommendationEndpointsTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function authenticated_user_can_access_personalized_recommendations()
+    public function test_authenticated_user_can_access_personalized_recommendations()
     {
         $customer = User::role('customer')->first();
 
@@ -238,16 +231,14 @@ class ProductRecommendationEndpointsTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function guest_cannot_access_personalized_recommendations()
+    public function test_guest_cannot_access_personalized_recommendations()
     {
         $response = $this->getJson('/api/v1/products/recommended');
 
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function all_endpoints_respect_limit_parameter()
+    public function test_all_endpoints_respect_limit_parameter()
     {
         $category = Category::factory()->create();
         Product::factory()->count(20)->create([
@@ -274,16 +265,14 @@ class ProductRecommendationEndpointsTest extends TestCase
         $this->assertLessThanOrEqual(5, count($response->json('data')));
     }
 
-    /** @test */
-    public function returns_404_for_non_existent_product()
+    public function test_returns_404_for_non_existent_product()
     {
         $response = $this->getJson('/api/v1/products/99999/related');
 
         $response->assertStatus(404);
     }
 
-    /** @test */
-    public function all_endpoints_return_empty_array_when_no_results()
+    public function test_all_endpoints_return_empty_array_when_no_results()
     {
         $product = Product::factory()->create(['is_active' => true]);
 
@@ -300,8 +289,7 @@ class ProductRecommendationEndpointsTest extends TestCase
         $response->assertJson(['meta' => ['count' => 0]]);
     }
 
-    /** @test */
-    public function endpoints_only_return_active_products()
+    public function test_endpoints_only_return_active_products()
     {
         $category = Category::factory()->create();
 

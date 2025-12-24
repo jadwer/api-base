@@ -9,8 +9,7 @@ use Tests\TestCase;
 
 class WishlistItemShowTest extends TestCase
 {
-    /** @test */
-    public function admin_can_view_any_wishlist_item()
+    public function test_admin_can_view_any_wishlist_item()
     {
         $admin = User::role('admin')->first();
 
@@ -39,8 +38,7 @@ class WishlistItemShowTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function tech_user_can_view_wishlist_item()
+    public function test_tech_user_can_view_wishlist_item()
     {
         $tech = User::role('tech')->first();
 
@@ -54,8 +52,7 @@ class WishlistItemShowTest extends TestCase
         $response->assertSuccessful();
     }
 
-    /** @test */
-    public function customer_can_view_wishlist_item_from_their_wishlist()
+    public function test_customer_can_view_wishlist_item_from_their_wishlist()
     {
         $customer = User::role('customer')->first();
 
@@ -82,8 +79,7 @@ class WishlistItemShowTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function customer_cannot_view_wishlist_item_from_other_users_private_wishlist()
+    public function test_customer_cannot_view_wishlist_item_from_other_users_private_wishlist()
     {
         $customer = User::role('customer')->first();
 
@@ -99,8 +95,7 @@ class WishlistItemShowTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function customer_can_view_wishlist_item_from_public_wishlist()
+    public function test_customer_can_view_wishlist_item_from_public_wishlist()
     {
         $customer = User::role('customer')->first();
 
@@ -116,8 +111,7 @@ class WishlistItemShowTest extends TestCase
         $response->assertSuccessful();
     }
 
-    /** @test */
-    public function guest_cannot_view_wishlist_item()
+    public function test_guest_cannot_view_wishlist_item()
     {
         $item = WishlistItem::factory()->create();
 
@@ -128,8 +122,7 @@ class WishlistItemShowTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function can_include_wishlist_relationship()
+    public function test_can_include_wishlist_relationship()
     {
         $admin = User::role('admin')->first();
 
@@ -151,8 +144,7 @@ class WishlistItemShowTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function can_include_product_relationship()
+    public function test_can_include_product_relationship()
     {
         $admin = User::role('admin')->first();
 
@@ -174,8 +166,7 @@ class WishlistItemShowTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function returns_404_for_non_existent_wishlist_item()
+    public function test_returns_404_for_non_existent_wishlist_item()
     {
         $admin = User::role('admin')->first();
 
@@ -187,8 +178,7 @@ class WishlistItemShowTest extends TestCase
         $response->assertStatus(404);
     }
 
-    /** @test */
-    public function shows_high_priority_item()
+    public function test_shows_high_priority_item()
     {
         $admin = User::role('admin')->first();
 
@@ -209,8 +199,7 @@ class WishlistItemShowTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function shows_item_with_notes()
+    public function test_shows_item_with_notes()
     {
         $admin = User::role('admin')->first();
 

@@ -62,7 +62,11 @@ class BillingServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(\Modules\Billing\Services\CFDI\CFDIStampingService::class, function ($app) {
-            return new \Modules\Billing\Services\CFDI\CFDIStampingService();
+            return new \Modules\Billing\Services\CFDI\CFDIStampingService(
+                $app->make(\Modules\Billing\Services\PAC\SWPacService::class),
+                $app->make(\Modules\Billing\Services\CFDI\CFDIXMLGenerator::class),
+                $app->make(\Modules\Billing\Services\CFDI\CFDIPDFGenerator::class)
+            );
         });
     }
 

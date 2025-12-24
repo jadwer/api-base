@@ -8,8 +8,7 @@ use Tests\TestCase;
 
 class ProductComparisonUpdateTest extends TestCase
 {
-    /** @test */
-    public function admin_can_update_any_comparison()
+    public function test_admin_can_update_any_comparison()
     {
         $admin = User::role('admin')->first();
         $comparison = ProductComparison::factory()->create(['name' => 'Old Name']);
@@ -45,8 +44,7 @@ class ProductComparisonUpdateTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function customer_can_update_their_own_comparison()
+    public function test_customer_can_update_their_own_comparison()
     {
         $customer = User::role('customer')->first();
         $comparison = ProductComparison::factory()->create([
@@ -78,8 +76,7 @@ class ProductComparisonUpdateTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function customer_cannot_update_other_users_comparison()
+    public function test_customer_cannot_update_other_users_comparison()
     {
         $customer = User::role('customer')->first();
         $otherUser = User::factory()->create();
@@ -102,8 +99,7 @@ class ProductComparisonUpdateTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function tech_user_cannot_update_comparison()
+    public function test_tech_user_cannot_update_comparison()
     {
         $tech = User::role('tech')->first();
         $comparison = ProductComparison::factory()->create();
@@ -125,8 +121,7 @@ class ProductComparisonUpdateTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function guest_cannot_update_comparison()
+    public function test_guest_cannot_update_comparison()
     {
         $comparison = ProductComparison::factory()->create();
 
@@ -146,8 +141,7 @@ class ProductComparisonUpdateTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function can_update_is_public_field()
+    public function test_can_update_is_public_field()
     {
         $customer = User::role('customer')->first();
         $comparison = ProductComparison::factory()->private()->create(['user_id' => $customer->id]);
@@ -181,8 +175,7 @@ class ProductComparisonUpdateTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function can_make_public_comparison_private()
+    public function test_can_make_public_comparison_private()
     {
         $customer = User::role('customer')->first();
         $comparison = ProductComparison::factory()->public()->create(['user_id' => $customer->id]);
@@ -209,8 +202,7 @@ class ProductComparisonUpdateTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function name_cannot_exceed_255_characters_on_update()
+    public function test_name_cannot_exceed_255_characters_on_update()
     {
         $admin = User::role('admin')->first();
         $comparison = ProductComparison::factory()->create();
@@ -235,8 +227,7 @@ class ProductComparisonUpdateTest extends TestCase
         $response->assertJsonValidationErrors(['name']);
     }
 
-    /** @test */
-    public function returns_404_for_non_existent_comparison()
+    public function test_returns_404_for_non_existent_comparison()
     {
         $admin = User::role('admin')->first();
 

@@ -9,8 +9,7 @@ use Tests\TestCase;
 
 class ProductComparisonItemUpdateTest extends TestCase
 {
-    /** @test */
-    public function admin_can_update_any_comparison_item()
+    public function test_admin_can_update_any_comparison_item()
     {
         $admin = User::role('admin')->first();
         $item = ProductComparisonItem::factory()->create(['position' => 0]);
@@ -46,8 +45,7 @@ class ProductComparisonItemUpdateTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function customer_can_update_item_in_their_own_comparison()
+    public function test_customer_can_update_item_in_their_own_comparison()
     {
         $customer = User::role('customer')->first();
         $comparison = ProductComparison::factory()->create(['user_id' => $customer->id]);
@@ -80,8 +78,7 @@ class ProductComparisonItemUpdateTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function customer_cannot_update_item_in_other_users_comparison()
+    public function test_customer_cannot_update_item_in_other_users_comparison()
     {
         $customer = User::role('customer')->first();
         $otherUser = User::factory()->create();
@@ -105,8 +102,7 @@ class ProductComparisonItemUpdateTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function tech_user_cannot_update_comparison_item()
+    public function test_tech_user_cannot_update_comparison_item()
     {
         $tech = User::role('tech')->first();
         $item = ProductComparisonItem::factory()->create();
@@ -128,8 +124,7 @@ class ProductComparisonItemUpdateTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function guest_cannot_update_comparison_item()
+    public function test_guest_cannot_update_comparison_item()
     {
         $item = ProductComparisonItem::factory()->create();
 
@@ -149,8 +144,7 @@ class ProductComparisonItemUpdateTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function can_reorder_items_by_updating_position()
+    public function test_can_reorder_items_by_updating_position()
     {
         $customer = User::role('customer')->first();
         $comparison = ProductComparison::factory()->create(['user_id' => $customer->id]);
@@ -181,8 +175,7 @@ class ProductComparisonItemUpdateTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function position_must_be_integer()
+    public function test_position_must_be_integer()
     {
         $admin = User::role('admin')->first();
         $item = ProductComparisonItem::factory()->create();
@@ -205,8 +198,7 @@ class ProductComparisonItemUpdateTest extends TestCase
         $response->assertJsonValidationErrors(['position']);
     }
 
-    /** @test */
-    public function position_cannot_be_negative()
+    public function test_position_cannot_be_negative()
     {
         $admin = User::role('admin')->first();
         $item = ProductComparisonItem::factory()->create();
@@ -229,8 +221,7 @@ class ProductComparisonItemUpdateTest extends TestCase
         $response->assertJsonValidationErrors(['position']);
     }
 
-    /** @test */
-    public function returns_404_for_non_existent_item()
+    public function test_returns_404_for_non_existent_item()
     {
         $admin = User::role('admin')->first();
 

@@ -24,8 +24,7 @@ class RecommendationEngineTest extends TestCase
         $this->engine = new RecommendationEngine();
     }
 
-    /** @test */
-    public function related_products_returns_same_category_products()
+    public function test_related_products_returns_same_category_products()
     {
         $category = Category::factory()->create();
         $brand = Brand::factory()->create();
@@ -67,8 +66,7 @@ class RecommendationEngineTest extends TestCase
         $this->assertTrue($related->contains('id', $relatedProduct2->id));
     }
 
-    /** @test */
-    public function related_products_filters_by_price_range()
+    public function test_related_products_filters_by_price_range()
     {
         $category = Category::factory()->create();
 
@@ -98,8 +96,7 @@ class RecommendationEngineTest extends TestCase
         $this->assertEquals($inRangeProduct->id, $related->first()->id);
     }
 
-    /** @test */
-    public function frequently_bought_together_uses_order_data()
+    public function test_frequently_bought_together_uses_order_data()
     {
         $customer = User::factory()->create();
 
@@ -150,8 +147,7 @@ class RecommendationEngineTest extends TestCase
         $this->assertEquals($productB->id, $result->get(1)->id);
     }
 
-    /** @test */
-    public function personalized_recommendations_based_on_purchase_history()
+    public function test_personalized_recommendations_based_on_purchase_history()
     {
         $customer = User::role('customer')->first();
         $category1 = Category::factory()->create();
@@ -190,8 +186,7 @@ class RecommendationEngineTest extends TestCase
         $this->assertFalse($result->contains('id', $purchasedProduct->id));
     }
 
-    /** @test */
-    public function personalized_recommendations_falls_back_to_popular_if_no_history()
+    public function test_personalized_recommendations_falls_back_to_popular_if_no_history()
     {
         $customer = User::factory()->create();
 
@@ -207,8 +202,7 @@ class RecommendationEngineTest extends TestCase
         $this->assertNotEmpty($result);
     }
 
-    /** @test */
-    public function trending_products_returns_most_sold_in_last_30_days()
+    public function test_trending_products_returns_most_sold_in_last_30_days()
     {
         $customer = User::factory()->create();
 
@@ -244,8 +238,7 @@ class RecommendationEngineTest extends TestCase
         $this->assertFalse($result->contains('id', $oldProduct->id));
     }
 
-    /** @test */
-    public function popular_products_requires_minimum_rating_and_reviews()
+    public function test_popular_products_requires_minimum_rating_and_reviews()
     {
         // Product with high rating and enough reviews
         $popularProduct = Product::factory()->create([
@@ -274,8 +267,7 @@ class RecommendationEngineTest extends TestCase
         $this->assertEquals($popularProduct->id, $result->first()->id);
     }
 
-    /** @test */
-    public function popular_products_orders_by_rating_then_reviews()
+    public function test_popular_products_orders_by_rating_then_reviews()
     {
         $product1 = Product::factory()->create([
             'is_active' => true,
@@ -303,8 +295,7 @@ class RecommendationEngineTest extends TestCase
         $this->assertEquals($product2->id, $result->get(2)->id); // 4.5 rating, 50 reviews
     }
 
-    /** @test */
-    public function new_arrivals_returns_recently_created_products()
+    public function test_new_arrivals_returns_recently_created_products()
     {
         // Create old product
         $oldProduct = Product::factory()->create([
@@ -331,8 +322,7 @@ class RecommendationEngineTest extends TestCase
         $this->assertEquals($newProduct1->id, $result->get(1)->id);
     }
 
-    /** @test */
-    public function new_arrivals_respects_limit()
+    public function test_new_arrivals_respects_limit()
     {
         // Create 15 products
         Product::factory()->count(15)->create(['is_active' => true]);
@@ -342,8 +332,7 @@ class RecommendationEngineTest extends TestCase
         $this->assertCount(5, $result);
     }
 
-    /** @test */
-    public function all_recommendation_methods_exclude_inactive_products()
+    public function test_all_recommendation_methods_exclude_inactive_products()
     {
         $category = Category::factory()->create();
 

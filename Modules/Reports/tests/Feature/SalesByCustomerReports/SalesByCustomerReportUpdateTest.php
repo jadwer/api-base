@@ -7,8 +7,7 @@ use Tests\TestCase;
 class SalesByCustomerReportUpdateTest extends TestCase
 {
 
-    /** @test */
-    public function cannot_update_sales_by_customer_reports()
+    public function test_cannot_update_sales_by_customer_reports()
     {
         $admin = $this->getAdminUser();
 
@@ -31,8 +30,7 @@ class SalesByCustomerReportUpdateTest extends TestCase
         $this->assertContains($response->status(), [403, 405]);
     }
 
-    /** @test */
-    public function admin_cannot_update_balance_sheet()
+    public function test_admin_cannot_update_balance_sheet()
     {
         $admin = $this->getAdminUser();
 

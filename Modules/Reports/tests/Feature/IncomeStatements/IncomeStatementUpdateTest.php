@@ -7,8 +7,7 @@ use Tests\TestCase;
 class IncomeStatementUpdateTest extends TestCase
 {
 
-    /** @test */
-    public function cannot_update_balance_sheets()
+    public function test_cannot_update_balance_sheets()
     {
         $admin = $this->getAdminUser();
 
@@ -31,8 +30,7 @@ class IncomeStatementUpdateTest extends TestCase
         $this->assertContains($response->status(), [403, 405]);
     }
 
-    /** @test */
-    public function admin_cannot_update_balance_sheet()
+    public function test_admin_cannot_update_balance_sheet()
     {
         $admin = $this->getAdminUser();
 

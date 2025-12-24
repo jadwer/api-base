@@ -36,7 +36,7 @@ class CFDIItem extends Model
     ];
 
     protected $casts = [
-        'cantidad' => 'decimal:6',
+        'cantidad' => 'float', // Use float for JSON:API Number field compatibility
         'valor_unitario' => 'integer',
         'importe' => 'integer',
         'descuento' => 'integer',

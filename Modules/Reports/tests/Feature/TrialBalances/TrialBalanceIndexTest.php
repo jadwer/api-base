@@ -7,8 +7,7 @@ use Tests\TestCase;
 class TrialBalanceIndexTest extends TestCase
 {
 
-    /** @test */
-    public function admin_can_fetch_trial_balances()
+    public function test_admin_can_fetch_trial_balances()
     {
         $admin = $this->getAdminUser();
 
@@ -37,8 +36,7 @@ class TrialBalanceIndexTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function tech_user_can_fetch_trial_balances()
+    public function test_tech_user_can_fetch_trial_balances()
     {
         $tech = $this->getTechUser();
 
@@ -50,8 +48,7 @@ class TrialBalanceIndexTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
-    public function customer_cannot_fetch_trial_balances()
+    public function test_customer_cannot_fetch_trial_balances()
     {
         $customer = $this->getCustomerUser();
 
@@ -63,8 +60,7 @@ class TrialBalanceIndexTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function guest_cannot_fetch_trial_balances()
+    public function test_guest_cannot_fetch_trial_balances()
     {
         $response = $this->jsonApi()
             ->expects('trial-balances')
@@ -73,8 +69,7 @@ class TrialBalanceIndexTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function can_filter_trial_balance_by_date()
+    public function test_can_filter_trial_balance_by_date()
     {
         $admin = $this->getAdminUser();
 
@@ -88,8 +83,7 @@ class TrialBalanceIndexTest extends TestCase
         $response->assertJsonPath('data.0.attributes.asOfDate', '2025-10-30');
     }
 
-    /** @test */
-    public function trial_balance_includes_all_sections()
+    public function test_trial_balance_includes_all_sections()
     {
         $admin = $this->getAdminUser();
 
@@ -110,8 +104,7 @@ class TrialBalanceIndexTest extends TestCase
         $this->assertIsArray($data['summaryByType']);
     }
 
-    /** @test */
-    public function trial_balance_includes_totals()
+    public function test_trial_balance_includes_totals()
     {
         $admin = $this->getAdminUser();
 

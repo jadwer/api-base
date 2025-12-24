@@ -7,8 +7,7 @@ use Tests\TestCase;
 class APAgingReportIndexTest extends TestCase
 {
 
-    /** @test */
-    public function admin_can_fetch_ap_aging_reports()
+    public function test_admin_can_fetch_ap_aging_reports()
     {
         $admin = $this->getAdminUser();
 
@@ -35,8 +34,7 @@ class APAgingReportIndexTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function tech_user_can_fetch_ap_aging_reports()
+    public function test_tech_user_can_fetch_ap_aging_reports()
     {
         $tech = $this->getTechUser();
 
@@ -48,8 +46,7 @@ class APAgingReportIndexTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
-    public function customer_cannot_fetch_ap_aging_reports()
+    public function test_customer_cannot_fetch_ap_aging_reports()
     {
         $customer = $this->getCustomerUser();
 
@@ -61,8 +58,7 @@ class APAgingReportIndexTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function guest_cannot_fetch_ap_aging_reports()
+    public function test_guest_cannot_fetch_ap_aging_reports()
     {
         $response = $this->jsonApi()
             ->expects('ap-aging-reports')
@@ -71,8 +67,7 @@ class APAgingReportIndexTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function can_filter_ap_aging_report_by_date()
+    public function test_can_filter_ap_aging_report_by_date()
     {
         $admin = $this->getAdminUser();
 
@@ -86,8 +81,7 @@ class APAgingReportIndexTest extends TestCase
         $response->assertJsonPath('data.0.attributes.asOfDate', '2025-10-30');
     }
 
-    /** @test */
-    public function ap_aging_report_includes_all_sections()
+    public function test_ap_aging_report_includes_all_sections()
     {
         $admin = $this->getAdminUser();
 
@@ -106,8 +100,7 @@ class APAgingReportIndexTest extends TestCase
         $this->assertIsArray($data['totals']);
     }
 
-    /** @test */
-    public function ap_aging_report_includes_totals()
+    public function test_ap_aging_report_includes_totals()
     {
         $admin = $this->getAdminUser();
 

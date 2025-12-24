@@ -8,8 +8,7 @@ use Tests\TestCase;
 
 class ProductComparisonShowTest extends TestCase
 {
-    /** @test */
-    public function admin_can_view_any_comparison()
+    public function test_admin_can_view_any_comparison()
     {
         $admin = User::role('admin')->first();
         $comparison = ProductComparison::factory()->create();
@@ -33,8 +32,7 @@ class ProductComparisonShowTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function tech_user_can_view_any_comparison()
+    public function test_tech_user_can_view_any_comparison()
     {
         $tech = User::role('tech')->first();
         $comparison = ProductComparison::factory()->create();
@@ -47,8 +45,7 @@ class ProductComparisonShowTest extends TestCase
         $response->assertSuccessful();
     }
 
-    /** @test */
-    public function customer_can_view_their_own_comparison()
+    public function test_customer_can_view_their_own_comparison()
     {
         $customer = User::role('customer')->first();
         $comparison = ProductComparison::factory()->create(['user_id' => $customer->id]);
@@ -70,8 +67,7 @@ class ProductComparisonShowTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function customer_can_view_public_comparison_from_others()
+    public function test_customer_can_view_public_comparison_from_others()
     {
         $customer = User::role('customer')->first();
         $otherUser = User::factory()->create();
@@ -93,8 +89,7 @@ class ProductComparisonShowTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function customer_cannot_view_private_comparison_from_others()
+    public function test_customer_cannot_view_private_comparison_from_others()
     {
         $customer = User::role('customer')->first();
         $otherUser = User::factory()->create();
@@ -108,8 +103,7 @@ class ProductComparisonShowTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function guest_cannot_view_comparison()
+    public function test_guest_cannot_view_comparison()
     {
         $comparison = ProductComparison::factory()->create();
 
@@ -120,8 +114,7 @@ class ProductComparisonShowTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function can_include_user_in_comparison_response()
+    public function test_can_include_user_in_comparison_response()
     {
         $admin = User::role('admin')->first();
         $comparison = ProductComparison::factory()->create();
@@ -142,8 +135,7 @@ class ProductComparisonShowTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function can_include_items_in_comparison_response()
+    public function test_can_include_items_in_comparison_response()
     {
         $admin = User::role('admin')->first();
         $comparison = ProductComparison::factory()->create();
@@ -156,8 +148,7 @@ class ProductComparisonShowTest extends TestCase
         $response->assertSuccessful();
     }
 
-    /** @test */
-    public function returns_404_for_non_existent_comparison()
+    public function test_returns_404_for_non_existent_comparison()
     {
         $admin = User::role('admin')->first();
 

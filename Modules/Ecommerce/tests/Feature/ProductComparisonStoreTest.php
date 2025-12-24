@@ -8,8 +8,7 @@ use Tests\TestCase;
 
 class ProductComparisonStoreTest extends TestCase
 {
-    /** @test */
-    public function admin_can_create_comparison()
+    public function test_admin_can_create_comparison()
     {
         $admin = User::role('admin')->first();
 
@@ -46,8 +45,7 @@ class ProductComparisonStoreTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function customer_can_create_comparison()
+    public function test_customer_can_create_comparison()
     {
         $customer = User::role('customer')->first();
 
@@ -78,8 +76,7 @@ class ProductComparisonStoreTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function tech_user_cannot_create_comparison()
+    public function test_tech_user_cannot_create_comparison()
     {
         $tech = User::role('tech')->first();
 
@@ -100,8 +97,7 @@ class ProductComparisonStoreTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function guest_cannot_create_comparison()
+    public function test_guest_cannot_create_comparison()
     {
         $data = [
             'type' => 'product-comparisons',
@@ -119,8 +115,7 @@ class ProductComparisonStoreTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function name_is_required()
+    public function test_name_is_required()
     {
         $admin = User::role('admin')->first();
 
@@ -141,8 +136,7 @@ class ProductComparisonStoreTest extends TestCase
         $response->assertJsonValidationErrors(['name']);
     }
 
-    /** @test */
-    public function can_create_public_comparison()
+    public function test_can_create_public_comparison()
     {
         $customer = User::role('customer')->first();
 
@@ -175,8 +169,7 @@ class ProductComparisonStoreTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function is_public_defaults_to_false()
+    public function test_is_public_defaults_to_false()
     {
         $customer = User::role('customer')->first();
 
@@ -203,8 +196,7 @@ class ProductComparisonStoreTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function name_cannot_exceed_255_characters()
+    public function test_name_cannot_exceed_255_characters()
     {
         $admin = User::role('admin')->first();
 
@@ -228,8 +220,7 @@ class ProductComparisonStoreTest extends TestCase
         $response->assertJsonValidationErrors(['name']);
     }
 
-    /** @test */
-    public function is_public_must_be_boolean()
+    public function test_is_public_must_be_boolean()
     {
         $admin = User::role('admin')->first();
 
@@ -251,8 +242,7 @@ class ProductComparisonStoreTest extends TestCase
         $response->assertJsonValidationErrors(['isPublic']);
     }
 
-    /** @test */
-    public function user_is_automatically_set_to_authenticated_user()
+    public function test_user_is_automatically_set_to_authenticated_user()
     {
         $customer = User::role('customer')->first();
 

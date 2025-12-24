@@ -8,8 +8,7 @@ use Tests\TestCase;
 
 class ProductComparisonIndexTest extends TestCase
 {
-    /** @test */
-    public function admin_can_list_all_comparisons()
+    public function test_admin_can_list_all_comparisons()
     {
         $admin = User::role('admin')->first();
 
@@ -36,8 +35,7 @@ class ProductComparisonIndexTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function tech_user_can_list_comparisons()
+    public function test_tech_user_can_list_comparisons()
     {
         $tech = User::role('tech')->first();
 
@@ -50,8 +48,7 @@ class ProductComparisonIndexTest extends TestCase
         $response->assertSuccessful();
     }
 
-    /** @test */
-    public function customer_can_list_their_own_and_public_comparisons()
+    public function test_customer_can_list_their_own_and_public_comparisons()
     {
         $customer = User::role('customer')->first();
 
@@ -71,8 +68,7 @@ class ProductComparisonIndexTest extends TestCase
         $response->assertSuccessful();
     }
 
-    /** @test */
-    public function guest_cannot_list_comparisons()
+    public function test_guest_cannot_list_comparisons()
     {
         ProductComparison::factory()->count(3)->create();
 
@@ -82,8 +78,7 @@ class ProductComparisonIndexTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function can_filter_comparisons_by_user_id()
+    public function test_can_filter_comparisons_by_user_id()
     {
         $admin = User::role('admin')->first();
         $user = User::factory()->create();
@@ -99,8 +94,7 @@ class ProductComparisonIndexTest extends TestCase
         $response->assertJsonCount(2, 'data');
     }
 
-    /** @test */
-    public function can_filter_comparisons_by_is_public()
+    public function test_can_filter_comparisons_by_is_public()
     {
         $admin = User::role('admin')->first();
 
@@ -115,8 +109,7 @@ class ProductComparisonIndexTest extends TestCase
         $response->assertJsonCount(2, 'data');
     }
 
-    /** @test */
-    public function can_sort_comparisons_by_name()
+    public function test_can_sort_comparisons_by_name()
     {
         $admin = User::role('admin')->first();
 
@@ -134,8 +127,7 @@ class ProductComparisonIndexTest extends TestCase
         $this->assertEquals(['Comparison A', 'Comparison B', 'Comparison C'], $names);
     }
 
-    /** @test */
-    public function can_include_user_relationship()
+    public function test_can_include_user_relationship()
     {
         $admin = User::role('admin')->first();
 
@@ -158,8 +150,7 @@ class ProductComparisonIndexTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function can_include_items_relationship()
+    public function test_can_include_items_relationship()
     {
         $admin = User::role('admin')->first();
 

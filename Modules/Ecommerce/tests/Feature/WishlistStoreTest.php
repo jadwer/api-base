@@ -8,8 +8,7 @@ use Tests\TestCase;
 
 class WishlistStoreTest extends TestCase
 {
-    /** @test */
-    public function admin_can_create_wishlist()
+    public function test_admin_can_create_wishlist()
     {
         $admin = User::role('admin')->first();
 
@@ -49,8 +48,7 @@ class WishlistStoreTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function customer_can_create_wishlist()
+    public function test_customer_can_create_wishlist()
     {
         $customer = User::role('customer')->first();
 
@@ -83,8 +81,7 @@ class WishlistStoreTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function tech_user_cannot_create_wishlist()
+    public function test_tech_user_cannot_create_wishlist()
     {
         $tech = User::role('tech')->first();
 
@@ -106,8 +103,7 @@ class WishlistStoreTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function guest_cannot_create_wishlist()
+    public function test_guest_cannot_create_wishlist()
     {
         $data = [
             'type' => 'wishlists',
@@ -126,8 +122,7 @@ class WishlistStoreTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function name_is_optional_and_has_default_value()
+    public function test_name_is_optional_and_has_default_value()
     {
         $admin = User::role('admin')->first();
 
@@ -152,8 +147,7 @@ class WishlistStoreTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function can_create_public_wishlist()
+    public function test_can_create_public_wishlist()
     {
         $customer = User::role('customer')->first();
 
@@ -187,8 +181,7 @@ class WishlistStoreTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function can_create_default_wishlist()
+    public function test_can_create_default_wishlist()
     {
         $customer = User::role('customer')->first();
 
@@ -222,8 +215,7 @@ class WishlistStoreTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function name_cannot_exceed_255_characters()
+    public function test_name_cannot_exceed_255_characters()
     {
         $admin = User::role('admin')->first();
 
@@ -250,8 +242,7 @@ class WishlistStoreTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function is_default_must_be_boolean()
+    public function test_is_default_must_be_boolean()
     {
         $admin = User::role('admin')->first();
 
@@ -276,8 +267,7 @@ class WishlistStoreTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function is_public_must_be_boolean()
+    public function test_is_public_must_be_boolean()
     {
         $admin = User::role('admin')->first();
 

@@ -8,8 +8,7 @@ use Tests\TestCase;
 
 class WishlistIndexTest extends TestCase
 {
-    /** @test */
-    public function admin_can_list_all_wishlists()
+    public function test_admin_can_list_all_wishlists()
     {
         $admin = User::role('admin')->first();
 
@@ -38,8 +37,7 @@ class WishlistIndexTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function tech_user_can_list_wishlists()
+    public function test_tech_user_can_list_wishlists()
     {
         $tech = User::role('tech')->first();
 
@@ -52,8 +50,7 @@ class WishlistIndexTest extends TestCase
         $response->assertSuccessful();
     }
 
-    /** @test */
-    public function customer_can_list_their_own_and_public_wishlists()
+    public function test_customer_can_list_their_own_and_public_wishlists()
     {
         $customer = User::role('customer')->first();
 
@@ -73,8 +70,7 @@ class WishlistIndexTest extends TestCase
         $response->assertSuccessful();
     }
 
-    /** @test */
-    public function guest_cannot_list_wishlists()
+    public function test_guest_cannot_list_wishlists()
     {
         Wishlist::factory()->count(3)->create();
 
@@ -84,8 +80,7 @@ class WishlistIndexTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function can_filter_wishlists_by_user_id()
+    public function test_can_filter_wishlists_by_user_id()
     {
         $admin = User::role('admin')->first();
         $user = User::factory()->create();
@@ -101,8 +96,7 @@ class WishlistIndexTest extends TestCase
         $response->assertJsonCount(2, 'data');
     }
 
-    /** @test */
-    public function can_filter_wishlists_by_is_default()
+    public function test_can_filter_wishlists_by_is_default()
     {
         $admin = User::role('admin')->first();
 
@@ -117,8 +111,7 @@ class WishlistIndexTest extends TestCase
         $response->assertJsonCount(1, 'data');
     }
 
-    /** @test */
-    public function can_filter_wishlists_by_is_public()
+    public function test_can_filter_wishlists_by_is_public()
     {
         $admin = User::role('admin')->first();
 
@@ -133,8 +126,7 @@ class WishlistIndexTest extends TestCase
         $response->assertJsonCount(2, 'data');
     }
 
-    /** @test */
-    public function can_sort_wishlists_by_name()
+    public function test_can_sort_wishlists_by_name()
     {
         $admin = User::role('admin')->first();
 
@@ -152,8 +144,7 @@ class WishlistIndexTest extends TestCase
         $this->assertEquals(['Wishlist A', 'Wishlist B', 'Wishlist C'], $names);
     }
 
-    /** @test */
-    public function can_include_user_relationship()
+    public function test_can_include_user_relationship()
     {
         $admin = User::role('admin')->first();
 
@@ -176,8 +167,7 @@ class WishlistIndexTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function can_include_items_relationship()
+    public function test_can_include_items_relationship()
     {
         $admin = User::role('admin')->first();
 

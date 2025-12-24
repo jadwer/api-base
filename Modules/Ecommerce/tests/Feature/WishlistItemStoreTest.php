@@ -10,8 +10,7 @@ use Tests\TestCase;
 
 class WishlistItemStoreTest extends TestCase
 {
-    /** @test */
-    public function admin_can_create_wishlist_item()
+    public function test_admin_can_create_wishlist_item()
     {
         $admin = User::role('admin')->first();
 
@@ -67,8 +66,7 @@ class WishlistItemStoreTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function customer_can_create_wishlist_item()
+    public function test_customer_can_create_wishlist_item()
     {
         $customer = User::role('customer')->first();
 
@@ -106,8 +104,7 @@ class WishlistItemStoreTest extends TestCase
         $response->assertCreated();
     }
 
-    /** @test */
-    public function tech_user_cannot_create_wishlist_item()
+    public function test_tech_user_cannot_create_wishlist_item()
     {
         $tech = User::role('tech')->first();
 
@@ -145,8 +142,7 @@ class WishlistItemStoreTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function guest_cannot_create_wishlist_item()
+    public function test_guest_cannot_create_wishlist_item()
     {
         $wishlist = Wishlist::factory()->create();
         $product = Product::factory()->create();
@@ -180,8 +176,7 @@ class WishlistItemStoreTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function wishlist_is_required()
+    public function test_wishlist_is_required()
     {
         $admin = User::role('admin')->first();
         $product = Product::factory()->create();
@@ -210,8 +205,7 @@ class WishlistItemStoreTest extends TestCase
         $response->assertStatus(422);
     }
 
-    /** @test */
-    public function product_is_required()
+    public function test_product_is_required()
     {
         $admin = User::role('admin')->first();
         $wishlist = Wishlist::factory()->create();
@@ -240,8 +234,7 @@ class WishlistItemStoreTest extends TestCase
         $response->assertStatus(422);
     }
 
-    /** @test */
-    public function quantity_must_be_positive()
+    public function test_quantity_must_be_positive()
     {
         $admin = User::role('admin')->first();
 
@@ -282,8 +275,7 @@ class WishlistItemStoreTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function priority_must_be_valid()
+    public function test_priority_must_be_valid()
     {
         $admin = User::role('admin')->first();
 
@@ -324,8 +316,7 @@ class WishlistItemStoreTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function can_create_with_high_priority()
+    public function test_can_create_with_high_priority()
     {
         $admin = User::role('admin')->first();
 
@@ -366,8 +357,7 @@ class WishlistItemStoreTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function notes_are_optional()
+    public function test_notes_are_optional()
     {
         $admin = User::role('admin')->first();
 

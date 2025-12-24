@@ -39,9 +39,9 @@ class AttendanceShowTest extends TestCase
                 'id',
                 'type',
                 'attributes' => [
-                    'attendanceDate',
-                    'checkInTime',
-                    'checkOutTime',
+                    'date',
+                    'checkIn',
+                    'checkOut',
                     'hoursWorked',
                     'status'
                 ]

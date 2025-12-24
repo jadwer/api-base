@@ -8,8 +8,7 @@ use Tests\TestCase;
 
 class WishlistUpdateTest extends TestCase
 {
-    /** @test */
-    public function admin_can_update_any_wishlist()
+    public function test_admin_can_update_any_wishlist()
     {
         $admin = User::role('admin')->first();
 
@@ -56,8 +55,7 @@ class WishlistUpdateTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function customer_can_update_their_own_wishlist()
+    public function test_customer_can_update_their_own_wishlist()
     {
         $customer = User::role('customer')->first();
 
@@ -94,8 +92,7 @@ class WishlistUpdateTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function customer_cannot_update_other_users_wishlist()
+    public function test_customer_cannot_update_other_users_wishlist()
     {
         $customer = User::role('customer')->first();
 
@@ -119,8 +116,7 @@ class WishlistUpdateTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function tech_user_cannot_update_wishlist()
+    public function test_tech_user_cannot_update_wishlist()
     {
         $tech = User::role('tech')->first();
 
@@ -143,8 +139,7 @@ class WishlistUpdateTest extends TestCase
         $response->assertStatus(403);
     }
 
-    /** @test */
-    public function guest_cannot_update_wishlist()
+    public function test_guest_cannot_update_wishlist()
     {
         $wishlist = Wishlist::factory()->create();
 
@@ -164,8 +159,7 @@ class WishlistUpdateTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
-    public function can_update_only_name()
+    public function test_can_update_only_name()
     {
         $customer = User::role('customer')->first();
 
@@ -200,8 +194,7 @@ class WishlistUpdateTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function can_update_only_is_default()
+    public function test_can_update_only_is_default()
     {
         $customer = User::role('customer')->first();
 
@@ -232,8 +225,7 @@ class WishlistUpdateTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function can_update_only_is_public()
+    public function test_can_update_only_is_public()
     {
         $customer = User::role('customer')->first();
 
@@ -264,8 +256,7 @@ class WishlistUpdateTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function name_cannot_exceed_255_characters_on_update()
+    public function test_name_cannot_exceed_255_characters_on_update()
     {
         $admin = User::role('admin')->first();
 
@@ -293,8 +284,7 @@ class WishlistUpdateTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function returns_404_for_non_existent_wishlist()
+    public function test_returns_404_for_non_existent_wishlist()
     {
         $admin = User::role('admin')->first();
 

@@ -41,7 +41,6 @@ class Phase3ComprehensiveTest extends TestCase
         $this->auditTrailService = app(AuditTrailService::class);
     }
 
-    /** @test */
     public function test_credit_management_validates_customer_credit_limit(): void
     {
         $customer = Contact::factory()->customer()->create([
@@ -68,7 +67,6 @@ class Phase3ComprehensiveTest extends TestCase
         $this->creditService->validateCustomerCredit($customer, 5000);
     }
 
-    /** @test */
     public function test_credit_management_blocks_customers_with_overdue_invoices(): void
     {
         $customer = Contact::factory()->customer()->create([
@@ -90,7 +88,6 @@ class Phase3ComprehensiveTest extends TestCase
         $this->creditService->validateCustomerCredit($customer, 3000);
     }
 
-    /** @test */
     public function test_approval_workflow_identifies_invoices_requiring_approval(): void
     {
         $customer = Contact::factory()->customer()->create();
@@ -121,7 +118,6 @@ class Phase3ComprehensiveTest extends TestCase
         $this->assertTrue($this->approvalService->requiresARApproval($largeInvoice));
     }
 
-    /** @test */
     public function test_approval_workflow_gets_required_approvers_by_amount(): void
     {
         $customer = Contact::factory()->customer()->create();
@@ -140,7 +136,6 @@ class Phase3ComprehensiveTest extends TestCase
         );
     }
 
-    /** @test */
     public function test_bank_reconciliation_matches_exact_transactions(): void
     {
         // SKIPPED: BankTransaction model not yet implemented in Finance module
@@ -148,7 +143,6 @@ class Phase3ComprehensiveTest extends TestCase
         $this->markTestSkipped('BankTransaction model not yet implemented');
     }
 
-    /** @test */
     public function test_period_control_validates_open_period(): void
     {
         $period = FiscalPeriod::factory()->create([
@@ -162,7 +156,6 @@ class Phase3ComprehensiveTest extends TestCase
         $this->assertTrue($result);
     }
 
-    /** @test */
     public function test_period_control_blocks_closed_period(): void
     {
         // Close ALL existing periods first
@@ -180,7 +173,6 @@ class Phase3ComprehensiveTest extends TestCase
         $this->periodControlService->validatePeriodAccess(now());
     }
 
-    /** @test */
     public function test_period_control_can_lock_and_unlock_period(): void
     {
         $user = $this->getAdminUser();
@@ -203,7 +195,6 @@ class Phase3ComprehensiveTest extends TestCase
         $this->assertEquals('open', $period->status);
     }
 
-    /** @test */
     public function test_audit_trail_logs_financial_transactions(): void
     {
         $user = $this->getAdminUser();
@@ -224,7 +215,6 @@ class Phase3ComprehensiveTest extends TestCase
         $this->assertEquals($user->id, $activity->causer_id);
     }
 
-    /** @test */
     public function test_audit_trail_logs_critical_actions_separately(): void
     {
         $user = $this->getAdminUser();
@@ -250,7 +240,6 @@ class Phase3ComprehensiveTest extends TestCase
         $this->assertEquals(7, $criticalLog->retention_years); // Mexican fiscal requirement
     }
 
-    /** @test */
     public function test_complete_integration_flow_with_all_phase3_features(): void
     {
         $user = $this->getAdminUser();
