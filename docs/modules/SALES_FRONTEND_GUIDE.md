@@ -1,13 +1,13 @@
 # Sales Module - Frontend Integration Guide
 
 **Module:** Sales
-**Entities:** 3 (SalesOrder, SalesOrderItem, OrderTracking)
-**Endpoints:** 15
+**Entities:** 2 (SalesOrder, SalesOrderItem)
+**Endpoints:** 24+ (CRUD + Custom tracking + Customer portal)
 **Base Path:** `/api/v1`
 
 ## Overview
 
-The Sales module manages customer sales orders, order items, and order tracking. It integrates with the Contacts module for customer management, Finance module for AR invoice generation, and includes a comprehensive order tracking system.
+The Sales module manages customer sales orders, order items, and order tracking. It integrates with the Contacts module for customer management, Finance module for AR invoice generation, and includes a comprehensive order tracking system with customer portal.
 
 ## Entities
 
@@ -19,7 +19,9 @@ The Sales module manages customer sales orders, order items, and order tracking.
 #### TypeScript Interface
 
 ```typescript
-type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'completed' | 'cancelled' | 'returned' | 'refunded';
+type OrderStatus = 'draft' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+type InvoicingStatus = 'pending' | 'partial' | 'invoiced' | 'not_required';
+type FinancialStatus = 'pending' | 'partial' | 'paid' | 'overdue';
 
 interface SalesOrder {
   id: string;
@@ -29,20 +31,29 @@ interface SalesOrder {
   orderDate: string;
   approvedAt: string | null;
   deliveredAt: string | null;
-  subtotalAmount: number;
-  taxAmount: number;
   discountTotal: number;
   totalAmount: number;
   notes: string | null;
 
   // Finance integration fields
   arInvoiceId: number | null;
-  invoicingStatus: string | null;
+  invoicingStatus: InvoicingStatus;
   invoicingNotes: string | null;
 
   metadata: Record<string, any> | null;
   createdAt: string;
   updatedAt: string;
+}
+
+interface SalesOrderCreateRequest {
+  contactId: number;
+  orderNumber: string;
+  orderDate: string;
+  status?: OrderStatus;
+  discountTotal?: number;
+  totalAmount: number;
+  notes?: string;
+  metadata?: Record<string, any>;
 }
 ```
 
@@ -56,13 +67,12 @@ interface SalesOrder {
 | `orderDate` | `order_date` | date | Yes | Yes | Yes |
 | `approvedAt` | `approved_at` | datetime | No | Yes | No |
 | `deliveredAt` | `delivered_at` | datetime | No | Yes | No |
-| `subtotalAmount` | `subtotal_amount` | number | Yes | Yes | No |
-| `taxAmount` | `tax_amount` | number | No | No | No |
 | `discountTotal` | `discount_total` | number | No | No | No |
 | `totalAmount` | `total_amount` | number | Yes | Yes | No |
 | `notes` | `notes` | string | No | No | No |
 | `arInvoiceId` | `ar_invoice_id` | number | No | No | Yes |
 | `invoicingStatus` | `invoicing_status` | string | No | Yes | Yes |
+| `invoicingNotes` | `invoicing_notes` | string | No | No | No |
 | `metadata` | `metadata` | object | No | No | No |
 
 #### Relationships
@@ -70,12 +80,29 @@ interface SalesOrder {
 - `contact` → Contact (belongsTo) - The customer
 - `customer` → Contact (belongsTo) - Alias for contact
 - `items` → SalesOrderItem[] (hasMany)
-- `arInvoice` → ARInvoice (belongsTo) - Generated AR invoice
+
+#### Filters
+
+| Filter | Example | Description |
+|--------|---------|-------------|
+| `filter[order_number]` | `SO-2025-001` | Filter by order number |
+| `filter[status]` | `pending` | Filter by status |
+| `filter[contact]` | `10` | Filter by customer (contact_id) |
+| `filter[order_date]` | `2025-01-15` | Filter by order date |
+| `filter[invoicing_status]` | `invoiced` | Filter by invoicing status |
+| `filter[ar_invoice_id]` | `5` | Filter by AR invoice |
+
+#### Include Paths
+
+- `contact` - Include customer details
+- `customer` - Alias for contact
+- `items` - Include order items
+- `items.product` - Include items with product details
 
 #### Examples
 
 **Create Sales Order:**
-```javascript
+```typescript
 const payload = {
   data: {
     type: "sales-orders",
@@ -83,9 +110,7 @@ const payload = {
       contactId: 10,
       orderNumber: "SO-2025-001",
       orderDate: "2025-11-05",
-      status: "pending",
-      subtotalAmount: 1000.00,
-      taxAmount: 160.00,
+      status: "draft",
       discountTotal: 50.00,
       totalAmount: 1110.00,
       notes: "Priority delivery"
@@ -95,13 +120,17 @@ const payload = {
 
 const response = await fetch('/api/v1/sales-orders', {
   method: 'POST',
-  headers,
+  headers: {
+    'Content-Type': 'application/vnd.api+json',
+    'Accept': 'application/vnd.api+json',
+    'Authorization': `Bearer ${token}`
+  },
   body: JSON.stringify(payload)
 });
 ```
 
 **List Orders with Customer:**
-```javascript
+```typescript
 const response = await fetch(
   '/api/v1/sales-orders?filter[status]=pending&include=customer,items&sort=-orderDate',
   { headers }
@@ -136,6 +165,16 @@ interface SalesOrderItem {
   createdAt: string;
   updatedAt: string;
 }
+
+interface SalesOrderItemCreateRequest {
+  salesOrderId: number;
+  productId: number;
+  quantity: number;
+  unitPrice: number;
+  discount?: number;
+  total: number;
+  metadata?: Record<string, any>;
+}
 ```
 
 #### Field Mappings
@@ -158,14 +197,29 @@ interface SalesOrderItem {
 - `salesOrder` → SalesOrder (belongsTo)
 - `product` → Product (belongsTo)
 
+#### Filters
+
+| Filter | Example | Description |
+|--------|---------|-------------|
+| `filter[salesOrderId]` | `5` | Filter by sales order |
+| `filter[productId]` | `123` | Filter by product |
+| `filter[quantity]` | `10` | Filter by quantity |
+| `filter[unitPrice]` | `99.99` | Filter by unit price |
+| `filter[total]` | `999.90` | Filter by total |
+
+#### Include Paths
+
+- `salesOrder` - Include parent order
+- `salesOrder.customer` - Include order with customer
+- `product` - Include product details
+
 ---
 
-### 3. OrderTracking
+## Order Tracking System
 
-**Endpoints:** `/orders/{id}/tracking`, `/orders/{id}/status-history`
-**Note:** These are custom REST endpoints, not JSON:API
+These are custom REST endpoints, not JSON:API.
 
-#### TypeScript Interface
+### TypeScript Interfaces
 
 ```typescript
 interface OrderTracking {
@@ -185,70 +239,144 @@ interface OrderTimelineEvent {
   timestamp: string | null;
   completed: boolean;
 }
+
+interface StatusHistoryEntry {
+  status: string;
+  changedAt: string;
+  changedBy: number;
+  notes: string | null;
+}
 ```
 
-#### Available Endpoints
+### Available Endpoints
 
-**Get Order Tracking:**
-```javascript
-const response = await fetch('/api/v1/orders/123/tracking', { headers });
+#### Get Order Tracking
 
-// Response:
+```http
+GET /api/v1/orders/{orderId}/tracking
+Authorization: Bearer {token}
+```
+
+**Response:**
+```json
 {
-  data: {
-    orderNumber: "SO-2025-001",
-    status: "shipped",
-    trackingNumber: "1Z999AA1234567890",
-    trackingUrl: "https://tracking.example.com/1Z999AA1234567890",
-    orderDate: "2025-11-01",
-    estimatedDelivery: "2025-11-08",
-    currentLocation: "In transit",
-    timeline: [
-      { status: "placed", label: "Order Placed", timestamp: "2025-11-01", completed: true },
-      { status: "confirmed", label: "Order Confirmed", timestamp: "2025-11-01", completed: true },
-      { status: "processing", label: "Processing", timestamp: null, completed: true },
-      { status: "shipped", label: "Shipped", timestamp: "2025-11-03", completed: true },
-      { status: "delivered", label: "Delivered", timestamp: null, completed: false }
+  "data": {
+    "orderNumber": "SO-2025-001",
+    "status": "shipped",
+    "trackingNumber": "1Z999AA1234567890",
+    "trackingUrl": "https://tracking.example.com/1Z999AA1234567890",
+    "orderDate": "2025-11-01",
+    "estimatedDelivery": "2025-11-08",
+    "currentLocation": "In transit",
+    "timeline": [
+      { "status": "placed", "label": "Order Placed", "timestamp": "2025-11-01", "completed": true },
+      { "status": "confirmed", "label": "Order Confirmed", "timestamp": "2025-11-01", "completed": true },
+      { "status": "processing", "label": "Processing", "timestamp": null, "completed": true },
+      { "status": "shipped", "label": "Shipped", "timestamp": "2025-11-03", "completed": true },
+      { "status": "delivered", "label": "Delivered", "timestamp": null, "completed": false }
     ]
   }
 }
 ```
 
-**Get Status History:**
-```javascript
-const response = await fetch('/api/v1/orders/123/status-history', { headers });
+#### Get Status History
+
+```http
+GET /api/v1/orders/{orderId}/status-history
+Authorization: Bearer {token}
 ```
 
-**Update Order Status (Admin Only):**
-```javascript
-const payload = {
-  status: "shipped",
-  notes: "Package picked up by carrier",
-  tracking_number: "1Z999AA1234567890",
-  tracking_url: "https://tracking.example.com/1Z999AA1234567890"
-};
+#### Update Order Status (Admin Only)
 
-const response = await fetch('/api/v1/orders/123/status', {
-  method: 'POST',
-  headers,
-  body: JSON.stringify(payload)
-});
+```http
+POST /api/v1/orders/{orderId}/status
+Authorization: Bearer {token}
+Content-Type: application/json
 ```
 
-**Mark Order as Shipped (Admin Only):**
-```javascript
-const payload = {
-  tracking_number: "1Z999AA1234567890",
-  tracking_url: "https://tracking.example.com/1Z999AA1234567890",
-  carrier: "UPS"
-};
-
-const response = await fetch('/api/v1/orders/123/ship', {
-  method: 'POST',
-  headers,
-  body: JSON.stringify(payload)
-});
+```json
+{
+  "status": "shipped",
+  "notes": "Package picked up by carrier",
+  "tracking_number": "1Z999AA1234567890",
+  "tracking_url": "https://tracking.example.com/1Z999AA1234567890"
+}
 ```
+
+#### Mark Order as Shipped (Admin Only)
+
+```http
+POST /api/v1/orders/{orderId}/ship
+Authorization: Bearer {token}
+Content-Type: application/json
+```
+
+```json
+{
+  "tracking_number": "1Z999AA1234567890",
+  "tracking_url": "https://tracking.example.com/1Z999AA1234567890",
+  "carrier": "UPS"
+}
+```
+
+---
+
+## Customer Order Portal
+
+Custom endpoints for customer self-service.
+
+### Available Endpoints
+
+#### List My Orders
+
+```http
+GET /api/v1/my-orders
+Authorization: Bearer {token}
+```
+
+Lists orders for the authenticated customer.
+
+#### Get My Order Details
+
+```http
+GET /api/v1/my-orders/{orderId}
+Authorization: Bearer {token}
+```
+
+#### Cancel My Order
+
+```http
+POST /api/v1/my-orders/{orderId}/cancel
+Authorization: Bearer {token}
+```
+
+Only works for orders in `draft` or `confirmed` status.
+
+#### Request Return
+
+```http
+POST /api/v1/my-orders/{orderId}/return
+Authorization: Bearer {token}
+Content-Type: application/json
+```
+
+```json
+{
+  "reason": "Product damaged",
+  "items": [
+    { "itemId": 1, "quantity": 1, "reason": "Defective" }
+  ]
+}
+```
+
+#### Download Invoice
+
+```http
+GET /api/v1/my-orders/{orderId}/invoice
+Authorization: Bearer {token}
+```
+
+Returns PDF invoice if available.
 
 ---
 
@@ -256,14 +384,26 @@ const response = await fetch('/api/v1/orders/123/ship', {
 
 ### 1. Create Complete Sales Order
 
-```javascript
-async function createSalesOrder(orderData) {
+```typescript
+async function createSalesOrder(orderData: {
+  customerId: number;
+  orderNumber: string;
+  items: Array<{
+    productId: number;
+    quantity: number;
+    unitPrice: number;
+    discount?: number;
+  }>;
+  discount?: number;
+  notes?: string;
+}) {
   // 1. Calculate totals
-  const subtotal = orderData.items.reduce((sum, item) =>
-    sum + (item.quantity * item.unitPrice - (item.discount || 0)), 0
-  );
-  const tax = subtotal * 0.16; // 16% IVA
-  const total = subtotal + tax;
+  const itemsTotal = orderData.items.reduce((sum, item) => {
+    const itemTotal = (item.quantity * item.unitPrice) - (item.discount || 0);
+    return sum + itemTotal;
+  }, 0);
+
+  const total = itemsTotal - (orderData.discount || 0);
 
   // 2. Create sales order
   const orderPayload = {
@@ -273,9 +413,7 @@ async function createSalesOrder(orderData) {
         contactId: orderData.customerId,
         orderNumber: orderData.orderNumber,
         orderDate: new Date().toISOString().split('T')[0],
-        status: "pending",
-        subtotalAmount: subtotal,
-        taxAmount: tax,
+        status: "draft",
         discountTotal: orderData.discount || 0,
         totalAmount: total,
         notes: orderData.notes
@@ -294,6 +432,8 @@ async function createSalesOrder(orderData) {
 
   // 3. Create order items
   for (const item of orderData.items) {
+    const itemTotal = (item.quantity * item.unitPrice) - (item.discount || 0);
+
     const itemPayload = {
       data: {
         type: "sales-order-items",
@@ -303,7 +443,7 @@ async function createSalesOrder(orderData) {
           quantity: item.quantity,
           unitPrice: item.unitPrice,
           discount: item.discount || 0,
-          total: (item.quantity * item.unitPrice) - (item.discount || 0)
+          total: itemTotal
         }
       }
     };
@@ -321,10 +461,22 @@ async function createSalesOrder(orderData) {
 
 ### 2. Order Tracking Widget
 
-```javascript
-async function OrderTrackingWidget({ orderId }) {
+```typescript
+async function getOrderTracking(orderId: number): Promise<OrderTracking> {
   const response = await fetch(`/api/v1/orders/${orderId}/tracking`, { headers });
-  const { data: tracking } = await response.json();
+  const { data } = await response.json();
+  return data;
+}
+
+// React component example
+function OrderTrackingWidget({ orderId }: { orderId: number }) {
+  const [tracking, setTracking] = useState<OrderTracking | null>(null);
+
+  useEffect(() => {
+    getOrderTracking(orderId).then(setTracking);
+  }, [orderId]);
+
+  if (!tracking) return <div>Loading...</div>;
 
   return (
     <div className="tracking-widget">
@@ -332,7 +484,7 @@ async function OrderTrackingWidget({ orderId }) {
       <p>Status: <span className={`status-${tracking.status}`}>{tracking.status}</span></p>
 
       {tracking.trackingNumber && (
-        <p>Tracking: <a href={tracking.trackingUrl}>{tracking.trackingNumber}</a></p>
+        <p>Tracking: <a href={tracking.trackingUrl!}>{tracking.trackingNumber}</a></p>
       )}
 
       {tracking.estimatedDelivery && (
@@ -354,16 +506,88 @@ async function OrderTrackingWidget({ orderId }) {
 
 ### 3. Customer Order History
 
-```javascript
-async function getCustomerOrders(customerId) {
+```typescript
+async function getCustomerOrders(customerId: number) {
   const response = await fetch(
     `/api/v1/sales-orders?filter[contact]=${customerId}&include=items.product&sort=-orderDate`,
     { headers }
   );
 
-  return await response.json();
+  return response.json();
 }
 ```
+
+### 4. Ship Order with Tracking
+
+```typescript
+async function shipOrder(
+  orderId: number,
+  trackingInfo: {
+    trackingNumber: string;
+    trackingUrl?: string;
+    carrier: string;
+  }
+) {
+  const response = await fetch(`/api/v1/orders/${orderId}/ship`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({
+      tracking_number: trackingInfo.trackingNumber,
+      tracking_url: trackingInfo.trackingUrl,
+      carrier: trackingInfo.carrier
+    })
+  });
+
+  return response.json();
+}
+```
+
+### 5. Update Order Status
+
+```typescript
+async function updateOrderStatus(
+  orderId: number,
+  status: OrderStatus,
+  notes?: string
+) {
+  const response = await fetch(`/api/v1/orders/${orderId}/status`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ status, notes })
+  });
+
+  return response.json();
+}
+```
+
+---
+
+## Order Status Flow
+
+```
+draft → confirmed → processing → shipped → delivered
+                              ↓
+                          cancelled (from draft/confirmed/processing)
+
+delivered → returned → refunded
+```
+
+### Valid Status Transitions
+
+| From | To |
+|------|----|
+| `draft` | `confirmed`, `cancelled` |
+| `confirmed` | `processing`, `cancelled` |
+| `processing` | `shipped`, `cancelled` |
+| `shipped` | `delivered`, `returned` |
+| `delivered` | `returned`, `completed` |
+| `returned` | `refunded` |
 
 ---
 
@@ -371,28 +595,48 @@ async function getCustomerOrders(customerId) {
 
 ### Role-Based Access
 
-| Role | Read | Create | Update | Delete | Tracking |
-|------|------|--------|--------|--------|----------|
-| **God** | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Admin** | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Tech** | ✅ | ❌ | ❌ | ❌ | ✅ (read-only) |
-| **Customer** | ✅ (own) | ✅ | ❌ | ❌ | ✅ (own) |
+| Role | Read | Create | Update | Delete | Tracking | Ship |
+|------|------|--------|--------|--------|----------|------|
+| **God** | All | Yes | Yes | Yes | Yes | Yes |
+| **Admin** | All | Yes | Yes | Yes | Yes | Yes |
+| **Tech** | All | No | No | No | Read | No |
+| **Customer** | Own | Yes | Limited | No | Own | No |
+
+### Permission Names
+
+| Entity | index | show | store | update | destroy |
+|--------|-------|------|-------|--------|---------|
+| sales-orders | `sales-orders.index` | `sales-orders.show` | `sales-orders.store` | `sales-orders.update` | `sales-orders.destroy` |
+| sales-order-items | `sales-order-items.index` | `sales-order-items.show` | `sales-order-items.store` | `sales-order-items.update` | `sales-order-items.destroy` |
 
 ---
 
 ## Quick Reference
 
-**Available Endpoints:**
+**JSON:API Endpoints:**
 - `GET /api/v1/sales-orders` - List all sales orders
 - `POST /api/v1/sales-orders` - Create sales order
 - `GET /api/v1/sales-orders/{id}` - Get single order
 - `PATCH /api/v1/sales-orders/{id}` - Update order
 - `DELETE /api/v1/sales-orders/{id}` - Delete order
 - Same pattern for `/sales-order-items`
+
+**Order Tracking Endpoints:**
 - `GET /api/v1/orders/{id}/tracking` - Get order tracking
 - `GET /api/v1/orders/{id}/status-history` - Get status history
 - `POST /api/v1/orders/{id}/status` - Update status (admin)
 - `POST /api/v1/orders/{id}/ship` - Mark as shipped (admin)
+
+**Customer Portal Endpoints:**
+- `GET /api/v1/my-orders` - List customer's orders
+- `GET /api/v1/my-orders/{id}` - Get customer's order
+- `POST /api/v1/my-orders/{id}/cancel` - Cancel order
+- `POST /api/v1/my-orders/{id}/return` - Request return
+- `GET /api/v1/my-orders/{id}/invoice` - Download invoice
+
+**Reporting Endpoints:**
+- `GET /api/v1/sales-orders/reports` - Sales reports
+- `GET /api/v1/sales-orders/customers` - Customer summary
 
 **Related Modules:**
 - [Contacts Module](CONTACTS_FRONTEND_GUIDE.md) - Customer management

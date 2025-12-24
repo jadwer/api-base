@@ -1,8 +1,8 @@
 # Ecommerce Module - Frontend Integration Guide
 
 **Module:** Ecommerce
-**Entities:** 11 (ShoppingCart, CartItem, CheckoutSession, PaymentTransaction, Wishlist, WishlistItem, ProductReview, Coupon, ShippingMethod, Currency, InventoryReservation)
-**Endpoints:** 67
+**Entities:** 15 (ShoppingCart, CartItem, CheckoutSession, PaymentTransaction, Wishlist, WishlistItem, ProductReview, Coupon, ShippingMethod, Currency, InventoryReservation, ProductQuestion, ProductAnswer, ProductComparison, ProductComparisonItem)
+**Endpoints:** 75
 **Base Path:** `/api/v1`
 
 ## Overview
@@ -338,6 +338,267 @@ interface Currency {
   updatedAt: string;
 }
 ```
+
+---
+
+### 9. CartItem
+
+**Endpoint:** `/cart-items`
+**Resource Type:** `cart-items`
+
+#### TypeScript Interface
+
+```typescript
+interface CartItem {
+  id: string;
+  shoppingCartId: string;
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+  originalPrice: number;
+  discountPercent: number;
+  discountAmount: number;
+  subtotal: number;
+  taxRate: number;
+  taxAmount: number;
+  total: number;
+  status: string;
+  metadata: Record<string, any> | null;
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+#### Relationships
+
+- `shoppingCart` → ShoppingCart (belongsTo)
+- `product` → Product (belongsTo)
+
+---
+
+### 10. WishlistItem
+
+**Endpoint:** `/wishlist-items`
+**Resource Type:** `wishlist-items`
+
+#### TypeScript Interface
+
+```typescript
+type Priority = 'low' | 'medium' | 'high';
+
+interface WishlistItem {
+  id: string;
+  wishlistId: number;
+  productId: number;
+  quantity: number;
+  priority: Priority;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+#### Field Mappings
+
+| JSON:API Field | Database Column | Type | Sortable | Filterable |
+|---------------|-----------------|------|----------|------------|
+| `wishlistId` | `wishlist_id` | number | No | Yes |
+| `productId` | `product_id` | number | No | Yes |
+| `quantity` | `quantity` | number | Yes | No |
+| `priority` | `priority` | string | Yes | Yes |
+
+#### Relationships
+
+- `wishlist` → Wishlist (belongsTo)
+- `product` → Product (belongsTo)
+
+---
+
+### 11. InventoryReservation
+
+**Endpoint:** `/inventory-reservations`
+**Resource Type:** `inventory-reservations`
+
+#### TypeScript Interface
+
+```typescript
+type ReservationStatus = 'active' | 'released' | 'fulfilled' | 'expired';
+
+interface InventoryReservation {
+  id: string;
+  checkoutSessionId: number;
+  stockId: number;
+  productId: number;
+  warehouseId: number;
+  quantityReserved: number;
+  status: ReservationStatus;
+  expiresAt: string;
+  releasedAt: string | null;
+  fulfilledAt: string | null;
+  notes: string | null;
+
+  // Calculated fields (read-only)
+  isExpired: boolean;
+  isActive: boolean;
+  timeRemaining: number;
+
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+#### Field Mappings
+
+| JSON:API Field | Database Column | Type | Sortable | Filterable |
+|---------------|-----------------|------|----------|------------|
+| `checkoutSessionId` | `checkout_session_id` | number | No | Yes |
+| `stockId` | `stock_id` | number | No | No |
+| `productId` | `product_id` | number | No | Yes |
+| `warehouseId` | `warehouse_id` | number | No | Yes |
+| `quantityReserved` | `quantity_reserved` | number | No | No |
+| `status` | `status` | string | No | Yes |
+| `expiresAt` | `expires_at` | datetime | No | No |
+
+#### Relationships
+
+- `checkoutSession` → CheckoutSession (belongsTo)
+- `stock` → Stock (belongsTo)
+- `product` → Product (belongsTo)
+- `warehouse` → Warehouse (belongsTo)
+
+---
+
+### 12. ProductQuestion
+
+**Endpoint:** `/product-questions`
+**Resource Type:** `product-questions`
+
+#### TypeScript Interface
+
+```typescript
+type QuestionStatus = 'pending' | 'approved' | 'rejected';
+
+interface ProductQuestion {
+  id: string;
+  question: string;
+  status: QuestionStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+#### Field Mappings
+
+| JSON:API Field | Database Column | Type | Sortable | Filterable |
+|---------------|-----------------|------|----------|------------|
+| `question` | `question` | string | Yes | No |
+| `status` | `status` | string | Yes | Yes |
+| `productId` | `product_id` | number | No | Yes |
+| `userId` | `user_id` | number | No | Yes |
+
+#### Relationships
+
+- `product` → Product (belongsTo)
+- `user` → User (belongsTo)
+- `answers` → ProductAnswer[] (hasMany)
+
+---
+
+### 13. ProductAnswer
+
+**Endpoint:** `/product-answers`
+**Resource Type:** `product-answers`
+
+#### TypeScript Interface
+
+```typescript
+interface ProductAnswer {
+  id: string;
+  answer: string;
+  isVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+#### Field Mappings
+
+| JSON:API Field | Database Column | Type | Sortable | Filterable |
+|---------------|-----------------|------|----------|------------|
+| `answer` | `answer` | string | Yes | No |
+| `isVerified` | `is_verified` | boolean | Yes | Yes |
+| `questionId` | `question_id` | number | No | Yes |
+| `userId` | `user_id` | number | No | Yes |
+
+#### Relationships
+
+- `question` → ProductQuestion (belongsTo)
+- `user` → User (belongsTo)
+
+---
+
+### 14. ProductComparison
+
+**Endpoint:** `/product-comparisons`
+**Resource Type:** `product-comparisons`
+
+#### TypeScript Interface
+
+```typescript
+interface ProductComparison {
+  id: string;
+  name: string;
+  isPublic: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+#### Field Mappings
+
+| JSON:API Field | Database Column | Type | Sortable | Filterable |
+|---------------|-----------------|------|----------|------------|
+| `name` | `name` | string | Yes | No |
+| `isPublic` | `is_public` | boolean | Yes | Yes |
+| `userId` | `user_id` | number | No | Yes |
+
+#### Relationships
+
+- `user` → User (belongsTo)
+- `items` → ProductComparisonItem[] (hasMany)
+
+---
+
+### 15. ProductComparisonItem
+
+**Endpoint:** `/product-comparison-items`
+**Resource Type:** `product-comparison-items`
+
+#### TypeScript Interface
+
+```typescript
+interface ProductComparisonItem {
+  id: string;
+  comparisonId: number;
+  productId: number;
+  position: number;
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+#### Field Mappings
+
+| JSON:API Field | Database Column | Type | Sortable | Filterable |
+|---------------|-----------------|------|----------|------------|
+| `comparisonId` | `comparison_id` | number | No | Yes |
+| `productId` | `product_id` | number | No | Yes |
+| `position` | `position` | number | Yes | No |
+
+#### Relationships
+
+- `comparison` → ProductComparison (belongsTo)
+- `product` → Product (belongsTo)
 
 ---
 
@@ -680,6 +941,8 @@ async function convertCurrency(amount, fromCurrency, toCurrency) {
 - `/coupons` - Discount codes
 - `/shipping-methods` - Delivery options
 - `/currencies` - Multi-currency support
+- `/product-questions`, `/product-answers` - Q&A
+- `/product-comparisons`, `/product-comparison-items` - Product comparison
 
 **Related Modules:**
 - [Product Module](PRODUCT_FRONTEND_GUIDE.md) - Product catalog

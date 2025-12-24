@@ -1,8 +1,8 @@
 # Billing Module - Frontend Integration Guide
 
 **Module:** Billing (Mexican CFDI Electronic Invoicing)
-**Entities:** 3 (CFDIInvoice, CFDIItem, CompanySetting)
-**Endpoints:** 15
+**Entities:** 4 (CFDIInvoice, CFDIItem, CompanySetting, PaymentTransaction)
+**Endpoints:** 20
 **Base Path:** `/api/v1`
 
 ## Overview
@@ -153,6 +153,144 @@ interface CompanySetting {
   updatedAt: string;
 }
 ```
+
+---
+
+### 3. CFDIItem
+
+**Endpoint:** `/cfdi-items`
+**Resource Type:** `cfdi-items`
+
+#### TypeScript Interface
+
+```typescript
+interface CFDIItem {
+  id: string;
+
+  // Foreign keys
+  cfdiInvoiceId: number;
+  productId: number | null;
+
+  // Item Information
+  numeroLinea: number;
+  claveProdServ: string;  // SAT product/service key
+  claveUnidad: string;    // SAT unit key
+  unidad: string;
+  cantidad: number;
+  descripcion: string;
+  noIdentificacion: string | null;
+
+  // Prices (in cents)
+  valorUnitario: number;
+  importe: number;
+  descuento: number;
+
+  // Taxes
+  impuestos: Record<string, any>;
+  objetoImp: string;  // 01, 02, 03
+
+  // Optional fields
+  numeroPedimento: string | null;
+  cuentaPredial: Record<string, any> | null;
+  informacionAduanera: Record<string, any> | null;
+
+  metadata: Record<string, any> | null;
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+#### Field Mappings
+
+| JSON:API Field | Database Column | Type | Sortable | Filterable |
+|---------------|-----------------|------|----------|------------|
+| `cfdiInvoiceId` | `cfdi_invoice_id` | number | No | Yes |
+| `productId` | `product_id` | number | No | Yes |
+| `numeroLinea` | `numero_linea` | number | Yes | Yes |
+| `claveProdServ` | `clave_prod_serv` | string | No | Yes |
+| `importe` | `importe` | number | Yes | No |
+| `objetoImp` | `objeto_imp` | string | No | Yes |
+
+#### Relationships
+
+- `cfdiInvoice` → CFDIInvoice (belongsTo)
+- `product` → Product (belongsTo)
+
+---
+
+### 4. PaymentTransaction
+
+**Endpoint:** `/payment-transactions`
+**Resource Type:** `payment-transactions`
+
+#### TypeScript Interface
+
+```typescript
+type PaymentStatus = 'pending' | 'authorized' | 'captured' | 'failed' | 'refunded' | 'cancelled';
+type PaymentGateway = 'stripe' | 'paypal' | 'mercadopago' | 'openpay' | 'conekta';
+
+interface PaymentTransaction {
+  id: string;
+
+  // Foreign keys
+  checkoutSessionId: number | null;
+  salesOrderId: number | null;
+  arInvoiceId: number | null;
+
+  // Gateway Info
+  gateway: PaymentGateway;
+  paymentIntentId: string | null;
+  transactionId: string | null;
+  // clientSecret: hidden (sensitive)
+
+  // Payment Details
+  amount: number;
+  currency: string;
+  status: PaymentStatus;
+  paymentMethod: string;
+
+  // Card Info
+  cardBrand: string | null;
+  cardLast4: string | null;
+
+  // Gateway Response & Error
+  gatewayResponse: Record<string, any> | null;
+  errorMessage: string | null;
+
+  // Event Timestamps
+  authorizedAt: string | null;
+  capturedAt: string | null;
+  failedAt: string | null;
+  refundedAt: string | null;
+
+  metadata: Record<string, any> | null;
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+#### Field Mappings
+
+| JSON:API Field | Database Column | Type | Sortable | Filterable |
+|---------------|-----------------|------|----------|------------|
+| `checkoutSessionId` | `checkout_session_id` | number | No | Yes |
+| `salesOrderId` | `sales_order_id` | number | No | Yes |
+| `arInvoiceId` | `ar_invoice_id` | number | No | Yes |
+| `gateway` | `gateway` | string | Yes | Yes |
+| `paymentIntentId` | `payment_intent_id` | string | Yes | Yes |
+| `transactionId` | `transaction_id` | string | Yes | Yes |
+| `amount` | `amount` | number | Yes | No |
+| `currency` | `currency` | string | Yes | Yes |
+| `status` | `status` | string | Yes | Yes |
+| `paymentMethod` | `payment_method` | string | Yes | Yes |
+| `authorizedAt` | `authorized_at` | datetime | Yes | No |
+| `capturedAt` | `captured_at` | datetime | Yes | No |
+
+#### Relationships
+
+- `checkoutSession` → CheckoutSession (belongsTo) - Read-only
+- `salesOrder` → SalesOrder (belongsTo) - Read-only
+- `arInvoice` → ARInvoice (belongsTo) - Read-only
 
 ---
 

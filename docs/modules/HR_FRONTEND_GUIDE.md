@@ -11,7 +11,116 @@ The HR module manages employee information, attendance tracking, leave managemen
 
 ## Core Entities
 
-### 1. Employee
+### 1. Department
+
+**Endpoint:** `/departments`
+**Resource Type:** `departments`
+
+#### TypeScript Interface
+
+```typescript
+interface Department {
+  id: string;
+  name: string;
+  description: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface DepartmentCreateRequest {
+  name: string;
+  description?: string;
+  isActive?: boolean;
+  managerId?: string;  // relationship to Employee
+}
+```
+
+#### Field Mappings
+
+| JSON:API Field | Database Column | Type | Required | Sortable | Filterable |
+|---------------|-----------------|------|----------|----------|------------|
+| `name` | `name` | string | Yes | Yes | Yes |
+| `description` | `description` | string | No | Yes | No |
+| `isActive` | `is_active` | boolean | No | Yes | Yes |
+
+#### Relationships
+
+- `manager` → Employee (belongsTo) - Department manager
+- `employees` → Employee[] (hasMany, readOnly)
+- `positions` → Position[] (hasMany, readOnly)
+
+#### Filters
+
+| Filter | Example | Description |
+|--------|---------|-------------|
+| `filter[name]` | `Engineering` | Filter by name |
+| `filter[isActive]` | `true` | Filter by active status |
+| `filter[managerId]` | `5` | Filter by manager |
+
+---
+
+### 2. Position
+
+**Endpoint:** `/positions`
+**Resource Type:** `positions`
+
+#### TypeScript Interface
+
+```typescript
+type PositionLevel = 'junior' | 'mid' | 'senior' | 'lead' | 'manager' | 'director';
+
+interface Position {
+  id: string;
+  title: string;
+  description: string | null;
+  level: PositionLevel;
+  minSalary: number;
+  maxSalary: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface PositionCreateRequest {
+  title: string;
+  description?: string;
+  level?: PositionLevel;
+  minSalary?: number;
+  maxSalary?: number;
+  isActive?: boolean;
+  departmentId?: string;  // relationship
+}
+```
+
+#### Field Mappings
+
+| JSON:API Field | Database Column | Type | Required | Sortable | Filterable |
+|---------------|-----------------|------|----------|----------|------------|
+| `title` | `title` | string | Yes | Yes | Yes |
+| `description` | `description` | string | No | Yes | No |
+| `level` | `level` | string | No | Yes | Yes |
+| `minSalary` | `min_salary` | number | No | Yes | No |
+| `maxSalary` | `max_salary` | number | No | Yes | No |
+| `isActive` | `is_active` | boolean | No | Yes | Yes |
+
+#### Relationships
+
+- `department` → Department (belongsTo)
+- `employees` → Employee[] (hasMany, readOnly)
+
+#### Filters
+
+| Filter | Example | Description |
+|--------|---------|-------------|
+| `filter[title]` | `Developer` | Filter by title |
+| `filter[level]` | `senior` | Filter by level |
+| `filter[isActive]` | `true` | Filter by active status |
+| `filter[departmentId]` | `3` | Filter by department |
+
+---
+
+### 3. Employee
 
 **Endpoint:** `/employees`
 **Resource Type:** `employees`
@@ -40,6 +149,24 @@ interface Employee {
   createdAt: string;
   updatedAt: string;
 }
+
+interface EmployeeCreateRequest {
+  employeeCode: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  hireDate: string;
+  birthDate?: string;
+  salary: number;
+  status?: EmployeeStatus;
+  address?: string;
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
+  departmentId?: string;  // relationship
+  positionId?: string;    // relationship
+  userId?: string;        // relationship
+}
 ```
 
 #### Field Mappings
@@ -55,20 +182,39 @@ interface Employee {
 | `birthDate` | `birth_date` | date | No | Yes | No |
 | `salary` | `salary` | number | Yes | Yes | No |
 | `status` | `status` | string | Yes | Yes | Yes |
+| `terminationDate` | `termination_date` | date | No | Yes | No |
+| `terminationReason` | `termination_reason` | string | No | No | No |
+| `address` | `address` | string | No | No | No |
+| `emergencyContactName` | `emergency_contact_name` | string | No | No | No |
+| `emergencyContactPhone` | `emergency_contact_phone` | string | No | No | No |
 
 #### Relationships
 
 - `department` → Department (belongsTo)
 - `position` → Position (belongsTo)
-- `user` → User (belongsTo)
-- `attendances` → Attendance[] (hasMany)
-- `leaves` → Leave[] (hasMany)
-- `payrollItems` → PayrollItem[] (hasMany)
-- `performanceReviews` → PerformanceReview[] (hasMany)
+- `user` → User (belongsTo, readOnly)
+- `managedDepartments` → Department[] (hasMany, readOnly)
+- `attendances` → Attendance[] (hasMany, readOnly)
+- `leaves` → Leave[] (hasMany, readOnly)
+- `payrollItems` → PayrollItem[] (hasMany, readOnly)
+- `performanceReviews` → PerformanceReview[] (hasMany, readOnly)
+
+#### Filters
+
+| Filter | Example | Description |
+|--------|---------|-------------|
+| `filter[employeeCode]` | `EMP001` | Filter by code |
+| `filter[firstName]` | `John` | Filter by first name |
+| `filter[lastName]` | `Doe` | Filter by last name |
+| `filter[email]` | `john@example.com` | Filter by email |
+| `filter[status]` | `active` | Filter by status |
+| `filter[departmentId]` | `2` | Filter by department |
+| `filter[positionId]` | `5` | Filter by position |
+| `filter[userId]` | `1` | Filter by linked user |
 
 ---
 
-### 2. Attendance
+### 4. Attendance
 
 **Endpoint:** `/attendances`
 **Resource Type:** `attendances`
@@ -81,14 +227,23 @@ type AttendanceStatus = 'present' | 'absent' | 'late' | 'half_day';
 interface Attendance {
   id: string;
   date: string;
-  checkIn: string;  // HH:MM:SS format
-  checkOut: string | null;
-  hoursWorked: number;     // Auto-calculated
-  overtimeHours: number;   // Auto-calculated
+  checkIn: string;           // HH:MM:SS format
+  checkOut: string | null;   // HH:MM:SS format
+  hoursWorked: number;       // Auto-calculated
+  overtimeHours: number;     // Auto-calculated
   status: AttendanceStatus;
   notes: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+interface AttendanceCreateRequest {
+  date: string;
+  checkIn: string;
+  checkOut?: string;
+  status: AttendanceStatus;
+  notes?: string;
+  employeeId: string;  // relationship (required)
 }
 ```
 
@@ -96,13 +251,93 @@ interface Attendance {
 - `hoursWorked`: Automatically calculated from checkIn and checkOut times
 - `overtimeHours`: Hours worked beyond standard work day (8 hours)
 
+#### Field Mappings
+
+| JSON:API Field | Database Column | Type | Required | Sortable | Filterable |
+|---------------|-----------------|------|----------|----------|------------|
+| `date` | `date` | date | Yes | Yes | Yes |
+| `checkIn` | `check_in` | string | Yes | Yes | No |
+| `checkOut` | `check_out` | string | No | Yes | No |
+| `hoursWorked` | `hours_worked` | number | No | Yes | No |
+| `overtimeHours` | `overtime_hours` | number | No | Yes | No |
+| `status` | `status` | string | Yes | Yes | Yes |
+| `notes` | `notes` | string | No | No | No |
+
 #### Relationships
 
-- `employee` → Employee (belongsTo)
+- `employee` → Employee (belongsTo, required)
+
+#### Filters
+
+| Filter | Example | Description |
+|--------|---------|-------------|
+| `filter[date]` | `2024-01-15` | Filter by date |
+| `filter[status]` | `present` | Filter by status |
+| `filter[employee]` | `5` | Filter by employee ID |
+| `filter[employeeId]` | `5` | Filter by employee ID (alternative) |
 
 ---
 
-### 3. Leave
+### 5. LeaveType
+
+**Endpoint:** `/leave-types`
+**Resource Type:** `leave-types`
+
+#### TypeScript Interface
+
+```typescript
+interface LeaveType {
+  id: string;
+  name: string;
+  code: string;
+  description: string | null;
+  daysAllowed: number;
+  requiresApproval: boolean;
+  paid: boolean;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface LeaveTypeCreateRequest {
+  name: string;
+  code: string;
+  description?: string;
+  daysAllowed: number;
+  requiresApproval?: boolean;
+  paid?: boolean;
+  active?: boolean;
+}
+```
+
+#### Field Mappings
+
+| JSON:API Field | Database Column | Type | Required | Sortable | Filterable |
+|---------------|-----------------|------|----------|----------|------------|
+| `name` | `name` | string | Yes | Yes | No |
+| `code` | `code` | string | Yes | Yes | Yes |
+| `description` | `description` | string | No | No | No |
+| `daysAllowed` | `days_allowed` | number | Yes | Yes | No |
+| `requiresApproval` | `requires_approval` | boolean | No | Yes | Yes |
+| `paid` | `paid` | boolean | No | Yes | Yes |
+| `active` | `active` | boolean | No | Yes | Yes |
+
+#### Relationships
+
+- `leaves` → Leave[] (hasMany)
+
+#### Filters
+
+| Filter | Example | Description |
+|--------|---------|-------------|
+| `filter[code]` | `VAC` | Filter by code |
+| `filter[active]` | `true` | Filter by active status |
+| `filter[paid]` | `true` | Filter by paid leave |
+| `filter[requiresApproval]` | `true` | Filter by approval requirement |
+
+---
+
+### 6. Leave
 
 **Endpoint:** `/leaves`
 **Resource Type:** `leaves`
@@ -116,7 +351,7 @@ interface Leave {
   id: string;
   startDate: string;
   endDate: string;
-  daysRequested: number;  // Auto-calculated
+  daysRequested: number;    // Auto-calculated
   status: LeaveStatus;
   reason: string;
   notes: string | null;
@@ -124,20 +359,53 @@ interface Leave {
   createdAt: string;
   updatedAt: string;
 }
+
+interface LeaveCreateRequest {
+  startDate: string;
+  endDate: string;
+  status?: LeaveStatus;
+  reason: string;
+  notes?: string;
+  employeeId: string;   // relationship (required)
+  leaveTypeId: string;  // relationship (required)
+  approverId?: string;  // relationship
+}
 ```
 
 **Auto-Calculated Fields:**
 - `daysRequested`: Automatically calculated as business days between startDate and endDate
 
+#### Field Mappings
+
+| JSON:API Field | Database Column | Type | Required | Sortable | Filterable |
+|---------------|-----------------|------|----------|----------|------------|
+| `startDate` | `start_date` | date | Yes | Yes | Yes |
+| `endDate` | `end_date` | date | Yes | Yes | Yes |
+| `daysRequested` | `days_requested` | number | No | Yes | No |
+| `status` | `status` | string | No | Yes | Yes |
+| `reason` | `reason` | string | Yes | No | No |
+| `notes` | `notes` | string | No | No | No |
+| `approvedAt` | `approved_at` | datetime | No | Yes | No |
+
 #### Relationships
 
-- `employee` → Employee (belongsTo)
-- `leaveType` → LeaveType (belongsTo)
+- `employee` → Employee (belongsTo, required)
+- `leaveType` → LeaveType (belongsTo, required)
 - `approver` → Employee (belongsTo)
+
+#### Filters
+
+| Filter | Example | Description |
+|--------|---------|-------------|
+| `filter[status]` | `pending` | Filter by status |
+| `filter[employeeId]` | `5` | Filter by employee |
+| `filter[leaveTypeId]` | `2` | Filter by leave type |
+| `filter[startDate]` | `2024-01-01` | Filter by start date |
+| `filter[endDate]` | `2024-01-31` | Filter by end date |
 
 ---
 
-### 4. PayrollPeriod
+### 7. PayrollPeriod
 
 **Endpoint:** `/payroll-periods`
 **Resource Type:** `payroll-periods`
@@ -163,20 +431,55 @@ interface PayrollPeriod {
   createdAt: string;
   updatedAt: string;
 }
+
+interface PayrollPeriodCreateRequest {
+  name: string;
+  periodType: PeriodType;
+  startDate: string;
+  endDate: string;
+  paymentDate: string;
+  status?: PayrollStatus;
+  notes?: string;
+}
 ```
 
 **Auto-Calculated Fields:**
-- `totalGross`: Sum of all payroll items' gross amounts
+- `totalGross`: Sum of all payroll items' (basicSalary + overtimePay + bonuses)
 - `totalDeductions`: Sum of all payroll items' deductions
 - `totalNet`: totalGross - totalDeductions
+
+#### Field Mappings
+
+| JSON:API Field | Database Column | Type | Required | Sortable | Filterable |
+|---------------|-----------------|------|----------|----------|------------|
+| `name` | `name` | string | Yes | Yes | No |
+| `periodType` | `period_type` | string | Yes | Yes | Yes |
+| `startDate` | `start_date` | date | Yes | Yes | Yes |
+| `endDate` | `end_date` | date | Yes | Yes | Yes |
+| `paymentDate` | `payment_date` | date | Yes | Yes | Yes |
+| `status` | `status` | string | No | Yes | Yes |
+| `totalGross` | `total_gross` | number | No | Yes | No |
+| `totalDeductions` | `total_deductions` | number | No | Yes | No |
+| `totalNet` | `total_net` | number | No | Yes | No |
+| `notes` | `notes` | string | No | No | No |
 
 #### Relationships
 
 - `payrollItems` → PayrollItem[] (hasMany)
 
+#### Filters
+
+| Filter | Example | Description |
+|--------|---------|-------------|
+| `filter[status]` | `approved` | Filter by status |
+| `filter[periodType]` | `monthly` | Filter by period type |
+| `filter[startDate]` | `2024-01-01` | Filter by start date |
+| `filter[endDate]` | `2024-01-31` | Filter by end date |
+| `filter[paymentDate]` | `2024-02-05` | Filter by payment date |
+
 ---
 
-### 5. PayrollItem
+### 8. PayrollItem
 
 **Endpoint:** `/payroll-items`
 **Resource Type:** `payroll-items`
@@ -184,38 +487,67 @@ interface PayrollPeriod {
 #### TypeScript Interface
 
 ```typescript
+type PayrollItemStatus = 'draft' | 'pending' | 'paid';
+
 interface PayrollItem {
   id: string;
-  baseSalary: number;
-  overtime: number;
+  basicSalary: number;
+  overtimePay: number;
   bonuses: number;
-  grossPay: number;         // Auto-calculated
-  socialSecurity: number;
-  healthInsurance: number;
-  taxes: number;
-  otherDeductions: number;
-  totalDeductions: number;  // Auto-calculated
+  deductions: number;
   netPay: number;           // Auto-calculated
-  status: string;
+  status: PayrollItemStatus;
+  paidAt: string | null;
   notes: string | null;
   createdAt: string;
   updatedAt: string;
 }
+
+interface PayrollItemCreateRequest {
+  basicSalary: number;
+  overtimePay?: number;
+  bonuses?: number;
+  deductions?: number;
+  status?: PayrollItemStatus;
+  paidAt?: string;
+  notes?: string;
+  employeeId: string;       // relationship (required)
+  payrollPeriodId: string;  // relationship (required)
+}
 ```
 
 **Auto-Calculated Fields:**
-- `grossPay`: baseSalary + overtime + bonuses
-- `totalDeductions`: socialSecurity + healthInsurance + taxes + otherDeductions
-- `netPay`: grossPay - totalDeductions
+- `netPay`: (basicSalary + overtimePay + bonuses) - deductions
+
+#### Field Mappings
+
+| JSON:API Field | Database Column | Type | Required | Sortable | Filterable |
+|---------------|-----------------|------|----------|----------|------------|
+| `basicSalary` | `basic_salary` | number | Yes | Yes | No |
+| `overtimePay` | `overtime_pay` | number | No | Yes | No |
+| `bonuses` | `bonuses` | number | No | Yes | No |
+| `deductions` | `deductions` | number | No | Yes | No |
+| `netPay` | `net_pay` | number | No | Yes | No |
+| `status` | `status` | string | No | Yes | Yes |
+| `paidAt` | `paid_at` | datetime | No | Yes | No |
+| `notes` | `notes` | string | No | No | No |
 
 #### Relationships
 
-- `employee` → Employee (belongsTo)
-- `payrollPeriod` → PayrollPeriod (belongsTo)
+- `employee` → Employee (belongsTo, required)
+- `payrollPeriod` → PayrollPeriod (belongsTo, required)
+
+#### Filters
+
+| Filter | Example | Description |
+|--------|---------|-------------|
+| `filter[status]` | `pending` | Filter by status |
+| `filter[employeeId]` | `5` | Filter by employee |
+| `filter[payrollPeriodId]` | `3` | Filter by payroll period |
 
 ---
 
-### 6. PerformanceReview
+### 9. PerformanceReview
 
 **Endpoint:** `/performance-reviews`
 **Resource Type:** `performance-reviews`
@@ -223,28 +555,68 @@ interface PayrollItem {
 #### TypeScript Interface
 
 ```typescript
-type ReviewStatus = 'draft' | 'pending' | 'completed';
+type ReviewStatus = 'draft' | 'submitted' | 'reviewed' | 'acknowledged';
 
 interface PerformanceReview {
   id: string;
   reviewDate: string;
-  periodStart: string;
-  periodEnd: string;
-  overallRating: number;  // 1-5
-  strengths: string;
-  areasForImprovement: string;
-  goals: string;
+  reviewPeriodStart: string;
+  reviewPeriodEnd: string;
+  overallRating: number;      // 1-5
+  goalsRating: number;        // 1-5
+  skillsRating: number;       // 1-5
+  attendanceRating: number;   // 1-5
+  comments: string | null;
+  employeeComments: string | null;
   status: ReviewStatus;
-  notes: string | null;
   createdAt: string;
   updatedAt: string;
 }
+
+interface PerformanceReviewCreateRequest {
+  reviewDate: string;
+  reviewPeriodStart: string;
+  reviewPeriodEnd: string;
+  overallRating: number;
+  goalsRating?: number;
+  skillsRating?: number;
+  attendanceRating?: number;
+  comments?: string;
+  employeeComments?: string;
+  status?: ReviewStatus;
+  employeeId: string;   // relationship (required)
+  reviewerId: string;   // relationship (required)
+}
 ```
+
+#### Field Mappings
+
+| JSON:API Field | Database Column | Type | Required | Sortable | Filterable |
+|---------------|-----------------|------|----------|----------|------------|
+| `reviewDate` | `review_date` | date | Yes | Yes | Yes |
+| `reviewPeriodStart` | `review_period_start` | date | Yes | Yes | No |
+| `reviewPeriodEnd` | `review_period_end` | date | Yes | Yes | No |
+| `overallRating` | `overall_rating` | integer | Yes | Yes | No |
+| `goalsRating` | `goals_rating` | integer | No | Yes | No |
+| `skillsRating` | `skills_rating` | integer | No | Yes | No |
+| `attendanceRating` | `attendance_rating` | integer | No | Yes | No |
+| `comments` | `comments` | string | No | No | No |
+| `employeeComments` | `employee_comments` | string | No | No | No |
+| `status` | `status` | string | No | Yes | Yes |
 
 #### Relationships
 
-- `employee` → Employee (belongsTo)
-- `reviewer` → Employee (belongsTo)
+- `employee` → Employee (belongsTo, required)
+- `reviewer` → Employee (belongsTo, required)
+
+#### Filters
+
+| Filter | Example | Description |
+|--------|---------|-------------|
+| `filter[status]` | `reviewed` | Filter by status |
+| `filter[employeeId]` | `5` | Filter by employee |
+| `filter[reviewerId]` | `3` | Filter by reviewer |
+| `filter[reviewDate]` | `2024-06-15` | Filter by review date |
 
 ---
 
@@ -252,24 +624,32 @@ interface PerformanceReview {
 
 ### 1. Track Employee Attendance
 
-```javascript
-async function recordAttendance(employeeId, checkIn, checkOut = null) {
+```typescript
+async function recordAttendance(employeeId: string, checkIn: string, checkOut?: string) {
   const payload = {
     data: {
       type: "attendances",
       attributes: {
-        employeeId: employeeId,
         date: new Date().toISOString().split('T')[0],
         checkIn: checkIn,      // "09:00:00"
         checkOut: checkOut,    // "17:30:00" or null
         status: "present"
+      },
+      relationships: {
+        employee: {
+          data: { type: "employees", id: employeeId }
+        }
       }
     }
   };
 
   const response = await fetch('/api/v1/attendances', {
     method: 'POST',
-    headers,
+    headers: {
+      'Content-Type': 'application/vnd.api+json',
+      'Accept': 'application/vnd.api+json',
+      'Authorization': `Bearer ${token}`
+    },
     body: JSON.stringify(payload)
   });
 
@@ -285,18 +665,30 @@ async function recordAttendance(employeeId, checkIn, checkOut = null) {
 
 ### 2. Submit Leave Request
 
-```javascript
-async function submitLeaveRequest(employeeId, leaveTypeId, startDate, endDate, reason) {
+```typescript
+async function submitLeaveRequest(
+  employeeId: string,
+  leaveTypeId: string,
+  startDate: string,
+  endDate: string,
+  reason: string
+) {
   const payload = {
     data: {
       type: "leaves",
       attributes: {
-        employeeId: employeeId,
-        leaveTypeId: leaveTypeId,
         startDate: startDate,
         endDate: endDate,
         status: "pending",
         reason: reason
+      },
+      relationships: {
+        employee: {
+          data: { type: "employees", id: employeeId }
+        },
+        leaveType: {
+          data: { type: "leave-types", id: leaveTypeId }
+        }
       }
     }
   };
@@ -318,8 +710,13 @@ async function submitLeaveRequest(employeeId, leaveTypeId, startDate, endDate, r
 
 ### 3. Process Payroll
 
-```javascript
-async function processPayroll(periodData) {
+```typescript
+async function processPayroll(periodData: {
+  name: string;
+  startDate: string;
+  endDate: string;
+  paymentDate: string;
+}) {
   // 1. Create payroll period
   const periodPayload = {
     data: {
@@ -346,7 +743,7 @@ async function processPayroll(periodData) {
 
   // 2. Get active employees
   const employeesResponse = await fetch(
-    '/api/v1/employees?filter[status]=active&include=attendances',
+    '/api/v1/employees?filter[status]=active',
     { headers }
   );
 
@@ -354,27 +751,23 @@ async function processPayroll(periodData) {
 
   // 3. Create payroll items for each employee
   for (const employee of employees.data) {
-    // Calculate overtime based on attendance
-    const attendances = employee.relationships.attendances.data || [];
-    const totalOvertime = attendances.reduce(
-      (sum, att) => sum + (att.attributes.overtimeHours || 0),
-      0
-    );
-
     const itemPayload = {
       data: {
         type: "payroll-items",
         attributes: {
-          payrollPeriodId: parseInt(periodId),
-          employeeId: parseInt(employee.id),
-          baseSalary: employee.attributes.salary,
-          overtime: totalOvertime * 50, // $50 per hour
+          basicSalary: employee.attributes.salary,
+          overtimePay: 0,
           bonuses: 0,
-          socialSecurity: employee.attributes.salary * 0.0765,
-          healthInsurance: 200,
-          taxes: employee.attributes.salary * 0.15,
-          otherDeductions: 0,
+          deductions: employee.attributes.salary * 0.15, // Example: 15% deductions
           status: "pending"
+        },
+        relationships: {
+          payrollPeriod: {
+            data: { type: "payroll-periods", id: periodId }
+          },
+          employee: {
+            data: { type: "employees", id: employee.id }
+          }
         }
       }
     };
@@ -397,6 +790,7 @@ async function processPayroll(periodData) {
   return {
     periodId: periodId,
     totalGross: finalData.data.attributes.totalGross,
+    totalDeductions: finalData.data.attributes.totalDeductions,
     totalNet: finalData.data.attributes.totalNet,
     employeeCount: employees.data.length
   };
@@ -405,8 +799,8 @@ async function processPayroll(periodData) {
 
 ### 4. Approve Payroll and Post to GL
 
-```javascript
-async function approveAndPostPayroll(payrollPeriodId) {
+```typescript
+async function approveAndPostPayroll(payrollPeriodId: string) {
   // 1. Approve payroll period
   const approvePayload = {
     data: {
@@ -446,8 +840,8 @@ async function approveAndPostPayroll(payrollPeriodId) {
 
 ### 5. Get Employee Summary
 
-```javascript
-async function getEmployeeSummary(employeeId) {
+```typescript
+async function getEmployeeSummary(employeeId: string) {
   const response = await fetch(
     `/api/v1/employees/${employeeId}?include=department,position,attendances,leaves,payrollItems`,
     { headers }
@@ -457,22 +851,22 @@ async function getEmployeeSummary(employeeId) {
   const employee = data.data;
 
   // Calculate attendance statistics
-  const attendances = data.included.filter(inc => inc.type === 'attendances');
+  const attendances = data.included?.filter((inc: any) => inc.type === 'attendances') || [];
   const totalHours = attendances.reduce(
-    (sum, att) => sum + (att.attributes.hoursWorked || 0),
+    (sum: number, att: any) => sum + (att.attributes.hoursWorked || 0),
     0
   );
 
   // Calculate leave balance
-  const leaves = data.included.filter(inc => inc.type === 'leaves');
+  const leaves = data.included?.filter((inc: any) => inc.type === 'leaves') || [];
   const approvedDays = leaves
-    .filter(leave => leave.attributes.status === 'approved')
-    .reduce((sum, leave) => sum + leave.attributes.daysRequested, 0);
+    .filter((leave: any) => leave.attributes.status === 'approved')
+    .reduce((sum: number, leave: any) => sum + leave.attributes.daysRequested, 0);
 
   // Get latest payroll
-  const payrollItems = data.included.filter(inc => inc.type === 'payroll-items');
+  const payrollItems = data.included?.filter((inc: any) => inc.type === 'payroll-items') || [];
   const latestPayroll = payrollItems.sort(
-    (a, b) => new Date(b.attributes.createdAt) - new Date(a.attributes.createdAt)
+    (a: any, b: any) => new Date(b.attributes.createdAt).getTime() - new Date(a.attributes.createdAt).getTime()
   )[0];
 
   return {
@@ -488,14 +882,67 @@ async function getEmployeeSummary(employeeId) {
     },
     leaves: {
       approvedDays: approvedDays,
-      pendingRequests: leaves.filter(l => l.attributes.status === 'pending').length
+      pendingRequests: leaves.filter((l: any) => l.attributes.status === 'pending').length
     },
     lastPayroll: latestPayroll ? {
-      grossPay: latestPayroll.attributes.grossPay,
+      basicSalary: latestPayroll.attributes.basicSalary,
       netPay: latestPayroll.attributes.netPay,
-      deductions: latestPayroll.attributes.totalDeductions
+      deductions: latestPayroll.attributes.deductions
     } : null
   };
+}
+```
+
+### 6. Create Performance Review
+
+```typescript
+async function createPerformanceReview(
+  employeeId: string,
+  reviewerId: string,
+  ratings: {
+    overall: number;
+    goals: number;
+    skills: number;
+    attendance: number;
+  },
+  comments: string
+) {
+  const today = new Date();
+  const sixMonthsAgo = new Date(today);
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+  const payload = {
+    data: {
+      type: "performance-reviews",
+      attributes: {
+        reviewDate: today.toISOString().split('T')[0],
+        reviewPeriodStart: sixMonthsAgo.toISOString().split('T')[0],
+        reviewPeriodEnd: today.toISOString().split('T')[0],
+        overallRating: ratings.overall,
+        goalsRating: ratings.goals,
+        skillsRating: ratings.skills,
+        attendanceRating: ratings.attendance,
+        comments: comments,
+        status: "draft"
+      },
+      relationships: {
+        employee: {
+          data: { type: "employees", id: employeeId }
+        },
+        reviewer: {
+          data: { type: "employees", id: reviewerId }
+        }
+      }
+    }
+  };
+
+  const response = await fetch('/api/v1/performance-reviews', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(payload)
+  });
+
+  return response.json();
 }
 ```
 
@@ -505,12 +952,26 @@ async function getEmployeeSummary(employeeId) {
 
 ### Role-Based Access
 
-| Role | Employees | Attendance | Leaves | Payroll | Reviews |
-|------|-----------|------------|--------|---------|---------|
-| **God** | ✅ CRUD | ✅ CRUD | ✅ CRUD | ✅ CRUD | ✅ CRUD |
-| **Admin** | ✅ CRUD | ✅ CRUD | ✅ CRUD | ✅ CRUD | ✅ CRUD |
-| **Tech** | ✅ Read | ✅ Read | ✅ Read | ✅ Read | ✅ Read |
-| **Customer** | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Role | Employees | Attendance | Leaves | Payroll | Reviews | Departments | Positions | LeaveTypes |
+|------|-----------|------------|--------|---------|---------|-------------|-----------|------------|
+| **God** | CRUD | CRUD | CRUD | CRUD | CRUD | CRUD | CRUD | CRUD |
+| **Admin** | CRUD | CRUD | CRUD | CRUD | CRUD | CRUD | CRUD | CRUD |
+| **Tech** | Read | Read | Read | Read | Read | Read | Read | Read |
+| **Customer** | - | - | - | - | - | - | - | - |
+
+### Permission Names
+
+| Entity | index | show | store | update | destroy |
+|--------|-------|------|-------|--------|---------|
+| employees | `employees.index` | `employees.show` | `employees.store` | `employees.update` | `employees.destroy` |
+| attendances | `attendances.index` | `attendances.show` | `attendances.store` | `attendances.update` | `attendances.destroy` |
+| leaves | `leaves.index` | `leaves.show` | `leaves.store` | `leaves.update` | `leaves.destroy` |
+| leave-types | `leave-types.index` | `leave-types.show` | `leave-types.store` | `leave-types.update` | `leave-types.destroy` |
+| payroll-periods | `payroll-periods.index` | `payroll-periods.show` | `payroll-periods.store` | `payroll-periods.update` | `payroll-periods.destroy` |
+| payroll-items | `payroll-items.index` | `payroll-items.show` | `payroll-items.store` | `payroll-items.update` | `payroll-items.destroy` |
+| performance-reviews | `performance-reviews.index` | `performance-reviews.show` | `performance-reviews.store` | `performance-reviews.update` | `performance-reviews.destroy` |
+| departments | `departments.index` | `departments.show` | `departments.store` | `departments.update` | `departments.destroy` |
+| positions | `positions.index` | `positions.show` | `positions.store` | `positions.update` | `positions.destroy` |
 
 ---
 
@@ -527,7 +988,7 @@ async function getEmployeeSummary(employeeId) {
 **Auto-Calculated Fields:**
 - Attendance: `hoursWorked`, `overtimeHours`
 - Leave: `daysRequested`
-- PayrollItem: `grossPay`, `totalDeductions`, `netPay`
+- PayrollItem: `netPay` (basicSalary + overtimePay + bonuses - deductions)
 - PayrollPeriod: `totalGross`, `totalDeductions`, `totalNet`
 
 **GL Integration:**
