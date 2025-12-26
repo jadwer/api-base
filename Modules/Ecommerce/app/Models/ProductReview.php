@@ -2,7 +2,7 @@
 
 namespace Modules\Ecommerce\Models;
 
-use App\Models\User;
+use Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,6 +30,23 @@ class ProductReview extends Model
         'is_verified_purchase' => 'boolean',
         'helpful_count' => 'integer',
     ];
+
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($review) {
+            if (!$review->user_id && auth()->check()) {
+                $review->user_id = auth()->id();
+            }
+            if (!$review->status) {
+                $review->status = 'pending';
+            }
+        });
+    }
 
     /**
      * Product being reviewed

@@ -18,8 +18,8 @@ class EmployeeShowTest extends TestCase
         $employee = Employee::factory()->create([
             'department_id' => $department->id,
             'position_id' => $position->id,
-            'firstName' => 'John',
-            'lastName' => 'Doe',
+            'first_name' => 'John',
+            'last_name' => 'Doe',
             'email' => 'john.doe@example.com',
             'salary' => 50000.00,
             'status' => 'active'

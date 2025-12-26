@@ -40,7 +40,7 @@ class CompanySettingUpdateTest extends TestCase
 
         $this->assertDatabaseHas('company_settings', [
             'id' => $setting->id,
-            'companyName' => 'Updated Company Name',
+            'company_name' => 'Updated Company Name',
         ]);
     }
 

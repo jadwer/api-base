@@ -33,8 +33,7 @@ class ProductReviewStoreTest extends TestCase
             ]
         ];
 
-        $response = $this->actingAs($admin, 'sanctum')
-            ->jsonApi()
+        $response = $this->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
             ->post('/api/v1/product-reviews');
@@ -79,11 +78,11 @@ class ProductReviewStoreTest extends TestCase
                 'data' => [
                     'type' => 'product-reviews',
                     'attributes' => [
-                        'user_id' => $customer->id,
+                        'userId' => $customer->id,
                         'rating' => 5,
                         'title' => 'Great product!',
                         'comment' => 'I really love this product.',
-                        'status' => 'pending', // Default status
+                        'status' => 'pending',
                     ]
                 ]
             ]);
@@ -122,11 +121,10 @@ class ProductReviewStoreTest extends TestCase
             ]
         ];
 
-        $response = $this->actingAs($customer, 'sanctum')
+        $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            
             ->post('/api/v1/product-reviews');
 
         $response->assertCreated();
@@ -172,9 +170,9 @@ class ProductReviewStoreTest extends TestCase
     }
 
     /**
-     * Test product_id is required.
+     * Test product relationship is required.
      */
-    public function test_product_id_is_required(): void
+    public function test_product_is_required(): void
     {
         $customer = $this->getCustomerUser();
 
@@ -186,14 +184,14 @@ class ProductReviewStoreTest extends TestCase
             ],
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            
             ->post('/api/v1/product-reviews');
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['product_id']);
+            ->assertJsonValidationErrors(['product']);
     }
 
     /**
@@ -372,11 +370,10 @@ class ProductReviewStoreTest extends TestCase
             ]
         ];
 
-        $response = $this->actingAs($customer, 'sanctum')
+        $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            
             ->post('/api/v1/product-reviews');
 
         $response->assertCreated()

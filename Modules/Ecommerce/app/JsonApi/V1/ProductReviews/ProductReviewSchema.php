@@ -53,7 +53,7 @@ class ProductReviewSchema extends Schema
             DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
 
             // Relationships
-            BelongsTo::make('product')->type('products')->readOnly(),
+            BelongsTo::make('product')->type('products'),
             BelongsTo::make('user')->type('users')->readOnly(),
         ];
     }

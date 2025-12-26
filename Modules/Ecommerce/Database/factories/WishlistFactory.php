@@ -3,7 +3,7 @@
 namespace Modules\Ecommerce\Database\Factories;
 
 use Modules\Ecommerce\Models\Wishlist;
-use App\Models\User;
+use Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class WishlistFactory extends Factory

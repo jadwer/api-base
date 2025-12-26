@@ -39,14 +39,14 @@ class EmployeeIndexTest extends TestCase
         Employee::factory()->create([
             'department_id' => $department->id,
             'position_id' => $position->id,
-            'firstName' => 'John',
-            'lastName' => 'Zulu'
+            'first_name' => 'John',
+            'last_name' => 'Zulu'
         ]);
         Employee::factory()->create([
             'department_id' => $department->id,
             'position_id' => $position->id,
-            'firstName' => 'Jane',
-            'lastName' => 'Alpha'
+            'first_name' => 'Jane',
+            'last_name' => 'Alpha'
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

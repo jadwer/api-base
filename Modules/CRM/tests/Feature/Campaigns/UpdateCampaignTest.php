@@ -108,7 +108,7 @@ class UpdateCampaignTest extends TestCase
         $response->assertOk();
         $this->assertDatabaseHas('campaigns', [
             'id' => $campaign->id,
-            'campaignType' => 'social_media',
+            'campaign_type' => 'social_media',
         ]);
     }
 
@@ -213,7 +213,7 @@ class UpdateCampaignTest extends TestCase
         $this->assertDatabaseHas('campaigns', [
             'id' => $campaign->id,
             'start_date' => $newStartDate,
-            'endDate' => $newEndDate,
+            'end_date' => $newEndDate,
         ]);
     }
 

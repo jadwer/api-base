@@ -10,27 +10,28 @@ class CompanySettingRequest extends ResourceRequest
     public function rules(): array
     {
         $settingId = $this->route('company_setting');
+        $creating = $this->isMethod('POST');
 
         return [
             'companyName' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'string',
                 'max:255',
             ],
             'rfc' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'string',
                 'size:13',
                 'regex:/^[A-Z]{4}[0-9]{6}[A-Z0-9]{3}$/',
                 Rule::unique('company_settings', 'rfc')->ignore($settingId),
             ],
             'taxRegime' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'string',
                 'max:10',
             ],
             'postalCode' => [
-                'required',
+                $creating ? 'required' : 'sometimes',
                 'string',
                 'size:5',
                 'regex:/^[0-9]{5}$/',

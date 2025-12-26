@@ -44,13 +44,13 @@ class CompanySettingSchema extends Schema
             // PAC Configuration
             Str::make('pacProvider', 'pac_provider'),
             Str::make('pacUsername', 'pac_username'),
-            // pac_password is hidden (encrypted, never exposed)
+            Str::make('pacPassword', 'pac_password')->hidden(), // Write-only (encrypted, never exposed)
             Boolean::make('pacProductionMode', 'pac_production_mode'),
 
             // Digital Certificate
             Str::make('certificateFile', 'certificate_file'),
             Str::make('keyFile', 'key_file'),
-            // key_password is hidden (encrypted, never exposed)
+            Str::make('keyPassword', 'key_password')->hidden(), // Write-only (encrypted, never exposed)
 
             // Additional Settings
             Str::make('logoPath', 'logo_path'),

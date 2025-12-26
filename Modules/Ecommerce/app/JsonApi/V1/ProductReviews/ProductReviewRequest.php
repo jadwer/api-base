@@ -16,10 +16,9 @@ class ProductReviewRequest extends ResourceRequest
     public function rules(): array
     {
         return [
-            // Foreign Keys
-            'productId' => [
+            // Relationship
+            'product' => [
                 $this->isCreating() ? 'required' : 'sometimes',
-                'integer',
                 JsonApiRule::toOne(),
             ],
 
@@ -66,8 +65,7 @@ class ProductReviewRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'productId.required' => 'El producto es obligatorio.',
-            'productId.integer' => 'El producto debe ser un número válido.',
+            'product.required' => 'El producto es obligatorio.',
             'rating.required' => 'La calificación es obligatoria.',
             'rating.integer' => 'La calificación debe ser un número.',
             'rating.min' => 'La calificación mínima es 1 estrella.',

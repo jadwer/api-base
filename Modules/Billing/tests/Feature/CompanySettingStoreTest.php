@@ -48,7 +48,7 @@ class CompanySettingStoreTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('company_settings', [
-            'companyName' => 'Test Company SA de CV',
+            'company_name' => 'Test Company SA de CV',
             'rfc' => 'TEST010101ABC',
         ]);
     }

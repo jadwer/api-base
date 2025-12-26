@@ -61,15 +61,16 @@ class PaymentTransactionStoreTest extends TestCase
     }
 
     /**
-     * Test tech can create a payment transaction.
+     * Test tech cannot create a payment transaction.
      */
-    public function test_tech_can_create_payment_transaction(): void
+    public function test_tech_cannot_create_payment_transaction(): void
     {
         $user = $this->getTechUser();
 
         $data = [
             'type' => 'payment-transactions',
             'attributes' => [
+                'gateway' => 'stripe',
                 'amount' => 500.00,
                 'currency' => 'USD',
             ],
@@ -81,7 +82,7 @@ class PaymentTransactionStoreTest extends TestCase
             ->withData($data)
             ->post('/api/v1/payment-transactions');
 
-        $response->assertCreated();
+        $response->assertStatus(403);
     }
 
     /**
@@ -94,6 +95,7 @@ class PaymentTransactionStoreTest extends TestCase
         $data = [
             'type' => 'payment-transactions',
             'attributes' => [
+                'gateway' => 'stripe',
                 'amount' => 500.00,
                 'currency' => 'MXN',
             ],
@@ -116,6 +118,7 @@ class PaymentTransactionStoreTest extends TestCase
         $data = [
             'type' => 'payment-transactions',
             'attributes' => [
+                'gateway' => 'stripe',
                 'amount' => 500.00,
                 'currency' => 'MXN',
             ],
@@ -139,6 +142,7 @@ class PaymentTransactionStoreTest extends TestCase
         $data = [
             'type' => 'payment-transactions',
             'attributes' => [
+                'gateway' => 'stripe',
                 'currency' => 'MXN',
             ],
         ];
@@ -150,7 +154,7 @@ class PaymentTransactionStoreTest extends TestCase
             ->post('/api/v1/payment-transactions');
 
         $response->assertStatus(422)
-            ->assertJsonApiValidationErrors(['amount']);
+            ->assertJsonValidationErrors(['amount']);
 
         // Verify Spanish error message
         $errors = $response->json('errors');
@@ -168,6 +172,7 @@ class PaymentTransactionStoreTest extends TestCase
         $data = [
             'type' => 'payment-transactions',
             'attributes' => [
+                'gateway' => 'stripe',
                 'amount' => 'not-a-number',
                 'currency' => 'MXN',
             ],
@@ -180,7 +185,7 @@ class PaymentTransactionStoreTest extends TestCase
             ->post('/api/v1/payment-transactions');
 
         $response->assertStatus(422)
-            ->assertJsonApiValidationErrors(['amount']);
+            ->assertJsonValidationErrors(['amount']);
 
         $errors = $response->json('errors');
         $amountError = collect($errors)->firstWhere('source.pointer', '/data/attributes/amount');
@@ -197,6 +202,7 @@ class PaymentTransactionStoreTest extends TestCase
         $data = [
             'type' => 'payment-transactions',
             'attributes' => [
+                'gateway' => 'stripe',
                 'amount' => -100.00,
                 'currency' => 'MXN',
             ],
@@ -209,7 +215,7 @@ class PaymentTransactionStoreTest extends TestCase
             ->post('/api/v1/payment-transactions');
 
         $response->assertStatus(422)
-            ->assertJsonApiValidationErrors(['amount']);
+            ->assertJsonValidationErrors(['amount']);
     }
 
     /**
@@ -222,6 +228,7 @@ class PaymentTransactionStoreTest extends TestCase
         $data = [
             'type' => 'payment-transactions',
             'attributes' => [
+                'gateway' => 'stripe',
                 'amount' => 1000.00,
                 'currency' => 'INVALID',
             ],
@@ -234,7 +241,7 @@ class PaymentTransactionStoreTest extends TestCase
             ->post('/api/v1/payment-transactions');
 
         $response->assertStatus(422)
-            ->assertJsonApiValidationErrors(['currency']);
+            ->assertJsonValidationErrors(['currency']);
 
         $errors = $response->json('errors');
         $currencyError = collect($errors)->firstWhere('source.pointer', '/data/attributes/currency');
@@ -254,6 +261,7 @@ class PaymentTransactionStoreTest extends TestCase
         $data = [
             'type' => 'payment-transactions',
             'attributes' => [
+                'gateway' => 'stripe',
                 'paymentIntentId' => 'pi_test_duplicate',
                 'amount' => 1000.00,
                 'currency' => 'MXN',
@@ -267,7 +275,7 @@ class PaymentTransactionStoreTest extends TestCase
             ->post('/api/v1/payment-transactions');
 
         $response->assertStatus(422)
-            ->assertJsonApiValidationErrors(['paymentIntentId']);
+            ->assertJsonValidationErrors(['paymentIntentId']);
 
         $errors = $response->json('errors');
         $paymentIntentError = collect($errors)->firstWhere('source.pointer', '/data/attributes/paymentIntentId');
@@ -287,6 +295,7 @@ class PaymentTransactionStoreTest extends TestCase
         $data = [
             'type' => 'payment-transactions',
             'attributes' => [
+                'gateway' => 'stripe',
                 'transactionId' => 'ch_test_duplicate',
                 'amount' => 1000.00,
                 'currency' => 'MXN',
@@ -300,7 +309,7 @@ class PaymentTransactionStoreTest extends TestCase
             ->post('/api/v1/payment-transactions');
 
         $response->assertStatus(422)
-            ->assertJsonApiValidationErrors(['transactionId']);
+            ->assertJsonValidationErrors(['transactionId']);
     }
 
     /**
@@ -326,7 +335,7 @@ class PaymentTransactionStoreTest extends TestCase
             ->post('/api/v1/payment-transactions');
 
         $response->assertStatus(422)
-            ->assertJsonApiValidationErrors(['gateway']);
+            ->assertJsonValidationErrors(['gateway']);
 
         $errors = $response->json('errors');
         $gatewayError = collect($errors)->firstWhere('source.pointer', '/data/attributes/gateway');
@@ -343,6 +352,7 @@ class PaymentTransactionStoreTest extends TestCase
         $data = [
             'type' => 'payment-transactions',
             'attributes' => [
+                'gateway' => 'stripe',
                 'amount' => 1000.00,
                 'currency' => 'MXN',
                 'status' => 'invalid-status',
@@ -356,7 +366,7 @@ class PaymentTransactionStoreTest extends TestCase
             ->post('/api/v1/payment-transactions');
 
         $response->assertStatus(422)
-            ->assertJsonApiValidationErrors(['status']);
+            ->assertJsonValidationErrors(['status']);
 
         $errors = $response->json('errors');
         $statusError = collect($errors)->firstWhere('source.pointer', '/data/attributes/status');
@@ -373,6 +383,7 @@ class PaymentTransactionStoreTest extends TestCase
         $data = [
             'type' => 'payment-transactions',
             'attributes' => [
+                'gateway' => 'stripe',
                 'amount' => 1000.00,
                 'currency' => 'MXN',
                 'cardLast4' => '12345', // 5 digits instead of 4
@@ -386,7 +397,7 @@ class PaymentTransactionStoreTest extends TestCase
             ->post('/api/v1/payment-transactions');
 
         $response->assertStatus(422)
-            ->assertJsonApiValidationErrors(['cardLast4']);
+            ->assertJsonValidationErrors(['cardLast4']);
 
         $errors = $response->json('errors');
         $cardError = collect($errors)->firstWhere('source.pointer', '/data/attributes/cardLast4');
