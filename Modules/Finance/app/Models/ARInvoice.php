@@ -5,13 +5,29 @@ namespace Modules\Finance\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Permission\Traits\HasPermissions;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 use Modules\Accounting\Models\JournalEntry;
 use Modules\Contacts\Models\Contact;
 use Modules\Sales\Models\SalesOrder;
 
 class ARInvoice extends Model
 {
-    use HasFactory, HasPermissions;
+    use HasFactory, HasPermissions, LogsActivity;
+
+    /**
+     * Activity Log Configuration
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                'invoice_number', 'status', 'invoice_date', 'due_date',
+                'contact_id', 'total_amount', 'paid_amount', 'sales_order_id'
+            ])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     protected $table = 'ar_invoices';
 

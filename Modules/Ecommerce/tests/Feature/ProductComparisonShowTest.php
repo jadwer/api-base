@@ -26,7 +26,7 @@ class ProductComparisonShowTest extends TestCase
                 'attributes' => [
                     'name' => $comparison->name,
                     'isPublic' => $comparison->is_public,
-                    'user_id' => $comparison->user_id,
+                    'userId' => $comparison->user_id,
                 ],
             ],
         ]);
@@ -61,7 +61,7 @@ class ProductComparisonShowTest extends TestCase
                 'type' => 'product-comparisons',
                 'id' => (string) $comparison->id,
                 'attributes' => [
-                    'user_id' => $customer->id,
+                    'userId' => $customer->id,
                 ],
             ],
         ]);

@@ -18,7 +18,21 @@ use Modules\Purchase\Services\PurchaseOrderApprovalService;
 
 class PurchaseOrder extends Model
 {
-    use HasFactory; // LogsActivity temporalmente desactivado para testing
+    use HasFactory, LogsActivity;
+
+    /**
+     * Activity Log Configuration
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                'order_number', 'status', 'order_date', 'contact_id',
+                'total_amount', 'approval_status', 'invoicing_status', 'financial_status'
+            ])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     /**
      * The attributes that aren't mass assignable.
@@ -48,20 +62,6 @@ class PurchaseOrder extends Model
             'metadata' => 'array',
         ];
     }
-
-    /**
-     * Get the activity log options.
-     * Temporalmente comentado para testing
-     */
-    /*
-    public function getActivitylogOptions(): LogOptions
-    {
-        return LogOptions::defaults()
-            ->logOnly(['contact_id', 'order_date', 'status', 'total_amount', 'notes'])
-            ->logOnlyDirty()
-            ->dontSubmitEmptyLogs();
-    }
-    */
 
     /**
      * Create a new factory instance for the model.

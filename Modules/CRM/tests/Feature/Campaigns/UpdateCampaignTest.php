@@ -108,7 +108,7 @@ class UpdateCampaignTest extends TestCase
         $response->assertOk();
         $this->assertDatabaseHas('campaigns', [
             'id' => $campaign->id,
-            'campaign_type' => 'social_media',
+            'type' => 'social_media',
         ]);
     }
 
@@ -315,8 +315,10 @@ class UpdateCampaignTest extends TestCase
             ->withData($data)
             ->patch("/api/v1/campaigns/{$campaign->id}");
 
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['status']);
+        $response->assertStatus(422)
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/status']
+            ]);
     }
 
     public function test_type_must_be_valid_enum_when_updating(): void
@@ -343,8 +345,10 @@ class UpdateCampaignTest extends TestCase
             ->withData($data)
             ->patch("/api/v1/campaigns/{$campaign->id}");
 
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['campaignType']);
+        $response->assertStatus(422)
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/campaignType']
+            ]);
     }
 
     public function test_end_date_must_be_after_or_equal_start_date_when_updating(): void
@@ -372,8 +376,10 @@ class UpdateCampaignTest extends TestCase
             ->withData($data)
             ->patch("/api/v1/campaigns/{$campaign->id}");
 
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['endDate']);
+        $response->assertStatus(422)
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/endDate']
+            ]);
     }
 
     public function test_tech_user_cannot_update_campaign(): void

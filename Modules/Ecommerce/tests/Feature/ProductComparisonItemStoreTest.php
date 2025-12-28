@@ -231,7 +231,9 @@ class ProductComparisonItemStoreTest extends TestCase
             ->post('/api/v1/product-comparison-items');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['comparison']);
+        $response->assertJsonFragment([
+            'source' => ['pointer' => '/data/relationships/comparison']
+        ]);
     }
 
     public function test_product_relationship_is_required()
@@ -261,7 +263,9 @@ class ProductComparisonItemStoreTest extends TestCase
             ->post('/api/v1/product-comparison-items');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['product']);
+        $response->assertJsonFragment([
+            'source' => ['pointer' => '/data/relationships/product']
+        ]);
     }
 
     public function test_position_defaults_to_zero()
@@ -338,7 +342,9 @@ class ProductComparisonItemStoreTest extends TestCase
             ->post('/api/v1/product-comparison-items');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['position']);
+        $response->assertJsonFragment([
+            'source' => ['pointer' => '/data/attributes/position']
+        ]);
     }
 
     public function test_position_cannot_be_negative()
@@ -375,6 +381,8 @@ class ProductComparisonItemStoreTest extends TestCase
             ->post('/api/v1/product-comparison-items');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['position']);
+        $response->assertJsonFragment([
+            'source' => ['pointer' => '/data/attributes/position']
+        ]);
     }
 }

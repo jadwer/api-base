@@ -47,7 +47,7 @@ class ShippingMethodUpdateTest extends TestCase
             'type' => 'shipping-methods',
             'id' => (string) $method->id,
             'attributes' => [
-                'is_active' => false,
+                'isActive' => false,
             ]
         ];
 

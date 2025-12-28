@@ -9,6 +9,7 @@ class ProductComparisonResource extends JsonApiResource
     public function attributes($request): iterable
     {
         return [
+            'userId' => $this->user_id,
             'name' => $this->name,
             'isPublic' => $this->is_public,
             'createdAt' => $this->created_at,

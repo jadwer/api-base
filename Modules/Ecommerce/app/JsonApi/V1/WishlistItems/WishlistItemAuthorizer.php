@@ -42,7 +42,8 @@ class WishlistItemAuthorizer implements Authorizer
             return false;
         }
 
-        if ($user->hasAnyRole(['god', 'admin'])) {
+        // Tech users have read-only access to all wishlist items
+        if ($user->hasAnyRole(['god', 'admin', 'tech'])) {
             return true;
         }
 

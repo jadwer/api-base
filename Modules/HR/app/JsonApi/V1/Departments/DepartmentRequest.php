@@ -2,6 +2,7 @@
 
 namespace Modules\HR\JsonApi\V1\Departments;
 
+use Illuminate\Validation\Rule;
 use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
 use LaravelJsonApi\Validation\Rule as JsonApiRule;
 
@@ -19,7 +20,7 @@ class DepartmentRequest extends ResourceRequest
                 'required',
                 'string',
                 'max:100',
-                JsonApiRule::unique('departments', 'name')->ignore($departmentId),
+                Rule::unique('departments', 'name')->ignore($departmentId),
             ],
             'description' => [
                 'nullable',

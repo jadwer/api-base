@@ -114,32 +114,33 @@ class EmployeeIndexTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('employees')
-            ->get("/api/v1/employees?filter[department]={$department1->id}");
+            ->get("/api/v1/employees?filter[departmentId]={$department1->id}");
 
         $response->assertOk();
         $this->assertGreaterThanOrEqual(2, count($response->json('data')));
     }
 
-    public function test_admin_can_filter_employees_by_employment_type(): void
+    public function test_admin_can_filter_employees_by_position(): void
     {
         $admin = $this->getAdminUser();
 
         $department = Department::factory()->create();
-        $position = Position::factory()->create(['department_id' => $department->id]);
+        $position1 = Position::factory()->create(['department_id' => $department->id]);
+        $position2 = Position::factory()->create(['department_id' => $department->id]);
 
-        Employee::factory()->count(2)->fullTime()->create([
+        Employee::factory()->count(2)->create([
             'department_id' => $department->id,
-            'position_id' => $position->id
+            'position_id' => $position1->id
         ]);
-        Employee::factory()->count(1)->contract()->create([
+        Employee::factory()->count(1)->create([
             'department_id' => $department->id,
-            'position_id' => $position->id
+            'position_id' => $position2->id
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('employees')
-            ->get('/api/v1/employees?filter[employmentType]=full-time');
+            ->get("/api/v1/employees?filter[positionId]={$position1->id}");
 
         $response->assertOk();
         $this->assertGreaterThanOrEqual(2, count($response->json('data')));

@@ -48,7 +48,8 @@ class WishlistAuthorizer implements Authorizer
             return Response::deny('Only public wishlists can be viewed without authentication.');
         }
 
-        if ($user->hasAnyRole(['god', 'admin'])) {
+        // Tech users have read-only access to all wishlists
+        if ($user->hasAnyRole(['god', 'admin', 'tech'])) {
             return true;
         }
 

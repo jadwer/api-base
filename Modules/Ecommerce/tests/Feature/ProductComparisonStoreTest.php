@@ -137,7 +137,9 @@ class ProductComparisonStoreTest extends TestCase
             ->post('/api/v1/product-comparisons');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['name']);
+        $response->assertJsonFragment([
+            'source' => ['pointer' => '/data/attributes/name']
+        ]);
     }
 
     public function test_can_create_public_comparison()
@@ -221,7 +223,9 @@ class ProductComparisonStoreTest extends TestCase
             ->post('/api/v1/product-comparisons');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['name']);
+        $response->assertJsonFragment([
+            'source' => ['pointer' => '/data/attributes/name']
+        ]);
     }
 
     public function test_is_public_must_be_boolean()
@@ -243,7 +247,9 @@ class ProductComparisonStoreTest extends TestCase
             ->post('/api/v1/product-comparisons');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['isPublic']);
+        $response->assertJsonFragment([
+            'source' => ['pointer' => '/data/attributes/isPublic']
+        ]);
     }
 
     public function test_user_is_automatically_set_to_authenticated_user()

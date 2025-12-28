@@ -195,7 +195,9 @@ class ProductComparisonItemUpdateTest extends TestCase
             ->patch('/api/v1/product-comparison-items/' . $item->id);
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['position']);
+        $response->assertJsonFragment([
+            'source' => ['pointer' => '/data/attributes/position']
+        ]);
     }
 
     public function test_position_cannot_be_negative()
@@ -218,7 +220,9 @@ class ProductComparisonItemUpdateTest extends TestCase
             ->patch('/api/v1/product-comparison-items/' . $item->id);
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['position']);
+        $response->assertJsonFragment([
+            'source' => ['pointer' => '/data/attributes/position']
+        ]);
     }
 
     public function test_returns_404_for_non_existent_item()

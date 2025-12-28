@@ -133,7 +133,7 @@ class PayrollItemIndexTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('payroll-items')
-            ->get("/api/v1/payroll-items?filter[employee]={$employee1->id}");
+            ->get("/api/v1/payroll-items?filter[employeeId]={$employee1->id}");
 
         $response->assertOk();
         $this->assertGreaterThanOrEqual(2, count($response->json('data')));

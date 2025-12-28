@@ -4,13 +4,29 @@ namespace Modules\CRM\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 use Modules\CRM\Database\Factories\LeadFactory;
 use Modules\User\Models\User;
 // use Modules\Contacts\Models\Contact; // Will be enabled when Contact module is implemented
 
 class Lead extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
+
+    /**
+     * Activity Log Configuration
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                'title', 'status', 'rating', 'source', 'user_id',
+                'estimated_value', 'converted_at'
+            ])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     protected $fillable = [
         'title',

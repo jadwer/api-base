@@ -117,19 +117,8 @@ class BrandIndexTest extends TestCase
             ],
         ]);
 
-        // Display brands with slugs
+        // Get brands and verify slugs
         $brands = $response->json('data');
-        echo "\n🏷️  SEEDED BRANDS WITH SLUGS:\n";
-        echo "=" . str_repeat("=", 50) . "\n";
-        
-        foreach ($brands as $brand) {
-            $name = $brand['attributes']['name'];
-            $slug = $brand['attributes']['slug'];
-            $description = $brand['attributes']['description'];
-            echo "📱 {$name} (slug: {$slug})\n";
-            echo "   {$description}\n";
-            echo "   " . str_repeat("-", 45) . "\n";
-        }
 
         // Assert specific seeded brands with slugs exist
         $brandSlugs = array_column(array_column($brands, 'attributes'), 'slug');

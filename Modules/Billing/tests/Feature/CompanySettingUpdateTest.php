@@ -111,13 +111,13 @@ class CompanySettingUpdateTest extends TestCase
     public function test_can_update_rfc()
     {
         $user = $this->getAdminUser();
-        $setting = CompanySetting::factory()->create(['rfc' => 'OLD0101010ABC']);
+        $setting = CompanySetting::factory()->create(['rfc' => 'OLDR010101ABC']);
 
         $data = [
             'type' => 'company-settings',
             'id' => (string) $setting->id,
             'attributes' => [
-                'rfc' => 'NEW0101010XYZ',
+                'rfc' => 'NEWR010101XYZ',
             ]
         ];
 
@@ -131,7 +131,7 @@ class CompanySettingUpdateTest extends TestCase
             ->assertJson([
                 'data' => [
                     'attributes' => [
-                        'rfc' => 'NEW0101010XYZ'
+                        'rfc' => 'NEWR010101XYZ'
                     ]
                 ]
             ]);
@@ -162,14 +162,14 @@ class CompanySettingUpdateTest extends TestCase
     public function test_cannot_update_to_existing_rfc()
     {
         $user = $this->getAdminUser();
-        $existingSetting = CompanySetting::factory()->create(['rfc' => 'EXIST010101ABC']);
-        $setting = CompanySetting::factory()->create(['rfc' => 'OTHER010101XYZ']);
+        $existingSetting = CompanySetting::factory()->create(['rfc' => 'EXIS010101ABC']);
+        $setting = CompanySetting::factory()->create(['rfc' => 'OTHR010101XYZ']);
 
         $data = [
             'type' => 'company-settings',
             'id' => (string) $setting->id,
             'attributes' => [
-                'rfc' => 'EXIST010101ABC',
+                'rfc' => 'EXIS010101ABC',
             ]
         ];
 
@@ -179,8 +179,7 @@ class CompanySettingUpdateTest extends TestCase
             ->withData($data)
             ->patch('/api/v1/company-settings/' . $setting->id);
 
-        $response->assertStatus(422)
-            ;// ->assertJsonValidationErrors(['rfc']);
+        $response->assertStatus(422);
     }
 
     public function test_can_update_pac_configuration()

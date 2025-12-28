@@ -22,7 +22,7 @@ class ShippingMethodStoreTest extends TestCase
                 'costPerKg' => 25.00,
                 'estimatedDaysMin' => 2,
                 'estimatedDaysMax' => 4,
-                'is_active' => true,
+                'isActive' => true,
                 'availableCountries' => ['MX', 'US'],
                 'metadata' => [
                     'tracking_available' => true,
@@ -60,7 +60,7 @@ class ShippingMethodStoreTest extends TestCase
                 'costPerKg' => 0.00,
                 'estimatedDaysMin' => 7,
                 'estimatedDaysMax' => 15,
-                'is_active' => true,
+                'isActive' => true,
             ]
         ];
 

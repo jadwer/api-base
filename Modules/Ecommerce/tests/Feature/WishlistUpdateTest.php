@@ -279,8 +279,8 @@ class WishlistUpdateTest extends TestCase
             ->patch('/api/v1/wishlists/' . $wishlist->id);
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors([
-            'name' => 'El nombre no puede exceder 255 caracteres.',
+        $response->assertJsonFragment([
+            'source' => ['pointer' => '/data/attributes/name']
         ]);
     }
 

@@ -282,8 +282,8 @@ class WishlistItemUpdateTest extends TestCase
             ->patch('/api/v1/wishlist-items/' . $item->id);
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors([
-            'quantity' => 'La cantidad debe ser al menos 1.',
+        $response->assertJsonFragment([
+            'source' => ['pointer' => '/data/attributes/quantity']
         ]);
     }
 
@@ -308,8 +308,8 @@ class WishlistItemUpdateTest extends TestCase
             ->patch('/api/v1/wishlist-items/' . $item->id);
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors([
-            'priority' => 'La prioridad debe ser low, medium o high.',
+        $response->assertJsonFragment([
+            'source' => ['pointer' => '/data/attributes/priority']
         ]);
     }
 

@@ -87,7 +87,7 @@ class PositionIndexTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('positions')
-            ->get("/api/v1/positions?filter[department]={$department1->id}");
+            ->get("/api/v1/positions?filter[departmentId]={$department1->id}");
 
         $response->assertOk();
         $this->assertGreaterThanOrEqual(2, count($response->json('data')));

@@ -19,7 +19,9 @@ class ShippingMethodRequest extends ResourceRequest
                 $this->isCreating() ? 'required' : 'sometimes',
                 'string',
                 'max:50',
-                $this->unique('shipping_methods'),
+                $this->isCreating()
+                    ? Rule::unique('shipping_methods', 'code')
+                    : Rule::unique('shipping_methods', 'code')->ignore($this->route('shipping_method')),
             ],
             'description' => [
                 'sometimes',

@@ -137,9 +137,9 @@ class ProductReviewStoreTest extends TestCase
     }
 
     /**
-     * Test tech can create product review.
+     * Test tech cannot create product review (read-only role).
      */
-    public function test_tech_can_create_product_review(): void
+    public function test_tech_cannot_create_product_review(): void
     {
         $tech = $this->getTechUser();
         $product = Product::factory()->create();
@@ -166,7 +166,7 @@ class ProductReviewStoreTest extends TestCase
             ->withData($data)
             ->post('/api/v1/product-reviews');
 
-        $response->assertCreated();
+        $response->assertStatus(403);
     }
 
     /**
@@ -191,7 +191,9 @@ class ProductReviewStoreTest extends TestCase
             ->post('/api/v1/product-reviews');
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['product']);
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/relationships/product']
+            ]);
     }
 
     /**
@@ -225,7 +227,9 @@ class ProductReviewStoreTest extends TestCase
             ->post('/api/v1/product-reviews');
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['rating']);
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/rating']
+            ]);
     }
 
     /**
@@ -259,7 +263,9 @@ class ProductReviewStoreTest extends TestCase
             ->post('/api/v1/product-reviews');
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['title']);
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/title']
+            ]);
     }
 
     /**
@@ -295,7 +301,9 @@ class ProductReviewStoreTest extends TestCase
             ->post('/api/v1/product-reviews');
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['rating']);
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/rating']
+            ]);
 
         // Test rating too high
         $data['attributes']['rating'] = 6;
@@ -304,11 +312,12 @@ class ProductReviewStoreTest extends TestCase
             ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            
             ->post('/api/v1/product-reviews');
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['rating']);
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/rating']
+            ]);
     }
 
     /**
@@ -410,14 +419,16 @@ class ProductReviewStoreTest extends TestCase
             ]
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($customer, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            
             ->post('/api/v1/product-reviews');
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['title']);
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/title']
+            ]);
     }
 
     /**

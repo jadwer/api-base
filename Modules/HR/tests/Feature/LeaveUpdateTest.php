@@ -44,11 +44,12 @@ class LeaveUpdateTest extends TestCase
 
         $response->assertOk();
         $this->assertEquals('approved', $response->json('data.attributes.status'));
-        $this->assertEquals('Approved by admin', $response->json('data.attributes.approverComments'));
+        $this->assertEquals('Approved by admin', $response->json('data.attributes.notes'));
 
         $this->assertDatabaseHas('leaves', [
             'id' => $leave->id,
-            'status' => 'approved'
+            'status' => 'approved',
+            'notes' => 'Approved by admin'
         ]);
     }
 

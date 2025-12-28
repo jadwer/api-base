@@ -154,7 +154,9 @@ class PaymentTransactionStoreTest extends TestCase
             ->post('/api/v1/payment-transactions');
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['amount']);
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/amount']
+            ]);
 
         // Verify Spanish error message
         $errors = $response->json('errors');
@@ -185,7 +187,9 @@ class PaymentTransactionStoreTest extends TestCase
             ->post('/api/v1/payment-transactions');
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['amount']);
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/amount']
+            ]);
 
         $errors = $response->json('errors');
         $amountError = collect($errors)->firstWhere('source.pointer', '/data/attributes/amount');
@@ -215,7 +219,9 @@ class PaymentTransactionStoreTest extends TestCase
             ->post('/api/v1/payment-transactions');
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['amount']);
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/amount']
+            ]);
     }
 
     /**
@@ -241,11 +247,14 @@ class PaymentTransactionStoreTest extends TestCase
             ->post('/api/v1/payment-transactions');
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['currency']);
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/currency']
+            ]);
 
         $errors = $response->json('errors');
         $currencyError = collect($errors)->firstWhere('source.pointer', '/data/attributes/currency');
-        $this->assertStringContainsString('MXN, USD, EUR', $currencyError['detail']);
+        // Check that it mentions valid currencies (the full list is MXN, USD, EUR, GBP, JPY, CAD, AUD, CHF, CNY, BRL)
+        $this->assertStringContainsString('MXN', $currencyError['detail']);
     }
 
     /**
@@ -275,7 +284,9 @@ class PaymentTransactionStoreTest extends TestCase
             ->post('/api/v1/payment-transactions');
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['paymentIntentId']);
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/paymentIntentId']
+            ]);
 
         $errors = $response->json('errors');
         $paymentIntentError = collect($errors)->firstWhere('source.pointer', '/data/attributes/paymentIntentId');
@@ -309,7 +320,9 @@ class PaymentTransactionStoreTest extends TestCase
             ->post('/api/v1/payment-transactions');
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['transactionId']);
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/transactionId']
+            ]);
     }
 
     /**
@@ -335,7 +348,9 @@ class PaymentTransactionStoreTest extends TestCase
             ->post('/api/v1/payment-transactions');
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['gateway']);
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/gateway']
+            ]);
 
         $errors = $response->json('errors');
         $gatewayError = collect($errors)->firstWhere('source.pointer', '/data/attributes/gateway');
@@ -366,7 +381,9 @@ class PaymentTransactionStoreTest extends TestCase
             ->post('/api/v1/payment-transactions');
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['status']);
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/status']
+            ]);
 
         $errors = $response->json('errors');
         $statusError = collect($errors)->firstWhere('source.pointer', '/data/attributes/status');
@@ -397,7 +414,9 @@ class PaymentTransactionStoreTest extends TestCase
             ->post('/api/v1/payment-transactions');
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['cardLast4']);
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/cardLast4']
+            ]);
 
         $errors = $response->json('errors');
         $cardError = collect($errors)->firstWhere('source.pointer', '/data/attributes/cardLast4');

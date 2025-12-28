@@ -4,6 +4,10 @@ namespace App\Providers;
 
 use App\Observers\CacheInvalidationObserver;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
+use Illuminate\Auth\Events\Failed;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +26,54 @@ class AppServiceProvider extends ServiceProvider
     {
         // Register cache invalidation observers for critical models
         $this->registerCacheInvalidation();
+
+        // Register authentication event listeners for audit logging
+        $this->registerAuthenticationLogging();
+    }
+
+    /**
+     * Register authentication event listeners for audit trail
+     */
+    private function registerAuthenticationLogging(): void
+    {
+        // Log successful logins
+        Event::listen(Login::class, function (Login $event) {
+            activity()
+                ->causedBy($event->user)
+                ->withProperties([
+                    'ip' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'guard' => $event->guard,
+                ])
+                ->log('login');
+        });
+
+        // Log logouts
+        Event::listen(Logout::class, function (Logout $event) {
+            if ($event->user) {
+                activity()
+                    ->causedBy($event->user)
+                    ->withProperties([
+                        'ip' => request()->ip(),
+                        'guard' => $event->guard,
+                    ])
+                    ->log('logout');
+            }
+        });
+
+        // Log failed login attempts
+        Event::listen(Failed::class, function (Failed $event) {
+            activity()
+                ->withProperties([
+                    'ip' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'credentials' => [
+                        'email' => $event->credentials['email'] ?? 'unknown',
+                    ],
+                    'guard' => $event->guard,
+                ])
+                ->log('login_failed');
+        });
     }
 
     /**

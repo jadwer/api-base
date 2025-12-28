@@ -22,21 +22,22 @@ class ProductComparisonAuthorizer implements Authorizer
 
     public function show(Request $request, object $model): bool|Response
     {
-        // Public comparisons are viewable by anyone authenticated
-        if ($model->is_public) {
-            return $request->user() !== null;
-        }
-
-        // Private comparisons only viewable by owner or admin
         $user = $request->user();
         if (!$user) {
             return false;
         }
 
-        if ($user->hasAnyRole(['god', 'admin'])) {
+        // Tech users have read-only access to all comparisons
+        if ($user->hasAnyRole(['god', 'admin', 'tech'])) {
             return true;
         }
 
+        // Public comparisons are viewable by anyone authenticated
+        if ($model->is_public) {
+            return true;
+        }
+
+        // Private comparisons only viewable by owner
         return $model->user_id === $user->id;
     }
 

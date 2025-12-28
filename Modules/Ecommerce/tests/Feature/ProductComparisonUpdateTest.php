@@ -224,7 +224,9 @@ class ProductComparisonUpdateTest extends TestCase
             ->patch('/api/v1/product-comparisons/' . $comparison->id);
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['name']);
+        $response->assertJsonFragment([
+            'source' => ['pointer' => '/data/attributes/name']
+        ]);
     }
 
     public function test_returns_404_for_non_existent_comparison()

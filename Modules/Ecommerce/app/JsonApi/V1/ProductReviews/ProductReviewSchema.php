@@ -39,7 +39,7 @@ class ProductReviewSchema extends Schema
             Number::make('userId', 'user_id'),
 
             // Review Details
-            Number::make('rating'), // 1-5 stars
+            Number::make('rating')->sortable(), // 1-5 stars
             Str::make('title')->sortable(),
             Str::make('comment'),
 

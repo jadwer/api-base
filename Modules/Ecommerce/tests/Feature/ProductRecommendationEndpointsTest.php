@@ -4,6 +4,7 @@ namespace Modules\Ecommerce\Tests\Feature;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Contacts\Models\Contact;
 use Modules\Product\Models\Brand;
 use Modules\Product\Models\Category;
 use Modules\Product\Models\Product;
@@ -77,12 +78,12 @@ class ProductRecommendationEndpointsTest extends TestCase
 
     public function test_public_can_access_frequently_bought_together_endpoint()
     {
-        $customer = User::factory()->create();
+        $contact = Contact::factory()->create(['is_customer' => true]);
 
         $product = Product::factory()->create(['is_active' => true]);
         $relatedProduct = Product::factory()->create(['is_active' => true]);
 
-        $order = SalesOrder::factory()->create(['contact_id' => $customer->id]);
+        $order = SalesOrder::factory()->create(['contact_id' => $contact->id]);
         SalesOrderItem::factory()->create([
             'sales_order_id' => $order->id,
             'product_id' => $product->id,
@@ -111,13 +112,13 @@ class ProductRecommendationEndpointsTest extends TestCase
 
     public function test_public_can_access_trending_products_endpoint()
     {
-        $customer = User::factory()->create();
+        $contact = Contact::factory()->create(['is_customer' => true]);
 
         $product = Product::factory()->create(['is_active' => true]);
 
         // Create recent sales
         $order = SalesOrder::factory()->create([
-            'contact_id' => $customer->id,
+            'contact_id' => $contact->id,
             'created_at' => Carbon::now()->subDays(5),
         ]);
         SalesOrderItem::factory()->create([
@@ -194,6 +195,7 @@ class ProductRecommendationEndpointsTest extends TestCase
     public function test_authenticated_user_can_access_personalized_recommendations()
     {
         $customer = User::role('customer')->first();
+        $contact = Contact::factory()->create(['is_customer' => true]);
 
         $category = Category::factory()->create();
         $purchasedProduct = Product::factory()->create([
@@ -201,7 +203,7 @@ class ProductRecommendationEndpointsTest extends TestCase
             'is_active' => true,
         ]);
 
-        $order = SalesOrder::factory()->create(['contact_id' => $customer->id]);
+        $order = SalesOrder::factory()->create(['contact_id' => $contact->id]);
         SalesOrderItem::factory()->create([
             'sales_order_id' => $order->id,
             'product_id' => $purchasedProduct->id,

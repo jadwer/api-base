@@ -127,7 +127,7 @@ class LeaveIndexTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('leaves')
-            ->get("/api/v1/leaves?filter[employee]={$employee1->id}");
+            ->get("/api/v1/leaves?filter[employeeId]={$employee1->id}");
 
         $response->assertOk();
         $this->assertGreaterThanOrEqual(2, count($response->json('data')));

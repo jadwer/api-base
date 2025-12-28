@@ -26,8 +26,8 @@ class LeaveShowTest extends TestCase
             'employee_id' => $employee->id,
             'leave_type_id' => $leaveType->id,
             'start_date' => '2024-01-15',
-            'endDate' => '2024-01-20',
-            'daysRequested' => 5,
+            'end_date' => '2024-01-20',
+            'days_requested' => 5,
             'status' => 'pending'
         ]);
 

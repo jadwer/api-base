@@ -54,13 +54,14 @@ class ProductComparisonItemAuthorizer implements Authorizer
             return false;
         }
 
-        // Can view if they can view the parent comparison
-        $comparison = $model->comparison;
-        if ($comparison->is_public) {
+        // Tech users have read-only access to all comparison items
+        if ($user->hasAnyRole(['god', 'admin', 'tech'])) {
             return true;
         }
 
-        if ($user->hasAnyRole(['god', 'admin'])) {
+        // Can view if they can view the parent comparison
+        $comparison = $model->comparison;
+        if ($comparison->is_public) {
             return true;
         }
 

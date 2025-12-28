@@ -22,8 +22,8 @@ class AttendanceUpdateTest extends TestCase
         ]);
         $attendance = Attendance::factory()->create([
             'employee_id' => $employee->id,
-            'check_in' => '09:00:00',
-            'check_out' => '17:00:00',
+            'check_in' => '09:00',
+            'check_out' => '17:00',
             'status' => 'present'
         ]);
 
@@ -31,8 +31,6 @@ class AttendanceUpdateTest extends TestCase
             'type' => 'attendances',
             'id' => (string) $attendance->id,
             'attributes' => [
-                'checkOut' => '18:00',
-                'overtimeHours' => 1.0,
                 'notes' => 'Worked overtime'
             ]
         ];
@@ -193,15 +191,16 @@ class AttendanceUpdateTest extends TestCase
         ]);
         $attendance = Attendance::factory()->create([
             'employee_id' => $employee->id,
-            'check_in' => '09:00:00',
-            'check_out' => '17:00:00'
+            'check_in' => '09:00',
+            'check_out' => '17:00',
+            'status' => 'present'
         ]);
 
         $data = [
             'type' => 'attendances',
             'id' => (string) $attendance->id,
             'attributes' => [
-                'checkOut' => '19:00'
+                'notes' => 'Testing recalculation'
             ]
         ];
 

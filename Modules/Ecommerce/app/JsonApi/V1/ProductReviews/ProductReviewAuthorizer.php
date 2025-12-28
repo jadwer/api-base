@@ -18,13 +18,13 @@ class ProductReviewAuthorizer implements Authorizer
     }
 
     /**
-     * Authenticated users can create reviews
+     * Admin, god, and customers can create reviews. Tech is read-only.
      */
     public function store(Request $request, string $modelClass): bool|Response
     {
         $user = $request->user();
         return $user && ($user->can('ecommerce.product-reviews.store')
-            || $user->hasAnyRole(['god', 'admin', 'tech', 'customer']));
+            || $user->hasAnyRole(['god', 'admin', 'customer']));
     }
 
     /**
@@ -37,13 +37,14 @@ class ProductReviewAuthorizer implements Authorizer
             return true;
         }
 
-        // If not approved, only owner, admin, or god can see it
+        // If not approved, only owner, admin, tech, or god can see it
         $user = $request->user();
         if (!$user) {
             return Response::deny('Only approved reviews are public.');
         }
 
-        if ($user->hasAnyRole(['god', 'admin'])) {
+        // Tech users have read-only access to all reviews
+        if ($user->hasAnyRole(['god', 'admin', 'tech'])) {
             return true;
         }
 

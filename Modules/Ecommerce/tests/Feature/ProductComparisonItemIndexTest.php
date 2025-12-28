@@ -27,7 +27,7 @@ class ProductComparisonItemIndexTest extends TestCase
                     'id',
                     'attributes' => [
                         'comparisonId',
-                        'product_id',
+                        'productId',
                         'position',
                         'createdAt',
                         'updatedAt',

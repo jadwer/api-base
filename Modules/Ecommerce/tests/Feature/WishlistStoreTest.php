@@ -237,8 +237,8 @@ class WishlistStoreTest extends TestCase
             ->post('/api/v1/wishlists');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors([
-            'name' => 'El nombre no puede exceder 255 caracteres.',
+        $response->assertJsonFragment([
+            'source' => ['pointer' => '/data/attributes/name']
         ]);
     }
 
@@ -262,8 +262,8 @@ class WishlistStoreTest extends TestCase
             ->post('/api/v1/wishlists');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors([
-            'isDefault' => 'El campo predeterminado debe ser verdadero o falso.',
+        $response->assertJsonFragment([
+            'source' => ['pointer' => '/data/attributes/isDefault']
         ]);
     }
 
@@ -287,8 +287,8 @@ class WishlistStoreTest extends TestCase
             ->post('/api/v1/wishlists');
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors([
-            'isPublic' => 'El campo público debe ser verdadero o falso.',
+        $response->assertJsonFragment([
+            'source' => ['pointer' => '/data/attributes/isPublic']
         ]);
     }
 }

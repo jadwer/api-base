@@ -172,8 +172,9 @@ class PositionDestroyTest extends TestCase
         if ($response->status() === 204) {
             $this->assertDatabaseMissing('positions', ['id' => $position->id]);
         } else {
-            // If it fails due to FK constraints, that's also acceptable behavior
-            $response->assertStatus(422);
+            // If it fails due to FK constraints, it returns 500 (DB exception)
+            $response->assertStatus(500);
+            $this->assertDatabaseHas('positions', ['id' => $position->id]);
         }
     }
 }

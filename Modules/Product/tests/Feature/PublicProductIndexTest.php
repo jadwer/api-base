@@ -68,14 +68,6 @@ class PublicProductIndexTest extends TestCase
         }
 
         $this->assertGreaterThanOrEqual(8, count($products), 'Should have at least 8 seeded products + 3 factory products');
-        
-        echo "\n📦 PUBLIC CATALOG - Products found:\n";
-        foreach ($products as $product) {
-            $name = $product['attributes']['name'];
-            $sku = $product['attributes']['sku'];
-            $price = $product['attributes']['price'];
-            echo "   • {$name} ({$sku}) - \${$price}\n";
-        }
     }
 
     public function test_public_catalog_has_proper_json_api_headers(): void
@@ -206,16 +198,11 @@ class PublicProductIndexTest extends TestCase
         $products = $response->json('data');
         
         $this->assertGreaterThan(0, count($products), 'Should find products matching "iPhone"');
-        
+
         // Verify all returned products contain "iPhone" in name
         foreach ($products as $product) {
             $name = $product['attributes']['name'];
             $this->assertStringContainsString('iPhone', $name, "Product name '{$name}' should contain 'iPhone'");
-        }
-        
-        echo "\n🔍 PUBLIC CATALOG - Search results for 'iPhone':\n";
-        foreach ($products as $product) {
-            echo "   • " . $product['attributes']['name'] . " (" . $product['attributes']['sku'] . ")\n";
         }
     }
 
@@ -230,16 +217,11 @@ class PublicProductIndexTest extends TestCase
         $products = $response->json('data');
         
         $this->assertGreaterThan(0, count($products), 'Should find products with SKU containing "APL"');
-        
+
         // Verify all returned products contain "APL" in SKU
         foreach ($products as $product) {
             $sku = $product['attributes']['sku'];
             $this->assertStringContainsString('APL', $sku, "Product SKU '{$sku}' should contain 'APL'");
-        }
-        
-        echo "\n🔍 PUBLIC CATALOG - Search results for SKU 'APL':\n";
-        foreach ($products as $product) {
-            echo "   • " . $product['attributes']['name'] . " (" . $product['attributes']['sku'] . ")\n";
         }
     }
 
@@ -269,18 +251,7 @@ class PublicProductIndexTest extends TestCase
             ],
         ]);
 
-        $products = $response->json('data');
         $included = $response->json('included') ?? [];
-
-        echo "\n🔗 PUBLIC CATALOG - Products with relationships:\n";
-        foreach ($products as $product) {
-            $name = $product['attributes']['name'];
-            $unitName = $this->findIncludedName($product, 'unit', $included, 'units');
-            $categoryName = $this->findIncludedName($product, 'category', $included, 'categories');
-            $brandName = $this->findIncludedName($product, 'brand', $included, 'brands');
-
-            echo "   • {$name} | Brand: {$brandName} | Category: {$categoryName} | Unit: {$unitName}\n";
-        }
 
         $this->assertGreaterThan(0, count($included), 'Should include related entities');
     }
@@ -312,10 +283,6 @@ class PublicProductIndexTest extends TestCase
         // Test that pagination parameter is respected
         $products = $response->json('data');
         $this->assertLessThanOrEqual(3, count($products), 'Should return at most 3 products when page size is 3');
-
-        echo "\n📄 PUBLIC CATALOG - Pagination test results:\n";
-        echo "Products returned: " . count($products) . "\n";
-        echo "Page size requested: 3\n";
     }
 
     public function test_guest_can_combine_search_and_filters_in_public_catalog(): void
@@ -334,26 +301,7 @@ class PublicProductIndexTest extends TestCase
                 $name = $product['attributes']['name'];
                 $this->assertStringContainsString('Pro', $name, "Product name '{$name}' should contain 'Pro'");
             }
-            
-            echo "\n🎯 PUBLIC CATALOG - Combined search + filter ('Pro' in Apple products):\n";
-            foreach ($products as $product) {
-                echo "   • " . $product['attributes']['name'] . "\n";
-            }
-        } else {
-            echo "\n🎯 PUBLIC CATALOG - No 'Pro' products found in Apple brand (this is okay for testing)\n";
         }
-    }
-
-    private function findIncludedName($product, $relationKey, $included, $expectedType): string
-    {
-        $relationId = $product['relationships'][$relationKey]['data']['id'] ?? null;
-        if (!$relationId) return 'N/A';
-
-        foreach ($included as $item) {
-            if ($item['type'] === $expectedType && $item['id'] == $relationId) {
-                return $item['attributes']['name'] ?? 'Unknown';
-            }
-        }
-        return 'N/A';
+        // No assertion needed if no products found - combined filters may yield empty results
     }
 }

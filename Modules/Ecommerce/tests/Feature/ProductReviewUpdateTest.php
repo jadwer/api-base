@@ -30,8 +30,7 @@ class ProductReviewUpdateTest extends TestCase
             ],
         ];
 
-        $response = $this->actingAs($admin, 'sanctum')
-            ->jsonApi()
+        $response = $this->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
             ->patch('/api/v1/product-reviews/' . $review->id);
@@ -146,11 +145,10 @@ class ProductReviewUpdateTest extends TestCase
             ],
         ];
 
-        $response = $this->actingAs($customer, 'sanctum')
+        $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            
             ->patch('/api/v1/product-reviews/' . $review->id);
 
         $response->assertSuccessful()
@@ -191,11 +189,10 @@ class ProductReviewUpdateTest extends TestCase
             ],
         ];
 
-        $response = $this->actingAs($admin, 'sanctum')
+        $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            
             ->patch('/api/v1/product-reviews/' . $review->id);
 
         $response->assertSuccessful();
@@ -237,7 +234,9 @@ class ProductReviewUpdateTest extends TestCase
             ->patch('/api/v1/product-reviews/' . $review->id);
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['rating']);
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/rating']
+            ]);
 
         // Test rating too high
         $data['attributes']['rating'] = 6;
@@ -246,11 +245,12 @@ class ProductReviewUpdateTest extends TestCase
             ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            
             ->patch('/api/v1/product-reviews/' . $review->id);
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['rating']);
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/rating']
+            ]);
     }
 
     /**
@@ -282,7 +282,9 @@ class ProductReviewUpdateTest extends TestCase
             ->patch('/api/v1/product-reviews/' . $review->id);
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['title']);
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/title']
+            ]);
     }
 
     /**
@@ -305,10 +307,10 @@ class ProductReviewUpdateTest extends TestCase
             ],
         ];
 
-        $response = $this->jsonApi()
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
             ->expects('product-reviews')
             ->withData($data)
-            
             ->patch('/api/v1/product-reviews/' . $review->id);
 
         $response->assertSuccessful();
@@ -382,7 +384,9 @@ class ProductReviewUpdateTest extends TestCase
             ->patch('/api/v1/product-reviews/' . $review->id);
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['status']);
+            ->assertJsonFragment([
+                'source' => ['pointer' => '/data/attributes/status']
+            ]);
     }
 
     /**

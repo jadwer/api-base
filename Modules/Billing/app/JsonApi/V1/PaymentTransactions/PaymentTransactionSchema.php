@@ -41,7 +41,7 @@ class PaymentTransactionSchema extends Schema
             Str::make('clientSecret', 'client_secret')->hidden(), // Sensitive data
 
             // Payment Details
-            Number::make('amount')->sortable(),
+            Number::make('amount')->sortable()->readOnlyOnUpdate(),
             Str::make('currency')->sortable(),
             Str::make('status')->sortable(),
             Str::make('paymentMethod', 'payment_method')->sortable(),

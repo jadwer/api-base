@@ -6,13 +6,29 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 use Modules\Billing\Database\Factories\CFDIInvoiceFactory;
 use Modules\Finance\Models\ARInvoice;
 use Modules\Contacts\Models\Contact;
 
 class CFDIInvoice extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
+
+    /**
+     * Activity Log Configuration
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                'status', 'uuid', 'tipo_comprobante', 'receptor_rfc',
+                'total', 'fecha_timbrado', 'fecha_cancelacion'
+            ])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     protected $table = 'cfdi_invoices';
 

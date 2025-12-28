@@ -83,7 +83,7 @@ class ProductReviewIndexTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('product-reviews')
-            ->filter(['product_id' => $product1->id])
+            ->filter(['productId' => $product1->id])
             ->get('/api/v1/product-reviews');
 
         $response->assertSuccessful()

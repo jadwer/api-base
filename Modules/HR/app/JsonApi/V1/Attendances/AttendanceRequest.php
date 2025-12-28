@@ -12,9 +12,11 @@ class AttendanceRequest extends ResourceRequest
      */
     public function rules(): array
     {
+        $isCreating = $this->isCreating();
+
         return [
             'date' => [
-                'required',
+                $isCreating ? 'required' : 'sometimes',
                 'date',
             ],
             'checkIn' => [
@@ -24,10 +26,9 @@ class AttendanceRequest extends ResourceRequest
             'checkOut' => [
                 'nullable',
                 'date_format:H:i',
-                'after:checkIn',
             ],
             'status' => [
-                'required',
+                $isCreating ? 'required' : 'sometimes',
                 'string',
                 'in:present,absent,late,half_day,on_leave',
             ],
@@ -36,7 +37,7 @@ class AttendanceRequest extends ResourceRequest
                 'string',
             ],
             'employee' => [
-                'required',
+                $isCreating ? 'required' : 'sometimes',
                 JsonApiRule::toOne(),
             ],
         ];

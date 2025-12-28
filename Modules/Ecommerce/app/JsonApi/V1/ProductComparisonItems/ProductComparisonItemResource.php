@@ -9,6 +9,8 @@ class ProductComparisonItemResource extends JsonApiResource
     public function attributes($request): iterable
     {
         return [
+            'comparisonId' => $this->comparison_id,
+            'productId' => $this->product_id,
             'position' => $this->position,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,

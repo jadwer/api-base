@@ -76,12 +76,12 @@ class PerformanceReviewIndexTest extends TestCase
 
         $testReviews = collect($data)->filter(function($item) {
             $reviewDate = $item['attributes']['reviewDate'] ?? null;
-            return $reviewDate === '2024-01-15' || $reviewDate === '2024-03-20';
+            return str_starts_with($reviewDate, '2024-01-15') || str_starts_with($reviewDate, '2024-03-20');
         })->values();
 
         $this->assertCount(2, $testReviews);
-        $this->assertEquals('2024-01-15', $testReviews[0]['attributes']['reviewDate']);
-        $this->assertEquals('2024-03-20', $testReviews[1]['attributes']['reviewDate']);
+        $this->assertStringContainsString('2024-01-15', $testReviews[0]['attributes']['reviewDate']);
+        $this->assertStringContainsString('2024-03-20', $testReviews[1]['attributes']['reviewDate']);
     }
 
     public function test_admin_can_filter_performance_reviews_by_status(): void
@@ -148,7 +148,7 @@ class PerformanceReviewIndexTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('performance-reviews')
-            ->get("/api/v1/performance-reviews?filter[employee]={$employee1->id}");
+            ->get("/api/v1/performance-reviews?filter[employeeId]={$employee1->id}");
 
         $response->assertOk();
         $this->assertGreaterThanOrEqual(2, count($response->json('data')));

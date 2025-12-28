@@ -26,7 +26,7 @@ class ProductComparisonItemShowTest extends TestCase
                 'id' => (string) $item->id,
                 'attributes' => [
                     'comparisonId' => $item->comparison_id,
-                    'product_id' => $item->product_id,
+                    'productId' => $item->product_id,
                     'position' => $item->position,
                 ],
             ],

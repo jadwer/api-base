@@ -90,7 +90,7 @@ class PayrollPeriodIndexTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('payroll-periods')
-            ->get('/api/v1/payroll-periods?filter[period_type]=monthly');
+            ->get('/api/v1/payroll-periods?filter[periodType]=monthly');
 
         $response->assertOk();
         $this->assertGreaterThanOrEqual(2, count($response->json('data')));

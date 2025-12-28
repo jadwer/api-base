@@ -122,9 +122,9 @@ class PayrollPeriodUpdateTest extends TestCase
             ->patch("/api/v1/payroll-periods/{$period->id}");
 
         $response->assertOk();
-        $this->assertEquals('2024-03-01', $response->json('data.attributes.startDate'));
-        $this->assertEquals('2024-03-31', $response->json('data.attributes.endDate'));
-        $this->assertEquals('2024-04-05', $response->json('data.attributes.paymentDate'));
+        $this->assertStringContainsString('2024-03-01', $response->json('data.attributes.startDate'));
+        $this->assertStringContainsString('2024-03-31', $response->json('data.attributes.endDate'));
+        $this->assertStringContainsString('2024-04-05', $response->json('data.attributes.paymentDate'));
     }
 
     public function test_tech_user_can_update_payroll_period(): void

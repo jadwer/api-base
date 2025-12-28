@@ -73,12 +73,6 @@ class PublicProductShowTest extends TestCase
         $this->assertEquals('Test Product', $productData['attributes']['name']);
         $this->assertEquals('TEST-001', $productData['attributes']['sku']);
         $this->assertEquals(99.99, $productData['attributes']['price']);
-
-        echo "\n📦 PUBLIC PRODUCT VIEW:\n";
-        echo "Name: {$productData['attributes']['name']}\n";
-        echo "SKU: {$productData['attributes']['sku']}\n";
-        echo "Price: \${$productData['attributes']['price']}\n";
-        echo "Description: {$productData['attributes']['description']}\n";
     }
 
     public function test_guest_can_view_public_product_with_relationships(): void
@@ -119,26 +113,14 @@ class PublicProductShowTest extends TestCase
             ],
         ]);
 
-        $productData = $response->json('data');
         $included = $response->json('included');
 
         // Verify relationships are included
         $this->assertNotEmpty($included, 'Should include related entities');
-        
-        $unitData = collect($included)->firstWhere('type', 'units');
-        $categoryData = collect($included)->firstWhere('type', 'categories');
-        $brandData = collect($included)->firstWhere('type', 'brands');
 
-        $this->assertNotNull($unitData, 'Should include unit data');
-        $this->assertNotNull($categoryData, 'Should include category data');
-        $this->assertNotNull($brandData, 'Should include brand data');
-
-        echo "\n📦 PUBLIC PRODUCT WITH RELATIONSHIPS:\n";
-        echo "Product: {$productData['attributes']['name']} ({$productData['attributes']['sku']})\n";
-        echo "Brand: {$brandData['attributes']['name']}\n";
-        echo "Category: {$categoryData['attributes']['name']}\n";
-        echo "Unit: {$unitData['attributes']['name']}\n";
-        echo "Price: \${$productData['attributes']['price']}\n";
+        $this->assertNotNull(collect($included)->firstWhere('type', 'units'), 'Should include unit data');
+        $this->assertNotNull(collect($included)->firstWhere('type', 'categories'), 'Should include category data');
+        $this->assertNotNull(collect($included)->firstWhere('type', 'brands'), 'Should include brand data');
     }
 
     public function test_guest_receives_404_for_nonexistent_product(): void
@@ -146,8 +128,6 @@ class PublicProductShowTest extends TestCase
         $response = $this->jsonApi()->get('/api/public/v1/public-products/999999');
 
         $response->assertNotFound();
-
-        echo "\n❌ Correctly returned 404 for non-existent product\n";
     }
 
     public function test_public_product_show_has_proper_json_api_headers(): void
@@ -175,8 +155,6 @@ class PublicProductShowTest extends TestCase
 
         $jsonApi = $response->json('jsonapi');
         $this->assertEquals('1.0', $jsonApi['version']);
-
-        echo "\n✅ JSON:API headers and structure verified\n";
     }
 
     public function test_guest_can_view_seeded_product(): void
@@ -193,23 +171,9 @@ class PublicProductShowTest extends TestCase
         $response->assertOk();
         
         $productData = $response->json('data');
-        $included = $response->json('included') ?? [];
 
-        echo "\n📱 SEEDED PRODUCT VIEW:\n";
-        echo "Product: {$productData['attributes']['name']}\n";
-        echo "SKU: {$productData['attributes']['sku']}\n";
-        echo "Price: \${$productData['attributes']['price']}\n";
-        echo "Description: {$productData['attributes']['description']}\n";
-
-        if (!empty($included)) {
-            $unitData = collect($included)->firstWhere('type', 'units');
-            $categoryData = collect($included)->firstWhere('type', 'categories');
-            $brandData = collect($included)->firstWhere('type', 'brands');
-
-            if ($unitData) echo "Unit: {$unitData['attributes']['name']}\n";
-            if ($categoryData) echo "Category: {$categoryData['attributes']['name']}\n";
-            if ($brandData) echo "Brand: {$brandData['attributes']['name']}\n";
-        }
+        $this->assertNotNull($productData['attributes']['name']);
+        $this->assertNotNull($productData['attributes']['sku']);
     }
 
     public function test_public_product_attributes_are_complete(): void
@@ -251,15 +215,6 @@ class PublicProductShowTest extends TestCase
         $this->assertEquals('/docs/product.pdf', $attributes['datasheetPath']);
         $this->assertNotNull($attributes['createdAt']);
         $this->assertNotNull($attributes['updatedAt']);
-
-        echo "\n✅ All product attributes verified:\n";
-        echo "Name: {$attributes['name']}\n";
-        echo "SKU: {$attributes['sku']}\n";
-        echo "Price: \${$attributes['price']}\n";
-        echo "Cost: \${$attributes['cost']}\n";
-        echo "IVA: " . ($attributes['iva'] ? 'Yes' : 'No') . "\n";
-        echo "Image Path: {$attributes['imgPath']}\n";
-        echo "Datasheet Path: {$attributes['datasheetPath']}\n";
     }
 
     public function test_public_product_relationship_links_are_accessible(): void
@@ -285,7 +240,5 @@ class PublicProductShowTest extends TestCase
         // Test brand relationship
         $response = $this->jsonApi()->get("/api/public/v1/public-products/{$product->id}/brand");
         $response->assertOk();
-
-        echo "\n🔗 All relationship endpoints accessible\n";
     }
 }

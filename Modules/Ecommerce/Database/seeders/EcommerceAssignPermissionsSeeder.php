@@ -35,10 +35,14 @@ class EcommerceAssignPermissionsSeeder extends Seeder
             $adminRole->givePermissionTo($adminPermissions);
         }
 
-        // Tech gets all ecommerce permissions (same as admin)
+        // Tech gets read-only permissions (index, show only)
         if ($techRole) {
             $techPermissions = Permission::where('guard_name', 'api')
                 ->where('name', 'like', 'ecommerce.%')
+                ->where(function ($query) {
+                    $query->where('name', 'like', '%.index')
+                          ->orWhere('name', 'like', '%.show');
+                })
                 ->get();
             $techRole->givePermissionTo($techPermissions);
         }
