@@ -1,6 +1,6 @@
 # Frontend Integration Guide
 
-**Last Updated:** 2025-11-05
+**Last Updated:** 2025-12-29
 **API Version:** v1
 **JSON:API Specification:** 1.1
 **Base URL:** `/api/v1`
@@ -223,6 +223,7 @@ Each module has a dedicated frontend integration guide with detailed information
 ### Supporting Modules
 
 - **[Contacts Module](modules/CONTACTS_FRONTEND_GUIDE.md)** - Contact Management, Addresses, Documents
+- **[Audit Module](modules/AUDIT_FRONTEND_GUIDE.md)** - Activity Logs (37 models, 50% coverage), Login History
 
 ---
 

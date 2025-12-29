@@ -9,10 +9,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Product\Models\Product;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Wishlist extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
+
+    /**
+     * Activity Log Configuration
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['name', 'is_default', 'is_public'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     protected $fillable = [
         'user_id',

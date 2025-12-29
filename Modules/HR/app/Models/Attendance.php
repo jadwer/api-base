@@ -7,10 +7,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\HR\Database\Factories\AttendanceFactory;
 use Carbon\Carbon;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Attendance extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
+
+    /**
+     * Activity Log Configuration
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['check_in', 'check_out', 'status', 'hours_worked', 'overtime_hours'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     protected $fillable = [
         'employee_id',

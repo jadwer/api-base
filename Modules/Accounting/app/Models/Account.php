@@ -5,11 +5,23 @@ namespace Modules\Accounting\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Permission\Traits\HasPermissions;
-
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Account extends Model
 {
-    use HasFactory, HasPermissions;
+    use HasFactory, HasPermissions, LogsActivity;
+
+    /**
+     * Activity Log Configuration
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['code', 'name', 'account_type', 'nature', 'parent_id', 'is_postable', 'status'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     protected $table = 'accounts';
     

@@ -5,6 +5,8 @@ namespace Modules\Inventory\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 /**
  * Modelo Stock
@@ -34,7 +36,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Stock extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
+
+    /**
+     * Activity Log Configuration
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['quantity', 'reserved_quantity', 'status', 'minimum_stock', 'reorder_point'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     /**
      * The table associated with the model.

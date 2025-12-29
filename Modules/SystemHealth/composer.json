@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/systemhealth",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\SystemHealth\\": "app/",
+            "Modules\\SystemHealth\\Database\\Factories\\": "Database/factories/",
+            "Modules\\SystemHealth\\Database\\Seeders\\": "Database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\SystemHealth\\Tests\\": "tests/"
+        }
+    }
+}

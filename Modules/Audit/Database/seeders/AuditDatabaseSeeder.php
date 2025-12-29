@@ -15,6 +15,7 @@ class AuditDatabaseSeeder extends Seeder
         $this->call([
             AuditPermissionSeeder::class,
             AuditAssignPermissionsSeeder::class,
+            AuditorRoleSeeder::class,
         ]);
         Log::info('AuditDatabaseSeeder executed successfully.');
     }

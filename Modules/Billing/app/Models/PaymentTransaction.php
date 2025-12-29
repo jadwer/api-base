@@ -9,10 +9,23 @@ use Modules\Billing\Database\Factories\PaymentTransactionFactory;
 use Modules\Ecommerce\Models\CheckoutSession;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Finance\Models\ARInvoice;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class PaymentTransaction extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
+
+    /**
+     * Activity Log Configuration
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['status', 'amount', 'gateway', 'payment_method', 'error_message', 'captured_at', 'failed_at', 'refunded_at'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     protected $fillable = [
         'checkout_session_id',

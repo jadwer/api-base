@@ -6,10 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Permission\Traits\HasPermissions;
 use Modules\Accounting\Models\Account;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class BankAccount extends Model
 {
-    use HasFactory, HasPermissions;
+    use HasFactory, HasPermissions, LogsActivity;
+
+    /**
+     * Activity Log Configuration
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['account_number', 'account_name', 'bank_name', 'currency', 'current_balance', 'status', 'is_active'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     protected $table = 'bank_accounts';
     

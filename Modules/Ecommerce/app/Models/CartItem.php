@@ -6,10 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Permission\Traits\HasPermissions;
 use Modules\Product\Models\Product;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class CartItem extends Model
 {
-    use HasFactory, HasPermissions;
+    use HasFactory, HasPermissions, LogsActivity;
+
+    /**
+     * Activity Log Configuration
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['quantity', 'unit_price', 'total', 'status'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     protected $table = 'cart_items';
     

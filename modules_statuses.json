@@ -15,5 +15,6 @@
     "Reports": true,
     "HR": true,
     "Billing": true,
-    "CRM": true
+    "CRM": true,
+    "SystemHealth": true
 }

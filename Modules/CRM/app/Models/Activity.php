@@ -6,11 +6,24 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\CRM\Database\Factories\ActivityFactory;
 use Modules\User\Models\User;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 // use Modules\Contacts\Models\Contact; // Will be enabled when Contact module is implemented
 
 class Activity extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
+
+    /**
+     * Activity Log Configuration
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['activity_type', 'subject', 'status', 'outcome', 'activity_date'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     protected $fillable = [
         'activity_type',

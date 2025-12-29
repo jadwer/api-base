@@ -1,0 +1,11 @@
+{
+    "name": "SystemHealth",
+    "alias": "systemhealth",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\SystemHealth\\Providers\\SystemHealthServiceProvider"
+    ],
+    "files": []
+}

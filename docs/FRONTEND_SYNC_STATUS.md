@@ -1,8 +1,8 @@
 # Frontend Synchronization Status
 
-**Last Updated:** 2025-12-25
+**Last Updated:** 2025-12-29
 **API Version:** Laravel 12 + JSON:API 5.x
-**Total Modules:** 17
+**Total Modules:** 18
 
 ## Quick Status
 
@@ -11,7 +11,7 @@
 | Auth | ✅ Complete | - | Login, logout, token management |
 | User | ✅ Complete | - | User CRUD, profile |
 | PermissionManager | ✅ Complete | - | Roles and permissions |
-| Audit | ✅ Complete | - | Activity logs |
+| Audit | ✅ Complete | - | Activity logs (37 models, 50% coverage) |
 | PageBuilder | ✅ Complete | - | CMS pages |
 | Product | ✅ Complete | - | Products, Categories, Brands, Units |
 | Inventory | ✅ Complete | - | Warehouses, Locations, Stock, Movements |
@@ -25,10 +25,48 @@
 | HR | ✅ Complete | - | 9 entities (employees, payroll, etc.) |
 | CRM | ✅ Complete | - | 4 entities (leads, campaigns, activities) |
 | Billing | ✅ Complete | - | CFDI invoicing, PAC integration |
+| SystemHealth | ✅ Complete | - | System monitoring, metrics, error logs |
 
 ---
 
-## Recent Backend Changes (2025-12-25)
+## Recent Backend Changes (2025-12-29)
+
+### SystemHealth Module (NEW)
+- **New Module:** System monitoring and health checks
+- **7 API Endpoints:** ping (public), index, database, storage, queue, errors, metrics
+- **Features:**
+  - Database connection and response time monitoring
+  - Cache read/write verification
+  - Queue and failed jobs status
+  - Disk space usage (storage directory)
+  - Database table sizes and row counts
+  - Application metrics (users, products, orders counts)
+  - Recent errors from Telescope
+- **Permissions:** 6 new permissions for god/admin roles
+- **Documentation:** `docs/modules/SYSTEMHEALTH_FRONTEND_GUIDE.md`
+
+### Audit Module (Major Update)
+- **Coverage expanded to 37 of 74 models (50%)**
+- **Financial models**: Payment, PaymentApplication, PaymentTransaction, CFDIInvoice, JournalEntry
+- **Ecommerce models**: ShoppingCart, Wishlist, ProductReview, CartItem, CheckoutSession
+- **Supporting models**: Brand, Category, Warehouse, Department, Position, BankAccount, Account
+- **Operational models**: Stock, Attendance, Activity
+- **Login/Logout tracking**: IP address, user agent, timestamps
+
+### Finance Module
+- **PaymentApplication**: Added audit logging (payment_id, ar_invoice_id, amount, application_date)
+
+### Ecommerce Module
+- **ShoppingCart**: Added audit logging (status, total_amount, coupon_code, discount_amount)
+- **Wishlist**: Added audit logging (name, is_default, is_public)
+- **ProductReview**: Added audit logging (rating, title, status, is_verified_purchase, helpful_count)
+
+### Billing Module
+- **PaymentTransaction**: Added audit logging (status, amount, gateway, payment_method, error_message)
+
+---
+
+## Previous Backend Changes (2025-12-25)
 
 ### Ecommerce Module
 - **ProductReview**: Fixed product relationship hydration (removed `readOnly()` from BelongsTo)
@@ -69,6 +107,7 @@ docs/modules/
 ├── PURCHASE_FRONTEND_GUIDE.md
 ├── REPORTS_FRONTEND_GUIDE.md
 ├── SALES_FRONTEND_GUIDE.md
+├── SYSTEMHEALTH_FRONTEND_GUIDE.md
 └── USER_FRONTEND_GUIDE.md
 ```
 
