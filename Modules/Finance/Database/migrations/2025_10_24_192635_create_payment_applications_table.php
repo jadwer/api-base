@@ -18,6 +18,10 @@ return new class extends Migration
             $table->boolean('is_active')->nullable()->default(1);
             $table->json('metadata')->nullable();
             $table->timestamps();
+
+            // Performance indexes
+            $table->index('payment_id');
+            $table->index('ar_invoice_id');
         });
     }
 

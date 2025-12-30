@@ -54,7 +54,6 @@ class PurchaseOrderItemSchema extends Schema
             ArrayHash::make('metadata'),
             
             // Finance integration fields
-            Number::make('apInvoiceLineId', 'ap_invoice_line_id')->sortable(),
             Number::make('invoicedQuantity', 'invoiced_quantity')->sortable(),
             Number::make('invoicedAmount', 'invoiced_amount')->sortable(),
             

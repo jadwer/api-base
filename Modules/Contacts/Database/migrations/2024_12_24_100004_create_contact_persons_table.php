@@ -20,6 +20,11 @@ return new class extends Migration
             $table->boolean('is_primary')->nullable()->default();
             $table->json('metadata')->nullable();
             $table->timestamps();
+
+            // Performance indexes
+            $table->index('contact_id');
+            $table->index('is_primary');
+            $table->index(['contact_id', 'is_primary']);
         });
     }
 

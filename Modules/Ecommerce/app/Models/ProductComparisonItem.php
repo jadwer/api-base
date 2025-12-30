@@ -24,6 +24,10 @@ class ProductComparisonItem extends Model
         'position' => 'integer',
     ];
 
+    protected $attributes = [
+        'position' => 0,
+    ];
+
     /**
      * Create a new factory instance for the model
      */

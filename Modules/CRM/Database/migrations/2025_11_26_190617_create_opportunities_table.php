@@ -59,6 +59,15 @@ return new class extends Migration
             $table->index('won_at');
             $table->index('lost_at');
         });
+
+        // Add FK from activities to opportunities (consolidado desde add_opportunity_id_to_activities_table)
+        Schema::table('activities', function (Blueprint $table) {
+            $table->foreign('opportunity_id')
+                ->references('id')
+                ->on('opportunities')
+                ->onDelete('cascade');
+            $table->index(['opportunity_id', 'activity_type'], 'activities_opportunity_type_index');
+        });
     }
 
     /**
@@ -66,6 +75,12 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Remove FK from activities first (consolidado)
+        Schema::table('activities', function (Blueprint $table) {
+            $table->dropForeign(['opportunity_id']);
+            $table->dropIndex('activities_opportunity_type_index');
+        });
+
         Schema::dropIfExists('opportunities');
     }
 };

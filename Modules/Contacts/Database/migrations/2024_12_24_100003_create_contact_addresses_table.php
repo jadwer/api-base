@@ -21,6 +21,12 @@ return new class extends Migration
             $table->boolean('is_default')->nullable()->default();
             $table->json('metadata')->nullable();
             $table->timestamps();
+
+            // Performance indexes
+            $table->index('contact_id');
+            $table->index('address_type');
+            $table->index('is_default');
+            $table->index(['contact_id', 'is_default']);
         });
     }
 

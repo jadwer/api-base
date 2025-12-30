@@ -32,8 +32,8 @@ class ProductComparison extends Model
         parent::boot();
 
         static::creating(function ($comparison) {
-            if (!$comparison->user_id && auth()->check()) {
-                $comparison->user_id = auth()->id();
+            if (!$comparison->user_id && auth('sanctum')->check()) {
+                $comparison->user_id = auth('sanctum')->id();
             }
         });
     }

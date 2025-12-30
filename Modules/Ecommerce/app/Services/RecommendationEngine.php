@@ -44,16 +44,30 @@ class RecommendationEngine
      */
     public function getFrequentlyBoughtTogether(Product $product, int $limit = 4): Collection
     {
-        return Product::select('products.*', DB::raw('COUNT(*) as frequency'))
-            ->join('sales_order_items as soi1', 'soi1.product_id', '=', 'products.id')
+        // Get product IDs that were bought together, ordered by frequency
+        $productIds = DB::table('sales_order_items as soi1')
+            ->select('soi1.product_id', DB::raw('COUNT(*) as frequency'))
             ->join('sales_order_items as soi2', 'soi2.sales_order_id', '=', 'soi1.sales_order_id')
+            ->join('products', 'products.id', '=', 'soi1.product_id')
             ->where('soi2.product_id', $product->id)
             ->where('soi1.product_id', '!=', $product->id)
             ->where('products.is_active', true)
-            ->groupBy('products.id')
+            ->groupBy('soi1.product_id')
             ->orderByDesc('frequency')
             ->limit($limit)
-            ->get();
+            ->pluck('soi1.product_id');
+
+        if ($productIds->isEmpty()) {
+            return collect();
+        }
+
+        return Product::whereIn('id', $productIds)
+            ->where('is_active', true)
+            ->get()
+            ->sortBy(function ($product) use ($productIds) {
+                return $productIds->search($product->id);
+            })
+            ->values();
     }
 
     /**
@@ -105,15 +119,29 @@ class RecommendationEngine
     {
         $thirtyDaysAgo = Carbon::now()->subDays(30);
 
-        return Product::select('products.*', DB::raw('COUNT(sales_order_items.id) as recent_sales_count'))
-            ->join('sales_order_items', 'sales_order_items.product_id', '=', 'products.id')
+        // Get product IDs with sales count, ordered by popularity
+        $productIds = DB::table('sales_order_items')
+            ->select('sales_order_items.product_id', DB::raw('COUNT(sales_order_items.id) as recent_sales_count'))
             ->join('sales_orders', 'sales_orders.id', '=', 'sales_order_items.sales_order_id')
+            ->join('products', 'products.id', '=', 'sales_order_items.product_id')
             ->where('sales_orders.created_at', '>=', $thirtyDaysAgo)
             ->where('products.is_active', true)
-            ->groupBy('products.id')
+            ->groupBy('sales_order_items.product_id')
             ->orderByDesc('recent_sales_count')
             ->limit($limit)
-            ->get();
+            ->pluck('sales_order_items.product_id');
+
+        if ($productIds->isEmpty()) {
+            return collect();
+        }
+
+        return Product::whereIn('id', $productIds)
+            ->where('is_active', true)
+            ->get()
+            ->sortBy(function ($product) use ($productIds) {
+                return $productIds->search($product->id);
+            })
+            ->values();
     }
 
     /**

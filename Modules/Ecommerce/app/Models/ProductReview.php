@@ -52,8 +52,8 @@ class ProductReview extends Model
         parent::boot();
 
         static::creating(function ($review) {
-            if (!$review->user_id && auth()->check()) {
-                $review->user_id = auth()->id();
+            if (!$review->user_id && auth('sanctum')->check()) {
+                $review->user_id = auth('sanctum')->id();
             }
             if (!$review->status) {
                 $review->status = 'pending';

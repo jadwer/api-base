@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('status')->default('active'); // Consolidado desde add_status_to_users_table
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

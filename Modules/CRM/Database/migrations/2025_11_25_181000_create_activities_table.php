@@ -30,6 +30,7 @@ return new class extends Migration
             // Relationships
             $table->foreignId('user_id')->constrained('users')->onDelete('restrict')->comment('User who performed/owns the activity');
             $table->foreignId('lead_id')->nullable()->constrained('leads')->onDelete('cascade')->comment('Related lead');
+            $table->unsignedBigInteger('opportunity_id')->nullable()->comment('Related opportunity - FK added after opportunities table exists'); // Consolidado
             $table->foreignId('contact_id')->nullable()->comment('Related contact - will be constrained when Contact module is implemented');
             $table->foreignId('campaign_id')->nullable()->constrained('campaigns')->onDelete('set null')->comment('Related campaign');
 

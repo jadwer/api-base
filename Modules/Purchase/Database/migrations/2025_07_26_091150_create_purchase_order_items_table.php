@@ -21,10 +21,22 @@ return new class extends Migration
             $table->decimal('subtotal', 10, 2);
             $table->decimal('total', 10, 2)->default(0);
             $table->json('metadata')->nullable();
+
+            // Receiving (consolidado)
+            $table->decimal('received_quantity', 15, 4)->default(0);
+
+            // Finance integration (consolidado)
+            $table->decimal('invoiced_quantity', 15, 4)->default(0);
+            $table->decimal('invoiced_amount', 15, 4)->default(0);
+
             $table->timestamps();
-            
-            // Foreign key constraint for product_id (products table exists now)
+
+            // Foreign key constraints
             $table->foreign('product_id')->references('id')->on('products')->onDelete('restrict');
+
+            // Performance indexes
+            $table->index('purchase_order_id');
+            $table->index('product_id');
         });
     }
 

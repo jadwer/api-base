@@ -34,7 +34,7 @@ class ProductComparisonItemSchema extends Schema
 
             Number::make('position')->sortable(),
 
-            // Relationships (for includes)
+            // Relationships (for includes only)
             BelongsTo::make('comparison')->type('product-comparisons')->readOnly(),
             BelongsTo::make('product')->type('products')->readOnly(),
 

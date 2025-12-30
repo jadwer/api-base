@@ -67,7 +67,6 @@ class PaymentTransactionRequest extends ResourceRequest
             'currency' => [
                 'sometimes',
                 'string',
-                'size:3',
                 'in:MXN,USD,EUR,GBP,JPY,CAD,AUD,CHF,CNY,BRL',
             ],
             'status' => [
@@ -156,7 +155,6 @@ class PaymentTransactionRequest extends ResourceRequest
             'amount.min' => 'El monto debe ser mayor o igual a 0.',
             'amount.max' => 'El monto no puede exceder 9,999,999.99.',
             'currency.string' => 'La moneda debe ser un texto.',
-            'currency.size' => 'La moneda debe tener exactamente 3 caracteres.',
             'currency.in' => 'La moneda debe ser una de las siguientes: MXN, USD, EUR, GBP, JPY, CAD, AUD, CHF, CNY, BRL.',
             'status.string' => 'El estado debe ser un texto.',
             'status.max' => 'El estado no puede exceder 50 caracteres.',

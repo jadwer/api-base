@@ -37,6 +37,19 @@ return new class extends Migration
             
             // Estado y auditoría
             $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending');
+
+            // Approval workflow (consolidado)
+            $table->enum('approval_status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->unsignedBigInteger('approved_by')->nullable();
+            $table->timestamp('approved_at')->nullable();
+            $table->text('approval_notes')->nullable();
+
+            // Quality check (consolidado)
+            $table->boolean('quality_checked')->default(false);
+            $table->timestamp('quality_checked_at')->nullable();
+            $table->unsignedBigInteger('quality_checked_by')->nullable();
+            $table->text('quality_check_notes')->nullable();
+
             $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
             
             // Stock antes y después del movimiento (para auditoría)
@@ -46,8 +59,19 @@ return new class extends Migration
             // Información adicional
             $table->json('batch_info')->nullable(); // Para lotes específicos
             $table->json('metadata')->nullable(); // Metadatos adicionales
-            
+
+            // GL Integration (consolidado)
+            $table->bigInteger('gl_journal_entry_id')->unsigned()->nullable();
+            $table->enum('gl_posting_status', ['pending', 'posted', 'error'])->default('pending');
+            $table->decimal('cost_per_unit', 10, 4)->default(0.0000);
+            $table->decimal('total_cost', 10, 2)->default(0.00);
+            $table->text('gl_posting_notes')->nullable();
+
             $table->timestamps();
+
+            // Foreign keys for approval/quality (consolidado)
+            $table->foreign('approved_by')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('quality_checked_by')->references('id')->on('users')->onDelete('set null');
             
             // Índices para mejorar performance
             $table->index(['movement_type', 'movement_date']);
@@ -56,6 +80,8 @@ return new class extends Migration
             $table->index(['reference_type', 'reference_id']);
             $table->index(['user_id', 'movement_date']);
             $table->index(['status', 'movement_date']);
+            $table->index('gl_journal_entry_id'); // Consolidado
+            $table->index('gl_posting_status'); // Consolidado
         });
     }
 

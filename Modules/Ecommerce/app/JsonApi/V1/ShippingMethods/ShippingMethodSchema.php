@@ -24,17 +24,17 @@ class ShippingMethodSchema extends Schema
         return [
             ID::make(),
 
-            Str::make('name'),
-            Str::make('code'),
+            Str::make('name')->sortable(),
+            Str::make('code')->sortable(),
             Str::make('description'),
-            Str::make('carrier'),
+            Str::make('carrier')->sortable(),
 
-            Number::make('baseCost', 'base_cost'),
+            Number::make('baseCost', 'base_cost')->sortable(),
             Number::make('costPerKg', 'cost_per_kg'),
-            Number::make('estimatedDaysMin', 'estimated_days_min'),
-            Number::make('estimatedDaysMax', 'estimated_days_max'),
+            Number::make('estimatedDaysMin', 'estimated_days_min')->sortable(),
+            Number::make('estimatedDaysMax', 'estimated_days_max')->sortable(),
 
-            Boolean::make('isActive', 'is_active'),
+            Boolean::make('isActive', 'is_active')->sortable(),
             ArrayHash::make('availableCountries', 'available_countries'),
             ArrayHash::make('metadata'),
 

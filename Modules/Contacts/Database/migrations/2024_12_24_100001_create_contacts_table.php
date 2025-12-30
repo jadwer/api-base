@@ -21,12 +21,25 @@ return new class extends Migration
             $table->boolean('is_customer')->nullable()->default();
             $table->boolean('is_supplier')->nullable()->default();
             $table->decimal('credit_limit', 10, 2)->nullable()->default(0);
+            $table->enum('credit_status', ['active', 'hold', 'blocked'])->default('active'); // Consolidado
+            $table->timestamp('credit_hold_at')->nullable(); // Consolidado
+            $table->text('credit_hold_reason')->nullable(); // Consolidado
+            $table->decimal('minimum_payment_score', 5, 2)->default(60.00); // Consolidado
             $table->decimal('current_credit', 10, 2)->nullable()->default(0);
             $table->string('classification')->nullable();
             $table->integer('payment_terms')->nullable()->default(30);
             $table->text('notes')->nullable();
             $table->json('metadata')->nullable();
             $table->timestamps();
+
+            // Performance indexes
+            $table->index('status');
+            $table->index('is_customer');
+            $table->index('is_supplier');
+            $table->index(['is_customer', 'status']);
+            $table->index(['is_supplier', 'status']);
+            $table->index('type');
+            $table->index('classification');
         });
     }
 

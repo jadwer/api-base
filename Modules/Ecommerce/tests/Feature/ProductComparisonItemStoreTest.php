@@ -18,21 +18,9 @@ class ProductComparisonItemStoreTest extends TestCase
         $data = [
             'type' => 'product-comparison-items',
             'attributes' => [
+                'comparisonId' => $comparison->id,
+                'productId' => $product->id,
                 'position' => 0,
-            ],
-            'relationships' => [
-                'comparison' => [
-                    'data' => [
-                        'type' => 'product-comparisons',
-                        'id' => (string) $comparison->id,
-                    ],
-                ],
-                'product' => [
-                    'data' => [
-                        'type' => 'products',
-                        'id' => (string) $product->id,
-                    ],
-                ],
             ],
         ];
 
@@ -70,21 +58,9 @@ class ProductComparisonItemStoreTest extends TestCase
         $data = [
             'type' => 'product-comparison-items',
             'attributes' => [
+                'comparisonId' => $comparison->id,
+                'productId' => $product->id,
                 'position' => 1,
-            ],
-            'relationships' => [
-                'comparison' => [
-                    'data' => [
-                        'type' => 'product-comparisons',
-                        'id' => (string) $comparison->id,
-                    ],
-                ],
-                'product' => [
-                    'data' => [
-                        'type' => 'products',
-                        'id' => (string) $product->id,
-                    ],
-                ],
             ],
         ];
 
@@ -107,21 +83,9 @@ class ProductComparisonItemStoreTest extends TestCase
         $data = [
             'type' => 'product-comparison-items',
             'attributes' => [
+                'comparisonId' => $comparison->id,
+                'productId' => $product->id,
                 'position' => 0,
-            ],
-            'relationships' => [
-                'comparison' => [
-                    'data' => [
-                        'type' => 'product-comparisons',
-                        'id' => (string) $comparison->id,
-                    ],
-                ],
-                'product' => [
-                    'data' => [
-                        'type' => 'products',
-                        'id' => (string) $product->id,
-                    ],
-                ],
             ],
         ];
 
@@ -143,21 +107,9 @@ class ProductComparisonItemStoreTest extends TestCase
         $data = [
             'type' => 'product-comparison-items',
             'attributes' => [
+                'comparisonId' => $comparison->id,
+                'productId' => $product->id,
                 'position' => 0,
-            ],
-            'relationships' => [
-                'comparison' => [
-                    'data' => [
-                        'type' => 'product-comparisons',
-                        'id' => (string) $comparison->id,
-                    ],
-                ],
-                'product' => [
-                    'data' => [
-                        'type' => 'products',
-                        'id' => (string) $product->id,
-                    ],
-                ],
             ],
         ];
 
@@ -178,21 +130,9 @@ class ProductComparisonItemStoreTest extends TestCase
         $data = [
             'type' => 'product-comparison-items',
             'attributes' => [
+                'comparisonId' => $comparison->id,
+                'productId' => $product->id,
                 'position' => 0,
-            ],
-            'relationships' => [
-                'comparison' => [
-                    'data' => [
-                        'type' => 'product-comparisons',
-                        'id' => (string) $comparison->id,
-                    ],
-                ],
-                'product' => [
-                    'data' => [
-                        'type' => 'products',
-                        'id' => (string) $product->id,
-                    ],
-                ],
             ],
         ];
 
@@ -204,7 +144,7 @@ class ProductComparisonItemStoreTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_comparison_relationship_is_required()
+    public function test_comparison_id_is_required()
     {
         $admin = User::role('admin')->first();
         $product = Product::factory()->create();
@@ -212,15 +152,8 @@ class ProductComparisonItemStoreTest extends TestCase
         $data = [
             'type' => 'product-comparison-items',
             'attributes' => [
+                'productId' => $product->id,
                 'position' => 0,
-            ],
-            'relationships' => [
-                'product' => [
-                    'data' => [
-                        'type' => 'products',
-                        'id' => (string) $product->id,
-                    ],
-                ],
             ],
         ];
 
@@ -232,11 +165,11 @@ class ProductComparisonItemStoreTest extends TestCase
 
         $response->assertStatus(422);
         $response->assertJsonFragment([
-            'source' => ['pointer' => '/data/relationships/comparison']
+            'source' => ['pointer' => '/data/attributes/comparisonId']
         ]);
     }
 
-    public function test_product_relationship_is_required()
+    public function test_product_id_is_required()
     {
         $admin = User::role('admin')->first();
         $comparison = ProductComparison::factory()->create();
@@ -244,15 +177,8 @@ class ProductComparisonItemStoreTest extends TestCase
         $data = [
             'type' => 'product-comparison-items',
             'attributes' => [
+                'comparisonId' => $comparison->id,
                 'position' => 0,
-            ],
-            'relationships' => [
-                'comparison' => [
-                    'data' => [
-                        'type' => 'product-comparisons',
-                        'id' => (string) $comparison->id,
-                    ],
-                ],
             ],
         ];
 
@@ -264,7 +190,7 @@ class ProductComparisonItemStoreTest extends TestCase
 
         $response->assertStatus(422);
         $response->assertJsonFragment([
-            'source' => ['pointer' => '/data/relationships/product']
+            'source' => ['pointer' => '/data/attributes/productId']
         ]);
     }
 
@@ -276,19 +202,9 @@ class ProductComparisonItemStoreTest extends TestCase
 
         $data = [
             'type' => 'product-comparison-items',
-            'relationships' => [
-                'comparison' => [
-                    'data' => [
-                        'type' => 'product-comparisons',
-                        'id' => (string) $comparison->id,
-                    ],
-                ],
-                'product' => [
-                    'data' => [
-                        'type' => 'products',
-                        'id' => (string) $product->id,
-                    ],
-                ],
+            'attributes' => [
+                'comparisonId' => $comparison->id,
+                'productId' => $product->id,
             ],
         ];
 
@@ -317,21 +233,9 @@ class ProductComparisonItemStoreTest extends TestCase
         $data = [
             'type' => 'product-comparison-items',
             'attributes' => [
+                'comparisonId' => $comparison->id,
+                'productId' => $product->id,
                 'position' => 'not-a-number',
-            ],
-            'relationships' => [
-                'comparison' => [
-                    'data' => [
-                        'type' => 'product-comparisons',
-                        'id' => (string) $comparison->id,
-                    ],
-                ],
-                'product' => [
-                    'data' => [
-                        'type' => 'products',
-                        'id' => (string) $product->id,
-                    ],
-                ],
             ],
         ];
 
@@ -356,21 +260,9 @@ class ProductComparisonItemStoreTest extends TestCase
         $data = [
             'type' => 'product-comparison-items',
             'attributes' => [
+                'comparisonId' => $comparison->id,
+                'productId' => $product->id,
                 'position' => -1,
-            ],
-            'relationships' => [
-                'comparison' => [
-                    'data' => [
-                        'type' => 'product-comparisons',
-                        'id' => (string) $comparison->id,
-                    ],
-                ],
-                'product' => [
-                    'data' => [
-                        'type' => 'products',
-                        'id' => (string) $product->id,
-                    ],
-                ],
             ],
         ];
 

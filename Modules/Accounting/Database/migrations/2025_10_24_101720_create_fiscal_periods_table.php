@@ -21,6 +21,13 @@ return new class extends Migration
             $table->unsignedBigInteger('closing_entry_id')->nullable()->comment('Circular dependency - reference to journal_entries');
             $table->json('metadata')->nullable();
             $table->timestamps();
+
+            // Performance indexes
+            $table->index('status');
+            $table->index('year');
+            $table->index('month');
+            $table->index(['year', 'month']);
+            $table->index(['start_date', 'end_date']);
         });
     }
 

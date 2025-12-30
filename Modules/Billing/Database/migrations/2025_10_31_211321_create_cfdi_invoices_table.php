@@ -64,7 +64,10 @@ return new class extends Migration
 
             // Files
             $table->string('xml_path')->nullable(); // Path to XML file
+            $table->longText('xml_original')->nullable(); // Original XML before timbrado (consolidado)
+            $table->longText('xml_timbrado')->nullable(); // Stamped XML from PAC (consolidado)
             $table->string('pdf_path')->nullable(); // Path to PDF file
+            $table->text('qr_code')->nullable(); // QR code data URI (consolidado)
 
             // PAC Response
             $table->text('pac_response')->nullable(); // JSON response from PAC

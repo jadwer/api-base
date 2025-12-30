@@ -19,6 +19,11 @@ return new class extends Migration
             $table->string('reference')->nullable();
             $table->json('metadata')->nullable();
             $table->timestamps();
+
+            // Performance indexes
+            $table->index('journal_entry_id');
+            $table->index('account_id');
+            $table->index(['journal_entry_id', 'account_id']);
         });
     }
 

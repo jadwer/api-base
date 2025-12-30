@@ -14,6 +14,7 @@ return new class extends Migration
             $table->foreignId('fiscal_period_id')->constrained('fiscal_periods')->onDelete('restrict');
             $table->string('number')->nullable()->unique();
             $table->date('date');
+            $table->date('accounting_date')->nullable(); // Consolidado
             $table->string('reference')->nullable();
             $table->text('description')->nullable();
             $table->decimal('total_debit', 10, 2)->default(0);
@@ -28,6 +29,12 @@ return new class extends Migration
             $table->text('reversal_reason')->nullable();
             $table->json('metadata')->nullable();
             $table->timestamps();
+
+            // Performance indexes
+            $table->index('fiscal_period_id');
+            $table->index('status');
+            $table->index('date');
+            $table->index(['fiscal_period_id', 'status']);
         });
     }
 

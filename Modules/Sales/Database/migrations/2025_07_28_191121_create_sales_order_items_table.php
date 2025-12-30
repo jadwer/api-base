@@ -21,6 +21,10 @@ return new class extends Migration
             $table->decimal('total', 15, 2);
             $table->json('metadata')->nullable();
             $table->timestamps();
+
+            // Performance indexes
+            $table->index('sales_order_id');
+            $table->index('product_id');
         });
     }
 

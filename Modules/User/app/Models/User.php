@@ -15,8 +15,7 @@ namespace Modules\User\Models;
  * - Guard 'api': Configurado para Spatie Permission
  *
  * Tabla: users
- * Migración base: database/migrations/0001_01_01_000000_create_users_table.php
- * Migración status: Modules/User/Database/migrations/2025_06_17_210137_add_status_to_users_table.php
+ * Migración: database/migrations/0001_01_01_000000_create_users_table.php
  */
 
 use Illuminate\Database\Eloquent\Model;
@@ -46,13 +45,7 @@ class User extends Authenticatable
 
     /**
      * Campos fillable
-     *
-     * Campos base (migración 0001_01_01_000000):
-     * - name, email, password, email_verified_at, remember_token
-     *
-     * Campos adicionales del módulo:
-     * - status: Campo agregado en Modules/User/Database/migrations/2025_06_17_210137_add_status_to_users_table.php
-     *   Valores: active, inactive, suspended
+     * Valores de status: active, inactive, suspended
      */
     protected $fillable = [
         'name',

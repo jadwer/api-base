@@ -28,6 +28,7 @@ return new class extends Migration
             $table->decimal('unit_cost', 10, 4)->default(0);
             $table->decimal('total_value', 15, 4)->storedAs('current_quantity * unit_cost');
             $table->enum('status', ['active', 'expired', 'quarantine', 'recalled', 'consumed'])->default('active');
+            $table->enum('quality_status', ['pending', 'in_testing', 'passed', 'failed', 'quarantine'])->default('pending'); // Consolidado
             $table->string('supplier_name')->nullable();
             $table->string('supplier_batch')->nullable();
             $table->text('quality_notes')->nullable();

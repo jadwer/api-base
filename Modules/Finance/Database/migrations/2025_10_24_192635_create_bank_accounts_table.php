@@ -21,6 +21,10 @@ return new class extends Migration
             $table->json('metadata')->nullable();
             $table->boolean('is_active')->nullable()->default(1);
             $table->timestamps();
+
+            // Performance indexes
+            $table->index('status');
+            $table->index('is_active');
         });
     }
 

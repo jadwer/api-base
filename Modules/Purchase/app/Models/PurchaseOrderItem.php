@@ -39,7 +39,6 @@ class PurchaseOrderItem extends Model
             'total' => 'float',
             'received_quantity' => 'float',
             'metadata' => 'array',
-            'ap_invoice_line_id' => 'integer',
             'invoiced_quantity' => 'float',
             'invoiced_amount' => 'float',
         ];

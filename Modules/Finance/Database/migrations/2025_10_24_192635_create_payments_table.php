@@ -12,20 +12,27 @@ return new class extends Migration
             $table->id();
             $table->string('payment_number')->unique();
             $table->date('payment_date');
-            $table->integer('customer_id');
-            $table->integer('bank_account_id');
-            $table->integer('payment_method_id');
+            $table->foreignId('contact_id')->constrained('contacts')->onDelete('restrict'); // Consolidado: era customer_id
+            $table->foreignId('bank_account_id')->constrained('bank_accounts')->onDelete('restrict');
+            $table->foreignId('payment_method_id')->constrained('payment_methods')->onDelete('restrict');
             $table->decimal('amount', 10, 2);
             $table->string('currency')->default('MXN');
             $table->decimal('applied_amount', 10, 2)->nullable()->default('0');
             $table->decimal('unapplied_amount', 10, 2)->nullable()->default('0');
             $table->string('status')->default('unapplied');
-            $table->integer('journal_entry_id')->nullable();
+            $table->foreignId('journal_entry_id')->nullable()->constrained('journal_entries')->onDelete('set null');
             $table->string('reference')->nullable();
             $table->text('notes')->nullable();
             $table->json('metadata')->nullable();
             $table->boolean('is_active')->nullable()->default(1);
             $table->timestamps();
+
+            // Performance indexes
+            $table->index('contact_id');
+            $table->index('payment_date');
+            $table->index('status');
+            $table->index('bank_account_id');
+            $table->index(['contact_id', 'payment_date']);
         });
     }
 

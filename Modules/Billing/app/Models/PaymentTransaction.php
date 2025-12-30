@@ -32,7 +32,6 @@ class PaymentTransaction extends Model
         'sales_order_id',
         'ar_invoice_id',
         'gateway',
-        'payment_gateway', // SQLite compatibility (not renamed in SQLite migration)
         'payment_intent_id',
         'transaction_id',
         'client_secret',

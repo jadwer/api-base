@@ -23,6 +23,12 @@ return new class extends Migration
             $table->string('status')->default('active');
             $table->json('metadata')->nullable();
             $table->timestamps();
+
+            // Performance indexes
+            $table->index('status');
+            $table->index('account_type');
+            $table->index('parent_id');
+            $table->index(['parent_id', 'status']);
         });
     }
 

@@ -27,7 +27,16 @@ return new class extends Migration
             $table->foreignId('unit_id')->constrained();
             $table->foreignId('category_id')->constrained();
             $table->foreignId('brand_id')->constrained();
+            $table->boolean('is_active')->default(true); // Consolidado
+            $table->float('average_rating')->nullable(); // Consolidado
+            $table->integer('total_reviews')->default(0); // Consolidado
+            $table->integer('total_sales')->default(0); // Consolidado
             $table->timestamps();
+
+            // Performance indexes
+            $table->index('category_id');
+            $table->index('brand_id');
+            $table->index('unit_id');
         });
 
         Schema::enableForeignKeyConstraints();

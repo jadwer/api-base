@@ -23,6 +23,12 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->json('metadata')->nullable();
             $table->timestamps();
+
+            // Performance indexes
+            $table->index('contact_id');
+            $table->index('document_type');
+            $table->index('verified_at');
+            $table->index('expires_at');
         });
     }
 

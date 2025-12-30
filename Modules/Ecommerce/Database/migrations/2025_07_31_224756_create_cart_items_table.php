@@ -24,6 +24,10 @@ return new class extends Migration
             $table->json('metadata')->nullable();
             $table->string('status')->default('active');
             $table->timestamps();
+
+            // Performance indexes
+            $table->index('shopping_cart_id');
+            $table->index('product_id');
         });
     }
 

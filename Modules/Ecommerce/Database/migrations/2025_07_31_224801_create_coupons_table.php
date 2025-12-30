@@ -26,6 +26,12 @@ return new class extends Migration
             $table->json('product_ids')->nullable();
             $table->json('category_ids')->nullable();
             $table->timestamps();
+
+            // Performance indexes
+            $table->index('is_active');
+            $table->index('starts_at');
+            $table->index('expires_at');
+            $table->index(['starts_at', 'expires_at']);
         });
     }
 

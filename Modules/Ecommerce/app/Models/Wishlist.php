@@ -48,8 +48,8 @@ class Wishlist extends Model
         parent::boot();
 
         static::creating(function ($wishlist) {
-            if (!$wishlist->user_id && auth()->check()) {
-                $wishlist->user_id = auth()->id();
+            if (!$wishlist->user_id && auth('sanctum')->check()) {
+                $wishlist->user_id = auth('sanctum')->id();
             }
         });
     }
