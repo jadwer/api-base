@@ -19,7 +19,7 @@ Claude Code MUST NEVER execute git commit commands automatically. Always provide
 ### **PHASE PROGRESSION GATE** ⚠️
 **DO NOT ADVANCE TO PHASE 3 UNTIL PHASE 1 AND PHASE 2 HAVE 100% TESTS PASSING.**
 
-**Current Phase Status (Updated 2025-11-25):**
+**Current Phase Status (Updated 2025-12-30):**
 - **Phase 1-2 (Accounting/Finance):** ✅ 100% - Core business logic complete
 - **Phase 3 (Business Rules):** ✅ **100% COMPLETE** - All enterprise services implemented & tested
 - **Phase 3.5 (Performance):** ✅ **100% COMPLETE** - Database optimization, caching, security, load testing
@@ -28,11 +28,20 @@ Claude Code MUST NEVER execute git commit commands automatically. Always provide
 - **Phase 4.2 (Reports & Analytics):** ✅ **100% COMPLETE** - Financial statements, management reports, KPIs
 - **Phase 4.3 (Advanced Ecommerce):** ✅ **100% COMPLETE** - Wishlists, recommendations, multi-currency
 - **Phase 4.4 (HR Module):** ✅ **100% COMPLETE** - 9 entities, 83 files, 49 endpoints, 400+ tests
-- **Phase 4.5 (CRM Module):** ✅ **100% PHASE 1 COMPLETE** - 4 entities (PipelineStage, Lead, Campaign, Activity), 227+ tests
+- **Phase 4.5 (CRM Module):** ✅ **100% COMPLETE** - 5 entities (PipelineStage, Lead, Campaign, Activity, Opportunity), 250+ tests
 - **P1 Business Rules:** ✅ **100% COMPLETE** - 5/5 critical tasks (Purchase Approval, Inventory GL, FEFO, Sales Reservation, Line Calculation)
 - **P2 Business Rules:** ✅ **11/12 COMPLETE** - High-value automation (1 deferred to P3: Budget Control)
+- **Database Consolidation:** ✅ **100% COMPLETE** - Migration cleanup for v1.0 release
 
 **Recent Progress:**
+
+**Database Consolidation (2025-12-30) - v1.0 Release Prep:**
+- ✅ **Migration Cleanup:** Consolidated 30+ add_* migrations into base create_* tables (-1447 lines)
+- ✅ **Folder Normalization:** Standardized Migrations/ to lowercase migrations/ (Laravel convention)
+- ✅ **Circular FK Resolution:** Created deferred FK migration for cross-module references
+- ✅ **Performance Indexes:** Distributed indexes to respective module migrations
+- ✅ **Orphan Fields Removed:** Cleaned up ap_invoice_line_id, payment_gateway references
+- ✅ **Documentation:** Added MIGRATION_CONSOLIDATION_ROADMAP.md
 
 **Phase 3.5 & 3.6 (2025-10-28) - Performance & Business Rules:**
 - ✅ 150+ database indexes (50-90% faster queries)
@@ -57,16 +66,16 @@ Claude Code MUST NEVER execute git commit commands automatically. Always provide
 - ✅ **Features:** Employee management, attendance tracking, leave management, payroll processing, performance reviews
 - ✅ **Test Coverage:** 400+ test cases covering CRUD, permissions, validation, relationships, filters, sorting
 
-**Phase 4.5 (2025-11-25) - CRM Module Phase 1 100% COMPLETE:**
-- ✅ **4/4 Phase 1 Entities Complete:** PipelineStage, Lead, Campaign, Activity
-- ✅ **Complete Implementation:** 42 files, 227+ tests (96% passing), 20+ API endpoints
+**Phase 4.5 (2025-12-30) - CRM Module 100% COMPLETE:**
+- ✅ **5/5 Entities Complete:** PipelineStage, Lead, Campaign, Activity, Opportunity
+- ✅ **Complete Implementation:** 50+ files, 250+ tests, 25+ API endpoints
 - ✅ **Activity Tracking:** 5 types (call, email, meeting, note, task), 4 status states, duration tracking
 - ✅ **Financial Tracking:** Campaign ROI tracking (budget, actual_cost, expected_revenue, actual_revenue)
 - ✅ **Campaign Management:** 6 types (email, social_media, event, webinar, direct_mail, telemarketing), 5 statuses
 - ✅ **Lead Pipeline:** Custom stages, status tracking (new, qualified, converted, lost), rating system (hot, warm, cold)
-- ✅ **Relationships:** Campaign-Lead many-to-many, Activity-Lead/Campaign, User associations, Contact integration
+- ✅ **Opportunities:** Full sales pipeline with stages, probability, expected close dates
+- ✅ **Relationships:** Campaign-Lead many-to-many, Activity-Lead/Campaign/Opportunity, User associations, Contact integration
 - ✅ **Comprehensive Documentation:** CRM_FRONTEND_GUIDE.md (900+ lines), CRM_MODULE_SUMMARY.md
-- ⏳ **Pending Phase 2:** Opportunities, Quotes, Custom Actions (convert lead, close opportunity, etc.)
 
 **Phase 5 (2025-11-05) - Billing Module 100% COMPLETE:**
 - ✅ **3 Complete Entities:** CFDIInvoice, CompanySetting, CFDIConcept
@@ -87,6 +96,7 @@ Claude Code MUST NEVER execute git commit commands automatically. Always provide
 - **💰 BILLING MODULE DOCUMENTATION:** `Modules/Billing/docs/PAC_INTEGRATION.md` **← CFDI & PAC integration guide**
 - **📊 CRM MODULE DOCUMENTATION:** `docs/modules/CRM_FRONTEND_GUIDE.md` **← Complete CRM frontend integration (900+ lines)**
 - **📊 CRM MODULE SUMMARY:** `docs/modules/CRM_MODULE_SUMMARY.md` **← CRM technical architecture & roadmap**
+- **🔄 MIGRATION CONSOLIDATION:** `docs/development/MIGRATION_CONSOLIDATION_ROADMAP.md` **← v1.0 migration cleanup**
 - **📋 BUSINESS RULES:** `docs/architecture/BUSINESS_RULES_COMPLETE.md` **← 150+ rules inventory**
 - **🔄 BUSINESS FLOWS:** `docs/architecture/BUSINESS_FLOWS.md` **← Order-to-Cash, Procure-to-Pay**
 - **🗄️ DATABASE DIAGRAMS:** `docs/architecture/ERD_DOCUMENTATION.md` **← Complete ERDs**
@@ -107,7 +117,7 @@ Claude Code MUST NEVER execute git commit commands automatically. Always provide
 
 This is a **modular Laravel 12 API** built with **JSON:API 5.x** specification, designed as a scalable base for enterprise applications like ERPs and CRMs. The project uses `nwidart/laravel-modules` for modular architecture with complete module isolation.
 
-**Current Status:** 11 modules (Product, Inventory, Purchase, Sales, Ecommerce, Finance, Accounting, Reports, HR, Billing, CRM) with 51+ entities - 10 complete, 1 in progress (CRM: 75% complete, 3/4 Phase 1 entities done).
+**Current Status:** 13 modules (Product, Inventory, Purchase, Sales, Ecommerce, Finance, Accounting, Reports, HR, Billing, CRM, Audit, SystemHealth) with 55+ entities - all modules complete.
 
 ## Architecture
 
@@ -176,8 +186,8 @@ php artisan db:seed --class="Modules\\{ModuleName}\\Database\\Seeders\\{ModuleNa
 # List all registered routes
 php artisan route:list --path=api/v1
 
-# Validate module structure
-php artisan validate:module-structure {ModuleName}
+# Generate module documentation
+php artisan module:docs {ModuleName}
 ```
 
 ### Asset Development
@@ -281,8 +291,10 @@ Content-Type: application/vnd.api+json
 - **Accounting:** Accounts, Journal Entries, Fiscal Periods, Exchange Rates (30+ routes)
 - **Reports:** Financial Statements, Management Reports, Analytics Dashboard (30+ routes)
 - **HR:** Employees, Attendance, Payroll, Leave Management, Performance Reviews (49 routes, 400+ tests)
-- **CRM (75% complete):** Pipeline Stages, Leads, Campaigns (15+ routes, 202+ tests - Phase 1: 3/4 entities done)
+- **CRM:** Pipeline Stages, Leads, Campaigns, Activities, Opportunities (25+ routes, 250+ tests)
 - **Billing:** CFDI Invoices, Company Settings, PAC Integration (SW Sapien), XML/PDF Generation (30+ routes, 50+ tests)
+- **Audit:** Activity logging, audit trails, compliance tracking
+- **SystemHealth:** System monitoring, health checks, performance metrics
 
 ### Finance & Accounting Phase 1 Features
 - **Calculated Fields:** `paidAmount` and `remainingBalance` in invoice responses
@@ -310,7 +322,7 @@ Content-Type: application/vnd.api+json
 php artisan api:generate-docs
 
 # Generate module-specific documentation
-php artisan generate:module-documentation {ModuleName}
+php artisan module:docs {ModuleName}
 ```
 
 ## Testing
