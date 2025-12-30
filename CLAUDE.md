@@ -481,6 +481,41 @@ This command safely removes:
 - **Public Product Catalog**: Implemented PublicServer.php for unauthenticated product catalog access with dedicated schemas
 - **Cross-Module Integration**: Updated all affected modules to maintain consistency in field naming, validation, and authorization patterns
 
+## Test Fix Workflow (Debugging Order)
+
+Cuando un test falla, verificar en este orden (flujo de datos, no de creación):
+
+```
+1. Model      → Fuente de verdad (fillable, casts, $attributes, relationships)
+2. Migration  → DB coincide con Model (columnas, tipos, nullable, defaults, FKs)
+3. Schema     → Mapea Model → JSON:API (fields camelCase→snake_case, filters, pagination)
+4. Request    → Validación coincide con Schema (reglas, messages() en español)
+5. Authorizer → 10 métodos completos (5 CRUD + 5 relationship), permisos en plural
+6. Factory    → Genera datos válidos para Model (states: active, inactive)
+7. Seed       → Permisos creados y asignados a roles
+8. Routes     → Recurso registrado en jsonapi.php con relationships
+9. Server.php → Schema Y Authorizer descomentados
+10. Tests     → Formato de datos coincide con Schema/Request
+```
+
+**¿Por qué este orden?**
+- El **Model es la fuente de verdad**. Si está mal, todo falla.
+- El **Schema antes de Request** porque define qué acepta la API.
+- **Factory después** porque debe generar lo que Model/Schema esperan.
+- **Tests al final** porque verifican todo lo anterior.
+
+**Verificación rápida por archivo:**
+| Archivo | Verificar |
+|---------|-----------|
+| Model | `$fillable`, `$casts` (usar `float` NO `decimal`), `$attributes`, relaciones |
+| Migration | Columnas, tipos, `nullable()`, `default()`, `constrained()` |
+| Schema | `fields()`, `filters()`, `pagination()`, `readOnly()` en BelongsTo |
+| Request | Reglas validación, `messages()` español, FKs como atributos NO relaciones |
+| Authorizer | 10 métodos, permisos `module.entities.action` (plural) |
+| Factory | `definition()`, states útiles |
+| Routes | `$api->resource()`, `->relationships()` |
+| Server.php | Schema en `allSchemas()`, Authorizer en `authorizers()` |
+
 ## CRITICAL DEVELOPMENT RULE
 
 ⚠️ **NEVER MAKE COMMITS AUTOMATICALLY** ⚠️
