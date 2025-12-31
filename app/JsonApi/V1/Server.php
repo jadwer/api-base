@@ -57,6 +57,7 @@ use Modules\Finance\JsonApi\V1\Payments\PaymentSchema;
 use Modules\Finance\JsonApi\V1\PaymentApplications\PaymentApplicationSchema;
 use Modules\Finance\JsonApi\V1\BankAccounts\BankAccountSchema;
 use Modules\Finance\JsonApi\V1\PaymentMethods\PaymentMethodSchema;
+use Modules\Finance\JsonApi\V1\ARPayments\ARPaymentSchema;
 use Modules\Reports\JsonApi\V1\BalanceSheets\BalanceSheetSchema;
 use Modules\Reports\JsonApi\V1\IncomeStatements\IncomeStatementSchema;
 use Modules\Reports\JsonApi\V1\CashFlows\CashFlowSchema;
@@ -108,6 +109,9 @@ class Server extends BaseServer
             UnitSchema::class,
             CategorySchema::class,
             BrandSchema::class,
+            \Modules\Product\JsonApi\V1\VariantAttributes\VariantAttributeSchema::class,
+            \Modules\Product\JsonApi\V1\VariantAttributeValues\VariantAttributeValueSchema::class,
+            \Modules\Product\JsonApi\V1\ProductVariants\ProductVariantSchema::class,
 
             // Inventory Module
             WarehouseSchema::class,
@@ -123,6 +127,9 @@ class Server extends BaseServer
             // Sales Module
             \Modules\Sales\JsonApi\V1\SalesOrders\SalesOrderSchema::class,
             \Modules\Sales\JsonApi\V1\SalesOrderItems\SalesOrderItemSchema::class,
+            \Modules\Sales\JsonApi\V1\Shipments\ShipmentSchema::class,
+            \Modules\Sales\JsonApi\V1\ShipmentItems\ShipmentItemSchema::class,
+            \Modules\Sales\JsonApi\V1\Backorders\BackorderSchema::class,
 
             // Ecommerce Module
             ShoppingCartSchema::class,
@@ -170,6 +177,7 @@ class Server extends BaseServer
             PaymentApplicationSchema::class,
             BankAccountSchema::class,
             PaymentMethodSchema::class,
+            ARPaymentSchema::class,
 
             // Reports Module (Phase 4.2 - Corrected)
             BalanceSheetSchema::class,
@@ -222,6 +230,9 @@ class Server extends BaseServer
             'units' => \Modules\Product\JsonApi\V1\Units\UnitAuthorizer::class,
             'categories' => \Modules\Product\JsonApi\V1\Categories\CategoryAuthorizer::class,
             'brands' => \Modules\Product\JsonApi\V1\Brands\BrandAuthorizer::class,
+            'variant-attributes' => \Modules\Product\JsonApi\V1\VariantAttributes\VariantAttributeAuthorizer::class,
+            'variant-attribute-values' => \Modules\Product\JsonApi\V1\VariantAttributeValues\VariantAttributeValueAuthorizer::class,
+            'product-variants' => \Modules\Product\JsonApi\V1\ProductVariants\ProductVariantAuthorizer::class,
             'warehouses' => \Modules\Inventory\JsonApi\V1\Warehouses\WarehouseAuthorizer::class,
             'warehouse-locations' => \Modules\Inventory\JsonApi\V1\WarehouseLocations\WarehouseLocationAuthorizer::class,
             'stocks' => \Modules\Inventory\JsonApi\V1\Stocks\StockAuthorizer::class,
@@ -231,6 +242,9 @@ class Server extends BaseServer
             'purchase-order-items' => \Modules\Purchase\JsonApi\V1\PurchaseOrderItems\PurchaseOrderItemAuthorizer::class,
             'sales-orders' => \Modules\Sales\JsonApi\V1\SalesOrders\SalesOrderAuthorizer::class,
             'sales-order-items' => \Modules\Sales\JsonApi\V1\SalesOrderItems\SalesOrderItemAuthorizer::class,
+            'shipments' => \Modules\Sales\JsonApi\V1\Shipments\ShipmentAuthorizer::class,
+            'shipment-items' => \Modules\Sales\JsonApi\V1\ShipmentItems\ShipmentItemAuthorizer::class,
+            'backorders' => \Modules\Sales\JsonApi\V1\Backorders\BackorderAuthorizer::class,
             
             // Ecommerce Module
             'shopping-carts' => \Modules\Ecommerce\JsonApi\V1\ShoppingCarts\ShoppingCartAuthorizer::class,
@@ -269,6 +283,7 @@ class Server extends BaseServer
             'payment-applications' => \Modules\Finance\JsonApi\V1\PaymentApplications\PaymentApplicationAuthorizer::class,
             'bank-accounts' => \Modules\Finance\JsonApi\V1\BankAccounts\BankAccountAuthorizer::class,
             'payment-methods' => \Modules\Finance\JsonApi\V1\PaymentMethods\PaymentMethodAuthorizer::class,
+            'ar-payments' => \Modules\Finance\JsonApi\V1\ARPayments\ARPaymentAuthorizer::class,
 
             // Reports Module (Phase 4.2 - Corrected)
             'balance-sheets' => \Modules\Reports\JsonApi\V1\BalanceSheets\BalanceSheetAuthorizer::class,

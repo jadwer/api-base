@@ -16,15 +16,13 @@ class WishlistItemRequest extends ResourceRequest
     public function rules(): array
     {
         return [
-            // Foreign Keys
-            'wishlistId' => [
+            // Relationships (JSON:API format)
+            'wishlist' => [
                 $this->isCreating() ? 'required' : 'sometimes',
-                'integer',
                 JsonApiRule::toOne(),
             ],
-            'productId' => [
+            'product' => [
                 $this->isCreating() ? 'required' : 'sometimes',
-                'integer',
                 JsonApiRule::toOne(),
             ],
 
@@ -54,10 +52,8 @@ class WishlistItemRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'wishlistId.required' => 'La lista de deseos es obligatoria.',
-            'wishlistId.integer' => 'La lista de deseos debe ser un número válido.',
-            'productId.required' => 'El producto es obligatorio.',
-            'productId.integer' => 'El producto debe ser un número válido.',
+            'wishlist.required' => 'La lista de deseos es obligatoria.',
+            'product.required' => 'El producto es obligatorio.',
             'quantity.integer' => 'La cantidad debe ser un número.',
             'quantity.min' => 'La cantidad mínima es 1.',
             'priority.in' => 'La prioridad debe ser: low, medium o high.',

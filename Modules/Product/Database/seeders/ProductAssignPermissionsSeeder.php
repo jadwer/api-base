@@ -21,6 +21,9 @@ class ProductAssignPermissionsSeeder extends Seeder
                 ->orWhere('name', 'like', 'units.%')
                 ->orWhere('name', 'like', 'categories.%')
                 ->orWhere('name', 'like', 'brands.%')
+                ->orWhere('name', 'like', 'variant-attributes.%')
+                ->orWhere('name', 'like', 'variant-attribute-values.%')
+                ->orWhere('name', 'like', 'product-variants.%')
                 ->get();
             $god->givePermissionTo($permissions);
         }
@@ -35,27 +38,48 @@ class ProductAssignPermissionsSeeder extends Seeder
                 'products.store',
                 'products.update',
                 'products.destroy',
-                
+
                 // Units - Full access
                 'units.index',
                 'units.show',
                 'units.store',
                 'units.update',
                 'units.destroy',
-                
+
                 // Categories - Full access
                 'categories.index',
                 'categories.show',
                 'categories.store',
                 'categories.update',
                 'categories.destroy',
-                
+
                 // Brands - Full access
                 'brands.index',
                 'brands.show',
                 'brands.store',
                 'brands.update',
                 'brands.destroy',
+
+                // PR-M003: Variant Attributes - Full access
+                'variant-attributes.index',
+                'variant-attributes.show',
+                'variant-attributes.store',
+                'variant-attributes.update',
+                'variant-attributes.destroy',
+
+                // PR-M003: Variant Attribute Values - Full access
+                'variant-attribute-values.index',
+                'variant-attribute-values.show',
+                'variant-attribute-values.store',
+                'variant-attribute-values.update',
+                'variant-attribute-values.destroy',
+
+                // PR-M003: Product Variants - Full access
+                'product-variants.index',
+                'product-variants.show',
+                'product-variants.store',
+                'product-variants.update',
+                'product-variants.destroy',
             ]);
         }
 
@@ -71,6 +95,13 @@ class ProductAssignPermissionsSeeder extends Seeder
                 'categories.show',
                 'brands.index',
                 'brands.show',
+                // PR-M003: Customers can view variants
+                'variant-attributes.index',
+                'variant-attributes.show',
+                'variant-attribute-values.index',
+                'variant-attribute-values.show',
+                'product-variants.index',
+                'product-variants.show',
             ]);
         }
     }

@@ -56,10 +56,10 @@ class SalesOrderObserver
                     'trace' => $e->getTraceAsString(),
                 ]);
 
-                // Optionally update invoicing_status to indicate failure
-                $salesOrder->update([
-                    'invoicing_status' => 'failed',
-                    'invoicing_notes' => $e->getMessage(),
+                // Only update notes, keep status as 'not_invoiced' to allow retry
+                // Note: 'failed' is not a valid enum value
+                $salesOrder->updateQuietly([
+                    'invoicing_notes' => 'Failed to create GL entry: ' . $e->getMessage(),
                 ]);
             }
         }

@@ -72,6 +72,7 @@ class RecommendationEngine
 
     /**
      * Get personalized recommendations based on user's purchase history
+     * Uses checkout_sessions (which have user_id) to track user purchases
      *
      * @param User $user
      * @param int $limit
@@ -79,19 +80,23 @@ class RecommendationEngine
      */
     public function getPersonalizedRecommendations(User $user, int $limit = 12): Collection
     {
-        // Get categories from user's purchase history
-        $purchasedCategories = DB::table('sales_orders')
+        // Get categories from user's completed checkout sessions
+        $purchasedCategories = DB::table('checkout_sessions')
+            ->join('sales_orders', 'sales_orders.checkout_session_id', '=', 'checkout_sessions.id')
             ->join('sales_order_items', 'sales_orders.id', '=', 'sales_order_items.sales_order_id')
             ->join('products', 'sales_order_items.product_id', '=', 'products.id')
-            ->where('sales_orders.customer_id', $user->id)
+            ->where('checkout_sessions.user_id', $user->id)
+            ->where('checkout_sessions.status', 'completed')
             ->pluck('products.category_id')
             ->unique()
             ->toArray();
 
         // Get products already purchased by user
-        $purchasedProducts = DB::table('sales_orders')
+        $purchasedProducts = DB::table('checkout_sessions')
+            ->join('sales_orders', 'sales_orders.checkout_session_id', '=', 'checkout_sessions.id')
             ->join('sales_order_items', 'sales_orders.id', '=', 'sales_order_items.sales_order_id')
-            ->where('sales_orders.customer_id', $user->id)
+            ->where('checkout_sessions.user_id', $user->id)
+            ->where('checkout_sessions.status', 'completed')
             ->pluck('sales_order_items.product_id')
             ->toArray();
 

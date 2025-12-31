@@ -33,7 +33,9 @@ class APInvoice extends Model
 
     protected $fillable = [
         'invoice_number', 'invoice_date', 'due_date', 'contact_id', 'purchase_order_id', 'currency', 'subtotal', 'tax_amount', 'total_amount', 'paid_amount', 'status', 'journal_entry_id', 'fiscal_period_id', 'notes', 'metadata', 'is_active',
-        'reconciliation_status', 'reconciled_at', 'reconciled_by', 'reconciliation_notes', 'discrepancies'
+        'reconciliation_status', 'reconciled_at', 'reconciled_by', 'reconciliation_notes', 'discrepancies',
+        // Void/Replacement fields
+        'voided_at', 'voided_by_id', 'void_reason', 'replaces_invoice_id'
     ];
 
     protected $casts = [
@@ -46,7 +48,11 @@ class APInvoice extends Model
         'metadata' => 'array',
         'is_active' => 'boolean',
         'reconciled_at' => 'datetime',
-        'discrepancies' => 'array'
+        'discrepancies' => 'array',
+        // Void fields
+        'voided_at' => 'datetime',
+        'voided_by_id' => 'integer',
+        'replaces_invoice_id' => 'integer'
     ];
 
     // Scopes
@@ -73,6 +79,21 @@ class APInvoice extends Model
     public function reconciledBy()
     {
         return $this->belongsTo(\App\Models\User::class, 'reconciled_by');
+    }
+
+    public function voidedBy()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'voided_by_id');
+    }
+
+    public function replacesInvoice()
+    {
+        return $this->belongsTo(APInvoice::class, 'replaces_invoice_id');
+    }
+
+    public function replacementInvoice()
+    {
+        return $this->hasOne(APInvoice::class, 'replaces_invoice_id');
     }
 
     // Legacy alias for backward compatibility

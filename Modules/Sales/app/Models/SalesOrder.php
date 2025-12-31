@@ -103,6 +103,75 @@ class SalesOrder extends Model
         return $this->hasMany(\Modules\Finance\Models\ARInvoice::class, 'sales_order_id');
     }
 
+    /**
+     * SA-M001: Shipments for this order.
+     */
+    public function shipments(): HasMany
+    {
+        return $this->hasMany(Shipment::class);
+    }
+
+    /**
+     * SA-M002: Backorders for this order.
+     */
+    public function backorders(): HasMany
+    {
+        return $this->hasMany(Backorder::class);
+    }
+
+    /**
+     * SA-M001: Get fulfillment status based on item statuses.
+     */
+    public function getFulfillmentStatusAttribute(): string
+    {
+        $items = $this->items;
+
+        if ($items->isEmpty()) {
+            return 'pending';
+        }
+
+        $allDelivered = $items->every(fn($item) => $item->fulfillment_status === 'delivered');
+        if ($allDelivered) {
+            return 'delivered';
+        }
+
+        $allShipped = $items->every(fn($item) => in_array($item->fulfillment_status, ['shipped', 'delivered']));
+        if ($allShipped) {
+            return 'shipped';
+        }
+
+        $anyShipped = $items->contains(fn($item) => in_array($item->fulfillment_status, ['partially_shipped', 'shipped', 'delivered']));
+        if ($anyShipped) {
+            return 'partially_shipped';
+        }
+
+        return 'pending';
+    }
+
+    /**
+     * SA-M001: Check if order is fully shipped.
+     */
+    public function isFullyShipped(): bool
+    {
+        return $this->items->every(fn($item) => $item->shipped_quantity >= $item->quantity);
+    }
+
+    /**
+     * SA-M001: Check if order has any shipments.
+     */
+    public function hasShipments(): bool
+    {
+        return $this->shipments()->exists();
+    }
+
+    /**
+     * SA-M001: Get remaining quantity to ship for all items.
+     */
+    public function getRemainingToShipAttribute(): float
+    {
+        return $this->items->sum(fn($item) => max(0, $item->quantity - $item->shipped_quantity));
+    }
+
     // Factory
     protected static function newFactory()
     {

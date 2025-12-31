@@ -68,7 +68,10 @@ class SalesOrderSchema extends Schema
             
             // Relación con Items
             HasMany::make('items')->type('sales-order-items'),
-            
+
+            // SA-M001: Relación con Shipments
+            HasMany::make('shipments')->type('shipments'),
+
             // Timestamps
             DateTime::make('createdAt', 'created_at')->readOnly()->sortable(),
             DateTime::make('updatedAt', 'updated_at')->readOnly()->sortable(),
@@ -101,6 +104,9 @@ class SalesOrderSchema extends Schema
             'customer', // Alias para contact en contexto de ventas
             'items',
             'items.product',
+            // SA-M001: Shipments
+            'shipments',
+            'shipments.items',
         ];
     }
 

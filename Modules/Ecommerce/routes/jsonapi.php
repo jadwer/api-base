@@ -26,6 +26,9 @@ JsonApiRoute::server('v1')
     ->resources(function (ResourceRegistrar $server) {
         // Phase 4.3.4 Advanced Ecommerce - Currencies (public read, admin write)
         $server->resource('currencies', CurrencyController::class);
+
+        // Phase 4.3.1 Advanced Ecommerce - Product Reviews (public read, auth write)
+        $server->resource('product-reviews', ProductReviewController::class);
     });
 
 // Authenticated routes
@@ -33,9 +36,6 @@ JsonApiRoute::server('v1')
     ->prefix('v1')
     ->middleware('auth:sanctum')
     ->resources(function (ResourceRegistrar $server) {
-        // Phase 4.3.1 Advanced Ecommerce - Product Reviews (requires auth)
-        $server->resource('product-reviews', ProductReviewController::class);
-
         // Core Ecommerce (Phase 1)
         $server->resource('shopping-carts', ShoppingCartController::class);
         $server->resource('cart-items', CartItemController::class);

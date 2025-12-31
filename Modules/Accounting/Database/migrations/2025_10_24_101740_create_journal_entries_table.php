@@ -27,6 +27,12 @@ return new class extends Migration
             $table->foreignId('posted_by_id')->nullable()->constrained('users')->onDelete('restrict');
             $table->foreignId('reversal_of_id')->nullable()->constrained('journal_entries')->onDelete('restrict');
             $table->text('reversal_reason')->nullable();
+            // Additional reversal fields
+            $table->boolean('is_reversal')->default(false);
+            $table->foreignId('reverses_entry_id')->nullable()->constrained('journal_entries')->onDelete('restrict');
+            // Source tracking (polymorphic)
+            $table->string('source_type')->nullable();
+            $table->unsignedBigInteger('source_id')->nullable();
             $table->json('metadata')->nullable();
             $table->timestamps();
 

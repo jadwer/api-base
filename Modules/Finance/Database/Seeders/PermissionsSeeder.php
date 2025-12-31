@@ -23,6 +23,7 @@ class PermissionsSeeder extends Seeder
             'payment-applications',
             'bank-accounts',
             'payment-methods',
+            'ar-payments',
         ];
 
         // Create permissions for each entity

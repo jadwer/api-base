@@ -5,6 +5,7 @@ namespace Modules\Sales\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
@@ -36,6 +37,7 @@ class SalesOrderItem extends Model
         'sales_order_id' => 'integer',
         'product_id' => 'integer',
         'quantity' => 'float',
+        'shipped_quantity' => 'float',
         'unit_price' => 'float',
         'discount' => 'float',
         'total' => 'float',
@@ -45,6 +47,11 @@ class SalesOrderItem extends Model
         'invoiced_amount' => 'float',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+    ];
+
+    protected $attributes = [
+        'shipped_quantity' => 0,
+        'fulfillment_status' => 'pending',
     ];
 
     /**
@@ -81,6 +88,56 @@ class SalesOrderItem extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(\Modules\Product\Models\Product::class);
+    }
+
+    /**
+     * SA-M001: Shipment items for this order item.
+     */
+    public function shipmentItems(): HasMany
+    {
+        return $this->hasMany(ShipmentItem::class);
+    }
+
+    /**
+     * SA-M001: Get remaining quantity to ship.
+     */
+    public function getRemainingQuantityAttribute(): float
+    {
+        return max(0, $this->quantity - $this->shipped_quantity);
+    }
+
+    /**
+     * SA-M001: Check if item is fully shipped.
+     */
+    public function isFullyShipped(): bool
+    {
+        return $this->shipped_quantity >= $this->quantity;
+    }
+
+    /**
+     * SA-M001: Update fulfillment status based on shipped quantity.
+     */
+    public function updateFulfillmentStatus(): void
+    {
+        if ($this->shipped_quantity <= 0) {
+            $this->fulfillment_status = 'pending';
+        } elseif ($this->shipped_quantity < $this->quantity) {
+            $this->fulfillment_status = 'partially_shipped';
+        } else {
+            $this->fulfillment_status = 'shipped';
+        }
+        $this->saveQuietly();
+    }
+
+    /**
+     * SA-M001: Recalculate shipped quantity from shipment items.
+     */
+    public function recalculateShippedQuantity(): void
+    {
+        $this->shipped_quantity = $this->shipmentItems()
+            ->whereHas('shipment', fn($q) => $q->whereIn('status', ['shipped', 'delivered']))
+            ->sum('quantity');
+        $this->updateFulfillmentStatus();
     }
 
     // Factory

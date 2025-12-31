@@ -46,9 +46,9 @@ class WishlistItemSchema extends Schema
             DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
             DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
 
-            // Relationships
-            BelongsTo::make('wishlist')->type('wishlists')->readOnly(),
-            BelongsTo::make('product')->type('products')->readOnly(),
+            // Relationships (writable for create/update)
+            BelongsTo::make('wishlist')->type('wishlists'),
+            BelongsTo::make('product')->type('products'),
         ];
     }
 

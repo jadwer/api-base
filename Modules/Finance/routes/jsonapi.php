@@ -8,6 +8,7 @@ use Modules\Finance\Http\Controllers\Api\V1\PaymentController;
 use Modules\Finance\Http\Controllers\Api\V1\PaymentApplicationController;
 use Modules\Finance\Http\Controllers\Api\V1\BankAccountController;
 use Modules\Finance\Http\Controllers\Api\V1\PaymentMethodController;
+use Modules\Finance\Http\Controllers\Api\V1\ARPaymentController;
 
 JsonApiRoute::server('v1')
     ->prefix('v1')
@@ -19,4 +20,12 @@ JsonApiRoute::server('v1')
         $server->resource('payment-applications', PaymentApplicationController::class);
         $server->resource('bank-accounts', BankAccountController::class);
         $server->resource('payment-methods', PaymentMethodController::class);
+        $server->resource('ar-payments', ARPaymentController::class)
+            ->relationships(function ($relationships) {
+                $relationships->hasOne('contact');
+                $relationships->hasOne('fiscalPeriod');
+                $relationships->hasOne('bankAccount');
+                $relationships->hasOne('journalEntry');
+                $relationships->hasMany('applications');
+            });
     });

@@ -105,7 +105,6 @@ class EdgeCaseIntegrationTest extends TestCase
      */
     public function test_ap_invoice_void_and_replacement()
     {
-        $this->markTestSkipped('APInvoice void fields (voided_at, voided_by_id, void_reason, replaces_invoice_id) not yet implemented');
 
         // Create original AP invoice (with error)
         $voidedInvoice = APInvoice::factory()->create([
@@ -155,7 +154,9 @@ class EdgeCaseIntegrationTest extends TestCase
      */
     public function test_payment_application_unapply_and_reapply()
     {
-        $this->markTestSkipped('ARPayment model not yet implemented');
+        // Skip: PaymentApplication table uses payment_id (generic) not ar_payment_id
+        // This test requires refactoring payment_applications table to support AR-specific payments
+        $this->markTestSkipped('PaymentApplication table structure differs from test expectations (uses payment_id not ar_payment_id)');
 
         // Create AR invoice
         $invoice = ARInvoice::factory()->create([
@@ -213,7 +214,6 @@ class EdgeCaseIntegrationTest extends TestCase
      */
     public function test_journal_entry_reversal_creates_opposite_entry()
     {
-        $this->markTestSkipped('JournalEntry reversal fields (is_reversal, reverses_entry_id) and journal_id not yet implemented');
 
         // Create accounts
         $cashAccount = Account::factory()->create([
@@ -231,7 +231,6 @@ class EdgeCaseIntegrationTest extends TestCase
         // Create original journal entry
         $originalEntry = JournalEntry::factory()->create([
             'fiscal_period_id' => $this->fiscalPeriod->id,
-            'journal_id' => null,
             'accounting_date' => now()->subDay(),
             'reference' => 'JE-001',
             'description' => 'Original Entry',
@@ -241,22 +240,21 @@ class EdgeCaseIntegrationTest extends TestCase
         // Add lines to original entry
         $originalEntry->lines()->create([
             'account_id' => $cashAccount->id,
-            'debit_amount' => 10000,
-            'credit_amount' => 0,
+            'debit' => 10000,
+            'credit' => 0,
             'description' => 'Cash receipt',
         ]);
 
         $originalEntry->lines()->create([
             'account_id' => $revenueAccount->id,
-            'debit_amount' => 0,
-            'credit_amount' => 10000,
+            'debit' => 0,
+            'credit' => 10000,
             'description' => 'Revenue earned',
         ]);
 
         // Create reversal entry
         $reversalEntry = JournalEntry::factory()->create([
             'fiscal_period_id' => $this->fiscalPeriod->id,
-            'journal_id' => null,
             'accounting_date' => now(),
             'reference' => 'JE-001-REV',
             'description' => 'Reversal of JE-001',
@@ -268,15 +266,15 @@ class EdgeCaseIntegrationTest extends TestCase
         // Add opposite lines to reversal
         $reversalEntry->lines()->create([
             'account_id' => $cashAccount->id,
-            'debit_amount' => 0,
-            'credit_amount' => 10000, // Opposite of original
+            'debit' => 0,
+            'credit' => 10000, // Opposite of original
             'description' => 'Cash receipt reversal',
         ]);
 
         $reversalEntry->lines()->create([
             'account_id' => $revenueAccount->id,
-            'debit_amount' => 10000, // Opposite of original
-            'credit_amount' => 0,
+            'debit' => 10000, // Opposite of original
+            'credit' => 0,
             'description' => 'Revenue reversal',
         ]);
 
@@ -284,12 +282,16 @@ class EdgeCaseIntegrationTest extends TestCase
         $this->assertTrue($reversalEntry->is_reversal);
         $this->assertEquals($originalEntry->id, $reversalEntry->reverses_entry_id);
 
-        // Verify net effect is zero
-        $cashBalance = $cashAccount->lines()->sum('debit_amount') - $cashAccount->lines()->sum('credit_amount');
-        $revenueBalance = $revenueAccount->lines()->sum('credit_amount') - $revenueAccount->lines()->sum('debit_amount');
+        // Verify net effect is zero using JournalLine
+        $cashBalance = \Modules\Accounting\Models\JournalLine::where('account_id', $cashAccount->id)
+            ->selectRaw('SUM(debit) - SUM(credit) as balance')
+            ->value('balance');
+        $revenueBalance = \Modules\Accounting\Models\JournalLine::where('account_id', $revenueAccount->id)
+            ->selectRaw('SUM(credit) - SUM(debit) as balance')
+            ->value('balance');
 
-        $this->assertEquals(0, $cashBalance);
-        $this->assertEquals(0, $revenueBalance);
+        $this->assertEquals(0, (float) $cashBalance);
+        $this->assertEquals(0, (float) $revenueBalance);
     }
 
     /**
@@ -414,7 +416,8 @@ class EdgeCaseIntegrationTest extends TestCase
      */
     public function test_payment_overpayment_creates_credit_balance()
     {
-        $this->markTestSkipped('ARPayment model not yet implemented');
+        // Skip: Same issue as test_payment_application_unapply_and_reapply
+        $this->markTestSkipped('PaymentApplication table structure differs from test expectations (uses payment_id not ar_payment_id)');
 
         // Create AR invoice
         $invoice = ARInvoice::factory()->create([
@@ -453,7 +456,8 @@ class EdgeCaseIntegrationTest extends TestCase
      */
     public function test_single_payment_applied_to_multiple_invoices()
     {
-        $this->markTestSkipped('ARPayment model not yet implemented');
+        // Skip: Same issue as test_payment_application_unapply_and_reapply
+        $this->markTestSkipped('PaymentApplication table structure differs from test expectations (uses payment_id not ar_payment_id)');
 
         // Create multiple invoices
         $invoice1 = ARInvoice::factory()->create([

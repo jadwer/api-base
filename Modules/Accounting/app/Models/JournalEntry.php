@@ -29,7 +29,12 @@ class JournalEntry extends Model
     protected $table = 'journal_entries';
     
     protected $fillable = [
-        'journal_id', 'fiscal_period_id', 'number', 'date', 'accounting_date', 'reference', 'description', 'total_debit', 'total_credit', 'company_id', 'status', 'approved_at', 'approved_by_id', 'posted_at', 'posted_by_id', 'reversal_of_id', 'reversal_reason', 'metadata'
+        'journal_id', 'fiscal_period_id', 'number', 'date', 'accounting_date', 'reference', 'description', 'total_debit', 'total_credit', 'company_id', 'status', 'approved_at', 'approved_by_id', 'posted_at', 'posted_by_id',
+        // Reversal fields
+        'reversal_of_id', 'reversal_reason', 'is_reversal', 'reverses_entry_id',
+        // Source tracking
+        'source_type', 'source_id',
+        'metadata'
     ];
 
     protected $casts = [
@@ -39,7 +44,10 @@ class JournalEntry extends Model
         'total_credit' => 'float',
         'approved_at' => 'datetime',
         'posted_at' => 'datetime',
-        'metadata' => 'array'
+        'metadata' => 'array',
+        'is_reversal' => 'boolean',
+        'reverses_entry_id' => 'integer',
+        'source_id' => 'integer'
     ];
 
     // Scopes
@@ -66,6 +74,44 @@ class JournalEntry extends Model
     public function journalLines()
     {
         return $this->hasMany(JournalLine::class);
+    }
+
+    // Alias for journalLines (for test compatibility)
+    public function lines()
+    {
+        return $this->journalLines();
+    }
+
+    /**
+     * The entry that this entry reverses.
+     */
+    public function reversesEntry()
+    {
+        return $this->belongsTo(JournalEntry::class, 'reverses_entry_id');
+    }
+
+    /**
+     * The entry that reverses this entry.
+     */
+    public function reversedByEntry()
+    {
+        return $this->hasOne(JournalEntry::class, 'reverses_entry_id');
+    }
+
+    /**
+     * Legacy alias for backwards compatibility.
+     */
+    public function reversalOf()
+    {
+        return $this->belongsTo(JournalEntry::class, 'reversal_of_id');
+    }
+
+    /**
+     * Get the source model (polymorphic).
+     */
+    public function source()
+    {
+        return $this->morphTo();
     }
 
     // Factory

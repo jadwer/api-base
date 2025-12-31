@@ -5,6 +5,7 @@ namespace Modules\Inventory\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Modelo ProductBatch
@@ -37,6 +38,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read \Modules\Product\Models\Product $product
  * @property-read Warehouse $warehouse
  * @property-read WarehouseLocation|null $warehouseLocation
+ * @property-read \Illuminate\Database\Eloquent\Collection|InventoryMovement[] $inventoryMovements IV-M003: Movements affecting this batch
+ * @property-read \Illuminate\Database\Eloquent\Collection|InventoryMovement[] $destinationMovements IV-M003: Movements where this batch is destination
  */
 class ProductBatch extends Model
 {
@@ -93,6 +96,90 @@ class ProductBatch extends Model
     public function warehouseLocation(): BelongsTo
     {
         return $this->belongsTo(WarehouseLocation::class, 'warehouse_location_id');
+    }
+
+    /**
+     * IV-M003: Movimientos de inventario que afectan este lote (origen).
+     */
+    public function inventoryMovements(): HasMany
+    {
+        return $this->hasMany(InventoryMovement::class, 'product_batch_id');
+    }
+
+    /**
+     * IV-M003: Movimientos de inventario donde este lote es destino.
+     */
+    public function destinationMovements(): HasMany
+    {
+        return $this->hasMany(InventoryMovement::class, 'destination_batch_id');
+    }
+
+    /**
+     * IV-M003: Obtener todos los movimientos relacionados con este lote (origen o destino).
+     */
+    public function allMovements()
+    {
+        return InventoryMovement::where('product_batch_id', $this->id)
+            ->orWhere('destination_batch_id', $this->id)
+            ->orderBy('movement_date', 'desc');
+    }
+
+    /**
+     * IV-M003: Verificar si el lote está próximo a expirar.
+     *
+     * @param int $daysThreshold Días de anticipación para considerar próximo a expirar
+     * @return bool
+     */
+    public function isExpiringSoon(int $daysThreshold = 30): bool
+    {
+        if (!$this->expiration_date) {
+            return false;
+        }
+
+        return $this->expiration_date->lte(now()->addDays($daysThreshold));
+    }
+
+    /**
+     * IV-M003: Verificar si el lote ya expiró.
+     */
+    public function isExpired(): bool
+    {
+        if (!$this->expiration_date) {
+            return false;
+        }
+
+        return $this->expiration_date->lt(now());
+    }
+
+    /**
+     * IV-M003: Scope para lotes próximos a expirar (FEFO).
+     */
+    public function scopeExpiringSoon($query, int $daysThreshold = 30)
+    {
+        return $query->whereNotNull('expiration_date')
+            ->where('expiration_date', '<=', now()->addDays($daysThreshold))
+            ->where('expiration_date', '>', now())
+            ->orderBy('expiration_date', 'asc');
+    }
+
+    /**
+     * IV-M003: Scope para lotes activos ordenados por FEFO (First Expire, First Out).
+     */
+    public function scopeFefo($query)
+    {
+        return $query->where('status', 'active')
+            ->where('current_quantity', '>', 0)
+            ->orderBy('expiration_date', 'asc')
+            ->orderBy('created_at', 'asc');
+    }
+
+    /**
+     * IV-M003: Scope para lotes con stock disponible.
+     */
+    public function scopeWithAvailableStock($query)
+    {
+        return $query->where('status', 'active')
+            ->whereRaw('current_quantity - reserved_quantity > 0');
     }
 
     /**

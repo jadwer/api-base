@@ -56,12 +56,15 @@ class JournalEntryFactory extends Factory
         $approvedAt = $this->faker->dateTimeBetween('-30 days', 'now');
         $postedAt = $this->faker->dateTimeBetween($approvedAt, 'now');
 
-        return $this->state(fn (array $attributes) => [
-            'status' => 'posted',
-            'approved_at' => $approvedAt,
-            'approved_by_id' => 1,
-            'posted_at' => $postedAt,
-            'posted_by_id' => 1,
-        ]);
+        return $this->state(function (array $attributes) use ($approvedAt, $postedAt) {
+            $user = \Modules\User\Models\User::factory()->create();
+            return [
+                'status' => 'posted',
+                'approved_at' => $approvedAt,
+                'approved_by_id' => $user->id,
+                'posted_at' => $postedAt,
+                'posted_by_id' => $user->id,
+            ];
+        });
     }
 }

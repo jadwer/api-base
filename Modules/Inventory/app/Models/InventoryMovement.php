@@ -31,7 +31,9 @@ use Spatie\Activitylog\LogOptions;
  * @property int $user_id
  * @property float|null $previous_stock
  * @property float|null $new_stock
- * @property array|null $batch_info
+ * @property int|null $product_batch_id IV-M003: Direct FK to ProductBatch for lot traceability
+ * @property int|null $destination_batch_id IV-M003: Destination batch for transfer/split operations
+ * @property array|null $batch_info Legacy JSON field - prefer product_batch_id for traceability queries
  * @property array|null $metadata
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -40,6 +42,8 @@ use Spatie\Activitylog\LogOptions;
  * @property-read WarehouseLocation|null $location
  * @property-read Warehouse|null $destinationWarehouse
  * @property-read WarehouseLocation|null $destinationLocation
+ * @property-read ProductBatch|null $productBatch IV-M003: Source batch for traceability
+ * @property-read ProductBatch|null $destinationBatch IV-M003: Destination batch for transfers
  * @property-read \Modules\User\Models\User $user
  */
 class InventoryMovement extends Model
@@ -66,8 +70,10 @@ class InventoryMovement extends Model
         'product_id' => 'integer',
         'warehouse_id' => 'integer',
         'warehouse_location_id' => 'integer',
+        'product_batch_id' => 'integer',
         'destination_warehouse_id' => 'integer',
         'destination_location_id' => 'integer',
+        'destination_batch_id' => 'integer',
         'quantity' => 'float',
         'unit_cost' => 'float',
         'total_value' => 'float',
@@ -222,6 +228,25 @@ class InventoryMovement extends Model
     }
 
     /**
+     * IV-M003: Scope to filter by product batch
+     */
+    public function scopeByBatch($query, int $batchId)
+    {
+        return $query->where(function ($q) use ($batchId) {
+            $q->where('product_batch_id', $batchId)
+              ->orWhere('destination_batch_id', $batchId);
+        });
+    }
+
+    /**
+     * IV-M003: Scope to filter movements with batch traceability
+     */
+    public function scopeWithBatchTraceability($query)
+    {
+        return $query->whereNotNull('product_batch_id');
+    }
+
+    /**
      * Helper methods
      */
     public function isEntry(): bool
@@ -320,6 +345,22 @@ class InventoryMovement extends Model
     public function destinationLocation(): BelongsTo
     {
         return $this->belongsTo(WarehouseLocation::class, 'destination_location_id');
+    }
+
+    /**
+     * IV-M003: El movimiento puede pertenecer a un lote de producto (trazabilidad).
+     */
+    public function productBatch(): BelongsTo
+    {
+        return $this->belongsTo(ProductBatch::class);
+    }
+
+    /**
+     * IV-M003: El movimiento puede tener un lote destino (para transferencias/splits).
+     */
+    public function destinationBatch(): BelongsTo
+    {
+        return $this->belongsTo(ProductBatch::class, 'destination_batch_id');
     }
 
     /**

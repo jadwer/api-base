@@ -24,7 +24,10 @@ class SalesAssignPermissionsSeeder extends Seeder
                                       ->where(function($query) {
                                           $query->where('name', 'like', 'customers.%')
                                                 ->orWhere('name', 'like', 'sales-orders.%')
-                                                ->orWhere('name', 'like', 'sales-order-items.%');
+                                                ->orWhere('name', 'like', 'sales-order-items.%')
+                                                ->orWhere('name', 'like', 'shipments.%')
+                                                ->orWhere('name', 'like', 'shipment-items.%')
+                                                ->orWhere('name', 'like', 'backorders.%');
                                       })
                                       ->get();
             $godRole->givePermissionTo($allPermissions);
@@ -34,12 +37,20 @@ class SalesAssignPermissionsSeeder extends Seeder
             // Admin tiene permisos CRUD completos
             $adminPermissions = Permission::where('guard_name', 'api')
                                         ->whereIn('name', [
-                                            'customers.index', 'customers.view', 'customers.show', 'customers.store', 
+                                            'customers.index', 'customers.view', 'customers.show', 'customers.store',
                                             'customers.update', 'customers.destroy',
-                                            'sales-orders.index', 'sales-orders.view', 'sales-orders.show', 
+                                            'sales-orders.index', 'sales-orders.view', 'sales-orders.show',
                                             'sales-orders.store', 'sales-orders.update', 'sales-orders.destroy',
                                             'sales-order-items.index', 'sales-order-items.view', 'sales-order-items.show',
                                             'sales-order-items.store', 'sales-order-items.update', 'sales-order-items.destroy',
+                                            // SA-M001: Shipments
+                                            'shipments.index', 'shipments.view', 'shipments.show',
+                                            'shipments.store', 'shipments.update', 'shipments.destroy',
+                                            'shipment-items.index', 'shipment-items.view', 'shipment-items.show',
+                                            'shipment-items.store', 'shipment-items.update', 'shipment-items.destroy',
+                                            // SA-M002: Backorders
+                                            'backorders.index', 'backorders.view', 'backorders.show',
+                                            'backorders.store', 'backorders.update', 'backorders.destroy',
                                         ])->get();
             $adminRole->givePermissionTo($adminPermissions);
         }
@@ -48,12 +59,20 @@ class SalesAssignPermissionsSeeder extends Seeder
             // Tech tiene permisos CRUD completos (similar a admin)
             $techPermissions = Permission::where('guard_name', 'api')
                                        ->whereIn('name', [
-                                           'customers.index', 'customers.view', 'customers.show', 'customers.store', 
+                                           'customers.index', 'customers.view', 'customers.show', 'customers.store',
                                            'customers.update', 'customers.destroy',
-                                           'sales-orders.index', 'sales-orders.view', 'sales-orders.show', 
+                                           'sales-orders.index', 'sales-orders.view', 'sales-orders.show',
                                            'sales-orders.store', 'sales-orders.update', 'sales-orders.destroy',
                                            'sales-order-items.index', 'sales-order-items.view', 'sales-order-items.show',
                                            'sales-order-items.store', 'sales-order-items.update', 'sales-order-items.destroy',
+                                           // SA-M001: Shipments
+                                           'shipments.index', 'shipments.view', 'shipments.show',
+                                           'shipments.store', 'shipments.update', 'shipments.destroy',
+                                           'shipment-items.index', 'shipment-items.view', 'shipment-items.show',
+                                           'shipment-items.store', 'shipment-items.update', 'shipment-items.destroy',
+                                           // SA-M002: Backorders
+                                           'backorders.index', 'backorders.view', 'backorders.show',
+                                           'backorders.store', 'backorders.update', 'backorders.destroy',
                                        ])->get();
             $techRole->givePermissionTo($techPermissions);
         }
@@ -67,6 +86,11 @@ class SalesAssignPermissionsSeeder extends Seeder
                                                // NO customers.* permissions - handled by authorizer logic
                                                'sales-orders.index', 'sales-orders.view', 'sales-orders.show',
                                                'sales-order-items.index', 'sales-order-items.view', 'sales-order-items.show',
+                                               // SA-M001: Customer can view shipments for their orders
+                                               'shipments.index', 'shipments.view', 'shipments.show',
+                                               'shipment-items.index', 'shipment-items.view', 'shipment-items.show',
+                                               // SA-M002: Customer can view backorders for their orders
+                                               'backorders.index', 'backorders.view', 'backorders.show',
                                            ])->get();
             $customerRole->givePermissionTo($customerPermissions);
         }

@@ -10,7 +10,13 @@ use Illuminate\Support\Facades\DB;
 /**
  * APInvoiceReconciliationService
  *
+ * PU-M001: Three-Way Match - Reconciles AP Invoices against Purchase Orders AND Receipts
  * PU-M002: Reconciles AP Invoices against Purchase Orders with tolerance validation
+ *
+ * Three-Way Match validates:
+ * 1. PO quantities vs Received quantities
+ * 2. Received quantities vs Invoiced quantities
+ * 3. PO amounts vs Invoice amounts
  */
 class APInvoiceReconciliationService
 {
@@ -67,13 +73,19 @@ class APInvoiceReconciliationService
         // Check 3: Validate invoice items exist in PO
         $this->validateItemsExist($apInvoice, $purchaseOrder, $discrepancies);
 
+        // Check 4: Three-Way Match - Validate received quantities (PU-M001)
+        $receivingVariance = $this->validateThreeWayMatch($purchaseOrder, $discrepancies);
+
         // Determine final reconciliation status
         if (count($discrepancies) > 0) {
-            // If amount variance exceeds tolerance, it's a critical discrepancy
-            if ($amountVariance > config('purchase.reconciliation_tolerance_percent', 5)) {
+            // Check for any critical discrepancies (amount, over-receiving, over-invoicing)
+            $hasCriticalDiscrepancy = $amountVariance > config('purchase.reconciliation_tolerance_percent', 5)
+                || $receivingVariance['has_critical_discrepancy'];
+
+            if ($hasCriticalDiscrepancy) {
                 $reconciliationStatus = 'discrepancy';
             } else {
-                // Minor discrepancies (like price variance warnings)
+                // Minor discrepancies (like price variance warnings, partial receiving)
                 $reconciliationStatus = 'matched'; // Still matched, but with notes
             }
         }
@@ -210,6 +222,166 @@ class APInvoiceReconciliationService
                 'message' => 'Purchase Order has no line items to reconcile against.',
             ];
         }
+    }
+
+    /**
+     * PU-M001: Three-Way Match Validation
+     *
+     * Validates that:
+     * 1. Ordered quantities match received quantities (within tolerance)
+     * 2. Received quantities match invoiced quantities (within tolerance)
+     *
+     * @param PurchaseOrder $purchaseOrder
+     * @param array $discrepancies
+     * @return array Match results with variance details
+     */
+    protected function validateThreeWayMatch(PurchaseOrder $purchaseOrder, array &$discrepancies): array
+    {
+        $tolerance = config('purchase.reconciliation_tolerance_percent', 5);
+        $poItems = $purchaseOrder->purchaseOrderItems;
+        $matchResults = [
+            'ordered_vs_received' => [],
+            'received_vs_invoiced' => [],
+            'has_critical_discrepancy' => false,
+        ];
+
+        if ($poItems->isEmpty()) {
+            return $matchResults;
+        }
+
+        foreach ($poItems as $item) {
+            $orderedQty = $item->quantity ?? 0;
+            $receivedQty = $item->received_quantity ?? 0;
+            $invoicedQty = $item->invoiced_quantity ?? $orderedQty; // Default to ordered if not set
+
+            // Check 1: Ordered vs Received
+            if ($orderedQty > 0) {
+                $receivingVariance = abs($orderedQty - $receivedQty);
+                $receivingVariancePercent = ($receivingVariance / $orderedQty) * 100;
+
+                $matchResults['ordered_vs_received'][] = [
+                    'product_id' => $item->product_id,
+                    'ordered' => $orderedQty,
+                    'received' => $receivedQty,
+                    'variance' => $receivingVariance,
+                    'variance_percent' => round($receivingVariancePercent, 2),
+                ];
+
+                // Flag if not fully received (more than tolerance difference)
+                if ($receivingVariancePercent > $tolerance && $receivedQty < $orderedQty) {
+                    $discrepancies[] = [
+                        'type' => 'receiving_discrepancy',
+                        'severity' => 'warning',
+                        'message' => sprintf(
+                            'Product ID %d: Ordered %.2f but only received %.2f (%.2f%% variance)',
+                            $item->product_id,
+                            $orderedQty,
+                            $receivedQty,
+                            $receivingVariancePercent
+                        ),
+                        'product_id' => $item->product_id,
+                        'ordered_quantity' => $orderedQty,
+                        'received_quantity' => $receivedQty,
+                        'variance_percent' => round($receivingVariancePercent, 2),
+                    ];
+                }
+
+                // Critical: Received MORE than ordered beyond tolerance
+                if ($receivedQty > $orderedQty * (1 + $tolerance / 100)) {
+                    $discrepancies[] = [
+                        'type' => 'over_receiving',
+                        'severity' => 'critical',
+                        'message' => sprintf(
+                            'Product ID %d: Received %.2f exceeds ordered %.2f by more than %d%% tolerance',
+                            $item->product_id,
+                            $receivedQty,
+                            $orderedQty,
+                            $tolerance
+                        ),
+                        'product_id' => $item->product_id,
+                        'ordered_quantity' => $orderedQty,
+                        'received_quantity' => $receivedQty,
+                    ];
+                    $matchResults['has_critical_discrepancy'] = true;
+                }
+            }
+
+            // Check 2: Received vs Invoiced (only if we have invoiced quantity data)
+            if ($receivedQty > 0 && $item->invoiced_quantity !== null) {
+                $invoiceVariance = abs($receivedQty - $invoicedQty);
+                $invoiceVariancePercent = ($invoiceVariance / $receivedQty) * 100;
+
+                $matchResults['received_vs_invoiced'][] = [
+                    'product_id' => $item->product_id,
+                    'received' => $receivedQty,
+                    'invoiced' => $invoicedQty,
+                    'variance' => $invoiceVariance,
+                    'variance_percent' => round($invoiceVariancePercent, 2),
+                ];
+
+                // Critical: Invoiced more than received
+                if ($invoicedQty > $receivedQty * (1 + $tolerance / 100)) {
+                    $discrepancies[] = [
+                        'type' => 'over_invoicing',
+                        'severity' => 'critical',
+                        'message' => sprintf(
+                            'Product ID %d: Invoiced %.2f exceeds received %.2f - potential overbilling',
+                            $item->product_id,
+                            $invoicedQty,
+                            $receivedQty
+                        ),
+                        'product_id' => $item->product_id,
+                        'received_quantity' => $receivedQty,
+                        'invoiced_quantity' => $invoicedQty,
+                    ];
+                    $matchResults['has_critical_discrepancy'] = true;
+                }
+            }
+        }
+
+        // Log three-way match results
+        Log::info('Three-Way Match completed', [
+            'purchase_order_id' => $purchaseOrder->id,
+            'items_checked' => $poItems->count(),
+            'discrepancies_found' => count(array_filter($discrepancies, fn($d) => in_array($d['type'], ['receiving_discrepancy', 'over_receiving', 'over_invoicing']))),
+            'has_critical' => $matchResults['has_critical_discrepancy'],
+        ]);
+
+        return $matchResults;
+    }
+
+    /**
+     * Perform standalone Three-Way Match validation
+     *
+     * PU-M001: Can be called independently to check match status
+     *
+     * @param PurchaseOrder $purchaseOrder
+     * @return array Detailed match results
+     */
+    public function performThreeWayMatch(PurchaseOrder $purchaseOrder): array
+    {
+        $discrepancies = [];
+        $matchResults = $this->validateThreeWayMatch($purchaseOrder, $discrepancies);
+
+        // Calculate summary
+        $totalOrdered = $purchaseOrder->purchaseOrderItems->sum('quantity');
+        $totalReceived = $purchaseOrder->purchaseOrderItems->sum('received_quantity');
+        $totalInvoiced = $purchaseOrder->purchaseOrderItems->sum('invoiced_quantity');
+
+        return [
+            'purchase_order_id' => $purchaseOrder->id,
+            'purchase_order_number' => $purchaseOrder->order_number,
+            'summary' => [
+                'total_ordered' => $totalOrdered,
+                'total_received' => $totalReceived,
+                'total_invoiced' => $totalInvoiced ?? $totalOrdered,
+                'receiving_percent' => $totalOrdered > 0 ? round(($totalReceived / $totalOrdered) * 100, 2) : 0,
+                'invoicing_percent' => $totalReceived > 0 ? round((($totalInvoiced ?? $totalReceived) / $totalReceived) * 100, 2) : 0,
+            ],
+            'match_status' => $matchResults['has_critical_discrepancy'] ? 'discrepancy' : 'matched',
+            'discrepancies' => $discrepancies,
+            'details' => $matchResults,
+        ];
     }
 
     /**

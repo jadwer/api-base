@@ -101,6 +101,38 @@ class Product extends Model
     }
 
     /**
+     * PR-M003: Un producto puede tener múltiples variantes.
+     */
+    public function variants(): HasMany
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
+
+    /**
+     * PR-M003: Variantes activas del producto.
+     */
+    public function activeVariants(): HasMany
+    {
+        return $this->variants()->where('is_active', true);
+    }
+
+    /**
+     * PR-M003: Variante por defecto del producto.
+     */
+    public function defaultVariant(): HasMany
+    {
+        return $this->variants()->where('is_default', true);
+    }
+
+    /**
+     * PR-M003: Verificar si el producto tiene variantes.
+     */
+    public function hasVariants(): bool
+    {
+        return $this->variants()->exists();
+    }
+
+    /**
      * Update cached rating and review count
      * Call this method when reviews are added/updated/deleted
      */
