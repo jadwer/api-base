@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use LaravelJsonApi\Laravel\Facades\JsonApiRoute;
 use LaravelJsonApi\Laravel\Routing\ResourceRegistrar;
 use Modules\Finance\Http\Controllers\Api\V1\ARInvoiceController;
@@ -29,3 +30,17 @@ JsonApiRoute::server('v1')
                 $relationships->hasMany('applications');
             });
     });
+
+// FI-M001: Late Payment Penalty endpoints
+Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
+    Route::get('ar-invoices/{arInvoice}/late-penalty', [ARInvoiceController::class, 'latePenalty'])
+        ->name('ar-invoices.late-penalty');
+    Route::post('ar-invoices/{arInvoice}/apply-penalty', [ARInvoiceController::class, 'applyPenalty'])
+        ->name('ar-invoices.apply-penalty');
+    Route::get('ar-invoices/overdue-with-penalties', [ARInvoiceController::class, 'overdueWithPenalties'])
+        ->name('ar-invoices.overdue-with-penalties');
+    Route::get('ar-invoices/penalty-summary', [ARInvoiceController::class, 'penaltySummary'])
+        ->name('ar-invoices.penalty-summary');
+    Route::get('ar-invoices/aging-report', [ARInvoiceController::class, 'agingReport'])
+        ->name('ar-invoices.aging-report');
+});

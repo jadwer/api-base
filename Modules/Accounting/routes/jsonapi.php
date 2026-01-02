@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use LaravelJsonApi\Laravel\Facades\JsonApiRoute;
 use LaravelJsonApi\Laravel\Routing\ResourceRegistrar;
 use Modules\Accounting\Http\Controllers\Api\V1\IdempotencyKeyController;
@@ -32,3 +33,15 @@ JsonApiRoute::server('v1')
         $server->resource('journal-lines', JournalLineController::class);
         $server->resource('exchange-rates', ExchangeRateController::class);
     });
+
+// AC-M001: Period Close Checklist custom endpoints
+Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
+    Route::get('fiscal-periods/{fiscalPeriod}/close-checklist', [FiscalPeriodController::class, 'closeChecklist'])
+        ->name('fiscal-periods.close-checklist');
+    Route::post('fiscal-periods/{fiscalPeriod}/close', [FiscalPeriodController::class, 'close'])
+        ->name('fiscal-periods.close');
+    Route::post('fiscal-periods/{fiscalPeriod}/reopen', [FiscalPeriodController::class, 'reopen'])
+        ->name('fiscal-periods.reopen');
+    Route::get('fiscal-periods/{fiscalPeriod}/summary', [FiscalPeriodController::class, 'summary'])
+        ->name('fiscal-periods.summary');
+});
