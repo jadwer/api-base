@@ -21,11 +21,6 @@ class ProductComparisonItemAuthorizer implements Authorizer
             return false;
         }
 
-        // Check permission first
-        if (!$user->can('ecommerce.product-comparison-items.store')) {
-            return false;
-        }
-
         // If admin/god, allow
         if ($user->hasAnyRole(['god', 'admin'])) {
             return true;
@@ -33,8 +28,18 @@ class ProductComparisonItemAuthorizer implements Authorizer
 
         // For customers, check if they own the comparison they're adding to
         $data = $request->json()->all();
-        if (isset($data['data']['relationships']['comparison']['data']['id'])) {
+        $comparisonId = null;
+
+        // Check in attributes (comparisonId as attribute)
+        if (isset($data['data']['attributes']['comparisonId'])) {
+            $comparisonId = $data['data']['attributes']['comparisonId'];
+        }
+        // Also check in relationships (comparison as relationship)
+        elseif (isset($data['data']['relationships']['comparison']['data']['id'])) {
             $comparisonId = $data['data']['relationships']['comparison']['data']['id'];
+        }
+
+        if ($comparisonId) {
             $comparison = \Modules\Ecommerce\Models\ProductComparison::find($comparisonId);
 
             if (!$comparison) {

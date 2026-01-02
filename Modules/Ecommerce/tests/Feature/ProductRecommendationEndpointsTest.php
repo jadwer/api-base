@@ -293,6 +293,9 @@ class ProductRecommendationEndpointsTest extends TestCase
 
     public function test_endpoints_only_return_active_products()
     {
+        // Delete existing products to ensure test isolation
+        Product::query()->delete();
+
         $category = Category::factory()->create();
 
         $activeProduct = Product::factory()->create([
@@ -311,18 +314,18 @@ class ProductRecommendationEndpointsTest extends TestCase
             'created_at' => Carbon::now(),
         ]);
 
-        // Test popular
+        // Test popular (JSON:API IDs are strings)
         $response = $this->getJson('/api/v1/products/popular');
         $response->assertSuccessful();
         $productIds = collect($response->json('data'))->pluck('id')->toArray();
-        $this->assertContains($activeProduct->id, $productIds);
-        $this->assertNotContains($inactiveProduct->id, $productIds);
+        $this->assertContains((string) $activeProduct->id, $productIds);
+        $this->assertNotContains((string) $inactiveProduct->id, $productIds);
 
         // Test new arrivals
         $response = $this->getJson('/api/v1/products/new-arrivals');
         $response->assertSuccessful();
         $productIds = collect($response->json('data'))->pluck('id')->toArray();
-        $this->assertContains($activeProduct->id, $productIds);
-        $this->assertNotContains($inactiveProduct->id, $productIds);
+        $this->assertContains((string) $activeProduct->id, $productIds);
+        $this->assertNotContains((string) $inactiveProduct->id, $productIds);
     }
 }

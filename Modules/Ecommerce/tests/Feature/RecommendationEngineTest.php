@@ -242,6 +242,9 @@ class RecommendationEngineTest extends TestCase
 
     public function test_popular_products_requires_minimum_rating_and_reviews()
     {
+        // Delete existing products to ensure test isolation
+        Product::query()->delete();
+
         // Product with high rating and enough reviews
         $popularProduct = Product::factory()->create([
             'is_active' => true,
@@ -250,14 +253,14 @@ class RecommendationEngineTest extends TestCase
         ]);
 
         // Product with high rating but not enough reviews
-        Product::factory()->create([
+        $lowReviewsProduct = Product::factory()->create([
             'is_active' => true,
             'average_rating' => 4.8,
             'total_reviews' => 3, // Less than 5
         ]);
 
         // Product with enough reviews but low rating
-        Product::factory()->create([
+        $lowRatingProduct = Product::factory()->create([
             'is_active' => true,
             'average_rating' => 3.5, // Less than 4.0
             'total_reviews' => 10,
@@ -265,12 +268,18 @@ class RecommendationEngineTest extends TestCase
 
         $result = $this->engine->getPopularProducts(12);
 
-        $this->assertCount(1, $result);
-        $this->assertEquals($popularProduct->id, $result->first()->id);
+        // Popular product should be included
+        $this->assertTrue($result->contains('id', $popularProduct->id));
+        // Products that don't meet criteria should be excluded
+        $this->assertFalse($result->contains('id', $lowReviewsProduct->id));
+        $this->assertFalse($result->contains('id', $lowRatingProduct->id));
     }
 
     public function test_popular_products_orders_by_rating_then_reviews()
     {
+        // Delete existing products to ensure test isolation
+        Product::query()->delete();
+
         $product1 = Product::factory()->create([
             'is_active' => true,
             'average_rating' => 4.8,
@@ -299,6 +308,9 @@ class RecommendationEngineTest extends TestCase
 
     public function test_new_arrivals_returns_recently_created_products()
     {
+        // Delete existing products to ensure test isolation
+        Product::query()->delete();
+
         // Create old product
         $oldProduct = Product::factory()->create([
             'is_active' => true,

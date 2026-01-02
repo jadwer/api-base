@@ -4,12 +4,24 @@ namespace Modules\Ecommerce\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class ShippingMethod extends Model
 {
     use HasFactory;
 
     protected $table = 'shipping_methods';
+
+    protected static function booted(): void
+    {
+        static::deleting(function (ShippingMethod $shippingMethod) {
+            if ($shippingMethod->checkoutSessions()->exists()) {
+                throw new ConflictHttpException(
+                    'No se puede eliminar el método de envío porque tiene sesiones de checkout asociadas.'
+                );
+            }
+        });
+    }
 
     protected $fillable = [
         'name',
