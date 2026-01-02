@@ -8,6 +8,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Modules\CRM\Database\Factories\OpportunityFactory;
 use Modules\User\Models\User;
+use Modules\Contacts\Models\Contact;
 
 class Opportunity extends Model
 {
@@ -103,11 +104,10 @@ class Opportunity extends Model
         return $this->belongsTo(PipelineStage::class);
     }
 
-    // public function contact()
-    // {
-    //     return $this->belongsTo(Contact::class);
-    // }
-    // TODO: Enable when Contact module is implemented
+    public function contact()
+    {
+        return $this->belongsTo(Contact::class);
+    }
 
     public function activities()
     {

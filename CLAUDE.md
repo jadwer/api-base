@@ -19,7 +19,7 @@ Claude Code MUST NEVER execute git commit commands automatically. Always provide
 ### **PHASE PROGRESSION GATE** ⚠️
 **DO NOT ADVANCE TO PHASE 3 UNTIL PHASE 1 AND PHASE 2 HAVE 100% TESTS PASSING.**
 
-**Current Phase Status (Updated 2025-12-30):**
+**Current Phase Status (Updated 2026-01-02):**
 - **Phase 1-2 (Accounting/Finance):** ✅ 100% - Core business logic complete
 - **Phase 3 (Business Rules):** ✅ **100% COMPLETE** - All enterprise services implemented & tested
 - **Phase 3.5 (Performance):** ✅ **100% COMPLETE** - Database optimization, caching, security, load testing
@@ -32,8 +32,16 @@ Claude Code MUST NEVER execute git commit commands automatically. Always provide
 - **P1 Business Rules:** ✅ **100% COMPLETE** - 5/5 critical tasks (Purchase Approval, Inventory GL, FEFO, Sales Reservation, Line Calculation)
 - **P2 Business Rules:** ✅ **11/12 COMPLETE** - High-value automation (1 deferred to P3: Budget Control)
 - **Database Consolidation:** ✅ **100% COMPLETE** - Migration cleanup for v1.0 release
+- **Code Cleanup (2026-01-02):** ✅ **COMPLETE** - Removed deprecated TODOs, enabled CRM-Contact integration
 
 **Recent Progress:**
+
+**Code Cleanup (2026-01-02) - Phase F Complete:**
+- ✅ **CRM-Contact Integration:** Enabled contact relationships in Lead, Activity, Opportunity models
+- ✅ **Deprecated TODOs Removed:** Cleaned up obsolete "TODO: Enable when Contact module is implemented" comments
+- ✅ **SalesOrder Enhancement:** Added subtotal and tax_amount fields
+- ✅ **API Documentation Generated:** docs/api/documentation.md (900KB), endpoints.json (5.5MB)
+- ✅ **Frontend Guide Updated:** Added Recent Updates section for 2026-01-02
 
 **Database Consolidation (2025-12-30) - v1.0 Release Prep:**
 - ✅ **Migration Cleanup:** Consolidated 30+ add_* migrations into base create_* tables (-1447 lines)

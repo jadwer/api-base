@@ -8,7 +8,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Modules\CRM\Database\Factories\LeadFactory;
 use Modules\User\Models\User;
-// use Modules\Contacts\Models\Contact; // Will be enabled when Contact module is implemented
+use Modules\Contacts\Models\Contact;
 
 class Lead extends Model
 {
@@ -56,27 +56,25 @@ class Lead extends Model
     /**
      * Relationships
      */
-    // public function contact()
-    // {
-    //     return $this->belongsTo(Contact::class);
-    // }
-    // TODO: Enable when Contact module is implemented
+    public function contact()
+    {
+        return $this->belongsTo(Contact::class);
+    }
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // public function campaigns()
-    // {
-    //     return $this->belongsToMany(
-    //         Campaign::class,
-    //         'campaign_lead',
-    //         'lead_id',
-    //         'campaign_id'
-    //     )->withTimestamps();
-    // }
-    // TODO: Enable when Campaign entity is implemented
+    public function campaigns()
+    {
+        return $this->belongsToMany(
+            Campaign::class,
+            'campaign_lead',
+            'lead_id',
+            'campaign_id'
+        )->withTimestamps();
+    }
 
     public function activities()
     {

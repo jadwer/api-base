@@ -23,23 +23,29 @@ class WishlistItemAuthorizer implements Authorizer
     }
 
     /**
-     * Authenticated users can add items to their wishlists
+     * Authenticated users can add items to their wishlists (tech is read-only)
      */
     public function store(Request $request, string $modelClass): bool|Response
     {
         $user = $request->user();
         return $user && ($user->can('ecommerce.wishlist-items.store')
-            || $user->hasAnyRole(['god', 'admin', 'tech', 'customer']));
+            || $user->hasAnyRole(['god', 'admin', 'customer']));
     }
 
     /**
-     * Owner of wishlist, admin, or god can view item
+     * Owner of wishlist, admin, or god can view item. Items from public wishlists are viewable by anyone.
      */
     public function show(Request $request, object $model): bool|Response
     {
+        // Check if wishlist is public - anyone can view items from public wishlists
+        $wishlist = $model->wishlist;
+        if ($wishlist && $wishlist->is_public) {
+            return true;
+        }
+
         $user = $request->user();
         if (!$user) {
-            return false;
+            return Response::deny('Only items from public wishlists can be viewed without authentication.');
         }
 
         // Tech users have read-only access to all wishlist items
@@ -48,12 +54,11 @@ class WishlistItemAuthorizer implements Authorizer
         }
 
         // Check if user owns the wishlist
-        $wishlist = $model->wishlist;
         if ($wishlist && isset($wishlist->user_id) && $wishlist->user_id === $user->id) {
             return true;
         }
 
-        return Response::deny('You can only view items from your own wishlists.');
+        return Response::deny('You can only view items from your own wishlists or public wishlists.');
     }
 
     /**

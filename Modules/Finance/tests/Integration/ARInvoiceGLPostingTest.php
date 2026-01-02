@@ -7,6 +7,7 @@ use Modules\Finance\Models\ARInvoice;
 use Modules\Finance\Services\ARInvoiceService;
 use Modules\Accounting\Models\JournalEntry;
 use Modules\Accounting\Models\Account;
+use Modules\Accounting\Models\FiscalPeriod;
 use Modules\Contacts\Models\Contact;
 
 /**
@@ -23,6 +24,17 @@ class ARInvoiceGLPostingTest extends TestCase
     {
         parent::setUp();
         $this->arInvoiceService = app(ARInvoiceService::class);
+
+        // Create fiscal period for current month if it doesn't exist
+        FiscalPeriod::firstOrCreate(
+            ['year' => now()->year, 'month' => now()->month],
+            [
+                'name' => now()->format('Y-m'),
+                'start_date' => now()->startOfMonth()->format('Y-m-d'),
+                'end_date' => now()->endOfMonth()->format('Y-m-d'),
+                'status' => 'open',
+            ]
+        );
     }
 
     public function test_creating_ar_invoice_creates_journal_entry(): void

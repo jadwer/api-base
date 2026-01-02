@@ -1,7 +1,7 @@
 # 🗄️ DATABASE SCHEMA REFERENCE - OFFICIAL DOCUMENTATION
 ## ⚠️ CRITICAL: READ BEFORE ANY DEVELOPMENT
 
-**Última actualización:** 2025-10-31 (Added HR Module - Phase 4.4)
+**Última actualización:** 2026-01-02 (Added CRM-Contact integration, SalesOrder subtotal/taxAmount)
 **Propósito:** Documentación oficial de la estructura de base de datos, modelos y mappings JSON:API
 
 ---

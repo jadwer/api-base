@@ -84,4 +84,30 @@ class FiscalPeriodFactory extends Factory
             ];
         });
     }
+
+    /**
+     * Create FiscalPeriod for a specific date
+     */
+    public function forDate(\Carbon\Carbon $date): static
+    {
+        $startDate = $date->copy()->startOfMonth();
+        $endDate = $date->copy()->endOfMonth();
+
+        return $this->state(fn (array $attributes) => [
+            'name' => sprintf('%04d-%02d', $date->year, $date->month),
+            'year' => $date->year,
+            'month' => $date->month,
+            'start_date' => $startDate->format('Y-m-d'),
+            'end_date' => $endDate->format('Y-m-d'),
+            'status' => 'open',
+        ]);
+    }
+
+    /**
+     * Create FiscalPeriod for current month
+     */
+    public function current(): static
+    {
+        return $this->forDate(\Carbon\Carbon::now());
+    }
 }

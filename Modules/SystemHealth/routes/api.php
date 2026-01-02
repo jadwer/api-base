@@ -9,8 +9,11 @@ use Modules\SystemHealth\Http\Controllers\Api\V1\SystemHealthController;
 |--------------------------------------------------------------------------
 |
 | These routes provide system health monitoring endpoints.
-| Most endpoints require authentication and god/admin role.
+| Most endpoints require authentication and specific permissions.
 | The /ping endpoint is public for uptime monitoring.
+|
+| Permissions are granular to allow future roles (e.g., auditor) to have
+| partial access without code changes - just assign permissions in DB.
 |
 */
 
@@ -19,7 +22,7 @@ Route::prefix('v1')->group(function () {
     Route::get('system-health/ping', [SystemHealthController::class, 'ping'])
         ->name('system-health.ping');
 
-    // Protected endpoints (require authentication and permissions)
+    // Protected endpoints (require authentication and specific permissions)
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('system-health', [SystemHealthController::class, 'index'])
             ->middleware('can:system-health.index')

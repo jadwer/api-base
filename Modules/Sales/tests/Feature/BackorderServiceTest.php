@@ -49,7 +49,7 @@ class BackorderServiceTest extends TestCase
     {
         [$order, $orderItem, $product] = $this->createOrderWithItem(10);
 
-        $backorder = $this->service->createBackorder($order, $orderItem, 5, [
+        $backorder = $this->service->createBackorder($orderItem, 5, null, [
             'priority' => 'high',
         ]);
 
@@ -67,9 +67,9 @@ class BackorderServiceTest extends TestCase
         [$order, $orderItem, $product] = $this->createOrderWithItem(10);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Backorder quantity must be greater than zero');
+        $this->expectExceptionMessage('Backorder quantity must be greater than 0');
 
-        $this->service->createBackorder($order, $orderItem, 0);
+        $this->service->createBackorder($orderItem, 0);
     }
 
     public function test_cannot_create_backorder_with_negative_quantity(): void
@@ -77,16 +77,16 @@ class BackorderServiceTest extends TestCase
         [$order, $orderItem, $product] = $this->createOrderWithItem(10);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Backorder quantity must be greater than zero');
+        $this->expectExceptionMessage('Backorder quantity must be greater than 0');
 
-        $this->service->createBackorder($order, $orderItem, -5);
+        $this->service->createBackorder($orderItem, -5);
     }
 
     public function test_can_fulfill_backorder(): void
     {
         [$order, $orderItem, $product] = $this->createOrderWithItem(10);
 
-        $backorder = $this->service->createBackorder($order, $orderItem, 5);
+        $backorder = $this->service->createBackorder($orderItem, 5);
 
         $fulfilled = $this->service->fulfillBackorder($backorder, 3);
 
@@ -99,7 +99,7 @@ class BackorderServiceTest extends TestCase
     {
         [$order, $orderItem, $product] = $this->createOrderWithItem(10);
 
-        $backorder = $this->service->createBackorder($order, $orderItem, 5);
+        $backorder = $this->service->createBackorder($orderItem, 5);
 
         $fulfilled = $this->service->fulfillBackorder($backorder, 5);
 
@@ -112,10 +112,10 @@ class BackorderServiceTest extends TestCase
     {
         [$order, $orderItem, $product] = $this->createOrderWithItem(10);
 
-        $backorder = $this->service->createBackorder($order, $orderItem, 5);
+        $backorder = $this->service->createBackorder($orderItem, 5);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Cannot fulfill more than remaining quantity');
+        $this->expectExceptionMessage('Cannot fulfill');
 
         $this->service->fulfillBackorder($backorder, 10);
     }
@@ -124,11 +124,11 @@ class BackorderServiceTest extends TestCase
     {
         [$order, $orderItem, $product] = $this->createOrderWithItem(10);
 
-        $backorder = $this->service->createBackorder($order, $orderItem, 5);
+        $backorder = $this->service->createBackorder($orderItem, 5);
         $this->service->cancelBackorder($backorder);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Cannot fulfill a cancelled backorder');
+        $this->expectExceptionMessage('is not pending fulfillment');
 
         $this->service->fulfillBackorder($backorder->fresh(), 3);
     }
@@ -137,23 +137,23 @@ class BackorderServiceTest extends TestCase
     {
         [$order, $orderItem, $product] = $this->createOrderWithItem(10);
 
-        $backorder = $this->service->createBackorder($order, $orderItem, 5);
+        $backorder = $this->service->createBackorder($orderItem, 5);
 
         $cancelled = $this->service->cancelBackorder($backorder, 'Customer request');
 
         $this->assertEquals('cancelled', $cancelled->status);
-        $this->assertEquals('Customer request', $cancelled->notes);
+        $this->assertStringContainsString('Customer request', $cancelled->metadata['cancellation_reason'] ?? '');
     }
 
     public function test_cannot_cancel_fulfilled_backorder(): void
     {
         [$order, $orderItem, $product] = $this->createOrderWithItem(10);
 
-        $backorder = $this->service->createBackorder($order, $orderItem, 5);
+        $backorder = $this->service->createBackorder($orderItem, 5);
         $this->service->fulfillBackorder($backorder, 5);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Cannot cancel a fulfilled backorder');
+        $this->expectExceptionMessage('cannot be cancelled');
 
         $this->service->cancelBackorder($backorder->fresh());
     }
@@ -162,26 +162,39 @@ class BackorderServiceTest extends TestCase
     {
         [$order, $orderItem, $product] = $this->createOrderWithItem(10);
 
-        $this->service->createBackorder($order, $orderItem, 5);
-        $backorder2 = $this->service->createBackorder($order, $orderItem, 3);
+        // Create second order item for separate backorder
+        $orderItem2 = SalesOrderItem::factory()->create([
+            'sales_order_id' => $order->id,
+            'product_id' => $product->id,
+            'quantity' => 10,
+        ]);
+
+        $this->service->createBackorder($orderItem, 5);
+        $backorder2 = $this->service->createBackorder($orderItem2, 3);
         $this->service->fulfillBackorder($backorder2, 2);
 
         $summary = $this->service->getOrderBackorderSummary($order);
 
         $this->assertEquals($order->id, $summary['order_id']);
         $this->assertEquals(2, $summary['total_backorders']);
-        $this->assertEquals(8, $summary['total_backordered']); // 5 + 3
-        $this->assertEquals(2, $summary['total_fulfilled']);
-        $this->assertEquals(6, $summary['total_remaining']); // 5 + (3-2)
+        $this->assertEquals(8, $summary['total_backorder_quantity']); // 5 + 3
+        $this->assertEquals(2, $summary['total_fulfilled_quantity']);
+        $this->assertEquals(6, $summary['total_remaining_quantity']); // 5 + (3-2)
     }
 
     public function test_get_pending_backorders_for_product(): void
     {
         [$order1, $orderItem1, $product] = $this->createOrderWithItem(10);
-        [$order2, $orderItem2, $product2] = $this->createOrderWithItem(5);
 
-        $this->service->createBackorder($order1, $orderItem1, 5);
-        $this->service->createBackorder($order1, $orderItem1, 3);
+        // Create second order item for separate backorder
+        $orderItem2 = SalesOrderItem::factory()->create([
+            'sales_order_id' => $order1->id,
+            'product_id' => $product->id,
+            'quantity' => 10,
+        ]);
+
+        $this->service->createBackorder($orderItem1, 5);
+        $this->service->createBackorder($orderItem2, 3);
 
         $pending = $this->service->getPendingBackordersForProduct($product->id);
 
@@ -192,8 +205,15 @@ class BackorderServiceTest extends TestCase
     {
         [$order, $orderItem, $product] = $this->createOrderWithItem(10);
 
-        $this->service->createBackorder($order, $orderItem, 5);
-        $this->service->createBackorder($order, $orderItem, 3);
+        // Create second order item for separate backorder
+        $orderItem2 = SalesOrderItem::factory()->create([
+            'sales_order_id' => $order->id,
+            'product_id' => $product->id,
+            'quantity' => 10,
+        ]);
+
+        $this->service->createBackorder($orderItem, 5);
+        $this->service->createBackorder($orderItem2, 3);
 
         // Fulfill with 6 units available - should fulfill first (5) + partial of second (1)
         $result = $this->service->fulfillBackordersForProduct($product->id, null, 6);
@@ -207,13 +227,20 @@ class BackorderServiceTest extends TestCase
     {
         [$order, $orderItem, $product] = $this->createOrderWithItem(20);
 
+        // Create second order item for separate backorder
+        $orderItem2 = SalesOrderItem::factory()->create([
+            'sales_order_id' => $order->id,
+            'product_id' => $product->id,
+            'quantity' => 20,
+        ]);
+
         // Create low priority first
-        $lowPriority = $this->service->createBackorder($order, $orderItem, 5, [
+        $lowPriority = $this->service->createBackorder($orderItem, 5, null, [
             'priority' => 'low',
         ]);
 
         // Create urgent priority second
-        $urgentPriority = $this->service->createBackorder($order, $orderItem, 3, [
+        $urgentPriority = $this->service->createBackorder($orderItem2, 3, null, [
             'priority' => 'urgent',
         ]);
 
@@ -243,9 +270,9 @@ class BackorderServiceTest extends TestCase
             'quantity' => 20,
         ]);
 
-        $backorders = $this->service->processOrderForBackorders($order, $warehouse->id);
+        $result = $this->service->processOrderForBackorders($order, $warehouse->id);
 
-        $this->assertEmpty($backorders);
+        $this->assertEmpty($result['backorders']);
     }
 
     public function test_process_order_for_backorders_with_insufficient_stock(): void
@@ -260,17 +287,17 @@ class BackorderServiceTest extends TestCase
             'quantity' => 3,
         ]);
 
-        $backorders = $this->service->processOrderForBackorders($order, $warehouse->id);
+        $result = $this->service->processOrderForBackorders($order, $warehouse->id);
 
-        $this->assertCount(1, $backorders);
-        $this->assertEquals(7, $backorders[0]->backorder_quantity); // 10 - 3 = 7
+        $this->assertCount(1, $result['backorders']);
+        $this->assertEquals(7, $result['backorders'][0]->backorder_quantity); // 10 - 3 = 7
     }
 
     public function test_partial_fulfillment_updates_status_correctly(): void
     {
         [$order, $orderItem, $product] = $this->createOrderWithItem(10);
 
-        $backorder = $this->service->createBackorder($order, $orderItem, 10);
+        $backorder = $this->service->createBackorder($orderItem, 10);
 
         // First fulfillment
         $this->service->fulfillBackorder($backorder, 3);

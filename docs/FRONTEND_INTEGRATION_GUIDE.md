@@ -1,6 +1,6 @@
 # Frontend Integration Guide
 
-**Last Updated:** 2025-12-29
+**Last Updated:** 2026-01-02
 **API Version:** v1
 **JSON:API Specification:** 1.1
 **Base URL:** `/api/v1`
@@ -190,6 +190,45 @@ const response = await fetch(
   { headers }
 );
 ```
+
+---
+
+## Recent Updates (2026-01-02)
+
+### Sales Order Amount Fields
+
+The `sales-orders` resource now includes additional amount fields for clearer financial breakdown:
+
+```typescript
+interface SalesOrderAttributes {
+  // ... existing fields ...
+  discountTotal: number;   // Total discounts applied
+  subtotal: number;        // Sum of line items before discounts (NEW)
+  taxAmount: number;       // Total tax amount (NEW)
+  totalAmount: number;     // Final amount: subtotal - discountTotal + taxAmount
+}
+```
+
+**Formula:** `totalAmount = subtotal - discountTotal + taxAmount`
+
+### CRM Activities
+
+The Activities entity now includes:
+- 5 activity types: `call`, `email`, `meeting`, `note`, `task`
+- 4 statuses: `scheduled`, `completed`, `cancelled`, `pending`
+- Duration tracking and scheduling fields
+- Relationships to Leads, Campaigns, Opportunities
+
+### SystemHealth Module
+
+New system monitoring endpoints available for admin/god roles:
+- `GET /api/v1/system-health` - Full system health status
+- `GET /api/v1/system-health/ping` - Public uptime check (no auth required)
+- `GET /api/v1/system-health/database` - Database health
+- `GET /api/v1/system-health/storage` - Storage health
+- `GET /api/v1/system-health/queue` - Queue health
+- `GET /api/v1/system-health/errors` - Recent error summary
+- `GET /api/v1/system-health/metrics` - Performance metrics
 
 ---
 
@@ -506,8 +545,8 @@ The conversion is automatic - always use camelCase when sending/receiving data f
 - `/cfdi-invoices`, `/cfdi-concepts`, `/company-settings`
 - `/cfdi-invoices/{id}/stamp`, `/cfdi-invoices/{id}/cancel`, `/cfdi-invoices/{id}/pdf`
 
-**CRM Module** (15 endpoints):
-- `/pipeline-stages`, `/leads`, `/campaigns`
+**CRM Module** (25 endpoints):
+- `/pipeline-stages`, `/leads`, `/campaigns`, `/activities`, `/opportunities`
 
 **Contacts Module** (20 endpoints):
 - `/contacts`, `/contact-addresses`, `/contact-people`, `/contact-documents`

@@ -47,10 +47,13 @@ class ActivitySchema extends Schema
                 ->type('campaigns')
                 ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
 
-            // BelongsTo::make('contact')
-            //     ->type('contacts')
-            //     ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
-            // TODO: Enable when Contact module is implemented
+            BelongsTo::make('contact')
+                ->type('contacts')
+                ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
+
+            BelongsTo::make('opportunity')
+                ->type('opportunities')
+                ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
         ];
     }
 
@@ -64,7 +67,8 @@ class ActivitySchema extends Schema
             Where::make('userId', 'user_id'),
             Where::make('leadId', 'lead_id'),
             Where::make('campaignId', 'campaign_id'),
-            // Where::make('contactId', 'contact_id'), // TODO: Enable when Contact module is implemented
+            Where::make('contactId', 'contact_id'),
+            Where::make('opportunityId', 'opportunity_id'),
         ];
     }
 

@@ -33,6 +33,8 @@ class SalesOrderRequest extends ResourceRequest
             'approvedAt' => ['nullable', 'date'],
             'deliveredAt' => ['nullable', 'date'],
             'discountTotal' => ['nullable', 'numeric', 'min:0'],
+            'subtotal' => ['nullable', 'numeric', 'min:0'],
+            'taxAmount' => ['nullable', 'numeric', 'min:0'],
             'totalAmount' => [$isCreating ? 'required' : 'sometimes', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string', 'max:1000'],
             'metadata' => ['nullable', 'array'],
@@ -58,6 +60,10 @@ class SalesOrderRequest extends ResourceRequest
             'totalAmount.min' => 'Total amount must be at least 0.',
             'discountTotal.numeric' => 'Discount total must be a number.',
             'discountTotal.min' => 'Discount total must be at least 0.',
+            'subtotal.numeric' => 'Subtotal must be a number.',
+            'subtotal.min' => 'Subtotal must be at least 0.',
+            'taxAmount.numeric' => 'Tax amount must be a number.',
+            'taxAmount.min' => 'Tax amount must be at least 0.',
             'notes.max' => 'Notes cannot exceed 1000 characters.',
         ];
     }

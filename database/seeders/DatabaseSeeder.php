@@ -29,10 +29,12 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->call([
+            // Phase 1: Core permissions and roles (must run first)
             \Modules\PermissionManager\Database\Seeders\PermissionManagerDatabaseSeeder::class,
             \Modules\Audit\Database\Seeders\AuditDatabaseSeeder::class,
             \Modules\PageBuilder\Database\Seeders\PageBuilderDatabaseSeeder::class,
-            \Modules\User\Database\Seeders\UserDatabaseSeeder::class,
+
+            // Phase 2: Module permissions (before users, so roles get all permissions)
             \Modules\Product\Database\Seeders\ProductDatabaseSeeder::class,
             \Modules\Inventory\Database\Seeders\InventoryDatabaseSeeder::class,
             \Modules\Purchase\Database\Seeders\PurchaseDatabaseSeeder::class,
@@ -46,6 +48,9 @@ class DatabaseSeeder extends Seeder
             \Modules\CRM\Database\Seeders\CRMDatabaseSeeder::class,
             \Modules\Reports\Database\Seeders\ReportsDatabaseSeeder::class,
             \Modules\SystemHealth\Database\Seeders\SystemHealthDatabaseSeeder::class,
+
+            // Phase 3: Users (after all permissions exist and are assigned to roles)
+            \Modules\User\Database\Seeders\UserDatabaseSeeder::class,
         ]);
     }
 }

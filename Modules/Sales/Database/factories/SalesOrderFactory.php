@@ -27,9 +27,11 @@ class SalesOrderFactory extends Factory
             $deliveredAt = $this->faker->dateTimeBetween($approvedAt ?: $orderDate, 'now');
         }
         
-        $totalAmount = $this->faker->randomFloat(2, 100, 50000);
-        $discountTotal = $this->faker->randomFloat(2, 0, $totalAmount * 0.2);
-        
+        $discountTotal = $this->faker->randomFloat(2, 0, 1000);
+        $taxAmount = $this->faker->randomFloat(2, 0, 500);
+        $subtotal = $this->faker->randomFloat(2, 100, 50000);
+        $totalAmount = $subtotal - $discountTotal + $taxAmount;
+
         return [
             'contact_id' => Contact::factory()->state(['is_customer' => true]),
             'order_number' => 'SO-' . strtoupper($this->faker->unique()->regexify('[A-Z0-9]{8}')),
@@ -37,8 +39,10 @@ class SalesOrderFactory extends Factory
             'order_date' => $orderDate->format('Y-m-d'),
             'approved_at' => $approvedAt?->format('Y-m-d H:i:s'),
             'delivered_at' => $deliveredAt?->format('Y-m-d H:i:s'),
-            'total_amount' => $totalAmount,
+            'subtotal' => $subtotal,
             'discount_total' => $discountTotal,
+            'tax_amount' => $taxAmount,
+            'total_amount' => $totalAmount,
             'notes' => $this->faker->optional(0.4)->paragraph(),
             'metadata' => $this->faker->optional(0.5)->passthrough([
                 'sales_rep' => $this->faker->name(),
@@ -127,10 +131,18 @@ class SalesOrderFactory extends Factory
      */
     public function highValue(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'total_amount' => $this->faker->randomFloat(2, 20000, 100000),
-            'discount_total' => $this->faker->randomFloat(2, 1000, 5000),
-        ]);
+        return $this->state(function (array $attributes) {
+            $subtotal = $this->faker->randomFloat(2, 20000, 100000);
+            $discountTotal = $this->faker->randomFloat(2, 1000, 5000);
+            $taxAmount = $this->faker->randomFloat(2, 1000, 5000);
+
+            return [
+                'subtotal' => $subtotal,
+                'discount_total' => $discountTotal,
+                'tax_amount' => $taxAmount,
+                'total_amount' => $subtotal - $discountTotal + $taxAmount,
+            ];
+        });
     }
 
     /**
@@ -138,10 +150,18 @@ class SalesOrderFactory extends Factory
      */
     public function lowValue(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'total_amount' => $this->faker->randomFloat(2, 50, 500),
-            'discount_total' => $this->faker->randomFloat(2, 0, 50),
-        ]);
+        return $this->state(function (array $attributes) {
+            $subtotal = $this->faker->randomFloat(2, 50, 500);
+            $discountTotal = $this->faker->randomFloat(2, 0, 50);
+            $taxAmount = $this->faker->randomFloat(2, 5, 50);
+
+            return [
+                'subtotal' => $subtotal,
+                'discount_total' => $discountTotal,
+                'tax_amount' => $taxAmount,
+                'total_amount' => $subtotal - $discountTotal + $taxAmount,
+            ];
+        });
     }
 
     /**

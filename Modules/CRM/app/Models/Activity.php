@@ -8,7 +8,7 @@ use Modules\CRM\Database\Factories\ActivityFactory;
 use Modules\User\Models\User;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
-// use Modules\Contacts\Models\Contact; // Will be enabled when Contact module is implemented
+use Modules\Contacts\Models\Contact;
 
 class Activity extends Model
 {
@@ -70,11 +70,10 @@ class Activity extends Model
         return $this->belongsTo(Opportunity::class);
     }
 
-    // public function contact()
-    // {
-    //     return $this->belongsTo(Contact::class);
-    // }
-    // TODO: Enable when Contact module is implemented
+    public function contact()
+    {
+        return $this->belongsTo(Contact::class);
+    }
 
     /**
      * Scopes

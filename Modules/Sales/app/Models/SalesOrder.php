@@ -18,6 +18,8 @@ use Spatie\Activitylog\LogOptions;
  * @property \Carbon\Carbon $order_date
  * @property \Carbon\Carbon|null $approved_at
  * @property \Carbon\Carbon|null $delivered_at
+ * @property float $subtotal
+ * @property float $tax_amount
  * @property float $total_amount
  * @property float|null $discount_total
  * @property string|null $notes
@@ -55,6 +57,8 @@ class SalesOrder extends Model
         'order_date' => 'date',
         'approved_at' => 'datetime',
         'delivered_at' => 'datetime',
+        'subtotal' => 'float',
+        'tax_amount' => 'float',
         'total_amount' => 'float',
         'discount_total' => 'float',
         'metadata' => 'array',

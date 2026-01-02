@@ -11,6 +11,7 @@ use Modules\Finance\Models\PaymentMethod;
 use Modules\Finance\Services\ARInvoiceService;
 use Modules\Finance\Services\PaymentApplicationService;
 use Modules\Accounting\Models\Account;
+use Modules\Accounting\Models\FiscalPeriod;
 use Modules\Contacts\Models\Contact;
 
 /**
@@ -29,6 +30,17 @@ class PaymentApplicationIntegrationTest extends TestCase
         parent::setUp();
         $this->arInvoiceService = app(ARInvoiceService::class);
         $this->paymentApplicationService = app(PaymentApplicationService::class);
+
+        // Create fiscal period for current month if it doesn't exist
+        FiscalPeriod::firstOrCreate(
+            ['year' => now()->year, 'month' => now()->month],
+            [
+                'name' => now()->format('Y-m'),
+                'start_date' => now()->startOfMonth()->format('Y-m-d'),
+                'end_date' => now()->endOfMonth()->format('Y-m-d'),
+                'status' => 'open',
+            ]
+        );
     }
 
     public function test_applying_payment_to_invoice_updates_balances(): void

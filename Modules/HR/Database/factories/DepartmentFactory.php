@@ -14,21 +14,24 @@ class DepartmentFactory extends Factory
      */
     public function definition(): array
     {
+        // Use departments + unique suffix to avoid OverflowException
+        $departments = [
+            'Recursos Humanos',
+            'Finanzas',
+            'Tecnología',
+            'Ventas',
+            'Marketing',
+            'Operaciones',
+            'Soporte al Cliente',
+            'Investigación y Desarrollo',
+            'Compras',
+            'Administración',
+            'Legal',
+            'Logística',
+        ];
+
         return [
-            'name' => $this->faker->unique()->randomElement([
-                'Recursos Humanos',
-                'Finanzas',
-                'Tecnología',
-                'Ventas',
-                'Marketing',
-                'Operaciones',
-                'Soporte al Cliente',
-                'Investigación y Desarrollo',
-                'Compras',
-                'Administración',
-                'Legal',
-                'Logística',
-            ]),
+            'name' => $this->faker->randomElement($departments) . ' ' . $this->faker->unique()->randomNumber(5),
             'description' => $this->faker->optional(0.7)->sentence(10),
             'manager_id' => null, // Will be set when Employee model exists
             'is_active' => true,

@@ -23,13 +23,13 @@ class WishlistAuthorizer implements Authorizer
     }
 
     /**
-     * Authenticated users can create wishlists
+     * Authenticated users can create wishlists (tech is read-only)
      */
     public function store(Request $request, string $modelClass): bool|Response
     {
         $user = $request->user();
         return $user && ($user->can('ecommerce.wishlists.store')
-            || $user->hasAnyRole(['god', 'admin', 'tech', 'customer']));
+            || $user->hasAnyRole(['god', 'admin', 'customer']));
     }
 
     /**

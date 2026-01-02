@@ -54,6 +54,8 @@ class SalesOrderSchema extends Schema
 
             // Campos de montos
             Number::make('discountTotal', 'discount_total'),
+            Number::make('subtotal')->sortable(),
+            Number::make('taxAmount', 'tax_amount'),
             Number::make('totalAmount', 'total_amount')->sortable(),
             
             Str::make('notes'),

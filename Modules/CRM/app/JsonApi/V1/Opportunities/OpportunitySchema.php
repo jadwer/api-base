@@ -69,10 +69,9 @@ class OpportunitySchema extends Schema
                 ->type('pipeline-stages')
                 ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
 
-            // BelongsTo::make('contact')
-            //     ->type('contacts')
-            //     ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
-            // TODO: Enable when Contact module is implemented
+            BelongsTo::make('contact')
+                ->type('contacts')
+                ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
 
             HasMany::make('activities')
                 ->type('activities')
@@ -92,6 +91,7 @@ class OpportunitySchema extends Schema
             Where::make('userId', 'user_id'),
             Where::make('leadId', 'lead_id'),
             Where::make('pipelineStageId', 'pipeline_stage_id'),
+            Where::make('contactId', 'contact_id'),
         ];
     }
 

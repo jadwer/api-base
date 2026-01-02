@@ -2,8 +2,8 @@
 
 **Módulo CRM - Guía Completa para Integración Frontend**
 
-**Versión:** Phase 2.1 (5 entidades implementadas)
-**Última actualización:** 2025-12-16
+**Versión:** Phase 2.2 (5 entidades + integración Contact)
+**Última actualización:** 2026-01-02
 
 ---
 
@@ -40,7 +40,7 @@ El módulo CRM (Customer Relationship Management) gestiona las relaciones con cl
 - **Campañas de Marketing:** 6 tipos de campañas con métricas financieras
 - **Actividades:** Registro de llamadas, emails, reuniones, notas y tareas
 - **Oportunidades:** Gestión de deals con forecasting automático de ingresos
-- **Relaciones:** Leads vinculados a campañas (many-to-many), Activities a Leads/Opportunities
+- **Relaciones:** Leads vinculados a campañas (many-to-many), Activities a Leads/Opportunities/Contacts, integración completa con módulo Contacts
 - **Validación en Español:** Todos los mensajes de error en español
 - **JSON:API 1.1:** Cumplimiento completo del estándar
 
