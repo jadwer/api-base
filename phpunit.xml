@@ -64,5 +64,18 @@
         <!-- Disable activity logging in tests -->
         <env name="ACTIVITY_LOGGER_ENABLED"
              value="false" />
+
+        <!-- PAC Integration (SW Sapien) - Enable for integration tests -->
+        <env name="SW_PAC_ENABLED"
+             value="true" />
+        <env name="SW_PAC_URL"
+             value="https://services.test.sw.com.mx" />
+        <env name="SW_PAC_TIMEOUT"
+             value="30" />
+        <env name="SW_PAC_RETRY_ATTEMPTS"
+             value="3" />
+
+        <!-- Stripe Integration - Keys loaded from .env.testing (not committed) -->
+        <!-- Set STRIPE_PUBLISHABLE_KEY and STRIPE_SECRET_KEY in .env.testing -->
     </php>
 </phpunit>
