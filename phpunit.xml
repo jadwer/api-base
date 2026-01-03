@@ -6,7 +6,9 @@
          executionOrder="default"
          beStrictAboutOutputDuringTests="true"
          failOnRisky="true"
-         failOnWarning="true">
+         failOnWarning="true"
+         cacheResult="true"
+         cacheDirectory=".phpunit.cache">
     <testsuites>
         <testsuite name="Unit">
             <directory>tests/Unit</directory>
@@ -43,26 +45,24 @@
              value="array" />
         <env name="TELESCOPE_ENABLED"
              value="false" />
+
+        <!-- SQLite file-based for fast tests with transaction support -->
         <env name="DB_CONNECTION"
-             value="mysql" />
-        <env name="DB_HOST"
-             value="127.0.0.1" />
-        <env name="DB_PORT"
-             value="3306" />
+             value="sqlite" />
         <env name="DB_DATABASE"
-             value="api-base-test" />
-        <env name="DB_USERNAME"
-             value="root" />
-        <env name="DB_PASSWORD"
-             value="root" />
+             value="/home/jadwer/dev/AtomoSoluciones/base/api-base/database/testing.sqlite" />
+
         <env name="LOG_LEVEL"
              value="emergency" />
         <!-- Performance optimizations -->
         <env name="CACHE_PREFIX"
              value="test_cache" />
         <env name="APP_DEBUG"
-             value="true" />
+             value="false" />
         <env name="DEBUGBAR_ENABLED"
+             value="false" />
+        <!-- Disable activity logging in tests -->
+        <env name="ACTIVITY_LOGGER_ENABLED"
              value="false" />
     </php>
 </phpunit>

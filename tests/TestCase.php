@@ -5,6 +5,9 @@ namespace Tests;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use LaravelJsonApi\Testing\MakesJsonApiRequests;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schema;
 use Modules\User\Models\User;
 
 abstract class TestCase extends BaseTestCase
@@ -12,53 +15,48 @@ abstract class TestCase extends BaseTestCase
     use MakesJsonApiRequests, RefreshDatabase;
 
     /**
-     * Cache de usuarios en memoria
+     * Cached users per test instance
      */
-    protected static ?User $cachedAdminUser = null;
-    protected static ?User $cachedTechUser = null;
-    protected static ?User $cachedCustomerUser = null;
+    protected ?User $adminUser = null;
+    protected ?User $techUser = null;
+    protected ?User $customerUser = null;
+
+    /**
+     * Default modules seeded for all tests
+     */
+    protected array $requiredModules = [
+        'PermissionManager',
+        'User',
+        'Accounting',
+        'Finance',
+        'Contacts',
+        'Product',
+        'Inventory',
+        'Purchase',
+        'Sales',
+        'Ecommerce',
+        'HR',
+        'Billing',
+        'CRM',
+        'Reports',
+        'Audit',
+    ];
+
+    /**
+     * Run the database seeds using the seeder property
+     */
+    protected $seeder = \Database\Seeders\TestDatabaseSeeder::class;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        // Seed mínimo + Accounting (usado por mayoría de tests)
-        $this->seedBasicData();
-    }
-
-    /**
-     * Seed de datos básicos - Todos los módulos necesarios
-     */
-    protected function seedBasicData(): void
-    {
+        // Clear permission cache for each test
         app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
-
-        // Seeders de todos los módulos (mantener performance con --quiet)
-        // IMPORTANT: Accounting must be seeded before Finance (FiscalPeriods, Journals)
-        $this->artisan('module:seed', ['module' => 'PermissionManager', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'User', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Accounting', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Finance', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Contacts', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Product', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Inventory', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Purchase', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Sales', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Ecommerce', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'HR', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Billing', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'CRM', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Reports', '--quiet' => true]);
-        $this->artisan('module:seed', ['module' => 'Audit', '--quiet' => true]);
-
-        // Cachear usuarios
-        static::$cachedAdminUser = User::where('email', 'admin@example.com')->first();
-        static::$cachedTechUser = User::where('email', 'tech@example.com')->first();
-        static::$cachedCustomerUser = User::where('email', 'customer@example.com')->first();
     }
 
     /**
-     * Seed de módulo específico (usar solo cuando el test lo necesite)
+     * Seed a specific module on demand
      */
     protected function seedModule(string $moduleName): void
     {
@@ -66,7 +64,7 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
-     * Asserta que el response contenga errores JSON:API para los punteros dados.
+     * Assert that the response contains JSON:API validation errors for given pointers
      */
     protected function assertJsonApiValidationErrors(array $pointers, \Illuminate\Testing\TestResponse $response): void
     {
@@ -81,25 +79,40 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
-     * Helpers con cache
+     * Get admin user (with per-test caching)
      */
     protected function getAdminUser(): User
     {
-        return static::$cachedAdminUser ?? User::where('email', 'admin@example.com')->firstOrFail();
-    }
-
-    protected function getTechUser(): User
-    {
-        return static::$cachedTechUser ?? User::where('email', 'tech@example.com')->firstOrFail();
-    }
-
-    protected function getCustomerUser(): User
-    {
-        return static::$cachedCustomerUser ?? User::where('email', 'customer@example.com')->firstOrFail();
+        if ($this->adminUser === null) {
+            $this->adminUser = User::where('email', 'admin@example.com')->firstOrFail();
+        }
+        return $this->adminUser;
     }
 
     /**
-     * Legacy aliases
+     * Get tech user (with per-test caching)
+     */
+    protected function getTechUser(): User
+    {
+        if ($this->techUser === null) {
+            $this->techUser = User::where('email', 'tech@example.com')->firstOrFail();
+        }
+        return $this->techUser;
+    }
+
+    /**
+     * Get customer user (with per-test caching)
+     */
+    protected function getCustomerUser(): User
+    {
+        if ($this->customerUser === null) {
+            $this->customerUser = User::where('email', 'customer@example.com')->firstOrFail();
+        }
+        return $this->customerUser;
+    }
+
+    /**
+     * Legacy aliases for backwards compatibility
      */
     protected function getSeededAdminUser(): User
     {
