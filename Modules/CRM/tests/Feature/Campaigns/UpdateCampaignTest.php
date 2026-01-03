@@ -210,11 +210,11 @@ class UpdateCampaignTest extends TestCase
             ->patch("/api/v1/campaigns/{$campaign->id}");
 
         $response->assertOk();
-        $this->assertDatabaseHas('campaigns', [
-            'id' => $campaign->id,
-            'start_date' => $newStartDate,
-            'end_date' => $newEndDate,
-        ]);
+
+        // Use model for date comparison (SQLite stores datetime, MySQL stores date)
+        $campaign->refresh();
+        $this->assertEquals($newStartDate, $campaign->start_date->format('Y-m-d'));
+        $this->assertEquals($newEndDate, $campaign->end_date->format('Y-m-d'));
     }
 
     public function test_admin_can_update_campaign_metadata(): void

@@ -16,7 +16,7 @@ class JournalEntryFactory extends Factory
         return [
             'journal_id' => \Modules\Accounting\Models\Journal::factory(),
             'fiscal_period_id' => \Modules\Accounting\Models\FiscalPeriod::factory(),
-            'number' => $this->faker->optional(0.8)->bothify('JE-####'),
+            'number' => $this->faker->boolean(80) ? $this->faker->unique()->regexify('JE-[0-9]{8}') : null,
             'date' => $this->faker->dateTimeBetween('-6 months', 'now')->format('Y-m-d'),
             'reference' => $this->faker->optional(0.6)->bothify('REF-###'),
             'description' => $this->faker->optional(0.7)->sentence(10),

@@ -23,7 +23,7 @@ class JournalFactory extends Factory
         ];
 
         return [
-            'code' => $this->faker->unique()->bothify('??##'),
+            'code' => $this->faker->unique()->regexify('[A-Z]{2}[0-9]{6}'),
             'name' => ucfirst(str_replace('_', ' ', $type)) . ' Journal',
             'description' => $this->faker->optional(0.6)->sentence(10),
             'prefix' => $prefixes[$type],

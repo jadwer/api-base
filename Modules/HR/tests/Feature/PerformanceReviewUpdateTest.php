@@ -184,10 +184,10 @@ class PerformanceReviewUpdateTest extends TestCase
             ->patch("/api/v1/performance-reviews/{$review->id}");
 
         $response->assertOk();
-        $this->assertDatabaseHas('performance_reviews', [
-            'id' => $review->id,
-            'review_date' => '2024-02-15',
-        ]);
+
+        // Use model for date comparison (SQLite stores datetime, MySQL stores date)
+        $review->refresh();
+        $this->assertEquals('2024-02-15', $review->review_date->format('Y-m-d'));
     }
 
     public function test_admin_can_add_employee_comments(): void

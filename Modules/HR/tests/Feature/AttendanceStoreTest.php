@@ -50,11 +50,11 @@ class AttendanceStoreTest extends TestCase
         $response->assertCreated();
         $this->assertEquals('present', $response->json('data.attributes.status'));
 
-        $this->assertDatabaseHas('attendances', [
-            'employee_id' => $employee->id,
-            'date' => '2024-01-15',
-            'status' => 'present'
-        ]);
+        // Use model for date comparison (SQLite stores datetime, MySQL stores date)
+        $attendance = \Modules\HR\Models\Attendance::where('employee_id', $employee->id)->first();
+        $this->assertNotNull($attendance);
+        $this->assertEquals('2024-01-15', $attendance->date->format('Y-m-d'));
+        $this->assertEquals('present', $attendance->status);
     }
 
     public function test_tech_user_can_create_attendance(): void

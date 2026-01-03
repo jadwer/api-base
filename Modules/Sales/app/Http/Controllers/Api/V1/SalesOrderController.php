@@ -9,6 +9,7 @@ use LaravelJsonApi\Laravel\Http\Controllers\Actions;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Contacts\Models\Contact;
 use Illuminate\Support\Facades\DB;
+use App\Support\DatabaseCompatibilityHelper as DBHelper;
 
 class SalesOrderController extends Controller
 {
@@ -66,11 +67,11 @@ class SalesOrderController extends Controller
             ->join('sales_order_items', 'sales_orders.id', '=', 'sales_order_items.sales_order_id')
             ->where('sales_orders.created_at', '>=', $startDate)
             ->select(
-                DB::raw('DATE(sales_orders.created_at) as date'),
+                DB::raw(DBHelper::dateOnly('sales_orders.created_at') . ' as date'),
                 DB::raw('count(distinct sales_orders.id) as orders'),
                 DB::raw('sum(sales_order_items.total) as revenue')
             )
-            ->groupBy(DB::raw('DATE(sales_orders.created_at)'))
+            ->groupBy(DB::raw(DBHelper::dateOnly('sales_orders.created_at')))
             ->orderBy('date')
             ->get();
 

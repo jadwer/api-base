@@ -10,6 +10,7 @@ use Modules\Purchase\Models\PurchaseOrder;
 use Modules\Purchase\Services\PurchaseOrderApprovalService;
 use Modules\Contacts\Models\Contact;
 use Carbon\Carbon;
+use App\Support\DatabaseCompatibilityHelper as DBHelper;
 
 class PurchaseOrderController extends Controller
 {
@@ -58,7 +59,7 @@ class PurchaseOrderController extends Controller
                 ->limit(10)
                 ->get(),
             'monthly_trend' => (clone $query)
-                ->selectRaw('DATE_FORMAT(order_date, "%Y-%m") as month, COUNT(*) as orders, SUM(total_amount) as amount')
+                ->selectRaw(DBHelper::formatDate('order_date', '%Y-%m') . ' as month, COUNT(*) as orders, SUM(total_amount) as amount')
                 ->groupBy('month')
                 ->orderBy('month')
                 ->get(),

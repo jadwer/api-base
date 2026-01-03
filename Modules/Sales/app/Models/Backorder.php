@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Inventory\Models\Warehouse;
 use Modules\Product\Models\Product;
+use App\Support\DatabaseCompatibilityHelper as DBHelper;
 
 /**
  * SA-M002: Backorder Model
@@ -192,7 +193,7 @@ class Backorder extends Model
      */
     public function scopeByPriority($query)
     {
-        return $query->orderByRaw("FIELD(priority, 'urgent', 'high', 'normal', 'low')");
+        return $query->orderByRaw(DBHelper::orderByPriority('priority', ['urgent', 'high', 'normal', 'low']));
     }
 
     /**

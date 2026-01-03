@@ -155,13 +155,21 @@ class RecommendationEngineTest extends TestCase
         $category1 = Category::factory()->create();
         $category2 = Category::factory()->create();
 
+        // Create checkout session with completed status (using the factory's completed() state)
+        $checkoutSession = \Modules\Ecommerce\Models\CheckoutSession::factory()->completed()->create([
+            'user_id' => $customer->id,
+        ]);
+
         // Customer has purchased products from category1
         $purchasedProduct = Product::factory()->create([
             'category_id' => $category1->id,
             'is_active' => true,
         ]);
 
-        $order = SalesOrder::factory()->create(['contact_id' => $contact->id]);
+        $order = SalesOrder::factory()->create([
+            'contact_id' => $contact->id,
+            'checkout_session_id' => $checkoutSession->id,
+        ]);
         SalesOrderItem::factory()->create([
             'sales_order_id' => $order->id,
             'product_id' => $purchasedProduct->id,
@@ -242,8 +250,8 @@ class RecommendationEngineTest extends TestCase
 
     public function test_popular_products_requires_minimum_rating_and_reviews()
     {
-        // Delete existing products to ensure test isolation
-        Product::query()->delete();
+        // Deactivate existing products to ensure test isolation (can't delete due to FK constraints)
+        Product::query()->update(['is_active' => false]);
 
         // Product with high rating and enough reviews
         $popularProduct = Product::factory()->create([
@@ -277,8 +285,8 @@ class RecommendationEngineTest extends TestCase
 
     public function test_popular_products_orders_by_rating_then_reviews()
     {
-        // Delete existing products to ensure test isolation
-        Product::query()->delete();
+        // Deactivate existing products to ensure test isolation (can't delete due to FK constraints)
+        Product::query()->update(['is_active' => false]);
 
         $product1 = Product::factory()->create([
             'is_active' => true,
@@ -308,8 +316,8 @@ class RecommendationEngineTest extends TestCase
 
     public function test_new_arrivals_returns_recently_created_products()
     {
-        // Delete existing products to ensure test isolation
-        Product::query()->delete();
+        // Deactivate existing products to ensure test isolation (can't delete due to FK constraints)
+        Product::query()->update(['is_active' => false]);
 
         // Create old product
         $oldProduct = Product::factory()->create([

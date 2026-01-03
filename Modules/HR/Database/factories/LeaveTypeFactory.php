@@ -22,7 +22,7 @@ class LeaveTypeFactory extends Factory
                 'Bereavement Leave',
                 'Study Leave',
             ]),
-            'code' => strtoupper($this->faker->unique()->lexify('???')),
+            'code' => strtoupper($this->faker->unique()->lexify('??')) . $this->faker->unique()->numerify('##'),
             'description' => $this->faker->sentence(),
             'days_allowed' => $this->faker->numberBetween(5, 30),
             'requires_approval' => $this->faker->boolean(80), // 80% require approval

@@ -7,6 +7,7 @@ use Modules\Inventory\Models\InventoryMovement;
 use Modules\Product\Models\Product;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Collection;
+use App\Support\DatabaseCompatibilityHelper as DBHelper;
 
 /**
  * LotTraceabilityService
@@ -216,7 +217,7 @@ class LotTraceabilityService
         }
 
         // Order by FEFO: earliest expiration first, then by creation date
-        $batches = $query->orderByRaw('COALESCE(expiration_date, "9999-12-31") ASC')
+        $batches = $query->orderByRaw(DBHelper::coalesceDate('expiration_date', '9999-12-31') . ' ASC')
             ->orderBy('created_at', 'asc')
             ->get();
 

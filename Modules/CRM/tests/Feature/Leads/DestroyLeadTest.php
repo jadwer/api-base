@@ -218,14 +218,14 @@ class DestroyLeadTest extends TestCase
 
     public function test_deleting_lead_does_not_delete_related_contact(): void
     {
-        $this->markTestSkipped('Contact module not yet implemented');
-
         $admin = $this->getAdminUser();
 
         $user = User::factory()->create();
+        $contact = \Modules\Contacts\Models\Contact::factory()->create();
 
         $lead = Lead::factory()->create([
             'user_id' => $user->id,
+            'contact_id' => $contact->id,
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')

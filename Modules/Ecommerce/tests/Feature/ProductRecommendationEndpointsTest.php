@@ -293,8 +293,8 @@ class ProductRecommendationEndpointsTest extends TestCase
 
     public function test_endpoints_only_return_active_products()
     {
-        // Delete existing products to ensure test isolation
-        Product::query()->delete();
+        // Deactivate existing products to ensure test isolation (can't delete due to FK constraints)
+        Product::query()->update(['is_active' => false]);
 
         $category = Category::factory()->create();
 

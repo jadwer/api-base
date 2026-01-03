@@ -110,7 +110,14 @@ class CartItemUpdateTest extends TestCase
     public function test_customer_user_cannot_update_CartItem(): void
     {
         $customer = $this->getCustomerUser();
-        $cartItem = CartItem::factory()->create();
+        // Create a cart that belongs to a DIFFERENT user (not the customer)
+        $otherUser = User::factory()->create();
+        $shoppingCart = \Modules\Ecommerce\Models\ShoppingCart::factory()->create([
+            'user_id' => $otherUser->id,
+        ]);
+        $cartItem = CartItem::factory()->create([
+            'shopping_cart_id' => $shoppingCart->id,
+        ]);
 
         $data = [
             'type' => 'cart-items',

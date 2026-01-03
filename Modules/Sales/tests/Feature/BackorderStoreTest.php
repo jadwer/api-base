@@ -155,10 +155,10 @@ class BackorderStoreTest extends TestCase
 
         $response->assertCreated();
 
-        $this->assertDatabaseHas('backorders', [
-            'sales_order_id' => $order->id,
-            'expected_date' => $expectedDate,
-        ]);
+        // Use model for date comparison (SQLite stores datetime, MySQL stores date)
+        $backorder = \Modules\Sales\Models\Backorder::where('sales_order_id', $order->id)->first();
+        $this->assertNotNull($backorder);
+        $this->assertEquals($expectedDate, $backorder->expected_date->format('Y-m-d'));
     }
 
     public function test_tech_can_create_backorder(): void

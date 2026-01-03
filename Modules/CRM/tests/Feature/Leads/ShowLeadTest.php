@@ -79,7 +79,24 @@ class ShowLeadTest extends TestCase
 
     public function test_admin_can_view_lead_with_contact_relationship(): void
     {
-        $this->markTestSkipped('Contact module not yet implemented - will be enabled in Phase 2');
+        $admin = $this->getAdminUser();
+
+        $user = User::factory()->create();
+        $contact = \Modules\Contacts\Models\Contact::factory()->create();
+
+        $lead = Lead::factory()->create([
+            'user_id' => $user->id,
+            'contact_id' => $contact->id,
+        ]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('leads')
+            ->get("/api/v1/leads/{$lead->id}?include=contact");
+
+        $response->assertOk();
+        $response->assertJsonStructure(['included']);
+        $this->assertNotEmpty($response->json('included'));
     }
 
     public function test_admin_can_view_lead_with_user_relationship(): void

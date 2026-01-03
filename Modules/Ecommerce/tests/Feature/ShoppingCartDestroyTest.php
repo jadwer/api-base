@@ -70,7 +70,11 @@ class ShoppingCartDestroyTest extends TestCase
     public function test_customer_user_cannot_delete_ShoppingCart(): void
     {
         $customer = $this->getCustomerUser();
-        $shoppingCart = ShoppingCart::factory()->create();
+        // Create a cart that belongs to a DIFFERENT user (not the customer)
+        $otherUser = User::factory()->create();
+        $shoppingCart = ShoppingCart::factory()->create([
+            'user_id' => $otherUser->id,
+        ]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
@@ -78,7 +82,7 @@ class ShoppingCartDestroyTest extends TestCase
             ->delete("/api/v1/shopping-carts/{$shoppingCart->id}");
 
         $response->assertStatus(403);
-        
+
         $this->assertDatabaseHas('shopping_carts', [
             'id' => $shoppingCart->id
         ]);

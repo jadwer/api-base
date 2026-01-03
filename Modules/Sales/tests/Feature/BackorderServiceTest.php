@@ -204,6 +204,15 @@ class BackorderServiceTest extends TestCase
     public function test_fulfill_backorders_for_product(): void
     {
         [$order, $orderItem, $product] = $this->createOrderWithItem(10);
+        $warehouse = Warehouse::factory()->create();
+
+        // Create stock so fulfillment can happen (service uses getAvailableStock)
+        Stock::factory()->create([
+            'product_id' => $product->id,
+            'warehouse_id' => $warehouse->id,
+            'quantity' => 100,
+            'reserved_quantity' => 0,
+        ]);
 
         // Create second order item for separate backorder
         $orderItem2 = SalesOrderItem::factory()->create([
@@ -226,6 +235,15 @@ class BackorderServiceTest extends TestCase
     public function test_fulfill_backorders_respects_priority(): void
     {
         [$order, $orderItem, $product] = $this->createOrderWithItem(20);
+        $warehouse = Warehouse::factory()->create();
+
+        // Create stock so fulfillment can happen (service uses getAvailableStock)
+        Stock::factory()->create([
+            'product_id' => $product->id,
+            'warehouse_id' => $warehouse->id,
+            'quantity' => 100,
+            'reserved_quantity' => 0,
+        ]);
 
         // Create second order item for separate backorder
         $orderItem2 = SalesOrderItem::factory()->create([
@@ -263,11 +281,12 @@ class BackorderServiceTest extends TestCase
         [$order, $orderItem, $product] = $this->createOrderWithItem(10);
         $warehouse = Warehouse::factory()->create();
 
-        // Create sufficient stock
+        // Create sufficient stock (with 0 reserved so all 20 are available)
         Stock::factory()->create([
             'product_id' => $product->id,
             'warehouse_id' => $warehouse->id,
             'quantity' => 20,
+            'reserved_quantity' => 0,
         ]);
 
         $result = $this->service->processOrderForBackorders($order, $warehouse->id);
@@ -280,11 +299,12 @@ class BackorderServiceTest extends TestCase
         [$order, $orderItem, $product] = $this->createOrderWithItem(10);
         $warehouse = Warehouse::factory()->create();
 
-        // Create insufficient stock
+        // Create insufficient stock (with 0 reserved so all 3 are available)
         Stock::factory()->create([
             'product_id' => $product->id,
             'warehouse_id' => $warehouse->id,
             'quantity' => 3,
+            'reserved_quantity' => 0,
         ]);
 
         $result = $this->service->processOrderForBackorders($order, $warehouse->id);

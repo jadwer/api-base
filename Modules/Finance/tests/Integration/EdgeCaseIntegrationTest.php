@@ -42,11 +42,12 @@ class EdgeCaseIntegrationTest extends TestCase
             'status' => 'open',
         ]);
 
-        // Create customer
+        // Create customer with high credit limit to avoid validation issues
         $this->customer = Contact::factory()->create([
             'name' => 'Test Customer',
             'is_customer' => true,
-            'credit_limit' => 50000,
+            'credit_limit' => 500000,
+            'current_credit' => 0,
         ]);
 
         // Create supplier

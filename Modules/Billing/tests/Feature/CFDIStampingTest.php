@@ -8,14 +8,11 @@ use Modules\Billing\Models\CFDIInvoice;
 use Modules\Billing\Models\CompanySetting;
 use Modules\Contacts\Models\Contact;
 use Modules\Finance\Models\ARInvoice;
-use App\Models\User;
+use Modules\User\Models\User;
 use Laravel\Sanctum\Sanctum;
 
 class CFDIStampingTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected User $adminUser;
     protected CompanySetting $companySetting;
     protected Contact $contact;
 
@@ -23,8 +20,8 @@ class CFDIStampingTest extends TestCase
     {
         parent::setUp();
 
-        // Get existing admin user and role from seeders
-        $this->adminUser = User::where('email', 'admin@example.com')->first();
+        // Get existing admin user from TestCase helper
+        $adminUser = $this->getAdminUser();
 
         // Ensure admin has PAC permissions directly
         // This handles case where permissions were added after initial seed
@@ -40,8 +37,8 @@ class CFDIStampingTest extends TestCase
                 ->where('guard_name', 'api')
                 ->first();
 
-            if ($permission && !$this->adminUser->hasPermissionTo($permissionName)) {
-                $this->adminUser->givePermissionTo($permission);
+            if ($permission && !$adminUser->hasPermissionTo($permissionName)) {
+                $adminUser->givePermissionTo($permission);
             }
         }
 
@@ -49,7 +46,7 @@ class CFDIStampingTest extends TestCase
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         // Reload user with fresh permissions
-        $this->adminUser = $this->adminUser->fresh();
+        $this->adminUser = $adminUser->fresh();
         $this->adminUser->load('roles', 'permissions');
 
         // Create company setting

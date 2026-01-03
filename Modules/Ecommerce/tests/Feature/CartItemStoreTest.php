@@ -104,7 +104,11 @@ class CartItemStoreTest extends TestCase
     public function test_customer_user_cannot_create_CartItem(): void
     {
         $customer = $this->getCustomerUser();
-        $shoppingCart = \Modules\Ecommerce\Models\ShoppingCart::factory()->create();
+        // Create a cart that belongs to a DIFFERENT user (not the customer)
+        $otherUser = \Modules\User\Models\User::factory()->create();
+        $shoppingCart = \Modules\Ecommerce\Models\ShoppingCart::factory()->create([
+            'user_id' => $otherUser->id,
+        ]);
         $product = \Modules\Product\Models\Product::first() ?? \Modules\Product\Models\Product::factory()->create();
 
         $data = [

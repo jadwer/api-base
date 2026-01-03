@@ -70,7 +70,14 @@ class CartItemDestroyTest extends TestCase
     public function test_customer_user_cannot_delete_CartItem(): void
     {
         $customer = $this->getCustomerUser();
-        $cartItem = CartItem::factory()->create();
+        // Create a cart that belongs to a DIFFERENT user (not the customer)
+        $otherUser = User::factory()->create();
+        $shoppingCart = \Modules\Ecommerce\Models\ShoppingCart::factory()->create([
+            'user_id' => $otherUser->id,
+        ]);
+        $cartItem = CartItem::factory()->create([
+            'shopping_cart_id' => $shoppingCart->id,
+        ]);
 
         $response = $this->actingAs($customer, 'sanctum')
             ->jsonApi()
@@ -78,7 +85,7 @@ class CartItemDestroyTest extends TestCase
             ->delete("/api/v1/cart-items/{$cartItem->id}");
 
         $response->assertStatus(403);
-        
+
         $this->assertDatabaseHas('cart_items', [
             'id' => $cartItem->id
         ]);

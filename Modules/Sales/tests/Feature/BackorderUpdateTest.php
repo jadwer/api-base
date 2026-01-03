@@ -86,10 +86,9 @@ class BackorderUpdateTest extends TestCase
 
         $response->assertFetchedOne($backorder);
 
-        $this->assertDatabaseHas('backorders', [
-            'id' => $backorder->id,
-            'expected_date' => $newDate,
-        ]);
+        // Use model refresh for date comparison (SQLite stores datetime, MySQL stores date)
+        $backorder->refresh();
+        $this->assertEquals($newDate, $backorder->expected_date->format('Y-m-d'));
     }
 
     public function test_can_update_promised_date(): void
@@ -114,10 +113,9 @@ class BackorderUpdateTest extends TestCase
 
         $response->assertFetchedOne($backorder);
 
-        $this->assertDatabaseHas('backorders', [
-            'id' => $backorder->id,
-            'promised_date' => $promisedDate,
-        ]);
+        // Use model refresh for date comparison (SQLite stores datetime, MySQL stores date)
+        $backorder->refresh();
+        $this->assertEquals($promisedDate, $backorder->promised_date->format('Y-m-d'));
     }
 
     public function test_can_update_notes(): void
