@@ -11,6 +11,8 @@ use Modules\Inventory\JsonApi\V1\WarehouseLocations\WarehouseLocationSchema;
 use Modules\Inventory\JsonApi\V1\Stocks\StockSchema;
 use Modules\Inventory\JsonApi\V1\ProductBatches\ProductBatchSchema;
 use Modules\Inventory\JsonApi\V1\InventoryMovements\InventoryMovementSchema;
+use Modules\Inventory\JsonApi\V1\CycleCounts\CycleCountSchema;
+use Modules\Inventory\JsonApi\V1\CycleCounts\CycleCountAuthorizer;
 use Modules\Purchase\JsonApi\V1\Suppliers\SupplierSchema;
 use Modules\Purchase\JsonApi\V1\PurchaseOrders\PurchaseOrderSchema;
 use Modules\Purchase\JsonApi\V1\PurchaseOrderItems\PurchaseOrderItemSchema;
@@ -119,10 +121,12 @@ class Server extends BaseServer
             StockSchema::class,
             ProductBatchSchema::class,
             InventoryMovementSchema::class,
+            CycleCountSchema::class,
 
             // Purchase Module
             PurchaseOrderSchema::class,
             PurchaseOrderItemSchema::class,
+            \Modules\Purchase\JsonApi\V1\Budgets\BudgetSchema::class,
 
             // Sales Module
             \Modules\Sales\JsonApi\V1\SalesOrders\SalesOrderSchema::class,
@@ -130,6 +134,7 @@ class Server extends BaseServer
             \Modules\Sales\JsonApi\V1\Shipments\ShipmentSchema::class,
             \Modules\Sales\JsonApi\V1\ShipmentItems\ShipmentItemSchema::class,
             \Modules\Sales\JsonApi\V1\Backorders\BackorderSchema::class,
+            \Modules\Sales\JsonApi\V1\DiscountRules\DiscountRuleSchema::class,
 
             // Ecommerce Module
             ShoppingCartSchema::class,
@@ -238,13 +243,16 @@ class Server extends BaseServer
             'stocks' => \Modules\Inventory\JsonApi\V1\Stocks\StockAuthorizer::class,
             'product-batches' => \Modules\Inventory\JsonApi\V1\ProductBatches\ProductBatchAuthorizer::class,
             'inventory-movements' => \Modules\Inventory\JsonApi\V1\InventoryMovements\InventoryMovementAuthorizer::class,
+            'cycle-counts' => CycleCountAuthorizer::class,
             'purchase-orders' => \Modules\Purchase\JsonApi\V1\PurchaseOrders\PurchaseOrderAuthorizer::class,
             'purchase-order-items' => \Modules\Purchase\JsonApi\V1\PurchaseOrderItems\PurchaseOrderItemAuthorizer::class,
+            'budgets' => \Modules\Purchase\JsonApi\V1\Budgets\BudgetAuthorizer::class,
             'sales-orders' => \Modules\Sales\JsonApi\V1\SalesOrders\SalesOrderAuthorizer::class,
             'sales-order-items' => \Modules\Sales\JsonApi\V1\SalesOrderItems\SalesOrderItemAuthorizer::class,
             'shipments' => \Modules\Sales\JsonApi\V1\Shipments\ShipmentAuthorizer::class,
             'shipment-items' => \Modules\Sales\JsonApi\V1\ShipmentItems\ShipmentItemAuthorizer::class,
             'backorders' => \Modules\Sales\JsonApi\V1\Backorders\BackorderAuthorizer::class,
+            'discount-rules' => \Modules\Sales\JsonApi\V1\DiscountRules\DiscountRuleAuthorizer::class,
             
             // Ecommerce Module
             'shopping-carts' => \Modules\Ecommerce\JsonApi\V1\ShoppingCarts\ShoppingCartAuthorizer::class,

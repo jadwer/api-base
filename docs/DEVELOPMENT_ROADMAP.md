@@ -1,6 +1,6 @@
 # Development Roadmap - v1.0
 
-**Last Updated:** 2026-01-03
+**Last Updated:** 2026-01-05
 **Status:** v1.0 RELEASE READY
 **Production Readiness:** 99%
 
@@ -14,7 +14,7 @@
 |--------|-----------|-------|--------|
 | Product | Products, Units, Categories, Brands, Variants | 90+ | Complete |
 | Inventory | Warehouses, Locations, Stock, Batches, Movements | 100+ | Complete |
-| Purchase | Suppliers, Orders, Items, Approval Workflow | 150+ | Complete |
+| Purchase | Suppliers, Orders, Items, Approval Workflow, Budgets | 180+ | Complete |
 | Sales | Customers, Orders, Items, Shipments, Backorders | 200+ | Complete |
 | Ecommerce | Carts, Checkout, Payments, Wishlists, Reviews, Recommendations | 250+ | Complete |
 | Finance | AP/AR Invoices, Payments, Bank Accounts, ARPayment | 200+ | Complete |
@@ -30,10 +30,10 @@
 
 | Métrica | Valor |
 |---------|-------|
-| Entidades totales | 65+ |
-| Endpoints API | 320+ |
-| Tests | 3,300+ (62,000+ assertions) |
-| Reglas de negocio | 165/175 (94%) |
+| Entidades totales | 67+ |
+| Endpoints API | 340+ |
+| Tests | 3,350+ (62,500+ assertions) |
+| Reglas de negocio | 166/175 (95%) |
 | Test duration | ~16 min (SQLite optimized) |
 
 ---
@@ -47,7 +47,7 @@
 - [x] **SA-A001** Sales Reservation System
 - [x] **SA-A002** Line Calculation Engine
 
-### P2 - Alta Prioridad (11/12 Complete)
+### P2 - Alta Prioridad (12/12 Complete)
 - [x] **FI-M003** Credit Hold Automation
 - [x] **IV-M002** Stock Reorder Alerts
 - [x] **PU-M001** Three-Way Match
@@ -59,7 +59,7 @@
 - [x] **FI-M001** Late Payment Penalties
 - [x] **Cross-Module** Event Listeners (Order-to-Cash, Procure-to-Pay)
 - [x] **Audit** Comprehensive activity logging (37 models)
-- [ ] **AC-M002** Budget Control (deferred to v1.1)
+- [x] **PU-M003** Budget Control for Purchase Orders (2026-01-05)
 
 ### Integraciones Externas
 - [x] **SW Sapien PAC** - CFDI stamping/cancellation
@@ -74,9 +74,9 @@
 
 | Tarea | Descripción | Status |
 |-------|-------------|--------|
-| F.1 | Generate API documentation (Scribe) | Pendiente |
-| F.2 | Update FRONTEND_INTEGRATION_GUIDE | Pendiente |
-| F.3 | Final test suite verification | Pendiente |
+| F.1 | Generate API documentation (Scribe) | Complete (664 endpoints) |
+| F.2 | Update FRONTEND_INTEGRATION_GUIDE | Complete |
+| F.3 | Final test suite verification | Complete (3,199 tests) |
 
 ### Checklist Pre-Release
 
@@ -86,7 +86,7 @@
 - [x] Event listeners functional
 - [x] Audit logging active
 - [x] Database migrations consolidated
-- [ ] API documentation generated
+- [x] API documentation generated (Scribe - 664 endpoints)
 - [ ] Production environment configured
 
 ---
@@ -115,3 +115,4 @@
 | v0.95 | 2025-12-31 | All business rules P1+P2, Audit complete |
 | v0.99 | 2026-01-02 | CRM-Contact integration, test fixes |
 | v1.0-rc1 | 2026-01-03 | Test optimization (SQLite), PAC/Stripe tests |
+| v1.0-rc2 | 2026-01-05 | PU-M003 Budget Control, Scribe API docs (664 endpoints) |

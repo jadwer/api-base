@@ -1,6 +1,6 @@
 # Frontend Integration Guide
 
-**Last Updated:** 2026-01-02
+**Last Updated:** 2026-01-05
 **API Version:** v1
 **JSON:API Specification:** 1.1
 **Base URL:** `/api/v1`
@@ -193,7 +193,68 @@ const response = await fetch(
 
 ---
 
-## Recent Updates (2026-01-02)
+## Recent Updates (2026-01-05)
+
+### Budget Control (PU-M003)
+
+New Budget Control system for Purchase Orders:
+
+**Endpoints:**
+- `GET /api/v1/budgets` - List all budgets
+- `GET /api/v1/budgets/{id}` - Get single budget
+- `POST /api/v1/budgets` - Create budget
+- `PATCH /api/v1/budgets/{id}` - Update budget
+- `DELETE /api/v1/budgets/{id}` - Delete budget
+- `GET /api/v1/budgets/summary` - Budget summary dashboard
+- `GET /api/v1/budgets/needs-attention` - Budgets requiring attention
+
+**TypeScript Interface:**
+```typescript
+interface BudgetAttributes {
+  name: string;
+  code: string;
+  description?: string;
+  budgetType: 'department' | 'category' | 'project' | 'supplier' | 'general';
+  departmentCode?: string;
+  categoryId?: number;
+  projectCode?: string;
+  contactId?: number;
+  periodType: 'monthly' | 'quarterly' | 'annual' | 'custom';
+  startDate: string;
+  endDate: string;
+  fiscalYear?: number;
+  budgetedAmount: number;
+  committedAmount: number;  // Amount allocated to POs
+  spentAmount: number;      // Amount actually spent
+  availableAmount: number;  // Computed: budgeted - committed - spent
+  warningThreshold?: number;  // Default 80%
+  criticalThreshold?: number; // Default 95%
+  hardLimit: boolean;
+  allowOvercommit: boolean;
+  isActive: boolean;
+  // Computed fields
+  utilizationPercent: number; // (committed + spent) / budgeted * 100
+  statusLevel: 'normal' | 'warning' | 'critical' | 'exceeded';
+}
+```
+
+**Filters:**
+- `filter[budgetType]=department`
+- `filter[periodType]=monthly`
+- `filter[isActive]=true`
+- `filter[fiscalYear]=2026`
+- `filter[current]` - Active budgets for current date
+- `filter[overWarning]` - Budgets over warning threshold
+- `filter[overCritical]` - Budgets over critical threshold
+
+**Relationships:**
+- `category` - Product category (if budget type is category)
+- `contact` - Supplier contact (if budget type is supplier)
+- `allocations` - Budget allocations to purchase orders
+
+---
+
+## Previous Updates (2026-01-02)
 
 ### Sales Order Amount Fields
 
@@ -514,8 +575,9 @@ The conversion is automatic - always use camelCase when sending/receiving data f
 **Inventory Module** (25 endpoints):
 - `/warehouses`, `/warehouse-locations`, `/stocks`, `/product-batches`, `/inventory-movements`
 
-**Purchase Module** (15 endpoints):
+**Purchase Module** (33 endpoints):
 - `/purchase-orders`, `/purchase-order-items`, `/suppliers`
+- `/budgets` (NEW: Budget Control system)
 
 **Sales Module** (24 endpoints):
 - `/sales-orders`, `/sales-order-items`, `/customers`, `/order-tracking`
