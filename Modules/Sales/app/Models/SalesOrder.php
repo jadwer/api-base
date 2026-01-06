@@ -62,6 +62,8 @@ class SalesOrder extends Model
         'total_amount' => 'float',
         'discount_total' => 'float',
         'metadata' => 'array',
+        'shipping_address' => 'array',
+        'billing_address' => 'array',
         'ar_invoice_id' => 'integer',
         'invoicing_status' => 'string',
         'financial_status' => 'string',

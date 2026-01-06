@@ -8,6 +8,8 @@ use Modules\Ecommerce\Models\ShippingMethod;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Models\SalesOrderItem;
 use Modules\Finance\Models\ARInvoice;
+use Modules\Contacts\Models\Contact;
+use Modules\User\Models\User;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -235,28 +237,31 @@ class CheckoutService
 
         return DB::transaction(function () use ($session) {
             $cart = $session->shoppingCart;
+            $user = $cart->user;
+
+            // Get or create Contact for the user
+            $contact = $this->getOrCreateContactForUser($user, $session);
 
             // Create sales order
             $order = SalesOrder::create([
-                'customer_id' => $cart->user_id,
+                'contact_id' => $contact->id,
                 'order_number' => $this->generateOrderNumber(),
                 'order_date' => now(),
                 'status' => 'confirmed',
-                'payment_status' => 'paid',
                 'order_source' => 'ecommerce',
                 'checkout_session_id' => $session->id,
                 'subtotal' => $session->subtotal_amount,
                 'tax_amount' => $session->tax_amount,
-                'shipping_amount' => $session->shipping_amount,
-                'discount_amount' => $session->discount_amount,
+                'discount_total' => $session->discount_amount,
                 'total_amount' => $session->total_amount,
-                'currency' => $session->currency,
                 'notes' => 'Order created from e-commerce checkout',
                 'shipping_address' => $session->shipping_address,
                 'billing_address' => $session->billing_address,
                 'metadata' => [
                     'checkout_session_id' => $session->id,
                     'payment_intent_id' => $session->payment_intent_id,
+                    'currency' => $session->currency,
+                    'shipping_amount' => $session->shipping_amount,
                 ],
             ]);
 
@@ -266,11 +271,13 @@ class CheckoutService
                     'sales_order_id' => $order->id,
                     'product_id' => $cartItem->product_id,
                     'quantity' => $cartItem->quantity,
-                    'unit_price' => $cartItem->price,
-                    'subtotal' => $cartItem->total,
-                    'tax_amount' => 0, // Tax calculated at order level
-                    'total' => $cartItem->total,
-                    'notes' => $cartItem->notes,
+                    'unit_price' => $cartItem->unit_price ?? $cartItem->price ?? 0,
+                    'discount' => $cartItem->discount_amount ?? 0,
+                    'total' => $cartItem->total ?? 0,
+                    'metadata' => [
+                        'notes' => $cartItem->notes,
+                        'original_price' => $cartItem->original_price,
+                    ],
                 ]);
             }
 
@@ -350,5 +357,50 @@ class CheckoutService
         $random = strtoupper(substr(md5(uniqid()), 0, 6));
 
         return "{$prefix}-{$date}-{$random}";
+    }
+
+    /**
+     * Get or create Contact for the given User
+     *
+     * This method ensures that every user who completes checkout has an associated
+     * Contact record for use in SalesOrder and Finance entities.
+     *
+     * @param User $user
+     * @param CheckoutSession $session
+     * @return Contact
+     */
+    private function getOrCreateContactForUser(User $user, CheckoutSession $session): Contact
+    {
+        // First, try to find an existing Contact linked to this user by email
+        $contact = Contact::where('email', $user->email)
+            ->where('is_customer', true)
+            ->first();
+
+        if ($contact) {
+            return $contact;
+        }
+
+        // Create new Contact from user and checkout session data
+        $billingAddress = $session->billing_address ?? [];
+
+        return Contact::create([
+            'type' => 'individual',
+            'name' => $user->name,
+            'legal_name' => $user->name,
+            'email' => $user->email,
+            'phone' => $session->contact_phone,
+            'status' => 'active',
+            'is_customer' => true,
+            'is_supplier' => false,
+            'credit_limit' => 0,
+            'current_credit' => 0,
+            'payment_terms' => 0, // Immediate payment for e-commerce
+            'notes' => 'Auto-created from e-commerce checkout',
+            'metadata' => [
+                'user_id' => $user->id,
+                'created_from' => 'ecommerce_checkout',
+                'checkout_session_id' => $session->id,
+            ],
+        ]);
     }
 }
