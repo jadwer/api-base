@@ -36,11 +36,11 @@ class EventDrivenIntegrationTest extends TestCase
      *
      * Flow: Sales Order Completed → Create AR Invoice → Update Sales Order
      *
-     * @skip Event listeners not yet implemented - deferred to Phase F
+     * NOTE: This test is superseded by OnlineSalesE2ETest which has full setup
      */
     public function test_sales_order_completed_creates_ar_invoice(): void
     {
-        $this->markTestSkipped('Event listener SalesOrderCompletedListener not yet implemented');
+        $this->markTestSkipped('Use OnlineSalesE2ETest::test_ar_invoice_created_from_sales_order_event instead');
 
         // Arrange: Create customer contact
         $customer = Contact::factory()->create([
@@ -91,11 +91,11 @@ class EventDrivenIntegrationTest extends TestCase
      *
      * Flow: Purchase Order Received → Create AP Invoice → Update Purchase Order
      *
-     * @skip Event listeners not yet implemented - deferred to Phase F
+     * TODO: Implement Procure-to-Pay E2E test similar to OnlineSalesE2ETest
      */
     public function test_purchase_order_received_creates_ap_invoice(): void
     {
-        $this->markTestSkipped('Event listener PurchaseOrderReceivedListener not yet implemented');
+        $this->markTestSkipped('TODO: Create ProcureToPayE2ETest with full accounting setup');
 
         // Arrange: Create supplier contact
         $supplier = Contact::factory()->create([
@@ -187,11 +187,11 @@ class EventDrivenIntegrationTest extends TestCase
     /**
      * Test complete Order-to-Cash flow
      *
-     * @skip Event listeners not yet implemented - deferred to Phase F
+     * NOTE: Superseded by OnlineSalesE2ETest::test_complete_online_sales_flow
      */
     public function test_order_to_cash_complete_flow(): void
     {
-        $this->markTestSkipped('Event listener SalesOrderCompletedListener not yet implemented');
+        $this->markTestSkipped('Use OnlineSalesE2ETest::test_complete_online_sales_flow instead');
 
         // Arrange
         $customer = Contact::factory()->create([
@@ -234,11 +234,11 @@ class EventDrivenIntegrationTest extends TestCase
     /**
      * Test complete Procure-to-Pay flow
      *
-     * @skip Event listeners not yet implemented - deferred to Phase F
+     * TODO: Implement Procure-to-Pay E2E test similar to OnlineSalesE2ETest
      */
     public function test_procure_to_pay_complete_flow(): void
     {
-        $this->markTestSkipped('Event listener PurchaseOrderReceivedListener not yet implemented');
+        $this->markTestSkipped('TODO: Create ProcureToPayE2ETest with full accounting setup');
 
         // Arrange
         $supplier = Contact::factory()->create(['is_supplier' => true]);

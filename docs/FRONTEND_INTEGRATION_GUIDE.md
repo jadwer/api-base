@@ -1,7 +1,7 @@
 # Frontend Integration Guide
 
-**Last Updated:** 2026-01-05
-**API Version:** v1
+**Last Updated:** 2026-01-06
+**API Version:** v1.1
 **JSON:API Specification:** 1.1
 **Base URL:** `/api/v1`
 
@@ -193,7 +193,238 @@ const response = await fetch(
 
 ---
 
-## Recent Updates (2026-01-05)
+## v1.1 Updates (2026-01-06)
+
+This section documents ALL new features, entities, and endpoints added in v1.1. Frontend must implement these to be fully compatible.
+
+### E2E Online Sales Flow
+
+**Full E2E Documentation:** See [E2E_TESTING_GUIDE.md](E2E_TESTING_GUIDE.md) for complete frontend implementation guide.
+
+The complete online sales flow is now implemented and tested:
+```
+Cart -> Checkout -> SalesOrder -> ARInvoice -> GL Posting
+```
+
+Key behaviors:
+- Contact is automatically created from user email during checkout (or reused if exists)
+- ARInvoice is automatically created when SalesOrder status changes to 'confirmed'
+- GL Journal Entry is automatically posted for revenue/receivables
+- Checkout sessions expire after 30 minutes
+
+---
+
+### Stripe Payment Integration
+
+New payment gateway integration for e-commerce checkout:
+
+**Endpoints:**
+- `POST /api/v1/checkout-sessions/{id}/payment-intent` - Create Stripe PaymentIntent
+- `PATCH /api/v1/checkout-sessions/{id}` - Confirm payment with paymentIntentId
+
+**Frontend Implementation:**
+```javascript
+// 1. Create payment intent
+const intentResponse = await api.post(`/checkout-sessions/${sessionId}/payment-intent`);
+const { clientSecret } = intentResponse.data.attributes;
+
+// 2. Use Stripe.js to confirm payment
+const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+  payment_method: paymentMethodId
+});
+
+// 3. Update checkout session
+await api.patch(`/checkout-sessions/${sessionId}`, {
+  data: {
+    type: 'checkout-sessions',
+    id: sessionId,
+    attributes: {
+      status: 'payment_confirmed',
+      paymentIntentId: paymentIntent.id
+    }
+  }
+});
+```
+
+---
+
+### Cycle Count Scheduling (IV-M001)
+
+New inventory cycle counting system:
+
+**Endpoints:**
+- `GET /api/v1/cycle-counts` - List cycle counts
+- `GET /api/v1/cycle-counts/{id}` - Get single cycle count
+- `POST /api/v1/cycle-counts` - Create/schedule cycle count
+- `PATCH /api/v1/cycle-counts/{id}` - Update cycle count (record results)
+- `DELETE /api/v1/cycle-counts/{id}` - Delete cycle count
+
+**TypeScript Interface:**
+```typescript
+interface CycleCountAttributes {
+  countNumber: string;
+  scheduledDate: string;
+  completedDate?: string;
+  status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
+  systemQuantity: number;
+  countedQuantity?: number;
+  varianceQuantity?: number;  // Computed: counted - system
+  varianceValue?: number;     // Computed: variance * unit cost
+  abcClass?: 'A' | 'B' | 'C';
+  notes?: string;
+  metadata?: Record<string, any>;
+  // Computed fields
+  hasVariance: boolean;
+  variancePercentage?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface CycleCountRelationships {
+  warehouse: { data: { type: 'warehouses'; id: string } };
+  warehouseLocation?: { data: { type: 'warehouse-locations'; id: string } };
+  product: { data: { type: 'products'; id: string } };
+  assignedTo?: { data: { type: 'users'; id: string } };
+  countedBy?: { data: { type: 'users'; id: string } };
+}
+```
+
+**Filters:**
+- `filter[status]=scheduled`
+- `filter[abcClass]=A`
+- `filter[warehouse]=1`
+- `filter[product]=123`
+- `filter[assignedTo]=5`
+
+---
+
+### Duplicate Contact Detection (CO-M001)
+
+New service for detecting duplicate contacts:
+
+**Usage in ContactRequest:**
+The backend now validates tax_id uniqueness automatically. When creating/updating contacts, if a duplicate tax_id is found, a 422 error is returned.
+
+**Frontend can proactively check:**
+```javascript
+// Check for duplicates before creating
+GET /api/v1/contacts?filter[taxId]=ABC123456789
+GET /api/v1/contacts?filter[email]=user@example.com
+```
+
+**Duplicate Detection Levels:**
+- **Definite:** Same tax_id (RFC) - blocked automatically
+- **Probable:** Same email - warning shown
+- **Possible:** Similar name (>80% similarity) - suggestion shown
+
+---
+
+### Automatic Discount Rules (SA-M003)
+
+New automatic discount system for sales orders:
+
+**Endpoints:**
+- `GET /api/v1/discount-rules` - List discount rules
+- `GET /api/v1/discount-rules/{id}` - Get single rule
+- `POST /api/v1/discount-rules` - Create rule
+- `PATCH /api/v1/discount-rules/{id}` - Update rule
+- `DELETE /api/v1/discount-rules/{id}` - Delete rule
+
+**TypeScript Interface:**
+```typescript
+interface DiscountRuleAttributes {
+  name: string;
+  code: string;
+  description?: string;
+  discountType: 'percentage' | 'fixed' | 'buy_x_get_y';
+  discountValue: number;
+  buyQuantity?: number;     // For buy_x_get_y
+  getQuantity?: number;     // For buy_x_get_y
+  appliesTo: 'order' | 'product' | 'category';
+  minOrderAmount?: number;
+  minQuantity?: number;
+  maxDiscountAmount?: number;
+  productIds?: number[];
+  categoryIds?: number[];
+  customerIds?: number[];
+  customerClassifications?: string[];
+  startDate?: string;
+  endDate?: string;
+  usageLimit?: number;
+  usagePerCustomer?: number;
+  currentUsage: number;     // Read-only
+  priority: number;
+  isCombinable: boolean;
+  isActive: boolean;
+  // Computed fields
+  isValid: boolean;
+  isExpired: boolean;
+  usageRemaining?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+**Discount Types:**
+- `percentage`: X% off (e.g., 10% off)
+- `fixed`: Fixed amount off (e.g., $50 off)
+- `buy_x_get_y`: Buy X get Y free (e.g., Buy 2 Get 1)
+
+**Filters:**
+- `filter[discountType]=percentage`
+- `filter[appliesTo]=order`
+- `filter[isActive]=true`
+- `filter[code]=SUMMER2026`
+
+**Validate Discount Code:**
+```javascript
+// Check if code is valid for order
+GET /api/v1/discount-rules?filter[code]=SUMMER2026&filter[isActive]=true
+
+// The response includes isValid computed field
+```
+
+---
+
+### Early Payment Discount (FI-M002)
+
+New early payment discount fields on AR Invoices:
+
+**New Fields in ar-invoices:**
+```typescript
+interface ARInvoiceEarlyPaymentFields {
+  discountPercent?: number;      // e.g., 2.0 for 2%
+  discountDays?: number;         // e.g., 10 for "2/10 Net 30"
+  discountDate?: string;         // Deadline for discount
+  discountAmount?: number;       // Calculated: total * percent
+  discountApplied: boolean;      // Was discount taken?
+  discountAppliedAmount?: number;// Actual discount given
+  discountAppliedDate?: string;  // When discount was applied
+}
+```
+
+**Common Payment Terms:**
+- `2/10 Net 30`: 2% discount if paid within 10 days
+- `1/15 Net 45`: 1% discount if paid within 15 days
+- `3/5 Net 30`: 3% discount if paid within 5 days
+
+**New Filter:**
+```javascript
+// Get invoices with available early payment discount
+GET /api/v1/ar-invoices?filter[withAvailableDiscount]=true
+```
+
+**Frontend Display:**
+```javascript
+// Check if discount is available
+if (invoice.discountDate && new Date(invoice.discountDate) > new Date()) {
+  const savings = invoice.discountAmount;
+  const deadline = invoice.discountDate;
+  showBanner(`Pay by ${deadline} to save $${savings}!`);
+}
+```
+
+---
 
 ### Budget Control (PU-M003)
 
@@ -567,29 +798,33 @@ The conversion is automatic - always use camelCase when sending/receiving data f
 
 ## Quick Reference
 
-### All Available Endpoints
+### All Available Endpoints (736+ Total)
 
 **Product Module** (20 endpoints):
 - `/products`, `/categories`, `/brands`, `/units`
 
-**Inventory Module** (25 endpoints):
+**Inventory Module** (30 endpoints):
 - `/warehouses`, `/warehouse-locations`, `/stocks`, `/product-batches`, `/inventory-movements`
+- `/cycle-counts` (NEW v1.1: IV-M001)
 
-**Purchase Module** (33 endpoints):
+**Purchase Module** (38 endpoints):
 - `/purchase-orders`, `/purchase-order-items`, `/suppliers`
-- `/budgets` (NEW: Budget Control system)
+- `/budgets`, `/budgets/summary`, `/budgets/needs-attention` (NEW v1.1: PU-M003)
 
-**Sales Module** (24 endpoints):
+**Sales Module** (29 endpoints):
 - `/sales-orders`, `/sales-order-items`, `/customers`, `/order-tracking`
+- `/discount-rules` (NEW v1.1: SA-M003)
 
-**Ecommerce Module** (67 endpoints):
+**Ecommerce Module** (72 endpoints):
 - `/shopping-carts`, `/cart-items`, `/checkout-sessions`, `/payment-transactions`
 - `/wishlists`, `/wishlist-items`, `/product-reviews`, `/coupons`
 - `/shipping-methods`, `/currencies`, `/product-recommendations`
+- `/checkout-sessions/{id}/payment-intent` (NEW v1.1: Stripe)
 
 **Finance Module** (40 endpoints):
 - `/ar-invoices`, `/ap-invoices`, `/payments`, `/payment-applications`
 - `/bank-accounts`, `/payment-methods`
+- NEW v1.1: Early payment discount fields on ar-invoices (FI-M002)
 
 **Accounting Module** (30 endpoints):
 - `/accounts`, `/journal-entries`, `/journal-lines`, `/journals`
@@ -612,6 +847,7 @@ The conversion is automatic - always use camelCase when sending/receiving data f
 
 **Contacts Module** (20 endpoints):
 - `/contacts`, `/contact-addresses`, `/contact-people`, `/contact-documents`
+- NEW v1.1: Duplicate detection validation on tax_id (CO-M001)
 
 ---
 
