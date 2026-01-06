@@ -7,19 +7,23 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Services\OrderStatusService;
+use Modules\Sales\Services\SalesOrderPDFGenerator;
 use Modules\Ecommerce\Services\Notifications\OrderNotificationService;
 
 class CustomerOrderController extends Controller
 {
     private OrderStatusService $orderStatusService;
     private OrderNotificationService $notificationService;
+    private SalesOrderPDFGenerator $pdfGenerator;
 
     public function __construct(
         OrderStatusService $orderStatusService,
-        OrderNotificationService $notificationService
+        OrderNotificationService $notificationService,
+        SalesOrderPDFGenerator $pdfGenerator
     ) {
         $this->orderStatusService = $orderStatusService;
         $this->notificationService = $notificationService;
+        $this->pdfGenerator = $pdfGenerator;
         $this->middleware('auth:sanctum');
     }
 
@@ -231,9 +235,9 @@ class CustomerOrderController extends Controller
      * GET /api/v1/my-orders/{order}/invoice
      *
      * @param SalesOrder $order
-     * @return JsonResponse
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function invoice(SalesOrder $order): JsonResponse
+    public function invoice(SalesOrder $order)
     {
         // Verify order belongs to customer
         if ($order->customer_id !== auth()->id()) {
@@ -242,14 +246,8 @@ class CustomerOrderController extends Controller
             ], 403);
         }
 
-        // TODO: Generate PDF invoice
-        return response()->json([
-            'message' => 'Invoice generation not yet implemented',
-            'data' => [
-                'order_number' => $order->order_number,
-                'total_amount' => $order->total_amount,
-            ],
-        ]);
+        // Generate and download PDF
+        return $this->pdfGenerator->download($order);
     }
 
     /**

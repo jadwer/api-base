@@ -7,6 +7,7 @@ use Modules\Sales\Http\Controllers\Api\V1\SalesOrderItemController;
 use Modules\Sales\Http\Controllers\Api\V1\ShipmentController;
 use Modules\Sales\Http\Controllers\Api\V1\ShipmentItemController;
 use Modules\Sales\Http\Controllers\Api\V1\BackorderController;
+use Modules\Sales\Http\Controllers\Api\V1\DiscountRuleController;
 use Illuminate\Support\Facades\Route;
 
 JsonApiRoute::server('v1')
@@ -20,6 +21,8 @@ JsonApiRoute::server('v1')
         $server->resource('shipment-items', ShipmentItemController::class);
         // SA-M002: Backorder Management
         $server->resource('backorders', BackorderController::class);
+        // SA-M003: Automatic Discount Rules
+        $server->resource('discount-rules', DiscountRuleController::class);
     });
 
 // Custom endpoints for sales reporting

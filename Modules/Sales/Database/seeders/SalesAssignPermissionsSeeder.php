@@ -27,7 +27,8 @@ class SalesAssignPermissionsSeeder extends Seeder
                                                 ->orWhere('name', 'like', 'sales-order-items.%')
                                                 ->orWhere('name', 'like', 'shipments.%')
                                                 ->orWhere('name', 'like', 'shipment-items.%')
-                                                ->orWhere('name', 'like', 'backorders.%');
+                                                ->orWhere('name', 'like', 'backorders.%')
+                                                ->orWhere('name', 'like', 'discount-rules.%');
                                       })
                                       ->get();
             $godRole->givePermissionTo($allPermissions);
@@ -51,6 +52,9 @@ class SalesAssignPermissionsSeeder extends Seeder
                                             // SA-M002: Backorders
                                             'backorders.index', 'backorders.view', 'backorders.show',
                                             'backorders.store', 'backorders.update', 'backorders.destroy',
+                                            // SA-M003: Discount Rules
+                                            'discount-rules.index', 'discount-rules.view', 'discount-rules.show',
+                                            'discount-rules.store', 'discount-rules.update', 'discount-rules.destroy',
                                         ])->get();
             $adminRole->givePermissionTo($adminPermissions);
         }
@@ -73,6 +77,8 @@ class SalesAssignPermissionsSeeder extends Seeder
                                            // SA-M002: Backorders
                                            'backorders.index', 'backorders.view', 'backorders.show',
                                            'backorders.store', 'backorders.update', 'backorders.destroy',
+                                           // SA-M003: Discount Rules (read-only for tech)
+                                           'discount-rules.index', 'discount-rules.view', 'discount-rules.show',
                                        ])->get();
             $techRole->givePermissionTo($techPermissions);
         }
