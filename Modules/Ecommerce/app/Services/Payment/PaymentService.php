@@ -7,6 +7,7 @@ use Modules\Ecommerce\Models\PaymentTransaction;
 use Modules\Ecommerce\Services\CheckoutService;
 use Modules\Ecommerce\Services\Notifications\OrderNotificationService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class PaymentService
@@ -32,8 +33,10 @@ class PaymentService
         // Register mock gateway (for testing)
         $this->gateways['mock'] = app(MockPaymentGateway::class);
 
-        // TODO: Register Stripe gateway when implemented
-        // $this->gateways['stripe'] = app(StripePaymentGateway::class);
+        // Register Stripe gateway if configured
+        if (config('services.stripe.secret')) {
+            $this->gateways['stripe'] = app(StripePaymentGateway::class);
+        }
     }
 
     /**
@@ -268,13 +271,140 @@ class PaymentService
             throw new \Exception('Invalid webhook signature');
         }
 
-        // Process webhook
+        // Process webhook through gateway
         $gateway->handleWebhook($payload, $signature);
 
-        // TODO: Implement webhook event processing
-        // - Update transaction status
-        // - Send notifications
-        // - Log events
+        // Process webhook event for our records
+        $this->processWebhookEvent($gatewayName, $payload);
+    }
+
+    /**
+     * Process webhook event and update transaction records
+     *
+     * @param string $gatewayName
+     * @param array $payload
+     * @return void
+     */
+    private function processWebhookEvent(string $gatewayName, array $payload): void
+    {
+        // Extract payment intent ID from payload (Stripe format)
+        $paymentIntentId = $payload['data']['object']['id'] ?? $payload['payment_intent_id'] ?? null;
+
+        if (!$paymentIntentId) {
+            Log::warning('Webhook received without payment intent ID', [
+                'gateway' => $gatewayName,
+                'payload_keys' => array_keys($payload),
+            ]);
+            return;
+        }
+
+        // Find the transaction
+        $transaction = PaymentTransaction::where('transaction_id', $paymentIntentId)->first();
+
+        if (!$transaction) {
+            Log::warning('Transaction not found for webhook', [
+                'gateway' => $gatewayName,
+                'payment_intent_id' => $paymentIntentId,
+            ]);
+            return;
+        }
+
+        // Determine event type (Stripe format: payment_intent.succeeded, etc.)
+        $eventType = $payload['type'] ?? 'unknown';
+
+        // Update transaction based on event type
+        DB::transaction(function () use ($transaction, $eventType, $payload) {
+            $previousStatus = $transaction->status;
+
+            switch ($eventType) {
+                case 'payment_intent.succeeded':
+                    if ($transaction->status !== 'captured') {
+                        $transaction->markAsCaptured();
+                        $this->handlePaymentSuccess($transaction);
+                    }
+                    break;
+
+                case 'payment_intent.payment_failed':
+                    $errorMessage = $payload['data']['object']['last_payment_error']['message'] ?? 'Payment failed';
+                    $transaction->markAsFailed($errorMessage);
+                    break;
+
+                case 'payment_intent.canceled':
+                    $transaction->update(['status' => 'cancelled']);
+                    break;
+
+                case 'charge.refunded':
+                    $transaction->markAsRefunded();
+                    $this->handleRefundSuccess($transaction);
+                    break;
+
+                default:
+                    Log::info('Unhandled webhook event type', [
+                        'type' => $eventType,
+                        'transaction_id' => $transaction->id,
+                    ]);
+                    return;
+            }
+
+            // Log the webhook event
+            Log::info('Webhook processed successfully', [
+                'event_type' => $eventType,
+                'transaction_id' => $transaction->id,
+                'previous_status' => $previousStatus,
+                'new_status' => $transaction->fresh()->status,
+            ]);
+
+            // Store webhook data in transaction metadata
+            $transaction->update([
+                'gateway_response' => array_merge(
+                    $transaction->gateway_response ?? [],
+                    ['webhook_events' => array_merge(
+                        $transaction->gateway_response['webhook_events'] ?? [],
+                        [['type' => $eventType, 'received_at' => now()->toIso8601String()]]
+                    )]
+                ),
+            ]);
+        });
+    }
+
+    /**
+     * Handle successful payment - complete checkout and send notifications
+     *
+     * @param PaymentTransaction $transaction
+     * @return void
+     */
+    private function handlePaymentSuccess(PaymentTransaction $transaction): void
+    {
+        $session = $transaction->checkoutSession;
+
+        if ($session && $session->status !== 'completed') {
+            // Update checkout session
+            $session->update(['status' => 'payment_confirmed']);
+
+            // Complete checkout and create order
+            $order = $this->checkoutService->completeCheckout($session);
+
+            // Link transaction to order
+            $transaction->update(['sales_order_id' => $order->id]);
+
+            // Send notifications
+            $this->notificationService->sendPaymentConfirmation($transaction->fresh());
+            $this->notificationService->sendOrderConfirmation($order);
+        }
+    }
+
+    /**
+     * Handle successful refund - send notification
+     *
+     * @param PaymentTransaction $transaction
+     * @return void
+     */
+    private function handleRefundSuccess(PaymentTransaction $transaction): void
+    {
+        // Send refund confirmation if order exists
+        if ($transaction->salesOrder) {
+            $this->notificationService->sendRefundConfirmation($transaction);
+        }
     }
 
     /**

@@ -292,6 +292,47 @@ class OrderNotificationService
     }
 
     /**
+     * Send refund confirmation notification
+     */
+    public function sendRefundConfirmation(PaymentTransaction $transaction, bool $async = true): void
+    {
+        if ($async) {
+            SendOrderNotificationJob::dispatch(
+                'refund_confirmation',
+                $transaction->id
+            )->onQueue('emails');
+        } else {
+            $this->sendRefundConfirmationNow($transaction);
+        }
+    }
+
+    /**
+     * Send refund confirmation immediately
+     */
+    public function sendRefundConfirmationNow(PaymentTransaction $transaction): void
+    {
+        $order = $transaction->salesOrder;
+
+        if (!$order) {
+            return;
+        }
+
+        $recipientEmail = $this->getOrderEmail($order);
+
+        if (!$recipientEmail) {
+            return;
+        }
+
+        // Use order status update mail with refund context
+        Mail::to($recipientEmail)->send(new OrderStatusUpdateMail(
+            $order,
+            $order->status,
+            'refunded',
+            "Payment of {$transaction->amount} {$transaction->currency} has been refunded."
+        ));
+    }
+
+    /**
      * Send notification to admin about new order
      */
     public function notifyAdminNewOrder(SalesOrder $order): void
