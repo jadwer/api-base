@@ -37,6 +37,14 @@ class PurchaseAssignPermissionsSeeder extends Seeder
             'purchase.approve-tier2',
             'purchase.approve-tier3',
             'purchase.approve-new-supplier',
+            // PU-M003: Budget Control
+            'budgets.index',
+            'budgets.show',
+            'budgets.store',
+            'budgets.update',
+            'budgets.destroy',
+            'budget-allocations.index',
+            'budget-allocations.show',
         ];
 
         foreach ($permissions as $permissionName) {

@@ -42,6 +42,15 @@ class PurchasePermissionSeeder extends Seeder
             'purchase.approve-tier2',        // Finance Director: >250K
             'purchase.approve-tier3',        // CFO: >1M
             'purchase.approve-new-supplier', // Approve first-time suppliers
+
+            // PU-M003: Budget Control permissions
+            'budgets.index',
+            'budgets.show',
+            'budgets.store',
+            'budgets.update',
+            'budgets.destroy',
+            'budget-allocations.index',
+            'budget-allocations.show',
         ];
 
         $this->bulkCreatePermissions($permissions);
