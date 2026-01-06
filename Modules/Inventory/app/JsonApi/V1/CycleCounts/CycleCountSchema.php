@@ -25,6 +25,9 @@ class CycleCountSchema extends Schema
         return [
             ID::make(),
             Str::make('countNumber'),
+            Number::make('warehouseId'),
+            Number::make('warehouseLocationId'),
+            Number::make('productId'),
             DateTime::make('scheduledDate'),
             DateTime::make('completedDate'),
             Str::make('status'),
@@ -32,6 +35,8 @@ class CycleCountSchema extends Schema
             Number::make('countedQuantity'),
             Number::make('varianceQuantity'),
             Number::make('varianceValue'),
+            Number::make('assignedTo'),
+            Number::make('countedBy'),
             Str::make('abcClass'),
             Str::make('notes'),
             ArrayHash::make('metadata'),
@@ -44,8 +49,6 @@ class CycleCountSchema extends Schema
             BelongsTo::make('warehouse')->readOnly(),
             BelongsTo::make('warehouseLocation')->readOnly(),
             BelongsTo::make('product')->readOnly(),
-            BelongsTo::make('assignedTo')->type('users')->readOnly(),
-            BelongsTo::make('countedBy')->type('users')->readOnly(),
         ];
     }
 
@@ -54,11 +57,10 @@ class CycleCountSchema extends Schema
         return [
             WhereIdIn::make($this),
             Where::make('status'),
-            WhereIn::make('status', 'statuses'),
-            Where::make('abcClass', 'abc_class'),
-            Where::make('warehouse', 'warehouse_id'),
-            Where::make('product', 'product_id'),
-            Where::make('assignedTo', 'assigned_to'),
+            Where::make('abc_class'),
+            Where::make('warehouse_id'),
+            Where::make('product_id'),
+            Where::make('assigned_to'),
         ];
     }
 

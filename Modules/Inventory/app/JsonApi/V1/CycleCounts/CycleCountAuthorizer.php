@@ -2,59 +2,64 @@
 
 namespace Modules\Inventory\JsonApi\V1\CycleCounts;
 
-use LaravelJsonApi\Contracts\Auth\Authorizer;
 use Illuminate\Http\Request;
-use Modules\Inventory\Models\CycleCount;
+use Illuminate\Auth\Access\Response;
+use LaravelJsonApi\Contracts\Auth\Authorizer;
 
 class CycleCountAuthorizer implements Authorizer
 {
-    public function index(Request $request, string $modelClass): bool|\Illuminate\Auth\Access\Response
+    public function index(Request $request, string $modelClass): bool|Response
     {
-        return $request->user()?->can('inventory.cycle-counts.index') ?? false;
+        $user = $request->user();
+        return $user?->can('inventory.cycle-counts.index') ?? false;
     }
 
-    public function show(?Request $request, CycleCount $model): bool|\Illuminate\Auth\Access\Response
+    public function store(Request $request, string $modelClass): bool|Response
     {
-        return $request?->user()?->can('inventory.cycle-counts.show') ?? false;
+        $user = $request->user();
+        return $user?->can('inventory.cycle-counts.store') ?? false;
     }
 
-    public function store(Request $request, string $modelClass): bool|\Illuminate\Auth\Access\Response
+    public function show(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('inventory.cycle-counts.store') ?? false;
+        $user = $request->user();
+        return $user?->can('inventory.cycle-counts.show') ?? false;
     }
 
-    public function update(Request $request, CycleCount $model): bool|\Illuminate\Auth\Access\Response
+    public function update(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('inventory.cycle-counts.update') ?? false;
+        $user = $request->user();
+        return $user?->can('inventory.cycle-counts.update') ?? false;
     }
 
-    public function destroy(Request $request, CycleCount $model): bool|\Illuminate\Auth\Access\Response
+    public function destroy(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('inventory.cycle-counts.destroy') ?? false;
+        $user = $request->user();
+        return $user?->can('inventory.cycle-counts.destroy') ?? false;
     }
 
-    public function showRelated(Request $request, CycleCount $model, string $fieldName): bool|\Illuminate\Auth\Access\Response
+    public function showRelated(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('inventory.cycle-counts.show') ?? false;
+        return $this->show($request, $model);
     }
 
-    public function showRelationship(Request $request, CycleCount $model, string $fieldName): bool|\Illuminate\Auth\Access\Response
+    public function showRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('inventory.cycle-counts.show') ?? false;
+        return $this->show($request, $model);
     }
 
-    public function updateRelationship(Request $request, CycleCount $model, string $fieldName): bool|\Illuminate\Auth\Access\Response
+    public function updateRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('inventory.cycle-counts.update') ?? false;
+        return $this->update($request, $model);
     }
 
-    public function attachRelationship(Request $request, CycleCount $model, string $fieldName): bool|\Illuminate\Auth\Access\Response
+    public function attachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('inventory.cycle-counts.update') ?? false;
+        return $this->update($request, $model);
     }
 
-    public function detachRelationship(Request $request, CycleCount $model, string $fieldName): bool|\Illuminate\Auth\Access\Response
+    public function detachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('inventory.cycle-counts.update') ?? false;
+        return $this->update($request, $model);
     }
 }

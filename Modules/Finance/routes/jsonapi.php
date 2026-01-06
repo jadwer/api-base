@@ -10,6 +10,7 @@ use Modules\Finance\Http\Controllers\Api\V1\PaymentApplicationController;
 use Modules\Finance\Http\Controllers\Api\V1\BankAccountController;
 use Modules\Finance\Http\Controllers\Api\V1\PaymentMethodController;
 use Modules\Finance\Http\Controllers\Api\V1\ARPaymentController;
+use Modules\Finance\Http\Controllers\Api\V1\BankTransactionController;
 
 JsonApiRoute::server('v1')
     ->prefix('v1')
@@ -28,6 +29,11 @@ JsonApiRoute::server('v1')
                 $relationships->hasOne('bankAccount');
                 $relationships->hasOne('journalEntry');
                 $relationships->hasMany('applications');
+            });
+        $server->resource('bank-transactions', BankTransactionController::class)
+            ->relationships(function ($relationships) {
+                $relationships->hasOne('bankAccount');
+                $relationships->hasOne('reconciledBy');
             });
     });
 

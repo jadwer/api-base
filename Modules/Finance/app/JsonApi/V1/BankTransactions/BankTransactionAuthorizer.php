@@ -1,41 +1,41 @@
 <?php
 
-namespace Modules\Sales\JsonApi\V1\DiscountRules;
+namespace Modules\Finance\JsonApi\V1\BankTransactions;
 
 use Illuminate\Http\Request;
 use Illuminate\Auth\Access\Response;
 use LaravelJsonApi\Contracts\Auth\Authorizer;
 
-class DiscountRuleAuthorizer implements Authorizer
+class BankTransactionAuthorizer implements Authorizer
 {
     public function index(Request $request, string $modelClass): bool|Response
     {
         $user = $request->user();
-        return $user?->can('discount-rules.index') ?? false;
+        return $user?->can('bank-transactions.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
     {
         $user = $request->user();
-        return $user?->can('discount-rules.store') ?? false;
+        return $user?->can('bank-transactions.store') ?? false;
     }
 
     public function show(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('discount-rules.show') ?? false;
+        return $user?->can('bank-transactions.show') ?? false;
     }
 
     public function update(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('discount-rules.update') ?? false;
+        return $user?->can('bank-transactions.update') ?? false;
     }
 
     public function destroy(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('discount-rules.destroy') ?? false;
+        return $user?->can('bank-transactions.destroy') ?? false;
     }
 
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response

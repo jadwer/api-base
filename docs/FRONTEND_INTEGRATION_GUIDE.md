@@ -426,6 +426,78 @@ if (invoice.discountDate && new Date(invoice.discountDate) > new Date()) {
 
 ---
 
+### Bank Transactions (FI-M003)
+
+New Bank Transactions API for financial management:
+
+**Endpoints:**
+- `GET /api/v1/bank-transactions` - List bank transactions
+- `GET /api/v1/bank-transactions/{id}` - Get single transaction
+- `POST /api/v1/bank-transactions` - Create transaction
+- `PATCH /api/v1/bank-transactions/{id}` - Update transaction
+- `DELETE /api/v1/bank-transactions/{id}` - Delete transaction
+
+**TypeScript Interface:**
+```typescript
+interface BankTransactionAttributes {
+  bankAccountId: number;
+  transactionDate: string;
+  amount: number;
+  transactionType: 'debit' | 'credit';
+  reference?: string;
+  description?: string;
+  reconciliationStatus: 'unreconciled' | 'reconciled' | 'pending';
+  reconciledById?: number;
+  reconciledAt?: string;
+  reconciliationNotes?: string;
+  statementNumber?: string;
+  runningBalance?: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface BankTransactionRelationships {
+  bankAccount: { data: { type: 'bank-accounts'; id: string } };
+  reconciledBy?: { data: { type: 'users'; id: string } };
+}
+```
+
+**Filters:**
+- `filter[bank_account_id]=1`
+- `filter[transaction_type]=debit`
+- `filter[reconciliation_status]=unreconciled`
+- `filter[statement_number]=STMT-2026-01`
+- `filter[reference]=DEP-001`
+- `filter[is_active]=true`
+
+**Bank Reconciliation Workflow:**
+```javascript
+// 1. Fetch unreconciled transactions
+const transactions = await api.get('/bank-transactions', {
+  params: {
+    'filter[bank_account_id]': bankAccountId,
+    'filter[reconciliation_status]': 'unreconciled'
+  }
+});
+
+// 2. Match with GL entries (manual or automatic)
+
+// 3. Mark as reconciled
+await api.patch(`/bank-transactions/${id}`, {
+  data: {
+    type: 'bank-transactions',
+    id: id,
+    attributes: {
+      reconciliationStatus: 'reconciled',
+      reconciliationNotes: 'Matched with JE-2026-001'
+    }
+  }
+});
+```
+
+---
+
 ### Budget Control (PU-M003)
 
 New Budget Control system for Purchase Orders:
@@ -821,10 +893,11 @@ The conversion is automatic - always use camelCase when sending/receiving data f
 - `/shipping-methods`, `/currencies`, `/product-recommendations`
 - `/checkout-sessions/{id}/payment-intent` (NEW v1.1: Stripe)
 
-**Finance Module** (40 endpoints):
+**Finance Module** (45 endpoints):
 - `/ar-invoices`, `/ap-invoices`, `/payments`, `/payment-applications`
-- `/bank-accounts`, `/payment-methods`
+- `/bank-accounts`, `/bank-transactions`, `/payment-methods`
 - NEW v1.1: Early payment discount fields on ar-invoices (FI-M002)
+- NEW v1.1: Bank transactions with auto-reconciliation (FI-M003)
 
 **Accounting Module** (30 endpoints):
 - `/accounts`, `/journal-entries`, `/journal-lines`, `/journals`

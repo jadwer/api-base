@@ -227,6 +227,36 @@ class CycleCount extends Model
         return $this->belongsTo(InventoryMovement::class, 'adjustment_movement_id');
     }
 
+    // Auto-generate count_number on creation
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->count_number)) {
+                $model->count_number = static::generateCountNumber();
+            }
+        });
+    }
+
+    public static function generateCountNumber(): string
+    {
+        $prefix = 'CC';
+        $date = now()->format('Ymd');
+        $lastCount = static::where('count_number', 'LIKE', "{$prefix}{$date}%")
+            ->orderBy('count_number', 'desc')
+            ->first();
+
+        if ($lastCount) {
+            $lastNumber = (int) substr($lastCount->count_number, -4);
+            $nextNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+        } else {
+            $nextNumber = '0001';
+        }
+
+        return "{$prefix}{$date}{$nextNumber}";
+    }
+
     // Factory
     protected static function newFactory()
     {

@@ -183,6 +183,7 @@ class Server extends BaseServer
             BankAccountSchema::class,
             PaymentMethodSchema::class,
             ARPaymentSchema::class,
+            \Modules\Finance\JsonApi\V1\BankTransactions\BankTransactionSchema::class,
 
             // Reports Module (Phase 4.2 - Corrected)
             BalanceSheetSchema::class,
@@ -292,6 +293,7 @@ class Server extends BaseServer
             'bank-accounts' => \Modules\Finance\JsonApi\V1\BankAccounts\BankAccountAuthorizer::class,
             'payment-methods' => \Modules\Finance\JsonApi\V1\PaymentMethods\PaymentMethodAuthorizer::class,
             'ar-payments' => \Modules\Finance\JsonApi\V1\ARPayments\ARPaymentAuthorizer::class,
+            'bank-transactions' => \Modules\Finance\JsonApi\V1\BankTransactions\BankTransactionAuthorizer::class,
 
             // Reports Module (Phase 4.2 - Corrected)
             'balance-sheets' => \Modules\Reports\JsonApi\V1\BalanceSheets\BalanceSheetAuthorizer::class,

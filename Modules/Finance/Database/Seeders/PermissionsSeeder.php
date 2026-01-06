@@ -22,6 +22,7 @@ class PermissionsSeeder extends Seeder
             'payments',
             'payment-applications',
             'bank-accounts',
+            'bank-transactions',
             'payment-methods',
             'ar-payments',
         ];

@@ -23,8 +23,6 @@ JsonApiRoute::server('v1')
                 $relationships->hasOne('warehouse');
                 $relationships->hasOne('warehouseLocation');
                 $relationships->hasOne('product');
-                $relationships->hasOne('assignedTo');
-                $relationships->hasOne('countedBy');
             });
     });
 
