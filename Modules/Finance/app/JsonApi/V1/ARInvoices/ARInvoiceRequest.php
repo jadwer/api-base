@@ -38,6 +38,14 @@ class ARInvoiceRequest extends ResourceRequest
             'notes' => ['nullable', 'string'],
             'metadata' => ['nullable', 'array'],
             'isActive' => ['nullable', 'boolean'],
+            // FI-M002: Early payment discount fields
+            'discountPercent' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'discountDays' => ['nullable', 'integer', 'min:1', 'max:365'],
+            'discountDate' => ['nullable', 'date'],
+            'discountAmount' => ['nullable', 'numeric', 'min:0'],
+            'discountApplied' => ['nullable', 'boolean'],
+            'discountAppliedAmount' => ['nullable', 'numeric', 'min:0'],
+            'discountAppliedDate' => ['nullable', 'date'],
         ];
     }
 
@@ -63,6 +71,16 @@ class ARInvoiceRequest extends ResourceRequest
             'notes.string' => 'El campo Notes debe ser texto.',
             'metadata.array' => 'El campo Metadata debe ser un arreglo.',
             'isActive.boolean' => 'El campo Is active debe ser verdadero o falso.',
+            // FI-M002: Early payment discount messages
+            'discountPercent.numeric' => 'El porcentaje de descuento debe ser un número.',
+            'discountPercent.min' => 'El porcentaje de descuento no puede ser negativo.',
+            'discountPercent.max' => 'El porcentaje de descuento no puede exceder 100%.',
+            'discountDays.integer' => 'Los días de descuento deben ser un número entero.',
+            'discountDays.min' => 'Los días de descuento deben ser al menos 1.',
+            'discountDays.max' => 'Los días de descuento no pueden exceder 365.',
+            'discountDate.date' => 'La fecha límite de descuento debe ser una fecha válida.',
+            'discountAmount.numeric' => 'El monto del descuento debe ser un número.',
+            'discountAmount.min' => 'El monto del descuento no puede ser negativo.',
         ];
     }
 }

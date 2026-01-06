@@ -162,13 +162,17 @@ class ARInvoiceService
         $dueDate = now()->addDays($paymentTerms);
 
         // Prepare data for invoice creation
+        // Use SalesOrder's tax_amount if available, otherwise calculate from total
+        $taxAmount = $salesOrder->tax_amount ?? 0;
+        $subtotal = $salesOrder->subtotal ?? ($salesOrder->total_amount - $taxAmount);
+
         $invoiceData = [
             'invoiceDate' => now(),
             'dueDate' => $dueDate,
             'contactId' => $salesOrder->contact_id,
             'currency' => 'MXN',
-            'subtotal' => $salesOrder->total_amount - ($salesOrder->discount_total ?? 0),
-            'taxAmount' => 0, // TODO: Calculate tax if needed
+            'subtotal' => $subtotal,
+            'taxAmount' => $taxAmount,
             'totalAmount' => $salesOrder->total_amount,
             'notes' => "Auto-generated from Sales Order #{$salesOrder->order_number}",
             'metadata' => [

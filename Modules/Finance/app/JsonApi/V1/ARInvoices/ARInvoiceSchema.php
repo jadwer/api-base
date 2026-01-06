@@ -41,7 +41,16 @@ class ARInvoiceSchema extends Schema
             Str::make('notes'),
             ArrayHash::make('metadata'),
             Boolean::make('isActive')->sortable(),
-            
+
+            // FI-M002: Early payment discount fields
+            Number::make('discountPercent')->sortable(),
+            Number::make('discountDays'),
+            DateTime::make('discountDate')->sortable(),
+            Number::make('discountAmount'),
+            Boolean::make('discountApplied')->sortable(),
+            Number::make('discountAppliedAmount'),
+            DateTime::make('discountAppliedDate'),
+
             // Timestamps
             DateTime::make('createdAt')->sortable()->readOnly(),
             DateTime::make('updatedAt')->sortable()->readOnly(),
@@ -65,6 +74,9 @@ class ARInvoiceSchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('status'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('journal_entry_id'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('is_active'),
+            // FI-M002: Discount filters
+            \LaravelJsonApi\Eloquent\Filters\Where::make('discount_applied'),
+            \LaravelJsonApi\Eloquent\Filters\Scope::make('withAvailableDiscount', 'with_available_discount'),
         ];
     }
 

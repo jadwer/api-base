@@ -32,7 +32,10 @@ class ARInvoice extends Model
     protected $table = 'ar_invoices';
 
     protected $fillable = [
-        'invoice_number', 'invoice_date', 'due_date', 'contact_id', 'sales_order_id', 'currency', 'subtotal', 'tax_amount', 'total_amount', 'paid_amount', 'paid_date', 'status', 'journal_entry_id', 'fiscal_period_id', 'notes', 'metadata', 'is_active'
+        'invoice_number', 'invoice_date', 'due_date', 'contact_id', 'sales_order_id', 'currency', 'subtotal', 'tax_amount', 'total_amount', 'paid_amount', 'paid_date', 'status', 'journal_entry_id', 'fiscal_period_id', 'notes', 'metadata', 'is_active',
+        // FI-M002: Early payment discount fields
+        'discount_percent', 'discount_days', 'discount_date', 'discount_amount',
+        'discount_applied', 'discount_applied_amount', 'discount_applied_date',
     ];
 
     protected $casts = [
@@ -44,13 +47,57 @@ class ARInvoice extends Model
         'total_amount' => 'float',
         'paid_amount' => 'float',
         'metadata' => 'array',
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
+        // FI-M002: Early payment discount casts
+        'discount_percent' => 'float',
+        'discount_days' => 'integer',
+        'discount_date' => 'date',
+        'discount_amount' => 'float',
+        'discount_applied' => 'boolean',
+        'discount_applied_amount' => 'float',
+        'discount_applied_date' => 'date',
     ];
 
     // Scopes
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * FI-M002: Scope for invoices with available early payment discounts.
+     */
+    public function scopeWithAvailableDiscount($query)
+    {
+        return $query->where('discount_applied', false)
+            ->whereNotNull('discount_date')
+            ->where('discount_date', '>=', now())
+            ->whereIn('status', ['pending', 'partial']);
+    }
+
+    /**
+     * FI-M002: Check if early payment discount is still available.
+     */
+    public function hasAvailableDiscount(): bool
+    {
+        return $this->discount_percent > 0
+            && $this->discount_date
+            && !$this->discount_applied
+            && now()->lte($this->discount_date);
+    }
+
+    /**
+     * FI-M002: Get effective remaining balance considering discount if applicable.
+     */
+    public function getEffectiveRemainingBalance(): float
+    {
+        $remaining = $this->total_amount - ($this->paid_amount ?? 0);
+
+        if ($this->hasAvailableDiscount()) {
+            return $remaining - $this->discount_amount;
+        }
+
+        return $remaining;
     }
 
 
