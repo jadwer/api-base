@@ -51,6 +51,13 @@ class InventoryPermissionSeeder extends Seeder
             'inventory-movements.store',
             'inventory-movements.update',
             'inventory-movements.destroy',
+
+            // Cycle Count permissions (IV-M001)
+            'inventory.cycle-counts.index',
+            'inventory.cycle-counts.show',
+            'inventory.cycle-counts.store',
+            'inventory.cycle-counts.update',
+            'inventory.cycle-counts.destroy',
         ];
 
         $this->bulkCreatePermissions($permissions);

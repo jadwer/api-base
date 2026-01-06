@@ -3,7 +3,9 @@
 namespace Modules\Inventory\Listeners;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Modules\Inventory\Events\InventoryMovementCreated;
+use Modules\Inventory\Mail\GLPostingFailedMail;
 use Modules\Accounting\Services\AccountingService;
 use Modules\Accounting\Models\Account;
 
@@ -315,17 +317,28 @@ class PostInventoryMovementToGL
             return;
         }
 
+        $retryAttempts = $movement->metadata['gl_retry_attempts'] ?? 0;
+
         Log::critical('GL posting failed after max retries', [
             'movement_id' => $movement->id,
             'movement_type' => $movement->movement_type,
             'quantity' => $movement->quantity,
             'total_cost' => $movement->total_cost,
             'error' => $e->getMessage(),
-            'retry_attempts' => $movement->metadata['gl_retry_attempts'] ?? 0,
+            'retry_attempts' => $retryAttempts,
         ]);
 
-        // TODO: Send email notification to accounting team
-        // $email = config('inventory.retry.notification_email');
-        // Mail::to($email)->send(new GLPostingFailed($movement, $e));
+        // Send email notification to accounting team
+        $notificationEmails = config('inventory.notifications.failed_posting_emails');
+
+        if ($notificationEmails) {
+            $recipients = is_array($notificationEmails)
+                ? $notificationEmails
+                : explode(',', $notificationEmails);
+
+            Mail::to($recipients)->queue(
+                new GLPostingFailedMail($movement, $e->getMessage(), $retryAttempts)
+            );
+        }
     }
 }

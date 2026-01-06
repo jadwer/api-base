@@ -7,6 +7,7 @@ use Modules\Inventory\Http\Controllers\Api\V1\WarehouseLocationController;
 use Modules\Inventory\Http\Controllers\Api\V1\ProductBatchController;
 use Modules\Inventory\Http\Controllers\Api\V1\StockController;
 use Modules\Inventory\Http\Controllers\Api\V1\InventoryMovementController;
+use Modules\Inventory\Http\Controllers\Api\V1\CycleCountController;
 
 JsonApiRoute::server('v1')
     ->prefix('v1')
@@ -17,5 +18,13 @@ JsonApiRoute::server('v1')
         $server->resource('product-batches', ProductBatchController::class);
         $server->resource('stocks', StockController::class);
         $server->resource('inventory-movements', InventoryMovementController::class);
+        $server->resource('cycle-counts', CycleCountController::class)
+            ->relationships(function ($relationships) {
+                $relationships->hasOne('warehouse');
+                $relationships->hasOne('warehouseLocation');
+                $relationships->hasOne('product');
+                $relationships->hasOne('assignedTo');
+                $relationships->hasOne('countedBy');
+            });
     });
 
