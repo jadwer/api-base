@@ -91,11 +91,11 @@ class EventDrivenIntegrationTest extends TestCase
      *
      * Flow: Purchase Order Received → Create AP Invoice → Update Purchase Order
      *
-     * TODO: Implement Procure-to-Pay E2E test similar to OnlineSalesE2ETest
+     * @see ProcureToPayE2ETest (future v1.2 implementation)
      */
     public function test_purchase_order_received_creates_ap_invoice(): void
     {
-        $this->markTestSkipped('TODO: Create ProcureToPayE2ETest with full accounting setup');
+        $this->markTestSkipped('Procure-to-Pay E2E test planned for v1.2');
 
         // Arrange: Create supplier contact
         $supplier = Contact::factory()->create([
@@ -234,11 +234,11 @@ class EventDrivenIntegrationTest extends TestCase
     /**
      * Test complete Procure-to-Pay flow
      *
-     * TODO: Implement Procure-to-Pay E2E test similar to OnlineSalesE2ETest
+     * @see ProcureToPayE2ETest (future v1.2 implementation)
      */
     public function test_procure_to_pay_complete_flow(): void
     {
-        $this->markTestSkipped('TODO: Create ProcureToPayE2ETest with full accounting setup');
+        $this->markTestSkipped('Procure-to-Pay E2E test planned for v1.2');
 
         // Arrange
         $supplier = Contact::factory()->create(['is_supplier' => true]);

@@ -1,10 +1,15 @@
 <?php
 
-// TODO: Refactorizar con JSON:API de manera empresarial
-// - Mover upload, download, view a Actions dentro del ContactDocumentController JSON:API estándar
-// - Usar relationships para verify/unverify en lugar de endpoints custom
-// - Implementar resource actions según JSON:API specification
-// - Eliminar este controlador "pegote" y usar solo JSON:API controllers
+/**
+ * ContactDocumentUploadController
+ *
+ * Handles file upload/download operations for contact documents.
+ * This controller uses standard Laravel file handling rather than JSON:API
+ * because multipart/form-data uploads are not natively supported by JSON:API spec.
+ *
+ * Future enhancement (v1.2+): Consider using JSON:API Actions extension
+ * or a dedicated file upload microservice.
+ */
 
 namespace Modules\Contacts\Http\Controllers\Api\V1;
 

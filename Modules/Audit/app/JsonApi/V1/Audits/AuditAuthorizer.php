@@ -128,7 +128,7 @@ class AuditAuthorizer implements Authorizer
      */
     public function attachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        // TODO: Implement attachRelationship() method.
+        // Audit logs are read-only, no relationship modifications allowed
         return false;
     }
 
@@ -142,7 +142,7 @@ class AuditAuthorizer implements Authorizer
      */
     public function detachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        // TODO: Implement detachRelationship() method.
+        // Audit logs are read-only, no relationship modifications allowed
         return false;
     }
 }

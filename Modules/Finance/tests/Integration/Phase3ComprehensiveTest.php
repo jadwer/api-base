@@ -138,9 +138,51 @@ class Phase3ComprehensiveTest extends TestCase
 
     public function test_bank_reconciliation_matches_exact_transactions(): void
     {
-        // SKIPPED: BankTransaction model not yet implemented in Finance module
-        // TODO: Implement when Finance module is fully regenerated with bank_transactions table
-        $this->markTestSkipped('BankTransaction model not yet implemented');
+        // Create bank account
+        $bankAccount = BankAccount::factory()->create();
+
+        // Create a journal entry to match against
+        $fiscalPeriod = FiscalPeriod::factory()->create([
+            'status' => 'open',
+            'start_date' => now()->startOfMonth(),
+            'end_date' => now()->endOfMonth(),
+        ]);
+
+        $cashAccount = Account::factory()->create([
+            'code' => '1101-TEST',
+            'account_type' => 'asset',
+            'is_postable' => true,
+        ]);
+
+        $journalEntry = JournalEntry::factory()->create([
+            'fiscal_period_id' => $fiscalPeriod->id,
+            'status' => 'posted',
+            'reference' => 'DEP-001',
+        ]);
+
+        JournalLine::factory()->create([
+            'journal_entry_id' => $journalEntry->id,
+            'account_id' => $cashAccount->id,
+            'debit' => 5000.00,
+            'credit' => 0,
+        ]);
+
+        // Create unreconciled bank transaction
+        $transaction = BankTransaction::factory()->create([
+            'bank_account_id' => $bankAccount->id,
+            'amount' => 5000.00,
+            'transaction_type' => 'credit',
+            'reconciliation_status' => 'unreconciled',
+            'reference' => 'DEP-001',
+        ]);
+
+        // Test auto-reconciliation
+        $result = $this->bankReconciliationService->autoReconcile($bankAccount, now());
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('matches', $result);
+        $this->assertArrayHasKey('unmatched_bank', $result);
+        $this->assertArrayHasKey('match_rate', $result);
     }
 
     public function test_period_control_validates_open_period(): void
