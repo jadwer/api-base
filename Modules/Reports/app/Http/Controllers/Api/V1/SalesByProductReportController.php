@@ -31,6 +31,11 @@ class SalesByProductReportController extends Controller
             ], 401);
         }
 
+        // God and admin roles have full access
+        if ($user->hasAnyRole(['god', 'admin'])) {
+            return null;
+        }
+
         if (!$user->hasPermissionTo($permission)) {
             return response()->json([
                 'jsonapi' => ['version' => '1.0'],

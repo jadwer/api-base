@@ -17,7 +17,7 @@ class TrialBalanceAuthorizer implements Authorizer
             return Response::deny('Unauthenticated', 401);
         }
 
-        return $user->hasPermissionTo('reports.trial-balances.index');
+        return $user->hasAnyRole(['god', 'admin']) || $user->hasPermissionTo('reports.trial-balances.index');
     }
 
     public function show(Request $request, object $model): bool|Response
@@ -28,7 +28,7 @@ class TrialBalanceAuthorizer implements Authorizer
             return Response::deny('Unauthenticated', 401);
         }
 
-        return $user->hasPermissionTo('reports.trial-balances.show');
+        return $user->hasAnyRole(['god', 'admin']) || $user->hasPermissionTo('reports.trial-balances.show');
     }
 
     public function store(Request $request, string $modelClass): bool|Response

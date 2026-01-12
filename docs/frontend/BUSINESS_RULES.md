@@ -243,15 +243,38 @@ GET /api/v1/contacts/check-duplicates?name=Acme&email=contact@acme.com
 - Display which invoices paid
 - Allow manual override if permitted
 
-### MP-006: Cart Expiration
+### MP-006: Guest Cart (LocalStorage)
 **Module:** Ecommerce
-**Rule:** Carts expire after 24 hours
+**Rule:** Guest carts use localStorage, not backend
 **Frontend Must:**
-- Show expiration timer
-- Warn before expiration
-- Handle expired cart gracefully
+- Store cart in localStorage for guests
+- Sync to backend on login/register
+- Clear localStorage after sync
+- Handle localStorage quota errors
 
-### MP-007: Document Expiration
+```typescript
+// LocalStorage structure
+{
+  items: [{ productId, quantity, unitPrice, productName, productImage }],
+  couponCode: string | null,
+  updatedAt: string
+}
+
+// On login: create backend cart with local items
+POST /api/v1/shopping-carts  // Create cart
+POST /api/v1/cart-items      // Add each item
+localStorage.removeItem('ecommerce_cart')  // Clear local
+```
+
+### MP-007: Cart Expiration (Backend)
+**Module:** Ecommerce
+**Rule:** Backend carts can expire
+**Frontend Must:**
+- Check `isExpired` computed field
+- Handle expired cart gracefully
+- Create new cart if expired
+
+### MP-008: Document Expiration
 **Module:** Contacts
 **Rule:** Track document expiration dates
 **Frontend Must:**
@@ -355,18 +378,28 @@ GET /api/v1/contacts/check-duplicates?name=Acme&email=contact@acme.com
 
 ### Ecommerce Checkout Flow
 ```
-1. Add items to cart
-2. Apply coupon (optional)
-3. Start checkout session
-4. Enter shipping address
-5. Select shipping method
-6. Create payment intent (Stripe)
-7. Confirm payment (Stripe.js)
-8. Backend confirms payment
-9. SalesOrder created automatically
-10. ARInvoice created automatically
-11. Email confirmation sent
-12. Redirect to order confirmation
+GUEST PHASE (localStorage):
+1. Add items to localStorage cart
+2. Apply coupon code (stored locally)
+
+LOGIN/REGISTER:
+3. User logs in or registers
+4. Frontend syncs localStorage cart to backend
+5. Create ShoppingCart via API
+6. Create CartItems via API
+7. Clear localStorage
+
+AUTHENTICATED CHECKOUT:
+8. Start checkout session
+9. Enter shipping address
+10. Select shipping method
+11. Create payment intent (Stripe)
+12. Confirm payment (Stripe.js)
+13. Backend confirms payment
+14. SalesOrder created automatically
+15. ARInvoice created automatically
+16. Email confirmation sent
+17. Redirect to order confirmation
 ```
 
 ---

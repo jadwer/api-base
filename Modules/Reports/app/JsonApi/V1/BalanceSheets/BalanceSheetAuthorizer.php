@@ -24,8 +24,8 @@ class BalanceSheetAuthorizer implements Authorizer
             return Response::deny('Unauthenticated', 401);
         }
 
-        // Only users with permission can view balance sheets
-        return $user->hasPermissionTo('reports.balance-sheets.index');
+        // God/Admin roles have full access, others need permission
+        return $user->hasAnyRole(['god', 'admin']) || $user->hasPermissionTo('reports.balance-sheets.index');
     }
 
     /**
@@ -43,8 +43,8 @@ class BalanceSheetAuthorizer implements Authorizer
             return Response::deny('Unauthenticated', 401);
         }
 
-        // Only users with permission can view balance sheets
-        return $user->hasPermissionTo('reports.balance-sheets.show');
+        // God/Admin roles have full access, others need permission
+        return $user->hasAnyRole(['god', 'admin']) || $user->hasPermissionTo('reports.balance-sheets.show');
     }
 
     /**

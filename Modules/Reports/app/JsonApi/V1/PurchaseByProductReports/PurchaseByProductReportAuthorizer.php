@@ -24,7 +24,7 @@ class PurchaseByProductReportAuthorizer implements Authorizer
             return Response::deny('Unauthenticated', 401);
         }
 
-        return $user->hasPermissionTo('reports.purchase-by-product-reports.index');
+        return $user->hasAnyRole(['god', 'admin']) || $user->hasPermissionTo('reports.purchase-by-product-reports.index');
     }
 
     /**
@@ -42,7 +42,7 @@ class PurchaseByProductReportAuthorizer implements Authorizer
             return Response::deny('Unauthenticated', 401);
         }
 
-        return $user->hasPermissionTo('reports.purchase-by-product-reports.show');
+        return $user->hasAnyRole(['god', 'admin']) || $user->hasPermissionTo('reports.purchase-by-product-reports.show');
     }
 
     /**

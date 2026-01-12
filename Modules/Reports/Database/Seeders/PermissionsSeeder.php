@@ -35,9 +35,9 @@ class PermissionsSeeder extends Seeder
             'reports.trial-balances.show',
         ];
 
-        $this->bulkCreateAndAssignPermissions($financialReportPermissions, ['admin', 'tech']);
+        $this->bulkCreateAndAssignPermissions($financialReportPermissions, ['god', 'admin', 'tech']);
 
-        // Aging report permissions (admin and tech can view)
+        // Aging report permissions (god, admin and tech can view)
         $agingReportPermissions = [
             // AP Aging
             'reports.ap-aging-reports.index',
@@ -48,9 +48,9 @@ class PermissionsSeeder extends Seeder
             'reports.ar-aging-reports.show',
         ];
 
-        $this->bulkCreateAndAssignPermissions($agingReportPermissions, ['admin', 'tech']);
+        $this->bulkCreateAndAssignPermissions($agingReportPermissions, ['god', 'admin', 'tech']);
 
-        // Sales report permissions (admin and tech can view)
+        // Sales report permissions (god, admin and tech can view)
         $salesReportPermissions = [
             // Sales by Customer
             'reports.sales-by-customer-reports.index',
@@ -61,9 +61,9 @@ class PermissionsSeeder extends Seeder
             'reports.sales-by-product-reports.show',
         ];
 
-        $this->bulkCreateAndAssignPermissions($salesReportPermissions, ['admin', 'tech']);
+        $this->bulkCreateAndAssignPermissions($salesReportPermissions, ['god', 'admin', 'tech']);
 
-        // Purchase report permissions (admin and tech can view)
+        // Purchase report permissions (god, admin and tech can view)
         $purchaseReportPermissions = [
             // Purchase by Supplier
             'reports.purchase-by-supplier-reports.index',
@@ -74,7 +74,7 @@ class PermissionsSeeder extends Seeder
             'reports.purchase-by-product-reports.show',
         ];
 
-        $this->bulkCreateAndAssignPermissions($purchaseReportPermissions, ['admin', 'tech']);
+        $this->bulkCreateAndAssignPermissions($purchaseReportPermissions, ['god', 'admin', 'tech']);
 
         $this->command->info('✅ Reports permissions seeded successfully!');
     }

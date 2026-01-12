@@ -17,7 +17,7 @@ class CashFlowAuthorizer implements Authorizer
             return Response::deny('Unauthenticated', 401);
         }
 
-        return $user->hasPermissionTo('reports.cash-flows.index');
+        return $user->hasAnyRole(['god', 'admin']) || $user->hasPermissionTo('reports.cash-flows.index');
     }
 
     public function show(Request $request, object $model): bool|Response
@@ -28,7 +28,7 @@ class CashFlowAuthorizer implements Authorizer
             return Response::deny('Unauthenticated', 401);
         }
 
-        return $user->hasPermissionTo('reports.cash-flows.show');
+        return $user->hasAnyRole(['god', 'admin']) || $user->hasPermissionTo('reports.cash-flows.show');
     }
 
     public function store(Request $request, string $modelClass): bool|Response

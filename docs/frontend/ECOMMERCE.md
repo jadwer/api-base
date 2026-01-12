@@ -2,49 +2,196 @@
 
 ## Entities
 
-| Entity | Endpoint | Description |
-|--------|----------|-------------|
-| ShoppingCart | `/api/v1/shopping-carts` | Customer carts |
-| CartItem | `/api/v1/cart-items` | Cart line items |
-| CheckoutSession | `/api/v1/checkout-sessions` | Checkout process |
-| OnlinePayment | `/api/v1/online-payments` | Payment processing |
-| Wishlist | `/api/v1/wishlists` | Customer wishlists |
-| WishlistItem | `/api/v1/wishlist-items` | Wishlist items |
-| ProductReview | `/api/v1/product-reviews` | Product reviews |
-| Coupon | `/api/v1/coupons` | Discount coupons |
+| Entity | Endpoint | Auth Required | Description |
+|--------|----------|---------------|-------------|
+| ShoppingCart | `/api/v1/shopping-carts` | Yes | Customer carts (backend) |
+| CartItem | `/api/v1/cart-items` | Yes | Cart line items |
+| CheckoutSession | `/api/v1/checkout-sessions` | Yes | Checkout process |
+| PaymentTransaction | `/api/v1/payment-transactions` | Yes | Payment processing |
+| Wishlist | `/api/v1/wishlists` | Yes | Customer wishlists |
+| WishlistItem | `/api/v1/wishlist-items` | Yes | Wishlist items |
+| ProductReview | `/api/v1/product-reviews` | Read: No, Write: Yes | Product reviews |
+| Coupon | `/api/v1/coupons` | Yes | Discount coupons |
 
-## Shopping Cart
+---
+
+## Guest Cart Strategy: LocalStorage
+
+**IMPORTANTE**: Los carritos de invitados se manejan en **LocalStorage**, no en backend.
+
+### Razones
+1. **Sin basura en BD** - No se acumulan carritos abandonados
+2. **Funciona offline** - El usuario puede agregar items sin conexión
+3. **Sin gestión de sesiones** - No hay que vincular dispositivos
+4. **Cross-device no es viable** - Sin auth, no hay forma confiable de vincular
+
+### Flujo Guest → Usuario Autenticado
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│  Guest añade    │     │  Guest hace     │     │  Backend crea   │
+│  items a        │────▶│  login/register │────▶│  carrito real   │
+│  localStorage   │     │                 │     │  con items      │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+```
+
+### LocalStorage Cart Structure
+
+```typescript
+interface LocalCartItem {
+  productId: number;
+  productVariantId: number | null;
+  quantity: number;
+  unitPrice: number;
+  productName: string;      // Para mostrar sin fetch
+  productImage: string;     // URL de imagen
+  addedAt: string;          // ISO date
+}
+
+interface LocalCart {
+  items: LocalCartItem[];
+  couponCode: string | null;
+  updatedAt: string;
+}
+
+// Storage key
+const CART_KEY = 'ecommerce_cart';
+
+// Example operations
+function getLocalCart(): LocalCart {
+  const data = localStorage.getItem(CART_KEY);
+  return data ? JSON.parse(data) : { items: [], couponCode: null, updatedAt: new Date().toISOString() };
+}
+
+function saveLocalCart(cart: LocalCart): void {
+  cart.updatedAt = new Date().toISOString();
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+}
+
+function addToLocalCart(item: LocalCartItem): void {
+  const cart = getLocalCart();
+  const existing = cart.items.find(i =>
+    i.productId === item.productId &&
+    i.productVariantId === item.productVariantId
+  );
+
+  if (existing) {
+    existing.quantity += item.quantity;
+  } else {
+    cart.items.push(item);
+  }
+
+  saveLocalCart(cart);
+}
+
+function clearLocalCart(): void {
+  localStorage.removeItem(CART_KEY);
+}
+```
+
+### Sync on Login
+
+```typescript
+async function syncCartOnLogin(token: string): Promise<ShoppingCart> {
+  const localCart = getLocalCart();
+
+  if (localCart.items.length === 0) {
+    // No local cart, fetch user's existing cart
+    return await fetchUserCart(token);
+  }
+
+  // Create backend cart with local items
+  const cart = await createCart(token, {
+    status: 'active',
+    couponCode: localCart.couponCode
+  });
+
+  // Add all items
+  for (const item of localCart.items) {
+    await addCartItem(token, {
+      shoppingCartId: cart.id,
+      productId: item.productId,
+      productVariantId: item.productVariantId,
+      quantity: item.quantity,
+      unitPrice: item.unitPrice
+    });
+  }
+
+  // Clear local cart
+  clearLocalCart();
+
+  return cart;
+}
+```
+
+---
+
+## Shopping Cart (Authenticated Users)
 
 ```typescript
 type CartStatus = 'active' | 'abandoned' | 'converted' | 'expired';
 
 interface ShoppingCart {
   id: string;
-  userId: number | null;      // Null for guest carts
-  sessionId: string;          // For guest tracking
+  userId: number;
+  sessionId: string | null;
   status: CartStatus;
-  subtotal: number;
+  totalAmount: number;
   discountAmount: number;
   taxAmount: number;
-  total: number;
+  shippingAmount: number;
   couponCode: string | null;
-  expiresAt: string;
+  currency: string;
+  expiresAt: string | null;
+  notes: string | null;
+
+  // Computed (appends)
+  itemsCount: number;
+  subtotalAmount: number;
+  finalTotal: number;
+  isExpired: boolean;
+  canApplyCoupon: boolean;
+
   createdAt: string;
+  updatedAt: string;
 }
 
-// Get or create cart
-GET /api/v1/shopping-carts/current
-POST /api/v1/shopping-carts/get-or-create
+// List user's carts
+GET /api/v1/shopping-carts
+
+// Create cart
+POST /api/v1/shopping-carts
+{
+  "data": {
+    "type": "shopping-carts",
+    "attributes": {
+      "status": "active",
+      "currency": "MXN"
+    }
+  }
+}
 
 // Get cart with items
-GET /api/v1/shopping-carts/{id}?include=items.product
+GET /api/v1/shopping-carts/{id}?include=cartItems
 
-// Merge guest cart after login
-POST /api/v1/shopping-carts/merge
+// Update cart
+PATCH /api/v1/shopping-carts/{id}
 {
-  "guest_session_id": "guest-session-123"
+  "data": {
+    "type": "shopping-carts",
+    "id": "1",
+    "attributes": {
+      "couponCode": "SAVE10",
+      "discountAmount": 100.00
+    }
+  }
 }
+
+// Delete cart
+DELETE /api/v1/shopping-carts/{id}
 ```
+
+---
 
 ## Cart Item
 
@@ -53,12 +200,19 @@ interface CartItem {
   id: string;
   shoppingCartId: number;
   productId: number;
-  productVariantId: number | null;
   quantity: number;
   unitPrice: number;
+  originalPrice: number;
+  discountPercent: number;
   discountAmount: number;
+  subtotal: number;
+  taxRate: number;
+  taxAmount: number;
   total: number;
+  status: string;
+  metadata: Record<string, any> | null;
   createdAt: string;
+  updatedAt: string;
 }
 
 // Add item to cart
@@ -67,11 +221,19 @@ POST /api/v1/cart-items
   "data": {
     "type": "cart-items",
     "attributes": {
-      "shoppingCartId": 1,
-      "productId": 5,
       "quantity": 2,
       "unitPrice": 150.00,
+      "originalPrice": 150.00,
+      "subtotal": 300.00,
       "total": 300.00
+    },
+    "relationships": {
+      "shoppingCart": {
+        "data": { "type": "shopping-carts", "id": "1" }
+      },
+      "product": {
+        "data": { "type": "products", "id": "5" }
+      }
     }
   }
 }
@@ -84,6 +246,7 @@ PATCH /api/v1/cart-items/{id}
     "id": "1",
     "attributes": {
       "quantity": 3,
+      "subtotal": 450.00,
       "total": 450.00
     }
   }
@@ -93,37 +256,51 @@ PATCH /api/v1/cart-items/{id}
 DELETE /api/v1/cart-items/{id}
 ```
 
+---
+
 ## Checkout Session
 
 ```typescript
-type CheckoutStatus = 'pending' | 'payment_pending' | 'completed' | 'failed' | 'cancelled';
+type CheckoutStatus = 'pending' | 'address_required' | 'shipping_required' |
+                      'payment_required' | 'processing' | 'completed' |
+                      'failed' | 'cancelled' | 'expired';
 
 interface CheckoutSession {
   id: string;
   shoppingCartId: number;
-  contactId: number | null;
+  userId: number;
   status: CheckoutStatus;
 
-  // Address info
-  shippingAddressId: number | null;
-  billingAddressId: number | null;
+  // Customer info
+  customerEmail: string;
+  customerPhone: string | null;
+
+  // Addresses (JSON)
+  shippingAddress: Address | null;
+  billingAddress: Address | null;
+
+  // Shipping
+  shippingMethodId: number | null;
+  shippingAmount: number;
 
   // Amounts
-  subtotal: number;
-  shippingAmount: number;
-  taxAmount: number;
+  subtotalAmount: number;
   discountAmount: number;
-  total: number;
+  taxAmount: number;
+  totalAmount: number;
+  currency: string;
 
   // Payment
   paymentMethod: string | null;
-  paymentIntentId: string | null;  // Stripe
+  paymentIntentId: string | null;
 
   // Result
   salesOrderId: number | null;
   completedAt: string | null;
+  expiresAt: string;
 
   createdAt: string;
+  updatedAt: string;
 }
 
 // Start checkout
@@ -133,100 +310,120 @@ POST /api/v1/checkout-sessions
     "type": "checkout-sessions",
     "attributes": {
       "shoppingCartId": 1,
-      "shippingAddressId": 5,
-      "billingAddressId": 5
+      "customerEmail": "customer@example.com",
+      "shippingAddress": {
+        "street": "Av. Reforma 123",
+        "city": "CDMX",
+        "state": "CDMX",
+        "postalCode": "06600",
+        "country": "MX"
+      },
+      "billingAddress": {
+        "street": "Av. Reforma 123",
+        "city": "CDMX",
+        "state": "CDMX",
+        "postalCode": "06600",
+        "country": "MX"
+      }
     }
   }
 }
 
-// Update checkout (add shipping method, etc.)
+// Update checkout (add shipping method)
 PATCH /api/v1/checkout-sessions/{id}
 {
   "data": {
     "type": "checkout-sessions",
+    "id": "1",
     "attributes": {
-      "shippingMethod": "express",
-      "shippingAmount": 150.00
+      "shippingMethodId": 2,
+      "shippingAmount": 150.00,
+      "status": "payment_required"
     }
   }
 }
+
+// Get checkout with relations
+GET /api/v1/checkout-sessions/{id}?include=shoppingCart,shippingMethod
 ```
 
-## Online Payment (Stripe)
+---
+
+## Payment Transaction (Stripe)
 
 ```typescript
-interface OnlinePayment {
+type PaymentStatus = 'pending' | 'processing' | 'authorized' | 'captured' |
+                     'succeeded' | 'failed' | 'cancelled' | 'refunded' |
+                     'partially_refunded';
+
+interface PaymentTransaction {
   id: string;
   checkoutSessionId: number;
-  provider: 'stripe';
+  salesOrderId: number | null;
+  arInvoiceId: number | null;
+
+  transactionId: string;      // Stripe payment intent ID
+  gateway: 'stripe' | 'mock';
+  paymentMethod: string;      // 'card', 'oxxo', etc.
+
   amount: number;
   currency: string;
-  status: 'pending' | 'processing' | 'succeeded' | 'failed' | 'refunded';
-  providerPaymentId: string | null;   // Stripe payment intent ID
-  providerData: Record<string, any>;
+  status: PaymentStatus;
+
+  gatewayResponse: Record<string, any>;
+  errorCode: string | null;
   errorMessage: string | null;
-  paidAt: string | null;
+
+  authorizedAt: string | null;
+  capturedAt: string | null;
+  failedAt: string | null;
+  refundedAt: string | null;
+
+  metadata: Record<string, any> | null;
   createdAt: string;
-}
-
-// Create payment intent (Stripe)
-POST /api/v1/online-payments/create-intent
-{
-  "checkout_session_id": 1,
-  "amount": 11600.00,
-  "currency": "mxn"
-}
-
-// Response
-{
-  "client_secret": "pi_xxx_secret_xxx",  // Use with Stripe.js
-  "payment_intent_id": "pi_xxx"
-}
-
-// Confirm payment (after Stripe.js confirmation)
-POST /api/v1/online-payments/confirm
-{
-  "payment_intent_id": "pi_xxx"
-}
-
-// Response (creates order automatically)
-{
-  "status": "succeeded",
-  "sales_order_id": 15,
-  "order_number": "SO-XXXXXXXX",
-  "ar_invoice_id": 20
+  updatedAt: string;
 }
 ```
 
 ### Stripe Integration Flow
 
 ```typescript
-// Frontend flow
-async function checkout(checkoutSessionId: number) {
-  // 1. Create payment intent
-  const { client_secret } = await createPaymentIntent(checkoutSessionId);
+// 1. Create checkout session first
+const checkoutSession = await createCheckoutSession(cartId, addresses);
 
-  // 2. Confirm with Stripe.js
-  const stripe = await loadStripe(STRIPE_PUBLIC_KEY);
-  const { error, paymentIntent } = await stripe.confirmCardPayment(client_secret, {
-    payment_method: {
-      card: cardElement,
-      billing_details: { name: 'Customer Name' }
+// 2. Backend creates Stripe PaymentIntent via CheckoutService
+//    This happens automatically when checkout session is created
+
+// 3. Get client_secret from checkout session
+const clientSecret = checkoutSession.attributes.paymentIntentId;
+
+// 4. Confirm with Stripe.js
+const stripe = await loadStripe(STRIPE_PUBLIC_KEY);
+const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+  payment_method: {
+    card: cardElement,
+    billing_details: {
+      name: 'Customer Name',
+      email: 'customer@example.com'
     }
-  });
-
-  if (error) {
-    showError(error.message);
-    return;
   }
+});
 
-  // 3. Confirm on backend
-  const result = await confirmPayment(paymentIntent.id);
-
-  // 4. Navigate to order confirmation
-  navigateTo(`/orders/${result.sales_order_id}`);
+if (error) {
+  showError(error.message);
+  return;
 }
+
+// 5. Update checkout session status
+await updateCheckoutSession(checkoutSession.id, {
+  status: 'processing'
+});
+
+// 6. Backend completes checkout via event/webhook
+//    Creates: SalesOrder, ARInvoice automatically
 ```
+
+---
 
 ## Wishlist
 
@@ -234,10 +431,14 @@ async function checkout(checkoutSessionId: number) {
 interface Wishlist {
   id: string;
   userId: number;
-  name: string;              // "My Wishlist", "Birthday Ideas"
+  name: string;
+  description: string | null;
   isPublic: boolean;
-  shareToken: string | null; // For sharing
+  isDefault: boolean;
+  shareToken: string | null;
+  itemCount: number;
   createdAt: string;
+  updatedAt: string;
 }
 
 interface WishlistItem {
@@ -245,32 +446,63 @@ interface WishlistItem {
   wishlistId: number;
   productId: number;
   productVariantId: number | null;
-  addedAt: string;
+  priority: number;
   notes: string | null;
+  notifyOnSale: boolean;
+  notifyOnStock: boolean;
+  addedAt: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // Get user wishlists
-GET /api/v1/wishlists?filter[user_id]=current
+GET /api/v1/wishlists
 
-// Add to wishlist
+// Create wishlist
+POST /api/v1/wishlists
+{
+  "data": {
+    "type": "wishlists",
+    "attributes": {
+      "name": "Birthday Ideas",
+      "isPublic": false
+    }
+  }
+}
+
+// Add item to wishlist
 POST /api/v1/wishlist-items
 {
   "data": {
     "type": "wishlist-items",
     "attributes": {
-      "wishlistId": 1,
-      "productId": 10
+      "priority": 1,
+      "notifyOnSale": true
+    },
+    "relationships": {
+      "wishlist": {
+        "data": { "type": "wishlists", "id": "1" }
+      },
+      "product": {
+        "data": { "type": "products", "id": "10" }
+      }
     }
   }
 }
 
-// Move to cart
-POST /api/v1/wishlist-items/{id}/move-to-cart
+// Get wishlist with items
+GET /api/v1/wishlists/{id}?include=wishlistItems.product
 ```
+
+---
 
 ## Product Review
 
+**Note**: Reading approved reviews is PUBLIC (no auth required).
+
 ```typescript
+type ReviewStatus = 'pending' | 'approved' | 'rejected';
+
 interface ProductReview {
   id: string;
   productId: number;
@@ -278,15 +510,20 @@ interface ProductReview {
   rating: number;            // 1-5
   title: string | null;
   content: string | null;
+  pros: string[] | null;
+  cons: string[] | null;
   isVerifiedPurchase: boolean;
-  isApproved: boolean;
+  status: ReviewStatus;
+  helpfulCount: number;
+  reportCount: number;
   createdAt: string;
+  updatedAt: string;
 }
 
-// Get reviews for product
-GET /api/v1/product-reviews?filter[product_id]=1&filter[is_approved]=true&sort=-createdAt
+// Get reviews for product (PUBLIC - no auth)
+GET /api/v1/product-reviews?filter[product_id]=1&filter[status]=approved&sort=-createdAt
 
-// Create review
+// Create review (requires auth)
 POST /api/v1/product-reviews
 {
   "data": {
@@ -294,28 +531,16 @@ POST /api/v1/product-reviews
     "attributes": {
       "productId": 1,
       "rating": 5,
-      "title": "Great product!",
-      "content": "Exceeded my expectations..."
+      "title": "Excellent product!",
+      "content": "Exceeded my expectations...",
+      "pros": ["Quality", "Fast shipping"],
+      "cons": ["Expensive"]
     }
   }
 }
-
-// Get product rating summary
-GET /api/v1/products/{id}/rating-summary
-
-// Response
-{
-  "averageRating": 4.5,
-  "totalReviews": 120,
-  "distribution": {
-    "5": 80,
-    "4": 25,
-    "3": 10,
-    "2": 3,
-    "1": 2
-  }
-}
 ```
+
+---
 
 ## Coupons
 
@@ -324,121 +549,192 @@ type DiscountType = 'percentage' | 'fixed_amount' | 'free_shipping';
 
 interface Coupon {
   id: string;
-  code: string;              // SAVE10
+  code: string;
   name: string;
+  description: string | null;
   discountType: DiscountType;
   discountValue: number;
   minOrderAmount: number | null;
-  maxDiscount: number | null;
+  maxDiscountAmount: number | null;
   usageLimit: number | null;
   usageCount: number;
+  usageLimitPerUser: number | null;
   startDate: string | null;
   endDate: string | null;
   isActive: boolean;
+  appliesToAllProducts: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
-// Apply coupon to cart
-POST /api/v1/shopping-carts/{id}/apply-coupon
+// Validate coupon (call before applying)
+// This is done by attempting to update cart with couponCode
+PATCH /api/v1/shopping-carts/{id}
 {
-  "coupon_code": "SAVE10"
+  "data": {
+    "type": "shopping-carts",
+    "id": "1",
+    "attributes": {
+      "couponCode": "SAVE10"
+    }
+  }
 }
 
-// Response
-{
-  "valid": true,
-  "discount_amount": 100.00,
-  "new_total": 900.00,
-  "message": "10% discount applied"
-}
-
-// OR
-{
-  "valid": false,
-  "error": "Coupon expired"
-}
-
-// Remove coupon
-POST /api/v1/shopping-carts/{id}/remove-coupon
+// If invalid, will return 422 with error
+// If valid, cart will be updated with discount
 ```
 
-## Product Recommendations
+---
+
+## Product Recommendations (PUBLIC)
 
 ```typescript
-// Get recommendations for product
-GET /api/v1/products/{id}/recommendations
+// Related products
+GET /api/v1/products/{id}/related
 
-// Response
-{
-  "frequently_bought_together": [
-    { "id": 5, "name": "iPhone Case", "price": 29.99 }
-  ],
-  "similar_products": [
-    { "id": 10, "name": "Samsung Galaxy", "price": 1199.99 }
-  ],
-  "customers_also_viewed": [...]
-}
+// Frequently bought together
+GET /api/v1/products/{id}/frequently-bought-together
 
-// Get personalized recommendations (for logged-in user)
-GET /api/v1/recommendations/personalized
+// Trending products
+GET /api/v1/products/trending
+
+// Popular products
+GET /api/v1/products/popular
+
+// New arrivals
+GET /api/v1/products/new-arrivals
+
+// Personalized (requires auth)
+GET /api/v1/products/recommended
 ```
+
+---
 
 ## Complete Checkout Flow
 
 ```typescript
-async function completeCheckout(cart: ShoppingCart, shippingAddress: Address) {
-  // 1. Create checkout session
-  const session = await fetch('/api/v1/checkout-sessions', {
+async function completeCheckout(shippingAddress: Address, cardElement: any) {
+  const token = getAuthToken();
+
+  // 1. Sync local cart to backend (if coming from guest)
+  let cart = await syncCartOnLogin(token);
+
+  // 2. Create checkout session
+  const sessionResponse = await fetch('/api/v1/checkout-sessions', {
     method: 'POST',
-    headers,
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/vnd.api+json',
+      'Accept': 'application/vnd.api+json'
+    },
     body: JSON.stringify({
       data: {
         type: 'checkout-sessions',
         attributes: {
-          shoppingCartId: cart.id,
-          shippingAddressId: shippingAddress.id,
-          billingAddressId: shippingAddress.id
+          shoppingCartId: parseInt(cart.id),
+          customerEmail: user.email,
+          shippingAddress,
+          billingAddress: shippingAddress
         }
       }
     })
   });
-  const { data: checkoutSession } = await session.json();
+  const { data: checkoutSession } = await sessionResponse.json();
 
-  // 2. Create payment intent
-  const intent = await fetch('/api/v1/online-payments/create-intent', {
-    method: 'POST',
+  // 3. Select shipping method
+  await fetch(`/api/v1/checkout-sessions/${checkoutSession.id}`, {
+    method: 'PATCH',
     headers,
     body: JSON.stringify({
-      checkout_session_id: checkoutSession.id,
-      amount: checkoutSession.attributes.total,
-      currency: 'mxn'
+      data: {
+        type: 'checkout-sessions',
+        id: checkoutSession.id,
+        attributes: {
+          shippingMethodId: selectedShippingMethod.id,
+          shippingAmount: selectedShippingMethod.price
+        }
+      }
     })
   });
-  const { client_secret } = await intent.json();
 
-  // 3. Confirm with Stripe
+  // 4. Get updated session with payment intent
+  const updatedSession = await fetch(
+    `/api/v1/checkout-sessions/${checkoutSession.id}`,
+    { headers }
+  ).then(r => r.json());
+
+  // 5. Confirm with Stripe
   const stripe = await loadStripe(STRIPE_PUBLIC_KEY);
-  const { paymentIntent } = await stripe.confirmCardPayment(client_secret, {
-    payment_method: { card: cardElement }
-  });
+  const { error, paymentIntent } = await stripe.confirmCardPayment(
+    updatedSession.data.attributes.paymentIntentId,
+    {
+      payment_method: {
+        card: cardElement,
+        billing_details: { name: user.name, email: user.email }
+      }
+    }
+  );
 
-  // 4. Confirm on backend (creates order + invoice)
-  const result = await fetch('/api/v1/online-payments/confirm', {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({ payment_intent_id: paymentIntent.id })
-  });
+  if (error) {
+    throw new Error(error.message);
+  }
 
-  return result.json();
+  // 6. Wait for backend to process (webhook or poll)
+  const result = await pollCheckoutStatus(checkoutSession.id);
+
+  // 7. Clear local cart and navigate
+  clearLocalCart();
+
+  return {
+    salesOrderId: result.salesOrderId,
+    orderNumber: result.orderNumber
+  };
+}
+
+async function pollCheckoutStatus(sessionId: string, maxAttempts = 10): Promise<any> {
+  for (let i = 0; i < maxAttempts; i++) {
+    const session = await fetch(`/api/v1/checkout-sessions/${sessionId}`, { headers })
+      .then(r => r.json());
+
+    if (session.data.attributes.status === 'completed') {
+      return session.data.attributes;
+    }
+
+    if (session.data.attributes.status === 'failed') {
+      throw new Error('Payment failed');
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+
+  throw new Error('Checkout timeout');
 }
 ```
+
+---
 
 ## Business Rules
 
 | Rule | Description | Frontend Impact |
 |------|-------------|-----------------|
-| Cart Expiration | Carts expire after 24h | Show timer |
-| Stock Validation | Check stock at checkout | Show stock errors |
-| Guest Checkout | Allow without login | Merge cart on login |
-| Coupon Limits | One coupon per cart | Validate before apply |
-| Review Verification | Mark if bought product | Show verified badge |
-| Payment Timeout | Payment intent expires | Handle expiration |
+| **Guest Cart** | LocalStorage only | Sync on login |
+| **Auth Required** | All cart endpoints need token | Redirect to login for checkout |
+| **Cart Expiration** | Backend carts can expire | Check `isExpired` computed field |
+| **Stock Validation** | Validated at checkout | Show stock errors |
+| **Coupon Limits** | One coupon per cart | Clear previous before applying |
+| **Review Moderation** | Reviews need approval | Show pending status |
+| **Verified Purchase** | Auto-set if bought product | Show badge on reviews |
+| **Payment Timeout** | Stripe intents expire | Handle 402 errors |
+
+---
+
+## Error Codes
+
+| HTTP | Meaning | Action |
+|------|---------|--------|
+| 401 | Not authenticated | Redirect to login |
+| 403 | Not authorized (not owner) | Show error |
+| 404 | Cart/item not found | Refresh cart |
+| 422 | Validation error | Show field errors |
+| 422 | Coupon invalid | Show coupon error |
+| 402 | Payment required/failed | Show payment error |

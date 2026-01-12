@@ -24,7 +24,7 @@ class ARAgingReportAuthorizer implements Authorizer
             return Response::deny('Unauthenticated', 401);
         }
 
-        return $user->hasPermissionTo('reports.ar-aging-reports.index');
+        return $user->hasAnyRole(['god', 'admin']) || $user->hasPermissionTo('reports.ar-aging-reports.index');
     }
 
     /**
@@ -42,7 +42,7 @@ class ARAgingReportAuthorizer implements Authorizer
             return Response::deny('Unauthenticated', 401);
         }
 
-        return $user->hasPermissionTo('reports.ar-aging-reports.show');
+        return $user->hasAnyRole(['god', 'admin']) || $user->hasPermissionTo('reports.ar-aging-reports.show');
     }
 
     /**

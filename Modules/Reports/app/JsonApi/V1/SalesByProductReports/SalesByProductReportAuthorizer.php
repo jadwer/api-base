@@ -24,7 +24,7 @@ class SalesByProductReportAuthorizer implements Authorizer
             return Response::deny('Unauthenticated', 401);
         }
 
-        return $user->hasPermissionTo('reports.sales-by-product-reports.index');
+        return $user->hasAnyRole(['god', 'admin']) || $user->hasPermissionTo('reports.sales-by-product-reports.index');
     }
 
     /**
@@ -42,7 +42,7 @@ class SalesByProductReportAuthorizer implements Authorizer
             return Response::deny('Unauthenticated', 401);
         }
 
-        return $user->hasPermissionTo('reports.sales-by-product-reports.show');
+        return $user->hasAnyRole(['god', 'admin']) || $user->hasPermissionTo('reports.sales-by-product-reports.show');
     }
 
     /**
