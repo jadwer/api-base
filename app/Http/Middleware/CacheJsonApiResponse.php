@@ -135,11 +135,21 @@ class CacheJsonApiResponse
 
         Cache::put($key, $data, $ttl);
 
-        // Add to cache tag for bulk invalidation
-        $resourceType = $this->extractResourceType($response);
-        if ($resourceType) {
-            Cache::tags([$resourceType])->put($key, true, $ttl);
+        // Add to cache tag for bulk invalidation (only if cache supports tagging)
+        if ($this->supportsTags()) {
+            $resourceType = $this->extractResourceType($response);
+            if ($resourceType) {
+                Cache::tags([$resourceType])->put($key, true, $ttl);
+            }
         }
+    }
+
+    /**
+     * Check if current cache store supports tagging
+     */
+    private function supportsTags(): bool
+    {
+        return Cache::getStore() instanceof \Illuminate\Cache\TaggableStore;
     }
 
     /**
@@ -173,7 +183,9 @@ class CacheJsonApiResponse
      */
     public static function invalidate(string $resourceType): void
     {
-        Cache::tags([$resourceType])->flush();
+        if (Cache::getStore() instanceof \Illuminate\Cache\TaggableStore) {
+            Cache::tags([$resourceType])->flush();
+        }
     }
 
     /**
