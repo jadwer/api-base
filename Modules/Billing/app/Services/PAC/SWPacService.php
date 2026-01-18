@@ -360,4 +360,54 @@ class SWPacService
             return false;
         }
     }
+
+    /**
+     * Get account balance and stamps information
+     *
+     * @return array
+     * @throws PacException
+     */
+    public function getBalance(): array
+    {
+        if (!$this->enabled) {
+            throw new PacException('SW PAC integration is not enabled');
+        }
+
+        try {
+            $response = Http::withToken($this->getAuthToken())
+                ->timeout($this->timeout)
+                ->get("{$this->baseUrl}/account/balance");
+
+            if (!$response->successful()) {
+                Log::error('SW PAC balance error', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+
+                throw new PacException(
+                    'Error al consultar saldo: ' . ($response->json()['message'] ?? 'Error desconocido'),
+                    $response->status()
+                );
+            }
+
+            $data = $response->json('data');
+
+            return [
+                'balance' => $data['saldoTimbres'] ?? $data['balance'] ?? null,
+                'stamps_used' => $data['timbresUtilizados'] ?? $data['stampsUsed'] ?? null,
+                'stamps_available' => $data['timbresDisponibles'] ?? $data['stampsAvailable'] ?? null,
+                'unlimited' => $data['unlimited'] ?? false,
+                'expiration_date' => $data['fechaExpiracion'] ?? $data['expirationDate'] ?? null,
+            ];
+        } catch (PacException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            Log::error('SW PAC balance exception', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            throw new PacException('Error al consultar saldo PAC: ' . $e->getMessage());
+        }
+    }
 }

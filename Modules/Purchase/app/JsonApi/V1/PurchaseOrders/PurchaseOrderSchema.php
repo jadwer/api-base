@@ -31,6 +31,7 @@ class PurchaseOrderSchema extends Schema
             ID::make(),
             Number::make('contact_id'),
             Number::make('contactId', 'contact_id'),
+            Number::make('warehouseId', 'warehouse_id'),
             DateTime::make('orderDate', 'order_date')
                 ->sortable(),
             Str::make('status')
@@ -38,16 +39,17 @@ class PurchaseOrderSchema extends Schema
             Number::make('totalAmount', 'total_amount')
                 ->sortable(),
             Str::make('notes'),
-            
+
             // Finance integration fields
             Number::make('apInvoiceId', 'ap_invoice_id')->sortable(),
             Str::make('invoicingStatus', 'invoicing_status')->sortable(),
             Str::make('invoicingNotes', 'invoicing_notes'),
-            
+
             DateTime::make('createdAt')->sortable()->readOnly(),
             DateTime::make('updatedAt')->sortable()->readOnly(),
-            
+
             BelongsTo::make('contact')->type('contacts'),
+            BelongsTo::make('warehouse')->type('warehouses'),
             HasMany::make('purchaseOrderItems')
                 ->type('purchase-order-items'),
         ];
@@ -62,6 +64,7 @@ class PurchaseOrderSchema extends Schema
             WhereIdIn::make($this),
             Where::make('status'),
             Where::make('contact', 'contact_id'),
+            Where::make('warehouse', 'warehouse_id'),
         ];
     }
 
@@ -80,6 +83,7 @@ class PurchaseOrderSchema extends Schema
     {
         return [
             'contact',
+            'warehouse',
             'purchaseOrderItems',
         ];
     }

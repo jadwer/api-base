@@ -5,6 +5,7 @@ namespace Modules\Purchase\Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Purchase\Models\PurchaseOrder;
 use Modules\Contacts\Models\Contact;
+use Modules\Inventory\Models\Warehouse;
 
 class PurchaseOrderFactory extends Factory
 {
@@ -20,6 +21,7 @@ class PurchaseOrderFactory extends Factory
     {
         return [
             'contact_id' => Contact::factory()->state(['is_supplier' => true]),
+            'warehouse_id' => Warehouse::factory(),
             'order_date' => $this->faker->date(),
             'status' => $this->faker->randomElement(['pending', 'approved', 'received', 'cancelled']),
             'total_amount' => $this->faker->randomFloat(2, 100, 50000),

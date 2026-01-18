@@ -59,6 +59,9 @@ class PermissionsSeeder extends Seeder
             'billing.company-settings.store',
             'billing.company-settings.update',
             'billing.company-settings.destroy',
+            'billing.company-settings.upload-certificate',
+            'billing.company-settings.upload-key',
+            'billing.company-settings.test-pac',
         ];
 
         $this->bulkCreateAndAssignPermissions($settingsPermissions, ['admin']);

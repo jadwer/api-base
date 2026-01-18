@@ -15,6 +15,8 @@ use Illuminate\Http\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class CFDIInvoiceController
 {
@@ -369,5 +371,176 @@ class CFDIInvoiceController
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * Send CFDI by email
+     *
+     * @param CFDIInvoice $cfdiInvoice
+     * @param Request $request
+     * @param CFDIPDFGenerator $pdfGenerator
+     * @return JsonResponse
+     */
+    public function sendEmail(
+        CFDIInvoice $cfdiInvoice,
+        Request $request,
+        CFDIPDFGenerator $pdfGenerator
+    ): JsonResponse {
+        // Check permission
+        if (Gate::denies('billing.cfdi-invoices.send-email')) {
+            abort(403, 'No tiene permisos para enviar CFDI por correo');
+        }
+
+        // Validate request
+        $validated = $request->validate([
+            'email' => ['required', 'email'],
+            'subject' => ['nullable', 'string', 'max:255'],
+            'message' => ['nullable', 'string', 'max:2000'],
+            'include_xml' => ['nullable', 'boolean'],
+        ]);
+
+        try {
+            // Ensure PDF exists
+            if (!$cfdiInvoice->pdf_path || !Storage::disk('public')->exists($cfdiInvoice->pdf_path)) {
+                $pdfGenerator->generate($cfdiInvoice);
+                $cfdiInvoice->refresh();
+            }
+
+            $email = $validated['email'];
+            $subject = $validated['subject'] ?? 'CFDI ' . $cfdiInvoice->getFolioCompleto();
+            $body = $validated['message'] ?? $this->getDefaultEmailBody($cfdiInvoice);
+            $includeXml = $validated['include_xml'] ?? true;
+
+            // Prepare attachments
+            $attachments = [];
+
+            // PDF attachment
+            if ($cfdiInvoice->pdf_path && Storage::disk('public')->exists($cfdiInvoice->pdf_path)) {
+                $attachments[] = [
+                    'path' => Storage::disk('public')->path($cfdiInvoice->pdf_path),
+                    'name' => $this->generatePdfFilename($cfdiInvoice),
+                    'mime' => 'application/pdf',
+                ];
+            }
+
+            // XML attachment (if requested and available)
+            if ($includeXml && ($cfdiInvoice->xml_timbrado || $cfdiInvoice->xml_original)) {
+                $xml = $cfdiInvoice->xml_timbrado ?? $cfdiInvoice->xml_original;
+                $attachments[] = [
+                    'data' => $xml,
+                    'name' => $this->generateXmlFilename($cfdiInvoice),
+                    'mime' => 'application/xml',
+                ];
+            }
+
+            // Send email
+            Mail::send([], [], function ($mail) use ($email, $subject, $body, $attachments, $cfdiInvoice) {
+                $mail->to($email)
+                    ->subject($subject)
+                    ->html($this->wrapEmailBody($body, $cfdiInvoice));
+
+                foreach ($attachments as $attachment) {
+                    if (isset($attachment['path'])) {
+                        $mail->attach($attachment['path'], [
+                            'as' => $attachment['name'],
+                            'mime' => $attachment['mime'],
+                        ]);
+                    } elseif (isset($attachment['data'])) {
+                        $mail->attachData($attachment['data'], $attachment['name'], [
+                            'mime' => $attachment['mime'],
+                        ]);
+                    }
+                }
+            });
+
+            return response()->json([
+                'message' => 'CFDI enviado correctamente por correo',
+                'data' => [
+                    'id' => $cfdiInvoice->id,
+                    'email' => $email,
+                    'folio' => $cfdiInvoice->getFolioCompleto(),
+                    'attachments' => count($attachments),
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al enviar CFDI por correo',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Generate default email body for CFDI
+     *
+     * @param CFDIInvoice $invoice
+     * @return string
+     */
+    protected function getDefaultEmailBody(CFDIInvoice $invoice): string
+    {
+        $folio = $invoice->getFolioCompleto();
+        $total = number_format($invoice->total / 100, 2);
+
+        return "Estimado cliente,\n\n" .
+            "Adjunto encontrará su Comprobante Fiscal Digital por Internet (CFDI) con los siguientes datos:\n\n" .
+            "Folio: {$folio}\n" .
+            "UUID: " . ($invoice->uuid ?? 'Pendiente de timbrado') . "\n" .
+            "Total: \${$total} {$invoice->moneda}\n\n" .
+            "Gracias por su preferencia.";
+    }
+
+    /**
+     * Wrap email body in HTML
+     *
+     * @param string $body
+     * @param CFDIInvoice $invoice
+     * @return string
+     */
+    protected function wrapEmailBody(string $body, CFDIInvoice $invoice): string
+    {
+        $companyName = $invoice->companySetting?->company_name ?? config('app.name');
+
+        return "<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { border-bottom: 2px solid #0066cc; padding-bottom: 10px; margin-bottom: 20px; }
+        .content { white-space: pre-wrap; }
+        .footer { margin-top: 30px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <div class='header'>
+            <h2>{$companyName}</h2>
+        </div>
+        <div class='content'>{$body}</div>
+        <div class='footer'>
+            <p>Este correo fue generado automáticamente. Por favor no responda a este mensaje.</p>
+        </div>
+    </div>
+</body>
+</html>";
+    }
+
+    /**
+     * Generate filename for PDF
+     *
+     * @param CFDIInvoice $invoice
+     * @return string
+     */
+    protected function generatePdfFilename(CFDIInvoice $invoice): string
+    {
+        $serie = $invoice->series ?? 'F';
+        $folio = str_pad($invoice->folio, 6, '0', STR_PAD_LEFT);
+
+        if ($invoice->uuid) {
+            return "CFDI_{$serie}_{$folio}_{$invoice->uuid}.pdf";
+        }
+
+        return "CFDI_{$serie}_{$folio}.pdf";
     }
 }

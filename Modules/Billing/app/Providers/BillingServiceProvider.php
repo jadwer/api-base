@@ -3,6 +3,7 @@
 namespace Modules\Billing\Providers;
 
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
@@ -27,6 +28,57 @@ class BillingServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'Database/migrations'));
+
+        // Validate external service configurations on boot (Phase 9 - Technical Debt)
+        $this->validateServiceConfigurations();
+    }
+
+    /**
+     * Validate external service configurations.
+     * Logs warnings for missing configurations to help with early detection.
+     */
+    protected function validateServiceConfigurations(): void
+    {
+        // Skip validation during console commands (migrations, tests, etc.)
+        if ($this->app->runningInConsole()) {
+            return;
+        }
+
+        // Validate Stripe configuration
+        $stripeKey = config('services.stripe.secret');
+        if (empty($stripeKey)) {
+            Log::warning('Billing: Stripe API key not configured. Payment processing will not work.', [
+                'config_key' => 'services.stripe.secret',
+            ]);
+        }
+
+        $stripeWebhookSecret = config('services.stripe.webhook_secret');
+        if (empty($stripeWebhookSecret)) {
+            Log::warning('Billing: Stripe webhook secret not configured. Webhook verification will fail.', [
+                'config_key' => 'services.stripe.webhook_secret',
+            ]);
+        }
+
+        // Validate SW PAC configuration
+        $pacConfig = config('billing.sw_pac');
+        if (!empty($pacConfig['enabled'])) {
+            $hasToken = !empty($pacConfig['token']);
+            $hasCredentials = !empty($pacConfig['user']) && !empty($pacConfig['password']);
+
+            if (!$hasToken && !$hasCredentials) {
+                Log::warning('Billing: SW PAC is enabled but no credentials configured. CFDI stamping will fail.', [
+                    'config_key' => 'billing.sw_pac',
+                    'has_token' => $hasToken,
+                    'has_user' => !empty($pacConfig['user']),
+                ]);
+            }
+
+            if (empty($pacConfig['url'])) {
+                Log::warning('Billing: SW PAC URL not configured.', [
+                    'config_key' => 'billing.sw_pac.url',
+                ]);
+            }
+        }
     }
 
     /**

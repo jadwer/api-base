@@ -13,6 +13,7 @@ use Spatie\Activitylog\LogOptions;
 use Modules\Purchase\Database\Factories\PurchaseOrderFactory;
 use Modules\Contacts\Models\Contact;
 use Modules\Finance\Models\APInvoice;
+use Modules\Inventory\Models\Warehouse;
 use Modules\User\Models\User;
 use Modules\Purchase\Services\PurchaseOrderApprovalService;
 
@@ -51,6 +52,7 @@ class PurchaseOrder extends Model
         return [
             'id' => 'integer',
             'contact_id' => 'integer',
+            'warehouse_id' => 'integer',
             'order_date' => 'date',
             'total_amount' => 'float',
             'ap_invoice_id' => 'integer',
@@ -104,13 +106,21 @@ class PurchaseOrder extends Model
     {
         return $this->belongsTo(Contact::class, 'contact_id');
     }
-    
+
     /**
      * Backward compatibility alias for supplier
      */
     public function supplier(): BelongsTo
     {
         return $this->contact();
+    }
+
+    /**
+     * Get the warehouse where received items will be stored.
+     */
+    public function warehouse(): BelongsTo
+    {
+        return $this->belongsTo(Warehouse::class, 'warehouse_id');
     }
 
     /**

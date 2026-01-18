@@ -77,13 +77,12 @@ class Coupon extends Model
             return 0.00;
         }
 
-        if ($this->type === 'percentage') {
-            return $cartAmount * ($this->value / 100);
-        } elseif ($this->type === 'fixed') {
-            return min($this->value, $cartAmount);
-        }
-
-        return 0.00;
+        return match ($this->type) {
+            'percentage' => $cartAmount * ($this->value / 100),
+            'fixed_amount' => min($this->value, $cartAmount),
+            'free_shipping' => 0.00, // Shipping discount handled separately
+            default => 0.00,
+        };
     }
 
     // Scopes

@@ -23,6 +23,9 @@ class SalesPermissionSeeder extends Seeder
             'backorders.index', 'backorders.view', 'backorders.show', 'backorders.store', 'backorders.update', 'backorders.destroy',
             // SA-M003: Discount Rule permissions
             'discount-rules.index', 'discount-rules.view', 'discount-rules.show', 'discount-rules.store', 'discount-rules.update', 'discount-rules.destroy',
+            // SA-M004: Quote permissions
+            'quotes.index', 'quotes.view', 'quotes.show', 'quotes.store', 'quotes.update', 'quotes.destroy',
+            'quote-items.index', 'quote-items.view', 'quote-items.show', 'quote-items.store', 'quote-items.update', 'quote-items.destroy',
         ];
 
         $this->bulkCreatePermissions($permissions);

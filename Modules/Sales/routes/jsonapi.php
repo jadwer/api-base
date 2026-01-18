@@ -8,6 +8,8 @@ use Modules\Sales\Http\Controllers\Api\V1\ShipmentController;
 use Modules\Sales\Http\Controllers\Api\V1\ShipmentItemController;
 use Modules\Sales\Http\Controllers\Api\V1\BackorderController;
 use Modules\Sales\Http\Controllers\Api\V1\DiscountRuleController;
+use Modules\Sales\Http\Controllers\Api\V1\QuoteController;
+use Modules\Sales\Http\Controllers\Api\V1\QuoteItemController;
 use Illuminate\Support\Facades\Route;
 
 JsonApiRoute::server('v1')
@@ -23,6 +25,9 @@ JsonApiRoute::server('v1')
         $server->resource('backorders', BackorderController::class);
         // SA-M003: Automatic Discount Rules
         $server->resource('discount-rules', DiscountRuleController::class);
+        // SA-M004: Quote Management
+        $server->resource('quotes', QuoteController::class);
+        $server->resource('quote-items', QuoteItemController::class);
     });
 
 // Custom endpoints for sales reporting
@@ -43,4 +48,15 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::get('sales-orders/{order}/backorder-summary', [BackorderController::class, 'orderSummary'])->name('sales-orders.backorder-summary');
     Route::post('backorders/fulfill-for-product', [BackorderController::class, 'fulfillForProduct'])->name('backorders.fulfill-for-product');
     Route::get('backorders/pending-for-product/{productId}', [BackorderController::class, 'pendingForProduct'])->name('backorders.pending-for-product');
+
+    // SA-M004: Quote action endpoints
+    Route::post('quotes/from-cart', [QuoteController::class, 'createFromCart'])->name('quotes.from-cart');
+    Route::get('quotes/expiring-soon', [QuoteController::class, 'expiringSoon'])->name('quotes.expiring-soon');
+    Route::get('quotes/summary', [QuoteController::class, 'summary'])->name('quotes.summary');
+    Route::post('quotes/{quote}/send', [QuoteController::class, 'send'])->name('quotes.send');
+    Route::post('quotes/{quote}/accept', [QuoteController::class, 'accept'])->name('quotes.accept');
+    Route::post('quotes/{quote}/reject', [QuoteController::class, 'reject'])->name('quotes.reject');
+    Route::post('quotes/{quote}/convert', [QuoteController::class, 'convert'])->name('quotes.convert');
+    Route::post('quotes/{quote}/cancel', [QuoteController::class, 'cancel'])->name('quotes.cancel');
+    Route::post('quotes/{quote}/duplicate', [QuoteController::class, 'duplicate'])->name('quotes.duplicate');
 });

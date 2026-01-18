@@ -35,9 +35,10 @@ class PurchaseOrderReceivedListener
             $purchaseOrder->load('purchaseOrderItems');
         }
 
-        // Get default warehouse (first active warehouse)
-        // NOTE: In production, warehouse_id should be added to purchase_orders table
-        $warehouse = Warehouse::where('is_active', true)->first();
+        // Use warehouse from purchase order, or fallback to first active warehouse
+        $warehouse = $purchaseOrder->warehouse_id
+            ? Warehouse::find($purchaseOrder->warehouse_id)
+            : Warehouse::where('is_active', true)->first();
 
         if (!$warehouse) {
             Log::warning('No active warehouse found for PurchaseOrder', [

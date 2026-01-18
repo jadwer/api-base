@@ -135,6 +135,8 @@ class Server extends BaseServer
             \Modules\Sales\JsonApi\V1\ShipmentItems\ShipmentItemSchema::class,
             \Modules\Sales\JsonApi\V1\Backorders\BackorderSchema::class,
             \Modules\Sales\JsonApi\V1\DiscountRules\DiscountRuleSchema::class,
+            \Modules\Sales\JsonApi\V1\Quotes\QuoteSchema::class,
+            \Modules\Sales\JsonApi\V1\QuoteItems\QuoteItemSchema::class,
 
             // Ecommerce Module
             ShoppingCartSchema::class,
@@ -254,6 +256,8 @@ class Server extends BaseServer
             'shipment-items' => \Modules\Sales\JsonApi\V1\ShipmentItems\ShipmentItemAuthorizer::class,
             'backorders' => \Modules\Sales\JsonApi\V1\Backorders\BackorderAuthorizer::class,
             'discount-rules' => \Modules\Sales\JsonApi\V1\DiscountRules\DiscountRuleAuthorizer::class,
+            'quotes' => \Modules\Sales\JsonApi\V1\Quotes\QuoteAuthorizer::class,
+            'quote-items' => \Modules\Sales\JsonApi\V1\QuoteItems\QuoteItemAuthorizer::class,
             
             // Ecommerce Module
             'shopping-carts' => \Modules\Ecommerce\JsonApi\V1\ShoppingCarts\ShoppingCartAuthorizer::class,

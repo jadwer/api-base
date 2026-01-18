@@ -28,7 +28,9 @@ class SalesAssignPermissionsSeeder extends Seeder
                                                 ->orWhere('name', 'like', 'shipments.%')
                                                 ->orWhere('name', 'like', 'shipment-items.%')
                                                 ->orWhere('name', 'like', 'backorders.%')
-                                                ->orWhere('name', 'like', 'discount-rules.%');
+                                                ->orWhere('name', 'like', 'discount-rules.%')
+                                                ->orWhere('name', 'like', 'quotes.%')
+                                                ->orWhere('name', 'like', 'quote-items.%');
                                       })
                                       ->get();
             $godRole->givePermissionTo($allPermissions);
@@ -55,6 +57,11 @@ class SalesAssignPermissionsSeeder extends Seeder
                                             // SA-M003: Discount Rules
                                             'discount-rules.index', 'discount-rules.view', 'discount-rules.show',
                                             'discount-rules.store', 'discount-rules.update', 'discount-rules.destroy',
+                                            // SA-M004: Quotes
+                                            'quotes.index', 'quotes.view', 'quotes.show',
+                                            'quotes.store', 'quotes.update', 'quotes.destroy',
+                                            'quote-items.index', 'quote-items.view', 'quote-items.show',
+                                            'quote-items.store', 'quote-items.update', 'quote-items.destroy',
                                         ])->get();
             $adminRole->givePermissionTo($adminPermissions);
         }
@@ -79,6 +86,11 @@ class SalesAssignPermissionsSeeder extends Seeder
                                            'backorders.store', 'backorders.update', 'backorders.destroy',
                                            // SA-M003: Discount Rules (read-only for tech)
                                            'discount-rules.index', 'discount-rules.view', 'discount-rules.show',
+                                           // SA-M004: Quotes (full access for tech)
+                                           'quotes.index', 'quotes.view', 'quotes.show',
+                                           'quotes.store', 'quotes.update', 'quotes.destroy',
+                                           'quote-items.index', 'quote-items.view', 'quote-items.show',
+                                           'quote-items.store', 'quote-items.update', 'quote-items.destroy',
                                        ])->get();
             $techRole->givePermissionTo($techPermissions);
         }
@@ -97,6 +109,9 @@ class SalesAssignPermissionsSeeder extends Seeder
                                                'shipment-items.index', 'shipment-items.view', 'shipment-items.show',
                                                // SA-M002: Customer can view backorders for their orders
                                                'backorders.index', 'backorders.view', 'backorders.show',
+                                               // SA-M004: Customer can view and request quotes
+                                               'quotes.index', 'quotes.view', 'quotes.show', 'quotes.store',
+                                               'quote-items.index', 'quote-items.view', 'quote-items.show',
                                            ])->get();
             $customerRole->givePermissionTo($customerPermissions);
         }
