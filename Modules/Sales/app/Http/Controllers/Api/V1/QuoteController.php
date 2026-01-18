@@ -12,6 +12,7 @@ use Modules\Sales\Models\Quote;
 use Modules\Sales\Models\QuoteItem;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Models\SalesOrderItem;
+use Modules\Sales\Services\QuotePDFGenerator;
 use Modules\Ecommerce\Models\ShoppingCart;
 use Modules\Product\Models\Product;
 
@@ -42,7 +43,7 @@ class QuoteController extends Controller
             'terms_and_conditions' => 'nullable|string|max:5000',
         ]);
 
-        $cart = ShoppingCart::with('cartItems.product')->findOrFail($request->input('shopping_cart_id'));
+        $cart = ShoppingCart::with('cartItems.product.brand')->findOrFail($request->input('shopping_cart_id'));
 
         if ($cart->cartItems->isEmpty()) {
             return response()->json([
@@ -70,6 +71,12 @@ class QuoteController extends Controller
             foreach ($cart->cartItems as $cartItem) {
                 $product = $cartItem->product;
 
+                // Auto-populate ETA from brand if product is out of stock
+                $notes = null;
+                if ($product && $product->stock_quantity <= 0 && $product->brand?->default_lead_time) {
+                    $notes = 'ETA: ' . $product->brand->default_lead_time;
+                }
+
                 QuoteItem::create([
                     'quote_id' => $quote->id,
                     'product_id' => $cartItem->product_id,
@@ -80,6 +87,7 @@ class QuoteController extends Controller
                     'tax_rate' => 16, // Default IVA México
                     'product_name' => $product?->name,
                     'product_sku' => $product?->sku,
+                    'notes' => $notes,
                 ]);
             }
 
@@ -334,6 +342,54 @@ class QuoteController extends Controller
         return response()->json([
             'data' => $stats
         ]);
+    }
+
+    /**
+     * Generate PDF for quote
+     * GET /api/v1/quotes/{quote}/pdf
+     */
+    public function generatePdf(Quote $quote): JsonResponse
+    {
+        $generator = new QuotePDFGenerator();
+        $path = $generator->generate($quote);
+
+        return response()->json([
+            'data' => [
+                'path' => $path,
+                'url' => asset('storage/' . $path),
+            ],
+            'message' => 'PDF generated successfully'
+        ]);
+    }
+
+    /**
+     * Download quote PDF
+     * GET /api/v1/quotes/{quote}/pdf/download
+     */
+    public function downloadPdf(Quote $quote)
+    {
+        $generator = new QuotePDFGenerator();
+        return $generator->download($quote);
+    }
+
+    /**
+     * Preview quote PDF (inline)
+     * GET /api/v1/quotes/{quote}/pdf/preview
+     */
+    public function previewPdf(Quote $quote)
+    {
+        $generator = new QuotePDFGenerator();
+        return $generator->preview($quote);
+    }
+
+    /**
+     * Stream quote PDF (real-time generation without storing)
+     * GET /api/v1/quotes/{quote}/pdf/stream
+     */
+    public function streamPdf(Quote $quote)
+    {
+        $generator = new QuotePDFGenerator();
+        return $generator->stream($quote);
     }
 
     /**

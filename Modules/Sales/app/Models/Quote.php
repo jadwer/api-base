@@ -255,19 +255,14 @@ class Quote extends Model
     }
 
     /**
-     * Generate unique quote number
+     * Generate unique quote number using FolioSequence
+     *
+     * Format is configurable via folio_sequences table.
+     * Default: COT-26000001 (prefix + year short + sequence)
      */
     public static function generateQuoteNumber(): string
     {
-        $prefix = 'QT';
-        $year = now()->format('Y');
-        $lastQuote = static::whereYear('created_at', $year)
-            ->orderByDesc('id')
-            ->first();
-
-        $sequence = $lastQuote ? ((int) substr($lastQuote->quote_number, -5) + 1) : 1;
-
-        return sprintf('%s-%s-%05d', $prefix, $year, $sequence);
+        return FolioSequence::getNextFolio('quote');
     }
 
     // Factory

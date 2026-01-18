@@ -25,6 +25,7 @@ class BrandSchema extends Schema
             Str::make('name')->sortable(),
             Str::make('description'),
             Str::make('slug')->sortable(),
+            Str::make('defaultLeadTime', 'default_lead_time'),
             Number::make('productsCount')
                 ->readOnly(),
             

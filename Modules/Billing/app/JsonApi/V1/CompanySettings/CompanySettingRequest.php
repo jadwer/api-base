@@ -97,6 +97,89 @@ class CompanySettingRequest extends ResourceRequest
                 'nullable',
                 'string',
             ],
+            // Contact Information
+            'address' => [
+                'sometimes',
+                'nullable',
+                'string',
+                'max:255',
+            ],
+            'city' => [
+                'sometimes',
+                'nullable',
+                'string',
+                'max:100',
+            ],
+            'state' => [
+                'sometimes',
+                'nullable',
+                'string',
+                'max:100',
+            ],
+            'phone' => [
+                'sometimes',
+                'nullable',
+                'string',
+                'max:50',
+            ],
+            'email' => [
+                'sometimes',
+                'nullable',
+                'email',
+                'max:255',
+            ],
+            'website' => [
+                'sometimes',
+                'nullable',
+                'url',
+                'max:255',
+            ],
+            // Commercial Settings
+            'bankAccounts' => [
+                'sometimes',
+                'nullable',
+                'array',
+            ],
+            'bankAccounts.*.bank' => [
+                'required_with:bankAccounts',
+                'string',
+                'max:100',
+            ],
+            'bankAccounts.*.account_number' => [
+                'sometimes',
+                'string',
+                'max:50',
+            ],
+            'bankAccounts.*.clabe' => [
+                'sometimes',
+                'string',
+                'max:20',
+            ],
+            'bankAccounts.*.currency' => [
+                'sometimes',
+                'string',
+                'in:MXN,USD,EUR',
+            ],
+            'bankAccounts.*.swift' => [
+                'sometimes',
+                'nullable',
+                'string',
+                'max:20',
+            ],
+            'commercialConditions' => [
+                'sometimes',
+                'nullable',
+                'array',
+            ],
+            'commercialConditions.*' => [
+                'string',
+                'max:500',
+            ],
+            'quoteSettings' => [
+                'sometimes',
+                'nullable',
+                'array',
+            ],
             'additionalSettings' => [
                 'sometimes',
                 'nullable',

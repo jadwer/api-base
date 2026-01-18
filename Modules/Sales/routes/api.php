@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Sales\Http\Controllers\Api\V1\FolioSequenceController;
 use Modules\Sales\Http\Controllers\Api\V1\OrderTrackingController;
 use Modules\Sales\Http\Controllers\Api\V1\CustomerOrderController;
 
@@ -32,6 +33,15 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
         Route::post('{order}/cancel', [CustomerOrderController::class, 'cancel']);
         Route::post('{order}/return', [CustomerOrderController::class, 'requestReturn']);
         Route::get('{order}/invoice', [CustomerOrderController::class, 'invoice']);
+    });
+
+    // Folio Sequence Configuration (Admin)
+    Route::prefix('folio-sequences')->group(function () {
+        Route::get('/', [FolioSequenceController::class, 'index']);
+        Route::get('{documentType}', [FolioSequenceController::class, 'show']);
+        Route::patch('{documentType}', [FolioSequenceController::class, 'update']);
+        Route::post('{documentType}/set-initial', [FolioSequenceController::class, 'setInitialSequence']);
+        Route::get('{documentType}/preview-next', [FolioSequenceController::class, 'previewNext']);
     });
 
 });

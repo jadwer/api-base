@@ -18,7 +18,7 @@ class Brand extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['name', 'description', 'is_active'])
+            ->logOnly(['name', 'description', 'is_active', 'default_lead_time'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }

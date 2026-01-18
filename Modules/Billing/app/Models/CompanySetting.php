@@ -27,6 +27,15 @@ class CompanySetting extends Model
         'key_file',
         'key_password',
         'logo_path',
+        'address',
+        'city',
+        'state',
+        'phone',
+        'email',
+        'website',
+        'bank_accounts',
+        'commercial_conditions',
+        'quote_settings',
         'additional_settings',
         'is_active',
     ];
@@ -36,6 +45,9 @@ class CompanySetting extends Model
         'next_credit_note_folio' => 'integer',
         'pac_production_mode' => 'boolean',
         'is_active' => 'boolean',
+        'bank_accounts' => 'array',
+        'commercial_conditions' => 'array',
+        'quote_settings' => 'array',
         'additional_settings' => 'array',
         'pac_password' => 'encrypted',
         'key_password' => 'encrypted',
@@ -128,6 +140,84 @@ class CompanySetting extends Model
     public function scopeByRFC($query, string $rfc)
     {
         return $query->where('rfc', $rfc);
+    }
+
+    /**
+     * Get bank accounts for a specific currency.
+     *
+     * @param string|null $currency Filter by currency (MXN, USD, etc.)
+     * @return array
+     */
+    public function getBankAccounts(?string $currency = null): array
+    {
+        $accounts = $this->bank_accounts ?? [];
+
+        if ($currency) {
+            return array_filter($accounts, fn($account) =>
+                ($account['currency'] ?? 'MXN') === $currency
+            );
+        }
+
+        return $accounts;
+    }
+
+    /**
+     * Get commercial conditions.
+     *
+     * @return array
+     */
+    public function getCommercialConditions(): array
+    {
+        return $this->commercial_conditions ?? $this->getDefaultCommercialConditions();
+    }
+
+    /**
+     * Get default commercial conditions.
+     *
+     * @return array
+     */
+    public function getDefaultCommercialConditions(): array
+    {
+        return [
+            'Precios expresados en moneda nacional (MXN) mas IVA.',
+            'Tiempo de entrega sujeto a disponibilidad de inventario.',
+            'Cotizacion valida por 30 dias a partir de la fecha de emision.',
+            'Forma de pago: 50% anticipo, 50% contra entrega.',
+            'Los precios pueden variar sin previo aviso despues de la vigencia.',
+        ];
+    }
+
+    /**
+     * Get quote settings with defaults.
+     *
+     * @return array
+     */
+    public function getQuoteSettings(): array
+    {
+        return array_merge([
+            'default_validity_days' => 30,
+            'default_currency' => 'MXN',
+            'show_product_images' => true,
+            'show_bank_accounts' => true,
+            'show_commercial_conditions' => true,
+        ], $this->quote_settings ?? []);
+    }
+
+    /**
+     * Get company full address.
+     *
+     * @return string
+     */
+    public function getFullAddressAttribute(): string
+    {
+        $parts = array_filter([
+            $this->address,
+            $this->city,
+            $this->state,
+            $this->postal_code,
+        ]);
+
+        return implode(', ', $parts);
     }
 
     /**

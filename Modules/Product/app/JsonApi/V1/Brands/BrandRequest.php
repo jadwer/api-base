@@ -19,6 +19,7 @@ class BrandRequest extends ResourceRequest
                 Rule::unique('brands', 'name')->ignore($brand),
             ],
             'description' => ['nullable', 'string', 'max:500'],
+            'defaultLeadTime' => ['nullable', 'string', 'max:100'],
         ];
     }
 }

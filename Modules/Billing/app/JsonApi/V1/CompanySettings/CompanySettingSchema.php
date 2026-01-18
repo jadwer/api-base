@@ -54,6 +54,19 @@ class CompanySettingSchema extends Schema
 
             // Additional Settings
             Str::make('logoPath', 'logo_path'),
+
+            // Contact Information
+            Str::make('address'),
+            Str::make('city'),
+            Str::make('state'),
+            Str::make('phone'),
+            Str::make('email'),
+            Str::make('website'),
+
+            // Commercial Settings
+            ArrayHash::make('bankAccounts', 'bank_accounts'),
+            ArrayHash::make('commercialConditions', 'commercial_conditions'),
+            ArrayHash::make('quoteSettings', 'quote_settings'),
             ArrayHash::make('additionalSettings', 'additional_settings'),
 
             // Status
