@@ -28,6 +28,9 @@ class SalesPermissionSeeder extends Seeder
             'quote-items.index', 'quote-items.view', 'quote-items.show', 'quote-items.store', 'quote-items.update', 'quote-items.destroy',
             // SA-M005: Folio Sequence permissions (admin only)
             'sales.folio-sequences.index', 'sales.folio-sequences.show', 'sales.folio-sequences.update',
+            // SA-M006: Remission permissions
+            'remissions.index', 'remissions.view', 'remissions.show', 'remissions.store', 'remissions.update', 'remissions.destroy',
+            'remission-items.index', 'remission-items.view', 'remission-items.show', 'remission-items.store', 'remission-items.update', 'remission-items.destroy',
         ];
 
         $this->bulkCreatePermissions($permissions);

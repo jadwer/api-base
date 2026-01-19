@@ -5,6 +5,7 @@ namespace Modules\Sales\Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 use Modules\Sales\Models\Quote;
 use Modules\Sales\Models\QuoteItem;
@@ -12,13 +13,11 @@ use Modules\Sales\Services\QuotePDFGenerator;
 use Modules\Billing\Models\CompanySetting;
 use Modules\Contacts\Models\Contact;
 use Modules\Product\Models\Product;
-use App\Models\User;
 
 class QuotePDFTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
-    protected User $admin;
     protected Quote $quote;
     protected Contact $contact;
 
@@ -28,14 +27,11 @@ class QuotePDFTest extends TestCase
 
         Storage::fake('public');
 
-        // Create admin user
-        $this->admin = User::factory()->create();
-
         // Create contact
         $this->contact = Contact::factory()->create([
-            'full_name' => 'Test Customer',
+            'name' => 'Test Customer',
             'email' => 'customer@test.com',
-            'rfc' => 'XAXX010101000',
+            'tax_id' => 'XAXX010101000',
         ]);
 
         // Create product
@@ -177,8 +173,10 @@ class QuotePDFTest extends TestCase
     /** @test */
     public function admin_can_generate_pdf_via_api(): void
     {
-        $response = $this->actingAs($this->admin)
-            ->getJson("/api/v1/quotes/{$this->quote->id}/pdf");
+        $admin = $this->getAdminUser();
+        Sanctum::actingAs($admin);
+
+        $response = $this->getJson("/api/v1/quotes/{$this->quote->id}/pdf");
 
         $response->assertOk()
             ->assertJsonStructure([
@@ -190,12 +188,14 @@ class QuotePDFTest extends TestCase
     /** @test */
     public function admin_can_download_pdf(): void
     {
+        $admin = $this->getAdminUser();
+        Sanctum::actingAs($admin);
+
         // First generate the PDF
         $generator = new QuotePDFGenerator();
         $generator->generate($this->quote);
 
-        $response = $this->actingAs($this->admin)
-            ->get("/api/v1/quotes/{$this->quote->id}/pdf/download");
+        $response = $this->get("/api/v1/quotes/{$this->quote->id}/pdf/download");
 
         $response->assertOk();
         $this->assertEquals('application/pdf', $response->headers->get('Content-Type'));
@@ -204,12 +204,14 @@ class QuotePDFTest extends TestCase
     /** @test */
     public function admin_can_preview_pdf(): void
     {
+        $admin = $this->getAdminUser();
+        Sanctum::actingAs($admin);
+
         // First generate the PDF
         $generator = new QuotePDFGenerator();
         $generator->generate($this->quote);
 
-        $response = $this->actingAs($this->admin)
-            ->get("/api/v1/quotes/{$this->quote->id}/pdf/preview");
+        $response = $this->get("/api/v1/quotes/{$this->quote->id}/pdf/preview");
 
         $response->assertOk();
         $this->assertEquals('application/pdf', $response->headers->get('Content-Type'));
@@ -218,8 +220,10 @@ class QuotePDFTest extends TestCase
     /** @test */
     public function admin_can_stream_pdf(): void
     {
-        $response = $this->actingAs($this->admin)
-            ->get("/api/v1/quotes/{$this->quote->id}/pdf/stream");
+        $admin = $this->getAdminUser();
+        Sanctum::actingAs($admin);
+
+        $response = $this->get("/api/v1/quotes/{$this->quote->id}/pdf/stream");
 
         $response->assertOk();
         $this->assertStringContainsString('application/pdf', $response->headers->get('Content-Type'));

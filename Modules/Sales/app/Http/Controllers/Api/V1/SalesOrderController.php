@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use LaravelJsonApi\Laravel\Http\Controllers\Actions;
 use Modules\Sales\Models\SalesOrder;
+use Modules\Sales\Services\SalesOrderPDFGenerator;
 use Modules\Contacts\Models\Contact;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use App\Support\DatabaseCompatibilityHelper as DBHelper;
 
 class SalesOrderController extends Controller
@@ -164,5 +166,92 @@ class SalesOrderController extends Controller
                 'generated_at' => now()->toISOString(),
             ]
         ]);
+    }
+
+    // ==========================================================
+    // SA-M011: PDF Generation Methods
+    // ==========================================================
+
+    /**
+     * Generate and return PDF info for sales order
+     */
+    public function generatePdf(SalesOrder $salesOrder, SalesOrderPDFGenerator $generator): JsonResponse
+    {
+        if (Gate::denies('sales-orders.show')) {
+            abort(403, 'No tiene permisos para ver esta orden');
+        }
+
+        try {
+            $path = $generator->generate($salesOrder);
+            $url = asset('storage/' . $path);
+
+            return response()->json([
+                'message' => 'PDF generado correctamente',
+                'data' => [
+                    'id' => $salesOrder->id,
+                    'order_number' => $salesOrder->order_number,
+                    'pdf_path' => $path,
+                    'pdf_url' => $url,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al generar PDF',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Download PDF for sales order
+     */
+    public function downloadPdf(SalesOrder $salesOrder, SalesOrderPDFGenerator $generator)
+    {
+        if (Gate::denies('sales-orders.show')) {
+            abort(403, 'No tiene permisos para descargar esta orden');
+        }
+
+        try {
+            return $generator->download($salesOrder);
+        } catch (\Exception $e) {
+            abort(500, 'Error al descargar PDF: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Preview PDF inline for sales order
+     */
+    public function previewPdf(SalesOrder $salesOrder, SalesOrderPDFGenerator $generator)
+    {
+        if (Gate::denies('sales-orders.show')) {
+            abort(403, 'No tiene permisos para ver esta orden');
+        }
+
+        try {
+            return $generator->preview($salesOrder);
+        } catch (\Exception $e) {
+            abort(500, 'Error al previsualizar PDF: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Stream PDF without storing for sales order
+     */
+    public function streamPdf(SalesOrder $salesOrder, Request $request, SalesOrderPDFGenerator $generator)
+    {
+        if (Gate::denies('sales-orders.show')) {
+            abort(403, 'No tiene permisos para ver esta orden');
+        }
+
+        $options = [
+            'show_bank_accounts' => $request->boolean('show_bank_accounts', true),
+            'show_conditions' => $request->boolean('show_conditions', true),
+        ];
+
+        try {
+            return $generator->stream($salesOrder, $options);
+        } catch (\Exception $e) {
+            abort(500, 'Error al generar PDF: ' . $e->getMessage());
+        }
     }
 }

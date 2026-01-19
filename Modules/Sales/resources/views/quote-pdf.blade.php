@@ -297,15 +297,17 @@
     <div class="customer-section">
         <div class="customer-title">DATOS DEL CLIENTE</div>
         <div class="customer-info">
-            <div class="customer-name">{{ $contact->full_name ?? $contact->company_name }}</div>
-            @if($contact->rfc)
-                <strong>RFC:</strong> {{ $contact->rfc }}<br>
+            <div class="customer-name">{{ $contact->name ?? $contact->legal_name }}</div>
+            @if($contact->tax_id)
+                <strong>RFC:</strong> {{ $contact->tax_id }}<br>
             @endif
-            @if($contact->address)
-                {{ $contact->address }}<br>
-            @endif
-            @if($contact->city || $contact->state || $contact->postal_code)
-                {{ $contact->city ?? '' }}{{ $contact->state ? ', ' . $contact->state : '' }} {{ $contact->postal_code ?? '' }}<br>
+            @if(isset($contactAddress) && $contactAddress)
+                @if($contactAddress->street)
+                    {{ $contactAddress->street }}<br>
+                @endif
+                @if($contactAddress->city || $contactAddress->state || $contactAddress->postal_code)
+                    {{ $contactAddress->city ?? '' }}{{ $contactAddress->state ? ', ' . $contactAddress->state : '' }} {{ $contactAddress->postal_code ?? '' }}<br>
+                @endif
             @endif
             @if($contact->email)
                 <strong>Email:</strong> {{ $contact->email }}

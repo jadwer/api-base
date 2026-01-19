@@ -10,6 +10,7 @@ use Modules\Sales\Http\Controllers\Api\V1\BackorderController;
 use Modules\Sales\Http\Controllers\Api\V1\DiscountRuleController;
 use Modules\Sales\Http\Controllers\Api\V1\QuoteController;
 use Modules\Sales\Http\Controllers\Api\V1\QuoteItemController;
+use Modules\Sales\Http\Controllers\Api\V1\RemissionController;
 use Illuminate\Support\Facades\Route;
 
 JsonApiRoute::server('v1')
@@ -28,6 +29,9 @@ JsonApiRoute::server('v1')
         // SA-M004: Quote Management
         $server->resource('quotes', QuoteController::class);
         $server->resource('quote-items', QuoteItemController::class);
+        // SA-M006: Remission (Delivery Notes)
+        $server->resource('remissions', RemissionController::class);
+        $server->resource('remission-items', \Modules\Sales\Http\Controllers\Api\V1\RemissionItemController::class);
     });
 
 // Custom endpoints for sales reporting
@@ -65,4 +69,25 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::get('quotes/{quote}/pdf/download', [QuoteController::class, 'downloadPdf'])->name('quotes.pdf.download');
     Route::get('quotes/{quote}/pdf/preview', [QuoteController::class, 'previewPdf'])->name('quotes.pdf.preview');
     Route::get('quotes/{quote}/pdf/stream', [QuoteController::class, 'streamPdf'])->name('quotes.pdf.stream');
+
+    // SA-M006: Remission action endpoints
+    Route::post('remissions/from-order', [RemissionController::class, 'createFromOrder'])->name('remissions.from-order');
+    Route::post('remissions/from-order-full', [RemissionController::class, 'createFromOrderFull'])->name('remissions.from-order-full');
+    Route::get('remissions/summary', [RemissionController::class, 'summary'])->name('remissions.summary');
+    Route::post('remissions/{remission}/print', [RemissionController::class, 'print'])->name('remissions.print');
+    Route::post('remissions/{remission}/deliver', [RemissionController::class, 'deliver'])->name('remissions.deliver');
+    Route::post('remissions/{remission}/cancel', [RemissionController::class, 'cancel'])->name('remissions.cancel');
+    Route::get('sales-orders/{order}/remissions', [RemissionController::class, 'forOrder'])->name('sales-orders.remissions');
+
+    // Remission PDF endpoints
+    Route::get('remissions/{remission}/pdf', [RemissionController::class, 'generatePdf'])->name('remissions.pdf');
+    Route::get('remissions/{remission}/pdf/download', [RemissionController::class, 'downloadPdf'])->name('remissions.pdf.download');
+    Route::get('remissions/{remission}/pdf/preview', [RemissionController::class, 'previewPdf'])->name('remissions.pdf.preview');
+    Route::get('remissions/{remission}/pdf/stream', [RemissionController::class, 'streamPdf'])->name('remissions.pdf.stream');
+
+    // SA-M011: SalesOrder PDF endpoints (enhanced professional format)
+    Route::get('sales-orders/{salesOrder}/pdf', [SalesOrderController::class, 'generatePdf'])->name('sales-orders.pdf');
+    Route::get('sales-orders/{salesOrder}/pdf/download', [SalesOrderController::class, 'downloadPdf'])->name('sales-orders.pdf.download');
+    Route::get('sales-orders/{salesOrder}/pdf/preview', [SalesOrderController::class, 'previewPdf'])->name('sales-orders.pdf.preview');
+    Route::get('sales-orders/{salesOrder}/pdf/stream', [SalesOrderController::class, 'streamPdf'])->name('sales-orders.pdf.stream');
 });

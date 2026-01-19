@@ -12,24 +12,21 @@ use Modules\Ecommerce\Models\CartItem;
 use Modules\Contacts\Models\Contact;
 use Modules\Product\Models\Product;
 use Modules\Product\Models\Brand;
-use App\Models\User;
 
 class QuoteFromCartWithETATest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
-    protected User $admin;
     protected Contact $contact;
     protected ShoppingCart $cart;
     protected Brand $brand;
-    protected Product $productInStock;
-    protected Product $productOutOfStock;
+    protected Product $productWithETA;
+    protected Product $productWithoutETA;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->admin = User::factory()->create();
         $this->contact = Contact::factory()->create();
 
         // Create brand with default lead time
@@ -38,61 +35,70 @@ class QuoteFromCartWithETATest extends TestCase
             'default_lead_time' => '2-3 semanas',
         ]);
 
+        // Create brand without lead time
+        $brandNoEta = Brand::factory()->create([
+            'name' => 'No ETA Brand',
+            'default_lead_time' => null,
+        ]);
+
         // Create products
-        $this->productInStock = Product::factory()->create([
+        $this->productWithETA = Product::factory()->create([
             'brand_id' => $this->brand->id,
-            'name' => 'Product In Stock',
-            'sku' => 'IN-STOCK-001',
+            'name' => 'Product With ETA',
+            'sku' => 'WITH-ETA-001',
             'price' => 100.00,
-            'stock_quantity' => 10,
         ]);
 
-        $this->productOutOfStock = Product::factory()->create([
-            'brand_id' => $this->brand->id,
-            'name' => 'Product Out of Stock',
-            'sku' => 'OUT-STOCK-001',
+        $this->productWithoutETA = Product::factory()->create([
+            'brand_id' => $brandNoEta->id,
+            'name' => 'Product Without ETA',
+            'sku' => 'NO-ETA-001',
             'price' => 200.00,
-            'stock_quantity' => 0,
         ]);
 
-        // Create shopping cart
+        // Create shopping cart using seeded admin
+        $admin = $this->getAdminUser();
         $this->cart = ShoppingCart::factory()->create([
-            'user_id' => $this->admin->id,
+            'user_id' => $admin->id,
             'currency' => 'MXN',
         ]);
 
         // Add items to cart
         CartItem::factory()->create([
             'shopping_cart_id' => $this->cart->id,
-            'product_id' => $this->productInStock->id,
+            'product_id' => $this->productWithETA->id,
             'quantity' => 2,
             'unit_price' => 100.00,
         ]);
 
         CartItem::factory()->create([
             'shopping_cart_id' => $this->cart->id,
-            'product_id' => $this->productOutOfStock->id,
+            'product_id' => $this->productWithoutETA->id,
             'quantity' => 1,
             'unit_price' => 200.00,
         ]);
 
-        // Create folio sequence
-        FolioSequence::create([
-            'document_type' => 'quote',
-            'prefix' => 'COT',
-            'include_year' => true,
-            'year_format' => 'y',
-            'separator' => '',
-            'padding' => 6,
-            'current_sequence' => 0,
-            'is_active' => true,
-        ]);
+        // Use existing folio sequence from migration or create if not exists
+        FolioSequence::updateOrCreate(
+            ['document_type' => 'quote'],
+            [
+                'prefix' => 'COT',
+                'include_year' => true,
+                'year_format' => 'y',
+                'separator' => '',
+                'padding' => 6,
+                'current_sequence' => 0,
+                'is_active' => true,
+            ]
+        );
     }
 
     /** @test */
-    public function it_creates_quote_from_cart_with_eta_for_out_of_stock_items(): void
+    public function it_creates_quote_from_cart_with_eta_from_brand(): void
     {
-        $response = $this->actingAs($this->admin)
+        $admin = $this->getAdminUser();
+
+        $response = $this->actingAs($admin, 'sanctum')
             ->postJson('/api/v1/quotes/from-cart', [
                 'shopping_cart_id' => $this->cart->id,
                 'contact_id' => $this->contact->id,
@@ -107,57 +113,21 @@ class QuoteFromCartWithETATest extends TestCase
         $items = $quote->items;
         $this->assertCount(2, $items);
 
-        // In-stock item should not have ETA note
-        $inStockItem = $items->where('product_sku', 'IN-STOCK-001')->first();
-        $this->assertNull($inStockItem->notes);
+        // Product with brand that has default_lead_time should have ETA
+        $itemWithETA = $items->where('product_sku', 'WITH-ETA-001')->first();
+        $this->assertEquals('ETA: 2-3 semanas', $itemWithETA->notes);
 
-        // Out-of-stock item should have ETA note from brand
-        $outOfStockItem = $items->where('product_sku', 'OUT-STOCK-001')->first();
-        $this->assertEquals('ETA: 2-3 semanas', $outOfStockItem->notes);
-    }
-
-    /** @test */
-    public function it_does_not_add_eta_when_brand_has_no_default_lead_time(): void
-    {
-        // Create brand without lead time
-        $brandNoEta = Brand::factory()->create([
-            'name' => 'No ETA Brand',
-            'default_lead_time' => null,
-        ]);
-
-        $productNoEta = Product::factory()->create([
-            'brand_id' => $brandNoEta->id,
-            'name' => 'No ETA Product',
-            'sku' => 'NO-ETA-001',
-            'price' => 150.00,
-            'stock_quantity' => 0,
-        ]);
-
-        CartItem::factory()->create([
-            'shopping_cart_id' => $this->cart->id,
-            'product_id' => $productNoEta->id,
-            'quantity' => 1,
-            'unit_price' => 150.00,
-        ]);
-
-        $response = $this->actingAs($this->admin)
-            ->postJson('/api/v1/quotes/from-cart', [
-                'shopping_cart_id' => $this->cart->id,
-                'contact_id' => $this->contact->id,
-            ]);
-
-        $response->assertStatus(201);
-
-        $quote = Quote::first();
-        $noEtaItem = $quote->items->where('product_sku', 'NO-ETA-001')->first();
-
-        $this->assertNull($noEtaItem->notes);
+        // Product with brand without default_lead_time should NOT have ETA
+        $itemWithoutETA = $items->where('product_sku', 'NO-ETA-001')->first();
+        $this->assertNull($itemWithoutETA->notes);
     }
 
     /** @test */
     public function it_generates_configurable_folio_for_quote(): void
     {
-        $response = $this->actingAs($this->admin)
+        $admin = $this->getAdminUser();
+
+        $response = $this->actingAs($admin, 'sanctum')
             ->postJson('/api/v1/quotes/from-cart', [
                 'shopping_cart_id' => $this->cart->id,
                 'contact_id' => $this->contact->id,
@@ -174,8 +144,10 @@ class QuoteFromCartWithETATest extends TestCase
     /** @test */
     public function it_generates_sequential_folios_for_multiple_quotes(): void
     {
+        $admin = $this->getAdminUser();
+
         // Create first quote
-        $this->actingAs($this->admin)
+        $this->actingAs($admin, 'sanctum')
             ->postJson('/api/v1/quotes/from-cart', [
                 'shopping_cart_id' => $this->cart->id,
                 'contact_id' => $this->contact->id,
@@ -183,18 +155,18 @@ class QuoteFromCartWithETATest extends TestCase
 
         // Create another cart for second quote
         $cart2 = ShoppingCart::factory()->create([
-            'user_id' => $this->admin->id,
+            'user_id' => $admin->id,
         ]);
 
         CartItem::factory()->create([
             'shopping_cart_id' => $cart2->id,
-            'product_id' => $this->productInStock->id,
+            'product_id' => $this->productWithETA->id,
             'quantity' => 1,
             'unit_price' => 100.00,
         ]);
 
         // Create second quote
-        $this->actingAs($this->admin)
+        $this->actingAs($admin, 'sanctum')
             ->postJson('/api/v1/quotes/from-cart', [
                 'shopping_cart_id' => $cart2->id,
                 'contact_id' => $this->contact->id,
@@ -210,7 +182,9 @@ class QuoteFromCartWithETATest extends TestCase
     /** @test */
     public function it_copies_product_info_to_quote_items(): void
     {
-        $response = $this->actingAs($this->admin)
+        $admin = $this->getAdminUser();
+
+        $response = $this->actingAs($admin, 'sanctum')
             ->postJson('/api/v1/quotes/from-cart', [
                 'shopping_cart_id' => $this->cart->id,
                 'contact_id' => $this->contact->id,
@@ -219,10 +193,10 @@ class QuoteFromCartWithETATest extends TestCase
         $response->assertStatus(201);
 
         $quote = Quote::first();
-        $item = $quote->items->where('product_sku', 'IN-STOCK-001')->first();
+        $item = $quote->items->where('product_sku', 'WITH-ETA-001')->first();
 
-        $this->assertEquals('Product In Stock', $item->product_name);
-        $this->assertEquals('IN-STOCK-001', $item->product_sku);
+        $this->assertEquals('Product With ETA', $item->product_name);
+        $this->assertEquals('WITH-ETA-001', $item->product_sku);
         $this->assertEquals(100.00, $item->unit_price);
         $this->assertEquals(100.00, $item->quoted_price);
         $this->assertEquals(2, $item->quantity);
@@ -231,7 +205,9 @@ class QuoteFromCartWithETATest extends TestCase
     /** @test */
     public function it_calculates_quote_totals_correctly(): void
     {
-        $response = $this->actingAs($this->admin)
+        $admin = $this->getAdminUser();
+
+        $response = $this->actingAs($admin, 'sanctum')
             ->postJson('/api/v1/quotes/from-cart', [
                 'shopping_cart_id' => $this->cart->id,
                 'contact_id' => $this->contact->id,

@@ -81,11 +81,22 @@ class QuotePDFGenerator
             }
         }
 
+        // Load contact with addresses
+        $contact = $quote->contact;
+        $contactAddress = null;
+        if ($contact && $contact->relationLoaded('contactAddresses')) {
+            $contactAddress = $contact->contactAddresses->first();
+        } elseif ($contact) {
+            $contactAddress = $contact->contactAddresses()->where('is_primary', true)->first()
+                ?? $contact->contactAddresses()->first();
+        }
+
         return [
             'quote' => $quote,
             'items' => $quote->items()->with('product.brand')->get(),
             'totals' => $this->calculateTotals($quote),
-            'contact' => $quote->contact,
+            'contact' => $contact,
+            'contactAddress' => $contactAddress,
             'company' => $company,
             'companyAddress' => $companyAddress,
             'companyPhone' => $company?->phone ?? $company?->additional_settings['phone'] ?? null,

@@ -3,34 +3,47 @@
 namespace Modules\Sales\Services;
 
 use Modules\Sales\Models\SalesOrder;
+use Modules\Billing\Models\CompanySetting;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
+use Luecano\NumeroALetras\NumeroALetras;
 
 /**
- * Generate PDF receipts for Sales Orders
+ * SA-M011: Enhanced PDF Generator for Sales Orders
  *
- * Creates simple PDF order receipts for customers.
- * For fiscal invoices (CFDI), use the Billing module.
+ * Creates professional PDF order documents with company branding,
+ * bank accounts, and commercial conditions - following the same
+ * format as quotes and invoices.
  */
 class SalesOrderPDFGenerator
 {
     /**
+     * Status labels in Spanish
+     */
+    protected const STATUS_LABELS = [
+        'draft' => 'Borrador',
+        'pending' => 'Pendiente',
+        'confirmed' => 'Confirmado',
+        'processing' => 'En Proceso',
+        'shipped' => 'Enviado',
+        'delivered' => 'Entregado',
+        'cancelled' => 'Cancelado',
+    ];
+
+    /**
      * Generate PDF for sales order
      *
      * @param SalesOrder $order
+     * @param array $options Optional generation options
      * @return string Path to generated PDF
      */
-    public function generate(SalesOrder $order): string
+    public function generate(SalesOrder $order, array $options = []): string
     {
-        $data = [
-            'order' => $order,
-            'items' => $order->items()->with('product')->get(),
-            'totals' => $this->calculateTotals($order),
-            'customer' => $order->customer,
-            'shippingAddress' => $order->shipping_address,
-        ];
+        $settings = CompanySetting::getActive();
 
-        $pdf = Pdf::loadView('sales::order-pdf', $data)
+        $data = $this->prepareData($order, $settings, $options);
+
+        $pdf = Pdf::loadView('sales::sales-order-pdf', $data)
             ->setPaper('letter')
             ->setOption('defaultFont', 'DejaVu Sans');
 
@@ -43,17 +56,71 @@ class SalesOrderPDFGenerator
     }
 
     /**
+     * Prepare data for PDF view
+     */
+    protected function prepareData(SalesOrder $order, ?CompanySetting $settings, array $options): array
+    {
+        $order->load(['items.product', 'contact']);
+
+        $totals = $this->calculateTotals($order);
+        $currency = $order->metadata['currency'] ?? 'MXN';
+
+        // Generate total in words
+        $totalInWords = null;
+        if (class_exists(NumeroALetras::class)) {
+            try {
+                $formatter = new NumeroALetras();
+                $totalInWords = $formatter->toInvoice(
+                    $totals['total'],
+                    2,
+                    $this->getCurrencyName($currency)
+                );
+            } catch (\Exception $e) {
+                $totalInWords = null;
+            }
+        }
+
+        // Determine what sections to show
+        $showBankAccounts = $options['show_bank_accounts']
+            ?? $settings?->getQuoteSettings()['show_bank_accounts']
+            ?? true;
+        $showConditions = $options['show_conditions']
+            ?? $settings?->getQuoteSettings()['show_commercial_conditions']
+            ?? true;
+
+        return [
+            'order' => $order,
+            'items' => $order->items,
+            'contact' => $order->contact,
+            'totals' => $totals,
+            'settings' => $settings,
+            'shippingAddress' => $order->shipping_address,
+            'billingAddress' => $order->billing_address,
+            'currency' => $currency,
+            'totalInWords' => $totalInWords,
+            'statusLabels' => self::STATUS_LABELS,
+            'showBankAccounts' => $showBankAccounts,
+            'showConditions' => $showConditions,
+            'conditions' => $settings?->getCommercialConditions() ?? [],
+        ];
+    }
+
+    /**
      * Calculate order totals
-     *
-     * @param SalesOrder $order
-     * @return array
      */
     protected function calculateTotals(SalesOrder $order): array
     {
-        $subtotal = $order->subtotal_amount ?? $order->total_amount;
+        $subtotal = $order->subtotal ?? 0;
         $tax = $order->tax_amount ?? 0;
         $shipping = $order->shipping_amount ?? 0;
-        $discount = $order->discount_amount ?? 0;
+        $discount = $order->discount_total ?? 0;
+
+        // If subtotal not set, calculate from items
+        if ($subtotal == 0 && $order->items->isNotEmpty()) {
+            $subtotal = $order->items->sum(function ($item) {
+                return $item->quantity * $item->unit_price;
+            });
+        }
 
         return [
             'subtotal' => $subtotal,
@@ -65,14 +132,25 @@ class SalesOrderPDFGenerator
     }
 
     /**
+     * Get currency name for amount in words
+     */
+    protected function getCurrencyName(string $code): string
+    {
+        return match (strtoupper($code)) {
+            'MXN' => 'PESOS MEXICANOS',
+            'USD' => 'DOLARES AMERICANOS',
+            'EUR' => 'EUROS',
+            default => $code,
+        };
+    }
+
+    /**
      * Generate filename for PDF
-     *
-     * @param SalesOrder $order
-     * @return string
      */
     protected function generateFilename(SalesOrder $order): string
     {
-        return "order_{$order->order_number}.pdf";
+        $number = str_replace(['/', '\\'], '-', $order->order_number);
+        return "OV_{$number}.pdf";
     }
 
     /**
@@ -109,10 +187,29 @@ class SalesOrderPDFGenerator
     }
 
     /**
-     * Get existing PDF path or generate new one
+     * Stream PDF without storing
      *
      * @param SalesOrder $order
-     * @return string
+     * @param array $options
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function stream(SalesOrder $order, array $options = [])
+    {
+        $settings = CompanySetting::getActive();
+        $data = $this->prepareData($order, $settings, $options);
+
+        $pdf = Pdf::loadView('sales::sales-order-pdf', $data)
+            ->setPaper('letter')
+            ->setOption('defaultFont', 'DejaVu Sans');
+
+        return response($pdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $this->generateFilename($order) . '"',
+        ]);
+    }
+
+    /**
+     * Get existing PDF path or generate new one
      */
     protected function getOrGeneratePath(SalesOrder $order): string
     {
@@ -126,6 +223,55 @@ class SalesOrderPDFGenerator
     }
 
     /**
+     * Regenerate PDF (force new generation)
+     *
+     * @param SalesOrder $order
+     * @param array $options
+     * @return string Path to generated PDF
+     */
+    public function regenerate(SalesOrder $order, array $options = []): string
+    {
+        // Delete existing PDF if exists
+        $this->delete($order);
+
+        return $this->generate($order, $options);
+    }
+
+    /**
+     * Delete existing PDF
+     *
+     * @param SalesOrder $order
+     * @return bool
+     */
+    public function delete(SalesOrder $order): bool
+    {
+        $path = "orders/{$order->id}/" . $this->generateFilename($order);
+
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::disk('public')->delete($path);
+        }
+
+        return false;
+    }
+
+    /**
+     * Get PDF URL if exists
+     *
+     * @param SalesOrder $order
+     * @return string|null
+     */
+    public function getUrl(SalesOrder $order): ?string
+    {
+        $path = "orders/{$order->id}/" . $this->generateFilename($order);
+
+        if (Storage::disk('public')->exists($path)) {
+            return asset('storage/' . $path);
+        }
+
+        return null;
+    }
+
+    /**
      * Format amount for display
      *
      * @param float $amount
@@ -134,10 +280,10 @@ class SalesOrderPDFGenerator
      */
     public function formatAmount(float $amount, string $currency = 'MXN'): string
     {
-        $symbol = match($currency) {
+        $symbol = match ($currency) {
             'MXN' => '$',
             'USD' => 'USD $',
-            'EUR' => '€',
+            'EUR' => 'EUR ',
             default => $currency . ' ',
         };
 

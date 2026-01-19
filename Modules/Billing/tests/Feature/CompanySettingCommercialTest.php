@@ -6,19 +6,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Modules\Billing\Models\CompanySetting;
-use App\Models\User;
 
 class CompanySettingCommercialTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
-
-    protected User $admin;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->admin = User::factory()->create();
-    }
 
     /** @test */
     public function company_setting_can_have_bank_accounts(): void
@@ -214,6 +205,8 @@ class CompanySettingCommercialTest extends TestCase
     /** @test */
     public function admin_can_update_commercial_settings_via_api(): void
     {
+        $admin = $this->getAdminUser();
+
         $setting = CompanySetting::create([
             'company_name' => 'Test Company',
             'rfc' => 'XAXX010101000',
@@ -222,29 +215,30 @@ class CompanySettingCommercialTest extends TestCase
             'is_active' => true,
         ]);
 
-        $response = $this->actingAs($this->admin)
-            ->patchJson("/api/v1/company-settings/{$setting->id}", [
-                'data' => [
-                    'type' => 'company-settings',
-                    'id' => (string) $setting->id,
-                    'attributes' => [
-                        'address' => 'Nueva Direccion 456',
-                        'phone' => '5555559999',
-                        'bankAccounts' => [
-                            [
-                                'bank' => 'Santander',
-                                'account_number' => '1111222233',
-                                'clabe' => '014180111122223333',
-                                'currency' => 'MXN',
-                            ],
-                        ],
-                        'commercialConditions' => [
-                            'Nueva condicion 1',
-                            'Nueva condicion 2',
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('company-settings')
+            ->withData([
+                'type' => 'company-settings',
+                'id' => (string) $setting->id,
+                'attributes' => [
+                    'address' => 'Nueva Direccion 456',
+                    'phone' => '5555559999',
+                    'bankAccounts' => [
+                        [
+                            'bank' => 'Santander',
+                            'account_number' => '1111222233',
+                            'clabe' => '014180111122223333',
+                            'currency' => 'MXN',
                         ],
                     ],
+                    'commercialConditions' => [
+                        'Nueva condicion 1',
+                        'Nueva condicion 2',
+                    ],
                 ],
-            ]);
+            ])
+            ->patch("/api/v1/company-settings/{$setting->id}");
 
         $response->assertOk();
 
@@ -259,6 +253,8 @@ class CompanySettingCommercialTest extends TestCase
     /** @test */
     public function commercial_settings_appear_in_api_response(): void
     {
+        $admin = $this->getAdminUser();
+
         $setting = CompanySetting::create([
             'company_name' => 'Test Company',
             'rfc' => 'XAXX010101000',
@@ -270,8 +266,10 @@ class CompanySettingCommercialTest extends TestCase
             'is_active' => true,
         ]);
 
-        $response = $this->actingAs($this->admin)
-            ->getJson("/api/v1/company-settings/{$setting->id}");
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('company-settings')
+            ->get("/api/v1/company-settings/{$setting->id}");
 
         $response->assertOk()
             ->assertJsonPath('data.attributes.address', 'Test Address')

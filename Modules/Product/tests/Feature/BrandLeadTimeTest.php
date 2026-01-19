@@ -6,19 +6,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Modules\Product\Models\Brand;
-use App\Models\User;
 
 class BrandLeadTimeTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
-
-    protected User $admin;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->admin = User::factory()->create();
-    }
 
     /** @test */
     public function brand_can_have_default_lead_time(): void
@@ -45,20 +36,23 @@ class BrandLeadTimeTest extends TestCase
     /** @test */
     public function admin_can_update_brand_lead_time_via_api(): void
     {
+        $admin = $this->getAdminUser();
+
         $brand = Brand::factory()->create([
             'name' => 'Test Brand',
         ]);
 
-        $response = $this->actingAs($this->admin)
-            ->patchJson("/api/v1/brands/{$brand->id}", [
-                'data' => [
-                    'type' => 'brands',
-                    'id' => (string) $brand->id,
-                    'attributes' => [
-                        'defaultLeadTime' => '15 dias habiles',
-                    ],
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('brands')
+            ->withData([
+                'type' => 'brands',
+                'id' => (string) $brand->id,
+                'attributes' => [
+                    'defaultLeadTime' => '15 dias habiles',
                 ],
-            ]);
+            ])
+            ->patch("/api/v1/brands/{$brand->id}");
 
         $response->assertOk();
 
@@ -85,13 +79,17 @@ class BrandLeadTimeTest extends TestCase
     /** @test */
     public function brand_lead_time_appears_in_api_response(): void
     {
+        $admin = $this->getAdminUser();
+
         $brand = Brand::factory()->create([
             'name' => 'Test Brand',
             'default_lead_time' => '3-4 semanas',
         ]);
 
-        $response = $this->actingAs($this->admin)
-            ->getJson("/api/v1/brands/{$brand->id}");
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('brands')
+            ->get("/api/v1/brands/{$brand->id}");
 
         $response->assertOk()
             ->assertJsonPath('data.attributes.defaultLeadTime', '3-4 semanas');

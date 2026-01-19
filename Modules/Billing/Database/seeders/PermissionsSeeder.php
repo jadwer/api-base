@@ -31,6 +31,8 @@ class PermissionsSeeder extends Seeder
             'billing.cfdi-invoices.preview-pdf',
             'billing.cfdi-invoices.validate',
             'billing.cfdi-invoices.cancellation-status',
+            // Phase 11: Prefactura (preview CFDI without stamping)
+            'billing.cfdi-invoices.prefactura',
         ];
 
         $this->bulkCreateAndAssignPermissions($readPermissions, ['admin', 'tech', 'customer']);
@@ -66,6 +68,24 @@ class PermissionsSeeder extends Seeder
 
         $this->bulkCreateAndAssignPermissions($settingsPermissions, ['admin']);
 
-        $this->command->info('✅ Permissions seeded successfully!');
+        // Invoice Series permissions (Phase 11 - Multiple series: FAC, FAC-W, REFAC, N)
+        // Read permissions for Admin and Tech
+        $seriesReadPermissions = [
+            'billing.invoice-series.index',
+            'billing.invoice-series.show',
+        ];
+
+        $this->bulkCreateAndAssignPermissions($seriesReadPermissions, ['admin', 'tech']);
+
+        // Write permissions for Admin only
+        $seriesWritePermissions = [
+            'billing.invoice-series.store',
+            'billing.invoice-series.update',
+            'billing.invoice-series.destroy',
+        ];
+
+        $this->bulkCreateAndAssignPermissions($seriesWritePermissions, ['admin']);
+
+        $this->command->info('Permissions seeded successfully!');
     }
 }

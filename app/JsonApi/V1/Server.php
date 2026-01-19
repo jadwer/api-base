@@ -137,6 +137,8 @@ class Server extends BaseServer
             \Modules\Sales\JsonApi\V1\DiscountRules\DiscountRuleSchema::class,
             \Modules\Sales\JsonApi\V1\Quotes\QuoteSchema::class,
             \Modules\Sales\JsonApi\V1\QuoteItems\QuoteItemSchema::class,
+            \Modules\Sales\JsonApi\V1\Remissions\RemissionSchema::class,
+            \Modules\Sales\JsonApi\V1\RemissionItems\RemissionItemSchema::class,
 
             // Ecommerce Module
             ShoppingCartSchema::class,
@@ -215,6 +217,7 @@ class Server extends BaseServer
             \Modules\Billing\JsonApi\V1\CompanySettings\CompanySettingSchema::class,
             \Modules\Billing\JsonApi\V1\CFDIInvoices\CFDIInvoiceSchema::class,
             \Modules\Billing\JsonApi\V1\CFDIItems\CFDIItemSchema::class,
+            \Modules\Billing\JsonApi\V1\InvoiceSeries\InvoiceSeriesSchema::class,
 
             // CRM Module (Phase 4.5)
             \Modules\CRM\JsonApi\V1\Leads\LeadSchema::class,
@@ -258,6 +261,8 @@ class Server extends BaseServer
             'discount-rules' => \Modules\Sales\JsonApi\V1\DiscountRules\DiscountRuleAuthorizer::class,
             'quotes' => \Modules\Sales\JsonApi\V1\Quotes\QuoteAuthorizer::class,
             'quote-items' => \Modules\Sales\JsonApi\V1\QuoteItems\QuoteItemAuthorizer::class,
+            'remissions' => \Modules\Sales\JsonApi\V1\Remissions\RemissionAuthorizer::class,
+            'remission-items' => \Modules\Sales\JsonApi\V1\RemissionItems\RemissionItemAuthorizer::class,
             
             // Ecommerce Module
             'shopping-carts' => \Modules\Ecommerce\JsonApi\V1\ShoppingCarts\ShoppingCartAuthorizer::class,
@@ -327,6 +332,7 @@ class Server extends BaseServer
             'company-settings' => \Modules\Billing\JsonApi\V1\CompanySettings\CompanySettingAuthorizer::class,
             'cfdi-invoices' => \Modules\Billing\JsonApi\V1\CFDIInvoices\CFDIInvoiceAuthorizer::class,
             'cfdi-items' => \Modules\Billing\JsonApi\V1\CFDIItems\CFDIItemAuthorizer::class,
+            'invoice-series' => \Modules\Billing\JsonApi\V1\InvoiceSeries\InvoiceSeriesAuthorizer::class,
 
             // CRM Module (Phase 4.5)
             'leads' => \Modules\CRM\JsonApi\V1\Leads\LeadAuthorizer::class,

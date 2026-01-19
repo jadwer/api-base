@@ -174,15 +174,22 @@ class Quote extends Model
     // Business Logic Methods
     public function recalculateTotals(): void
     {
-        $subtotal = $this->items()->sum('total');
-        $taxAmount = $this->items()->sum('tax_amount');
-        $discountAmount = $this->items()->sum('discount_amount');
+        // Calculate subtotal as sum of (quantity * quoted_price) for all items
+        $subtotalBeforeDiscount = $this->items()
+            ->selectRaw('SUM(quantity * quoted_price) as subtotal')
+            ->value('subtotal') ?? 0;
+
+        $discountAmount = $this->items()->sum('discount_amount') ?? 0;
+        $taxAmount = $this->items()->sum('tax_amount') ?? 0;
+
+        // Subtotal after discount
+        $subtotalAfterDiscount = $subtotalBeforeDiscount - $discountAmount;
 
         $this->update([
-            'subtotal_amount' => $subtotal + $discountAmount, // Subtotal before discounts
+            'subtotal_amount' => $subtotalAfterDiscount, // Subtotal after discounts, before tax
             'discount_amount' => $discountAmount,
             'tax_amount' => $taxAmount,
-            'total_amount' => $subtotal + $taxAmount,
+            'total_amount' => $subtotalAfterDiscount + $taxAmount,
         ]);
     }
 

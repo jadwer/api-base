@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -23,7 +24,7 @@ return new class extends Migration
             $table->string('separator', 5)->default(''); // Separator between prefix and number (empty, -, /)
             $table->integer('padding')->default(6); // Number of digits (000001)
             $table->bigInteger('current_sequence')->default(0); // Current sequence number
-            $table->integer('reset_yearly')->default(false); // Reset sequence each year
+            $table->boolean('reset_yearly')->default(false); // Reset sequence each year
             $table->integer('last_reset_year')->nullable(); // Year of last reset
             $table->boolean('is_active')->default(true);
             $table->timestamps();

@@ -71,9 +71,9 @@ class QuoteController extends Controller
             foreach ($cart->cartItems as $cartItem) {
                 $product = $cartItem->product;
 
-                // Auto-populate ETA from brand if product is out of stock
+                // Auto-populate ETA from brand if it has a default lead time
                 $notes = null;
-                if ($product && $product->stock_quantity <= 0 && $product->brand?->default_lead_time) {
+                if ($product?->brand?->default_lead_time) {
                     $notes = 'ETA: ' . $product->brand->default_lead_time;
                 }
 

@@ -8,6 +8,8 @@ use Modules\Billing\Models\CFDIInvoice;
 use Modules\Billing\Services\CFDI\CFDIXMLGenerator;
 use Modules\Billing\Services\CFDI\CFDIPDFGenerator;
 use Modules\Billing\Services\CFDI\CFDIStampingService;
+use Modules\Billing\Services\CFDI\PrefacturaPDFGenerator;
+use Modules\Sales\Models\SalesOrder;
 use Modules\Billing\Exceptions\PacException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -542,5 +544,131 @@ class CFDIInvoiceController
         }
 
         return "CFDI_{$serie}_{$folio}.pdf";
+    }
+
+    /**
+     * Generate Prefactura PDF from a draft CFDIInvoice
+     *
+     * Prefactura is a preview PDF with "SIN VALIDEZ FISCAL" watermark
+     * that allows reviewing the invoice before stamping with PAC.
+     *
+     * @param CFDIInvoice $cfdiInvoice
+     * @param PrefacturaPDFGenerator $generator
+     * @return JsonResponse
+     */
+    public function prefactura(
+        CFDIInvoice $cfdiInvoice,
+        PrefacturaPDFGenerator $generator
+    ): JsonResponse {
+        if (Gate::denies('billing.cfdi-invoices.prefactura')) {
+            abort(403, 'No tiene permisos para generar prefactura');
+        }
+
+        try {
+            $path = $generator->generate($cfdiInvoice);
+
+            return response()->json([
+                'message' => 'Prefactura generada correctamente',
+                'data' => [
+                    'id' => $cfdiInvoice->id,
+                    'folio' => $cfdiInvoice->getFolioCompleto(),
+                    'pdf_path' => $path,
+                    'is_stamped' => (bool) $cfdiInvoice->uuid,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al generar prefactura',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Download Prefactura PDF
+     *
+     * @param CFDIInvoice $cfdiInvoice
+     * @param PrefacturaPDFGenerator $generator
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function downloadPrefactura(
+        CFDIInvoice $cfdiInvoice,
+        PrefacturaPDFGenerator $generator
+    ) {
+        if (Gate::denies('billing.cfdi-invoices.prefactura')) {
+            abort(403, 'No tiene permisos para descargar prefactura');
+        }
+
+        try {
+            return $generator->download($cfdiInvoice);
+        } catch (\Exception $e) {
+            abort(500, 'Error al descargar prefactura: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Preview Prefactura PDF inline
+     *
+     * @param CFDIInvoice $cfdiInvoice
+     * @param PrefacturaPDFGenerator $generator
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function previewPrefactura(
+        CFDIInvoice $cfdiInvoice,
+        PrefacturaPDFGenerator $generator
+    ) {
+        if (Gate::denies('billing.cfdi-invoices.prefactura')) {
+            abort(403, 'No tiene permisos para previsualizar prefactura');
+        }
+
+        try {
+            return $generator->preview($cfdiInvoice);
+        } catch (\Exception $e) {
+            abort(500, 'Error al previsualizar prefactura: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Generate Prefactura from a SalesOrder without creating a CFDIInvoice
+     *
+     * This allows previewing how an invoice would look before creating
+     * the actual CFDI record. Useful for customer review before billing.
+     *
+     * @param SalesOrder $salesOrder
+     * @param Request $request
+     * @param PrefacturaPDFGenerator $generator
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function prefacturaFromOrder(
+        SalesOrder $salesOrder,
+        Request $request,
+        PrefacturaPDFGenerator $generator
+    ) {
+        if (Gate::denies('billing.cfdi-invoices.prefactura')) {
+            abort(403, 'No tiene permisos para generar prefactura');
+        }
+
+        // Optional CFDI data overrides from request
+        $cfdiData = $request->validate([
+            'receptor_rfc' => ['nullable', 'string', 'max:13'],
+            'receptor_uso_cfdi' => ['nullable', 'string', 'max:10'],
+            'receptor_regimen_fiscal' => ['nullable', 'string', 'max:3'],
+            'receptor_domicilio_fiscal' => ['nullable', 'string', 'max:5'],
+            'metodo_pago' => ['nullable', 'string', 'in:PUE,PPD'],
+            'forma_pago' => ['nullable', 'string', 'max:2'],
+            'series' => ['nullable', 'string', 'max:10'],
+        ]);
+
+        try {
+            $download = $request->boolean('download', false);
+
+            if ($download) {
+                return $generator->downloadFromOrder($salesOrder, $cfdiData);
+            }
+
+            return $generator->streamFromOrder($salesOrder, $cfdiData);
+        } catch (\Exception $e) {
+            abort(500, 'Error al generar prefactura desde orden: ' . $e->getMessage());
+        }
     }
 }

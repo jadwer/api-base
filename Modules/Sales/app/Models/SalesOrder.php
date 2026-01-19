@@ -126,6 +126,14 @@ class SalesOrder extends Model
     }
 
     /**
+     * SA-M006: Remissions (delivery notes) for this order.
+     */
+    public function remissions(): HasMany
+    {
+        return $this->hasMany(Remission::class);
+    }
+
+    /**
      * SA-M001: Get fulfillment status based on item statuses.
      */
     public function getFulfillmentStatusAttribute(): string

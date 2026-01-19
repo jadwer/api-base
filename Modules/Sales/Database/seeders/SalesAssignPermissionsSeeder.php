@@ -30,7 +30,10 @@ class SalesAssignPermissionsSeeder extends Seeder
                                                 ->orWhere('name', 'like', 'backorders.%')
                                                 ->orWhere('name', 'like', 'discount-rules.%')
                                                 ->orWhere('name', 'like', 'quotes.%')
-                                                ->orWhere('name', 'like', 'quote-items.%');
+                                                ->orWhere('name', 'like', 'quote-items.%')
+                                                ->orWhere('name', 'like', 'sales.folio-sequences.%')
+                                                ->orWhere('name', 'like', 'remissions.%')
+                                                ->orWhere('name', 'like', 'remission-items.%');
                                       })
                                       ->get();
             $godRole->givePermissionTo($allPermissions);
@@ -62,6 +65,14 @@ class SalesAssignPermissionsSeeder extends Seeder
                                             'quotes.store', 'quotes.update', 'quotes.destroy',
                                             'quote-items.index', 'quote-items.view', 'quote-items.show',
                                             'quote-items.store', 'quote-items.update', 'quote-items.destroy',
+                                            // SA-M005: Folio Sequences (admin only)
+                                            'sales.folio-sequences.index', 'sales.folio-sequences.show',
+                                            'sales.folio-sequences.update',
+                                            // SA-M006: Remissions
+                                            'remissions.index', 'remissions.view', 'remissions.show',
+                                            'remissions.store', 'remissions.update', 'remissions.destroy',
+                                            'remission-items.index', 'remission-items.view', 'remission-items.show',
+                                            'remission-items.store', 'remission-items.update', 'remission-items.destroy',
                                         ])->get();
             $adminRole->givePermissionTo($adminPermissions);
         }
@@ -91,6 +102,11 @@ class SalesAssignPermissionsSeeder extends Seeder
                                            'quotes.store', 'quotes.update', 'quotes.destroy',
                                            'quote-items.index', 'quote-items.view', 'quote-items.show',
                                            'quote-items.store', 'quote-items.update', 'quote-items.destroy',
+                                           // SA-M006: Remissions (full access for tech)
+                                           'remissions.index', 'remissions.view', 'remissions.show',
+                                           'remissions.store', 'remissions.update', 'remissions.destroy',
+                                           'remission-items.index', 'remission-items.view', 'remission-items.show',
+                                           'remission-items.store', 'remission-items.update', 'remission-items.destroy',
                                        ])->get();
             $techRole->givePermissionTo($techPermissions);
         }
@@ -112,6 +128,9 @@ class SalesAssignPermissionsSeeder extends Seeder
                                                // SA-M004: Customer can view and request quotes
                                                'quotes.index', 'quotes.view', 'quotes.show', 'quotes.store',
                                                'quote-items.index', 'quote-items.view', 'quote-items.show',
+                                               // SA-M006: Customer can view remissions for their orders
+                                               'remissions.index', 'remissions.view', 'remissions.show',
+                                               'remission-items.index', 'remission-items.view', 'remission-items.show',
                                            ])->get();
             $customerRole->givePermissionTo($customerPermissions);
         }

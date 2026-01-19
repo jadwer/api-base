@@ -6,32 +6,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Modules\Sales\Models\FolioSequence;
-use App\Models\User;
-use Spatie\Permission\Models\Permission;
 
 class FolioSequenceTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
-
-    protected User $admin;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        // Create permissions
-        Permission::findOrCreate('sales.folio-sequences.index');
-        Permission::findOrCreate('sales.folio-sequences.show');
-        Permission::findOrCreate('sales.folio-sequences.update');
-
-        // Create admin user with permissions
-        $this->admin = User::factory()->create();
-        $this->admin->givePermissionTo([
-            'sales.folio-sequences.index',
-            'sales.folio-sequences.show',
-            'sales.folio-sequences.update',
-        ]);
-    }
 
     /** @test */
     public function it_generates_sequential_folios(): void
@@ -160,13 +138,15 @@ class FolioSequenceTest extends TestCase
     /** @test */
     public function admin_can_list_folio_sequences(): void
     {
+        $admin = $this->getAdminUser();
+
         FolioSequence::create([
-            'document_type' => 'quote',
-            'prefix' => 'COT',
+            'document_type' => 'test_list_api',
+            'prefix' => 'TST',
             'is_active' => true,
         ]);
 
-        $response = $this->actingAs($this->admin)
+        $response = $this->actingAs($admin, 'sanctum')
             ->getJson('/api/v1/folio-sequences');
 
         $response->assertOk()
@@ -188,72 +168,80 @@ class FolioSequenceTest extends TestCase
     /** @test */
     public function admin_can_view_folio_sequence(): void
     {
+        $admin = $this->getAdminUser();
+
         FolioSequence::create([
-            'document_type' => 'quote',
-            'prefix' => 'COT',
+            'document_type' => 'test_view_api',
+            'prefix' => 'VIW',
             'include_year' => true,
             'year_format' => 'y',
             'padding' => 6,
             'is_active' => true,
         ]);
 
-        $response = $this->actingAs($this->admin)
-            ->getJson('/api/v1/folio-sequences/quote');
+        $response = $this->actingAs($admin, 'sanctum')
+            ->getJson('/api/v1/folio-sequences/test_view_api');
 
         $response->assertOk()
-            ->assertJsonPath('data.documentType', 'quote')
-            ->assertJsonPath('data.prefix', 'COT');
+            ->assertJsonPath('data.documentType', 'test_view_api')
+            ->assertJsonPath('data.prefix', 'VIW');
     }
 
     /** @test */
     public function admin_can_update_folio_sequence(): void
     {
+        $admin = $this->getAdminUser();
+
         FolioSequence::create([
-            'document_type' => 'quote',
-            'prefix' => 'COT',
+            'document_type' => 'test_update_api',
+            'prefix' => 'UPD',
             'padding' => 4,
             'is_active' => true,
         ]);
 
-        $response = $this->actingAs($this->admin)
-            ->patchJson('/api/v1/folio-sequences/quote', [
-                'prefix' => 'QUO',
+        $response = $this->actingAs($admin, 'sanctum')
+            ->patchJson('/api/v1/folio-sequences/test_update_api', [
+                'prefix' => 'NEW',
                 'padding' => 6,
                 'include_year' => true,
             ]);
 
         $response->assertOk()
-            ->assertJsonPath('data.prefix', 'QUO')
+            ->assertJsonPath('data.prefix', 'NEW')
             ->assertJsonPath('data.padding', 6);
     }
 
     /** @test */
     public function admin_can_set_initial_sequence(): void
     {
+        $admin = $this->getAdminUser();
+
         FolioSequence::create([
-            'document_type' => 'quote',
-            'prefix' => 'COT',
+            'document_type' => 'test_initial_api',
+            'prefix' => 'INI',
             'current_sequence' => 0,
             'is_active' => true,
         ]);
 
-        $response = $this->actingAs($this->admin)
-            ->postJson('/api/v1/folio-sequences/quote/set-initial', [
+        $response = $this->actingAs($admin, 'sanctum')
+            ->postJson('/api/v1/folio-sequences/test_initial_api/set-initial', [
                 'start_from' => 1000,
             ]);
 
         $response->assertOk();
 
-        $sequence = FolioSequence::where('document_type', 'quote')->first();
+        $sequence = FolioSequence::where('document_type', 'test_initial_api')->first();
         $this->assertEquals(999, $sequence->current_sequence); // start_from - 1
     }
 
     /** @test */
     public function admin_can_preview_next_folio(): void
     {
+        $admin = $this->getAdminUser();
+
         FolioSequence::create([
-            'document_type' => 'quote',
-            'prefix' => 'COT',
+            'document_type' => 'test_preview_api',
+            'prefix' => 'PRE',
             'include_year' => true,
             'year_format' => 'y',
             'padding' => 6,
@@ -261,21 +249,21 @@ class FolioSequenceTest extends TestCase
             'is_active' => true,
         ]);
 
-        $response = $this->actingAs($this->admin)
-            ->getJson('/api/v1/folio-sequences/quote/preview-next');
+        $response = $this->actingAs($admin, 'sanctum')
+            ->getJson('/api/v1/folio-sequences/test_preview_api/preview-next');
 
         $year = now()->format('y');
         $response->assertOk()
-            ->assertJsonPath('data.next_folio', "COT{$year}000032")
+            ->assertJsonPath('data.next_folio', "PRE{$year}000032")
             ->assertJsonPath('data.current_sequence', 31);
     }
 
     /** @test */
     public function unauthorized_user_cannot_access_folio_sequences(): void
     {
-        $user = User::factory()->create();
+        $customer = $this->getCustomerUser();
 
-        $response = $this->actingAs($user)
+        $response = $this->actingAs($customer, 'sanctum')
             ->getJson('/api/v1/folio-sequences');
 
         $response->assertForbidden();

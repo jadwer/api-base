@@ -146,6 +146,7 @@ class FolioSequence extends Model
             'invoice' => 'FAC',
             'invoice_online' => 'FAC-W',
             'invoice_refac' => 'REFAC',
+            'remission' => 'REM',
         ];
 
         $prefix = $prefixes[$documentType] ?? strtoupper(substr($documentType, 0, 3));
