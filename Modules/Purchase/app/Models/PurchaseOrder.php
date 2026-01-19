@@ -16,6 +16,8 @@ use Modules\Finance\Models\APInvoice;
 use Modules\Inventory\Models\Warehouse;
 use Modules\User\Models\User;
 use Modules\Purchase\Services\PurchaseOrderApprovalService;
+use Modules\Sales\Models\Quote;
+use Modules\Sales\Models\FolioSequence;
 
 class PurchaseOrder extends Model
 {
@@ -52,6 +54,7 @@ class PurchaseOrder extends Model
         return [
             'id' => 'integer',
             'contact_id' => 'integer',
+            'quote_id' => 'integer',
             'warehouse_id' => 'integer',
             'order_date' => 'date',
             'total_amount' => 'float',
@@ -113,6 +116,14 @@ class PurchaseOrder extends Model
     public function supplier(): BelongsTo
     {
         return $this->contact();
+    }
+
+    /**
+     * Get the quote that originated this purchase order.
+     */
+    public function quote(): BelongsTo
+    {
+        return $this->belongsTo(Quote::class, 'quote_id');
     }
 
     /**
@@ -283,6 +294,19 @@ class PurchaseOrder extends Model
         }
 
         return true;
+    }
+
+    // ========== ORDER NUMBER GENERATION ==========
+
+    /**
+     * Generate unique purchase order number using FolioSequence
+     *
+     * Format is configurable via folio_sequences table.
+     * Default: OC-26000001 (prefix + year short + sequence)
+     */
+    public static function generateOrderNumber(): string
+    {
+        return FolioSequence::getNextFolio('purchase_order');
     }
 
     // ========== SCOPES ==========

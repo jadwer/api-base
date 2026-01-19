@@ -15,6 +15,11 @@ use Modules\Sales\Models\SalesOrderItem;
 use Modules\Sales\Services\QuotePDFGenerator;
 use Modules\Ecommerce\Models\ShoppingCart;
 use Modules\Product\Models\Product;
+use Modules\Purchase\Models\PurchaseOrder;
+use Modules\Purchase\Models\PurchaseOrderItem;
+use Modules\Inventory\Models\Warehouse;
+use Modules\Sales\Mail\QuoteConvertedMail;
+use Illuminate\Support\Facades\Mail;
 
 class QuoteController extends Controller
 {
@@ -231,6 +236,9 @@ class QuoteController extends Controller
                 'converted_at' => now(),
             ]);
 
+            // Send email notification to customer
+            $this->sendQuoteConvertedEmail($quote, $order);
+
             return response()->json([
                 'data' => [
                     'quote' => $this->transformQuote($quote->fresh()),
@@ -393,6 +401,143 @@ class QuoteController extends Controller
     }
 
     /**
+     * Generate a Purchase Order from the quote
+     * POST /api/v1/quotes/{quote}/generate-purchase-order
+     *
+     * This creates a PO to request products from suppliers based on the quote items.
+     */
+    public function generatePurchaseOrder(Request $request, Quote $quote): JsonResponse
+    {
+        // Validate quote can generate PO
+        if (!$quote->canGeneratePurchaseOrder) {
+            return response()->json([
+                'error' => 'Cannot generate purchase order. Quote must be accepted or converted and not already have a PO.'
+            ], 400);
+        }
+
+        $request->validate([
+            'supplier_id' => 'required|exists:contacts,id',
+            'warehouse_id' => 'nullable|exists:warehouses,id',
+            'notes' => 'nullable|string|max:2000',
+        ]);
+
+        return DB::transaction(function () use ($request, $quote) {
+            // Get warehouse if not provided (use first active warehouse)
+            $warehouseId = $request->input('warehouse_id');
+            if (!$warehouseId) {
+                $warehouse = Warehouse::where('is_active', true)->first()
+                    ?? Warehouse::first();
+                $warehouseId = $warehouse?->id;
+            }
+
+            // Calculate total from quote items (using cost if available, otherwise unit_price)
+            $total = 0;
+            foreach ($quote->items as $item) {
+                $product = $item->product;
+                $unitCost = $product?->cost ?? $item->unit_price;
+                $total += $item->quantity * $unitCost;
+            }
+
+            // Create purchase order
+            $purchaseOrder = PurchaseOrder::create([
+                'order_number' => PurchaseOrder::generateOrderNumber(),
+                'contact_id' => $request->input('supplier_id'),
+                'quote_id' => $quote->id,
+                'warehouse_id' => $warehouseId,
+                'order_date' => now(),
+                'status' => 'pending',
+                'total_amount' => $total,
+                'notes' => $request->input('notes') ?? "Generado desde cotizacion {$quote->quote_number}",
+                'metadata' => [
+                    'source' => 'quote',
+                    'quote_id' => $quote->id,
+                    'quote_number' => $quote->quote_number,
+                ],
+            ]);
+
+            // Create purchase order items from quote items
+            foreach ($quote->items as $quoteItem) {
+                $product = $quoteItem->product;
+                $unitCost = $product?->cost ?? $quoteItem->unit_price;
+
+                PurchaseOrderItem::create([
+                    'purchase_order_id' => $purchaseOrder->id,
+                    'product_id' => $quoteItem->product_id,
+                    'quantity' => $quoteItem->quantity,
+                    'unit_price' => $unitCost,
+                    'discount' => 0,
+                    'received_quantity' => 0,
+                    'metadata' => [
+                        'quote_item_id' => $quoteItem->id,
+                        'original_quoted_price' => $quoteItem->quoted_price,
+                    ],
+                ]);
+            }
+
+            // Link quote to purchase order
+            $quote->update([
+                'purchase_order_id' => $purchaseOrder->id,
+            ]);
+
+            return response()->json([
+                'data' => [
+                    'quote' => $this->transformQuote($quote->fresh()),
+                    'purchaseOrder' => [
+                        'type' => 'purchase-orders',
+                        'id' => (string) $purchaseOrder->id,
+                        'attributes' => [
+                            'orderNumber' => $purchaseOrder->order_number,
+                            'status' => $purchaseOrder->status,
+                            'totalAmount' => $purchaseOrder->total_amount,
+                            'supplierId' => $purchaseOrder->contact_id,
+                            'warehouseId' => $purchaseOrder->warehouse_id,
+                        ]
+                    ]
+                ],
+                'message' => 'Purchase order generated successfully from quote'
+            ], 201);
+        });
+    }
+
+    /**
+     * Send email notification when quote is converted to order
+     */
+    protected function sendQuoteConvertedEmail(Quote $quote, SalesOrder $order): void
+    {
+        $quote->load(['contact', 'items.product']);
+        $order->load(['items.product']);
+
+        // Send to customer
+        if ($quote->contact?->email) {
+            try {
+                Mail::to($quote->contact->email)
+                    ->queue(new QuoteConvertedMail($quote, $order, false));
+            } catch (\Exception $e) {
+                \Log::error('Failed to send quote converted email to customer', [
+                    'quote_id' => $quote->id,
+                    'email' => $quote->contact->email,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        // Send to admin/sales team (optional - configurable)
+        $adminEmail = config('sales.notifications.quote_converted_admin_email');
+        if ($adminEmail) {
+            try {
+                Mail::to($adminEmail)
+                    ->queue(new QuoteConvertedMail($quote, $order, true));
+            } catch (\Exception $e) {
+                \Log::error('Failed to send quote converted email to admin', [
+                    'quote_id' => $quote->id,
+                    'email' => $adminEmail,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+    }
+
+    /**
      * Transform quote to JSON:API-like format
      */
     private function transformQuote(Quote $quote): array
@@ -405,6 +550,7 @@ class QuoteController extends Controller
                 'contactId' => $quote->contact_id,
                 'shoppingCartId' => $quote->shopping_cart_id,
                 'salesOrderId' => $quote->sales_order_id,
+                'purchaseOrderId' => $quote->purchase_order_id,
                 'status' => $quote->status,
                 'quoteDate' => $quote->quote_date?->toISOString(),
                 'validUntil' => $quote->valid_until?->toISOString(),
@@ -428,6 +574,8 @@ class QuoteController extends Controller
                 'isExpired' => $quote->isExpired,
                 'canBeSent' => $quote->canBeSent,
                 'canBeConverted' => $quote->canBeConverted,
+                'canGeneratePurchaseOrder' => $quote->canGeneratePurchaseOrder,
+                'hasPurchaseOrder' => $quote->hasPurchaseOrder,
                 'createdAt' => $quote->created_at?->toISOString(),
                 'updatedAt' => $quote->updated_at?->toISOString(),
             ],

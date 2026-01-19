@@ -40,11 +40,13 @@ class QuoteSchema extends Schema
             Number::make('contactId', 'contact_id'),
             Number::make('shoppingCartId', 'shopping_cart_id'),
             Number::make('salesOrderId', 'sales_order_id'),
+            Number::make('purchaseOrderId', 'purchase_order_id')->readOnly(),
 
             // Relations
             BelongsTo::make('contact')->type('contacts'),
             BelongsTo::make('shoppingCart')->type('shopping-carts'),
             BelongsTo::make('salesOrder')->type('sales-orders'),
+            BelongsTo::make('purchaseOrder')->type('purchase-orders'),
 
             // Basic fields
             Str::make('quoteNumber', 'quote_number')->sortable(),
@@ -114,6 +116,7 @@ class QuoteSchema extends Schema
             'contact',
             'shoppingCart',
             'salesOrder',
+            'purchaseOrder',
             'items',
             'items.product',
         ];

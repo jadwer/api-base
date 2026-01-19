@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Contacts\Models\Contact;
 use Modules\Ecommerce\Models\ShoppingCart;
+use Modules\Purchase\Models\PurchaseOrder;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
@@ -16,6 +17,7 @@ use Spatie\Activitylog\LogOptions;
  * @property int $contact_id
  * @property int|null $shopping_cart_id
  * @property int|null $sales_order_id
+ * @property int|null $purchase_order_id
  * @property string $quote_number
  * @property string $status
  * @property \Carbon\Carbon $quote_date
@@ -50,6 +52,7 @@ class Quote extends Model
         'contact_id' => 'integer',
         'shopping_cart_id' => 'integer',
         'sales_order_id' => 'integer',
+        'purchase_order_id' => 'integer',
         'quote_date' => 'date',
         'valid_until' => 'date',
         'subtotal_amount' => 'float',
@@ -140,6 +143,11 @@ class Quote extends Model
         return $this->belongsTo(SalesOrder::class);
     }
 
+    public function purchaseOrder(): BelongsTo
+    {
+        return $this->belongsTo(PurchaseOrder::class);
+    }
+
     public function items(): HasMany
     {
         return $this->hasMany(QuoteItem::class);
@@ -159,6 +167,17 @@ class Quote extends Model
     public function getCanBeConvertedAttribute(): bool
     {
         return in_array($this->status, ['accepted']) && !$this->sales_order_id;
+    }
+
+    public function getCanGeneratePurchaseOrderAttribute(): bool
+    {
+        // Can generate PO when quote is accepted but not yet has a PO
+        return in_array($this->status, ['accepted', 'converted']) && !$this->purchase_order_id;
+    }
+
+    public function getHasPurchaseOrderAttribute(): bool
+    {
+        return !is_null($this->purchase_order_id);
     }
 
     public function getItemsCountAttribute(): int

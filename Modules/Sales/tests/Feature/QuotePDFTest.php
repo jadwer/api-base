@@ -83,7 +83,8 @@ class QuotePDFTest extends TestCase
         $generator = new QuotePDFGenerator();
         $path = $generator->generate($this->quote);
 
-        $this->assertStringContainsString('cotizacion_COT_26000001.pdf', $path);
+        // The filename keeps hyphens since they're allowed in the regex pattern
+        $this->assertStringContainsString('cotizacion_COT-26000001.pdf', $path);
     }
 
     /** @test */

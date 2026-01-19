@@ -64,6 +64,9 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::post('quotes/{quote}/cancel', [QuoteController::class, 'cancel'])->name('quotes.cancel');
     Route::post('quotes/{quote}/duplicate', [QuoteController::class, 'duplicate'])->name('quotes.duplicate');
 
+    // SA-M012: Generate Purchase Order from Quote
+    Route::post('quotes/{quote}/generate-purchase-order', [QuoteController::class, 'generatePurchaseOrder'])->name('quotes.generate-purchase-order');
+
     // Quote PDF endpoints
     Route::get('quotes/{quote}/pdf', [QuoteController::class, 'generatePdf'])->name('quotes.pdf');
     Route::get('quotes/{quote}/pdf/download', [QuoteController::class, 'downloadPdf'])->name('quotes.pdf.download');
