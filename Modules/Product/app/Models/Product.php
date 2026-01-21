@@ -43,7 +43,11 @@ class Product extends Model
         'id' => 'integer',
         'price' => 'float',
         'cost' => 'float',
+        'compare_at_price' => 'float',
         'iva' => 'boolean',
+        'is_on_sale' => 'boolean',
+        'sale_starts_at' => 'datetime',
+        'sale_ends_at' => 'datetime',
         'unit_id' => 'integer',
         'category_id' => 'integer',
         'brand_id' => 'integer',
@@ -154,6 +158,68 @@ class Product extends Model
               ->orWhere('sku', 'like', $searchTerm)
               ->orWhere('description', 'like', $searchTerm);
         });
+    }
+
+    /**
+     * Scope for products on sale (active offers)
+     */
+    public function scopeOnSale($query)
+    {
+        return $query->where('is_on_sale', true)
+            ->where(function ($q) {
+                $q->whereNull('sale_starts_at')
+                    ->orWhere('sale_starts_at', '<=', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('sale_ends_at')
+                    ->orWhere('sale_ends_at', '>=', now());
+            });
+    }
+
+    /**
+     * Check if product is currently on sale
+     */
+    public function isCurrentlyOnSale(): bool
+    {
+        if (!$this->is_on_sale) {
+            return false;
+        }
+
+        $now = now();
+
+        if ($this->sale_starts_at && $this->sale_starts_at > $now) {
+            return false;
+        }
+
+        if ($this->sale_ends_at && $this->sale_ends_at < $now) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Get discount percentage
+     */
+    public function getDiscountPercentageAttribute(): ?int
+    {
+        if (!$this->compare_at_price || $this->compare_at_price <= $this->price) {
+            return null;
+        }
+
+        return (int) round((($this->compare_at_price - $this->price) / $this->compare_at_price) * 100);
+    }
+
+    /**
+     * Get savings amount
+     */
+    public function getSavingsAttribute(): ?float
+    {
+        if (!$this->compare_at_price || $this->compare_at_price <= $this->price) {
+            return null;
+        }
+
+        return $this->compare_at_price - $this->price;
     }
 
     /**

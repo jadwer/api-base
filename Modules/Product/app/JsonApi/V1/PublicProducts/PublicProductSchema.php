@@ -31,15 +31,20 @@ class PublicProductSchema extends Schema
             Str::make('fullDescription', 'full_description'),
             Number::make('price')->sortable(),
             Number::make('cost')->sortable(),
+            Number::make('compareAtPrice', 'compare_at_price'),
+            Boolean::make('isOnSale', 'is_on_sale'),
+            DateTime::make('saleStartsAt', 'sale_starts_at'),
+            DateTime::make('saleEndsAt', 'sale_ends_at'),
+            Str::make('saleBadge', 'sale_badge'),
             Boolean::make('iva'),
             Str::make('imgPath', 'img_path'),
             Str::make('datasheetPath', 'datasheet_path'),
-            
+
             // Relaciones
             BelongsTo::make('unit')->type('units'),
             BelongsTo::make('category')->type('categories'),
             BelongsTo::make('brand')->type('brands'),
-            
+
             DateTime::make('createdAt', 'created_at')->readOnly()->sortable(),
             DateTime::make('updatedAt', 'updated_at')->readOnly()->sortable(),
         ];
@@ -64,6 +69,8 @@ class PublicProductSchema extends Schema
             Where::make('unit_id'),
             Where::make('category_id'),
             Where::make('brand_id'),
+            Where::make('is_on_sale'),
+            Scope::make('onSale', 'on_sale'),
             WhereIn::make('brands', 'brand_id')->delimiter(','),
             WhereIn::make('categories', 'category_id')->delimiter(','),
             WhereIn::make('units', 'unit_id')->delimiter(','),
