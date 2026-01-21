@@ -28,7 +28,7 @@ class CFDIInvoiceFactory extends Factory
             'contact_id' => $contact->id,
             'ar_invoice_id' => null,
             'series' => $companySetting->invoice_series ?? 'F',
-            'folio' => $this->faker->numberBetween(1, 9999),
+            'folio' => $this->faker->unique()->numberBetween(1, 999999),
             'uuid' => null,
             'tipo_comprobante' => 'I', // Ingreso
             'receptor_rfc' => strtoupper($this->faker->regexify('[A-Z]{4}[0-9]{6}[A-Z0-9]{3}')),
