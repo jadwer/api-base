@@ -7,6 +7,26 @@ use Illuminate\Validation\Rule;
 
 class CouponRequest extends ResourceRequest
 {
+    /**
+     * Hook to modify existing data before merging with request data.
+     *
+     * This fixes a conflict where the JSON:API document's 'type' field (resource type)
+     * gets confused with the model's 'type' attribute (couponType) during PATCH requests.
+     *
+     * @param object $model
+     * @param array $existing
+     * @return array
+     */
+    protected function withExisting(object $model, array $existing): array
+    {
+        // Ensure couponType uses the model's actual type value, not the JSON:API resource type
+        if (isset($existing['attributes'])) {
+            $existing['attributes']['couponType'] = $model->type;
+        }
+
+        return $existing;
+    }
+
     public function rules(): array
     {
         $coupon = $this->model();

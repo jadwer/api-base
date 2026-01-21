@@ -124,7 +124,8 @@ class Quote extends Model
     {
         return $query->where('status', 'sent')
             ->whereNotNull('valid_until')
-            ->where('valid_until', '<=', now()->addDays($days));
+            ->where('valid_until', '>', now())              // Not already expired
+            ->where('valid_until', '<=', now()->addDays($days)); // Within X days
     }
 
     // Relationships

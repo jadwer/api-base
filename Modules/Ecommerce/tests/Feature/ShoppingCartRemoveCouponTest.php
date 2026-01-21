@@ -150,7 +150,7 @@ class ShoppingCartRemoveCouponTest extends TestCase
 
         $response = $this->postJson("/api/v1/shopping-carts/{$cart->id}/remove-coupon");
 
-        $response->assertStatus(401);
+        $response->assertStatus(403);
     }
 
     public function test_guest_can_remove_coupon_from_own_session_cart(): void

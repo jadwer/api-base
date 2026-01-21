@@ -57,6 +57,7 @@ class ProductBatchUpdateTest extends TestCase
             'warehouse_location_id' => $location->id,
             'batch_number' => 'OLD001',
             'status' => 'active',
+            'initial_quantity' => 150.0, // Must be >= current_quantity
             'current_quantity' => 100.0,
             'reserved_quantity' => 10.0
         ]);

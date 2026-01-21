@@ -34,7 +34,7 @@ class ShoppingCartController extends Controller
     public function getOrCreate(Request $request): JsonResponse
     {
         $userId = Auth::id();
-        $sessionId = $request->input('session_id') ?? $request->session()->getId();
+        $sessionId = $request->input('session_id') ?? ($request->hasSession() ? $request->session()->getId() : null);
 
         // Try to find existing active cart
         $cart = ShoppingCart::query()
@@ -68,7 +68,7 @@ class ShoppingCartController extends Controller
     public function current(Request $request): JsonResponse
     {
         $userId = Auth::id();
-        $sessionId = $request->input('session_id') ?? $request->session()->getId();
+        $sessionId = $request->input('session_id') ?? ($request->hasSession() ? $request->session()->getId() : null);
 
         $cart = ShoppingCart::query()
             ->with(['cartItems', 'cartItems.product'])
@@ -411,7 +411,7 @@ class ShoppingCartController extends Controller
             }
         } else {
             // Session cart - must match current session
-            $sessionId = request()->input('session_id') ?? request()->session()->getId();
+            $sessionId = request()->input('session_id') ?? (request()->hasSession() ? request()->session()->getId() : null);
             if ($shoppingCart->session_id !== $sessionId) {
                 abort(403, 'You do not have access to this cart');
             }

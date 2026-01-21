@@ -4,6 +4,7 @@ namespace Modules\Billing\JsonApi\V1\CompanySettings;
 
 use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use LaravelJsonApi\Eloquent\Fields\ArrayHash;
+use LaravelJsonApi\Eloquent\Fields\ArrayList;
 use LaravelJsonApi\Eloquent\Fields\Boolean;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\ID;
@@ -64,8 +65,8 @@ class CompanySettingSchema extends Schema
             Str::make('website'),
 
             // Commercial Settings
-            ArrayHash::make('bankAccounts', 'bank_accounts'),
-            ArrayHash::make('commercialConditions', 'commercial_conditions'),
+            ArrayList::make('bankAccounts', 'bank_accounts'),
+            ArrayList::make('commercialConditions', 'commercial_conditions'),
             ArrayHash::make('quoteSettings', 'quote_settings'),
             ArrayHash::make('additionalSettings', 'additional_settings'),
 

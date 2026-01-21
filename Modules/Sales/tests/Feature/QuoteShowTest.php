@@ -114,7 +114,7 @@ class QuoteShowTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('quotes')
-            ->includePaths('quoteItems')
+            ->includePaths('items')
             ->get("/api/v1/quotes/{$quote->id}");
 
         $response->assertOk();

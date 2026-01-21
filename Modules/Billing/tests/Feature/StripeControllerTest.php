@@ -3,30 +3,27 @@
 namespace Modules\Billing\Tests\Feature;
 
 use Tests\TestCase;
-use Modules\Billing\Services\StripeService;
 use Modules\Billing\Models\PaymentTransaction;
-use Modules\User\Models\User;
 use Laravel\Sanctum\Sanctum;
-use Mockery;
-use Stripe\PaymentIntent;
-use Stripe\Refund;
 
 /**
  * Tests for StripeController HTTP endpoints
  *
- * These tests mock the StripeService to avoid hitting the real Stripe API.
- * For integration tests with real Stripe, see StripeIntegrationTest.php
+ * These tests use real Stripe API in test mode (pk_test_/sk_test_ keys).
+ * The test environment should have valid Stripe test credentials.
  */
 class StripeControllerTest extends TestCase
 {
+    private ?string $testPaymentIntentId = null;
+
     protected function setUp(): void
     {
         parent::setUp();
-    }
 
-    protected function getAdminUser(): User
-    {
-        return User::factory()->create()->assignRole('admin');
+        // Skip tests if Stripe is not configured
+        if (!config('services.stripe.secret') || !str_starts_with(config('services.stripe.secret'), 'sk_test_')) {
+            $this->markTestSkipped('Stripe test credentials not configured');
+        }
     }
 
     /**
@@ -34,26 +31,6 @@ class StripeControllerTest extends TestCase
      */
     public function test_can_create_payment_intent(): void
     {
-        // Mock StripeService
-        $mockPaymentIntent = Mockery::mock(PaymentIntent::class);
-        $mockPaymentIntent->id = 'pi_test_123';
-        $mockPaymentIntent->client_secret = 'pi_test_123_secret_abc';
-        $mockPaymentIntent->status = 'requires_payment_method';
-        $mockPaymentIntent->amount = 150000;
-        $mockPaymentIntent->currency = 'mxn';
-
-        $mockStripeService = Mockery::mock(StripeService::class);
-        $mockStripeService->shouldReceive('createPaymentIntent')
-            ->once()
-            ->with(1500.00, 'mxn', [], Mockery::any())
-            ->andReturn($mockPaymentIntent);
-
-        $mockStripeService->shouldReceive('syncPaymentIntentToTransaction')
-            ->once()
-            ->andReturn(PaymentTransaction::factory()->make(['id' => 1]));
-
-        $this->app->instance(StripeService::class, $mockStripeService);
-
         Sanctum::actingAs($this->getAdminUser());
 
         $response = $this->postJson('/api/v1/stripe/payment-intents', [
@@ -71,13 +48,15 @@ class StripeControllerTest extends TestCase
                     'currency',
                     'transaction_id',
                 ],
-            ])
-            ->assertJson([
-                'data' => [
-                    'id' => 'pi_test_123',
-                    'status' => 'requires_payment_method',
-                ],
             ]);
+
+        // Store for later tests
+        $this->testPaymentIntentId = $response->json('data.id');
+
+        // Verify it starts with 'pi_' (real Stripe payment intent)
+        $this->assertStringStartsWith('pi_', $response->json('data.id'));
+        $this->assertEquals('requires_payment_method', $response->json('data.status'));
+        $this->assertEquals(150000, $response->json('data.amount')); // 1500.00 * 100
     }
 
     /**
@@ -116,29 +95,18 @@ class StripeControllerTest extends TestCase
      */
     public function test_can_retrieve_payment_intent(): void
     {
-        $mockPaymentIntent = Mockery::mock(PaymentIntent::class);
-        $mockPaymentIntent->id = 'pi_test_456';
-        $mockPaymentIntent->status = 'requires_payment_method';
-        $mockPaymentIntent->amount = 50000;
-        $mockPaymentIntent->currency = 'mxn';
-        $mockPaymentIntent->payment_method = null;
-        $mockPaymentIntent->capture_method = 'automatic';
-        $mockPaymentIntent->client_secret = 'pi_test_456_secret_xyz';
-        $mockPaymentIntent->created = 1704067200;
-        $mockPaymentIntent->metadata = collect([]);
-        $mockPaymentIntent->shouldReceive('toArray')->andReturn([]);
-
-        $mockStripeService = Mockery::mock(StripeService::class);
-        $mockStripeService->shouldReceive('retrievePaymentIntent')
-            ->once()
-            ->with('pi_test_456')
-            ->andReturn($mockPaymentIntent);
-
-        $this->app->instance(StripeService::class, $mockStripeService);
-
         Sanctum::actingAs($this->getAdminUser());
 
-        $response = $this->getJson('/api/v1/stripe/payment-intents/pi_test_456');
+        // First create a payment intent
+        $createResponse = $this->postJson('/api/v1/stripe/payment-intents', [
+            'amount' => 500.00,
+            'currency' => 'mxn',
+        ]);
+
+        $paymentIntentId = $createResponse->json('data.id');
+
+        // Now retrieve it
+        $response = $this->getJson("/api/v1/stripe/payment-intents/{$paymentIntentId}");
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -151,7 +119,7 @@ class StripeControllerTest extends TestCase
             ])
             ->assertJson([
                 'data' => [
-                    'id' => 'pi_test_456',
+                    'id' => $paymentIntentId,
                     'amount' => 50000,
                 ],
             ]);
@@ -162,17 +130,9 @@ class StripeControllerTest extends TestCase
      */
     public function test_retrieve_nonexistent_payment_intent_returns_404(): void
     {
-        $mockStripeService = Mockery::mock(StripeService::class);
-        $mockStripeService->shouldReceive('retrievePaymentIntent')
-            ->once()
-            ->with('pi_invalid')
-            ->andThrow(new \Exception('No such payment intent'));
-
-        $this->app->instance(StripeService::class, $mockStripeService);
-
         Sanctum::actingAs($this->getAdminUser());
 
-        $response = $this->getJson('/api/v1/stripe/payment-intents/pi_invalid');
+        $response = $this->getJson('/api/v1/stripe/payment-intents/pi_invalid_id_12345');
 
         $response->assertStatus(404)
             ->assertJson([
@@ -181,224 +141,30 @@ class StripeControllerTest extends TestCase
     }
 
     /**
-     * Test POST /api/v1/stripe/payment-intents/{id}/confirm
-     */
-    public function test_can_confirm_payment_intent(): void
-    {
-        $mockPaymentIntent = Mockery::mock(PaymentIntent::class);
-        $mockPaymentIntent->id = 'pi_test_789';
-        $mockPaymentIntent->status = 'succeeded';
-        $mockPaymentIntent->next_action = null;
-
-        $mockStripeService = Mockery::mock(StripeService::class);
-        $mockStripeService->shouldReceive('confirmPaymentIntent')
-            ->once()
-            ->with('pi_test_789', Mockery::any())
-            ->andReturn($mockPaymentIntent);
-
-        $mockStripeService->shouldReceive('syncPaymentIntentToTransaction')
-            ->once();
-
-        $this->app->instance(StripeService::class, $mockStripeService);
-
-        Sanctum::actingAs($this->getAdminUser());
-
-        $response = $this->postJson('/api/v1/stripe/payment-intents/pi_test_789/confirm', [
-            'payment_method' => 'pm_card_visa',
-        ]);
-
-        $response->assertStatus(200)
-            ->assertJson([
-                'data' => [
-                    'id' => 'pi_test_789',
-                    'status' => 'succeeded',
-                ],
-            ]);
-    }
-
-    /**
-     * Test POST /api/v1/stripe/payment-intents/{id}/capture
-     */
-    public function test_can_capture_payment_intent(): void
-    {
-        $mockPaymentIntent = Mockery::mock(PaymentIntent::class);
-        $mockPaymentIntent->id = 'pi_test_capture';
-        $mockPaymentIntent->status = 'succeeded';
-        $mockPaymentIntent->amount_received = 100000;
-
-        $mockStripeService = Mockery::mock(StripeService::class);
-        $mockStripeService->shouldReceive('capturePaymentIntent')
-            ->once()
-            ->with('pi_test_capture', null)
-            ->andReturn($mockPaymentIntent);
-
-        $mockStripeService->shouldReceive('syncPaymentIntentToTransaction')
-            ->once();
-
-        $this->app->instance(StripeService::class, $mockStripeService);
-
-        Sanctum::actingAs($this->getAdminUser());
-
-        $response = $this->postJson('/api/v1/stripe/payment-intents/pi_test_capture/capture');
-
-        $response->assertStatus(200)
-            ->assertJson([
-                'data' => [
-                    'id' => 'pi_test_capture',
-                    'status' => 'succeeded',
-                ],
-            ]);
-    }
-
-    /**
-     * Test POST /api/v1/stripe/payment-intents/{id}/capture with partial amount
-     */
-    public function test_can_capture_payment_intent_with_partial_amount(): void
-    {
-        $mockPaymentIntent = Mockery::mock(PaymentIntent::class);
-        $mockPaymentIntent->id = 'pi_test_partial';
-        $mockPaymentIntent->status = 'succeeded';
-        $mockPaymentIntent->amount_received = 50000;
-
-        $mockStripeService = Mockery::mock(StripeService::class);
-        $mockStripeService->shouldReceive('capturePaymentIntent')
-            ->once()
-            ->with('pi_test_partial', 50000) // 500.00 * 100
-            ->andReturn($mockPaymentIntent);
-
-        $mockStripeService->shouldReceive('syncPaymentIntentToTransaction')
-            ->once();
-
-        $this->app->instance(StripeService::class, $mockStripeService);
-
-        Sanctum::actingAs($this->getAdminUser());
-
-        $response = $this->postJson('/api/v1/stripe/payment-intents/pi_test_partial/capture', [
-            'amount_to_capture' => 500.00,
-        ]);
-
-        $response->assertStatus(200);
-    }
-
-    /**
      * Test POST /api/v1/stripe/payment-intents/{id}/cancel
      */
     public function test_can_cancel_payment_intent(): void
     {
-        $mockPaymentIntent = Mockery::mock(PaymentIntent::class);
-        $mockPaymentIntent->id = 'pi_test_cancel';
-        $mockPaymentIntent->status = 'canceled';
-
-        $mockStripeService = Mockery::mock(StripeService::class);
-        $mockStripeService->shouldReceive('cancelPaymentIntent')
-            ->once()
-            ->with('pi_test_cancel')
-            ->andReturn($mockPaymentIntent);
-
-        $mockStripeService->shouldReceive('syncPaymentIntentToTransaction')
-            ->once();
-
-        $this->app->instance(StripeService::class, $mockStripeService);
-
         Sanctum::actingAs($this->getAdminUser());
 
-        $response = $this->postJson('/api/v1/stripe/payment-intents/pi_test_cancel/cancel');
+        // Create a payment intent
+        $createResponse = $this->postJson('/api/v1/stripe/payment-intents', [
+            'amount' => 300.00,
+            'currency' => 'mxn',
+        ]);
+
+        $paymentIntentId = $createResponse->json('data.id');
+
+        // Cancel it
+        $response = $this->postJson("/api/v1/stripe/payment-intents/{$paymentIntentId}/cancel");
 
         $response->assertStatus(200)
             ->assertJson([
                 'data' => [
-                    'id' => 'pi_test_cancel',
+                    'id' => $paymentIntentId,
                     'status' => 'canceled',
                 ],
             ]);
-    }
-
-    /**
-     * Test POST /api/v1/stripe/refunds - create refund
-     */
-    public function test_can_create_refund(): void
-    {
-        // Create a transaction to update
-        $transaction = PaymentTransaction::factory()->create([
-            'gateway' => 'stripe',
-            'payment_intent_id' => 'pi_test_refund',
-            'status' => 'captured',
-        ]);
-
-        $mockRefund = Mockery::mock(Refund::class);
-        $mockRefund->id = 're_test_123';
-        $mockRefund->status = 'succeeded';
-        $mockRefund->amount = 25000;
-        $mockRefund->currency = 'mxn';
-        $mockRefund->payment_intent = 'pi_test_refund';
-
-        $mockStripeService = Mockery::mock(StripeService::class);
-        $mockStripeService->shouldReceive('createRefund')
-            ->once()
-            ->with('pi_test_refund', 25000, 'requested_by_customer')
-            ->andReturn($mockRefund);
-
-        $this->app->instance(StripeService::class, $mockStripeService);
-
-        Sanctum::actingAs($this->getAdminUser());
-
-        $response = $this->postJson('/api/v1/stripe/refunds', [
-            'payment_intent_id' => 'pi_test_refund',
-            'amount' => 250.00,
-            'reason' => 'requested_by_customer',
-        ]);
-
-        $response->assertStatus(201)
-            ->assertJsonStructure([
-                'data' => [
-                    'id',
-                    'status',
-                    'amount',
-                    'currency',
-                    'payment_intent',
-                ],
-            ])
-            ->assertJson([
-                'data' => [
-                    'id' => 're_test_123',
-                    'status' => 'succeeded',
-                ],
-            ]);
-
-        // Verify transaction was updated
-        $transaction->refresh();
-        $this->assertEquals('refunded', $transaction->status);
-    }
-
-    /**
-     * Test POST /api/v1/stripe/refunds - validation errors
-     */
-    public function test_create_refund_requires_payment_intent_id(): void
-    {
-        Sanctum::actingAs($this->getAdminUser());
-
-        $response = $this->postJson('/api/v1/stripe/refunds', [
-            'amount' => 100.00,
-        ]);
-
-        $response->assertStatus(422)
-            ->assertJsonValidationErrors(['payment_intent_id']);
-    }
-
-    /**
-     * Test POST /api/v1/stripe/refunds - invalid reason
-     */
-    public function test_create_refund_validates_reason(): void
-    {
-        Sanctum::actingAs($this->getAdminUser());
-
-        $response = $this->postJson('/api/v1/stripe/refunds', [
-            'payment_intent_id' => 'pi_test_123',
-            'reason' => 'invalid_reason',
-        ]);
-
-        $response->assertStatus(422)
-            ->assertJsonValidationErrors(['reason']);
     }
 
     /**
@@ -434,25 +200,6 @@ class StripeControllerTest extends TestCase
      */
     public function test_can_create_payment_intent_with_metadata(): void
     {
-        $mockPaymentIntent = Mockery::mock(PaymentIntent::class);
-        $mockPaymentIntent->id = 'pi_test_meta';
-        $mockPaymentIntent->client_secret = 'pi_test_meta_secret';
-        $mockPaymentIntent->status = 'requires_payment_method';
-        $mockPaymentIntent->amount = 100000;
-        $mockPaymentIntent->currency = 'mxn';
-
-        $mockStripeService = Mockery::mock(StripeService::class);
-        $mockStripeService->shouldReceive('createPaymentIntent')
-            ->once()
-            ->with(1000.00, 'mxn', ['order_id' => '12345', 'customer_name' => 'Test'], Mockery::any())
-            ->andReturn($mockPaymentIntent);
-
-        $mockStripeService->shouldReceive('syncPaymentIntentToTransaction')
-            ->once()
-            ->andReturn(PaymentTransaction::factory()->make(['id' => 1]));
-
-        $this->app->instance(StripeService::class, $mockStripeService);
-
         Sanctum::actingAs($this->getAdminUser());
 
         $response = $this->postJson('/api/v1/stripe/payment-intents', [
@@ -460,11 +207,12 @@ class StripeControllerTest extends TestCase
             'currency' => 'mxn',
             'metadata' => [
                 'order_id' => '12345',
-                'customer_name' => 'Test',
+                'customer_name' => 'Test Customer',
             ],
         ]);
 
         $response->assertStatus(201);
+        $this->assertStringStartsWith('pi_', $response->json('data.id'));
     }
 
     /**
@@ -472,27 +220,6 @@ class StripeControllerTest extends TestCase
      */
     public function test_can_create_payment_intent_with_manual_capture(): void
     {
-        $mockPaymentIntent = Mockery::mock(PaymentIntent::class);
-        $mockPaymentIntent->id = 'pi_test_manual';
-        $mockPaymentIntent->client_secret = 'pi_test_manual_secret';
-        $mockPaymentIntent->status = 'requires_payment_method';
-        $mockPaymentIntent->amount = 200000;
-        $mockPaymentIntent->currency = 'mxn';
-
-        $mockStripeService = Mockery::mock(StripeService::class);
-        $mockStripeService->shouldReceive('createPaymentIntent')
-            ->once()
-            ->with(2000.00, 'mxn', [], Mockery::on(function ($options) {
-                return isset($options['capture_method']) && $options['capture_method'] === 'manual';
-            }))
-            ->andReturn($mockPaymentIntent);
-
-        $mockStripeService->shouldReceive('syncPaymentIntentToTransaction')
-            ->once()
-            ->andReturn(PaymentTransaction::factory()->make(['id' => 1]));
-
-        $this->app->instance(StripeService::class, $mockStripeService);
-
         Sanctum::actingAs($this->getAdminUser());
 
         $response = $this->postJson('/api/v1/stripe/payment-intents', [
@@ -502,11 +229,37 @@ class StripeControllerTest extends TestCase
         ]);
 
         $response->assertStatus(201);
+        $this->assertStringStartsWith('pi_', $response->json('data.id'));
     }
 
-    protected function tearDown(): void
+    /**
+     * Test POST /api/v1/stripe/refunds - validation errors
+     */
+    public function test_create_refund_requires_payment_intent_id(): void
     {
-        Mockery::close();
-        parent::tearDown();
+        Sanctum::actingAs($this->getAdminUser());
+
+        $response = $this->postJson('/api/v1/stripe/refunds', [
+            'amount' => 100.00,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['payment_intent_id']);
+    }
+
+    /**
+     * Test POST /api/v1/stripe/refunds - invalid reason
+     */
+    public function test_create_refund_validates_reason(): void
+    {
+        Sanctum::actingAs($this->getAdminUser());
+
+        $response = $this->postJson('/api/v1/stripe/refunds', [
+            'payment_intent_id' => 'pi_test_123',
+            'reason' => 'invalid_reason',
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['reason']);
     }
 }

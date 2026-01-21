@@ -266,10 +266,14 @@ class CompanySettingCommercialTest extends TestCase
             'is_active' => true,
         ]);
 
+        // Verify address was actually saved
+        $this->assertEquals('Test Address', $setting->fresh()->address);
+
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('company-settings')
             ->get("/api/v1/company-settings/{$setting->id}");
+
 
         $response->assertOk()
             ->assertJsonPath('data.attributes.address', 'Test Address')

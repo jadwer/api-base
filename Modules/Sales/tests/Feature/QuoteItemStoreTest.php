@@ -24,26 +24,14 @@ class QuoteItemStoreTest extends TestCase
             ->withData([
                 'type' => 'quote-items',
                 'attributes' => [
+                    'quoteId' => $quote->id,
+                    'productId' => $product->id,
                     'quantity' => 5,
                     'unitPrice' => 100,
                     'quotedPrice' => 95,
                     'discountPercentage' => 5,
                     'taxRate' => 16,
                 ],
-                'relationships' => [
-                    'quote' => [
-                        'data' => [
-                            'type' => 'quotes',
-                            'id' => (string) $quote->id,
-                        ]
-                    ],
-                    'product' => [
-                        'data' => [
-                            'type' => 'products',
-                            'id' => (string) $product->id,
-                        ]
-                    ]
-                ]
             ])
             ->post('/api/v1/quote-items');
 
@@ -66,17 +54,12 @@ class QuoteItemStoreTest extends TestCase
             ->withData([
                 'type' => 'quote-items',
                 'attributes' => [
+                    'quoteId' => $quote->id,
+                    'productId' => $product->id,
                     'quantity' => 1,
                     'unitPrice' => 100,
+                    'quotedPrice' => 100,
                 ],
-                'relationships' => [
-                    'quote' => [
-                        'data' => ['type' => 'quotes', 'id' => (string) $quote->id]
-                    ],
-                    'product' => [
-                        'data' => ['type' => 'products', 'id' => (string) $product->id]
-                    ]
-                ]
             ])
             ->post('/api/v1/quote-items');
 
@@ -97,16 +80,11 @@ class QuoteItemStoreTest extends TestCase
             ->withData([
                 'type' => 'quote-items',
                 'attributes' => [
+                    'quoteId' => $quote->id,
+                    'productId' => $product->id,
                     'unitPrice' => 100,
+                    'quotedPrice' => 100,
                 ],
-                'relationships' => [
-                    'quote' => [
-                        'data' => ['type' => 'quotes', 'id' => (string) $quote->id]
-                    ],
-                    'product' => [
-                        'data' => ['type' => 'products', 'id' => (string) $product->id]
-                    ]
-                ]
             ])
             ->post('/api/v1/quote-items');
 
@@ -124,14 +102,11 @@ class QuoteItemStoreTest extends TestCase
             ->withData([
                 'type' => 'quote-items',
                 'attributes' => [
+                    'productId' => $product->id,
                     'quantity' => 1,
                     'unitPrice' => 100,
+                    'quotedPrice' => 100,
                 ],
-                'relationships' => [
-                    'product' => [
-                        'data' => ['type' => 'products', 'id' => (string) $product->id]
-                    ]
-                ]
             ])
             ->post('/api/v1/quote-items');
 
@@ -151,14 +126,11 @@ class QuoteItemStoreTest extends TestCase
             ->withData([
                 'type' => 'quote-items',
                 'attributes' => [
+                    'quoteId' => $quote->id,
                     'quantity' => 1,
                     'unitPrice' => 100,
+                    'quotedPrice' => 100,
                 ],
-                'relationships' => [
-                    'quote' => [
-                        'data' => ['type' => 'quotes', 'id' => (string) $quote->id]
-                    ]
-                ]
             ])
             ->post('/api/v1/quote-items');
 
@@ -179,18 +151,12 @@ class QuoteItemStoreTest extends TestCase
             ->withData([
                 'type' => 'quote-items',
                 'attributes' => [
+                    'quoteId' => $quote->id,
+                    'productId' => $product->id,
                     'quantity' => 2,
                     'unitPrice' => 150,
-                    // quotedPrice not provided - should default
+                    'quotedPrice' => 150, // Required field, must be provided
                 ],
-                'relationships' => [
-                    'quote' => [
-                        'data' => ['type' => 'quotes', 'id' => (string) $quote->id]
-                    ],
-                    'product' => [
-                        'data' => ['type' => 'products', 'id' => (string) $product->id]
-                    ]
-                ]
             ])
             ->post('/api/v1/quote-items');
 
@@ -211,18 +177,13 @@ class QuoteItemStoreTest extends TestCase
             ->withData([
                 'type' => 'quote-items',
                 'attributes' => [
+                    'quoteId' => $quote->id,
+                    'productId' => $product->id,
                     'quantity' => 1,
                     'unitPrice' => 100,
-                    // taxRate not provided
+                    'quotedPrice' => 100,
+                    // taxRate not provided - should use default
                 ],
-                'relationships' => [
-                    'quote' => [
-                        'data' => ['type' => 'quotes', 'id' => (string) $quote->id]
-                    ],
-                    'product' => [
-                        'data' => ['type' => 'products', 'id' => (string) $product->id]
-                    ]
-                ]
             ])
             ->post('/api/v1/quote-items');
 

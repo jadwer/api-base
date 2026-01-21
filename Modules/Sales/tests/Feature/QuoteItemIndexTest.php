@@ -40,7 +40,7 @@ class QuoteItemIndexTest extends TestCase
                         'quotedPrice',
                         'discountPercentage',
                         'taxRate',
-                        'subtotal',
+                        'subtotalBeforeDiscount',
                         'total',
                     ]
                 ]

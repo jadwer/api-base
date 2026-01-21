@@ -11,7 +11,7 @@ class CouponFactory extends Factory
 
     public function definition(): array
     {
-        $type = $this->faker->randomElement(['percentage', 'fixed']);
+        $type = $this->faker->randomElement(['percentage', 'fixed_amount', 'free_shipping']);
         $maxUses = $this->faker->optional(0.7)->numberBetween(10, 1000); // Algunos ilimitados
         $usedCount = $maxUses ? $this->faker->numberBetween(0, min($maxUses, 50)) : $this->faker->numberBetween(0, 100);
 
@@ -38,9 +38,11 @@ class CouponFactory extends Factory
                 'Descuento de fin de semana'
             ]),
             'type' => $type,
-            'value' => $type === 'percentage' 
-                ? $this->faker->randomElement([10, 15, 20, 25, 30, 50]) 
-                : $this->faker->randomElement([50, 100, 150, 200, 300, 500]),
+            'value' => match ($type) {
+                'percentage' => $this->faker->randomElement([10, 15, 20, 25, 30, 50]),
+                'fixed_amount' => $this->faker->randomElement([50, 100, 150, 200, 300, 500]),
+                'free_shipping' => 0,
+            },
             'min_amount' => $this->faker->optional(0.6)->randomElement([100, 200, 500, 1000, 1500]),
             'max_amount' => $this->faker->optional(0.3)->randomElement([2000, 5000, 10000]),
             'max_uses' => $maxUses,

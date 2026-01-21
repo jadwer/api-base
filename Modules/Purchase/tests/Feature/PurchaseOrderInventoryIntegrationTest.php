@@ -21,16 +21,17 @@ class PurchaseOrderInventoryIntegrationTest extends TestCase
     {
         // Arrange: Create necessary data
         $admin = $this->getAdminUser();
-        // Use the first active warehouse (same logic as PurchaseOrderReceivedListener)
-        $warehouse = Warehouse::where('is_active', true)->first() ?? Warehouse::factory()->create(['is_active' => true]);
+        // Create a specific warehouse to ensure deterministic behavior
+        $warehouse = Warehouse::factory()->create(['is_active' => true]);
         $supplier = Contact::factory()->create(['is_supplier' => true]);
 
         $product1 = Product::factory()->create(['name' => 'Product 1']);
         $product2 = Product::factory()->create(['name' => 'Product 2']);
 
-        // Create a purchase order with items
+        // Create a purchase order with items, explicitly setting the warehouse
         $purchaseOrder = PurchaseOrder::factory()->create([
             'contact_id' => $supplier->id,
+            'warehouse_id' => $warehouse->id, // Explicitly set warehouse
             'status' => 'approved', // Start as approved, not received yet
             'total_amount' => 1000.00,
         ]);

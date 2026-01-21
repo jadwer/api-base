@@ -94,7 +94,9 @@ class ShoppingCartClearTest extends TestCase
 
         $response = $this->deleteJson("/api/v1/shopping-carts/{$cart->id}/clear");
 
-        $response->assertStatus(401);
+        // Guest gets 403 Forbidden because they don't own this cart
+        // (cart belongs to a user, and guest has no session_id that matches)
+        $response->assertStatus(403);
     }
 
     public function test_guest_can_clear_own_session_cart(): void

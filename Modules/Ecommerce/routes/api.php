@@ -14,14 +14,21 @@ use Modules\Ecommerce\Http\Controllers\Api\V1\CouponController;
 |
 */
 
-Route::prefix('v1')->middleware(['auth:sanctum'])->group(function () {
-    // Shopping Cart custom endpoints
+// Public routes - Guest cart operations with session_id
+// Authorization is handled in controller via authorizeCartAccess()
+Route::prefix('v1')->group(function () {
     Route::post('shopping-carts/get-or-create', [ShoppingCartController::class, 'getOrCreate']);
     Route::get('shopping-carts/current', [ShoppingCartController::class, 'current']);
-    Route::post('shopping-carts/merge', [ShoppingCartController::class, 'merge']);
     Route::delete('shopping-carts/{shoppingCart}/clear', [ShoppingCartController::class, 'clear']);
     Route::post('shopping-carts/{shoppingCart}/apply-coupon', [ShoppingCartController::class, 'applyCoupon']);
     Route::post('shopping-carts/{shoppingCart}/remove-coupon', [ShoppingCartController::class, 'removeCoupon']);
+});
+
+// Authenticated routes - operations that require user identity
+Route::prefix('v1')->middleware(['auth:sanctum'])->group(function () {
+    // Merge requires auth to know which user to merge to
+    Route::post('shopping-carts/merge', [ShoppingCartController::class, 'merge']);
+    // Checkout requires auth to create order with contact
     Route::post('shopping-carts/{shoppingCart}/checkout', [ShoppingCartController::class, 'checkout']);
 
     // Coupon validation endpoint

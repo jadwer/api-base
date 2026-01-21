@@ -317,6 +317,7 @@ class ShoppingCartCheckoutTest extends TestCase
                 'shipping_address' => ['street' => 'Test'],
             ]);
 
+        // User is authenticated but doesn't own this cart - 403 Forbidden
         $response->assertStatus(403);
     }
 

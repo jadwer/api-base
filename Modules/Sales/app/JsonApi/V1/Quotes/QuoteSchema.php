@@ -103,7 +103,6 @@ class QuoteSchema extends Schema
             Where::make('contact', 'contact_id'),
             Where::make('quote_date'),
             Where::make('valid_until'),
-            WhereIn::make('status'),
         ];
     }
 

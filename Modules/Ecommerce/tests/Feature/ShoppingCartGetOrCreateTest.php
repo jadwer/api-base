@@ -5,12 +5,13 @@ namespace Modules\Ecommerce\Tests\Feature;
 use Tests\TestCase;
 use Modules\User\Models\User;
 use Modules\Ecommerce\Models\ShoppingCart;
+use Illuminate\Support\Str;
 
 class ShoppingCartGetOrCreateTest extends TestCase
 {
     public function test_authenticated_user_can_get_or_create_cart(): void
     {
-        $user = $this->getCustomerUser();
+        $user = User::factory()->create();
 
         $response = $this->actingAs($user, 'sanctum')
             ->postJson('/api/v1/shopping-carts/get-or-create');
@@ -39,7 +40,7 @@ class ShoppingCartGetOrCreateTest extends TestCase
 
     public function test_returns_existing_active_cart_for_user(): void
     {
-        $user = $this->getCustomerUser();
+        $user = User::factory()->create();
 
         $existingCart = ShoppingCart::factory()->create([
             'user_id' => $user->id,
@@ -56,7 +57,7 @@ class ShoppingCartGetOrCreateTest extends TestCase
 
     public function test_creates_new_cart_if_existing_is_expired(): void
     {
-        $user = $this->getCustomerUser();
+        $user = User::factory()->create();
 
         $expiredCart = ShoppingCart::factory()->create([
             'user_id' => $user->id,
@@ -73,7 +74,7 @@ class ShoppingCartGetOrCreateTest extends TestCase
 
     public function test_creates_new_cart_if_existing_is_not_active(): void
     {
-        $user = $this->getCustomerUser();
+        $user = User::factory()->create();
 
         ShoppingCart::factory()->create([
             'user_id' => $user->id,
@@ -108,7 +109,7 @@ class ShoppingCartGetOrCreateTest extends TestCase
 
     public function test_cart_expires_in_7_days(): void
     {
-        $user = $this->getCustomerUser();
+        $user = User::factory()->create();
 
         $response = $this->actingAs($user, 'sanctum')
             ->postJson('/api/v1/shopping-carts/get-or-create');
@@ -122,7 +123,7 @@ class ShoppingCartGetOrCreateTest extends TestCase
 
     public function test_cart_uses_default_currency(): void
     {
-        $user = $this->getCustomerUser();
+        $user = User::factory()->create();
 
         $response = $this->actingAs($user, 'sanctum')
             ->postJson('/api/v1/shopping-carts/get-or-create');
@@ -133,7 +134,7 @@ class ShoppingCartGetOrCreateTest extends TestCase
 
     public function test_new_cart_has_zero_total(): void
     {
-        $user = $this->getCustomerUser();
+        $user = User::factory()->create();
 
         $response = $this->actingAs($user, 'sanctum')
             ->postJson('/api/v1/shopping-carts/get-or-create');

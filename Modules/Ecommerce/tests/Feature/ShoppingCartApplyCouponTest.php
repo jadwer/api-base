@@ -37,6 +37,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'is_active' => true,
             'max_uses' => 100,
             'used_count' => 0,
+            'min_amount' => null, // No minimum order requirement
         ]);
 
         $response = $this->actingAs($user, 'sanctum')
@@ -82,6 +83,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'type' => 'percentage',
             'value' => 10,
             'is_active' => true,
+            'min_amount' => null, // No minimum order requirement
         ]);
 
         $response = $this->actingAs($user, 'sanctum')
@@ -116,6 +118,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'type' => 'fixed_amount',
             'value' => 25,
             'is_active' => true,
+            'min_amount' => null, // No minimum order requirement
         ]);
 
         $response = $this->actingAs($user, 'sanctum')
@@ -348,6 +351,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'is_active' => true,
             'type' => 'percentage',
             'value' => 10,
+            'min_amount' => null, // No minimum order requirement
         ]);
 
         $response = $this->actingAs($admin, 'sanctum')
@@ -382,6 +386,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'value' => 50, // 50% = 500
             'max_amount' => 100, // but capped at 100
             'is_active' => true,
+            'min_amount' => null, // No minimum order requirement
         ]);
 
         $response = $this->actingAs($user, 'sanctum')
