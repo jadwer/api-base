@@ -119,6 +119,7 @@ class QuoteSchema extends Schema
             'purchaseOrder',
             'items',
             'items.product',
+            'items.product.stock',
         ];
     }
 

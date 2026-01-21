@@ -9,6 +9,7 @@ use Modules\Reports\Http\Controllers\Api\V1\CashFlowController;
 use Modules\Reports\Http\Controllers\Api\V1\TrialBalanceController;
 use Modules\Reports\Http\Controllers\Api\V1\AgingReportController;
 use Modules\Reports\Http\Controllers\Api\V1\SalesReportController;
+use Modules\Reports\Http\Controllers\Api\V1\SalesAdvancedReportController;
 use Modules\Reports\Http\Controllers\Api\V1\PurchaseReportController;
 use Modules\Reports\Http\Controllers\Api\V1\AnalyticsController;
 use Modules\Reports\Http\Controllers\Api\V1\ExportController;
@@ -46,6 +47,12 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
         Route::get('purchase-by-supplier', [PurchaseReportController::class, 'bySupplier']);
         Route::get('purchase-by-product', [PurchaseReportController::class, 'byProduct']);
 
+        // Phase 13: Advanced Sales Reports
+        Route::get('sales-by-employee', [SalesAdvancedReportController::class, 'byEmployee']);
+        Route::get('sales-by-batch', [SalesAdvancedReportController::class, 'byBatch']);
+        Route::get('sales-profitability', [SalesAdvancedReportController::class, 'profitability']);
+        Route::get('sales-trend', [SalesAdvancedReportController::class, 'trend']);
+
     });
 
     // Analytics
@@ -67,5 +74,10 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
         Route::get('aging-ap/export', fn(Request $request, AgingReportService $service) =>
             app(ExportController::class)->aging($request, $service, 'ap'));
         Route::get('sales-by-customer/export', [ExportController::class, 'salesByCustomer']);
+
+        // Phase 13: Advanced Report Exports
+        Route::get('sales-by-employee/export', [ExportController::class, 'salesByEmployee']);
+        Route::get('sales-by-batch/export', [ExportController::class, 'salesByBatch']);
+        Route::get('sales-profitability/export', [ExportController::class, 'salesProfitability']);
     });
 });

@@ -92,6 +92,8 @@ class QuoteItemSchema extends Schema
         return [
             'quote',
             'product',
+            'product.stock',
+            'product.stock.warehouse',
         ];
     }
 

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Contacts\Models\Contact;
+use Modules\User\Models\User;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
@@ -54,6 +55,7 @@ class SalesOrder extends Model
     protected $casts = [
         'id' => 'integer',
         'contact_id' => 'integer',
+        'assigned_to' => 'integer',
         'order_date' => 'date',
         'approved_at' => 'datetime',
         'delivered_at' => 'datetime',
@@ -97,6 +99,14 @@ class SalesOrder extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Contact::class, 'contact_id');
+    }
+
+    /**
+     * Phase 13: User/Employee assigned to this order (seller/salesperson).
+     */
+    public function assignedUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
     }
 
     public function items(): HasMany

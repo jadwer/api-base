@@ -12,6 +12,7 @@ use Modules\Reports\Services\FinancialStatements\CashFlowService;
 use Modules\Reports\Services\FinancialStatements\TrialBalanceService;
 use Modules\Reports\Services\ManagementReports\AgingReportService;
 use Modules\Reports\Services\ManagementReports\SalesReportService;
+use Modules\Reports\Services\SalesReports\SalesAdvancedReportService;
 use Carbon\Carbon;
 
 class ExportController extends Controller
@@ -190,6 +191,107 @@ class ExportController extends Controller
         $data = $service->generateByCustomer($startDate, $endDate);
 
         return $this->handleExport('sales-by-customer', $data, $request->input('format'));
+    }
+
+    /**
+     * Phase 13: Export Sales by Employee
+     *
+     * GET /api/v1/reports/sales-by-employee/export?format=csv&start_date=2026-01-01&end_date=2026-01-19
+     *
+     * @param Request $request
+     * @param SalesAdvancedReportService $service
+     * @return Response
+     */
+    public function salesByEmployee(Request $request, SalesAdvancedReportService $service): Response
+    {
+        $request->validate([
+            'format' => 'required|in:csv,pdf,excel',
+            'start_date' => 'sometimes|date',
+            'end_date' => 'sometimes|date|after_or_equal:start_date',
+            'employee_id' => 'sometimes|integer|exists:users,id',
+        ]);
+
+        $startDate = $request->has('start_date')
+            ? Carbon::parse($request->input('start_date'))
+            : Carbon::now()->startOfMonth();
+
+        $endDate = $request->has('end_date')
+            ? Carbon::parse($request->input('end_date'))
+            : Carbon::now();
+
+        $employeeId = $request->input('employee_id');
+
+        $data = $service->generateByEmployee($startDate, $endDate, $employeeId);
+
+        return $this->handleExport('sales-by-employee', $data, $request->input('format'));
+    }
+
+    /**
+     * Phase 13: Export Sales by Batch
+     *
+     * GET /api/v1/reports/sales-by-batch/export?format=csv&start_date=2026-01-01&end_date=2026-01-19
+     *
+     * @param Request $request
+     * @param SalesAdvancedReportService $service
+     * @return Response
+     */
+    public function salesByBatch(Request $request, SalesAdvancedReportService $service): Response
+    {
+        $request->validate([
+            'format' => 'required|in:csv,pdf,excel',
+            'start_date' => 'sometimes|date',
+            'end_date' => 'sometimes|date|after_or_equal:start_date',
+            'product_id' => 'sometimes|integer|exists:products,id',
+            'batch_number' => 'sometimes|string|max:100',
+        ]);
+
+        $startDate = $request->has('start_date')
+            ? Carbon::parse($request->input('start_date'))
+            : Carbon::now()->startOfMonth();
+
+        $endDate = $request->has('end_date')
+            ? Carbon::parse($request->input('end_date'))
+            : Carbon::now();
+
+        $productId = $request->input('product_id');
+        $batchNumber = $request->input('batch_number');
+
+        $data = $service->generateByBatch($startDate, $endDate, $productId, $batchNumber);
+
+        return $this->handleExport('sales-by-batch', $data, $request->input('format'));
+    }
+
+    /**
+     * Phase 13: Export Sales Profitability Report
+     *
+     * GET /api/v1/reports/sales-profitability/export?format=csv&start_date=2026-01-01&end_date=2026-01-19
+     *
+     * @param Request $request
+     * @param SalesAdvancedReportService $service
+     * @return Response
+     */
+    public function salesProfitability(Request $request, SalesAdvancedReportService $service): Response
+    {
+        $request->validate([
+            'format' => 'required|in:csv,pdf,excel',
+            'start_date' => 'sometimes|date',
+            'end_date' => 'sometimes|date|after_or_equal:start_date',
+            'category_id' => 'sometimes|integer|exists:categories,id',
+        ]);
+
+        $startDate = $request->has('start_date')
+            ? Carbon::parse($request->input('start_date'))
+            : Carbon::now()->startOfMonth();
+
+        $endDate = $request->has('end_date')
+            ? Carbon::parse($request->input('end_date'))
+            : Carbon::now();
+
+        $categoryId = $request->input('category_id');
+
+        $data = $service->generateProfitabilityReport($startDate, $endDate, $categoryId);
+
+        return $this->handleExport('sales-profitability', $data, $request->input('format'));
     }
 
     /**

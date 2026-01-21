@@ -42,7 +42,8 @@ class QuoteItemShowTest extends TestCase
                     'quotedPrice',
                     'discountPercentage',
                     'taxRate',
-                    'subtotal',
+                    'subtotalBeforeDiscount',
+                    'subtotalAfterDiscount',
                     'total',
                 ]
             ]

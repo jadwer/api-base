@@ -327,15 +327,17 @@ class ShoppingCartController extends Controller
                 'contact_id' => $request->input('contact_id'),
                 'status' => 'pending',
                 'order_date' => now(),
-                'subtotal_amount' => $shoppingCart->subtotalAmount,
-                'discount_amount' => $shoppingCart->discount_amount ?? 0,
+                'subtotal' => $shoppingCart->subtotalAmount,
+                'discount_total' => $shoppingCart->discount_amount ?? 0,
                 'tax_amount' => $shoppingCart->tax_amount ?? 0,
-                'shipping_amount' => $shoppingCart->shipping_amount ?? 0,
                 'total_amount' => $shoppingCart->finalTotal,
-                'currency' => $shoppingCart->currency,
                 'billing_address' => $request->input('billing_address'),
                 'shipping_address' => $request->input('shipping_address'),
                 'notes' => $shoppingCart->notes,
+                'metadata' => [
+                    'currency' => $shoppingCart->currency,
+                    'shipping_amount' => $shoppingCart->shipping_amount ?? 0,
+                ],
             ]);
 
             // Create order items
@@ -345,8 +347,7 @@ class ShoppingCartController extends Controller
                     'product_id' => $cartItem->product_id,
                     'quantity' => $cartItem->quantity,
                     'unit_price' => $cartItem->unit_price,
-                    'discount_amount' => $cartItem->discount_amount ?? 0,
-                    'tax_amount' => $cartItem->tax_amount ?? 0,
+                    'discount' => $cartItem->discount_amount ?? 0,
                     'total' => $cartItem->total,
                 ]);
             }
