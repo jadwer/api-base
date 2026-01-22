@@ -36,6 +36,12 @@ class ProductSchema extends Schema
             Boolean::make('isActive', 'is_active')->sortable(),
             Str::make('imgPath', 'img_path'),
             Str::make('datasheetPath', 'datasheet_path'),
+            Str::make('imgUrl')->readOnly()->extractUsing(
+                static fn($model) => $model->img_url
+            ),
+            Str::make('datasheetUrl')->readOnly()->extractUsing(
+                static fn($model) => $model->datasheet_url
+            ),
 
             // Relaciones
             BelongsTo::make('unit')->type('units'),

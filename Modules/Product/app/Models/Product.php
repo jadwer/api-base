@@ -223,6 +223,40 @@ class Product extends Model
     }
 
     /**
+     * Get full URL for product image
+     */
+    public function getImgUrlAttribute(): ?string
+    {
+        if (empty($this->img_path)) {
+            return null;
+        }
+
+        // Si ya es una URL completa, devolverla tal cual
+        if (str_starts_with($this->img_path, 'http://') || str_starts_with($this->img_path, 'https://')) {
+            return $this->img_path;
+        }
+
+        return asset('storage/products/' . $this->img_path);
+    }
+
+    /**
+     * Get full URL for product datasheet
+     */
+    public function getDatasheetUrlAttribute(): ?string
+    {
+        if (empty($this->datasheet_path)) {
+            return null;
+        }
+
+        // Si ya es una URL completa, devolverla tal cual
+        if (str_starts_with($this->datasheet_path, 'http://') || str_starts_with($this->datasheet_path, 'https://')) {
+            return $this->datasheet_path;
+        }
+
+        return asset('storage/datasheets/' . $this->datasheet_path);
+    }
+
+    /**
      * Create a new factory instance for the model.
      */
     protected static function newFactory()

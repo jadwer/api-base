@@ -39,6 +39,12 @@ class PublicProductSchema extends Schema
             Boolean::make('iva'),
             Str::make('imgPath', 'img_path'),
             Str::make('datasheetPath', 'datasheet_path'),
+            Str::make('imageUrl')->readOnly()->extractUsing(
+                static fn($model) => $model->img_url
+            ),
+            Str::make('datasheetUrl')->readOnly()->extractUsing(
+                static fn($model) => $model->datasheet_url
+            ),
 
             // Relaciones
             BelongsTo::make('unit')->type('units'),
