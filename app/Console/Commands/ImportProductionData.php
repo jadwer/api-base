@@ -171,7 +171,7 @@ class ImportProductionData extends Command
                         DB::table('units')->updateOrInsert(
                             ['id' => $row['id']],
                             [
-                                'type' => $row['type'],
+                                'unit_type' => $row['type'],  // Campo renombrado: type -> unit_type
                                 'code' => $row['code'],
                                 'name' => $row['name'],
                                 'created_at' => $row['created_at'],
@@ -194,79 +194,51 @@ class ImportProductionData extends Command
     {
         $this->info('Importando productos...');
 
-        // Products have more complex structure
-        if (preg_match_all("/\((\d+),\s*'([^']*)',\s*'([^']*)',\s*'([^']*)',\s*'([^']*)',\s*([0-9.]+|NULL),\s*([0-9.]+|NULL),\s*(\d+),\s*'([^']*)',\s*'([^']*)',\s*(\d+),\s*(\d+),\s*(\d+),\s*'([^']*)',\s*'([^']*)'\)/s", $content, $matches, PREG_SET_ORDER)) {
+        // Columnas en el orden del dump SQL de producción:
+        // id, name, sku, description, full_description, price, cost, iva, img_path, datasheet_path, unit_id, category_id, brand_id, created_at, updated_at
+        $columns = ['id', 'name', 'sku', 'description', 'full_description', 'price', 'cost', 'iva', 'img_path', 'datasheet_path', 'unit_id', 'category_id', 'brand_id', 'created_at', 'updated_at'];
 
-            foreach ($matches as $match) {
-                $this->stats['products']++;
+        // phpMyAdmin puede generar múltiples INSERT statements, capturar todos
+        if (preg_match_all("/INSERT INTO `products`[^;]+;/s", $content, $allMatches)) {
+            foreach ($allMatches[0] as $insertStatement) {
+                $data = $this->parseInsertStatement($insertStatement, $columns);
 
-                $productData = [
-                    'id' => (int) $match[1],
-                    'name' => $this->unescapeSql($match[2]),
-                    'sku' => $this->unescapeSql($match[3]),
-                    'description' => $this->unescapeSql($match[4]),
-                    'full_description' => $this->unescapeSql($match[5]),
-                    'price' => $match[6] === 'NULL' ? null : (float) $match[6],
-                    'cost' => $match[7] === 'NULL' ? null : (float) $match[7],
-                    'iva' => (int) $match[8],
-                    'img_path' => $this->unescapeSql($match[9]),
-                    'datasheet_path' => $this->unescapeSql($match[10]),
-                    'unit_id' => (int) $match[11],
-                    'category_id' => (int) $match[12],
-                    'brand_id' => (int) $match[13],
-                    'created_at' => $match[14],
-                    'updated_at' => $match[15],
-                ];
+                foreach ($data as $row) {
+                    $this->stats['products']++;
 
-                if (!$this->dryRun) {
-                    try {
-                        // Build metadata JSON
-                        $metadata = [
-                            'full_description' => $productData['full_description'],
-                            'iva' => $productData['iva'],
-                            'img_path_original' => $productData['img_path'],
-                            'datasheet_path_original' => $productData['datasheet_path'],
-                            'migrated_from' => 'daniel_crm_api',
-                            'migrated_at' => now()->toISOString(),
-                        ];
+                    if (!$this->dryRun) {
+                        try {
+                            $insertData = [
+                                'name' => $row['name'] ?: 'Sin nombre',
+                                'sku' => $row['sku'] ?: null,
+                                'description' => $row['description'] ?: '',
+                                'full_description' => $row['full_description'] ?: '',
+                                'price' => is_numeric($row['price']) ? (float) $row['price'] : null,
+                                'cost' => is_numeric($row['cost']) ? (float) $row['cost'] : null,
+                                'iva' => (int) ($row['iva'] ?? 0),
+                                'img_path' => $row['img_path'] ?: null,
+                                'datasheet_path' => $row['datasheet_path'] ?: null,
+                                'unit_id' => (int) $row['unit_id'],
+                                'category_id' => (int) $row['category_id'],
+                                'brand_id' => (int) $row['brand_id'],
+                                'is_active' => true,
+                                'created_at' => $row['created_at'],
+                                'updated_at' => $row['updated_at'],
+                            ];
 
-                        // Check if products table has all required columns
-                        $insertData = [
-                            'name' => $productData['name'],
-                            'sku' => $productData['sku'],
-                            'description' => $productData['description'],
-                            'price' => $productData['price'],
-                            'cost' => $productData['cost'],
-                            'unit_id' => $productData['unit_id'],
-                            'category_id' => $productData['category_id'],
-                            'brand_id' => $productData['brand_id'],
-                            'created_at' => $productData['created_at'],
-                            'updated_at' => $productData['updated_at'],
-                        ];
-
-                        // Add optional columns if they exist
-                        if (Schema::hasColumn('products', 'is_active')) {
-                            $insertData['is_active'] = true;
+                            DB::table('products')->updateOrInsert(
+                                ['id' => (int) $row['id']],
+                                $insertData
+                            );
+                        } catch (\Exception $e) {
+                            $this->stats['errors'][] = "Product {$row['id']}: " . $e->getMessage();
                         }
-                        if (Schema::hasColumn('products', 'slug')) {
-                            $insertData['slug'] = Str::slug($productData['sku'] ?: $productData['name']);
-                        }
-                        if (Schema::hasColumn('products', 'metadata')) {
-                            $insertData['metadata'] = json_encode($metadata);
-                        }
-
-                        DB::table('products')->updateOrInsert(
-                            ['id' => $productData['id']],
-                            $insertData
-                        );
-                    } catch (\Exception $e) {
-                        $this->stats['errors'][] = "Product {$productData['id']}: " . $e->getMessage();
                     }
-                }
 
-                // Show progress every 50 products
-                if ($this->stats['products'] % 50 === 0) {
-                    $this->line("  Procesados: {$this->stats['products']}...");
+                    // Show progress every 100 products
+                    if ($this->stats['products'] % 100 === 0) {
+                        $this->line("  Procesados: {$this->stats['products']}...");
+                    }
                 }
             }
         }
@@ -315,23 +287,97 @@ class ImportProductionData extends Command
     {
         $results = [];
 
-        // Extract values between parentheses
-        if (preg_match_all("/\(([^)]+)\)/", $sql, $matches)) {
-            foreach ($matches[1] as $valueString) {
-                // Parse individual values (handling quoted strings)
-                $values = $this->parseValues($valueString);
+        // Encontrar el inicio de VALUES
+        $valuesPos = stripos($sql, 'VALUES');
+        if ($valuesPos === false) {
+            return $results;
+        }
 
-                if (count($values) === count($columns)) {
-                    $row = [];
-                    foreach ($columns as $i => $col) {
-                        $row[$col] = $this->cleanValue($values[$i] ?? null);
-                    }
-                    $results[] = $row;
+        $valuesPart = substr($sql, $valuesPos + 6); // Skip "VALUES"
+
+        // Parsear cada grupo de valores (...)
+        $rows = $this->extractRowsFromValues($valuesPart);
+
+        foreach ($rows as $valueString) {
+            $values = $this->parseValues($valueString);
+
+            if (count($values) === count($columns)) {
+                $row = [];
+                foreach ($columns as $i => $col) {
+                    $row[$col] = $this->cleanValue($values[$i] ?? null);
                 }
+                $results[] = $row;
             }
         }
 
         return $results;
+    }
+
+    private function extractRowsFromValues(string $valuesPart): array
+    {
+        $rows = [];
+        $current = '';
+        $depth = 0;
+        $inQuote = false;
+        $escapeNext = false;
+
+        for ($i = 0; $i < strlen($valuesPart); $i++) {
+            $char = $valuesPart[$i];
+
+            if ($escapeNext) {
+                $current .= $char;
+                $escapeNext = false;
+                continue;
+            }
+
+            if ($char === '\\') {
+                $current .= $char;
+                $escapeNext = true;
+                continue;
+            }
+
+            // Manejar comillas dobles escapadas ''
+            if ($char === "'" && !$escapeNext) {
+                if ($i + 1 < strlen($valuesPart) && $valuesPart[$i + 1] === "'") {
+                    // Comilla escapada ''
+                    $current .= "''";
+                    $i++;
+                    continue;
+                }
+                $inQuote = !$inQuote;
+                $current .= $char;
+                continue;
+            }
+
+            if (!$inQuote) {
+                if ($char === '(') {
+                    $depth++;
+                    if ($depth === 1) {
+                        $current = ''; // Empezar nuevo row
+                        continue;
+                    }
+                }
+
+                if ($char === ')') {
+                    $depth--;
+                    if ($depth === 0) {
+                        $rows[] = $current;
+                        $current = '';
+                        continue;
+                    }
+                }
+
+                if ($char === ';' && $depth === 0) {
+                    break; // Fin del INSERT
+                }
+            }
+
+            if ($depth > 0) {
+                $current .= $char;
+            }
+        }
+
+        return $rows;
     }
 
     private function parseValues(string $valueString): array
@@ -352,6 +398,14 @@ class ImportProductionData extends Command
 
             if ($char === '\\') {
                 $escapeNext = true;
+                $current .= $char; // Mantener el backslash para unescape después
+                continue;
+            }
+
+            // Manejar comillas dobles escapadas ''
+            if ($char === "'" && $inQuote && $i + 1 < strlen($valueString) && $valueString[$i + 1] === "'") {
+                $current .= "'"; // Una sola comilla
+                $i++;
                 continue;
             }
 
@@ -392,8 +446,8 @@ class ImportProductionData extends Command
     private function unescapeSql(string $value): string
     {
         return str_replace(
-            ["\\n", "\\r", "\\'", '\\"'],
-            ["\n", "\r", "'", '"'],
+            ["\\n", "\\r", "\\'", '\\"', "\\\\"],
+            ["\n", "\r", "'", '"', "\\"],
             $value
         );
     }
