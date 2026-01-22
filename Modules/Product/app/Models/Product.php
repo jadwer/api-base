@@ -236,6 +236,12 @@ class Product extends Model
             return $this->img_path;
         }
 
+        // Si es una ruta absoluta del public directory (legacy data)
+        if (str_starts_with($this->img_path, '/images/') || str_starts_with($this->img_path, '/storage/')) {
+            return asset($this->img_path);
+        }
+
+        // Solo el nombre del archivo - agregar prefijo de storage
         return asset('storage/products/' . $this->img_path);
     }
 
@@ -253,6 +259,12 @@ class Product extends Model
             return $this->datasheet_path;
         }
 
+        // Si es una ruta absoluta del public directory (legacy data)
+        if (str_starts_with($this->datasheet_path, '/datasheets/') || str_starts_with($this->datasheet_path, '/storage/')) {
+            return asset($this->datasheet_path);
+        }
+
+        // Solo el nombre del archivo - agregar prefijo de storage
         return asset('storage/datasheets/' . $this->datasheet_path);
     }
 

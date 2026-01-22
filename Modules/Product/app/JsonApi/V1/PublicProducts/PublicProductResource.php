@@ -23,6 +23,8 @@ class PublicProductResource extends JsonApiResource
             'iva'             => $this->iva,
             'imgPath'         => $this->img_path,
             'datasheetPath'   => $this->datasheet_path,
+            'imageUrl'        => $this->img_url,
+            'datasheetUrl'    => $this->datasheet_url,
             'createdAt'       => $this->created_at,
             'updatedAt'       => $this->updated_at,
         ];

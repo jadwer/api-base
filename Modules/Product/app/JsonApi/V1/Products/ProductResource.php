@@ -16,8 +16,11 @@ class ProductResource extends JsonApiResource
             'price'           => $this->price,
             'cost'            => $this->cost,
             'iva'             => $this->iva,
+            'isActive'        => $this->is_active,
             'imgPath'         => $this->img_path,
             'datasheetPath'   => $this->datasheet_path,
+            'imgUrl'          => $this->img_url,
+            'datasheetUrl'    => $this->datasheet_url,
             'createdAt'       => $this->created_at,
             'updatedAt'       => $this->updated_at,
         ];
