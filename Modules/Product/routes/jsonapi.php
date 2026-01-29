@@ -10,6 +10,13 @@ use Modules\Product\Http\Controllers\Api\V1\VariantAttributeController;
 use Modules\Product\Http\Controllers\Api\V1\VariantAttributeValueController;
 use Modules\Product\Http\Controllers\Api\V1\ProductVariantController;
 
+/*
+|--------------------------------------------------------------------------
+| JSON:API Routes
+|--------------------------------------------------------------------------
+| Note: Custom upload routes are in api.php, not here.
+| JSON:API doesn't support multipart/form-data natively.
+*/
 JsonApiRoute::server('v1')
     ->prefix('v1')
     ->middleware('auth:sanctum')

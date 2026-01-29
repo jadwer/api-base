@@ -241,7 +241,12 @@ class Product extends Model
             return asset($this->img_path);
         }
 
-        // Solo el nombre del archivo - agregar prefijo de storage
+        // Si ya incluye el directorio (nuevo formato: products/filename.jpg)
+        if (str_starts_with($this->img_path, 'products/')) {
+            return asset('storage/' . $this->img_path);
+        }
+
+        // Solo el nombre del archivo (legacy) - agregar prefijo de storage
         return asset('storage/products/' . $this->img_path);
     }
 
@@ -264,7 +269,12 @@ class Product extends Model
             return asset($this->datasheet_path);
         }
 
-        // Solo el nombre del archivo - agregar prefijo de storage
+        // Si ya incluye el directorio (nuevo formato: datasheets/filename.pdf)
+        if (str_starts_with($this->datasheet_path, 'datasheets/')) {
+            return asset('storage/' . $this->datasheet_path);
+        }
+
+        // Solo el nombre del archivo (legacy) - agregar prefijo de storage
         return asset('storage/datasheets/' . $this->datasheet_path);
     }
 
