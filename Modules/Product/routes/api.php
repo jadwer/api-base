@@ -19,3 +19,15 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::post('products/upload-datasheet', [ProductUploadController::class, 'uploadDatasheet'])
         ->name('products.upload-datasheet');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Public Download Routes (No Auth Required)
+|--------------------------------------------------------------------------
+| Datasheet downloads are public but tracked for analytics.
+| Logs: IP, User-Agent, user (if authenticated), timestamp, product
+*/
+Route::prefix('v1')->group(function () {
+    Route::get('products/{product}/datasheet', [ProductUploadController::class, 'downloadDatasheet'])
+        ->name('products.download-datasheet');
+});
