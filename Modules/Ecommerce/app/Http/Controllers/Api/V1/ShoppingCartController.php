@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use LaravelJsonApi\Laravel\Http\Controllers\Actions;
 use Modules\Ecommerce\Models\ShoppingCart;
 use Modules\Ecommerce\Models\Coupon;
+use Modules\Sales\Models\FolioSequence;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Models\SalesOrderItem;
 
@@ -97,7 +98,7 @@ class ShoppingCartController extends Controller
     public function merge(Request $request): JsonResponse
     {
         $request->validate([
-            'guest_session_id' => 'required|string'
+            'guest_session_id' => 'required|string|max:255|regex:/^[a-zA-Z0-9_\-]+$/'
         ]);
 
         $userId = Auth::id();
@@ -204,68 +205,71 @@ class ShoppingCartController extends Controller
 
         $couponCode = $request->input('coupon_code');
 
-        // Find and validate coupon
-        $coupon = Coupon::where('code', $couponCode)
-            ->where('is_active', true)
-            ->first();
+        return DB::transaction(function () use ($couponCode, $shoppingCart) {
+            // Find and validate coupon with row lock to prevent race condition on used_count
+            $coupon = Coupon::where('code', $couponCode)
+                ->where('is_active', true)
+                ->lockForUpdate()
+                ->first();
 
-        if (!$coupon) {
+            if (!$coupon) {
+                return response()->json([
+                    'valid' => false,
+                    'error' => 'Invalid coupon code'
+                ], 400);
+            }
+
+            // Check validity dates
+            if ($coupon->starts_at && $coupon->starts_at->isFuture()) {
+                return response()->json([
+                    'valid' => false,
+                    'error' => 'Coupon is not yet active'
+                ], 400);
+            }
+
+            if ($coupon->expires_at && $coupon->expires_at->isPast()) {
+                return response()->json([
+                    'valid' => false,
+                    'error' => 'Coupon has expired'
+                ], 400);
+            }
+
+            // Check usage limit (safe under lock)
+            if ($coupon->max_uses && $coupon->used_count >= $coupon->max_uses) {
+                return response()->json([
+                    'valid' => false,
+                    'error' => 'Coupon usage limit reached'
+                ], 400);
+            }
+
+            // Check minimum amount
+            $subtotal = $shoppingCart->subtotalAmount;
+            if ($coupon->min_amount && $subtotal < $coupon->min_amount) {
+                return response()->json([
+                    'valid' => false,
+                    'error' => "Minimum order amount is {$coupon->min_amount}"
+                ], 400);
+            }
+
+            // Calculate discount
+            $discountAmount = $this->calculateDiscount($coupon, $subtotal);
+
+            // Apply coupon
+            $shoppingCart->update([
+                'coupon_code' => $couponCode,
+                'discount_amount' => $discountAmount,
+            ]);
+
+            // Increment usage count (safe under lock)
+            $coupon->increment('used_count');
+
             return response()->json([
-                'valid' => false,
-                'error' => 'Invalid coupon code'
-            ], 400);
-        }
-
-        // Check validity dates
-        if ($coupon->starts_at && $coupon->starts_at->isFuture()) {
-            return response()->json([
-                'valid' => false,
-                'error' => 'Coupon is not yet active'
-            ], 400);
-        }
-
-        if ($coupon->expires_at && $coupon->expires_at->isPast()) {
-            return response()->json([
-                'valid' => false,
-                'error' => 'Coupon has expired'
-            ], 400);
-        }
-
-        // Check usage limit
-        if ($coupon->max_uses && $coupon->used_count >= $coupon->max_uses) {
-            return response()->json([
-                'valid' => false,
-                'error' => 'Coupon usage limit reached'
-            ], 400);
-        }
-
-        // Check minimum amount
-        $subtotal = $shoppingCart->subtotalAmount;
-        if ($coupon->min_amount && $subtotal < $coupon->min_amount) {
-            return response()->json([
-                'valid' => false,
-                'error' => "Minimum order amount is {$coupon->min_amount}"
-            ], 400);
-        }
-
-        // Calculate discount
-        $discountAmount = $this->calculateDiscount($coupon, $subtotal);
-
-        // Apply coupon
-        $shoppingCart->update([
-            'coupon_code' => $couponCode,
-            'discount_amount' => $discountAmount,
-        ]);
-
-        // Increment usage count
-        $coupon->increment('used_count');
-
-        return response()->json([
-            'valid' => true,
-            'discount_amount' => $discountAmount,
-            'new_total' => $shoppingCart->refresh()->finalTotal,
-            'message' => 'Coupon applied successfully'
-        ]);
+                'valid' => true,
+                'discount_amount' => $discountAmount,
+                'new_total' => $shoppingCart->refresh()->finalTotal,
+                'message' => 'Coupon applied successfully'
+            ]);
+        });
     }
 
     /**
@@ -323,7 +327,7 @@ class ShoppingCartController extends Controller
         return DB::transaction(function () use ($request, $shoppingCart) {
             // Create sales order
             $order = SalesOrder::create([
-                'order_number' => 'SO-' . strtoupper(Str::random(8)),
+                'order_number' => FolioSequence::getNextFolio('sales_order'),
                 'contact_id' => $request->input('contact_id'),
                 'status' => 'pending',
                 'order_date' => now(),
@@ -415,6 +419,15 @@ class ShoppingCartController extends Controller
             if ($shoppingCart->session_id !== $sessionId) {
                 abort(403, 'You do not have access to this cart');
             }
+        }
+
+        // Validate cart is still active and not expired
+        if (!$shoppingCart->isActive()) {
+            abort(400, 'Cart is not active');
+        }
+
+        if ($shoppingCart->isExpired) {
+            abort(400, 'Cart has expired');
         }
     }
 

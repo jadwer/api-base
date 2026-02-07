@@ -51,6 +51,8 @@ class CartItemSchema extends Schema
     {
         return [
             WhereIdIn::make($this),
+            Where::make('shoppingCartId', 'shopping_cart_id'),
+            Where::make('productId', 'product_id'),
             Where::make('status'),
         ];
     }

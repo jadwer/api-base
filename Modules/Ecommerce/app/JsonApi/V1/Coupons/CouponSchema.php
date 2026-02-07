@@ -13,6 +13,7 @@ use LaravelJsonApi\Eloquent\Fields\ArrayList;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
 use LaravelJsonApi\Eloquent\Fields\Relations\HasMany;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
+use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
 use Modules\Ecommerce\Models\Coupon;
@@ -49,6 +50,8 @@ class CouponSchema extends Schema
     {
         return [
             WhereIdIn::make($this),
+            Where::make('isActive', 'is_active'),
+            Where::make('code'),
         ];
     }
 
