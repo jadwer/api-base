@@ -72,7 +72,21 @@ class RemissionController extends Controller
                 $orderItem = $order->items->firstWhere('id', $itemData['sales_order_item_id']);
 
                 if (!$orderItem) {
-                    continue;
+                    throw new \InvalidArgumentException(
+                        "Item {$itemData['sales_order_item_id']} does not belong to order {$order->id}"
+                    );
+                }
+
+                // Validate quantity does not exceed remaining
+                $alreadyRemitted = RemissionItem::where('sales_order_item_id', $orderItem->id)
+                    ->whereHas('remission', fn($q) => $q->where('status', '!=', 'cancelled'))
+                    ->sum('quantity');
+                $remaining = $orderItem->quantity - $alreadyRemitted;
+
+                if ($itemData['quantity'] > $remaining) {
+                    throw new \InvalidArgumentException(
+                        "Quantity {$itemData['quantity']} exceeds remaining {$remaining} for item {$orderItem->id}"
+                    );
                 }
 
                 RemissionItem::create([

@@ -37,9 +37,8 @@ class PaymentTransactionSchema extends Schema
             Number::make('amount'),
             Str::make('currency'),
 
-            ArrayHash::make('gatewayResponse', 'gateway_response'),
-            Str::make('errorMessage', 'error_message'),
-            ArrayHash::make('metadata'),
+            Str::make('errorMessage', 'error_message')->readOnly(),
+            ArrayHash::make('metadata')->readOnly(),
 
             DateTime::make('processedAt', 'processed_at'),
             DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),

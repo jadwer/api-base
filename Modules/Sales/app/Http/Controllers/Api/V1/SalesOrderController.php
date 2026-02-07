@@ -35,9 +35,9 @@ class SalesOrderController extends Controller
             abort(403, 'No tiene permisos para ver reportes de ventas');
         }
 
-        $period = $request->get('period', '30'); // days
-        $startDate = now()->subDays((int)$period);
-        
+        $period = min((int) $request->get('period', '30'), 365); // days, max 1 year
+        $startDate = now()->subDays($period);
+
         // Basic sales metrics
         $totalOrders = SalesOrder::where('created_at', '>=', $startDate)->count();
         $totalRevenue = DB::table('sales_orders')
@@ -115,60 +115,61 @@ class SalesOrderController extends Controller
             abort(403, 'No tiene permisos para ver datos de clientes');
         }
 
-        $period = $request->get('period', '90'); // days
-        $startDate = now()->subDays((int)$period);
-        
+        $period = min((int) $request->get('period', '90'), 365); // days, max 1 year
+        $startDate = now()->subDays($period);
+        $perPage = min((int) ($request->get('per_page', 25)), 100);
+
         $customers = Contact::where('is_customer', true)
+            ->whereHas('salesOrders', function ($query) use ($startDate) {
+                $query->where('created_at', '>=', $startDate);
+            })
             ->with(['salesOrders' => function ($query) use ($startDate) {
                 $query->where('created_at', '>=', $startDate)
                       ->with('items');
             }])
-            ->get()
-            ->map(function ($customer) {
-                $orders = $customer->salesOrders;
-                $totalRevenue = $orders->sum(function ($order) {
-                    return $order->items->sum('total');
-                });
+            ->paginate($perPage);
 
-                return [
-                    'id' => $customer->id,
-                    'type' => 'customer-sales',
-                    'attributes' => [
-                        'customer_name' => $customer->name,
-                        'customer_email' => $customer->email,
-                        'customer_classification' => $customer->classification,
-                        'total_orders' => $orders->count(),
-                        'total_revenue' => round($totalRevenue, 2),
-                        'last_order_date' => $orders->max('created_at'),
-                        'average_order_value' => $orders->count() > 0 ? round($totalRevenue / $orders->count(), 2) : 0,
-                        'orders' => $orders->map(function ($order) {
-                            $orderTotal = $order->items->sum('total');
-                            
-                            return [
-                                'id' => $order->id,
-                                'order_number' => $order->order_number,
-                                'status' => $order->status,
-                                'order_date' => $order->order_date,
-                                'total_amount' => round($orderTotal, 2),
-                                'items_count' => $order->items->count(),
-                            ];
-                        })->toArray()
-                    ]
-                ];
-            })
-            ->filter(function ($customer) {
-                return $customer['attributes']['total_orders'] > 0;
-            })
-            ->sortByDesc(function ($customer) {
-                return $customer['attributes']['total_revenue'];
-            })
-            ->values();
+        $transformed = collect($customers->items())->map(function ($customer) {
+            $orders = $customer->salesOrders;
+            $totalRevenue = $orders->sum(function ($order) {
+                return $order->items->sum('total');
+            });
+
+            return [
+                'id' => $customer->id,
+                'type' => 'customer-sales',
+                'attributes' => [
+                    'customer_name' => $customer->name,
+                    'customer_email' => $customer->email,
+                    'customer_classification' => $customer->classification,
+                    'total_orders' => $orders->count(),
+                    'total_revenue' => round($totalRevenue, 2),
+                    'last_order_date' => $orders->max('created_at'),
+                    'average_order_value' => $orders->count() > 0 ? round($totalRevenue / $orders->count(), 2) : 0,
+                    'orders' => $orders->map(function ($order) {
+                        $orderTotal = $order->items->sum('total');
+
+                        return [
+                            'id' => $order->id,
+                            'order_number' => $order->order_number,
+                            'status' => $order->status,
+                            'order_date' => $order->order_date,
+                            'total_amount' => round($orderTotal, 2),
+                            'items_count' => $order->items->count(),
+                        ];
+                    })->toArray()
+                ]
+            ];
+        })->values();
 
         return response()->json([
-            'data' => $customers,
+            'data' => $transformed,
             'meta' => [
-                'total_customers' => $customers->count(),
-                'period_days' => (int)$period,
+                'current_page' => $customers->currentPage(),
+                'per_page' => $customers->perPage(),
+                'total_customers' => $customers->total(),
+                'last_page' => $customers->lastPage(),
+                'period_days' => $period,
                 'start_date' => $startDate->format('Y-m-d'),
                 'end_date' => now()->format('Y-m-d'),
                 'generated_at' => now()->toISOString(),

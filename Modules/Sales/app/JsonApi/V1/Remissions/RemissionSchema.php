@@ -92,7 +92,6 @@ class RemissionSchema extends Schema
         return [
             WhereIdIn::make($this),
             Where::make('remission_number'),
-            Where::make('status'),
             Where::make('salesOrder', 'sales_order_id'),
             Where::make('warehouse', 'warehouse_id'),
             Where::make('remission_date'),

@@ -72,7 +72,7 @@ class StripeController extends Controller
         $this->authorizePaymentAction($request);
 
         $validator = Validator::make($request->all(), [
-            'amount' => 'required|numeric|min:10',
+            'amount' => 'required|numeric|min:10|max:99999999',
             'currency' => 'nullable|string|size:3',
             'metadata' => 'nullable|array',
             'customer_id' => 'nullable|string',

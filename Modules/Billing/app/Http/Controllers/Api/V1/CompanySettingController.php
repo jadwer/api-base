@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use LaravelJsonApi\Laravel\Http\Controllers\Actions;
 use Modules\Billing\Models\CompanySetting;
 use Modules\Billing\Services\PAC\SWPacService;
@@ -42,19 +43,11 @@ class CompanySettingController extends Controller
 
         try {
             $file = $request->file('certificate');
-            $extension = strtolower($file->getClientOriginalExtension());
-
-            // Validate file extension
-            if ($extension !== 'cer') {
-                return response()->json([
-                    'message' => 'El archivo debe ser un certificado .cer',
-                ], 422);
-            }
 
             // Read file content
             $content = file_get_contents($file->getRealPath());
 
-            // Validate it's a valid certificate
+            // Validate it's a valid certificate (content-based, not extension-based)
             $certInfo = $this->validateCertificate($content);
 
             if (!$certInfo['valid']) {
@@ -63,8 +56,8 @@ class CompanySettingController extends Controller
                 ], 422);
             }
 
-            // Store certificate securely
-            $filename = 'certificates/' . $companySetting->id . '_' . time() . '.cer';
+            // Store certificate securely with random filename
+            $filename = 'certificates/' . Str::random(40) . '.cer';
             Storage::disk('local')->put($filename, $content);
 
             // Update company setting (forceFill because certificate_file is guarded)
@@ -111,19 +104,11 @@ class CompanySettingController extends Controller
         try {
             $file = $request->file('key');
             $password = $request->input('password');
-            $extension = strtolower($file->getClientOriginalExtension());
-
-            // Validate file extension
-            if ($extension !== 'key') {
-                return response()->json([
-                    'message' => 'El archivo debe ser una llave privada .key',
-                ], 422);
-            }
 
             // Read file content
             $content = file_get_contents($file->getRealPath());
 
-            // Validate key with password
+            // Validate key with password (content-based, not extension-based)
             $keyValid = $this->validatePrivateKey($content, $password);
 
             if (!$keyValid['valid']) {
@@ -133,8 +118,8 @@ class CompanySettingController extends Controller
                 ], 422);
             }
 
-            // Store key securely
-            $filename = 'keys/' . $companySetting->id . '_' . time() . '.key';
+            // Store key securely with random filename
+            $filename = 'keys/' . Str::random(40) . '.key';
             Storage::disk('local')->put($filename, $content);
 
             // Update company setting (forceFill because key_file/key_password are guarded)

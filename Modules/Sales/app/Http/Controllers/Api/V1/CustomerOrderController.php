@@ -81,7 +81,8 @@ class CustomerOrderController extends Controller
             $query->whereDate('order_date', '<=', $request->to_date);
         }
 
-        $orders = $query->paginate($request->per_page ?? 15);
+        $perPage = min((int) ($request->per_page ?? 15), 100);
+        $orders = $query->paginate($perPage);
 
         return response()->json([
             'data' => $orders->items(),

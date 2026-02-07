@@ -55,7 +55,7 @@ class CheckoutSessionSchema extends Schema
 
             // Payment Information
             Str::make('paymentMethod', 'payment_method'),
-            Str::make('paymentIntentId', 'payment_intent_id'),
+            Str::make('paymentIntentId', 'payment_intent_id')->readOnly(),
 
             // Amounts
             Number::make('subtotalAmount', 'subtotal_amount'),

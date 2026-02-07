@@ -13,6 +13,8 @@ use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Modules\Ecommerce\Models\ProductReview;
 
 class ProductReviewSchema extends Schema
@@ -73,6 +75,24 @@ class ProductReviewSchema extends Schema
             Where::make('rating'),
             Where::make('isVerifiedPurchase', 'is_verified_purchase'),
         ];
+    }
+
+    public function indexQuery(?Request $request, Builder $query): Builder
+    {
+        $user = $request?->user();
+
+        if ($user && $user->hasAnyRole(['god', 'admin', 'tech'])) {
+            return $query;
+        }
+
+        if ($user) {
+            return $query->where(function ($q) use ($user) {
+                $q->where('status', 'approved')
+                  ->orWhere('user_id', $user->id);
+            });
+        }
+
+        return $query->where('status', 'approved');
     }
 
     public function includePaths(): iterable

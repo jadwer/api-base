@@ -4,6 +4,7 @@ namespace Modules\Sales\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 /**
  * FolioSequence Model
@@ -151,9 +152,9 @@ class FolioSequence extends Model
 
         $prefix = $prefixes[$documentType] ?? strtoupper(substr($documentType, 0, 3));
         $year = now()->format('y');
-        $timestamp = now()->format('His');
+        $random = strtoupper(Str::random(8));
 
-        return sprintf('%s-%s%s', $prefix, $year, $timestamp);
+        return sprintf('%s-%s%s', $prefix, $year, $random);
     }
 
     /**
