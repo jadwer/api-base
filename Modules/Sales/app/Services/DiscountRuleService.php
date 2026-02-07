@@ -45,8 +45,14 @@ class DiscountRuleService
 
         // First, apply order-level discounts
         $orderRules = $applicableRules->filter(fn ($r) => $r->applies_to === DiscountRule::APPLIES_TO_ORDER);
+        $nonCombinableApplied = false;
 
         foreach ($orderRules as $rule) {
+            // If a non-combinable rule was already applied, stop
+            if ($nonCombinableApplied) {
+                break;
+            }
+            // If this rule is non-combinable but others already applied, skip it
             if ($appliedRules->isNotEmpty() && !$rule->is_combinable) {
                 continue;
             }
@@ -62,7 +68,7 @@ class DiscountRuleService
                 ]);
 
                 if (!$rule->is_combinable) {
-                    break;
+                    $nonCombinableApplied = true;
                 }
             }
         }
@@ -99,11 +105,15 @@ class DiscountRuleService
             }
         }
 
+        // Cap total discount to not exceed order subtotal
+        $totalDiscount = min($orderDiscount + array_sum($itemDiscounts), $order->subtotal);
+        $orderDiscount = min($orderDiscount, $order->subtotal);
+
         return [
             'applied_rules' => $appliedRules,
             'order_discount' => $orderDiscount,
             'item_discounts' => $itemDiscounts,
-            'total_discount' => $orderDiscount + array_sum($itemDiscounts),
+            'total_discount' => $totalDiscount,
         ];
     }
 

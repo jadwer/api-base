@@ -95,7 +95,7 @@ class QuoteController extends Controller
                     'unit_price' => $cartItem->unit_price,
                     'quoted_price' => $cartItem->unit_price, // Initially same as unit price
                     'discount_percentage' => 0,
-                    'tax_rate' => 16, // Default IVA México
+                    'tax_rate' => ($product?->iva ?? false) ? 16 : 0,
                     'product_name' => $product?->name,
                     'product_sku' => $product?->sku,
                     'notes' => $notes,
@@ -680,7 +680,7 @@ class QuoteController extends Controller
                     'unit_price' => $product->price ?? 0,
                     'quoted_price' => $product->price ?? 0,
                     'discount_percentage' => 0,
-                    'tax_rate' => 16, // Mexico IVA
+                    'tax_rate' => $product->iva ? 16 : 0,
                     'product_name' => $product->name,
                     'product_sku' => $product->sku,
                     'notes' => $eta,

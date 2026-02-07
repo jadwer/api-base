@@ -9,6 +9,7 @@ use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Services\OrderStatusService;
 use Modules\Sales\Services\SalesOrderPDFGenerator;
 use Modules\Ecommerce\Services\Notifications\OrderNotificationService;
+use Modules\Contacts\Models\Contact;
 
 class CustomerOrderController extends Controller
 {
@@ -28,6 +29,21 @@ class CustomerOrderController extends Controller
     }
 
     /**
+     * Get the contact ID associated with the authenticated user.
+     */
+    private function getCustomerContactId(): ?int
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return null;
+        }
+        $contact = Contact::where('email', $user->email)
+            ->where('is_customer', true)
+            ->first();
+        return $contact?->id;
+    }
+
+    /**
      * List customer's orders
      *
      * GET /api/v1/my-orders
@@ -37,8 +53,13 @@ class CustomerOrderController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $query = SalesOrder::where('customer_id', auth()->id())
-            ->with(['items.product', 'customer'])
+        $contactId = $this->getCustomerContactId();
+        if (!$contactId) {
+            return response()->json(['data' => [], 'meta' => ['current_page' => 1, 'per_page' => 15, 'total' => 0, 'last_page' => 1]]);
+        }
+
+        $query = SalesOrder::where('contact_id', $contactId)
+            ->with(['items.product', 'contact'])
             ->orderBy('order_date', 'desc');
 
         // Filter by status
@@ -84,13 +105,14 @@ class CustomerOrderController extends Controller
     public function show(SalesOrder $order): JsonResponse
     {
         // Verify order belongs to customer
-        if ($order->customer_id !== auth()->id()) {
+        $contactId = $this->getCustomerContactId();
+        if (!$contactId || $order->contact_id !== $contactId) {
             return response()->json([
                 'error' => 'Unauthorized access to order',
             ], 403);
         }
 
-        $order->load(['items.product', 'customer']);
+        $order->load(['items.product', 'contact']);
 
         $statusHistory = $this->orderStatusService->getStatusHistory($order);
 
@@ -116,7 +138,8 @@ class CustomerOrderController extends Controller
     public function cancel(Request $request, SalesOrder $order): JsonResponse
     {
         // Verify order belongs to customer
-        if ($order->customer_id !== auth()->id()) {
+        $contactId = $this->getCustomerContactId();
+        if (!$contactId || $order->contact_id !== $contactId) {
             return response()->json([
                 'error' => 'Unauthorized access to order',
             ], 403);
@@ -172,7 +195,8 @@ class CustomerOrderController extends Controller
     public function requestReturn(Request $request, SalesOrder $order): JsonResponse
     {
         // Verify order belongs to customer
-        if ($order->customer_id !== auth()->id()) {
+        $contactId = $this->getCustomerContactId();
+        if (!$contactId || $order->contact_id !== $contactId) {
             return response()->json([
                 'error' => 'Unauthorized access to order',
             ], 403);
@@ -240,7 +264,8 @@ class CustomerOrderController extends Controller
     public function invoice(SalesOrder $order)
     {
         // Verify order belongs to customer
-        if ($order->customer_id !== auth()->id()) {
+        $contactId = $this->getCustomerContactId();
+        if (!$contactId || $order->contact_id !== $contactId) {
             return response()->json([
                 'error' => 'Unauthorized access to order',
             ], 403);

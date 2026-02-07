@@ -14,6 +14,13 @@ use InvalidArgumentException;
  */
 class ShipmentService
 {
+    private OrderStatusService $orderStatusService;
+
+    public function __construct(OrderStatusService $orderStatusService)
+    {
+        $this->orderStatusService = $orderStatusService;
+    }
+
     /**
      * Create a new shipment for an order.
      *
@@ -215,6 +222,15 @@ class ShipmentService
     {
         $order->load('items');
 
+        // Get quantities already allocated in pending/processing shipments
+        $pendingQuantities = ShipmentItem::whereHas('shipment', function ($q) use ($order) {
+                $q->where('sales_order_id', $order->id)
+                  ->whereIn('status', ['pending', 'processing']);
+            })
+            ->select('sales_order_item_id', DB::raw('SUM(quantity) as total_pending'))
+            ->groupBy('sales_order_item_id')
+            ->pluck('total_pending', 'sales_order_item_id');
+
         foreach ($items as $orderItemId => $quantity) {
             $orderItem = $order->items->find($orderItemId);
 
@@ -226,10 +242,13 @@ class ShipmentService
                 throw new InvalidArgumentException("Quantity must be greater than 0");
             }
 
-            $remaining = $orderItem->remaining_quantity;
-            if ($quantity > $remaining) {
+            // remaining_quantity already subtracts shipped_quantity; also subtract pending shipment allocations
+            $pendingQty = $pendingQuantities[$orderItemId] ?? 0;
+            $effectiveRemaining = $orderItem->remaining_quantity - $pendingQty;
+
+            if ($quantity > $effectiveRemaining) {
                 throw new InvalidArgumentException(
-                    "Cannot ship {$quantity} of item {$orderItemId}. Only {$remaining} remaining."
+                    "Cannot ship {$quantity} of item {$orderItemId}. Only {$effectiveRemaining} available (accounting for pending shipments)."
                 );
             }
         }
@@ -243,25 +262,20 @@ class ShipmentService
         $order->refresh();
         $fulfillmentStatus = $order->fulfillment_status;
 
-        // Update order metadata with shipment info
-        $metadata = $order->metadata ?? [];
+        $targetStatus = match ($fulfillmentStatus) {
+            'delivered' => 'delivered',
+            'shipped' => 'shipped',
+            'partially_shipped' => 'processing',
+            default => null,
+        };
 
-        if ($fulfillmentStatus === 'delivered') {
-            $order->update([
-                'status' => 'delivered',
-                'delivered_at' => now(),
-                'metadata' => array_merge($metadata, ['delivery_completed_at' => now()->toIso8601String()]),
-            ]);
-        } elseif ($fulfillmentStatus === 'shipped') {
-            $order->update([
-                'status' => 'shipped',
-                'metadata' => array_merge($metadata, ['fully_shipped_at' => now()->toIso8601String()]),
-            ]);
-        } elseif ($fulfillmentStatus === 'partially_shipped') {
-            $order->update([
-                'status' => 'processing',
-                'metadata' => array_merge($metadata, ['partially_shipped' => true]),
-            ]);
+        if ($targetStatus && $targetStatus !== $order->status
+            && $this->orderStatusService->canTransitionTo($order, $targetStatus)) {
+            $this->orderStatusService->updateStatus(
+                $order,
+                $targetStatus,
+                "Auto-updated from shipment fulfillment ({$fulfillmentStatus})"
+            );
         }
     }
 }

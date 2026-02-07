@@ -41,42 +41,42 @@ class CheckoutService
             throw new \Exception('Cart is not active or has expired');
         }
 
-        // Check if there's already an active checkout session
-        $existingSession = CheckoutSession::where('shopping_cart_id', $cart->id)
-            ->active()
-            ->first();
+        // Atomically check-or-create checkout session to prevent race conditions
+        return DB::transaction(function () use ($cart, $data) {
+            $existingSession = CheckoutSession::where('shopping_cart_id', $cart->id)
+                ->active()
+                ->lockForUpdate()
+                ->first();
 
-        if ($existingSession) {
-            return $existingSession;
-        }
+            if ($existingSession) {
+                return $existingSession;
+            }
 
-        // Calculate totals
-        $subtotal = $cart->subtotalAmount;
-        $discount = $cart->discount_amount ?? 0;
-        $tax = $this->calculateTax($subtotal - $discount);
+            // Calculate totals
+            $subtotal = $cart->subtotalAmount;
+            $discount = $cart->discount_amount ?? 0;
+            $tax = $this->calculateTax($subtotal - $discount);
 
-        // Create checkout session
-        $session = CheckoutSession::create([
-            'shopping_cart_id' => $cart->id,
-            'user_id' => $cart->user_id,
-            'status' => 'initiated',
-            'step' => 'address',
-            'contact_email' => $data['email'] ?? $cart->user->email ?? null,
-            'contact_phone' => $data['phone'] ?? null,
-            'subtotal_amount' => $subtotal,
-            'discount_amount' => $discount,
-            'tax_amount' => $tax,
-            'shipping_amount' => 0, // Will be calculated when shipping method is selected
-            'total_amount' => $subtotal - $discount + $tax,
-            'currency' => $cart->currency ?? 'MXN',
-            'expires_at' => now()->addMinutes(30), // 30 minutes to complete checkout
-            'metadata' => [
-                'initiated_at' => now()->toIso8601String(),
-                'user_agent' => request()->userAgent(),
-            ],
-        ]);
-
-        return $session;
+            return CheckoutSession::create([
+                'shopping_cart_id' => $cart->id,
+                'user_id' => $cart->user_id,
+                'status' => 'initiated',
+                'step' => 'address',
+                'contact_email' => $data['email'] ?? $cart->user->email ?? null,
+                'contact_phone' => $data['phone'] ?? null,
+                'subtotal_amount' => $subtotal,
+                'discount_amount' => $discount,
+                'tax_amount' => $tax,
+                'shipping_amount' => 0,
+                'total_amount' => $subtotal - $discount + $tax,
+                'currency' => $cart->currency ?? 'MXN',
+                'expires_at' => now()->addMinutes(30),
+                'metadata' => [
+                    'initiated_at' => now()->toIso8601String(),
+                    'user_agent' => request()->userAgent(),
+                ],
+            ]);
+        });
     }
 
     /**
@@ -354,9 +354,19 @@ class CheckoutService
     {
         $prefix = 'ORD';
         $date = now()->format('Ymd');
-        $random = strtoupper(substr(md5(uniqid()), 0, 6));
 
-        return "{$prefix}-{$date}-{$random}";
+        // Retry loop to guarantee uniqueness
+        for ($i = 0; $i < 5; $i++) {
+            $random = strtoupper(\Illuminate\Support\Str::random(8));
+            $number = "{$prefix}-{$date}-{$random}";
+
+            if (!SalesOrder::where('order_number', $number)->exists()) {
+                return $number;
+            }
+        }
+
+        // Fallback: use timestamp-based suffix
+        return "{$prefix}-{$date}-" . strtoupper(dechex(time()));
     }
 
     /**

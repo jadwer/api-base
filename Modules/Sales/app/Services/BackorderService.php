@@ -41,9 +41,10 @@ class BackorderService
             throw new InvalidArgumentException('Backorder quantity must be greater than 0');
         }
 
-        // Check if backorder already exists for this item
+        // Check if backorder already exists for this item (with lock to prevent race condition)
         $existing = Backorder::where('sales_order_item_id', $orderItem->id)
             ->pending()
+            ->lockForUpdate()
             ->first();
 
         if ($existing) {
@@ -82,43 +83,46 @@ class BackorderService
     public function processOrderForBackorders(SalesOrder $order, ?int $warehouseId = null): array
     {
         $order->load('items.product');
-        $backorders = [];
-        $available = [];
 
-        foreach ($order->items as $item) {
-            $availableStock = $this->getAvailableStock($item->product_id, $warehouseId);
-            $remainingToShip = $item->remaining_quantity;
+        return DB::transaction(function () use ($order, $warehouseId) {
+            $backorders = [];
+            $available = [];
 
-            if ($remainingToShip <= 0) {
-                continue; // Already fully shipped
+            foreach ($order->items as $item) {
+                $availableStock = $this->getAvailableStock($item->product_id, $warehouseId);
+                $remainingToShip = $item->remaining_quantity;
+
+                if ($remainingToShip <= 0) {
+                    continue; // Already fully shipped
+                }
+
+                if ($availableStock >= $remainingToShip) {
+                    // Fully available
+                    $available[] = [
+                        'item' => $item,
+                        'quantity' => $remainingToShip,
+                    ];
+                } elseif ($availableStock > 0) {
+                    // Partially available
+                    $available[] = [
+                        'item' => $item,
+                        'quantity' => $availableStock,
+                    ];
+                    $backorderQty = $remainingToShip - $availableStock;
+                    $backorder = $this->createBackorder($item, $backorderQty, $warehouseId);
+                    $backorders[] = $backorder;
+                } else {
+                    // Nothing available - full backorder
+                    $backorder = $this->createBackorder($item, $remainingToShip, $warehouseId);
+                    $backorders[] = $backorder;
+                }
             }
 
-            if ($availableStock >= $remainingToShip) {
-                // Fully available
-                $available[] = [
-                    'item' => $item,
-                    'quantity' => $remainingToShip,
-                ];
-            } elseif ($availableStock > 0) {
-                // Partially available
-                $available[] = [
-                    'item' => $item,
-                    'quantity' => $availableStock,
-                ];
-                $backorderQty = $remainingToShip - $availableStock;
-                $backorder = $this->createBackorder($item, $backorderQty, $warehouseId);
-                $backorders[] = $backorder;
-            } else {
-                // Nothing available - full backorder
-                $backorder = $this->createBackorder($item, $remainingToShip, $warehouseId);
-                $backorders[] = $backorder;
-            }
-        }
-
-        return [
-            'backorders' => $backorders,
-            'available' => $available,
-        ];
+            return [
+                'backorders' => $backorders,
+                'available' => $available,
+            ];
+        });
     }
 
     /**

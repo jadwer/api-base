@@ -75,6 +75,14 @@ class ProductReviewSchema extends Schema
         ];
     }
 
+    public function includePaths(): iterable
+    {
+        return [
+            'product',
+            'user',
+        ];
+    }
+
     /**
      * Get the resource paginator.
      *

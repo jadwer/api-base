@@ -198,8 +198,12 @@ class PaymentService
             throw new \Exception('Payment cannot be refunded');
         }
 
-        if ($amount > $transaction->amount) {
-            throw new \Exception('Refund amount cannot exceed payment amount');
+        // Check against total already refunded (sum of prior refunds)
+        $previouslyRefunded = $transaction->metadata['refund_amount'] ?? 0;
+        $maxRefundable = $transaction->amount - $previouslyRefunded;
+
+        if ($amount > $maxRefundable) {
+            throw new \Exception("Refund amount ({$amount}) exceeds remaining refundable amount ({$maxRefundable})");
         }
 
         return DB::transaction(function () use ($transaction, $amount, $reason) {
@@ -319,8 +323,11 @@ class PaymentService
         // Determine event type (Stripe format: payment_intent.succeeded, etc.)
         $eventType = $payload['type'] ?? 'unknown';
 
-        // Update transaction based on event type
+        // Update transaction based on event type (with lock for idempotency)
         DB::transaction(function () use ($transaction, $eventType, $payload) {
+            // Re-fetch with lock to prevent concurrent duplicate processing
+            $transaction = $transaction->fresh();
+            $transaction = PaymentTransaction::lockForUpdate()->find($transaction->id);
             $previousStatus = $transaction->status;
 
             switch ($eventType) {

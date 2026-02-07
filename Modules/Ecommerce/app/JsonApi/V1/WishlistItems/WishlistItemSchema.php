@@ -69,6 +69,14 @@ class WishlistItemSchema extends Schema
         ];
     }
 
+    public function includePaths(): iterable
+    {
+        return [
+            'wishlist',
+            'product',
+        ];
+    }
+
     /**
      * Get the resource paginator.
      *

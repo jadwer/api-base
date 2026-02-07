@@ -105,6 +105,17 @@ class CheckoutSessionSchema extends Schema
         ];
     }
 
+    public function includePaths(): iterable
+    {
+        return [
+            'shoppingCart',
+            'user',
+            'shippingMethod',
+            'inventoryReservations',
+            'paymentTransactions',
+        ];
+    }
+
     /**
      * Get the resource paginator.
      *

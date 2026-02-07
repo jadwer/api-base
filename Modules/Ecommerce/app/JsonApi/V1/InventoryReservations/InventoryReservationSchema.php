@@ -63,6 +63,16 @@ class InventoryReservationSchema extends Schema
         ];
     }
 
+    public function includePaths(): iterable
+    {
+        return [
+            'checkoutSession',
+            'stock',
+            'product',
+            'warehouse',
+        ];
+    }
+
     public function pagination(): ?Paginator
     {
         return PagePagination::make();

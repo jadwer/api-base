@@ -67,6 +67,15 @@ class ShoppingCartSchema extends Schema
         ];
     }
 
+    public function includePaths(): iterable
+    {
+        return [
+            'cartItems',
+            'cartItems.product',
+            'user',
+        ];
+    }
+
     public function pagination(): ?Paginator
     {
         return PagePagination::make();

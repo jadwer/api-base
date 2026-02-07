@@ -57,6 +57,16 @@ class ProductQuestionSchema extends Schema
         ];
     }
 
+    public function includePaths(): iterable
+    {
+        return [
+            'product',
+            'user',
+            'answers',
+            'answers.user',
+        ];
+    }
+
     /**
      * Get the resource paginator.
      */

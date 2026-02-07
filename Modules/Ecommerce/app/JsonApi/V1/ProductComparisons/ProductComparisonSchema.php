@@ -50,6 +50,15 @@ class ProductComparisonSchema extends Schema
         ];
     }
 
+    public function includePaths(): iterable
+    {
+        return [
+            'user',
+            'items',
+            'items.product',
+        ];
+    }
+
     /**
      * Get the resource paginator.
      */

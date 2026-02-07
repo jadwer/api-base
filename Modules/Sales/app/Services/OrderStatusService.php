@@ -61,17 +61,28 @@ class OrderStatusService
         return DB::transaction(function () use ($order, $newStatus, $notes, $metadata) {
             $oldStatus = $order->status;
 
-            // Update order status
+            // Build status history entry
+            $history = $order->metadata['status_history'] ?? [];
+            $history[] = [
+                'from' => $oldStatus,
+                'to' => $newStatus,
+                'changed_at' => now()->toIso8601String(),
+                'changed_by' => auth()->id() ?? 'system',
+                'notes' => $notes,
+                'metadata' => $metadata,
+            ];
+
+            // Update order status + history in single write
             $order->update([
                 'status' => $newStatus,
                 'metadata' => array_merge(
                     $order->metadata ?? [],
-                    ['last_status_change' => now()->toIso8601String()]
+                    [
+                        'last_status_change' => now()->toIso8601String(),
+                        'status_history' => $history,
+                    ]
                 ),
             ]);
-
-            // Add to status history
-            $this->addStatusHistory($order, $oldStatus, $newStatus, $notes, $metadata);
 
             // Trigger status-specific actions
             $this->handleStatusChange($order, $newStatus);
@@ -414,8 +425,11 @@ class OrderStatusService
                 }
 
                 // Release reservation: only decrement reserved_quantity
-                // available_quantity is a generated column (quantity - reserved_quantity)
-                $stock->decrement('reserved_quantity', $item->quantity);
+                // Guard against going below zero (e.g. order was never fully reserved)
+                $releaseQty = min($item->quantity, $stock->reserved_quantity);
+                if ($releaseQty > 0) {
+                    $stock->decrement('reserved_quantity', $releaseQty);
+                }
 
                 Log::info('Inventory reservation released for sales order', [
                     'order_id' => $order->id,

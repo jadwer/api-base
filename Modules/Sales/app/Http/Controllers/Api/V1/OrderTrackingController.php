@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Services\OrderStatusService;
+use Modules\Contacts\Models\Contact;
 
 class OrderTrackingController extends Controller
 {
@@ -183,8 +184,11 @@ class OrderTrackingController extends Controller
             return true;
         }
 
-        // Customer can only access their own orders
-        return $order->customer_id === $user->id;
+        // Customer can only access their own orders (via contact email match)
+        $contact = Contact::where('email', $user->email)
+            ->where('is_customer', true)
+            ->first();
+        return $contact && $order->contact_id === $contact->id;
     }
 
     /**

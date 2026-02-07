@@ -66,6 +66,15 @@ class PaymentTransactionSchema extends Schema
         ];
     }
 
+    public function includePaths(): iterable
+    {
+        return [
+            'checkoutSession',
+            'salesOrder',
+            'arInvoice',
+        ];
+    }
+
     public function pagination(): ?Paginator
     {
         return PagePagination::make();
