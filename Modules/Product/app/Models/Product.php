@@ -28,11 +28,32 @@ class Product extends Model
     }
 
     /**
-     * The attributes that aren't mass assignable.
+     * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'sku',
+        'description',
+        'full_description',
+        'price',
+        'cost',
+        'compare_at_price',
+        'iva',
+        'is_on_sale',
+        'sale_starts_at',
+        'sale_ends_at',
+        'img_path',
+        'datasheet_path',
+        'unit_id',
+        'category_id',
+        'brand_id',
+        'is_active',
+        'average_rating',
+        'total_reviews',
+        'total_sales',
+    ];
 
     /**
      * The attributes that should be cast to native types.

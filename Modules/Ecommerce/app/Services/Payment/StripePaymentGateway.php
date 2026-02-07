@@ -95,7 +95,7 @@ class StripePaymentGateway implements PaymentGatewayInterface
     {
         try {
             // Convert amount to cents for Stripe
-            $amountInCents = (int) ($amount * 100);
+            $amountInCents = (int) round($amount * 100);
 
             $refund = $this->stripeService->createRefund(
                 paymentIntentId: $transactionId,

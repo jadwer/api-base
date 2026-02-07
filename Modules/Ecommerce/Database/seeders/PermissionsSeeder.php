@@ -87,6 +87,11 @@ class PermissionsSeeder extends Seeder
             'ecommerce.product-answers.store',
             'ecommerce.product-answers.update',
             'ecommerce.product-answers.destroy',
+            'ecommerce.currencies.index',
+            'ecommerce.currencies.show',
+            'ecommerce.currencies.store',
+            'ecommerce.currencies.update',
+            'ecommerce.currencies.destroy',
         ];
 
         $this->bulkCreatePermissions($permissions);

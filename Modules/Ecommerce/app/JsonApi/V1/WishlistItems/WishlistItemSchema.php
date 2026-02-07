@@ -2,6 +2,8 @@
 
 namespace Modules\Ecommerce\JsonApi\V1\WishlistItems;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\ID;
@@ -75,5 +77,22 @@ class WishlistItemSchema extends Schema
     public function pagination(): ?Paginator
     {
         return PagePagination::make();
+    }
+
+    /**
+     * Scope index queries so non-admin users only see items from their own/public wishlists.
+     */
+    public function indexQuery(?Request $request, Builder $query): Builder
+    {
+        $user = $request?->user();
+
+        if ($user && !$user->hasAnyRole(['god', 'admin', 'tech'])) {
+            return $query->whereHas('wishlist', function (Builder $q) use ($user) {
+                $q->where('user_id', $user->id)
+                  ->orWhere('is_public', true);
+            });
+        }
+
+        return $query;
     }
 }

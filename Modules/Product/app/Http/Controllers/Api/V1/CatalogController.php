@@ -44,8 +44,8 @@ class CatalogController extends Controller
 
         // Sorting
         $sortBy = $request->get('sort', 'name');
-        $sortDirection = $request->get('direction', 'asc');
-        
+        $sortDirection = in_array($request->get('direction', 'asc'), ['asc', 'desc']) ? $request->get('direction', 'asc') : 'asc';
+
         $allowedSorts = ['name', 'created_at', 'updated_at', 'price'];
         if (in_array($sortBy, $allowedSorts)) {
             $query->orderBy($sortBy, $sortDirection);

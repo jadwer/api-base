@@ -31,6 +31,10 @@ class SalesOrderController extends Controller
      */
     public function reports(Request $request): JsonResponse
     {
+        if (Gate::denies('sales-orders.index')) {
+            abort(403, 'No tiene permisos para ver reportes de ventas');
+        }
+
         $period = $request->get('period', '30'); // days
         $startDate = now()->subDays((int)$period);
         
@@ -107,6 +111,10 @@ class SalesOrderController extends Controller
      */
     public function customers(Request $request): JsonResponse
     {
+        if (Gate::denies('sales-orders.index')) {
+            abort(403, 'No tiene permisos para ver datos de clientes');
+        }
+
         $period = $request->get('period', '90'); // days
         $startDate = now()->subDays((int)$period);
         

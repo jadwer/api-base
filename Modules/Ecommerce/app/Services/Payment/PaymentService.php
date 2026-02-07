@@ -94,7 +94,10 @@ class PaymentService
                 'currency' => $session->currency,
                 'gateway_response' => $paymentIntent,
                 'metadata' => [
-                    'payment_data' => $paymentData,
+                    'payment_data' => array_diff_key($paymentData, array_flip([
+                        'card_number', 'cvv', 'cvc', 'exp_month', 'exp_year',
+                        'card_holder', 'security_code', 'pin', 'password',
+                    ])),
                     'created_at' => now()->toIso8601String(),
                 ],
             ]);

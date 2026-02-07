@@ -38,7 +38,8 @@ class ProductUploadController extends Controller
         ]);
 
         $file = $request->file('file');
-        $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+        $extension = $file->guessExtension() ?: $file->getClientOriginalExtension();
+        $filename = Str::uuid() . '.' . $extension;
         $path = $file->storeAs('products', $filename, 'public');
 
         return response()->json([

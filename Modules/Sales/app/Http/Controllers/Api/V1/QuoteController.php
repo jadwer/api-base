@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use LaravelJsonApi\Laravel\Http\Controllers\Actions;
 use Modules\Sales\Models\Quote;
@@ -20,6 +21,7 @@ use Modules\Purchase\Models\PurchaseOrderItem;
 use Modules\Inventory\Models\Warehouse;
 use Modules\Sales\Mail\QuoteConvertedMail;
 use Illuminate\Support\Facades\Mail;
+use Modules\Contacts\Models\Contact;
 
 class QuoteController extends Controller
 {
@@ -40,6 +42,10 @@ class QuoteController extends Controller
      */
     public function createFromCart(Request $request): JsonResponse
     {
+        if (Gate::denies('quotes.store')) {
+            abort(403, 'No tiene permisos para crear cotizaciones');
+        }
+
         $request->validate([
             'shopping_cart_id' => 'required|exists:shopping_carts,id',
             'contact_id' => 'required|exists:contacts,id',
@@ -112,6 +118,10 @@ class QuoteController extends Controller
      */
     public function send(Quote $quote): JsonResponse
     {
+        if (Gate::denies('quotes.update')) {
+            abort(403, 'No tiene permisos para enviar cotizaciones');
+        }
+
         if (!$quote->canBeSent) {
             return response()->json([
                 'error' => 'Quote cannot be sent. It must be in draft status with at least one item.'
@@ -135,6 +145,10 @@ class QuoteController extends Controller
      */
     public function accept(Quote $quote): JsonResponse
     {
+        if (Gate::denies('quotes.update')) {
+            abort(403, 'No tiene permisos para aceptar cotizaciones');
+        }
+
         if ($quote->status !== 'sent') {
             return response()->json([
                 'error' => 'Only sent quotes can be accepted'
@@ -155,6 +169,10 @@ class QuoteController extends Controller
      */
     public function reject(Request $request, Quote $quote): JsonResponse
     {
+        if (Gate::denies('quotes.update')) {
+            abort(403, 'No tiene permisos para rechazar cotizaciones');
+        }
+
         if (!in_array($quote->status, ['sent', 'draft'])) {
             return response()->json([
                 'error' => 'This quote cannot be rejected'
@@ -181,6 +199,10 @@ class QuoteController extends Controller
      */
     public function convert(Request $request, Quote $quote): JsonResponse
     {
+        if (Gate::denies('quotes.update')) {
+            abort(403, 'No tiene permisos para convertir cotizaciones');
+        }
+
         if (!$quote->canBeConverted) {
             return response()->json([
                 'error' => 'Quote cannot be converted. It must be in accepted status and not already converted.'
@@ -263,6 +285,10 @@ class QuoteController extends Controller
      */
     public function cancel(Quote $quote): JsonResponse
     {
+        if (Gate::denies('quotes.update')) {
+            abort(403, 'No tiene permisos para cancelar cotizaciones');
+        }
+
         if (!$quote->cancel()) {
             return response()->json([
                 'error' => 'This quote cannot be cancelled'
@@ -281,6 +307,10 @@ class QuoteController extends Controller
      */
     public function duplicate(Quote $quote): JsonResponse
     {
+        if (Gate::denies('quotes.store')) {
+            abort(403, 'No tiene permisos para duplicar cotizaciones');
+        }
+
         return DB::transaction(function () use ($quote) {
             $newQuote = $quote->replicate(['quote_number', 'status', 'sent_at', 'accepted_at', 'rejected_at', 'converted_at', 'sales_order_id']);
             $newQuote->quote_number = Quote::generateQuoteNumber();
@@ -309,6 +339,10 @@ class QuoteController extends Controller
      */
     public function expiringSoon(Request $request): JsonResponse
     {
+        if (Gate::denies('quotes.index')) {
+            abort(403, 'No tiene permisos para ver cotizaciones');
+        }
+
         $days = $request->input('days', 7);
 
         $quotes = Quote::with(['contact', 'items'])
@@ -331,6 +365,10 @@ class QuoteController extends Controller
      */
     public function summary(): JsonResponse
     {
+        if (Gate::denies('quotes.index')) {
+            abort(403, 'No tiene permisos para ver resumen de cotizaciones');
+        }
+
         $stats = [
             'total' => Quote::count(),
             'draft' => Quote::draft()->count(),
@@ -358,6 +396,10 @@ class QuoteController extends Controller
      */
     public function generatePdf(Quote $quote): JsonResponse
     {
+        if (Gate::denies('quotes.show')) {
+            abort(403, 'No tiene permisos para generar PDF de cotizaciones');
+        }
+
         $generator = new QuotePDFGenerator();
         $path = $generator->generate($quote);
 
@@ -376,6 +418,10 @@ class QuoteController extends Controller
      */
     public function downloadPdf(Quote $quote)
     {
+        if (Gate::denies('quotes.show')) {
+            abort(403, 'No tiene permisos para descargar PDF de cotizaciones');
+        }
+
         $generator = new QuotePDFGenerator();
         return $generator->download($quote);
     }
@@ -386,6 +432,10 @@ class QuoteController extends Controller
      */
     public function previewPdf(Quote $quote)
     {
+        if (Gate::denies('quotes.show')) {
+            abort(403, 'No tiene permisos para previsualizar cotizaciones');
+        }
+
         $generator = new QuotePDFGenerator();
         return $generator->preview($quote);
     }
@@ -396,6 +446,10 @@ class QuoteController extends Controller
      */
     public function streamPdf(Quote $quote)
     {
+        if (Gate::denies('quotes.show')) {
+            abort(403, 'No tiene permisos para ver cotizaciones');
+        }
+
         $generator = new QuotePDFGenerator();
         return $generator->stream($quote);
     }
@@ -408,6 +462,10 @@ class QuoteController extends Controller
      */
     public function generatePurchaseOrder(Request $request, Quote $quote): JsonResponse
     {
+        if (Gate::denies('quotes.update')) {
+            abort(403, 'No tiene permisos para generar ordenes de compra');
+        }
+
         // Validate quote can generate PO
         if (!$quote->canGeneratePurchaseOrder) {
             return response()->json([
@@ -535,6 +593,128 @@ class QuoteController extends Controller
                 ]);
             }
         }
+    }
+
+    /**
+     * Request a quote as a customer (simplified flow)
+     * POST /api/v1/quotes/request
+     *
+     * This endpoint is for customers to request quotes without needing
+     * to access the dashboard or select a contact. The authenticated
+     * user's contact record is used automatically.
+     */
+    public function requestQuote(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json([
+                'error' => 'Authentication required'
+            ], 401);
+        }
+
+        $request->validate([
+            'items' => 'required|array|min:1',
+            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.quantity' => 'required|integer|min:1',
+            'notes' => 'nullable|string|max:2000',
+            'shipping_address' => 'nullable|array',
+        ]);
+
+        // Find or create contact for the user
+        $contact = Contact::where('email', $user->email)->first();
+
+        if (!$contact) {
+            // Create a new contact for this user
+            $contact = Contact::create([
+                'contact_type' => 'individual',
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone ?? null,
+                'status' => 'active',
+                'is_customer' => true,
+                'is_supplier' => false,
+            ]);
+        }
+
+        // Validate products exist and are active
+        $productIds = collect($request->input('items'))->pluck('product_id')->unique();
+        $products = Product::whereIn('id', $productIds)
+            ->where('is_active', true)
+            ->get()
+            ->keyBy('id');
+
+        if ($products->count() !== $productIds->count()) {
+            return response()->json([
+                'error' => 'One or more products are not available'
+            ], 400);
+        }
+
+        return DB::transaction(function () use ($request, $contact, $products) {
+            // Create quote
+            $quote = Quote::create([
+                'quote_number' => Quote::generateQuoteNumber(),
+                'contact_id' => $contact->id,
+                'status' => 'draft',
+                'quote_date' => now(),
+                'valid_until' => now()->addDays(30),
+                'currency' => 'MXN',
+                'notes' => $request->input('notes'),
+                'shipping_address' => $request->input('shipping_address'),
+            ]);
+
+            // Create quote items
+            foreach ($request->input('items') as $item) {
+                $product = $products->get($item['product_id']);
+
+                // Get ETA from brand if available
+                $eta = null;
+                if ($product->brand && $product->brand->default_lead_time) {
+                    $eta = "Tiempo de entrega estimado: {$product->brand->default_lead_time} días";
+                }
+
+                QuoteItem::create([
+                    'quote_id' => $quote->id,
+                    'product_id' => $product->id,
+                    'quantity' => $item['quantity'],
+                    'unit_price' => $product->price ?? 0,
+                    'quoted_price' => $product->price ?? 0,
+                    'discount_percentage' => 0,
+                    'tax_rate' => 16, // Mexico IVA
+                    'product_name' => $product->name,
+                    'product_sku' => $product->sku,
+                    'notes' => $eta,
+                ]);
+            }
+
+            // Recalculate totals
+            $quote->recalculateTotals();
+
+            // Auto-send the quote (mark as sent)
+            $quote->markAsSent();
+
+            // Log the quote request
+            activity('quote_request')
+                ->performedOn($quote)
+                ->causedBy($contact)
+                ->withProperties([
+                    'contact_email' => $contact->email,
+                    'items_count' => count($request->input('items')),
+                    'total_amount' => $quote->total_amount,
+                ])
+                ->log('Customer requested a quote');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Cotización solicitada exitosamente. Recibirás una respuesta en tu correo electrónico.',
+                'data' => [
+                    'quote_number' => $quote->quote_number,
+                    'total_amount' => $quote->total_amount,
+                    'items_count' => $quote->items->count(),
+                    'valid_until' => $quote->valid_until?->toDateString(),
+                ]
+            ], 201);
+        });
     }
 
     /**

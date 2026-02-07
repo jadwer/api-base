@@ -9,6 +9,7 @@ use Modules\Billing\Services\StripeService;
 use Modules\Billing\Models\PaymentTransaction;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Stripe\Exception\CardException;
 use Exception;
 
 /**
@@ -24,6 +25,25 @@ class StripeController extends Controller
     public function __construct(
         private readonly StripeService $stripeService
     ) {}
+
+    private function authorizePaymentAction(Request $request): void
+    {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            abort(401, 'Unauthorized');
+        }
+        if (!$user->hasAnyRole(['god', 'admin', 'tech'])) {
+            abort(403, 'No tiene permisos para gestionar pagos de Stripe');
+        }
+    }
+
+    private function safeErrorMessage(Exception $e): string
+    {
+        if ($e instanceof CardException) {
+            return $e->getMessage();
+        }
+        return 'An internal error occurred while processing the payment';
+    }
 
     /**
      * Create Payment Intent
@@ -49,6 +69,8 @@ class StripeController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        $this->authorizePaymentAction($request);
+
         $validator = Validator::make($request->all(), [
             'amount' => 'required|numeric|min:10',
             'currency' => 'nullable|string|size:3',
@@ -102,7 +124,7 @@ class StripeController extends Controller
 
             return response()->json([
                 'error' => 'Failed to create payment intent',
-                'message' => $e->getMessage(),
+                'message' => $this->safeErrorMessage($e),
             ], 500);
         }
     }
@@ -125,8 +147,10 @@ class StripeController extends Controller
      *   }
      * }
      */
-    public function show(string $id): JsonResponse
+    public function show(Request $request, string $id): JsonResponse
     {
+        $this->authorizePaymentAction($request);
+
         try {
             $paymentIntent = $this->stripeService->retrievePaymentIntent($id);
 
@@ -151,7 +175,7 @@ class StripeController extends Controller
 
             return response()->json([
                 'error' => 'Payment intent not found',
-                'message' => $e->getMessage(),
+                'message' => $this->safeErrorMessage($e),
             ], 404);
         }
     }
@@ -176,6 +200,8 @@ class StripeController extends Controller
      */
     public function confirm(Request $request, string $id): JsonResponse
     {
+        $this->authorizePaymentAction($request);
+
         $validator = Validator::make($request->all(), [
             'payment_method' => 'nullable|string',
             'return_url' => 'nullable|url',
@@ -218,7 +244,7 @@ class StripeController extends Controller
 
             return response()->json([
                 'error' => 'Failed to confirm payment intent',
-                'message' => $e->getMessage(),
+                'message' => $this->safeErrorMessage($e),
             ], 400);
         }
     }
@@ -242,6 +268,8 @@ class StripeController extends Controller
      */
     public function capture(Request $request, string $id): JsonResponse
     {
+        $this->authorizePaymentAction($request);
+
         $validator = Validator::make($request->all(), [
             'amount_to_capture' => 'nullable|numeric|min:0.50',
         ]);
@@ -255,7 +283,7 @@ class StripeController extends Controller
         try {
             $amountInCents = null;
             if ($request->has('amount_to_capture')) {
-                $amountInCents = (int) ($request->input('amount_to_capture') * 100);
+                $amountInCents = (int) round($request->input('amount_to_capture') * 100);
             }
 
             $paymentIntent = $this->stripeService->capturePaymentIntent($id, $amountInCents);
@@ -278,7 +306,7 @@ class StripeController extends Controller
 
             return response()->json([
                 'error' => 'Failed to capture payment intent',
-                'message' => $e->getMessage(),
+                'message' => $this->safeErrorMessage($e),
             ], 400);
         }
     }
@@ -298,8 +326,10 @@ class StripeController extends Controller
      *   }
      * }
      */
-    public function cancel(string $id): JsonResponse
+    public function cancel(Request $request, string $id): JsonResponse
     {
+        $this->authorizePaymentAction($request);
+
         try {
             $paymentIntent = $this->stripeService->cancelPaymentIntent($id);
 
@@ -320,7 +350,7 @@ class StripeController extends Controller
 
             return response()->json([
                 'error' => 'Failed to cancel payment intent',
-                'message' => $e->getMessage(),
+                'message' => $this->safeErrorMessage($e),
             ], 400);
         }
     }
@@ -346,6 +376,8 @@ class StripeController extends Controller
      */
     public function refund(Request $request): JsonResponse
     {
+        $this->authorizePaymentAction($request);
+
         $validator = Validator::make($request->all(), [
             'payment_intent_id' => 'required|string',
             'amount' => 'nullable|numeric|min:0.50',
@@ -361,7 +393,7 @@ class StripeController extends Controller
         try {
             $amountInCents = null;
             if ($request->has('amount')) {
-                $amountInCents = (int) ($request->input('amount') * 100);
+                $amountInCents = (int) round($request->input('amount') * 100);
             }
 
             $refund = $this->stripeService->createRefund(
@@ -401,7 +433,7 @@ class StripeController extends Controller
 
             return response()->json([
                 'error' => 'Failed to create refund',
-                'message' => $e->getMessage(),
+                'message' => $this->safeErrorMessage($e),
             ], 400);
         }
     }

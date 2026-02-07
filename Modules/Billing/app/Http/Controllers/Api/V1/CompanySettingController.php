@@ -67,10 +67,8 @@ class CompanySettingController extends Controller
             $filename = 'certificates/' . $companySetting->id . '_' . time() . '.cer';
             Storage::disk('local')->put($filename, $content);
 
-            // Update company setting
-            $companySetting->update([
-                'certificate_file' => $filename,
-            ]);
+            // Update company setting (forceFill because certificate_file is guarded)
+            $companySetting->forceFill(['certificate_file' => $filename])->save();
 
             return response()->json([
                 'message' => 'Certificado subido correctamente',
@@ -139,11 +137,11 @@ class CompanySettingController extends Controller
             $filename = 'keys/' . $companySetting->id . '_' . time() . '.key';
             Storage::disk('local')->put($filename, $content);
 
-            // Update company setting with encrypted password
-            $companySetting->update([
+            // Update company setting (forceFill because key_file/key_password are guarded)
+            $companySetting->forceFill([
                 'key_file' => $filename,
                 'key_password' => $password, // Model has encrypted cast
-            ]);
+            ])->save();
 
             return response()->json([
                 'message' => 'Llave privada subida correctamente',

@@ -35,7 +35,7 @@ class StripeService
     ): PaymentIntent {
         try {
             // Convert amount to cents (Stripe expects smallest currency unit)
-            $amountInCents = (int) ($amount * 100);
+            $amountInCents = (int) round($amount * 100);
 
             $params = [
                 'amount' => $amountInCents,

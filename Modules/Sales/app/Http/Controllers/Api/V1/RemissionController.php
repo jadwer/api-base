@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use LaravelJsonApi\Laravel\Http\Controllers\Actions;
 use Modules\Sales\Models\Remission;
 use Modules\Sales\Models\RemissionItem;
@@ -33,6 +34,10 @@ class RemissionController extends Controller
      */
     public function createFromOrder(Request $request): JsonResponse
     {
+        if (Gate::denies('remissions.store')) {
+            abort(403, 'No tiene permisos para crear remisiones');
+        }
+
         $request->validate([
             'sales_order_id' => 'required|exists:sales_orders,id',
             'warehouse_id' => 'nullable|exists:warehouses,id',
@@ -97,6 +102,10 @@ class RemissionController extends Controller
      */
     public function createFromOrderFull(Request $request): JsonResponse
     {
+        if (Gate::denies('remissions.store')) {
+            abort(403, 'No tiene permisos para crear remisiones');
+        }
+
         $request->validate([
             'sales_order_id' => 'required|exists:sales_orders,id',
             'warehouse_id' => 'nullable|exists:warehouses,id',
@@ -152,6 +161,10 @@ class RemissionController extends Controller
      */
     public function print(Remission $remission, RemissionPDFGenerator $generator): JsonResponse
     {
+        if (Gate::denies('remissions.update')) {
+            abort(403, 'No tiene permisos para imprimir remisiones');
+        }
+
         if (!$remission->canBePrinted()) {
             return response()->json([
                 'error' => 'Remission cannot be printed. It must have items and be in draft or printed status.'
@@ -176,6 +189,10 @@ class RemissionController extends Controller
      */
     public function deliver(Request $request, Remission $remission): JsonResponse
     {
+        if (Gate::denies('remissions.update')) {
+            abort(403, 'No tiene permisos para marcar remisiones como entregadas');
+        }
+
         $request->validate([
             'received_by' => 'nullable|string|max:200',
             'delivery_notes' => 'nullable|string|max:2000',
@@ -204,6 +221,10 @@ class RemissionController extends Controller
      */
     public function cancel(Remission $remission): JsonResponse
     {
+        if (Gate::denies('remissions.update')) {
+            abort(403, 'No tiene permisos para cancelar remisiones');
+        }
+
         if (!$remission->cancel()) {
             return response()->json([
                 'error' => 'This remission cannot be cancelled. Delivered remissions cannot be cancelled.'
@@ -222,6 +243,10 @@ class RemissionController extends Controller
      */
     public function forOrder(SalesOrder $order): JsonResponse
     {
+        if (Gate::denies('remissions.index')) {
+            abort(403, 'No tiene permisos para ver remisiones');
+        }
+
         $remissions = $order->remissions()
             ->with(['items', 'warehouse'])
             ->orderBy('created_at', 'desc')
@@ -242,6 +267,10 @@ class RemissionController extends Controller
      */
     public function generatePdf(Remission $remission, RemissionPDFGenerator $generator): JsonResponse
     {
+        if (Gate::denies('remissions.show')) {
+            abort(403, 'No tiene permisos para generar PDF de remisiones');
+        }
+
         $path = $generator->generate($remission);
 
         return response()->json([
@@ -259,6 +288,10 @@ class RemissionController extends Controller
      */
     public function downloadPdf(Remission $remission, RemissionPDFGenerator $generator)
     {
+        if (Gate::denies('remissions.show')) {
+            abort(403, 'No tiene permisos para descargar PDF de remisiones');
+        }
+
         return $generator->download($remission);
     }
 
@@ -268,6 +301,10 @@ class RemissionController extends Controller
      */
     public function previewPdf(Remission $remission, RemissionPDFGenerator $generator)
     {
+        if (Gate::denies('remissions.show')) {
+            abort(403, 'No tiene permisos para previsualizar remisiones');
+        }
+
         return $generator->preview($remission);
     }
 
@@ -277,6 +314,10 @@ class RemissionController extends Controller
      */
     public function streamPdf(Remission $remission, RemissionPDFGenerator $generator)
     {
+        if (Gate::denies('remissions.show')) {
+            abort(403, 'No tiene permisos para ver remisiones');
+        }
+
         return $generator->stream($remission);
     }
 
@@ -286,6 +327,10 @@ class RemissionController extends Controller
      */
     public function summary(): JsonResponse
     {
+        if (Gate::denies('remissions.index')) {
+            abort(403, 'No tiene permisos para ver resumen de remisiones');
+        }
+
         $stats = [
             'total' => Remission::count(),
             'draft' => Remission::draft()->count(),

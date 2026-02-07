@@ -2,6 +2,8 @@
 
 namespace Modules\Ecommerce\JsonApi\V1\ShoppingCarts;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\ID;
@@ -68,6 +70,20 @@ class ShoppingCartSchema extends Schema
     public function pagination(): ?Paginator
     {
         return PagePagination::make();
+    }
+
+    /**
+     * Scope index queries so non-admin users only see their own carts.
+     */
+    public function indexQuery(?Request $request, Builder $query): Builder
+    {
+        $user = $request?->user();
+
+        if ($user && !$user->hasAnyRole(['god', 'admin', 'tech'])) {
+            return $query->where('user_id', $user->id);
+        }
+
+        return $query;
     }
 
     public static function type(): string

@@ -23,9 +23,8 @@ class CompanySetting extends Model
         'pac_username',
         'pac_password',
         'pac_production_mode',
-        'certificate_file',
-        'key_file',
-        'key_password',
+        // certificate_file, key_file, key_password excluded from mass-assignment
+        // Use dedicated upload endpoints (CompanySettingController) to set these
         'logo_path',
         'address',
         'city',

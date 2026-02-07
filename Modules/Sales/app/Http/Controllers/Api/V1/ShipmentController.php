@@ -5,6 +5,7 @@ namespace Modules\Sales\Http\Controllers\Api\V1;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
 use LaravelJsonApi\Laravel\Http\Controllers\Actions;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Models\Shipment;
@@ -39,6 +40,10 @@ class ShipmentController extends Controller
      */
     public function createFromOrder(Request $request): JsonResponse
     {
+        if (Gate::denies('shipments.store')) {
+            abort(403, 'No tiene permisos para crear envios');
+        }
+
         $request->validate([
             'sales_order_id' => 'required|exists:sales_orders,id',
             'items' => 'required|array|min:1',
@@ -100,6 +105,10 @@ class ShipmentController extends Controller
      */
     public function ship(Request $request, Shipment $shipment): JsonResponse
     {
+        if (Gate::denies('shipments.update')) {
+            abort(403, 'No tiene permisos para marcar envios');
+        }
+
         $request->validate([
             'tracking_number' => 'nullable|string|max:100',
             'carrier' => 'nullable|string|max:100',
@@ -147,6 +156,10 @@ class ShipmentController extends Controller
      */
     public function deliver(Request $request, Shipment $shipment): JsonResponse
     {
+        if (Gate::denies('shipments.update')) {
+            abort(403, 'No tiene permisos para marcar envios como entregados');
+        }
+
         $request->validate([
             'actual_delivery' => 'nullable|date',
         ]);
@@ -190,6 +203,10 @@ class ShipmentController extends Controller
      */
     public function cancel(Request $request, Shipment $shipment): JsonResponse
     {
+        if (Gate::denies('shipments.update')) {
+            abort(403, 'No tiene permisos para cancelar envios');
+        }
+
         $request->validate([
             'reason' => 'nullable|string|max:500',
         ]);
@@ -229,6 +246,10 @@ class ShipmentController extends Controller
      */
     public function orderSummary(SalesOrder $order): JsonResponse
     {
+        if (Gate::denies('shipments.index')) {
+            abort(403, 'No tiene permisos para ver resumen de envios');
+        }
+
         $summary = $this->shipmentService->getOrderShipmentSummary($order);
 
         return response()->json([
