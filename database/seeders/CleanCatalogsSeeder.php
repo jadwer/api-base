@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
 /**
@@ -16,8 +17,9 @@ use Carbon\Carbon;
  * - Fiscal periods
  * - Chart of accounts (Mexican standard)
  * - Default warehouse
- * - Folio sequences
+ * - Folio sequences (for quotes, orders, remissions)
  * - Invoice series
+ * - Test category, brand, and products
  */
 class CleanCatalogsSeeder extends Seeder
 {
@@ -29,9 +31,11 @@ class CleanCatalogsSeeder extends Seeder
         $this->seedFiscalPeriods();
         $this->seedChartOfAccounts();
         $this->seedDefaultWarehouse();
-        // Note: FolioSequences are created by migration 2026_01_18_200000_create_folio_sequences_table.php
+        $this->seedFolioSequences();
         $this->seedDefaultCompanySetting();
         $this->seedInvoiceSeries();
+        $this->seedTestCategoryAndBrand();
+        $this->seedTestProducts();
 
         $this->command->info('  - Essential catalogs created');
     }
@@ -274,5 +278,255 @@ class CleanCatalogsSeeder extends Seeder
                 $s
             );
         }
+    }
+
+    /**
+     * Seed folio sequences for quotes, orders, remissions
+     */
+    private function seedFolioSequences(): void
+    {
+        $sequences = [
+            [
+                'document_type' => 'quote',
+                'prefix' => 'COT',
+                'include_year' => true,
+                'year_format' => 'y',
+                'separator' => '-',
+                'padding' => 5,
+                'current_sequence' => 0,
+                'reset_yearly' => true,
+                'last_reset_year' => (int) date('Y'),
+                'is_active' => true,
+            ],
+            [
+                'document_type' => 'sales_order',
+                'prefix' => 'OV',
+                'include_year' => true,
+                'year_format' => 'y',
+                'separator' => '-',
+                'padding' => 5,
+                'current_sequence' => 0,
+                'reset_yearly' => true,
+                'last_reset_year' => (int) date('Y'),
+                'is_active' => true,
+            ],
+            [
+                'document_type' => 'purchase_order',
+                'prefix' => 'OC',
+                'include_year' => true,
+                'year_format' => 'y',
+                'separator' => '-',
+                'padding' => 5,
+                'current_sequence' => 0,
+                'reset_yearly' => true,
+                'last_reset_year' => (int) date('Y'),
+                'is_active' => true,
+            ],
+            [
+                'document_type' => 'remission',
+                'prefix' => 'REM',
+                'include_year' => true,
+                'year_format' => 'y',
+                'separator' => '-',
+                'padding' => 5,
+                'current_sequence' => 0,
+                'reset_yearly' => true,
+                'last_reset_year' => (int) date('Y'),
+                'is_active' => true,
+            ],
+        ];
+
+        foreach ($sequences as $seq) {
+            \Modules\Sales\Models\FolioSequence::firstOrCreate(
+                ['document_type' => $seq['document_type']],
+                $seq
+            );
+        }
+    }
+
+    /**
+     * Seed test category and brand (can be deleted easily)
+     */
+    private function seedTestCategoryAndBrand(): void
+    {
+        // Test Category
+        \Modules\Product\Models\Category::firstOrCreate(
+            ['slug' => 'productos-prueba'],
+            [
+                'name' => 'Productos de Prueba',
+                'description' => 'Categoria para productos de prueba. Puede eliminarse.',
+                'slug' => 'productos-prueba',
+            ]
+        );
+
+        // Test Brand
+        \Modules\Product\Models\Brand::firstOrCreate(
+            ['slug' => 'marca-prueba'],
+            [
+                'name' => 'Marca Prueba',
+                'description' => 'Marca para productos de prueba. Puede eliminarse.',
+                'slug' => 'marca-prueba',
+            ]
+        );
+    }
+
+    /**
+     * Seed 5 test products with placeholder images and PDFs
+     */
+    private function seedTestProducts(): void
+    {
+        // Get required relations
+        $unit = \Modules\Product\Models\Unit::where('code', 'H87')->first(); // Pieza
+        $category = \Modules\Product\Models\Category::where('slug', 'productos-prueba')->first();
+        $brand = \Modules\Product\Models\Brand::where('slug', 'marca-prueba')->first();
+
+        if (!$unit || !$category || !$brand) {
+            return; // Skip if dependencies don't exist
+        }
+
+        // Create storage directories if they don't exist
+        Storage::disk('public')->makeDirectory('products');
+        Storage::disk('public')->makeDirectory('datasheets');
+
+        $products = [
+            [
+                'name' => 'Producto de Prueba 1',
+                'sku' => 'TEST-001',
+                'description' => 'Producto de prueba para desarrollo. Puede eliminarse.',
+                'full_description' => 'Este es un producto de prueba creado por el seeder. Puede eliminarse sin afectar el sistema.',
+                'price' => 100.00,
+                'cost' => 50.00,
+                'iva' => true,
+            ],
+            [
+                'name' => 'Producto de Prueba 2',
+                'sku' => 'TEST-002',
+                'description' => 'Segundo producto de prueba para desarrollo.',
+                'full_description' => 'Este es el segundo producto de prueba. Ideal para probar funcionalidades de carrito y cotizaciones.',
+                'price' => 250.00,
+                'cost' => 125.00,
+                'iva' => true,
+            ],
+            [
+                'name' => 'Producto de Prueba 3',
+                'sku' => 'TEST-003',
+                'description' => 'Tercer producto de prueba sin IVA.',
+                'full_description' => 'Producto de prueba configurado sin IVA para probar calculos de impuestos.',
+                'price' => 500.00,
+                'cost' => 300.00,
+                'iva' => false,
+            ],
+            [
+                'name' => 'Producto de Prueba 4',
+                'sku' => 'TEST-004',
+                'description' => 'Cuarto producto de prueba con precio alto.',
+                'full_description' => 'Producto de prueba con precio mas alto para probar cotizaciones grandes.',
+                'price' => 1500.00,
+                'cost' => 800.00,
+                'iva' => true,
+            ],
+            [
+                'name' => 'Producto de Prueba 5',
+                'sku' => 'TEST-005',
+                'description' => 'Quinto producto de prueba economico.',
+                'full_description' => 'Producto de prueba con precio bajo para probar multiples items en carrito.',
+                'price' => 50.00,
+                'cost' => 20.00,
+                'iva' => true,
+            ],
+        ];
+
+        foreach ($products as $index => $productData) {
+            $productNumber = $index + 1;
+
+            // Create placeholder image (simple SVG)
+            $imageName = "test-product-{$productNumber}.svg";
+            $imagePath = "products/{$imageName}";
+            if (!Storage::disk('public')->exists($imagePath)) {
+                $svgContent = $this->generatePlaceholderSvg($productNumber, $productData['name']);
+                Storage::disk('public')->put($imagePath, $svgContent);
+            }
+
+            // Create placeholder PDF datasheet
+            $pdfName = "test-datasheet-{$productNumber}.pdf";
+            $pdfPath = "datasheets/{$pdfName}";
+            if (!Storage::disk('public')->exists($pdfPath)) {
+                $pdfContent = $this->generatePlaceholderPdf($productNumber, $productData['name']);
+                Storage::disk('public')->put($pdfPath, $pdfContent);
+            }
+
+            \Modules\Product\Models\Product::firstOrCreate(
+                ['sku' => $productData['sku']],
+                array_merge($productData, [
+                    'unit_id' => $unit->id,
+                    'category_id' => $category->id,
+                    'brand_id' => $brand->id,
+                    'img_path' => $imagePath,
+                    'datasheet_path' => $pdfPath,
+                    'is_active' => true,
+                ])
+            );
+        }
+    }
+
+    /**
+     * Generate a simple SVG placeholder image
+     */
+    private function generatePlaceholderSvg(int $number, string $name): string
+    {
+        $colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
+        $color = $colors[($number - 1) % count($colors)];
+
+        return <<<SVG
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <rect width="400" height="400" fill="{$color}"/>
+  <rect x="20" y="20" width="360" height="360" fill="white" fill-opacity="0.1" rx="20"/>
+  <text x="200" y="180" font-family="Arial, sans-serif" font-size="80" font-weight="bold" fill="white" text-anchor="middle">TEST</text>
+  <text x="200" y="260" font-family="Arial, sans-serif" font-size="60" font-weight="bold" fill="white" text-anchor="middle">{$number}</text>
+  <text x="200" y="350" font-family="Arial, sans-serif" font-size="14" fill="white" fill-opacity="0.8" text-anchor="middle">Producto de Prueba</text>
+</svg>
+SVG;
+    }
+
+    /**
+     * Generate a simple PDF placeholder (minimal valid PDF)
+     */
+    private function generatePlaceholderPdf(int $number, string $name): string
+    {
+        // Minimal valid PDF structure
+        $content = "Ficha Tecnica - Producto de Prueba {$number}\n\n";
+        $content .= "Nombre: {$name}\n";
+        $content .= "SKU: TEST-00{$number}\n\n";
+        $content .= "Descripcion:\n";
+        $content .= "Este es un documento de prueba generado automaticamente.\n";
+        $content .= "Puede eliminarse sin afectar el sistema.\n\n";
+        $content .= "Especificaciones:\n";
+        $content .= "- Material: N/A\n";
+        $content .= "- Dimensiones: N/A\n";
+        $content .= "- Peso: N/A\n\n";
+        $content .= "Fecha de generacion: " . date('Y-m-d H:i:s') . "\n";
+
+        // Simple PDF structure
+        $pdf = "%PDF-1.4\n";
+        $pdf .= "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n";
+        $pdf .= "2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n";
+        $pdf .= "3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>\nendobj\n";
+
+        $streamContent = "BT\n/F1 12 Tf\n50 700 Td\n";
+        $lines = explode("\n", $content);
+        foreach ($lines as $line) {
+            $escapedLine = str_replace(['(', ')', '\\'], ['\\(', '\\)', '\\\\'], $line);
+            $streamContent .= "({$escapedLine}) Tj\n0 -15 Td\n";
+        }
+        $streamContent .= "ET";
+
+        $streamLength = strlen($streamContent);
+        $pdf .= "4 0 obj\n<< /Length {$streamLength} >>\nstream\n{$streamContent}\nendstream\nendobj\n";
+        $pdf .= "5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n";
+        $pdf .= "xref\n0 6\n0000000000 65535 f \n";
+        $pdf .= "trailer\n<< /Size 6 /Root 1 0 R >>\n";
+        $pdf .= "startxref\n0\n%%EOF";
+
+        return $pdf;
     }
 }

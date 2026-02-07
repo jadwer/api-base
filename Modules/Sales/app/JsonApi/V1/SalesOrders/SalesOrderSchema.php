@@ -13,6 +13,7 @@ use LaravelJsonApi\Eloquent\Fields\Relations\HasMany;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Filters\WhereIn;
+use LaravelJsonApi\Eloquent\Filters\Scope;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use Modules\Sales\Models\SalesOrder;
 
@@ -93,6 +94,8 @@ class SalesOrderSchema extends Schema
             Where::make('order_date'),
             Where::make('invoicing_status'),
             Where::make('ar_invoice_id'),
+            // Customer Portal filter - filter by contact email
+            Scope::make('contact_email', 'forContactEmail'),
         ];
     }
 

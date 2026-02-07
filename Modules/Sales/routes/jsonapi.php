@@ -54,6 +54,8 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::get('backorders/pending-for-product/{productId}', [BackorderController::class, 'pendingForProduct'])->name('backorders.pending-for-product');
 
     // SA-M004: Quote action endpoints
+    // Customer quote request (simplified flow - no contact selection needed)
+    Route::post('quotes/request', [QuoteController::class, 'requestQuote'])->name('quotes.request');
     Route::post('quotes/from-cart', [QuoteController::class, 'createFromCart'])->name('quotes.from-cart');
     Route::get('quotes/expiring-soon', [QuoteController::class, 'expiringSoon'])->name('quotes.expiring-soon');
     Route::get('quotes/summary', [QuoteController::class, 'summary'])->name('quotes.summary');

@@ -81,11 +81,4 @@ class User extends Authenticatable
     {
         return UserFactory::new();
     }
-
-    public function setPasswordAttribute($value): void
-    {
-        if ($value) {
-            $this->attributes['password'] = bcrypt($value);
-        }
-    }
 }

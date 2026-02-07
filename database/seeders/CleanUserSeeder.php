@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use Modules\User\Models\User;
 
 /**
@@ -19,21 +18,34 @@ class CleanUserSeeder extends Seeder
         // Get system user for activity logging
         $system = User::where('email', 'system@audit.local')->first();
 
-        // Create the God/Admin user
-        $email = env('CLEAN_ADMIN_EMAIL', 'admin@laborwasser.com');
-        $name = env('CLEAN_ADMIN_NAME', 'Administrador');
-        $password = env('CLEAN_ADMIN_PASSWORD', 'Admin2026!');
+        // Create the God user (configurable via env)
+        $email = env('CLEAN_ADMIN_EMAIL', 'god@example.com');
+        $name = env('CLEAN_ADMIN_NAME', 'God');
+        $password = env('CLEAN_ADMIN_PASSWORD', 'supersecure');
 
-        $admin = User::firstOrCreate(
+        $god = User::firstOrCreate(
             ['email' => $email],
             [
                 'name' => $name,
-                'password' => Hash::make($password),
+                'password' => $password,  // El modelo User hashea automáticamente via cast 'hashed'
                 'status' => 'active',
             ]
         );
 
-        // Assign god role
+        if (!$god->hasRole('god')) {
+            $god->assignRole('god');
+        }
+
+        // Create secondary admin user (Labor Wasser default)
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@laborwasser.com'],
+            [
+                'name' => 'Administrador',
+                'password' => 'Admin2026!',
+                'status' => 'active',
+            ]
+        );
+
         if (!$admin->hasRole('god')) {
             $admin->assignRole('god');
         }
@@ -46,11 +58,12 @@ class CleanUserSeeder extends Seeder
                 ->log("Admin user created: {$email}");
         }
 
-        $this->command->info("  - Admin user created: {$email}");
+        $this->command->info("  - God user created: {$email}");
+        $this->command->info("  - Admin user created: admin@laborwasser.com");
 
         // Show password hint in non-production
         if (app()->environment('local', 'development', 'staging')) {
-            $this->command->warn("    Password: {$password}");
+            $this->command->warn("    Password for both: {$password}");
             $this->command->warn("    (Change this immediately in production!)");
         }
     }

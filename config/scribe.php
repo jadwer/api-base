@@ -1,7 +1,8 @@
 <?php
 
 use Knuckles\Scribe\Extracting\Strategies;
-// Note: Defaults, AuthIn and config functions removed for compatibility with older Scribe versions
+use Knuckles\Scribe\Config\Defaults;
+use function Knuckles\Scribe\Config\removeStrategies;
 
 // Only the most common configs are shown. See the https://scribe.knuckles.wtf/laravel/reference/config for all.
 

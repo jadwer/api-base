@@ -13,6 +13,7 @@ use LaravelJsonApi\Eloquent\Fields\Relations\HasMany;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Filters\WhereIn;
+use LaravelJsonApi\Eloquent\Filters\Scope;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use Modules\Sales\Models\Quote;
 
@@ -103,6 +104,8 @@ class QuoteSchema extends Schema
             Where::make('contact', 'contact_id'),
             Where::make('quote_date'),
             Where::make('valid_until'),
+            // Customer Portal filter - filter by contact email
+            Scope::make('contact_email', 'forContactEmail'),
         ];
     }
 
