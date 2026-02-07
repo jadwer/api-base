@@ -30,7 +30,6 @@ class ProductRecommendationController extends Controller
                 'sku' => $product->sku,
                 'description' => $product->description,
                 'price' => $product->price,
-                'cost' => $product->cost,
                 'imgPath' => $product->img_path,
                 'isActive' => $product->is_active,
                 'averageRating' => $product->average_rating,

@@ -37,7 +37,12 @@ class Shipment extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'sales_order_id', 'warehouse_id', 'shipment_number', 'status',
+        'carrier', 'tracking_number', 'tracking_url',
+        'ship_date', 'estimated_delivery', 'actual_delivery',
+        'shipping_address', 'notes', 'shipping_cost', 'weight', 'metadata',
+    ];
 
     protected $casts = [
         'id' => 'integer',

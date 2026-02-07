@@ -23,12 +23,9 @@ class Brand extends Model
             ->dontSubmitEmptyLogs();
     }
 
-    /**
-     * The attributes that aren't mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = [];
+    protected $fillable = [
+        'name', 'description', 'logo_path', 'website', 'is_active', 'default_lead_time',
+    ];
 
     /**
      * The attributes that should be cast to native types.

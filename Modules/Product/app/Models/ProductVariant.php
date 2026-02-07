@@ -33,7 +33,11 @@ class ProductVariant extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'product_id', 'sku', 'name', 'price', 'cost', 'weight',
+        'barcode', 'img_path', 'stock_quantity', 'low_stock_threshold',
+        'is_active', 'is_default', 'metadata',
+    ];
 
     protected $casts = [
         'id' => 'integer',

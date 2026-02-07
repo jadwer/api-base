@@ -24,7 +24,7 @@ class DiscountRuleService
             ->get();
 
         return $rules->filter(function (DiscountRule $rule) use ($order) {
-            return $rule->canBeUsedBy($order->customer_id);
+            return $rule->canBeUsedBy($order->contact_id);
         });
     }
 
@@ -87,7 +87,7 @@ class DiscountRuleService
                     continue;
                 }
 
-                $discount = $rule->calculateDiscount($item->line_total, $item->quantity);
+                $discount = $rule->calculateDiscount($item->total, $item->quantity);
 
                 if ($discount > 0) {
                     $itemDiscounts[$item->id] += $discount;

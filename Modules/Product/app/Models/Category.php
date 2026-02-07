@@ -23,12 +23,9 @@ class Category extends Model
             ->dontSubmitEmptyLogs();
     }
 
-    /**
-     * The attributes that aren't mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = [];
+    protected $fillable = [
+        'name', 'description', 'parent_id', 'slug', 'is_active', 'sort_order',
+    ];
 
     /**
      * The attributes that should be cast to native types.

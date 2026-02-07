@@ -301,7 +301,7 @@ class StripeService
             'currency' => strtoupper($paymentIntent->currency),
             'status' => $status,
             'payment_method' => $paymentIntent->payment_method_types[0] ?? null,
-            'gateway_response' => $paymentIntent->toArray(),
+            'gateway_response' => collect($paymentIntent->toArray())->except(['client_secret'])->all(),
         ]);
 
         // Set card info if available

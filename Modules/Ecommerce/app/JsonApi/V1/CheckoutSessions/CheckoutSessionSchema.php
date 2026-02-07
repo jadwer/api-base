@@ -2,6 +2,8 @@
 
 namespace Modules\Ecommerce\JsonApi\V1\CheckoutSessions;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use LaravelJsonApi\Eloquent\Fields\ArrayHash;
 use LaravelJsonApi\Eloquent\Fields\Boolean;
@@ -41,9 +43,9 @@ class CheckoutSessionSchema extends Schema
             Number::make('userId', 'user_id'),
             Number::make('shippingMethodId', 'shipping_method_id'),
 
-            // Session Status
-            Str::make('status')->sortable(),
-            Str::make('step'),
+            // Session Status (server-managed)
+            Str::make('status')->sortable()->readOnly(),
+            Str::make('step')->readOnly(),
 
             // Contact Information
             Str::make('contactEmail', 'contact_email'),
@@ -57,13 +59,13 @@ class CheckoutSessionSchema extends Schema
             Str::make('paymentMethod', 'payment_method'),
             Str::make('paymentIntentId', 'payment_intent_id')->readOnly(),
 
-            // Amounts
-            Number::make('subtotalAmount', 'subtotal_amount'),
-            Number::make('shippingAmount', 'shipping_amount'),
-            Number::make('taxAmount', 'tax_amount'),
-            Number::make('discountAmount', 'discount_amount'),
-            Number::make('totalAmount', 'total_amount'),
-            Str::make('currency'),
+            // Amounts (server-calculated, readOnly)
+            Number::make('subtotalAmount', 'subtotal_amount')->readOnly(),
+            Number::make('shippingAmount', 'shipping_amount')->readOnly(),
+            Number::make('taxAmount', 'tax_amount')->readOnly(),
+            Number::make('discountAmount', 'discount_amount')->readOnly(),
+            Number::make('totalAmount', 'total_amount')->readOnly(),
+            Str::make('currency')->readOnly(),
 
             // Metadata
             Str::make('notes'),
@@ -114,6 +116,25 @@ class CheckoutSessionSchema extends Schema
             'inventoryReservations',
             'paymentTransactions',
         ];
+    }
+
+    /**
+     * Scope index queries to the authenticated user's sessions.
+     * Admins see all; regular users see only their own.
+     */
+    public function indexQuery(?Request $request, Builder $query): Builder
+    {
+        if (!$request || !$request->user('sanctum')) {
+            return $query->where('id', 0); // no results for guests
+        }
+
+        $user = $request->user('sanctum');
+
+        if ($user->hasAnyRole(['god', 'admin', 'administrator', 'tech'])) {
+            return $query;
+        }
+
+        return $query->where('user_id', $user->id);
     }
 
     /**

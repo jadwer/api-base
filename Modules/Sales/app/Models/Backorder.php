@@ -41,7 +41,12 @@ class Backorder extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'sales_order_id', 'sales_order_item_id', 'product_id', 'warehouse_id',
+        'backorder_number', 'original_quantity', 'backorder_quantity', 'fulfilled_quantity',
+        'status', 'priority', 'expected_date', 'promised_date',
+        'notes', 'customer_notes', 'metadata',
+    ];
 
     protected $casts = [
         'id' => 'integer',

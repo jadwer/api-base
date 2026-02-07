@@ -27,6 +27,11 @@ class PaymentTransaction extends Model
             ->dontSubmitEmptyLogs();
     }
 
+    protected $hidden = [
+        'client_secret',
+        'gateway_response',
+    ];
+
     protected $fillable = [
         'checkout_session_id',
         'sales_order_id',

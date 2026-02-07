@@ -32,7 +32,11 @@ class QuoteItem extends Model
 {
     use HasFactory, LogsActivity;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'quote_id', 'product_id', 'quantity', 'unit_price', 'quoted_price',
+        'discount_percentage', 'discount_amount', 'tax_rate', 'tax_amount', 'total',
+        'product_name', 'product_sku', 'notes', 'metadata',
+    ];
 
     protected $casts = [
         'id' => 'integer',

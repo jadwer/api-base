@@ -31,7 +31,11 @@ class RemissionItem extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'remission_id', 'sales_order_item_id', 'product_id',
+        'quantity', 'product_name', 'product_sku', 'unit',
+        'notes', 'batch_number', 'expiry_date', 'metadata',
+    ];
 
     protected $casts = [
         'id' => 'integer',

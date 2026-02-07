@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class CFDIInvoiceController
@@ -60,7 +61,7 @@ class CFDIInvoiceController
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error al generar XML CFDI',
-                'error' => $e->getMessage(),
+                'error' => $this->safeError($e, 'generateXml'),
             ], 500);
         }
     }
@@ -91,7 +92,7 @@ class CFDIInvoiceController
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error al generar PDF CFDI',
-                'error' => $e->getMessage(),
+                'error' => $this->safeError($e, 'generatePdf'),
             ], 500);
         }
     }
@@ -113,7 +114,8 @@ class CFDIInvoiceController
         try {
             return $pdfGenerator->download($cfdiInvoice);
         } catch (\Exception $e) {
-            abort(500, 'Error al descargar PDF CFDI: ' . $e->getMessage());
+            Log::error('Error al descargar PDF CFDI', ['error' => $e->getMessage()]);
+            abort(500, 'Error al descargar PDF CFDI');
         }
     }
 
@@ -134,7 +136,8 @@ class CFDIInvoiceController
         try {
             return $pdfGenerator->preview($cfdiInvoice);
         } catch (\Exception $e) {
-            abort(500, 'Error al previsualizar PDF CFDI: ' . $e->getMessage());
+            Log::error('Error al previsualizar PDF CFDI', ['error' => $e->getMessage()]);
+            abort(500, 'Error al previsualizar PDF CFDI');
         }
     }
 
@@ -224,7 +227,7 @@ class CFDIInvoiceController
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error inesperado al timbrar CFDI',
-                'error' => $e->getMessage(),
+                'error' => $this->safeError($e, 'stamp'),
             ], 500);
         }
     }
@@ -298,7 +301,7 @@ class CFDIInvoiceController
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error inesperado al cancelar CFDI',
-                'error' => $e->getMessage(),
+                'error' => $this->safeError($e, 'cancel'),
             ], 500);
         }
     }
@@ -334,7 +337,7 @@ class CFDIInvoiceController
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error inesperado',
-                'error' => $e->getMessage(),
+                'error' => $this->safeError($e, 'validateSAT'),
             ], 500);
         }
     }
@@ -370,7 +373,7 @@ class CFDIInvoiceController
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error inesperado',
-                'error' => $e->getMessage(),
+                'error' => $this->safeError($e, 'cancellationStatus'),
             ], 500);
         }
     }
@@ -467,7 +470,7 @@ class CFDIInvoiceController
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error al enviar CFDI por correo',
-                'error' => $e->getMessage(),
+                'error' => $this->safeError($e, 'sendEmail'),
             ], 500);
         }
     }
@@ -579,7 +582,7 @@ class CFDIInvoiceController
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error al generar prefactura',
-                'error' => $e->getMessage(),
+                'error' => $this->safeError($e, 'prefactura'),
             ], 500);
         }
     }
@@ -602,7 +605,8 @@ class CFDIInvoiceController
         try {
             return $generator->download($cfdiInvoice);
         } catch (\Exception $e) {
-            abort(500, 'Error al descargar prefactura: ' . $e->getMessage());
+            Log::error('Error al descargar prefactura', ['error' => $e->getMessage()]);
+            abort(500, 'Error al descargar prefactura');
         }
     }
 
@@ -624,7 +628,8 @@ class CFDIInvoiceController
         try {
             return $generator->preview($cfdiInvoice);
         } catch (\Exception $e) {
-            abort(500, 'Error al previsualizar prefactura: ' . $e->getMessage());
+            Log::error('Error al previsualizar prefactura', ['error' => $e->getMessage()]);
+            abort(500, 'Error al previsualizar prefactura');
         }
     }
 
@@ -668,7 +673,22 @@ class CFDIInvoiceController
 
             return $generator->streamFromOrder($salesOrder, $cfdiData);
         } catch (\Exception $e) {
-            abort(500, 'Error al generar prefactura desde orden: ' . $e->getMessage());
+            Log::error('Error al generar prefactura desde orden', ['error' => $e->getMessage()]);
+            abort(500, 'Error al generar prefactura desde orden');
         }
+    }
+
+    /**
+     * Sanitize exception message for API response.
+     * Logs the full error for debugging but returns generic message to client.
+     */
+    private function safeError(\Exception $e, string $context): string
+    {
+        Log::error("CFDI {$context}: {$e->getMessage()}", [
+            'exception' => get_class($e),
+            'trace' => $e->getTraceAsString(),
+        ]);
+
+        return 'Error interno del servidor';
     }
 }

@@ -50,7 +50,12 @@ class SalesOrder extends Model
             ->dontSubmitEmptyLogs();
     }
 
-    protected $guarded = [];
+    protected $fillable = [
+        'contact_id', 'assigned_to', 'order_number', 'status', 'order_date',
+        'approved_at', 'delivered_at', 'subtotal', 'tax_amount', 'total_amount',
+        'discount_total', 'notes', 'metadata', 'shipping_address', 'billing_address',
+        'ar_invoice_id', 'invoicing_status', 'financial_status', 'invoicing_notes',
+    ];
 
     protected $casts = [
         'id' => 'integer',
@@ -87,6 +92,16 @@ class SalesOrder extends Model
     public function scopeByContact($query, int $contactId)
     {
         return $query->where('contact_id', $contactId);
+    }
+
+    /**
+     * Filter orders by contact email (for customer portal)
+     */
+    public function scopeForContactEmail($query, string $email)
+    {
+        return $query->whereHas('contact', function ($q) use ($email) {
+            $q->where('email', $email);
+        });
     }
 
     // Relaciones

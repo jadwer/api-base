@@ -39,7 +39,13 @@ class Remission extends Model
 {
     use HasFactory, LogsActivity;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'sales_order_id', 'shipment_id', 'warehouse_id',
+        'remission_number', 'status', 'remission_date', 'delivery_date',
+        'delivered_by', 'received_by', 'delivery_notes',
+        'shipping_address', 'pdf_path', 'pdf_generated_at',
+        'internal_notes', 'metadata', 'delivered_at', 'printed_at',
+    ];
 
     protected $casts = [
         'id' => 'integer',

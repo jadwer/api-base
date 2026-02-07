@@ -130,7 +130,6 @@ class ProductViewController extends Controller
                 'sku' => $product->sku,
                 'description' => $product->description,
                 'price' => $product->price,
-                'cost' => $product->cost,
                 'imgPath' => $product->img_path,
                 'imageUrl' => $product->img_url ?? null,
                 'isActive' => $product->is_active,

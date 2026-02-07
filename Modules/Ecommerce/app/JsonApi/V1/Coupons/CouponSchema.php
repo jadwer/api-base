@@ -34,7 +34,7 @@ class CouponSchema extends Schema
             Number::make('minAmount', 'min_amount'),
             Number::make('maxAmount', 'max_amount'),
             Number::make('maxUses', 'max_uses'),
-            Number::make('usedCount', 'used_count'),
+            Number::make('usedCount', 'used_count')->readOnly(),
             DateTime::make('startsAt', 'starts_at'),
             DateTime::make('expiresAt', 'expires_at'),
             Boolean::make('isActive', 'is_active')->sortable(),

@@ -10,12 +10,9 @@ class Unit extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that aren't mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = [];
+    protected $fillable = [
+        'name', 'abbreviation', 'sat_code', 'description', 'is_active',
+    ];
 
     /**
      * The attributes that should be cast to native types.

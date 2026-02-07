@@ -30,7 +30,11 @@ class SalesOrderItem extends Model
 {
     use HasFactory, LogsActivity;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'sales_order_id', 'product_id', 'quantity', 'shipped_quantity',
+        'unit_price', 'discount', 'total', 'metadata', 'fulfillment_status',
+        'ar_invoice_line_id', 'invoiced_quantity', 'invoiced_amount',
+    ];
 
     protected $casts = [
         'id' => 'integer',

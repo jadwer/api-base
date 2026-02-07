@@ -138,6 +138,10 @@ class FolioSequenceController extends Controller
      */
     public function previewNext(string $documentType): JsonResponse
     {
+        if (Gate::denies('sales.folio-sequences.show')) {
+            abort(403, 'No tiene permisos para previsualizar folios');
+        }
+
         $sequence = FolioSequence::where('document_type', $documentType)
             ->where('is_active', true)
             ->first();

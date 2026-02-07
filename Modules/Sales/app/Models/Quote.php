@@ -45,7 +45,14 @@ class Quote extends Model
 {
     use HasFactory, LogsActivity;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'contact_id', 'shopping_cart_id', 'sales_order_id', 'purchase_order_id',
+        'quote_number', 'status', 'quote_date', 'valid_until', 'estimated_eta',
+        'subtotal_amount', 'discount_amount', 'tax_amount', 'total_amount', 'currency',
+        'notes', 'internal_notes', 'terms_and_conditions',
+        'shipping_address', 'billing_address', 'metadata',
+        'sent_at', 'accepted_at', 'rejected_at', 'converted_at',
+    ];
 
     protected $casts = [
         'id' => 'integer',
@@ -118,6 +125,16 @@ class Quote extends Model
     public function scopeByContact($query, int $contactId)
     {
         return $query->where('contact_id', $contactId);
+    }
+
+    /**
+     * Filter quotes by contact email (for customer portal)
+     */
+    public function scopeForContactEmail($query, string $email)
+    {
+        return $query->whereHas('contact', function ($q) use ($email) {
+            $q->where('email', $email);
+        });
     }
 
     public function scopeExpiringSoon($query, int $days = 7)

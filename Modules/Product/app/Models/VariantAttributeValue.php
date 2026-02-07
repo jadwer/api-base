@@ -27,7 +27,10 @@ class VariantAttributeValue extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'variant_attribute_id', 'value', 'code', 'display_value',
+        'color_hex', 'sort_order', 'is_active',
+    ];
 
     protected $casts = [
         'id' => 'integer',

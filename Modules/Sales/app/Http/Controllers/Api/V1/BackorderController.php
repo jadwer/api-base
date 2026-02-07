@@ -5,6 +5,7 @@ namespace Modules\Sales\Http\Controllers\Api\V1;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
 use LaravelJsonApi\Laravel\Http\Controllers\Actions;
 use Modules\Sales\Models\Backorder;
 use Modules\Sales\Models\SalesOrder;
@@ -39,6 +40,10 @@ class BackorderController extends Controller
      */
     public function fulfill(Request $request, Backorder $backorder): JsonResponse
     {
+        if (Gate::denies('sales.backorders.update')) {
+            abort(403, 'No tiene permisos para cumplir backorders');
+        }
+
         $request->validate([
             'quantity' => 'required|numeric|min:0.01',
             'create_shipment' => 'boolean',
@@ -85,6 +90,10 @@ class BackorderController extends Controller
      */
     public function cancel(Request $request, Backorder $backorder): JsonResponse
     {
+        if (Gate::denies('sales.backorders.update')) {
+            abort(403, 'No tiene permisos para cancelar backorders');
+        }
+
         $request->validate([
             'reason' => 'nullable|string|max:500',
         ]);
@@ -124,6 +133,10 @@ class BackorderController extends Controller
      */
     public function orderSummary(SalesOrder $order): JsonResponse
     {
+        if (Gate::denies('sales.backorders.index')) {
+            abort(403, 'No tiene permisos para ver resumen de backorders');
+        }
+
         $summary = $this->backorderService->getOrderBackorderSummary($order);
 
         return response()->json([
@@ -141,6 +154,10 @@ class BackorderController extends Controller
      */
     public function fulfillForProduct(Request $request): JsonResponse
     {
+        if (Gate::denies('sales.backorders.update')) {
+            abort(403, 'No tiene permisos para cumplir backorders');
+        }
+
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'warehouse_id' => 'nullable|exists:warehouses,id',
@@ -186,6 +203,10 @@ class BackorderController extends Controller
      */
     public function pendingForProduct(int $productId): JsonResponse
     {
+        if (Gate::denies('sales.backorders.index')) {
+            abort(403, 'No tiene permisos para ver backorders pendientes');
+        }
+
         $pending = $this->backorderService->getPendingBackordersForProduct($productId);
 
         return response()->json([
