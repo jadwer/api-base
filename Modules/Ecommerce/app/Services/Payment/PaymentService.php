@@ -266,8 +266,12 @@ class PaymentService
     {
         $gateway = $this->getGateway($gatewayName);
 
-        // Verify signature if provided
-        if ($signature && !$gateway->verifyWebhookSignature($payload, $signature)) {
+        // Verify webhook signature - always required
+        if (empty($signature)) {
+            throw new \Exception('Missing webhook signature');
+        }
+
+        if (!$gateway->verifyWebhookSignature($payload, $signature)) {
             throw new \Exception('Invalid webhook signature');
         }
 

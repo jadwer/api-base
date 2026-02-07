@@ -26,7 +26,7 @@ class StripeWebhookController extends Controller
     public function handleWebhook(Request $request): JsonResponse
     {
         try {
-            $payload = $request->all();
+            $rawPayload = $request->getContent();
             $signature = $request->header('Stripe-Signature');
 
             if (!$signature) {
@@ -35,7 +35,7 @@ class StripeWebhookController extends Controller
                 ], 400);
             }
 
-            $this->stripeService->handleWebhook($payload, $signature);
+            $this->stripeService->handleWebhookRaw($rawPayload, $signature);
 
             return response()->json([
                 'message' => 'Webhook processed successfully',

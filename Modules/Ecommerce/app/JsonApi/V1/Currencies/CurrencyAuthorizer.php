@@ -12,7 +12,7 @@ class CurrencyAuthorizer implements Authorizer
      * Authorize index (list all currencies)
      * Public endpoint - anyone can view currencies
      */
-    public function index(Request $request): bool|Response
+    public function index(Request $request, string $modelClass): bool|Response
     {
         return true;
     }
@@ -21,7 +21,7 @@ class CurrencyAuthorizer implements Authorizer
      * Authorize store (create currency)
      * Only admins can create currencies
      */
-    public function store(Request $request): bool|Response
+    public function store(Request $request, string $modelClass): bool|Response
     {
         $user = $request->user();
 

@@ -337,19 +337,20 @@ class OrderStatusService
                     continue;
                 }
 
-                // Check if sufficient quantity available
-                if ($stock->quantity < $item->quantity) {
+                // Check if sufficient quantity available (quantity - reserved = available)
+                $availableQty = $stock->quantity - $stock->reserved_quantity;
+                if ($availableQty < $item->quantity) {
                     Log::error('Insufficient stock for reservation', [
                         'order_id' => $order->id,
                         'product_id' => $item->product_id,
                         'required' => $item->quantity,
-                        'available' => $stock->quantity,
+                        'available' => $availableQty,
                     ]);
                     throw new \Exception("Insufficient stock for product ID: {$item->product_id}");
                 }
 
-                // Reserve inventory
-                $stock->decrement('quantity', $item->quantity);
+                // Reserve inventory: only increment reserved_quantity
+                // available_quantity is a generated column (quantity - reserved_quantity)
                 $stock->increment('reserved_quantity', $item->quantity);
 
                 Log::info('Inventory reserved for sales order', [
@@ -412,8 +413,8 @@ class OrderStatusService
                     continue;
                 }
 
-                // Release reservation
-                $stock->increment('quantity', $item->quantity);
+                // Release reservation: only decrement reserved_quantity
+                // available_quantity is a generated column (quantity - reserved_quantity)
                 $stock->decrement('reserved_quantity', $item->quantity);
 
                 Log::info('Inventory reservation released for sales order', [

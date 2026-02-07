@@ -349,6 +349,19 @@ class StripeService
     }
 
     /**
+     * Handle webhook event using raw body for correct HMAC verification.
+     *
+     * @param string $rawBody
+     * @param string $signature
+     * @return bool
+     * @throws Exception
+     */
+    public function handleWebhookRaw(string $rawBody, string $signature): bool
+    {
+        return $this->processWebhookEvent($rawBody, $signature);
+    }
+
+    /**
      * Handle webhook event.
      *
      * @param array $payload
@@ -358,6 +371,20 @@ class StripeService
      */
     public function handleWebhook(array $payload, string $signature): bool
     {
+        // Re-encoding loses original formatting; prefer handleWebhookRaw
+        return $this->processWebhookEvent(json_encode($payload), $signature);
+    }
+
+    /**
+     * Process webhook event (shared logic).
+     *
+     * @param string $body
+     * @param string $signature
+     * @return bool
+     * @throws Exception
+     */
+    private function processWebhookEvent(string $body, string $signature): bool
+    {
         try {
             $webhookSecret = config('services.stripe.webhook_secret');
 
@@ -365,9 +392,9 @@ class StripeService
                 throw new Exception('Stripe webhook secret not configured');
             }
 
-            // Verify webhook signature
+            // Verify webhook signature using raw body
             $event = \Stripe\Webhook::constructEvent(
-                json_encode($payload),
+                $body,
                 $signature,
                 $webhookSecret
             );

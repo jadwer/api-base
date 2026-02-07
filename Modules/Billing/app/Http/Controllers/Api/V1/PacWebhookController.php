@@ -48,12 +48,15 @@ class PacWebhookController extends Controller
 
             // Find invoice by folio or UUID
             $invoice = null;
-            if (!empty($data['folio'])) {
+            if (!empty($data['folio']) && str_contains($data['folio'], '-')) {
                 // Parse folio (format: SERIE-FOLIO, e.g., F-000123)
-                [$series, $folio] = explode('-', $data['folio']);
-                $invoice = CFDIInvoice::where('series', $series)
-                    ->where('folio', (int)$folio)
-                    ->first();
+                $parts = explode('-', $data['folio'], 2);
+                if (count($parts) === 2) {
+                    [$series, $folio] = $parts;
+                    $invoice = CFDIInvoice::where('series', $series)
+                        ->where('folio', (int)$folio)
+                        ->first();
+                }
             }
 
             if (!$invoice && !empty($data['uuid'])) {
@@ -202,9 +205,10 @@ class PacWebhookController extends Controller
     {
         $secret = config('billing.sw_pac.webhook_secret');
 
-        // If no secret is configured, skip validation
+        // If no secret is configured, reject all webhooks
         if (empty($secret)) {
-            return true;
+            Log::warning('PAC webhook rejected: no webhook_secret configured');
+            return false;
         }
 
         $signature = $request->header('X-SW-Signature');

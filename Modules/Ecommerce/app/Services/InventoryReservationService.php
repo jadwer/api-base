@@ -42,7 +42,7 @@ class InventoryReservationService
                 } else {
                     // Fallback to Stock if no batches available
                     $stock = Stock::where('product_id', $item->product_id)
-                        ->where('quantity_on_hand', '>=', $item->quantity)
+                        ->whereRaw('(quantity - reserved_quantity) >= ?', [$item->quantity])
                         ->lockForUpdate() // Pessimistic locking to prevent race conditions
                         ->first();
 
@@ -62,9 +62,9 @@ class InventoryReservationService
                         'notes' => "Reserved for checkout session #{$session->id}",
                     ]);
 
-                    // Update stock (reduce available)
-                    $stock->decrement('quantity_on_hand', $item->quantity);
-                    $stock->increment('quantity_reserved', $item->quantity);
+                    // Update stock: only increment reserved_quantity
+                    // available_quantity is a generated column (quantity - reserved_quantity)
+                    $stock->increment('reserved_quantity', $item->quantity);
 
                     $reservations[] = $reservation;
                 }
@@ -91,10 +91,20 @@ class InventoryReservationService
         }
 
         DB::transaction(function () use ($reservation, $reason) {
-            // Update stock (restore available quantity)
-            $stock = $reservation->stock;
-            $stock->increment('quantity_on_hand', $reservation->quantity_reserved);
-            $stock->decrement('quantity_reserved', $reservation->quantity_reserved);
+            // Update stock: only decrement reserved_quantity to restore availability
+            // available_quantity is a generated column (quantity - reserved_quantity)
+            if ($reservation->stock_id && $reservation->stock) {
+                $reservation->stock->decrement('reserved_quantity', $reservation->quantity_reserved);
+            } elseif ($reservation->notes && str_contains($reservation->notes, 'batch')) {
+                // Handle batch-based reservation release
+                $batchInfo = $this->extractBatchInfo($reservation);
+                if ($batchInfo) {
+                    $batch = ProductBatch::find($batchInfo['batch_id']);
+                    if ($batch) {
+                        $batch->decrement('reserved_quantity', $reservation->quantity_reserved);
+                    }
+                }
+            }
 
             // Mark reservation as released
             $reservation->release($reason);
@@ -133,13 +143,22 @@ class InventoryReservationService
         }
 
         DB::transaction(function () use ($reservation) {
-            $stock = $reservation->stock;
-
-            // Update stock (remove from reserved)
-            $stock->decrement('quantity_reserved', $reservation->quantity_reserved);
-
-            // Note: The quantity_on_hand was already decremented when reservation was created
-            // So we don't need to decrement it again here
+            if ($reservation->stock_id && $reservation->stock) {
+                // Stock-based reservation: decrement both quantity and reserved_quantity
+                // On reserve we only incremented reserved_quantity, now on fulfill
+                // we decrement quantity (actual removal) and reserved_quantity (release hold)
+                $reservation->stock->decrement('quantity', $reservation->quantity_reserved);
+                $reservation->stock->decrement('reserved_quantity', $reservation->quantity_reserved);
+            } elseif ($reservation->notes && str_contains($reservation->notes, 'batch')) {
+                // Batch-based reservation: finalize the batch consumption
+                $batchInfo = $this->extractBatchInfo($reservation);
+                if ($batchInfo) {
+                    $batch = ProductBatch::find($batchInfo['batch_id']);
+                    if ($batch) {
+                        $batch->decrement('reserved_quantity', $reservation->quantity_reserved);
+                    }
+                }
+            }
 
             // Mark reservation as fulfilled
             $reservation->fulfill();
@@ -184,7 +203,7 @@ class InventoryReservationService
     public function hasAvailableStock(int $productId, float $quantity, ?int $warehouseId = null): bool
     {
         $query = Stock::where('product_id', $productId)
-            ->where('quantity_on_hand', '>=', $quantity);
+            ->whereRaw('(quantity - reserved_quantity) >= ?', [$quantity]);
 
         if ($warehouseId) {
             $query->where('warehouse_id', $warehouseId);
@@ -208,7 +227,7 @@ class InventoryReservationService
             $query->where('warehouse_id', $warehouseId);
         }
 
-        return $query->sum('quantity_on_hand');
+        return $query->sum('available_quantity');
     }
 
     /**
@@ -280,6 +299,29 @@ class InventoryReservationService
     }
 
     /**
+     * Extract batch info from reservation notes
+     *
+     * @param InventoryReservation $reservation
+     * @return array|null
+     */
+    private function extractBatchInfo(InventoryReservation $reservation): ?array
+    {
+        if (!$reservation->notes) {
+            return null;
+        }
+
+        // Notes contain JSON batch info embedded in the text
+        if (preg_match('/Batch info: ({.*})/', $reservation->notes, $matches)) {
+            $info = json_decode($matches[1], true);
+            if ($info && isset($info['batch_id'])) {
+                return $info;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Reserve from batch using FEFO strategy
      *
      * @param CheckoutSession $session
@@ -310,10 +352,9 @@ class InventoryReservationService
             'notes' => $notes,
         ]);
 
-        // Update batch quantities
-        $batch->decrement('current_quantity', $cartItem->quantity);
+        // Update batch: only increment reserved_quantity
+        // available_quantity is a generated column (current_quantity - reserved_quantity)
         $batch->increment('reserved_quantity', $cartItem->quantity);
-        // available_quantity is auto-calculated: current_quantity - reserved_quantity
 
         return $reservation;
     }

@@ -146,11 +146,25 @@ class SWPacService
         }
 
         try {
+            // Load certificate data from company settings
+            $settings = \Modules\Billing\Models\CompanySetting::where('is_active', true)->first();
+
+            if (!$settings || empty($settings->certificate_file) || empty($settings->key_file)) {
+                throw new PacException('No se encontraron certificados configurados para la cancelacion CFDI');
+            }
+
+            $cerPath = storage_path('app/' . $settings->certificate_file);
+            $keyPath = storage_path('app/' . $settings->key_file);
+
+            if (!file_exists($cerPath) || !file_exists($keyPath)) {
+                throw new PacException('Los archivos de certificado no existen en el servidor');
+            }
+
             $payload = [
                 'rfc' => $rfcEmisor,
-                'b64Cer' => '', // Certificate will be added from company settings
-                'b64Key' => '', // Key will be added from company settings
-                'password' => '', // Certificate password from company settings
+                'b64Cer' => base64_encode(file_get_contents($cerPath)),
+                'b64Key' => base64_encode(file_get_contents($keyPath)),
+                'password' => $settings->key_password ?? '',
                 'uuids' => [
                     [
                         'uuid' => $uuid,

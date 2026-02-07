@@ -182,7 +182,7 @@ class CheckoutService
         foreach ($cart->cartItems as $item) {
             // Get available stock
             $availableStock = $item->product->stocks()
-                ->where('quantity_on_hand', '>=', $item->quantity)
+                ->whereRaw('(quantity - reserved_quantity) >= ?', [$item->quantity])
                 ->first();
 
             if (!$availableStock) {

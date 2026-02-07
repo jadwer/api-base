@@ -15,11 +15,21 @@ use LaravelJsonApi\Eloquent\Filters\WhereIn;
 use LaravelJsonApi\Eloquent\Filters\Scope;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Contracts\Paginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Modules\Product\Models\Product;
 
 class PublicProductSchema extends Schema
 {
     public static string $model = Product::class;
+
+    /**
+     * Only show active products in the public catalog.
+     */
+    public function indexQuery(?Request $request, Builder $query): Builder
+    {
+        return $query->where('is_active', true);
+    }
 
     public function fields(): array
     {
@@ -30,7 +40,6 @@ class PublicProductSchema extends Schema
             Str::make('description'),
             Str::make('fullDescription', 'full_description'),
             Number::make('price')->sortable(),
-            Number::make('cost')->sortable(),
             Number::make('compareAtPrice', 'compare_at_price'),
             Boolean::make('isOnSale', 'is_on_sale'),
             DateTime::make('saleStartsAt', 'sale_starts_at'),

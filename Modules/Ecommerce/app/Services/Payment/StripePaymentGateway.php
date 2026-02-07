@@ -182,9 +182,27 @@ class StripePaymentGateway implements PaymentGatewayInterface
      */
     public function verifyWebhookSignature(array $payload, string $signature): bool
     {
-        // Stripe signature verification is done inside handleWebhook
-        // This is a pre-check, actual verification happens in StripeService
-        return !empty($signature) && !empty(config('services.stripe.webhook_secret'));
+        $webhookSecret = config('services.stripe.webhook_secret');
+
+        if (empty($signature) || empty($webhookSecret)) {
+            return false;
+        }
+
+        try {
+            // Use Stripe SDK for real cryptographic verification
+            // Note: payload must be the raw request body string, not re-encoded JSON
+            \Stripe\Webhook::constructEvent(
+                json_encode($payload),
+                $signature,
+                $webhookSecret
+            );
+            return true;
+        } catch (\Exception $e) {
+            Log::warning('Stripe webhook signature verification failed', [
+                'error' => $e->getMessage(),
+            ]);
+            return false;
+        }
     }
 
     /**

@@ -33,8 +33,9 @@ class CFDIAutomationService
                 throw new \Exception('AR Invoice must have a valid contact');
             }
 
-            // Determine serie and folio
+            // Determine serie and folio atomically
             $serie = $settings->invoice_series ?? 'F';
+            $settings = CompanySetting::where('id', $settings->id)->lockForUpdate()->first();
             $folio = $settings->next_folio_invoice ?? 1;
 
             // Create CFDI Invoice
@@ -234,14 +235,14 @@ class CFDIAutomationService
      * @param mixed $amount
      * @return int
      */
+    /**
+     * Convert amount to cents.
+     *
+     * Amounts from AR Invoice are always in decimal (e.g., 100.00 = $100 MXN).
+     * CFDI stores amounts in cents (e.g., 10000 = $100 MXN).
+     */
     protected function toCents($amount): int
     {
-        if (is_int($amount)) {
-            // Already in cents
-            return $amount;
-        }
-
-        // Convert decimal to cents
         return (int) round((float) $amount * 100);
     }
 }

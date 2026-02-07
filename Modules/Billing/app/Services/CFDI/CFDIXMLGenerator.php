@@ -347,12 +347,12 @@ class CFDIXMLGenerator
      */
     protected function formatAmount($amount): string
     {
-        // Convert from cents to currency if needed
-        if ($amount >= 100) {
+        // Amounts are stored in cents (integers), convert to currency
+        if (is_int($amount) || (is_float($amount) && $amount == floor($amount) && $amount > 0)) {
             $amount = $amount / 100;
         }
 
-        return number_format($amount, 2, '.', '');
+        return number_format((float) $amount, 2, '.', '');
     }
 
     /**

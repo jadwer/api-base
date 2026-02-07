@@ -12,7 +12,7 @@ class CheckoutSessionAuthorizer implements Authorizer
     {
         $user = $request->user();
         return $user && ($user->can('ecommerce.checkout-sessions.index')
-            || $user->hasRole(['god', 'admin', 'tech']));
+            || $user->hasAnyRole(['god', 'admin', 'tech']));
     }
 
     public function store(Request $request, string $modelClass): bool|Response

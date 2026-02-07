@@ -43,6 +43,9 @@ class InventoryReservation extends Model
 
     public function getIsExpiredAttribute(): bool
     {
+        if (!$this->expires_at) {
+            return false;
+        }
         return $this->expires_at->isPast() && $this->status === 'active';
     }
 
