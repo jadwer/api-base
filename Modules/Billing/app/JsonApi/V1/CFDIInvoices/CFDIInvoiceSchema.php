@@ -10,6 +10,7 @@ use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
 use LaravelJsonApi\Eloquent\Fields\Relations\HasMany;
 use LaravelJsonApi\Eloquent\Fields\Str;
+use LaravelJsonApi\Eloquent\Filters\Scope;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
@@ -124,6 +125,24 @@ class CFDIInvoiceSchema extends Schema
             Where::make('companySettingId', 'company_setting_id'),
             Where::make('contactId', 'contact_id'),
             Where::make('arInvoiceId', 'ar_invoice_id'),
+            Scope::make('search', 'forSearch'),
+            Scope::make('dateFrom', 'dateFrom'),
+            Scope::make('dateTo', 'dateTo'),
+        ];
+    }
+
+    /**
+     * Get the resource include paths.
+     *
+     * @return iterable
+     */
+    public function includePaths(): iterable
+    {
+        return [
+            'companySetting',
+            'contact',
+            'arInvoice',
+            'items',
         ];
     }
 

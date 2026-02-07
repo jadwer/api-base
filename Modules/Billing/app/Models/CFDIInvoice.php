@@ -140,6 +140,27 @@ class CFDIInvoice extends Model
         return $query->where('contact_id', $contactId);
     }
 
+    public function scopeForSearch($query, string $search)
+    {
+        return $query->where(function ($q) use ($search) {
+            $q->where('series', 'like', "%{$search}%")
+              ->orWhere('folio', 'like', "%{$search}%")
+              ->orWhere('uuid', 'like', "%{$search}%")
+              ->orWhere('receptor_rfc', 'like', "%{$search}%")
+              ->orWhere('receptor_nombre', 'like', "%{$search}%");
+        });
+    }
+
+    public function scopeDateFrom($query, string $date)
+    {
+        return $query->where('fecha_emision', '>=', $date);
+    }
+
+    public function scopeDateTo($query, string $date)
+    {
+        return $query->where('fecha_emision', '<=', $date);
+    }
+
     /**
      * Accessors - Convert cents to decimal amounts
      */
