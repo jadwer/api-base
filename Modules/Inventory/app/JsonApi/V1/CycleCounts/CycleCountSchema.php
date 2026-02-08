@@ -10,6 +10,7 @@ use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\Boolean;
 use LaravelJsonApi\Eloquent\Fields\ArrayHash;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
+use LaravelJsonApi\Eloquent\Filters\Scope;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIn;
@@ -61,6 +62,10 @@ class CycleCountSchema extends Schema
             Where::make('warehouse_id'),
             Where::make('product_id'),
             Where::make('assigned_to'),
+            Scope::make('scheduled_after', 'scheduledAfter'),
+            Scope::make('scheduled_before', 'scheduledBefore'),
+            Scope::make('has_variance', 'hasVariance'),
+            Scope::make('overdue'),
         ];
     }
 

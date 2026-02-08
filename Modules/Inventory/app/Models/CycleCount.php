@@ -196,6 +196,28 @@ class CycleCount extends Model
             ->where('status', self::STATUS_SCHEDULED);
     }
 
+    public function scopeScheduledAfter($query, string $date)
+    {
+        return $query->where('scheduled_date', '>=', $date);
+    }
+
+    public function scopeScheduledBefore($query, string $date)
+    {
+        return $query->where('scheduled_date', '<=', $date);
+    }
+
+    public function scopeHasVariance($query, $value)
+    {
+        if (filter_var($value, FILTER_VALIDATE_BOOLEAN)) {
+            return $query->whereNotNull('variance_quantity')
+                ->where('variance_quantity', '!=', 0);
+        }
+        return $query->where(function ($q) {
+            $q->whereNull('variance_quantity')
+              ->orWhere('variance_quantity', '=', 0);
+        });
+    }
+
     // Relationships
     public function warehouse()
     {

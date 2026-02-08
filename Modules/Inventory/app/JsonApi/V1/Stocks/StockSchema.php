@@ -102,6 +102,10 @@ class StockSchema extends Schema
             Where::make('warehouse_id'),
             Where::make('warehouse_location_id'),
             Scope::make('search'),
+            Scope::make('low_stock', 'lowStock'),
+            Scope::make('out_of_stock', 'outOfStock'),
+            Scope::make('min_quantity', 'minQuantity'),
+            Scope::make('max_quantity', 'maxQuantity'),
         ];
     }
 

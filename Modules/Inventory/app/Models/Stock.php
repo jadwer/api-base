@@ -124,6 +124,33 @@ class Stock extends Model
         });
     }
 
+    public function scopeLowStock($query, $value)
+    {
+        if (filter_var($value, FILTER_VALIDATE_BOOLEAN)) {
+            return $query->whereColumn('quantity', '<=', 'minimum_stock')
+                ->where('quantity', '>', 0);
+        }
+        return $query;
+    }
+
+    public function scopeOutOfStock($query, $value)
+    {
+        if (filter_var($value, FILTER_VALIDATE_BOOLEAN)) {
+            return $query->where('quantity', '<=', 0);
+        }
+        return $query;
+    }
+
+    public function scopeMinQuantity($query, $value)
+    {
+        return $query->where('quantity', '>=', $value);
+    }
+
+    public function scopeMaxQuantity($query, $value)
+    {
+        return $query->where('quantity', '<=', $value);
+    }
+
     /**
      * Create a new factory instance for the model.
      */

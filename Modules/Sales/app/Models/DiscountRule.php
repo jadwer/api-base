@@ -253,6 +253,15 @@ class DiscountRule extends Model
         return $query->orderByDesc('priority');
     }
 
+    public function scopeForSearch($query, string $search)
+    {
+        return $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('code', 'like', "%{$search}%")
+              ->orWhere('description', 'like', "%{$search}%");
+        });
+    }
+
     // Factory
     protected static function newFactory()
     {

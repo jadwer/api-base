@@ -9,6 +9,7 @@ use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Fields\Boolean;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\ArrayHash;
+use LaravelJsonApi\Eloquent\Filters\Scope;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIn;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
@@ -72,6 +73,7 @@ class DiscountRuleSchema extends Schema
             Where::make('isActive', 'is_active'),
             Where::make('isCombinable', 'is_combinable'),
             Where::make('code'),
+            Scope::make('search', 'forSearch'),
         ];
     }
 
