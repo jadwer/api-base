@@ -77,6 +77,17 @@ class ActivitySchema extends Schema
         return PagePagination::make();
     }
 
+    public function includePaths(): iterable
+    {
+        return [
+            'user',
+            'lead',
+            'campaign',
+            'contact',
+            'opportunity',
+        ];
+    }
+
     public static function type(): string
     {
         return 'activities';

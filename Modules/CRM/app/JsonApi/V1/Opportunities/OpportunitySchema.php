@@ -100,6 +100,17 @@ class OpportunitySchema extends Schema
         return PagePagination::make();
     }
 
+    public function includePaths(): iterable
+    {
+        return [
+            'lead',
+            'user',
+            'pipelineStage',
+            'contact',
+            'activities',
+        ];
+    }
+
     public static function type(): string
     {
         return 'opportunities';

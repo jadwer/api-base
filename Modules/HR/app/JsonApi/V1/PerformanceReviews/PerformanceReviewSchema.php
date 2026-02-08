@@ -54,4 +54,15 @@ class PerformanceReviewSchema extends Schema
     {
         return PagePagination::make();
     }
+
+    /**
+     * Get the include paths supported by this resource.
+     */
+    public function includePaths(): iterable
+    {
+        return [
+            'employee',
+            'reviewer',
+        ];
+    }
 }

@@ -67,4 +67,12 @@ class CampaignSchema extends Schema
     {
         return PagePagination::make();
     }
+
+    public function includePaths(): iterable
+    {
+        return [
+            'user',
+            'leads',
+        ];
+    }
 }

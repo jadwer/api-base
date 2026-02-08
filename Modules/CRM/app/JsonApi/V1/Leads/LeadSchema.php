@@ -85,6 +85,17 @@ class LeadSchema extends Schema
         return PagePagination::make();
     }
 
+    public function includePaths(): iterable
+    {
+        return [
+            'contact',
+            'user',
+            'campaigns',
+            'activities',
+            'opportunity',
+        ];
+    }
+
     public static function type(): string
     {
         return 'leads';
