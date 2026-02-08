@@ -5,6 +5,7 @@ use LaravelJsonApi\Laravel\Routing\ResourceRegistrar;
 use Modules\Purchase\Http\Controllers\Api\V1\PurchaseOrderController;
 use Modules\Purchase\Http\Controllers\Api\V1\PurchaseOrderItemController;
 use Modules\Purchase\Http\Controllers\Api\V1\BudgetController;
+use Modules\Purchase\Http\Controllers\Api\V1\BudgetAllocationController;
 use Illuminate\Support\Facades\Route;
 
 JsonApiRoute::server('v1')
@@ -20,6 +21,7 @@ JsonApiRoute::server('v1')
                 $relationships->hasOne('contact');
                 $relationships->hasMany('allocations');
             });
+        $server->resource('budget-allocations', BudgetAllocationController::class);
     });
 
 // Custom endpoints for purchase reporting and approval

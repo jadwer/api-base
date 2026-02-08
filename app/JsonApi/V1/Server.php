@@ -124,6 +124,7 @@ class Server extends BaseServer
             PurchaseOrderSchema::class,
             PurchaseOrderItemSchema::class,
             \Modules\Purchase\JsonApi\V1\Budgets\BudgetSchema::class,
+            \Modules\Purchase\JsonApi\V1\BudgetAllocations\BudgetAllocationSchema::class,
 
             // Sales Module
             \Modules\Sales\JsonApi\V1\SalesOrders\SalesOrderSchema::class,
@@ -253,6 +254,7 @@ class Server extends BaseServer
             'purchase-orders' => \Modules\Purchase\JsonApi\V1\PurchaseOrders\PurchaseOrderAuthorizer::class,
             'purchase-order-items' => \Modules\Purchase\JsonApi\V1\PurchaseOrderItems\PurchaseOrderItemAuthorizer::class,
             'budgets' => \Modules\Purchase\JsonApi\V1\Budgets\BudgetAuthorizer::class,
+            'budget-allocations' => \Modules\Purchase\JsonApi\V1\BudgetAllocations\BudgetAllocationAuthorizer::class,
             'sales-orders' => \Modules\Sales\JsonApi\V1\SalesOrders\SalesOrderAuthorizer::class,
             'sales-order-items' => \Modules\Sales\JsonApi\V1\SalesOrderItems\SalesOrderItemAuthorizer::class,
             'shipments' => \Modules\Sales\JsonApi\V1\Shipments\ShipmentAuthorizer::class,
