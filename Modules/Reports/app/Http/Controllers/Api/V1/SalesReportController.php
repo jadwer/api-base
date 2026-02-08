@@ -19,6 +19,35 @@ class SalesReportController extends Controller
     }
 
     /**
+     * Authorize the request against a specific permission.
+     */
+    private function authorize(Request $request, string $permission): ?JsonResponse
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '401', 'title' => 'Unauthenticated']],
+            ], 401);
+        }
+
+        // God and admin roles have full access
+        if ($user->hasAnyRole(['god', 'admin'])) {
+            return null;
+        }
+
+        if (!$user->hasPermissionTo($permission)) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '403', 'title' => 'Forbidden']],
+            ], 403);
+        }
+
+        return null;
+    }
+
+    /**
      * Generate Sales by Customer Report
      *
      * GET /api/v1/reports/sales-by-customer?start_date=2025-01-01&end_date=2025-10-28
@@ -28,6 +57,10 @@ class SalesReportController extends Controller
      */
     public function byCustomer(Request $request): JsonResponse
     {
+        if ($error = $this->authorize($request, 'reports.sales-by-customer-reports.index')) {
+            return $error;
+        }
+
         $request->validate([
             'start_date' => 'sometimes|date',
             'end_date' => 'sometimes|date|after_or_equal:start_date',
@@ -58,6 +91,10 @@ class SalesReportController extends Controller
      */
     public function byProduct(Request $request): JsonResponse
     {
+        if ($error = $this->authorize($request, 'reports.sales-by-product-reports.index')) {
+            return $error;
+        }
+
         $request->validate([
             'start_date' => 'sometimes|date',
             'end_date' => 'sometimes|date|after_or_equal:start_date',

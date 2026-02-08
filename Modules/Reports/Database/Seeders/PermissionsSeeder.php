@@ -76,6 +76,20 @@ class PermissionsSeeder extends Seeder
 
         $this->bulkCreateAndAssignPermissions($purchaseReportPermissions, ['god', 'admin', 'tech']);
 
+        // Advanced sales report permissions (admin only - exposes cost/margin/profit data)
+        $advancedReportPermissions = [
+            'reports.sales-advanced.index',
+        ];
+
+        $this->bulkCreateAndAssignPermissions($advancedReportPermissions, ['god', 'admin']);
+
+        // Analytics permissions (admin only - exposes KPIs and financial metrics)
+        $analyticsPermissions = [
+            'reports.analytics.index',
+        ];
+
+        $this->bulkCreateAndAssignPermissions($analyticsPermissions, ['god', 'admin']);
+
         $this->command->info('✅ Reports permissions seeded successfully!');
     }
 }

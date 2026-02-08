@@ -27,14 +27,48 @@ class AnalyticsController extends Controller
     }
 
     /**
+     * Authorize the request against a specific permission.
+     */
+    private function authorize(Request $request, string $permission): ?JsonResponse
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '401', 'title' => 'Unauthenticated']],
+            ], 401);
+        }
+
+        // God and admin roles have full access
+        if ($user->hasAnyRole(['god', 'admin'])) {
+            return null;
+        }
+
+        if (!$user->hasPermissionTo($permission)) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '403', 'title' => 'Forbidden']],
+            ], 403);
+        }
+
+        return null;
+    }
+
+    /**
      * Get Key Performance Indicators
      *
      * GET /api/v1/analytics/kpis
      *
+     * @param Request $request
      * @return JsonResponse
      */
-    public function kpis(): JsonResponse
+    public function kpis(Request $request): JsonResponse
     {
+        if ($error = $this->authorize($request, 'reports.analytics.index')) {
+            return $error;
+        }
+
         $kpis = $this->kpiService->getKPIs();
 
         return response()->json([
@@ -47,10 +81,15 @@ class AnalyticsController extends Controller
      *
      * GET /api/v1/analytics/metrics
      *
+     * @param Request $request
      * @return JsonResponse
      */
-    public function metrics(): JsonResponse
+    public function metrics(Request $request): JsonResponse
     {
+        if ($error = $this->authorize($request, 'reports.analytics.index')) {
+            return $error;
+        }
+
         $metrics = $this->metricsService->getMetrics();
 
         return response()->json([
@@ -68,6 +107,10 @@ class AnalyticsController extends Controller
      */
     public function trends(Request $request): JsonResponse
     {
+        if ($error = $this->authorize($request, 'reports.analytics.index')) {
+            return $error;
+        }
+
         $request->validate([
             'metric' => 'required|in:revenue,sales,purchases,expenses,profit',
             'period' => 'sometimes|in:6months,12months,24months',
@@ -88,10 +131,15 @@ class AnalyticsController extends Controller
      *
      * GET /api/v1/analytics/dashboard
      *
+     * @param Request $request
      * @return JsonResponse
      */
-    public function dashboard(): JsonResponse
+    public function dashboard(Request $request): JsonResponse
     {
+        if ($error = $this->authorize($request, 'reports.analytics.index')) {
+            return $error;
+        }
+
         $kpis = $this->kpiService->getKPIs();
         $metrics = $this->metricsService->getMetrics();
         $revenueTrend = $this->trendAnalysisService->generateTrend('revenue', '12months');

@@ -4,29 +4,18 @@ namespace Modules\Accounting\JsonApi\V1\JournalLines;
 
 use Illuminate\Http\Request;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Support\Facades\Log;
 use LaravelJsonApi\Contracts\Auth\Authorizer;
 
 class JournalLineAuthorizer implements Authorizer
 {
     public function index(Request $request, string $modelClass): bool|Response
     {
-        Log::info('JournalLineAuthorizer@index called', [
-            'user_id' => $request->user()?->id,
-            'model_class' => $modelClass,
-        ]);
-        
         $user = $request->user();
         return $user?->can('journal-lines.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
     {
-        Log::info('JournalLineAuthorizer@store called', [
-            'user_id' => $request->user()?->id,
-            'model_class' => $modelClass,
-        ]);
-        
         $user = $request->user();
         return $user?->can('journal-lines.store') ?? false;
     }

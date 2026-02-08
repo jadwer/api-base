@@ -2,9 +2,10 @@
 
 namespace Modules\Reports\Http\Controllers\Api\V1;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Symfony\Component\HttpFoundation\Response;
 use Modules\Reports\Services\Export\ExportService;
 use Modules\Reports\Services\FinancialStatements\BalanceSheetService;
 use Modules\Reports\Services\FinancialStatements\IncomeStatementService;
@@ -26,6 +27,35 @@ class ExportController extends Controller
     }
 
     /**
+     * Authorize the request against a specific permission.
+     */
+    private function authorize(Request $request, string $permission): ?JsonResponse
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '401', 'title' => 'Unauthenticated']],
+            ], 401);
+        }
+
+        // God and admin roles have full access
+        if ($user->hasAnyRole(['god', 'admin'])) {
+            return null;
+        }
+
+        if (!$user->hasPermissionTo($permission)) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '403', 'title' => 'Forbidden']],
+            ], 403);
+        }
+
+        return null;
+    }
+
+    /**
      * Export Balance Sheet
      *
      * GET /api/v1/reports/balance-sheet/export?format=csv&as_of_date=2025-10-28
@@ -36,6 +66,10 @@ class ExportController extends Controller
      */
     public function balanceSheet(Request $request, BalanceSheetService $service): Response
     {
+        if ($error = $this->authorize($request, 'reports.balance-sheets.index')) {
+            return $error;
+        }
+
         $request->validate([
             'format' => 'required|in:csv,pdf,excel',
             'as_of_date' => 'sometimes|date',
@@ -61,6 +95,10 @@ class ExportController extends Controller
      */
     public function incomeStatement(Request $request, IncomeStatementService $service): Response
     {
+        if ($error = $this->authorize($request, 'reports.income-statements.index')) {
+            return $error;
+        }
+
         $request->validate([
             'format' => 'required|in:csv,pdf,excel',
             'start_date' => 'sometimes|date',
@@ -91,6 +129,10 @@ class ExportController extends Controller
      */
     public function cashFlow(Request $request, CashFlowService $service): Response
     {
+        if ($error = $this->authorize($request, 'reports.cash-flows.index')) {
+            return $error;
+        }
+
         $request->validate([
             'format' => 'required|in:csv,pdf,excel',
             'start_date' => 'sometimes|date',
@@ -121,6 +163,10 @@ class ExportController extends Controller
      */
     public function trialBalance(Request $request, TrialBalanceService $service): Response
     {
+        if ($error = $this->authorize($request, 'reports.trial-balances.index')) {
+            return $error;
+        }
+
         $request->validate([
             'format' => 'required|in:csv,pdf,excel',
             'as_of_date' => 'sometimes|date',
@@ -147,6 +193,11 @@ class ExportController extends Controller
      */
     public function aging(Request $request, AgingReportService $service, string $type): Response
     {
+        $permission = $type === 'ar' ? 'reports.ar-aging-reports.index' : 'reports.ap-aging-reports.index';
+        if ($error = $this->authorize($request, $permission)) {
+            return $error;
+        }
+
         $request->validate([
             'format' => 'required|in:csv,pdf,excel',
             'as_of_date' => 'sometimes|date',
@@ -174,6 +225,10 @@ class ExportController extends Controller
      */
     public function salesByCustomer(Request $request, SalesReportService $service): Response
     {
+        if ($error = $this->authorize($request, 'reports.sales-by-customer-reports.index')) {
+            return $error;
+        }
+
         $request->validate([
             'format' => 'required|in:csv,pdf,excel',
             'start_date' => 'sometimes|date',
@@ -204,6 +259,10 @@ class ExportController extends Controller
      */
     public function salesByEmployee(Request $request, SalesAdvancedReportService $service): Response
     {
+        if ($error = $this->authorize($request, 'reports.sales-advanced.index')) {
+            return $error;
+        }
+
         $request->validate([
             'format' => 'required|in:csv,pdf,excel',
             'start_date' => 'sometimes|date',
@@ -237,6 +296,10 @@ class ExportController extends Controller
      */
     public function salesByBatch(Request $request, SalesAdvancedReportService $service): Response
     {
+        if ($error = $this->authorize($request, 'reports.sales-advanced.index')) {
+            return $error;
+        }
+
         $request->validate([
             'format' => 'required|in:csv,pdf,excel',
             'start_date' => 'sometimes|date',
@@ -272,6 +335,10 @@ class ExportController extends Controller
      */
     public function salesProfitability(Request $request, SalesAdvancedReportService $service): Response
     {
+        if ($error = $this->authorize($request, 'reports.sales-advanced.index')) {
+            return $error;
+        }
+
         $request->validate([
             'format' => 'required|in:csv,pdf,excel',
             'start_date' => 'sometimes|date',

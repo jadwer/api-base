@@ -28,12 +28,45 @@ class SalesAdvancedReportController extends Controller
     }
 
     /**
+     * Authorize the request against a specific permission.
+     */
+    private function authorize(Request $request, string $permission): ?JsonResponse
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '401', 'title' => 'Unauthenticated']],
+            ], 401);
+        }
+
+        // God and admin roles have full access
+        if ($user->hasAnyRole(['god', 'admin'])) {
+            return null;
+        }
+
+        if (!$user->hasPermissionTo($permission)) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '403', 'title' => 'Forbidden']],
+            ], 403);
+        }
+
+        return null;
+    }
+
+    /**
      * Generate Sales by Employee/Salesperson Report
      *
      * GET /api/v1/reports/sales-by-employee?start_date=2026-01-01&end_date=2026-01-19&employee_id=1
      */
     public function byEmployee(Request $request): JsonResponse
     {
+        if ($error = $this->authorize($request, 'reports.sales-advanced.index')) {
+            return $error;
+        }
+
         $request->validate([
             'start_date' => 'sometimes|date',
             'end_date' => 'sometimes|date|after_or_equal:start_date',
@@ -62,6 +95,10 @@ class SalesAdvancedReportController extends Controller
      */
     public function byBatch(Request $request): JsonResponse
     {
+        if ($error = $this->authorize($request, 'reports.sales-advanced.index')) {
+            return $error;
+        }
+
         $request->validate([
             'start_date' => 'sometimes|date',
             'end_date' => 'sometimes|date|after_or_equal:start_date',
@@ -92,6 +129,10 @@ class SalesAdvancedReportController extends Controller
      */
     public function profitability(Request $request): JsonResponse
     {
+        if ($error = $this->authorize($request, 'reports.sales-advanced.index')) {
+            return $error;
+        }
+
         $request->validate([
             'start_date' => 'sometimes|date',
             'end_date' => 'sometimes|date|after_or_equal:start_date',
@@ -120,6 +161,10 @@ class SalesAdvancedReportController extends Controller
      */
     public function trend(Request $request): JsonResponse
     {
+        if ($error = $this->authorize($request, 'reports.sales-advanced.index')) {
+            return $error;
+        }
+
         $request->validate([
             'start_date' => 'sometimes|date',
             'end_date' => 'sometimes|date|after_or_equal:start_date',
