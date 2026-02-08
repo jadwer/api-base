@@ -14,7 +14,7 @@ class ProfilePasswordController extends Controller
 
         $validated = $request->validate([
             'current_password' => ['required'],
-            'password' => ['required', 'confirmed'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
         if (!Hash::check($validated['current_password'], $user->password)) {

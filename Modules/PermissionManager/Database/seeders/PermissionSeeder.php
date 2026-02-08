@@ -41,8 +41,8 @@ class PermissionSeeder extends Seeder
             // Warehouse Locations
             'warehouse-locations.index', 'warehouse-locations.show', 'warehouse-locations.store',
             'warehouse-locations.update', 'warehouse-locations.destroy',
-            // Stock
-            'stock.index', 'stock.show', 'stock.store', 'stock.update', 'stock.destroy',
+            // Stocks
+            'stocks.index', 'stocks.show', 'stocks.store', 'stocks.update', 'stocks.destroy',
             // Product Batches
             'product-batches.index', 'product-batches.show', 'product-batches.store',
             'product-batches.update', 'product-batches.destroy',

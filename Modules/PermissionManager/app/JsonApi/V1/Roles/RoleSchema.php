@@ -65,6 +65,11 @@ class RoleSchema extends Schema
         return PagePagination::make();
     }
 
+    public function includePaths(): iterable
+    {
+        return ['permissions'];
+    }
+
     public function with(): array
     {
         return ['permissions'];

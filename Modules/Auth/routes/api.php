@@ -5,13 +5,17 @@ use Modules\Auth\Http\Controllers\Api\V1\AuthController;
 use Modules\Auth\Http\Controllers\ProfilePasswordController;
 
 Route::prefix('auth')->group(function () {
-    Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
-    
+    Route::post('/login', [AuthController::class, 'login'])
+        ->middleware('login.throttle')
+        ->name('auth.login');
+
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
     });
 
-    Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
+    Route::post('/register', [AuthController::class, 'register'])
+        ->middleware('throttle:5,1')
+        ->name('auth.register');
 });
 
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {

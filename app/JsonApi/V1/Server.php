@@ -13,7 +13,6 @@ use Modules\Inventory\JsonApi\V1\ProductBatches\ProductBatchSchema;
 use Modules\Inventory\JsonApi\V1\InventoryMovements\InventoryMovementSchema;
 use Modules\Inventory\JsonApi\V1\CycleCounts\CycleCountSchema;
 use Modules\Inventory\JsonApi\V1\CycleCounts\CycleCountAuthorizer;
-use Modules\Purchase\JsonApi\V1\Suppliers\SupplierSchema;
 use Modules\Purchase\JsonApi\V1\PurchaseOrders\PurchaseOrderSchema;
 use Modules\Purchase\JsonApi\V1\PurchaseOrderItems\PurchaseOrderItemSchema;
 use Modules\User\JsonApi\V1\Users\UserSchema;
@@ -21,7 +20,6 @@ use Modules\PageBuilder\JsonApi\V1\Pages\PageSchema;
 use Modules\PermissionManager\JsonApi\V1\Permissions\PermissionSchema;
 use Modules\PermissionManager\JsonApi\V1\Roles\RoleSchema;
 use Modules\Product\JsonApi\V1\Products\ProductSchema;
-use Modules\Product\JsonApi\V1\PublicProducts\PublicProductSchema;
 use Modules\Product\JsonApi\V1\Units\UnitSchema;
 use Modules\Product\JsonApi\V1\Categories\CategorySchema;
 use Modules\Product\JsonApi\V1\Brands\BrandSchema;
@@ -36,7 +34,6 @@ use Modules\Ecommerce\JsonApi\V1\ProductComparisons\ProductComparisonSchema;
 use Modules\Ecommerce\JsonApi\V1\ProductComparisonItems\ProductComparisonItemSchema;
 use Modules\Ecommerce\JsonApi\V1\ProductQuestions\ProductQuestionSchema;
 use Modules\Ecommerce\JsonApi\V1\ProductAnswers\ProductAnswerSchema;
-use Modules\VerificationTest\JsonApi\V1\VerificationItems\VerificationItemSchema;
 use Modules\Contacts\JsonApi\V1\Contacts\ContactSchema;
 use Modules\Contacts\JsonApi\V1\ContactDocuments\ContactDocumentSchema;
 use Modules\Contacts\JsonApi\V1\ContactAddresses\ContactAddressSchema;
@@ -145,7 +142,6 @@ class Server extends BaseServer
             CartItemSchema::class,
             CouponSchema::class,
             \Modules\Ecommerce\JsonApi\V1\CheckoutSessions\CheckoutSessionSchema::class,
-            \Modules\Ecommerce\JsonApi\V1\PaymentTransactions\PaymentTransactionSchema::class,
             \Modules\Ecommerce\JsonApi\V1\InventoryReservations\InventoryReservationSchema::class,
             \Modules\Ecommerce\JsonApi\V1\ShippingMethods\ShippingMethodSchema::class,
             ProductReviewSchema::class, // Phase 4.3.1
@@ -237,6 +233,10 @@ class Server extends BaseServer
     {
         $authorizers = [
             'audits' => AuditAuthorizer::class,
+            'users' => \Modules\User\JsonApi\V1\Users\UserAuthorizer::class,
+            'pages' => \Modules\PageBuilder\JsonApi\V1\Pages\PageAuthorizer::class,
+            'roles' => \Modules\PermissionManager\JsonApi\V1\Roles\RoleAuthorizer::class,
+            'permissions' => \Modules\PermissionManager\JsonApi\V1\Permissions\PermissionAuthorizer::class,
             'products' => \Modules\Product\JsonApi\V1\Products\ProductAuthorizer::class,
             'units' => \Modules\Product\JsonApi\V1\Units\UnitAuthorizer::class,
             'categories' => \Modules\Product\JsonApi\V1\Categories\CategoryAuthorizer::class,
@@ -272,6 +272,13 @@ class Server extends BaseServer
             'wishlists' => \Modules\Ecommerce\JsonApi\V1\Wishlists\WishlistAuthorizer::class,
             'wishlist-items' => \Modules\Ecommerce\JsonApi\V1\WishlistItems\WishlistItemAuthorizer::class,
             'currencies' => \Modules\Ecommerce\JsonApi\V1\Currencies\CurrencyAuthorizer::class,
+            'checkout-sessions' => \Modules\Ecommerce\JsonApi\V1\CheckoutSessions\CheckoutSessionAuthorizer::class,
+            'inventory-reservations' => \Modules\Ecommerce\JsonApi\V1\InventoryReservations\InventoryReservationAuthorizer::class,
+            'shipping-methods' => \Modules\Ecommerce\JsonApi\V1\ShippingMethods\ShippingMethodAuthorizer::class,
+            'product-comparisons' => \Modules\Ecommerce\JsonApi\V1\ProductComparisons\ProductComparisonAuthorizer::class,
+            'product-comparison-items' => \Modules\Ecommerce\JsonApi\V1\ProductComparisonItems\ProductComparisonItemAuthorizer::class,
+            'product-questions' => \Modules\Ecommerce\JsonApi\V1\ProductQuestions\ProductQuestionAuthorizer::class,
+            'product-answers' => \Modules\Ecommerce\JsonApi\V1\ProductAnswers\ProductAnswerAuthorizer::class,
 
             // Contacts Module
             'contacts' => \Modules\Contacts\JsonApi\V1\Contacts\ContactAuthorizer::class,
