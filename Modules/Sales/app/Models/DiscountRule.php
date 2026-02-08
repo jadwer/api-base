@@ -198,19 +198,19 @@ class DiscountRule extends Model
 
     private function calculateBuyXGetYDiscount(float $amount, int $quantity): float
     {
-        if (!$this->buy_quantity || !$this->get_quantity) {
+        if (!$this->buy_quantity || !$this->get_quantity || $quantity <= 0) {
             return 0;
         }
 
         $setSize = $this->buy_quantity + $this->get_quantity;
         $completeSets = floor($quantity / $setSize);
 
-        if ($completeSets === 0) {
+        if ($completeSets <= 0) {
             return 0;
         }
 
         $unitPrice = $amount / $quantity;
-        return $completeSets * $this->get_quantity * $unitPrice;
+        return min($completeSets * $this->get_quantity * $unitPrice, $amount);
     }
 
     // Scopes

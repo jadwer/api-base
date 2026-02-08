@@ -15,7 +15,10 @@ use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Filters\WhereIn;
 use LaravelJsonApi\Eloquent\Filters\Scope;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Modules\Sales\Models\SalesOrder;
+use Modules\Contacts\Models\Contact;
 
 class SalesOrderSchema extends Schema
 {
@@ -116,6 +119,30 @@ class SalesOrderSchema extends Schema
     }
 
     /**
+     * Scope index queries: admins see all, customers see own orders only.
+     */
+    public function indexQuery(?Request $request, Builder $query): Builder
+    {
+        if (!$request || !$request->user('sanctum')) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        $user = $request->user('sanctum');
+
+        if ($user->hasAnyRole(['god', 'admin', 'administrator', 'tech'])) {
+            return $query;
+        }
+
+        // Customers only see their own orders (via contact email match)
+        $contact = Contact::where('email', $user->email)->first();
+        if ($contact) {
+            return $query->where('contact_id', $contact->id);
+        }
+
+        return $query->whereRaw('1 = 0');
+    }
+
+    /**
      * Get the resource paginator.
      */
     public function pagination(): ?PagePagination
@@ -129,15 +156,5 @@ class SalesOrderSchema extends Schema
     public static function type(): string
     {
         return 'sales-orders';
-    }
-
-    /**
-     * Get the resource relationships.
-     */
-    public function relationships(): array
-    {
-        return [
-            //
-        ];
     }
 }

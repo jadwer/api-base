@@ -15,7 +15,10 @@ use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Filters\WhereIn;
 use LaravelJsonApi\Eloquent\Filters\Scope;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Modules\Sales\Models\Quote;
+use Modules\Contacts\Models\Contact;
 
 class QuoteSchema extends Schema
 {
@@ -123,6 +126,30 @@ class QuoteSchema extends Schema
             'items.product',
             'items.product.stock',
         ];
+    }
+
+    /**
+     * Scope index queries: admins see all, customers see own quotes only.
+     */
+    public function indexQuery(?Request $request, Builder $query): Builder
+    {
+        if (!$request || !$request->user('sanctum')) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        $user = $request->user('sanctum');
+
+        if ($user->hasAnyRole(['god', 'admin', 'administrator', 'tech'])) {
+            return $query;
+        }
+
+        // Customers only see their own quotes (via contact email match)
+        $contact = Contact::where('email', $user->email)->first();
+        if ($contact) {
+            return $query->where('contact_id', $contact->id);
+        }
+
+        return $query->whereRaw('1 = 0');
     }
 
     /**
