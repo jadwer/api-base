@@ -226,7 +226,7 @@ class PaymentService
                 'metadata' => array_merge(
                     $transaction->metadata ?? [],
                     [
-                        'refund_amount' => $amount,
+                        'refund_amount' => ($transaction->metadata['refund_amount'] ?? 0) + $amount,
                         'refund_reason' => $reason,
                         'refunded_at' => now()->toIso8601String(),
                     ]

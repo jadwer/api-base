@@ -17,7 +17,7 @@ class PaymentTransactionAuthorizer implements Authorizer
     public function store(Request $request, string $modelClass): bool|Response
     {
         $user = $request->user();
-        return $user && $user->hasAnyRole(['god', 'admin', 'tech', 'customer']);
+        return $user && $user->hasAnyRole(['god', 'admin', 'tech']);
     }
 
     public function show(Request $request, object $model): bool|Response

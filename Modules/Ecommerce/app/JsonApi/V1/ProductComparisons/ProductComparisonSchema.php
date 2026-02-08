@@ -13,6 +13,8 @@ use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Modules\Ecommerce\Models\ProductComparison;
 
 class ProductComparisonSchema extends Schema
@@ -57,6 +59,27 @@ class ProductComparisonSchema extends Schema
             'items',
             'items.product',
         ];
+    }
+
+    /**
+     * Scope index queries: admins see all, users see own + public.
+     */
+    public function indexQuery(?Request $request, Builder $query): Builder
+    {
+        if (!$request || !$request->user('sanctum')) {
+            return $query->where('is_public', true);
+        }
+
+        $user = $request->user('sanctum');
+
+        if ($user->hasAnyRole(['god', 'admin', 'administrator', 'tech'])) {
+            return $query;
+        }
+
+        return $query->where(function ($q) use ($user) {
+            $q->where('user_id', $user->id)
+              ->orWhere('is_public', true);
+        });
     }
 
     /**

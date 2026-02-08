@@ -75,6 +75,10 @@ class Currency extends Model
      */
     public function convertTo(float $amount, Currency $toCurrency): float
     {
+        if ($this->exchange_rate == 0) {
+            throw new \DivisionByZeroError('Exchange rate cannot be zero for currency: ' . $this->code);
+        }
+
         // Convert to base currency first, then to target currency
         $baseAmount = $amount / $this->exchange_rate;
         return $baseAmount * $toCurrency->exchange_rate;
@@ -88,6 +92,10 @@ class Currency extends Model
      */
     public function toBaseCurrency(float $amount): float
     {
+        if ($this->exchange_rate == 0) {
+            throw new \DivisionByZeroError('Exchange rate cannot be zero for currency: ' . $this->code);
+        }
+
         return $amount / $this->exchange_rate;
     }
 

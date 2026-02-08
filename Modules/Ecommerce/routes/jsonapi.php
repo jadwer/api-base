@@ -62,7 +62,7 @@ JsonApiRoute::server('v1')
 
 // Phase 4.3.3 Advanced Ecommerce - Product Recommendations
 // Public routes for recommendations
-Route::prefix('v1')->group(function () {
+Route::prefix('v1')->middleware('throttle:60,1')->group(function () {
     Route::get('products/{id}/related', [ProductRecommendationController::class, 'related'])
         ->name('products.related');
     Route::get('products/{id}/frequently-bought-together', [ProductRecommendationController::class, 'frequentlyBoughtTogether'])

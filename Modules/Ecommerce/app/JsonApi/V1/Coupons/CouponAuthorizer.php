@@ -4,29 +4,18 @@ namespace Modules\Ecommerce\JsonApi\V1\Coupons;
 
 use Illuminate\Http\Request;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Support\Facades\Log;
 use LaravelJsonApi\Contracts\Auth\Authorizer;
 
 class CouponAuthorizer implements Authorizer
 {
     public function index(Request $request, string $modelClass): bool|Response
     {
-        Log::info('CouponAuthorizer@index called', [
-            'user_id' => $request->user()?->id,
-            'model_class' => $modelClass,
-        ]);
-        
         $user = $request->user();
         return $user?->can('ecommerce.coupons.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
     {
-        Log::info('CouponAuthorizer@store called', [
-            'user_id' => $request->user()?->id,
-            'model_class' => $modelClass,
-        ]);
-        
         $user = $request->user();
         return $user?->can('ecommerce.coupons.store') ?? false;
     }

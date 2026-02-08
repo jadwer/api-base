@@ -15,6 +15,8 @@ use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Modules\Ecommerce\Models\CartItem;
 
 class CartItemSchema extends Schema
@@ -63,6 +65,26 @@ class CartItemSchema extends Schema
             'shoppingCart',
             'product',
         ];
+    }
+
+    /**
+     * Scope index queries to the authenticated user's cart items.
+     */
+    public function indexQuery(?Request $request, Builder $query): Builder
+    {
+        if (!$request || !$request->user('sanctum')) {
+            return $query->where('id', 0);
+        }
+
+        $user = $request->user('sanctum');
+
+        if ($user->hasAnyRole(['god', 'admin', 'administrator', 'tech'])) {
+            return $query;
+        }
+
+        return $query->whereHas('shoppingCart', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        });
     }
 
     public function pagination(): ?Paginator
