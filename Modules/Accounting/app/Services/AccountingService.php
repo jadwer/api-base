@@ -62,7 +62,7 @@ class AccountingService
                 'date' => $entryDate,
                 'description' => $description,
                 'reference' => $reference,
-                'status' => 'draft',
+                'status' => JournalEntry::STATUS_DRAFT,
                 'total_debit' => 0,
                 'total_credit' => 0,
             ]);
@@ -99,7 +99,7 @@ class AccountingService
     {
         return DB::transaction(function () use ($entry) {
             // Idempotency check
-            if ($entry->status === 'posted') {
+            if ($entry->status === JournalEntry::STATUS_POSTED) {
                 return true;
             }
 
@@ -118,7 +118,7 @@ class AccountingService
 
             // Post with audit trail
             $entry->update([
-                'status' => 'posted',
+                'status' => JournalEntry::STATUS_POSTED,
                 'posted_at' => now(),
                 'posted_by_id' => auth()->id()
             ]);
@@ -212,7 +212,7 @@ class AccountingService
     {
         return DB::transaction(function () use ($entry, $reason) {
             // Validate original entry is posted
-            if ($entry->status !== 'posted') {
+            if ($entry->status !== JournalEntry::STATUS_POSTED) {
                 throw new Exception('Only posted entries can be reversed');
             }
 
@@ -222,7 +222,7 @@ class AccountingService
             // Create reversal entry
             $reversalEntry = $entry->replicate(['number', 'posted_at', 'posted_by_id']);
             $reversalEntry->description = "REVERSAL: {$entry->description}";
-            $reversalEntry->status = 'draft';
+            $reversalEntry->status = JournalEntry::STATUS_DRAFT;
             $reversalEntry->reversal_of_id = $entry->id;
             $reversalEntry->reversal_reason = $reason;
             $reversalEntry->save();
@@ -253,19 +253,21 @@ class AccountingService
      */
     public function approveJournalEntry(JournalEntry $entry): bool
     {
-        if ($entry->status !== 'draft') {
-            throw new Exception('Only draft entries can be approved');
-        }
+        return DB::transaction(function () use ($entry) {
+            if ($entry->status !== JournalEntry::STATUS_DRAFT) {
+                throw new Exception('Only draft entries can be approved');
+            }
 
-        // Validate balance before approval
-        $this->validateBalance($entry);
+            // Validate balance before approval
+            $this->validateBalance($entry);
 
-        $entry->update([
-            'status' => 'approved',
-            'approved_at' => now(),
-            'approved_by_id' => auth()->id()
-        ]);
+            $entry->update([
+                'status' => JournalEntry::STATUS_APPROVED,
+                'approved_at' => now(),
+                'approved_by_id' => auth()->id()
+            ]);
 
-        return true;
+            return true;
+        });
     }
 }

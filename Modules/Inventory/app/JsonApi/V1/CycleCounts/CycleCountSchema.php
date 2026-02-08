@@ -58,13 +58,13 @@ class CycleCountSchema extends Schema
         return [
             WhereIdIn::make($this),
             Where::make('status'),
-            Where::make('abc_class'),
-            Where::make('warehouse_id'),
-            Where::make('product_id'),
-            Where::make('assigned_to'),
-            Scope::make('scheduled_after', 'scheduledAfter'),
-            Scope::make('scheduled_before', 'scheduledBefore'),
-            Scope::make('has_variance', 'hasVariance'),
+            Where::make('abcClass', 'abc_class'),
+            Where::make('warehouseId', 'warehouse_id'),
+            Where::make('productId', 'product_id'),
+            Where::make('assignedTo', 'assigned_to'),
+            Scope::make('scheduledAfter'),
+            Scope::make('scheduledBefore'),
+            Scope::make('hasVariance'),
             Scope::make('overdue'),
         ];
     }

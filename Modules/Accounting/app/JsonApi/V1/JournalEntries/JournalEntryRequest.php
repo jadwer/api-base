@@ -22,7 +22,7 @@ class JournalEntryRequest extends ResourceRequest
             'reference' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'totalDebit' => [$isUpdate ? 'sometimes' : 'required', 'numeric'],
-            'totalCredit' => [$isUpdate ? 'sometimes' : 'required', 'numeric'],            'status' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'totalCredit' => [$isUpdate ? 'sometimes' : 'required', 'numeric'],            'status' => [$isUpdate ? 'sometimes' : 'required', 'string', Rule::in(JournalEntry::STATUSES)],
             'approved_at' => ['nullable', 'string'],
             'approved_by_id' => ['nullable', 'string'],
             'postedAt' => ['nullable', 'string'],
@@ -112,7 +112,7 @@ class JournalEntryRequest extends ResourceRequest
             'totalDebit.required' => 'El campo Total debit es obligatorio.',
             'totalCredit.required' => 'El campo Total credit es obligatorio.',            'status.required' => 'El campo Status es obligatorio.',
             'status.string' => 'El campo Status debe ser texto.',
-            'status.max' => 'El campo Status no puede tener más de 255 caracteres.',
+            'status.in' => 'El campo Status debe ser: draft, approved, posted o reversed.',
             'reversal_reason.string' => 'El campo Reversal reason debe ser texto.',
             'metadata.array' => 'El campo Metadata debe ser un arreglo.',
         ];

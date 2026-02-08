@@ -13,6 +13,21 @@ class JournalEntry extends Model
     use HasFactory, HasPermissions, LogsActivity;
 
     /**
+     * Status constants
+     */
+    const STATUS_DRAFT = 'draft';
+    const STATUS_APPROVED = 'approved';
+    const STATUS_POSTED = 'posted';
+    const STATUS_REVERSED = 'reversed';
+
+    const STATUSES = [
+        self::STATUS_DRAFT,
+        self::STATUS_APPROVED,
+        self::STATUS_POSTED,
+        self::STATUS_REVERSED,
+    ];
+
+    /**
      * Activity Log Configuration
      */
     public function getActivitylogOptions(): LogOptions
@@ -53,7 +68,7 @@ class JournalEntry extends Model
     // Scopes
     public function scopeActive($query)
     {
-        return $query->where('status', 'draft');
+        return $query->where('status', self::STATUS_DRAFT);
     }
 
     public function journal()

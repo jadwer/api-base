@@ -25,7 +25,6 @@ class AccountRequest extends ResourceRequest
             'isCashFlow' => [$isUpdate ? 'sometimes' : 'required', 'boolean'],
             'status' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'metadata' => ['nullable', 'array'],
-            'metadata' => ['nullable', 'array'],
         ];
     }
 
