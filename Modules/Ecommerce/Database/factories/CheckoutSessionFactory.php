@@ -183,13 +183,13 @@ class CheckoutSessionFactory extends Factory
     }
 
     /**
-     * Indicate that the checkout session is abandoned.
+     * Indicate that the checkout session is expired (abandoned).
      */
     public function abandoned(): static
     {
         return $this->state(function (array $attributes) {
             return [
-                'status' => 'abandoned',
+                'status' => 'expired',
                 'expires_at' => $this->faker->dateTimeBetween('-1 month', '-1 day'),
             ];
         });

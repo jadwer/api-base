@@ -282,15 +282,18 @@ class ShoppingCartController extends Controller
 
         $couponCode = $shoppingCart->coupon_code;
 
-        if ($couponCode) {
-            // Decrement usage count
-            Coupon::where('code', $couponCode)->decrement('used_count');
-        }
+        DB::transaction(function () use ($shoppingCart, $couponCode) {
+            if ($couponCode) {
+                Coupon::where('code', $couponCode)
+                    ->where('used_count', '>', 0)
+                    ->decrement('used_count');
+            }
 
-        $shoppingCart->update([
-            'coupon_code' => null,
-            'discount_amount' => 0,
-        ]);
+            $shoppingCart->update([
+                'coupon_code' => null,
+                'discount_amount' => 0,
+            ]);
+        });
 
         return response()->json([
             'data' => $this->transformCart($shoppingCart->refresh()),

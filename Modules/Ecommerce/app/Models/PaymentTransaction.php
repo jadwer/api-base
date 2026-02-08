@@ -18,21 +18,38 @@ class PaymentTransaction extends Model
         'sales_order_id',
         'ar_invoice_id',
         'transaction_id',
+        'payment_intent_id',
+        'client_secret',
         'gateway',
         'payment_method',
         'status',
         'amount',
         'currency',
+        'card_brand',
+        'card_last4',
         'gateway_response',
         'error_message',
         'processed_at',
+        'authorized_at',
+        'captured_at',
+        'failed_at',
+        'refunded_at',
         'metadata',
+    ];
+
+    protected $hidden = [
+        'client_secret',
+        'gateway_response',
     ];
 
     protected $casts = [
         'amount' => 'float',
         'gateway_response' => 'array',
         'processed_at' => 'datetime',
+        'authorized_at' => 'datetime',
+        'captured_at' => 'datetime',
+        'failed_at' => 'datetime',
+        'refunded_at' => 'datetime',
         'metadata' => 'array',
     ];
 

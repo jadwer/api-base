@@ -189,10 +189,12 @@ class StripePaymentGateway implements PaymentGatewayInterface
         }
 
         try {
-            // Use Stripe SDK for real cryptographic verification
-            // Note: payload must be the raw request body string, not re-encoded JSON
+            // Stripe signature is computed on the raw JSON body.
+            // Since the interface receives a decoded array, we must re-encode it.
+            // For production, prefer passing the raw body string directly.
+            $rawBody = json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             \Stripe\Webhook::constructEvent(
-                json_encode($payload),
+                $rawBody,
                 $signature,
                 $webhookSecret
             );

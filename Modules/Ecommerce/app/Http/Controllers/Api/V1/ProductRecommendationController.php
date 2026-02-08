@@ -49,7 +49,7 @@ class ProductRecommendationController extends Controller
     public function related(int $id, Request $request): JsonResponse
     {
         $product = Product::findOrFail($id);
-        $limit = $request->input('limit', 6);
+        $limit = min((int) $request->input('limit', 6), 50);
 
         $relatedProducts = $this->recommendationEngine->getRelatedProducts($product, $limit);
 
@@ -72,7 +72,7 @@ class ProductRecommendationController extends Controller
     public function frequentlyBoughtTogether(int $id, Request $request): JsonResponse
     {
         $product = Product::findOrFail($id);
-        $limit = $request->input('limit', 4);
+        $limit = min((int) $request->input('limit', 4), 50);
 
         $products = $this->recommendationEngine->getFrequentlyBoughtTogether($product, $limit);
 
@@ -93,7 +93,7 @@ class ProductRecommendationController extends Controller
      */
     public function trending(Request $request): JsonResponse
     {
-        $limit = $request->input('limit', 12);
+        $limit = min((int) $request->input('limit', 12), 50);
 
         $products = $this->recommendationEngine->getTrendingProducts($limit);
 
@@ -114,7 +114,7 @@ class ProductRecommendationController extends Controller
      */
     public function popular(Request $request): JsonResponse
     {
-        $limit = $request->input('limit', 12);
+        $limit = min((int) $request->input('limit', 12), 50);
 
         $products = $this->recommendationEngine->getPopularProducts($limit);
 
@@ -135,7 +135,7 @@ class ProductRecommendationController extends Controller
      */
     public function newArrivals(Request $request): JsonResponse
     {
-        $limit = $request->input('limit', 12);
+        $limit = min((int) $request->input('limit', 12), 50);
 
         $products = $this->recommendationEngine->getNewArrivals($limit);
 
@@ -157,7 +157,7 @@ class ProductRecommendationController extends Controller
     public function personalized(Request $request): JsonResponse
     {
         $user = $request->user();
-        $limit = $request->input('limit', 12);
+        $limit = min((int) $request->input('limit', 12), 50);
 
         $products = $this->recommendationEngine->getPersonalizedRecommendations($user, $limit);
 
