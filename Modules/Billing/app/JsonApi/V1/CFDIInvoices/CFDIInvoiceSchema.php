@@ -15,7 +15,10 @@ use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Modules\Billing\Models\CFDIInvoice;
+use Modules\Contacts\Models\Contact;
 
 class CFDIInvoiceSchema extends Schema
 {
@@ -144,6 +147,30 @@ class CFDIInvoiceSchema extends Schema
             'arInvoice',
             'items',
         ];
+    }
+
+    /**
+     * Scope index queries: admins see all, customers see own invoices only.
+     */
+    public function indexQuery(?Request $request, Builder $query): Builder
+    {
+        if (!$request || !$request->user('sanctum')) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        $user = $request->user('sanctum');
+
+        if ($user->hasAnyRole(['god', 'admin', 'administrator', 'tech'])) {
+            return $query;
+        }
+
+        // Customers only see their own invoices (via contact email match)
+        $contact = Contact::where('email', $user->email)->first();
+        if ($contact) {
+            return $query->where('contact_id', $contact->id);
+        }
+
+        return $query->whereRaw('1 = 0');
     }
 
     /**
