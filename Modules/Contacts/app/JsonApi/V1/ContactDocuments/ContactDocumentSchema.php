@@ -50,13 +50,13 @@ class ContactDocumentSchema extends Schema
         return [
             WhereIdIn::make($this),
             \LaravelJsonApi\Eloquent\Filters\Where::make('contactId', 'contact_id'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('document_type'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('file_path'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('original_filename'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('mime_type'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('file_size'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('uploaded_by'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('verified_by'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('documentType', 'document_type'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('filePath', 'file_path'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('originalFilename', 'original_filename'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('mimeType', 'mime_type'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('fileSize', 'file_size'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('uploadedBy', 'uploaded_by'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('verifiedBy', 'verified_by'),
         ];
     }
 

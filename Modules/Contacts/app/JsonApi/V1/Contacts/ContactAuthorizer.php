@@ -4,7 +4,6 @@ namespace Modules\Contacts\JsonApi\V1\Contacts;
 
 use Illuminate\Http\Request;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Support\Facades\Log;
 use LaravelJsonApi\Contracts\Auth\Authorizer;
 
 class ContactAuthorizer implements Authorizer
@@ -12,26 +11,11 @@ class ContactAuthorizer implements Authorizer
     public function index(Request $request, string $modelClass): bool|Response
     {
         $user = $request->user();
-        
-        Log::info('ContactAuthorizer@index called', [
-            'user_id' => $user?->id,
-            'user_email' => $user?->email,
-            'model_class' => $modelClass,
-            'has_permission' => $user?->can('contacts.index'),
-            'user_permissions' => $user?->getAllPermissions()->pluck('name')->toArray(),
-            'user_roles' => $user?->getRoleNames()->toArray(),
-        ]);
-        
         return $user?->can('contacts.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
     {
-        Log::info('ContactAuthorizer@store called', [
-            'user_id' => $request->user()?->id,
-            'model_class' => $modelClass,
-        ]);
-        
         $user = $request->user();
         return $user?->can('contacts.store') ?? false;
     }

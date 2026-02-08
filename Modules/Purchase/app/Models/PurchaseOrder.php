@@ -249,25 +249,11 @@ class PurchaseOrder extends Model
                 }
 
                 $item->update(['received_quantity' => $newReceived]);
-
-                \Log::info('Purchase order item received', [
-                    'purchase_order_id' => $this->id,
-                    'item_id' => $item->id,
-                    'product_id' => $item->product_id,
-                    'quantity_received' => $itemData['quantity'],
-                    'total_received' => $newReceived,
-                    'quantity_ordered' => $item->quantity,
-                ]);
             }
 
             // Check if fully received
             if ($this->isFullyReceived()) {
                 $this->update(['status' => 'received']);
-
-                \Log::info('Purchase order fully received', [
-                    'purchase_order_id' => $this->id,
-                    'order_date' => $this->order_date,
-                ]);
 
                 // Dispatch event if needed
                 // event(new PurchaseOrderReceived($this));

@@ -51,14 +51,14 @@ class ContactAddressSchema extends Schema
         return [
             WhereIdIn::make($this),
             \LaravelJsonApi\Eloquent\Filters\Where::make('contactId', 'contact_id'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('address_type'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('address_line_1'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('address_line_2'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('addressType', 'address_type'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('addressLine1', 'address_line_1'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('addressLine2', 'address_line_2'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('city'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('state'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('country'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('postal_code'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('is_default'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('postalCode', 'postal_code'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('isDefault', 'is_default'),
         ];
     }
 

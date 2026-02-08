@@ -10,6 +10,7 @@ use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Fields\ArrayHash;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsToMany;
+use LaravelJsonApi\Eloquent\Fields\Relations\HasMany;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
@@ -47,6 +48,10 @@ class CampaignSchema extends Schema
             BelongsToMany::make('leads')
                 ->type('leads')
                 ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
+
+            HasMany::make('activities')
+                ->type('activities')
+                ->serializeUsing(static fn ($relation) => $relation->withoutLinks()),
         ];
     }
 
@@ -73,6 +78,12 @@ class CampaignSchema extends Schema
         return [
             'user',
             'leads',
+            'activities',
         ];
+    }
+
+    public static function type(): string
+    {
+        return 'campaigns';
     }
 }

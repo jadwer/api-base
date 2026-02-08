@@ -28,35 +28,35 @@ class BudgetSchema extends Schema
             Str::make('name')->sortable(),
             Str::make('code')->sortable(),
             Str::make('description'),
-            Str::make('budgetType')->sortable(),
-            Str::make('departmentCode'),
-            Number::make('categoryId'),
-            Str::make('projectCode'),
-            Number::make('contactId'),
-            Str::make('periodType')->sortable(),
-            DateTime::make('startDate')->sortable(),
-            DateTime::make('endDate')->sortable(),
-            Number::make('fiscalYear')->sortable(),
-            Number::make('budgetedAmount')->sortable(),
-            Number::make('committedAmount')->sortable(),
-            Number::make('spentAmount')->sortable(),
-            Number::make('availableAmount')->readOnly(),
-            Number::make('warningThreshold'),
-            Number::make('criticalThreshold'),
-            Boolean::make('hardLimit'),
-            Boolean::make('allowOvercommit'),
-            Boolean::make('isActive')->sortable(),
+            Str::make('budgetType', 'budget_type')->sortable(),
+            Str::make('departmentCode', 'department_code'),
+            Number::make('categoryId', 'category_id'),
+            Str::make('projectCode', 'project_code'),
+            Number::make('contactId', 'contact_id'),
+            Str::make('periodType', 'period_type')->sortable(),
+            DateTime::make('startDate', 'start_date')->sortable(),
+            DateTime::make('endDate', 'end_date')->sortable(),
+            Number::make('fiscalYear', 'fiscal_year')->sortable(),
+            Number::make('budgetedAmount', 'budgeted_amount')->sortable(),
+            Number::make('committedAmount', 'committed_amount')->sortable(),
+            Number::make('spentAmount', 'spent_amount')->sortable(),
+            Number::make('availableAmount', 'available_amount')->readOnly(),
+            Number::make('warningThreshold', 'warning_threshold'),
+            Number::make('criticalThreshold', 'critical_threshold'),
+            Boolean::make('hardLimit', 'hard_limit'),
+            Boolean::make('allowOvercommit', 'allow_overcommit'),
+            Boolean::make('isActive', 'is_active')->sortable(),
 
             // Computed attributes
-            Number::make('utilizationPercent')->readOnly()->extractUsing(
+            Number::make('utilizationPercent', 'utilization_percent')->readOnly()->extractUsing(
                 fn ($model) => $model->utilization_percent
             ),
-            Str::make('statusLevel')->readOnly()->extractUsing(
+            Str::make('statusLevel', 'status_level')->readOnly()->extractUsing(
                 fn ($model) => $model->status_level
             ),
 
-            DateTime::make('createdAt')->sortable()->readOnly(),
-            DateTime::make('updatedAt')->sortable()->readOnly(),
+            DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
+            DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
 
             // Relationships
             BelongsTo::make('category'),

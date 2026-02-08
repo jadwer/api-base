@@ -34,6 +34,20 @@ class PurchaseOrderController extends Controller
      */
     public function reports(Request $request): JsonResponse
     {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '401', 'title' => 'Unauthenticated']],
+            ], 401);
+        }
+        if (!$user->hasAnyRole(['god', 'admin']) && !$user->hasPermissionTo('purchase-orders.index')) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '403', 'title' => 'Forbidden']],
+            ], 403);
+        }
+
         $startDate = $request->get('start_date', Carbon::now()->subMonth());
         $endDate = $request->get('end_date', Carbon::now());
 
@@ -80,6 +94,20 @@ class PurchaseOrderController extends Controller
      */
     public function suppliers(Request $request): JsonResponse
     {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '401', 'title' => 'Unauthenticated']],
+            ], 401);
+        }
+        if (!$user->hasAnyRole(['god', 'admin']) && !$user->hasPermissionTo('purchase-orders.index')) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '403', 'title' => 'Forbidden']],
+            ], 403);
+        }
+
         $startDate = $request->get('start_date', Carbon::now()->subMonth());
         $endDate = $request->get('end_date', Carbon::now());
 

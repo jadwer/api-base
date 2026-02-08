@@ -9,19 +9,19 @@ class ContactDocumentRequest extends ResourceRequest
 {
     public function rules(): array
     {
-        $contactdocument = $this->model();
-        
+        $isCreating = $this->isCreating();
+
         return [
-            'contact_id' => ['nullable', 'integer'],
-            'document_type' => ['nullable', 'string', 'max:255', Rule::in(['rfc', 'cedula_fiscal', 'ine', 'constancia_sat', 'opinion_sat', 'certificado_sello', 'comprobante_domicilio', 'cotizacion', 'orden_compra', 'factura', 'contrato', 'otros'])],
-            'file_path' => ['nullable', 'string', 'max:255'],
-            'original_filename' => ['nullable', 'string', 'max:255'],
-            'mime_type' => ['nullable', 'string', 'max:255'],
-            'file_size' => ['nullable', 'integer'],
-            'uploaded_by' => ['nullable', 'integer'],
-            'verified_at' => ['nullable', 'date'],
-            'verified_by' => ['nullable', 'integer'],
-            'expires_at' => ['nullable', 'date'],
+            'contactId' => [$isCreating ? 'required' : 'sometimes', 'integer'],
+            'documentType' => ['nullable', 'string', 'max:255', Rule::in(['rfc', 'cedula_fiscal', 'ine', 'constancia_sat', 'opinion_sat', 'certificado_sello', 'comprobante_domicilio', 'cotizacion', 'orden_compra', 'factura', 'contrato', 'otros'])],
+            'filePath' => ['nullable', 'string', 'max:255'],
+            'originalFilename' => ['nullable', 'string', 'max:255'],
+            'mimeType' => ['nullable', 'string', 'max:255'],
+            'fileSize' => ['nullable', 'integer'],
+            'uploadedBy' => ['nullable', 'integer'],
+            'verifiedAt' => ['nullable', 'date'],
+            'verifiedBy' => ['nullable', 'integer'],
+            'expiresAt' => ['nullable', 'date'],
             'notes' => ['nullable', 'string'],
             'metadata' => ['nullable', 'array'],
         ];
@@ -30,20 +30,20 @@ class ContactDocumentRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'contact_id.integer' => 'El campo Contact id debe ser un número entero.',
-            'document_type.string' => 'El campo Document type debe ser texto.',
-            'document_type.max' => 'El campo Document type no puede tener más de 255 caracteres.',
-            'file_path.string' => 'El campo File path debe ser texto.',
-            'file_path.max' => 'El campo File path no puede tener más de 255 caracteres.',
-            'original_filename.string' => 'El campo Original filename debe ser texto.',
-            'original_filename.max' => 'El campo Original filename no puede tener más de 255 caracteres.',
-            'mime_type.string' => 'El campo Mime type debe ser texto.',
-            'mime_type.max' => 'El campo Mime type no puede tener más de 255 caracteres.',
-            'file_size.integer' => 'El campo File size debe ser un número entero.',
-            'uploaded_by.integer' => 'El campo Uploaded by debe ser un número entero.',
-            'verified_at.date' => 'El campo Verified at debe ser una fecha válida.',
-            'verified_by.integer' => 'El campo Verified by debe ser un número entero.',
-            'expires_at.date' => 'El campo Expires at debe ser una fecha válida.',
+            'contactId.integer' => 'El campo Contact id debe ser un número entero.',
+            'documentType.string' => 'El campo Document type debe ser texto.',
+            'documentType.max' => 'El campo Document type no puede tener más de 255 caracteres.',
+            'filePath.string' => 'El campo File path debe ser texto.',
+            'filePath.max' => 'El campo File path no puede tener más de 255 caracteres.',
+            'originalFilename.string' => 'El campo Original filename debe ser texto.',
+            'originalFilename.max' => 'El campo Original filename no puede tener más de 255 caracteres.',
+            'mimeType.string' => 'El campo Mime type debe ser texto.',
+            'mimeType.max' => 'El campo Mime type no puede tener más de 255 caracteres.',
+            'fileSize.integer' => 'El campo File size debe ser un número entero.',
+            'uploadedBy.integer' => 'El campo Uploaded by debe ser un número entero.',
+            'verifiedAt.date' => 'El campo Verified at debe ser una fecha válida.',
+            'verifiedBy.integer' => 'El campo Verified by debe ser un número entero.',
+            'expiresAt.date' => 'El campo Expires at debe ser una fecha válida.',
             'notes.string' => 'El campo Notes debe ser texto.',
         ];
     }

@@ -17,10 +17,6 @@ class PermissionsSeeder extends Seeder
         $this->command->info('🔐 Seeding CRM permissions...');
 
         $permissions = [
-            'god',
-            'admin',
-            'tech',
-            'customer',
             // Leads (5 permissions)
             'crm.leads.index',
             'crm.leads.show',

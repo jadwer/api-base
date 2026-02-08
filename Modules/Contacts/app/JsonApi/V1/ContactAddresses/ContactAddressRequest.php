@@ -9,10 +9,10 @@ class ContactAddressRequest extends ResourceRequest
 {
     public function rules(): array
     {
-        $contactaddress = $this->model();
-        
+        $isCreating = $this->isCreating();
+
         return [
-            'contactId' => ['required', 'integer'],
+            'contactId' => [$isCreating ? 'required' : 'sometimes', 'integer'],
             'addressType' => ['nullable', 'string', 'max:255'],
             'addressLine1' => ['nullable', 'string', 'max:255'],
             'addressLine2' => ['nullable', 'string', 'max:255'],

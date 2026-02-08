@@ -70,4 +70,14 @@ class PipelineStageSchema extends Schema
     {
         return PagePagination::make();
     }
+
+    /**
+     * Get the resource include paths.
+     *
+     * @return iterable
+     */
+    public function includePaths(): iterable
+    {
+        return [];
+    }
 }

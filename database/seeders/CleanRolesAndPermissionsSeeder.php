@@ -85,6 +85,7 @@ class CleanRolesAndPermissionsSeeder extends Seeder
             \Modules\Ecommerce\Database\Seeders\PermissionsSeeder::class,
             \Modules\Audit\Database\Seeders\AuditPermissionSeeder::class,
             \Modules\PageBuilder\Database\Seeders\PagePermissionSeeder::class,
+            \Modules\Contacts\Database\Seeders\PermissionsSeeder::class,
             \Modules\CRM\Database\Seeders\PermissionsSeeder::class,
             \Modules\HR\Database\Seeders\PermissionsSeeder::class,
             \Modules\Accounting\Database\Seeders\PermissionsSeeder::class,

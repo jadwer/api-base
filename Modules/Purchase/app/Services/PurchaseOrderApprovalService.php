@@ -4,7 +4,6 @@ namespace Modules\Purchase\Services;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Modules\Purchase\Models\PurchaseOrder;
 use Modules\Contacts\Models\Contact;
 
@@ -122,12 +121,6 @@ class PurchaseOrderApprovalService
                     'status' => 'approved',
                 ]);
 
-                Log::info('Purchase order auto-approved (no approval required)', [
-                    'order_id' => $order->id,
-                    'order_number' => $order->order_number ?? 'N/A',
-                    'total_amount' => $order->total_amount,
-                ]);
-
                 return true;
             }
 
@@ -157,25 +150,10 @@ class PurchaseOrderApprovalService
                     'status' => 'approved',
                     'metadata' => $metadata,
                 ]);
-
-                Log::info('Purchase order fully approved', [
-                    'order_id' => $order->id,
-                    'order_number' => $order->order_number ?? 'N/A',
-                    'total_amount' => $order->total_amount,
-                    'approved_by' => $userId,
-                    'approval_count' => count($approvals),
-                ]);
             } else {
                 $order->update([
                     'approval_status' => 'pending',
                     'metadata' => $metadata,
-                ]);
-
-                Log::info('Purchase order partially approved', [
-                    'order_id' => $order->id,
-                    'order_number' => $order->order_number ?? 'N/A',
-                    'approval_count' => count($approvals),
-                    'required_count' => $requiredApprovers->count(),
                 ]);
             }
 
@@ -209,13 +187,6 @@ class PurchaseOrderApprovalService
             'approval_status' => 'rejected',
             'status' => 'cancelled',
             'metadata' => $metadata,
-        ]);
-
-        Log::info('Purchase order rejected', [
-            'order_id' => $order->id,
-            'order_number' => $order->order_number ?? 'N/A',
-            'rejected_by' => $userId,
-            'reason' => $reason,
         ]);
 
         return true;
