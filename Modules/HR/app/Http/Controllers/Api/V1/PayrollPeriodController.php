@@ -31,6 +31,20 @@ class PayrollPeriodController extends Controller
      */
     public function process(Request $request, PayrollPeriod $payrollPeriod)
     {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '401', 'title' => 'Unauthenticated']],
+            ], 401);
+        }
+        if (!$user->hasAnyRole(['god', 'admin']) && !$user->hasPermissionTo('hr.payroll-periods.update')) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '403', 'title' => 'Forbidden']],
+            ], 403);
+        }
+
         try {
             $period = $this->payrollService->processPeriod($payrollPeriod);
 
@@ -52,8 +66,22 @@ class PayrollPeriodController extends Controller
      */
     public function markAsPaid(Request $request, PayrollPeriod $payrollPeriod)
     {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '401', 'title' => 'Unauthenticated']],
+            ], 401);
+        }
+        if (!$user->hasAnyRole(['god', 'admin']) && !$user->hasPermissionTo('hr.payroll-periods.update')) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '403', 'title' => 'Forbidden']],
+            ], 403);
+        }
+
         try {
-            $userId = $request->user()->id;
+            $userId = $user->id;
             $result = $this->payrollService->markAsPaid($payrollPeriod, $userId);
 
             return response()->json([
@@ -78,6 +106,20 @@ class PayrollPeriodController extends Controller
      */
     public function close(Request $request, PayrollPeriod $payrollPeriod)
     {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '401', 'title' => 'Unauthenticated']],
+            ], 401);
+        }
+        if (!$user->hasAnyRole(['god', 'admin']) && !$user->hasPermissionTo('hr.payroll-periods.update')) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '403', 'title' => 'Forbidden']],
+            ], 403);
+        }
+
         try {
             $period = $this->payrollService->closePeriod($payrollPeriod);
 
@@ -99,6 +141,20 @@ class PayrollPeriodController extends Controller
      */
     public function reopen(Request $request, PayrollPeriod $payrollPeriod)
     {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '401', 'title' => 'Unauthenticated']],
+            ], 401);
+        }
+        if (!$user->hasAnyRole(['god', 'admin']) && !$user->hasPermissionTo('hr.payroll-periods.update')) {
+            return response()->json([
+                'jsonapi' => ['version' => '1.0'],
+                'errors' => [['status' => '403', 'title' => 'Forbidden']],
+            ], 403);
+        }
+
         try {
             $period = $this->payrollService->reopenPeriod($payrollPeriod);
 

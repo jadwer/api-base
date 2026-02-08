@@ -17,9 +17,6 @@ class AuditPermissionSeeder extends Seeder
         $permissions = [
             'audit.index',
             'audit.show',
-            'audit.store',
-            'audit.update',
-            'audit.destroy',
             'audit.export',
         ];
 

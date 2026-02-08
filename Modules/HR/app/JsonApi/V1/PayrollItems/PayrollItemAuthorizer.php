@@ -35,26 +35,26 @@ class PayrollItemAuthorizer implements AuthorizerContract
 
     public function showRelated(Request $request, $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('hr.payroll-items.show-related') ?? false;
+        return $this->show($request, $model);
     }
 
     public function showRelationship(Request $request, $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('hr.payroll-items.show-relationship') ?? false;
+        return $this->show($request, $model);
     }
 
     public function updateRelationship(Request $request, $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('hr.payroll-items.update-relationship') ?? false;
+        return $this->update($request, $model);
     }
 
     public function attachRelationship(Request $request, $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('hr.payroll-items.attach-relationship') ?? false;
+        return $this->update($request, $model);
     }
 
     public function detachRelationship(Request $request, $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('hr.payroll-items.detach-relationship') ?? false;
+        return $this->update($request, $model);
     }
 }

@@ -3,7 +3,6 @@
 namespace Modules\Audit\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Log;
 
 class AuditDatabaseSeeder extends Seeder
 {
@@ -17,6 +16,5 @@ class AuditDatabaseSeeder extends Seeder
             AuditAssignPermissionsSeeder::class,
             AuditorRoleSeeder::class,
         ]);
-        Log::info('AuditDatabaseSeeder executed successfully.');
     }
 }

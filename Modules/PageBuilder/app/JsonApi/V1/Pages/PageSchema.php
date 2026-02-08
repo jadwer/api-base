@@ -2,7 +2,6 @@
 
 namespace Modules\PageBuilder\JsonApi\V1\Pages;
 
-use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Fields\Number;
@@ -73,6 +72,24 @@ class PageSchema extends Schema
         }
 
         return $query->whereNotNull('published_at');
+    }
+
+    /**
+     * Get the resource paginator.
+     */
+    public function pagination(): PagePagination
+    {
+        return PagePagination::make();
+    }
+
+    /**
+     * Get the resource include paths.
+     */
+    public function includePaths(): iterable
+    {
+        return [
+            'user',
+        ];
     }
 
 }

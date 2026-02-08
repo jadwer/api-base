@@ -35,26 +35,26 @@ class PerformanceReviewAuthorizer implements AuthorizerContract
 
     public function showRelated(Request $request, $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('hr.performance-reviews.show-related') ?? false;
+        return $this->show($request, $model);
     }
 
     public function showRelationship(Request $request, $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('hr.performance-reviews.show-relationship') ?? false;
+        return $this->show($request, $model);
     }
 
     public function updateRelationship(Request $request, $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('hr.performance-reviews.update-relationship') ?? false;
+        return $this->update($request, $model);
     }
 
     public function attachRelationship(Request $request, $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('hr.performance-reviews.attach-relationship') ?? false;
+        return $this->update($request, $model);
     }
 
     public function detachRelationship(Request $request, $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('hr.performance-reviews.detach-relationship') ?? false;
+        return $this->update($request, $model);
     }
 }

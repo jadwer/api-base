@@ -2,7 +2,7 @@
 
 namespace Modules\Audit\JsonApi\V1\Audits;
 
-use App\Models\Audit;
+use Modules\Audit\Models\Audit;
 use Illuminate\Http\Request;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 

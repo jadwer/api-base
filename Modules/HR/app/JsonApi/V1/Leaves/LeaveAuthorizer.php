@@ -59,8 +59,7 @@ class LeaveAuthorizer implements AuthorizerContract
      */
     public function showRelated(Request $request, $model, string $fieldName): bool|Response
     {
-        $user = $request->user();
-        return $user?->can('hr.leaves.show-related') ?? false;
+        return $this->show($request, $model);
     }
 
     /**
@@ -68,8 +67,7 @@ class LeaveAuthorizer implements AuthorizerContract
      */
     public function showRelationship(Request $request, $model, string $fieldName): bool|Response
     {
-        $user = $request->user();
-        return $user?->can('hr.leaves.show-relationship') ?? false;
+        return $this->show($request, $model);
     }
 
     /**
@@ -77,8 +75,7 @@ class LeaveAuthorizer implements AuthorizerContract
      */
     public function updateRelationship(Request $request, $model, string $fieldName): bool|Response
     {
-        $user = $request->user();
-        return $user?->can('hr.leaves.update-relationship') ?? false;
+        return $this->update($request, $model);
     }
 
     /**
@@ -86,8 +83,7 @@ class LeaveAuthorizer implements AuthorizerContract
      */
     public function attachRelationship(Request $request, $model, string $fieldName): bool|Response
     {
-        $user = $request->user();
-        return $user?->can('hr.leaves.attach-relationship') ?? false;
+        return $this->update($request, $model);
     }
 
     /**
@@ -95,7 +91,6 @@ class LeaveAuthorizer implements AuthorizerContract
      */
     public function detachRelationship(Request $request, $model, string $fieldName): bool|Response
     {
-        $user = $request->user();
-        return $user?->can('hr.leaves.detach-relationship') ?? false;
+        return $this->update($request, $model);
     }
 }
