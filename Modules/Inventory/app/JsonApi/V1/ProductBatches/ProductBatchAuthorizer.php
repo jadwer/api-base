@@ -29,7 +29,7 @@ class ProductBatchAuthorizer implements Authorizer
      */
     public function show(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('product-batches.view') ?? false;
+        return $request->user()?->can('product-batches.show') ?? false;
     }
 
     /**

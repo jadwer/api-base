@@ -116,4 +116,16 @@ class StockSchema extends Schema
     {
         return PagePagination::make();
     }
+
+    /**
+     * Get the resource include paths.
+     */
+    public function includePaths(): iterable
+    {
+        return [
+            'product',
+            'warehouse',
+            'location',
+        ];
+    }
 }

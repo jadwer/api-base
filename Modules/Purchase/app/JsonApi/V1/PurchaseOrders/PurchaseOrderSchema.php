@@ -29,7 +29,7 @@ class PurchaseOrderSchema extends Schema
     {
         return [
             ID::make(),
-            Number::make('contact_id'),
+            Str::make('orderNumber', 'order_number'),
             Number::make('contactId', 'contact_id'),
             Number::make('warehouseId', 'warehouse_id'),
             DateTime::make('orderDate', 'order_date')
@@ -39,6 +39,12 @@ class PurchaseOrderSchema extends Schema
             Number::make('totalAmount', 'total_amount')
                 ->sortable(),
             Str::make('notes'),
+
+            // Approval workflow fields
+            Str::make('approvalStatus', 'approval_status')->sortable(),
+            DateTime::make('approvedAt', 'approved_at')->sortable()->readOnly(),
+            Number::make('approvedById', 'approved_by_id')->readOnly(),
+            Str::make('financialStatus', 'financial_status')->sortable(),
 
             // Finance integration fields
             Number::make('apInvoiceId', 'ap_invoice_id')->sortable(),

@@ -39,7 +39,6 @@ class JournalEntryRequest extends ResourceRequest
             ],
             'reversal_reason' => ['nullable', 'string'],
             'metadata' => ['nullable', 'array'],
-            'metadata' => ['nullable', 'array'],
         ];
     }
 

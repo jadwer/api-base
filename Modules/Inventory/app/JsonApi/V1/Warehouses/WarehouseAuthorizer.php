@@ -29,7 +29,7 @@ class WarehouseAuthorizer implements Authorizer
      */
     public function show(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('warehouses.view') ?? false;
+        return $request->user()?->can('warehouses.show') ?? false;
     }
 
     /**

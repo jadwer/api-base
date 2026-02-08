@@ -73,4 +73,16 @@ class CycleCountSchema extends Schema
     {
         return PagePagination::make();
     }
+
+    /**
+     * Get the resource include paths.
+     */
+    public function includePaths(): iterable
+    {
+        return [
+            'warehouse',
+            'warehouseLocation',
+            'product',
+        ];
+    }
 }

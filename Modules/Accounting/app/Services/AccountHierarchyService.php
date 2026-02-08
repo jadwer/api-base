@@ -196,8 +196,8 @@ class AccountHierarchyService
         }
 
         // Check if has transactions (journal entry lines)
-        if ($account->journalEntryLines()->exists()) {
-            $transactionCount = $account->journalEntryLines()->count();
+        if ($account->journalLines()->exists()) {
+            $transactionCount = $account->journalLines()->count();
             throw new \Exception(
                 "Cannot delete account with {$transactionCount} transaction(s). Account has been used in journal entries."
             );
