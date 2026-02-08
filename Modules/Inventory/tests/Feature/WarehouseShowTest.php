@@ -37,7 +37,7 @@ class WarehouseShowTest extends TestCase
 
     public function test_admin_can_show_warehouse(): void
     {
-        $admin = $this->createUserWithWarehousePermissions('admin', ['warehouses.view']);
+        $admin = $this->createUserWithWarehousePermissions('admin', ['warehouses.show']);
         $this->actingAs($admin, 'sanctum');
 
         $warehouse = Warehouse::factory()->create([
@@ -80,7 +80,7 @@ class WarehouseShowTest extends TestCase
 
     public function test_tech_can_show_warehouse(): void
     {
-        $tech = $this->createUserWithWarehousePermissions('tech', ['warehouses.view']);
+        $tech = $this->createUserWithWarehousePermissions('tech', ['warehouses.show']);
         $this->actingAs($tech, 'sanctum');
 
         $warehouse = Warehouse::factory()->create();
@@ -119,7 +119,7 @@ class WarehouseShowTest extends TestCase
 
     public function test_show_nonexistent_warehouse_returns_404(): void
     {
-        $admin = $this->createUserWithWarehousePermissions('admin', ['warehouses.view']);
+        $admin = $this->createUserWithWarehousePermissions('admin', ['warehouses.show']);
         $this->actingAs($admin, 'sanctum');
 
         $response = $this->jsonApi()->get('/api/v1/warehouses/99999');

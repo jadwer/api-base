@@ -22,7 +22,7 @@ class ProductBatchShowTest extends TestCase
         
         // Crear permisos necesarios
         Permission::firstOrCreate(['name' => 'product-batches.index', 'guard_name' => 'api']);
-        Permission::firstOrCreate(['name' => 'product-batches.view', 'guard_name' => 'api']);
+        Permission::firstOrCreate(['name' => 'product-batches.show', 'guard_name' => 'api']);
         
         // Crear roles
         Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'api']);
@@ -45,7 +45,7 @@ class ProductBatchShowTest extends TestCase
 
     public function test_admin_can_view_product_batch()
     {
-        $admin = $this->createUserWithPermissions('admin', ['product-batches.view']);
+        $admin = $this->createUserWithPermissions('admin', ['product-batches.show']);
         
         $product = Product::factory()->create();
         $warehouse = Warehouse::factory()->create();
@@ -105,7 +105,7 @@ class ProductBatchShowTest extends TestCase
 
     public function test_admin_can_view_product_batch_with_includes()
     {
-        $admin = $this->createUserWithPermissions('admin', ['product-batches.view']);
+        $admin = $this->createUserWithPermissions('admin', ['product-batches.show']);
         
         $product = Product::factory()->create(['name' => 'Test Product']);
         $warehouse = Warehouse::factory()->create(['name' => 'Test Warehouse']);
@@ -155,7 +155,7 @@ class ProductBatchShowTest extends TestCase
 
     public function test_product_batch_shows_computed_fields()
     {
-        $admin = $this->createUserWithPermissions('admin', ['product-batches.view']);
+        $admin = $this->createUserWithPermissions('admin', ['product-batches.show']);
         
         $productBatch = ProductBatch::factory()->create([
             'initial_quantity' => 100.0000,
@@ -202,7 +202,7 @@ class ProductBatchShowTest extends TestCase
 
     public function test_tech_with_view_permission_can_view_product_batch()
     {
-        $tech = $this->createUserWithPermissions('tech', ['product-batches.view']);
+        $tech = $this->createUserWithPermissions('tech', ['product-batches.show']);
         $productBatch = ProductBatch::factory()->create();
 
         $response = $this->actingAs($tech, 'sanctum')
@@ -216,7 +216,7 @@ class ProductBatchShowTest extends TestCase
 
     public function test_returns_404_for_nonexistent_product_batch()
     {
-        $admin = $this->createUserWithPermissions('admin', ['product-batches.view']);
+        $admin = $this->createUserWithPermissions('admin', ['product-batches.show']);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

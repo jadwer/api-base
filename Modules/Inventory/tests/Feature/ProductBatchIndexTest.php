@@ -22,7 +22,7 @@ class ProductBatchIndexTest extends TestCase
         
         // Crear permisos necesarios (con firstOrCreate)
         Permission::firstOrCreate(['name' => 'product-batches.index', 'guard_name' => 'api']);
-        Permission::firstOrCreate(['name' => 'product-batches.view', 'guard_name' => 'api']);
+        Permission::firstOrCreate(['name' => 'product-batches.show', 'guard_name' => 'api']);
         
         // Crear roles (con firstOrCreate)
         Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'api']);

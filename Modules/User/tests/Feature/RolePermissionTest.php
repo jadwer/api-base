@@ -36,10 +36,10 @@ class RolePermissionTest extends TestCase
     {
         $permissions = [
             'users.index',
-            'users.view',
+            'users.show',
             'users.store',
             'users.update',
-            'users.delete',
+            'users.destroy',
         ];
 
         foreach ($permissions as $permission) {
@@ -55,10 +55,10 @@ class RolePermissionTest extends TestCase
         $role = Role::findByName('god', 'api');
         $expectedPermissions = [
             'users.index',
-            'users.view',
+            'users.show',
             'users.store',
             'users.update',
-            'users.delete',
+            'users.destroy',
         ];
 
         foreach ($expectedPermissions as $permission) {

@@ -227,7 +227,7 @@ class PurchaseOrderItemDestroyTest extends TestCase
 
     public function test_tech_user_cannot_delete_purchase_order_item()
     {
-        $tech = $this->createUserWithPermissions('test', ['purchase-order-items.view']); // Solo lectura
+        $tech = $this->createUserWithPermissions('test', ['purchase-order-items.show']); // Solo lectura
         $item = $this->createPurchaseOrderItem();
         
         $response = $this->actingAs($tech, 'sanctum')

@@ -22,7 +22,6 @@ class StockShowTest extends TestCase
         
         // Crear permisos necesarios
         Permission::firstOrCreate(['name' => 'stocks.show']);
-        Permission::firstOrCreate(['name' => 'stocks.view']);
         
         // Crear roles
         Role::firstOrCreate(['name' => 'admin']);

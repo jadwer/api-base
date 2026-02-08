@@ -21,7 +21,7 @@ class UserAuthorizer implements Authorizer
 
         if (!$user) return false;
 
-        if (! $user->can('users.create')) {
+        if (! $user->can('users.store')) {
             return Response::deny('No tienes permiso para crear usuarios.');
         }
 
@@ -30,7 +30,7 @@ class UserAuthorizer implements Authorizer
 
     public function show(Request $request, object $model): bool|Response
     {
-        return $request->user()?->can('users.view') ?? false;
+        return $request->user()?->can('users.show') ?? false;
     }
 
     public function update(Request $request, object $model): bool|Response
@@ -46,7 +46,7 @@ class UserAuthorizer implements Authorizer
             return false;
         }
 
-        $permission = Gate::forUser($user)->inspect('users.delete');
+        $permission = Gate::forUser($user)->inspect('users.destroy');
 
         if (!$permission->allowed()) {
             return $permission;

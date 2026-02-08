@@ -22,7 +22,7 @@ class ProductBatchUpdateTest extends TestCase
         
         // Crear permisos necesarios
         Permission::firstOrCreate(['name' => 'product-batches.update', 'guard_name' => 'api']);
-        Permission::firstOrCreate(['name' => 'product-batches.view', 'guard_name' => 'api']);
+        Permission::firstOrCreate(['name' => 'product-batches.show', 'guard_name' => 'api']);
         
         // Crear roles
         Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'api']);

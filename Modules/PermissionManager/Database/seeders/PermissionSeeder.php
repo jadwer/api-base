@@ -27,26 +27,25 @@ class PermissionSeeder extends Seeder
 
         $permissions = [
             // Roles
-            'roles.view', 'roles.index', 'roles.create', 'roles.store', 'roles.update', 'roles.delete', 'roles.destroy',
+            'roles.index', 'roles.show', 'roles.store', 'roles.update', 'roles.destroy',
             // Permissions
-            'permissions.view', 'permissions.index', 'permissions.create', 'permissions.store', 'permissions.update',
-            'permissions.delete', 'permissions.destroy', 'permissions.assign', 'permissions.revoke',
+            'permissions.index', 'permissions.show', 'permissions.store', 'permissions.update',
+            'permissions.destroy', 'permissions.assign', 'permissions.revoke',
             // Users
-            'users.view', 'users.index', 'users.create', 'users.store', 'users.update', 'users.delete',
+            'users.index', 'users.show', 'users.store', 'users.update', 'users.destroy',
             // Own profile
-            'profile.view', 'profile.update',
+            'profile.show', 'profile.update',
             // Warehouses
-            'warehouses.view', 'warehouses.index', 'warehouses.create', 'warehouses.store', 'warehouses.update',
-            'warehouses.delete', 'warehouses.destroy',
+            'warehouses.index', 'warehouses.show', 'warehouses.store', 'warehouses.update',
+            'warehouses.destroy',
             // Warehouse Locations
-            'warehouse-locations.view', 'warehouse-locations.index', 'warehouse-locations.create',
-            'warehouse-locations.store', 'warehouse-locations.update', 'warehouse-locations.delete',
-            'warehouse-locations.destroy',
+            'warehouse-locations.index', 'warehouse-locations.show', 'warehouse-locations.store',
+            'warehouse-locations.update', 'warehouse-locations.destroy',
             // Stock
-            'stock.view', 'stock.index', 'stock.create', 'stock.store', 'stock.update', 'stock.delete', 'stock.destroy',
+            'stock.index', 'stock.show', 'stock.store', 'stock.update', 'stock.destroy',
             // Product Batches
-            'product-batches.view', 'product-batches.index', 'product-batches.create', 'product-batches.store',
-            'product-batches.update', 'product-batches.delete', 'product-batches.destroy',
+            'product-batches.index', 'product-batches.show', 'product-batches.store',
+            'product-batches.update', 'product-batches.destroy',
         ];
 
         // Use bulk insert - much faster than individual firstOrCreate

@@ -38,7 +38,7 @@ class WarehouseLocationShowTest extends TestCase
 
     public function test_admin_can_show_warehouse_location(): void
     {
-        $admin = $this->createUserWithPermissions('admin', ['warehouse-locations.view']);
+        $admin = $this->createUserWithPermissions('admin', ['warehouse-locations.show']);
         $this->actingAs($admin, 'sanctum');
 
         $warehouse = Warehouse::factory()->create();
@@ -92,7 +92,7 @@ class WarehouseLocationShowTest extends TestCase
 
     public function test_admin_can_show_warehouse_location_with_relationships(): void
     {
-        $admin = $this->createUserWithPermissions('admin', ['warehouse-locations.view']);
+        $admin = $this->createUserWithPermissions('admin', ['warehouse-locations.show']);
         $this->actingAs($admin, 'sanctum');
 
         $warehouse = Warehouse::factory()->create(['name' => 'Main Warehouse']);
@@ -131,7 +131,7 @@ class WarehouseLocationShowTest extends TestCase
 
     public function test_tech_can_show_warehouse_location(): void
     {
-        $tech = $this->createUserWithPermissions('tech', ['warehouse-locations.view']);
+        $tech = $this->createUserWithPermissions('tech', ['warehouse-locations.show']);
         $this->actingAs($tech, 'sanctum');
 
         $warehouse = Warehouse::factory()->create();
@@ -167,7 +167,7 @@ class WarehouseLocationShowTest extends TestCase
 
     public function test_show_nonexistent_warehouse_location_returns_404(): void
     {
-        $admin = $this->createUserWithPermissions('admin', ['warehouse-locations.view']);
+        $admin = $this->createUserWithPermissions('admin', ['warehouse-locations.show']);
         $this->actingAs($admin, 'sanctum');
 
         $response = $this->jsonApi()->get('/api/v1/warehouse-locations/99999');

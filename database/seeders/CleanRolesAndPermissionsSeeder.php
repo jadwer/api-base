@@ -119,7 +119,6 @@ class CleanRolesAndPermissionsSeeder extends Seeder
         $techPermissions = Permission::where(function($query) {
             $query->where('name', 'like', '%.index')
                   ->orWhere('name', 'like', '%.show')
-                  ->orWhere('name', 'like', '%.view')
                   ->orWhere('name', 'like', 'profile.%');
         })->get();
         $techRole->syncPermissions($techPermissions);
@@ -127,7 +126,7 @@ class CleanRolesAndPermissionsSeeder extends Seeder
         // Customer gets limited permissions
         $customerRole = Role::findByName('customer', 'api');
         $customerPermissions = Permission::whereIn('name', [
-            'profile.view', 'profile.update',
+            'profile.show', 'profile.update',
             'ecommerce.shopping-carts.index', 'ecommerce.shopping-carts.show',
             'ecommerce.shopping-carts.store', 'ecommerce.shopping-carts.update',
             'ecommerce.cart-items.index', 'ecommerce.cart-items.show',

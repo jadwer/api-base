@@ -27,17 +27,17 @@ class AssignPermissionsSeeder extends Seeder
         $permissionsMap = [
             'god' => Permission::all()->pluck('name')->toArray(),
             'admin' => [
-                'users.index', 'users.view', 'users.create', 'users.update', 'users.delete',
-                'roles.view', 'roles.index',
-                'permissions.view', 'permissions.index', 'permissions.assign',
-                'profile.view', 'profile.update',
+                'users.index', 'users.show', 'users.store', 'users.update', 'users.destroy',
+                'roles.show', 'roles.index',
+                'permissions.show', 'permissions.index', 'permissions.assign',
+                'profile.show', 'profile.update',
             ],
             'tech' => [
-                'users.index', 'users.view', 'users.delete',
-                'profile.view', 'profile.update',
+                'users.index', 'users.show', 'users.destroy',
+                'profile.show', 'profile.update',
             ],
             'customer' => [
-                'profile.view', 'profile.update',
+                'profile.show', 'profile.update',
             ],
             'guest' => [],
         ];

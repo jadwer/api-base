@@ -19,8 +19,8 @@ class WarehouseLocationDestroyTest extends TestCase
         parent::setUp();
         
         // Crear permisos necesarios
-        Permission::firstOrCreate(['name' => 'warehouse-locations.delete']);
-        Permission::firstOrCreate(['name' => 'warehouse-locations.view']);
+        Permission::firstOrCreate(['name' => 'warehouse-locations.destroy']);
+        Permission::firstOrCreate(['name' => 'warehouse-locations.show']);
         
         // Crear roles
         Role::firstOrCreate(['name' => 'admin']);
@@ -43,7 +43,7 @@ class WarehouseLocationDestroyTest extends TestCase
 
     public function test_admin_can_delete_warehouse_location()
     {
-        $admin = $this->createUserWithPermissions('admin', ['warehouse-locations.delete']);
+        $admin = $this->createUserWithPermissions('admin', ['warehouse-locations.destroy']);
         
         $warehouse = Warehouse::factory()->create();
         $location = WarehouseLocation::factory()->create([
@@ -65,7 +65,7 @@ class WarehouseLocationDestroyTest extends TestCase
 
     public function test_delete_nonexistent_warehouse_location_returns_404()
     {
-        $admin = $this->createUserWithPermissions('admin', ['warehouse-locations.delete']);
+        $admin = $this->createUserWithPermissions('admin', ['warehouse-locations.destroy']);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -77,7 +77,7 @@ class WarehouseLocationDestroyTest extends TestCase
 
     public function test_warehouse_location_deletion_cascades_related_records()
     {
-        $admin = $this->createUserWithPermissions('admin', ['warehouse-locations.delete']);
+        $admin = $this->createUserWithPermissions('admin', ['warehouse-locations.destroy']);
         
         $warehouse = Warehouse::factory()->create();
         $location = WarehouseLocation::factory()->create([
@@ -165,7 +165,7 @@ class WarehouseLocationDestroyTest extends TestCase
 
     public function test_delete_warehouse_location_with_active_stock_should_fail()
     {
-        $admin = $this->createUserWithPermissions('admin', ['warehouse-locations.delete']);
+        $admin = $this->createUserWithPermissions('admin', ['warehouse-locations.destroy']);
         
         $warehouse = Warehouse::factory()->create();
         $location = WarehouseLocation::factory()->create([
@@ -195,7 +195,7 @@ class WarehouseLocationDestroyTest extends TestCase
 
     public function test_can_delete_warehouse_location_with_zero_stock()
     {
-        $admin = $this->createUserWithPermissions('admin', ['warehouse-locations.delete']);
+        $admin = $this->createUserWithPermissions('admin', ['warehouse-locations.destroy']);
         
         $warehouse = Warehouse::factory()->create();
         $location = WarehouseLocation::factory()->create([
