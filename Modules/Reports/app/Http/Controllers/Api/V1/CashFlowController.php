@@ -157,6 +157,10 @@ class CashFlowController extends Controller
      */
     public function comparative(Request $request): JsonResponse
     {
+        if ($error = $this->authorize($request, 'reports.cash-flows.index')) {
+            return $error;
+        }
+
         // Current period
         $currentStartDate = $request->input('currentStartDate') ?? $request->input('filter.currentStartDate');
         $currentStartDate = $currentStartDate ? Carbon::parse($currentStartDate) : Carbon::now()->startOfMonth();

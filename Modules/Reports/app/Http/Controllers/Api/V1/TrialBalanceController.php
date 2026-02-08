@@ -145,6 +145,10 @@ class TrialBalanceController extends Controller
      */
     public function comparative(Request $request): JsonResponse
     {
+        if ($error = $this->authorize($request, 'reports.trial-balances.index')) {
+            return $error;
+        }
+
         // Current period
         $currentDate = $request->input('currentDate') ?? $request->input('filter.currentDate');
         $currentDate = $currentDate ? Carbon::parse($currentDate) : Carbon::now();
@@ -192,6 +196,10 @@ class TrialBalanceController extends Controller
      */
     public function detailed(Request $request): JsonResponse
     {
+        if ($error = $this->authorize($request, 'reports.trial-balances.index')) {
+            return $error;
+        }
+
         // Get filter parameters
         $asOfDate = $request->input('asOfDate') ?? $request->input('filter.asOfDate');
         $asOfDate = $asOfDate ? Carbon::parse($asOfDate) : Carbon::now();

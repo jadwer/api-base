@@ -151,6 +151,10 @@ class BalanceSheetController extends Controller
      */
     public function comparative(Request $request): JsonResponse
     {
+        if ($error = $this->authorize($request, 'reports.balance-sheets.index')) {
+            return $error;
+        }
+
         $currentDate = $request->input('currentDate')
             ? Carbon::parse($request->input('currentDate'))
             : Carbon::now();
