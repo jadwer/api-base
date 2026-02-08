@@ -419,14 +419,6 @@ class InventoryMovement extends Model
             'approval_notes' => $notes,
         ]);
 
-        \Illuminate\Support\Facades\Log::info('Inventory adjustment approved', [
-            'movement_id' => $this->id,
-            'movement_type' => $this->movement_type,
-            'product_id' => $this->product_id,
-            'quantity' => $this->quantity,
-            'approved_by' => $userId,
-        ]);
-
         return true;
     }
 
@@ -453,15 +445,6 @@ class InventoryMovement extends Model
             'approved_by' => $userId,
             'approved_at' => now(),
             'approval_notes' => $reason,
-        ]);
-
-        \Illuminate\Support\Facades\Log::warning('Inventory adjustment rejected', [
-            'movement_id' => $this->id,
-            'movement_type' => $this->movement_type,
-            'product_id' => $this->product_id,
-            'quantity' => $this->quantity,
-            'rejected_by' => $userId,
-            'reason' => $reason,
         ]);
 
         return true;
