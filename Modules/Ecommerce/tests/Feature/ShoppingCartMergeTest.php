@@ -97,6 +97,9 @@ class ShoppingCartMergeTest extends TestCase
         $user = $this->getCustomerUser();
         $guestSessionId = 'guest-session-' . uniqid();
 
+        // Deactivate any existing user carts so merge uses our test cart
+        ShoppingCart::where('user_id', $user->id)->where('status', 'active')->update(['status' => 'abandoned']);
+
         $product = Product::factory()->create(['price' => 50]);
 
         // Create user cart with product
@@ -148,6 +151,9 @@ class ShoppingCartMergeTest extends TestCase
     {
         $user = $this->getCustomerUser();
         $guestSessionId = 'guest-session-' . uniqid();
+
+        // Deactivate any existing user carts so merge uses our test cart
+        ShoppingCart::where('user_id', $user->id)->where('status', 'active')->update(['status' => 'abandoned']);
 
         $product1 = Product::factory()->create(['price' => 50]);
         $product2 = Product::factory()->create(['price' => 75]);

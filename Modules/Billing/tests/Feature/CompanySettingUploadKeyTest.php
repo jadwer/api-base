@@ -120,7 +120,7 @@ class CompanySettingUploadKeyTest extends TestCase
 
         $response->assertStatus(422);
         $response->assertJson([
-            'message' => 'El archivo debe ser una llave privada .key',
+            'message' => 'La llave privada no es válida o la contraseña es incorrecta',
         ]);
     }
 

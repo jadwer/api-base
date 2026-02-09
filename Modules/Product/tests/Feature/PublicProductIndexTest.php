@@ -33,6 +33,7 @@ class PublicProductIndexTest extends TestCase
             'unit_id' => $unit->id,
             'category_id' => $category->id,
             'brand_id' => $brand->id,
+            'is_active' => true,
         ]);
 
         $response = $this->jsonApi()->get('/api/public/v1/public-products');
@@ -95,8 +96,8 @@ class PublicProductIndexTest extends TestCase
         $category = Category::factory()->create();
         $brand = Brand::factory()->create();
         
-        Product::factory()->create(['name' => 'Zebra Product', 'unit_id' => $unit->id, 'category_id' => $category->id, 'brand_id' => $brand->id]);
-        Product::factory()->create(['name' => 'Alpha Product', 'unit_id' => $unit->id, 'category_id' => $category->id, 'brand_id' => $brand->id]);
+        Product::factory()->create(['name' => 'Zebra Product', 'is_active' => true, 'unit_id' => $unit->id, 'category_id' => $category->id, 'brand_id' => $brand->id]);
+        Product::factory()->create(['name' => 'Alpha Product', 'is_active' => true, 'unit_id' => $unit->id, 'category_id' => $category->id, 'brand_id' => $brand->id]);
 
         $response = $this->jsonApi()->get('/api/public/v1/public-products?sort=name&page[size]=2');
 
@@ -120,8 +121,8 @@ class PublicProductIndexTest extends TestCase
         $category = Category::factory()->create();
         $brand = Brand::factory()->create();
         
-        Product::factory()->create(['name' => 'Cheap Product', 'price' => 10.0, 'unit_id' => $unit->id, 'category_id' => $category->id, 'brand_id' => $brand->id]);
-        Product::factory()->create(['name' => 'Expensive Product', 'price' => 100.0, 'unit_id' => $unit->id, 'category_id' => $category->id, 'brand_id' => $brand->id]);
+        Product::factory()->create(['name' => 'Cheap Product', 'price' => 10.0, 'is_active' => true, 'unit_id' => $unit->id, 'category_id' => $category->id, 'brand_id' => $brand->id]);
+        Product::factory()->create(['name' => 'Expensive Product', 'price' => 100.0, 'is_active' => true, 'unit_id' => $unit->id, 'category_id' => $category->id, 'brand_id' => $brand->id]);
 
         $response = $this->jsonApi()->get('/api/public/v1/public-products?sort=-price');
 
@@ -139,8 +140,8 @@ class PublicProductIndexTest extends TestCase
         $smartphones = Category::factory()->create(['name' => 'Smartphones']);
         $laptops = Category::factory()->create(['name' => 'Laptops']);
 
-        Product::factory()->count(3)->create(['category_id' => $smartphones->id]);
-        Product::factory()->count(2)->create(['category_id' => $laptops->id]);
+        Product::factory()->count(3)->create(['category_id' => $smartphones->id, 'is_active' => true]);
+        Product::factory()->count(2)->create(['category_id' => $laptops->id, 'is_active' => true]);
 
         // Filter by Smartphones category
         $response = $this->jsonApi()->get("/api/public/v1/public-products?filter[category_id]={$smartphones->id}");
@@ -156,8 +157,8 @@ class PublicProductIndexTest extends TestCase
         $apple = Brand::factory()->create(['name' => 'Apple']);
         $samsung = Brand::factory()->create(['name' => 'Samsung']);
 
-        Product::factory()->count(4)->create(['brand_id' => $apple->id]);
-        Product::factory()->count(2)->create(['brand_id' => $samsung->id]);
+        Product::factory()->count(4)->create(['brand_id' => $apple->id, 'is_active' => true]);
+        Product::factory()->count(2)->create(['brand_id' => $samsung->id, 'is_active' => true]);
 
         // Filter by Apple brand
         $response = $this->jsonApi()->get("/api/public/v1/public-products?filter[brand_id]={$apple->id}");
@@ -174,9 +175,9 @@ class PublicProductIndexTest extends TestCase
         $samsung = Brand::factory()->create(['name' => 'Samsung']);
         $sony = Brand::factory()->create(['name' => 'Sony']);
 
-        Product::factory()->count(2)->create(['brand_id' => $apple->id]);
-        Product::factory()->count(3)->create(['brand_id' => $samsung->id]);
-        Product::factory()->count(1)->create(['brand_id' => $sony->id]);
+        Product::factory()->count(2)->create(['brand_id' => $apple->id, 'is_active' => true]);
+        Product::factory()->count(3)->create(['brand_id' => $samsung->id, 'is_active' => true]);
+        Product::factory()->count(1)->create(['brand_id' => $sony->id, 'is_active' => true]);
 
         // Filter by Apple and Samsung brands
         $response = $this->jsonApi()->get("/api/public/v1/public-products?filter[brands]={$apple->id},{$samsung->id}");

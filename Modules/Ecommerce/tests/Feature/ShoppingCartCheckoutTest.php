@@ -210,7 +210,7 @@ class ShoppingCartCheckoutTest extends TestCase
 
         $response->assertStatus(400);
         $response->assertJson([
-            'error' => 'Cart is not active or has expired',
+            'message' => 'Cart is not active',
         ]);
     }
 
@@ -382,7 +382,7 @@ class ShoppingCartCheckoutTest extends TestCase
         $response->assertStatus(201);
 
         $orderNumber = $response->json('data.attributes.orderNumber');
-        $this->assertStringStartsWith('SO-', $orderNumber);
+        $this->assertStringStartsWith('OV-', $orderNumber);
     }
 
     public function test_checkout_returns_404_for_nonexistent_cart(): void

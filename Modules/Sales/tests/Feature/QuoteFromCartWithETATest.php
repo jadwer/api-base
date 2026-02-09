@@ -41,12 +41,13 @@ class QuoteFromCartWithETATest extends TestCase
             'default_lead_time' => null,
         ]);
 
-        // Create products
+        // Create products (both with IVA for predictable tax calculation)
         $this->productWithETA = Product::factory()->create([
             'brand_id' => $this->brand->id,
             'name' => 'Product With ETA',
             'sku' => 'WITH-ETA-001',
             'price' => 100.00,
+            'iva' => true,
         ]);
 
         $this->productWithoutETA = Product::factory()->create([
@@ -54,6 +55,7 @@ class QuoteFromCartWithETATest extends TestCase
             'name' => 'Product Without ETA',
             'sku' => 'NO-ETA-001',
             'price' => 200.00,
+            'iva' => true,
         ]);
 
         // Create shopping cart using seeded admin

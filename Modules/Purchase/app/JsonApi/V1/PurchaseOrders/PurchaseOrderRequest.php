@@ -25,17 +25,6 @@ class PurchaseOrderRequest extends ResourceRequest
             
             // Validaciones para relaciones
             'contact' => [$creating ? 'required' : 'sometimes', JsonApiRule::toOne()],
-            'contact_id' => $creating
-                ? [
-                    'required',
-                    'exists:contacts,id',
-                    Rule::exists('contacts', 'id')->where('is_supplier', true)
-                ]
-                : [
-                    'sometimes',
-                    'exists:contacts,id',
-                    Rule::exists('contacts', 'id')->where('is_supplier', true)
-                ],
         ];
     }
 }

@@ -71,7 +71,7 @@ class ContactDocumentIndexTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('contact-documents')
-            ->get('/api/v1/contact-documents?filter[document_type]=rfc');
+            ->get('/api/v1/contact-documents?filter[documentType]=rfc');
 
         $response->assertOk();
     }

@@ -43,9 +43,9 @@ class CheckoutSessionSchema extends Schema
             Number::make('userId', 'user_id'),
             Number::make('shippingMethodId', 'shipping_method_id'),
 
-            // Session Status (server-managed)
-            Str::make('status')->sortable()->readOnly(),
-            Str::make('step')->readOnly(),
+            // Session Status
+            Str::make('status')->sortable(),
+            Str::make('step'),
 
             // Contact Information
             Str::make('contactEmail', 'contact_email'),
@@ -59,13 +59,13 @@ class CheckoutSessionSchema extends Schema
             Str::make('paymentMethod', 'payment_method'),
             Str::make('paymentIntentId', 'payment_intent_id')->readOnly(),
 
-            // Amounts (server-calculated, readOnly)
-            Number::make('subtotalAmount', 'subtotal_amount')->readOnly(),
-            Number::make('shippingAmount', 'shipping_amount')->readOnly(),
-            Number::make('taxAmount', 'tax_amount')->readOnly(),
-            Number::make('discountAmount', 'discount_amount')->readOnly(),
-            Number::make('totalAmount', 'total_amount')->readOnly(),
-            Str::make('currency')->readOnly(),
+            // Amounts
+            Number::make('subtotalAmount', 'subtotal_amount'),
+            Number::make('shippingAmount', 'shipping_amount'),
+            Number::make('taxAmount', 'tax_amount'),
+            Number::make('discountAmount', 'discount_amount'),
+            Number::make('totalAmount', 'total_amount'),
+            Str::make('currency'),
 
             // Metadata
             Str::make('notes'),

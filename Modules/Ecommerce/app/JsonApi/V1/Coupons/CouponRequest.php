@@ -37,7 +37,7 @@ class CouponRequest extends ResourceRequest
             'name' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'couponType' => [$isUpdate ? 'sometimes' : 'required', 'string', Rule::in(['percentage', 'fixed_amount', 'free_shipping'])],
-            'value' => [$isUpdate ? 'sometimes' : 'required', 'numeric', 'min:0', 'max:100'],
+            'value' => [$isUpdate ? 'sometimes' : 'required', 'numeric', 'min:0'],
             'minAmount' => ['nullable', 'numeric', 'min:0'],
             'maxAmount' => ['nullable', 'numeric', 'min:0'],
             'maxUses' => ['nullable', 'integer', 'min:1'],

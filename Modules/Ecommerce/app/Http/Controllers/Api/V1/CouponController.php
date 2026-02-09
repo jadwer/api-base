@@ -67,10 +67,14 @@ class CouponController extends Controller
             'valid' => true,
             'data' => [
                 'type' => 'coupons',
+                'id' => (string) $coupon->id,
                 'attributes' => [
                     'code' => $coupon->code,
+                    'name' => $coupon->name,
                     'couponType' => $coupon->type,
+                    'value' => $coupon->value,
                     'minAmount' => $coupon->min_amount,
+                    'maxAmount' => $coupon->max_amount,
                 ]
             ]
         ]);

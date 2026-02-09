@@ -56,11 +56,14 @@ class CFDIInvoiceIndexTest extends TestCase
         }
     }
 
-    public function test_customer_can_list_cfdi_invoices()
+    public function test_customer_can_list_own_cfdi_invoices()
     {
         $user = $this->getCustomerUser();
 
-        $invoices = CFDIInvoice::factory()->count(2)->create();
+        // indexQuery scopes customer to see only invoices linked to their contact
+        $contact = Contact::factory()->create(['email' => $user->email]);
+        $ownInvoices = CFDIInvoice::factory()->count(2)->create(['contact_id' => $contact->id]);
+        $otherInvoices = CFDIInvoice::factory()->count(3)->create(); // not associated
 
         $response = $this->jsonApi()
             ->expects('cfdi-invoices')
@@ -69,11 +72,11 @@ class CFDIInvoiceIndexTest extends TestCase
 
         $response->assertSuccessful();
 
-        // Verify our created invoices are in the response
+        // Customer should only see their own invoices
         $data = $response->json('data');
-        $this->assertGreaterThanOrEqual(2, count($data));
+        $this->assertCount(2, $data);
         $ids = collect($data)->pluck('id')->toArray();
-        foreach ($invoices as $invoice) {
+        foreach ($ownInvoices as $invoice) {
             $this->assertContains((string)$invoice->id, $ids);
         }
     }

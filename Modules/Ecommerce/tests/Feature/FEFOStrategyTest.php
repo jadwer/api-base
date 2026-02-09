@@ -258,10 +258,12 @@ class FEFOStrategyTest extends TestCase
         $this->assertCount(1, $result['reservations']);
 
         // Assert: Check batch quantities were updated
+        // Reservation only increments reserved_quantity; current_quantity stays unchanged
+        // available_quantity is a stored generated column: current_quantity - reserved_quantity
         $batch->refresh();
-        $this->assertEquals(75.0, $batch->current_quantity); // 100 - 25
+        $this->assertEquals(100.0, $batch->current_quantity); // Unchanged during reservation
         $this->assertEquals(25.0, $batch->reserved_quantity);
-        $this->assertEquals(50.0, $batch->available_quantity); // Generated: 75 - 25
+        $this->assertEquals(75.0, $batch->available_quantity); // Generated: 100 - 25
 
         // Assert: Check reservation notes contain batch info
         $reservation = $result['reservations'][0];
@@ -333,9 +335,9 @@ class FEFOStrategyTest extends TestCase
         $reservation = $result['reservations'][0];
         $this->assertStringContainsString('BATCH-2025-03', $reservation->notes);
 
-        // Verify batch was updated
+        // Verify batch was updated (reservation only increments reserved_quantity)
         $batch1->refresh();
-        $this->assertEquals(70.0, $batch1->current_quantity); // 100 - 30
+        $this->assertEquals(100.0, $batch1->current_quantity); // Unchanged during reservation
         $this->assertEquals(30.0, $batch1->reserved_quantity);
 
         // Other batches should be unchanged

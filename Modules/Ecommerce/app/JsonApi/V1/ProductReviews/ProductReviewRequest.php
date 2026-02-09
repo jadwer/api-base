@@ -39,8 +39,17 @@ class ProductReviewRequest extends ResourceRequest
                 'string',
             ],
 
-            // Verification & Status (admin-only, excluded from customer requests)
-            // These fields are managed server-side; not accepted via API
+            // Status (admin-managed)
+            'status' => [
+                'sometimes',
+                'string',
+                Rule::in(['pending', 'approved', 'rejected']),
+            ],
+            'helpfulCount' => [
+                'sometimes',
+                'integer',
+                'min:0',
+            ],
         ];
     }
 

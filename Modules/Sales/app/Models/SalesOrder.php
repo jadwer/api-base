@@ -55,6 +55,7 @@ class SalesOrder extends Model
         'approved_at', 'delivered_at', 'subtotal', 'tax_amount', 'total_amount',
         'discount_total', 'notes', 'metadata', 'shipping_address', 'billing_address',
         'ar_invoice_id', 'invoicing_status', 'financial_status', 'invoicing_notes',
+        'order_source', 'checkout_session_id',
     ];
 
     protected $casts = [
@@ -74,6 +75,8 @@ class SalesOrder extends Model
         'ar_invoice_id' => 'integer',
         'invoicing_status' => 'string',
         'financial_status' => 'string',
+        'order_source' => 'string',
+        'checkout_session_id' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

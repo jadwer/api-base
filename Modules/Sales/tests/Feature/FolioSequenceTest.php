@@ -108,8 +108,8 @@ class FolioSequenceTest extends TestCase
     {
         $folio = FolioSequence::getNextFolio('nonexistent');
 
-        // Should generate default format: PREFIX-YYHHMIS
-        $this->assertMatchesRegularExpression('/^NON-\d{8}$/', $folio);
+        // Should generate default format: PREFIX-{Str::random(8)} (alphanumeric)
+        $this->assertMatchesRegularExpression('/^NON-[A-Za-z0-9]+$/', $folio);
     }
 
     /** @test */

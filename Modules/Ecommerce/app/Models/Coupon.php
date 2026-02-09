@@ -12,7 +12,11 @@ class Coupon extends Model
     use HasFactory, HasPermissions;
 
     protected $table = 'coupons';
-    
+
+    protected $attributes = [
+        'used_count' => 0,
+    ];
+
     protected $fillable = [
         'code', 'name', 'description', 'type', 'value', 'min_amount', 'max_amount', 'max_uses', 'used_count', 'starts_at', 'expires_at', 'is_active', 'customer_ids', 'product_ids', 'category_ids'
     ];

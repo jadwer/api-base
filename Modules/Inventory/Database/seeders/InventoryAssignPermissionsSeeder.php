@@ -95,9 +95,12 @@ class InventoryAssignPermissionsSeeder extends Seeder
                 'product-batches.index',
                 'product-batches.show',
                 
-                // Inventory Movements - Read only
+                // Inventory Movements - Full access
                 'inventory-movements.index',
                 'inventory-movements.show',
+                'inventory-movements.store',
+                'inventory-movements.update',
+                'inventory-movements.destroy',
 
                 // Cycle Counts - Read only (IV-M001)
                 'inventory.cycle-counts.index',

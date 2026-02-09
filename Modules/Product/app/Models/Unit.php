@@ -11,7 +11,7 @@ class Unit extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'abbreviation', 'sat_code', 'description', 'is_active',
+        'name', 'code', 'unit_type',
     ];
 
     /**

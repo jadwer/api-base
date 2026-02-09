@@ -60,9 +60,9 @@ class SalesOrderInventoryReservationTest extends TestCase
         // Act: Confirm order
         $this->service->updateStatus($order, 'confirmed');
 
-        // Assert: Stock quantities updated
+        // Assert: Stock quantities updated (only reserved_quantity changes, quantity stays the same)
         $stock->refresh();
-        $this->assertEquals(75.0, $stock->quantity); // 100 - 25
+        $this->assertEquals(100.0, $stock->quantity); // unchanged
         $this->assertEquals(25.0, $stock->reserved_quantity);
     }
 
@@ -98,9 +98,9 @@ class SalesOrderInventoryReservationTest extends TestCase
         // Act: Cancel order
         $this->service->updateStatus($order, 'cancelled');
 
-        // Assert: Stock quantities released
+        // Assert: Stock quantities released (only reserved_quantity changes, quantity stays the same)
         $stock->refresh();
-        $this->assertEquals(100.0, $stock->quantity); // 75 + 25
+        $this->assertEquals(75.0, $stock->quantity); // unchanged
         $this->assertEquals(0.0, $stock->reserved_quantity); // 25 - 25
     }
 
@@ -156,10 +156,10 @@ class SalesOrderInventoryReservationTest extends TestCase
         $stock1->refresh();
         $stock2->refresh();
 
-        $this->assertEquals(35.0, $stock1->quantity); // 50 - 15
+        $this->assertEquals(50.0, $stock1->quantity); // unchanged
         $this->assertEquals(15.0, $stock1->reserved_quantity);
 
-        $this->assertEquals(50.0, $stock2->quantity); // 80 - 30
+        $this->assertEquals(80.0, $stock2->quantity); // unchanged
         $this->assertEquals(30.0, $stock2->reserved_quantity);
     }
 
@@ -297,18 +297,18 @@ class SalesOrderInventoryReservationTest extends TestCase
             'unit_price' => 10.00,
         ]);
 
-        // Step 1: Confirm order - reserves inventory
+        // Step 1: Confirm order - reserves inventory (only reserved_quantity changes)
         $this->service->updateStatus($order, 'confirmed');
 
         $stock->refresh();
-        $this->assertEquals(70.0, $stock->quantity);
+        $this->assertEquals(100.0, $stock->quantity); // unchanged
         $this->assertEquals(30.0, $stock->reserved_quantity);
 
-        // Step 2: Cancel order - releases inventory
+        // Step 2: Cancel order - releases inventory (only reserved_quantity changes back)
         $this->service->updateStatus($order, 'cancelled');
 
         $stock->refresh();
-        $this->assertEquals(100.0, $stock->quantity);
+        $this->assertEquals(100.0, $stock->quantity); // unchanged
         $this->assertEquals(0.0, $stock->reserved_quantity);
     }
 
@@ -344,9 +344,9 @@ class SalesOrderInventoryReservationTest extends TestCase
 
         $this->service->updateStatus($order1, 'confirmed');
 
-        // Stock now: 20 available, 30 reserved
+        // Stock now: quantity unchanged, 30 reserved, available = 50 - 30 = 20
         $stock->refresh();
-        $this->assertEquals(20.0, $stock->quantity);
+        $this->assertEquals(50.0, $stock->quantity); // unchanged
         $this->assertEquals(30.0, $stock->reserved_quantity);
 
         // Second order tries to take 25 units (more than available)

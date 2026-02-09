@@ -369,10 +369,12 @@ class CompanySettingStoreTest extends TestCase
             ->assertJsonMissing(['pacPassword']);
     }
 
-    public function test_can_create_with_certificate_files()
+    public function test_certificate_files_are_not_mass_assignable()
     {
         $user = $this->getAdminUser();
 
+        // certificate_file and key_file are excluded from mass-assignment for security
+        // They can only be set via upload-certificate and upload-key endpoints
         $data = [
             'type' => 'company-settings',
             'attributes' => [
@@ -392,16 +394,15 @@ class CompanySettingStoreTest extends TestCase
             ->withData($data)
             ->post('/api/v1/company-settings');
 
+        // Record is created but certificate fields remain null (not mass-assignable)
         $response->assertCreated()
-            ->assertJson([
-                'data' => [
-                    'attributes' => [
-                        'certificateFile' => '/path/to/certificate.cer',
-                        'keyFile' => '/path/to/key.key',
-                    ]
-                ]
-            ])
             ->assertJsonMissing(['keyPassword']);
+
+        $this->assertDatabaseHas('company_settings', [
+            'company_name' => 'Test Company',
+            'certificate_file' => null,
+            'key_file' => null,
+        ]);
     }
 
     public function test_can_create_with_additional_settings()

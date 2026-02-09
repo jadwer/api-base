@@ -27,7 +27,7 @@ class PurchaseOrderStoreTest extends TestCase
         $data = [
             'type' => 'purchase-orders',
             'attributes' => [
-                'contact_id' => $contact->id,
+
                 'orderDate' => '2025-01-15',
                 'status' => 'pending',
                 'totalAmount' => 2500.50,
@@ -99,7 +99,7 @@ class PurchaseOrderStoreTest extends TestCase
         $data = [
             'type' => 'purchase-orders',
             'attributes' => [
-                'contact_id' => $contact->id,
+
                 'orderDate' => '2025-01-20',
                 'status' => 'pending',
                 'totalAmount' => 1000.00,
@@ -148,10 +148,9 @@ class PurchaseOrderStoreTest extends TestCase
         $response->assertStatus(422);
         $this->assertJsonApiValidationErrors([
             '/data/attributes/orderDate',
-            '/data/attributes/status', 
+            '/data/attributes/status',
             '/data/attributes/totalAmount',
             '/data/relationships/contact',
-            '/data/attributes/contact_id',
         ], $response);
     }
 
@@ -163,7 +162,6 @@ class PurchaseOrderStoreTest extends TestCase
         $data = [
             'type' => 'purchase-orders',
             'attributes' => [
-                'contact_id' => 999999,
                 'orderDate' => '2025-01-15',
                 'status' => 'pending',
                 'totalAmount' => 1500.00,
@@ -202,7 +200,7 @@ class PurchaseOrderStoreTest extends TestCase
         $data = [
             'type' => 'purchase-orders',
             'attributes' => [
-                'contact_id' => $contact->id,
+
                 'orderDate' => '2025-01-15',
                 'status' => 'invalid_status', // Invalid status
                 'totalAmount' => 1500.00,
@@ -235,7 +233,7 @@ class PurchaseOrderStoreTest extends TestCase
         $data = [
             'type' => 'purchase-orders',
             'attributes' => [
-                'contact_id' => $contact->id,
+
                 'orderDate' => '2025-01-15',
                 'status' => 'pending',
                 'totalAmount' => -100.00, // Negative amount
@@ -268,7 +266,7 @@ class PurchaseOrderStoreTest extends TestCase
         $data = [
             'type' => 'purchase-orders',
             'attributes' => [
-                'contact_id' => $contact->id,
+
                 'orderDate' => 'invalid-date', // Invalid date format
                 'status' => 'pending',
                 'totalAmount' => 1500.00,
@@ -298,7 +296,7 @@ class PurchaseOrderStoreTest extends TestCase
         $data = [
             'type' => 'purchase-orders',
             'attributes' => [
-                'contact_id' => $contact->id,
+
                 'orderDate' => '2025-01-15',
                 'status' => 'pending',
                 'totalAmount' => 1500.00,
@@ -327,7 +325,7 @@ class PurchaseOrderStoreTest extends TestCase
         $data = [
             'type' => 'purchase-orders',
             'attributes' => [
-                'contact_id' => $contact->id,
+
                 'orderDate' => '2025-01-15',
                 'status' => 'pending',
                 'totalAmount' => 1500.00,

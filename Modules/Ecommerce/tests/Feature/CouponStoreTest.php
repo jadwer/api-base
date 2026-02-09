@@ -26,7 +26,6 @@ class CouponStoreTest extends TestCase
                 'minAmount' => 50.00,
                 'maxAmount' => 100.00,
                 'maxUses' => 100,
-                'usedCount' => 0,
                 'startsAt' => '2025-01-01T00:00:00Z',
                 'expiresAt' => '2025-12-31T23:59:59Z',
                 'isActive' => true,
@@ -69,7 +68,6 @@ class CouponStoreTest extends TestCase
                 'name' => 'Minimal Coupon',
                 'couponType' => 'fixed_amount',
                 'value' => 5.00,
-                'usedCount' => 0,
                 'isActive' => true
             ]
         ];
@@ -94,7 +92,6 @@ class CouponStoreTest extends TestCase
                 'name' => 'Unauthorized Coupon',
                 'couponType' => 'percentage',
                 'value' => 10,
-                'usedCount' => 0,
                 'isActive' => true
             ]
         ];
@@ -117,7 +114,6 @@ class CouponStoreTest extends TestCase
                 'name' => 'Guest Coupon',
                 'couponType' => 'percentage',
                 'value' => 15,
-                'usedCount' => 0,
                 'isActive' => true
             ]
         ];
@@ -161,7 +157,6 @@ class CouponStoreTest extends TestCase
                 'name' => '', // Empty name
                 'couponType' => '',
                 'value' => -5, // Negative value
-                'usedCount' => 0,
                 'isActive' => 'not_boolean' // Invalid boolean
             ]
         ];

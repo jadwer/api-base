@@ -119,6 +119,11 @@ class InventoryMovementRequest extends ResourceRequest
      */
     public function withValidator($validator): void
     {
+        // Skip custom validation for DELETE requests (no body is sent)
+        if ($this->isMethod('DELETE')) {
+            return;
+        }
+
         $validator->after(function ($validator) {
             $data = $this->validated();
             

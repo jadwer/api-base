@@ -331,11 +331,16 @@ class CompanySettingUpdateTest extends TestCase
             ]);
     }
 
-    public function test_can_update_certificate_files()
+    public function test_certificate_files_are_not_mass_assignable_on_update()
     {
         $user = $this->getAdminUser();
         $setting = CompanySetting::factory()->create();
 
+        $originalCertFile = $setting->certificate_file;
+        $originalKeyFile = $setting->key_file;
+
+        // certificate_file and key_file are excluded from mass-assignment for security
+        // They can only be set via upload-certificate and upload-key endpoints
         $data = [
             'type' => 'company-settings',
             'id' => (string) $setting->id,
@@ -352,15 +357,12 @@ class CompanySettingUpdateTest extends TestCase
             ->withData($data)
             ->patch('/api/v1/company-settings/' . $setting->id);
 
+        // Update succeeds but certificate fields remain unchanged (not mass-assignable)
         $response->assertSuccessful()
-            ->assertJson([
-                'data' => [
-                    'attributes' => [
-                        'certificateFile' => '/new/path/cert.cer',
-                        'keyFile' => '/new/path/key.key',
-                    ]
-                ]
-            ])
             ->assertJsonMissing(['keyPassword']);
+
+        $setting->refresh();
+        $this->assertEquals($originalCertFile, $setting->certificate_file);
+        $this->assertEquals($originalKeyFile, $setting->key_file);
     }
 }

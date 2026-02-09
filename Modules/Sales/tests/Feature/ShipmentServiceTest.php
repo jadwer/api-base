@@ -326,7 +326,7 @@ class ShipmentServiceTest extends TestCase
 
         $order = SalesOrder::factory()->create([
             'contact_id' => $customer->id,
-            'status' => 'confirmed',
+            'status' => 'processing',
         ]);
 
         $orderItem = SalesOrderItem::factory()->create([

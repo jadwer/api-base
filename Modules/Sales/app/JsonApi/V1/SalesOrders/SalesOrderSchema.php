@@ -46,9 +46,6 @@ class SalesOrderSchema extends Schema
             // Relación con Contact
             BelongsTo::make('contact')->type('contacts'),
             
-            // Relación con Customer (usa contact_id como clave foránea)
-            BelongsTo::make('customer')->type('customers'),
-            
             // Campos básicos - camelCase for JSON:API, mapped to snake_case in DB
             Str::make('orderNumber', 'order_number')->sortable(),
             Str::make('status')->sortable(),
@@ -109,7 +106,6 @@ class SalesOrderSchema extends Schema
     {
         return [
             'contact',
-            'customer', // Alias para contact en contexto de ventas
             'items',
             'items.product',
             // SA-M001: Shipments

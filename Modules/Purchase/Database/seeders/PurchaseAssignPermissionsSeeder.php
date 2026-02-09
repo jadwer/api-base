@@ -45,6 +45,9 @@ class PurchaseAssignPermissionsSeeder extends Seeder
             'budgets.destroy',
             'budget-allocations.index',
             'budget-allocations.show',
+            'budget-allocations.store',
+            'budget-allocations.update',
+            'budget-allocations.destroy',
         ];
 
         foreach ($permissions as $permissionName) {

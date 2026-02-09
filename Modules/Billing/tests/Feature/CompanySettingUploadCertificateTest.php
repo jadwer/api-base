@@ -98,7 +98,7 @@ class CompanySettingUploadCertificateTest extends TestCase
 
         $response->assertStatus(422);
         $response->assertJson([
-            'message' => 'El archivo debe ser un certificado .cer',
+            'message' => 'El certificado no es válido: No se pudo leer el certificado',
         ]);
     }
 

@@ -50,9 +50,9 @@ class LoginTest extends TestCase
             'password' => 'irrelevant',
         ]);
 
-        // Verificar que la respuesta es un error 422 (unprocessable entity)
-        $response->assertStatus(422)
-            ->assertJsonFragment(['message' => 'El correo no está registrado.']);
+        // Verificar que la respuesta es un error 401 (security best practice: same message for invalid credentials)
+        $response->assertStatus(401)
+            ->assertJsonFragment(['message' => 'Credenciales inválidas.']);
     }
 
     public function test_login_fails_with_missing_fields(): void

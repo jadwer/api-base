@@ -31,7 +31,7 @@ class ProductVariantShowTest extends TestCase
             'sku' => 'SHOW-TEST-' . uniqid(),
             'name' => 'Show Test Variant',
             'price' => 149.99,
-            'stockQuantity' => 50,
+            'stock_quantity' => 50,
             'is_active' => true,
         ]);
 

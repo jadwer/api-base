@@ -10,9 +10,20 @@ use Modules\Product\Models\Product;
 
 class ShoppingCartCurrentTest extends TestCase
 {
+    /**
+     * Deactivate any existing active carts for the user to avoid test interference.
+     */
+    private function deactivateUserCarts(int $userId): void
+    {
+        ShoppingCart::where('user_id', $userId)
+            ->where('status', 'active')
+            ->update(['status' => 'abandoned']);
+    }
+
     public function test_authenticated_user_can_get_current_cart(): void
     {
         $user = $this->getCustomerUser();
+        $this->deactivateUserCarts($user->id);
 
         $cart = ShoppingCart::factory()->create([
             'user_id' => $user->id,
@@ -37,6 +48,7 @@ class ShoppingCartCurrentTest extends TestCase
     public function test_returns_404_when_no_active_cart_exists(): void
     {
         $user = $this->getCustomerUser();
+        $this->deactivateUserCarts($user->id);
 
         $response = $this->actingAs($user, 'sanctum')
             ->getJson('/api/v1/shopping-carts/current');
@@ -51,6 +63,7 @@ class ShoppingCartCurrentTest extends TestCase
     public function test_returns_404_when_cart_is_expired(): void
     {
         $user = $this->getCustomerUser();
+        $this->deactivateUserCarts($user->id);
 
         ShoppingCart::factory()->create([
             'user_id' => $user->id,
@@ -67,6 +80,7 @@ class ShoppingCartCurrentTest extends TestCase
     public function test_returns_404_when_cart_is_not_active(): void
     {
         $user = $this->getCustomerUser();
+        $this->deactivateUserCarts($user->id);
 
         ShoppingCart::factory()->create([
             'user_id' => $user->id,
@@ -100,6 +114,7 @@ class ShoppingCartCurrentTest extends TestCase
     public function test_user_cannot_see_other_users_cart(): void
     {
         $user1 = $this->getCustomerUser();
+        $this->deactivateUserCarts($user1->id);
         $user2 = User::factory()->create();
 
         ShoppingCart::factory()->create([

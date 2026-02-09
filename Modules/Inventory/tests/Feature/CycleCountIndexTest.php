@@ -82,7 +82,7 @@ class CycleCountIndexTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('cycle-counts')
-            ->filter(['abc_class' => 'A'])
+            ->filter(['abcClass' => 'A'])
             ->get('/api/v1/cycle-counts');
 
         $response->assertOk();

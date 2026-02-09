@@ -29,13 +29,13 @@ class ProductReviewIndexTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        // Guest should see all reviews (filtering happens client-side)
+        // Guest should only see approved reviews (indexQuery filters by status)
         $response = $this->jsonApi()
             ->expects('product-reviews')
             ->get('/api/v1/product-reviews');
 
         $response->assertSuccessful()
-            ->assertJsonCount(5, 'data');
+            ->assertJsonCount(3, 'data');
     }
 
     /**

@@ -393,7 +393,7 @@ class SalesAdvancedReportsTest extends TestCase
             ->get('/api/v1/reports/sales-by-employee/export?format=csv');
 
         // Should either return file or error if export service not configured
-        $this->assertTrue(in_array($response->status(), [200, 500]));
+        $this->assertTrue(in_array($response->getStatusCode(), [200, 500]));
     }
 
     // ========================================================================

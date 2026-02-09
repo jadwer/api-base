@@ -210,6 +210,9 @@ class CFDIStampingTest extends TestCase
 
     public function test_webhook_can_update_invoice_status_on_stamp()
     {
+        $secret = 'test-webhook-secret';
+        config(['billing.sw_pac.webhook_secret' => $secret]);
+
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $this->companySetting->id,
             'contact_id' => $this->contact->id,
@@ -219,13 +222,19 @@ class CFDIStampingTest extends TestCase
             'uuid' => null,
         ]);
 
-        $response = $this->postJson('/api/v1/webhooks/pac/stamp', [
+        $payload = json_encode([
             'uuid' => 'A1B2C3D4-E5F6-7890-ABCD-EF1234567890',
             'folio' => 'F-123',
             'status' => 'valid',
             'fecha_timbrado' => now()->toIso8601String(),
             'qr_code' => 'base64_qr_code_data',
         ]);
+        $signature = hash_hmac('sha256', $payload, $secret);
+
+        $response = $this->call('POST', '/api/v1/webhooks/pac/stamp', [], [], [], [
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_X_SW_SIGNATURE' => $signature,
+        ], $payload);
 
         $response->assertStatus(200);
 
@@ -238,6 +247,9 @@ class CFDIStampingTest extends TestCase
 
     public function test_webhook_can_update_invoice_status_on_cancel()
     {
+        $secret = 'test-webhook-secret';
+        config(['billing.sw_pac.webhook_secret' => $secret]);
+
         $invoice = CFDIInvoice::factory()->create([
             'company_setting_id' => $this->companySetting->id,
             'contact_id' => $this->contact->id,
@@ -246,11 +258,17 @@ class CFDIStampingTest extends TestCase
             'fecha_timbrado' => now(),
         ]);
 
-        $response = $this->postJson('/api/v1/webhooks/pac/cancel', [
+        $payload = json_encode([
             'uuid' => 'A1B2C3D4-E5F6-7890-ABCD-EF1234567890',
             'status' => 'cancelled',
             'fecha_cancelacion' => now()->toIso8601String(),
         ]);
+        $signature = hash_hmac('sha256', $payload, $secret);
+
+        $response = $this->call('POST', '/api/v1/webhooks/pac/cancel', [], [], [], [
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_X_SW_SIGNATURE' => $signature,
+        ], $payload);
 
         $response->assertStatus(200);
 

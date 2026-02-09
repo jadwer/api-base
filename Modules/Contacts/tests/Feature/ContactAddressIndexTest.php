@@ -69,7 +69,7 @@ class ContactAddressIndexTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('contact-addresses')
-            ->get('/api/v1/contact-addresses?filter[address_type]=test');
+            ->get('/api/v1/contact-addresses?filter[addressType]=test');
 
         $response->assertOk();
     }
