@@ -182,6 +182,8 @@ class ShoppingCartController extends Controller
         $shoppingCart->update([
             'total_amount' => 0,
             'discount_amount' => 0,
+            'tax_amount' => 0,
+            'shipping_amount' => 0,
             'coupon_code' => null,
         ]);
 
@@ -447,11 +449,11 @@ class ShoppingCartController extends Controller
                 'userId' => $cart->user_id,
                 'status' => $cart->status,
                 'expiresAt' => $cart->expires_at?->toISOString(),
-                'totalAmount' => $cart->total_amount,
+                'totalAmount' => $cart->finalTotal,
                 'currency' => $cart->currency,
                 'couponCode' => $cart->coupon_code,
                 'discountAmount' => $cart->discount_amount,
-                'taxAmount' => $cart->tax_amount,
+                'taxAmount' => $cart->computedTaxAmount,
                 'shippingAmount' => $cart->shipping_amount,
                 'notes' => $cart->notes,
                 'itemsCount' => $cart->itemsCount,

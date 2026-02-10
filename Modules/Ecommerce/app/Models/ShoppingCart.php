@@ -41,7 +41,8 @@ class ShoppingCart extends Model
 
     protected $appends = [
         'itemsCount',
-        'subtotalAmount', 
+        'subtotalAmount',
+        'computedTaxAmount',
         'finalTotal',
         'isExpired',
         'canApplyCoupon'
@@ -55,16 +56,21 @@ class ShoppingCart extends Model
 
     public function getSubtotalAmountAttribute(): float
     {
-        return $this->cartItems()->sum('total') ?? 0.00;
+        return (float) ($this->cartItems()->sum('subtotal') ?? 0.00);
+    }
+
+    public function getComputedTaxAmountAttribute(): float
+    {
+        return (float) ($this->cartItems()->sum('tax_amount') ?? 0.00);
     }
 
     public function getFinalTotalAttribute(): float
     {
         $subtotal = $this->getSubtotalAmountAttribute();
-        $discount = $this->discount_amount ?? 0.00;
-        $tax = $this->tax_amount ?? 0.00;
-        $shipping = $this->shipping_amount ?? 0.00;
-        
+        $discount = (float) ($this->attributes['discount_amount'] ?? 0.00);
+        $tax = $this->getComputedTaxAmountAttribute();
+        $shipping = (float) ($this->attributes['shipping_amount'] ?? 0.00);
+
         return $subtotal - $discount + $tax + $shipping;
     }
 

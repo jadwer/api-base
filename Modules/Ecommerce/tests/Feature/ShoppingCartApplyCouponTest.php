@@ -27,6 +27,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'product_id' => $product->id,
             'quantity' => 1,
             'unit_price' => 500,
+            'subtotal' => 500,
             'total' => 500,
         ]);
 
@@ -75,6 +76,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'product_id' => $product->id,
             'quantity' => 1,
             'unit_price' => 100,
+            'subtotal' => 100,
             'total' => 100,
         ]);
 
@@ -110,6 +112,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'product_id' => $product->id,
             'quantity' => 1,
             'unit_price' => 100,
+            'subtotal' => 100,
             'total' => 100,
         ]);
 
@@ -271,6 +274,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'product_id' => $product->id,
             'quantity' => 1,
             'unit_price' => 50,
+            'subtotal' => 50,
             'total' => 50,
         ]);
 
@@ -343,6 +347,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'product_id' => $product->id,
             'quantity' => 1,
             'unit_price' => 100,
+            'subtotal' => 100,
             'total' => 100,
         ]);
 
@@ -377,6 +382,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'product_id' => $product->id,
             'quantity' => 1,
             'unit_price' => 1000,
+            'subtotal' => 1000,
             'total' => 1000,
         ]);
 

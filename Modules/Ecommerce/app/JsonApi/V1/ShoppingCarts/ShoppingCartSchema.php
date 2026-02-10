@@ -43,6 +43,7 @@ class ShoppingCartSchema extends Schema
             // ✅ CAMPOS CALCULADOS (NUEVOS - similar a Finance)
             Number::make('itemsCount')->readOnly(),
             Number::make('subtotalAmount')->readOnly(),
+            Number::make('computedTaxAmount')->readOnly(),
             Number::make('finalTotal')->readOnly(),
             Boolean::make('isExpired')->readOnly(),
             Boolean::make('canApplyCoupon')->readOnly(),
