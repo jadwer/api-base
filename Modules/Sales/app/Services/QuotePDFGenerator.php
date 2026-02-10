@@ -45,7 +45,8 @@ class QuotePDFGenerator
         $pdf = Pdf::loadView('sales::quote-pdf', $data)
             ->setPaper('letter')
             ->setOption('defaultFont', 'DejaVu Sans')
-            ->setOption('isRemoteEnabled', true);
+            ->setOption('isRemoteEnabled', true)
+            ->setOption('isPhpEnabled', true);
 
         $filename = $this->generateFilename($quote);
         $path = "quotes/{$quote->id}/{$filename}";
@@ -91,6 +92,12 @@ class QuotePDFGenerator
                 ?? $contact->contactAddresses()->first();
         }
 
+        // Get the salesperson name from metadata or options
+        $elaboratedBy = $quote->metadata['elaborated_by'] ?? null;
+
+        // Branch from quote metadata or options
+        $branch = $quote->metadata['branch'] ?? $options['branch'] ?? 'Matriz';
+
         return [
             'quote' => $quote,
             'items' => $quote->items()->with('product.brand')->get(),
@@ -104,6 +111,8 @@ class QuotePDFGenerator
             'bankAccounts' => $options['bank_accounts'] ?? $company?->getBankAccounts() ?? $this->defaultBankAccounts,
             'conditions' => $options['conditions'] ?? $company?->getCommercialConditions() ?? $this->defaultConditions,
             'amountInWords' => $this->amountInWords($quote->total_amount, $quote->currency ?? 'MXN'),
+            'elaboratedBy' => $options['elaborated_by'] ?? $elaboratedBy,
+            'branch' => $branch,
         ];
     }
 
@@ -185,6 +194,7 @@ class QuotePDFGenerator
             ->setPaper('letter')
             ->setOption('defaultFont', 'DejaVu Sans')
             ->setOption('isRemoteEnabled', true)
+            ->setOption('isPhpEnabled', true)
             ->stream($this->generateFilename($quote));
     }
 

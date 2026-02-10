@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>Cotizacion {{ $quote->quote_number }}</title>
     <style>
+        @page {
+            margin: 20px 25px 40px 25px;
+        }
         * {
             font-family: DejaVu Sans, sans-serif;
             box-sizing: border-box;
@@ -11,102 +14,98 @@
             padding: 0;
         }
         body {
-            font-size: 10px;
+            font-size: 9px;
             line-height: 1.4;
             color: #333;
-            padding: 15px;
         }
 
-        /* Header */
-        .header {
-            width: 100%;
-            margin-bottom: 15px;
+        /* Title Banner */
+        .title-banner {
+            background: #1a3764;
+            color: white;
+            padding: 10px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
-        .header-table {
+
+        /* Company Header */
+        .company-header {
+            width: 100%;
+            margin-bottom: 8px;
+        }
+        .company-header-table {
             width: 100%;
             border-collapse: collapse;
         }
-        .logo-cell {
-            width: 25%;
+        .company-info-cell {
             vertical-align: top;
-        }
-        .logo-cell img {
-            max-width: 120px;
-            max-height: 60px;
-        }
-        .company-cell {
-            width: 45%;
-            vertical-align: top;
-            padding-left: 10px;
+            width: 70%;
         }
         .company-name {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
-            color: #1a365d;
-            margin-bottom: 3px;
+            color: #1a3764;
+            margin-bottom: 2px;
         }
         .company-detail {
-            font-size: 9px;
-            color: #4a5568;
-            line-height: 1.3;
+            font-size: 8px;
+            color: #555;
+            line-height: 1.4;
         }
-        .quote-cell {
-            width: 30%;
+        .elaborated-by {
+            font-size: 8px;
+            color: #555;
+            margin-top: 4px;
+        }
+        .logo-cell {
             vertical-align: top;
+            width: 30%;
             text-align: right;
         }
-        .quote-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #2b6cb0;
-            margin-bottom: 5px;
-        }
-        .quote-number {
-            font-size: 14px;
-            font-weight: bold;
-            color: #1a365d;
-        }
-        .quote-date {
-            font-size: 9px;
-            color: #4a5568;
-            margin-top: 3px;
+        .logo-cell img {
+            max-width: 150px;
+            max-height: 55px;
         }
 
-        /* Customer Section */
-        .customer-section {
-            background: #f7fafc;
-            border: 1px solid #e2e8f0;
-            padding: 10px;
-            margin-bottom: 15px;
+        /* Receptor Section */
+        .receptor-section {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 12px;
+            border: 1px solid #ccc;
         }
-        .customer-title {
-            font-size: 10px;
-            font-weight: bold;
-            color: #2d3748;
-            margin-bottom: 5px;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 3px;
-        }
-        .customer-info {
+        .receptor-section th {
+            background: #1a3764;
+            color: white;
+            padding: 5px 8px;
             font-size: 9px;
-        }
-        .customer-name {
             font-weight: bold;
-            font-size: 11px;
+            text-align: left;
+        }
+        .receptor-section td {
+            padding: 5px 8px;
+            font-size: 8px;
+            vertical-align: top;
+            border: 1px solid #ddd;
+        }
+        .receptor-name {
+            font-weight: bold;
+            font-size: 9px;
         }
 
         /* Items Table */
         .items-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
+            margin-bottom: 0;
         }
         .items-table th {
-            background: #2b6cb0;
+            background: #1a3764;
             color: white;
             text-align: left;
-            padding: 8px 5px;
-            font-size: 9px;
+            padding: 6px 5px;
+            font-size: 8px;
             font-weight: bold;
         }
         .items-table th.text-center {
@@ -116,9 +115,9 @@
             text-align: right;
         }
         .items-table td {
-            padding: 6px 5px;
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 9px;
+            padding: 5px 5px;
+            border-bottom: 1px solid #ddd;
+            font-size: 8px;
             vertical-align: top;
         }
         .items-table td.text-center {
@@ -127,244 +126,251 @@
         .items-table td.text-right {
             text-align: right;
         }
-        .product-image {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-            border: 1px solid #e2e8f0;
+        .items-table tr:nth-child(even) {
+            background: #f8f9fa;
         }
         .product-code {
             font-weight: bold;
-            color: #2d3748;
+            color: #333;
         }
         .product-name {
-            color: #4a5568;
+            color: #444;
         }
         .product-eta {
             color: #c53030;
             font-style: italic;
-            font-size: 8px;
+            font-size: 7px;
             margin-top: 2px;
+        }
+
+        /* Amount in words row */
+        .amount-words-row {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 8px;
+        }
+        .amount-words-row td {
+            padding: 5px 8px;
+            font-size: 8px;
+            border: 1px solid #ddd;
+        }
+        .amount-words-label {
+            font-weight: bold;
+            background: #f0f0f0;
+            width: 120px;
         }
 
         /* Totals */
         .totals-section {
             width: 100%;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         .totals-table {
-            width: 280px;
+            width: 250px;
             margin-left: auto;
             border-collapse: collapse;
         }
         .totals-table td {
-            padding: 5px 8px;
+            padding: 4px 8px;
             font-size: 9px;
         }
         .totals-table .label {
             text-align: right;
-            color: #4a5568;
+            color: #555;
+            font-weight: bold;
         }
         .totals-table .value {
             text-align: right;
-            font-weight: bold;
             width: 100px;
         }
-        .totals-table .total-row td {
-            border-top: 2px solid #2b6cb0;
-            padding-top: 8px;
-            font-size: 12px;
+        .totals-table .total-row {
+            background: #1a3764;
+            color: white;
         }
-        .amount-words {
-            font-size: 8px;
-            color: #4a5568;
-            text-align: right;
-            margin-top: 5px;
-            font-style: italic;
+        .totals-table .total-row td {
+            padding: 6px 8px;
+            font-size: 11px;
+            font-weight: bold;
         }
 
         /* Bank Info */
         .bank-section {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
+            font-size: 7px;
+            color: #555;
+            line-height: 1.5;
         }
         .bank-title {
-            font-size: 10px;
             font-weight: bold;
-            color: #2d3748;
-            margin-bottom: 8px;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 3px;
-        }
-        .bank-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .bank-table td {
-            padding: 3px 8px;
             font-size: 8px;
-            border: 1px solid #e2e8f0;
-        }
-        .bank-table .bank-label {
-            background: #f7fafc;
-            font-weight: bold;
-            width: 120px;
+            color: #333;
+            margin-bottom: 3px;
         }
 
         /* Conditions */
         .conditions-section {
-            background: #fffbeb;
-            border: 1px solid #fcd34d;
-            padding: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         .conditions-title {
-            font-size: 10px;
-            font-weight: bold;
-            color: #92400e;
-            margin-bottom: 5px;
-        }
-        .conditions-list {
             font-size: 8px;
-            color: #78350f;
-            padding-left: 15px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 3px;
         }
-        .conditions-list li {
-            margin-bottom: 2px;
+        .conditions-text {
+            font-size: 7px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        /* Notes */
+        .notes-section {
+            background: #f7fafc;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+        }
+        .notes-title {
+            font-size: 8px;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        .notes-text {
+            font-size: 8px;
         }
 
         /* Footer */
         .footer {
-            text-align: center;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: right;
             font-size: 8px;
-            color: #718096;
-            border-top: 1px solid #e2e8f0;
-            padding-top: 10px;
-            margin-top: 15px;
-        }
-        .validity {
-            background: #ebf8ff;
-            border: 1px solid #90cdf4;
-            padding: 8px;
-            text-align: center;
-            margin-bottom: 15px;
-            font-size: 9px;
-            color: #2b6cb0;
+            color: #888;
+            padding: 5px 25px;
+            border-top: 1px solid #ddd;
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <div class="header">
-        <table class="header-table">
+    {{-- Title Banner --}}
+    <div class="title-banner">
+        Cotizacion: {{ $quote->quote_number }}
+    </div>
+
+    {{-- Company Header --}}
+    <div class="company-header">
+        <table class="company-header-table">
             <tr>
+                <td class="company-info-cell">
+                    <div class="company-name">{{ $company->company_name ?? config('app.name') }}</div>
+                    <div class="company-detail">
+                        @if($company && $company->rfc)
+                            RFC: {{ $company->rfc }}<br>
+                        @endif
+                        @if(isset($companyAddress))
+                            {{ $companyAddress['street'] ?? '' }}<br>
+                            {{ $companyAddress['city'] ?? '' }}{{ isset($companyAddress['state']) ? ', ' . $companyAddress['state'] : '' }}{{ isset($companyAddress['postal_code']) ? ', CP ' . $companyAddress['postal_code'] : '' }}<br>
+                        @endif
+                        @if(isset($companyPhone))
+                            Tel: {{ $companyPhone }}
+                        @endif
+                    </div>
+                    @if(isset($elaboratedBy) && $elaboratedBy)
+                        <div class="elaborated-by">Elaborado por: <strong>{{ $elaboratedBy }}</strong></div>
+                    @endif
+                </td>
                 <td class="logo-cell">
                     @if($company && $company->logo_path)
                         <img src="{{ storage_path('app/public/' . $company->logo_path) }}" alt="Logo">
                     @endif
                 </td>
-                <td class="company-cell">
-                    <div class="company-name">{{ $company->company_name ?? config('app.name') }}</div>
-                    <div class="company-detail">
-                        @if($company && $company->rfc)
-                            <strong>RFC:</strong> {{ $company->rfc }}<br>
-                        @endif
-                        @if(isset($companyAddress))
-                            {{ $companyAddress['street'] ?? '' }}<br>
-                            {{ $companyAddress['city'] ?? '' }}, {{ $companyAddress['state'] ?? '' }} {{ $companyAddress['postal_code'] ?? '' }}<br>
-                        @endif
-                        @if(isset($companyPhone))
-                            <strong>Tel:</strong> {{ $companyPhone }}<br>
-                        @endif
-                        @if(isset($companyEmail))
-                            <strong>Email:</strong> {{ $companyEmail }}
-                        @endif
-                    </div>
-                </td>
-                <td class="quote-cell">
-                    <div class="quote-title">COTIZACION</div>
-                    <div class="quote-number">{{ $quote->quote_number }}</div>
-                    <div class="quote-date">
-                        Fecha: {{ $quote->quote_date->format('d/m/Y') }}<br>
-                        Vigencia: {{ $quote->valid_until->format('d/m/Y') }}
-                    </div>
-                </td>
             </tr>
         </table>
     </div>
 
-    <!-- Customer Info -->
-    @if($contact)
-    <div class="customer-section">
-        <div class="customer-title">DATOS DEL CLIENTE</div>
-        <div class="customer-info">
-            <div class="customer-name">{{ $contact->name ?? $contact->legal_name }}</div>
-            @if($contact->tax_id)
-                <strong>RFC:</strong> {{ $contact->tax_id }}<br>
-            @endif
-            @if(isset($contactAddress) && $contactAddress)
-                @if($contactAddress->street)
-                    {{ $contactAddress->street }}<br>
+    {{-- Receptor Section --}}
+    <table class="receptor-section">
+        <tr>
+            <th style="width: 50%;">Receptor</th>
+            <th style="width: 25%;">Fecha de Creacion</th>
+            <th style="width: 25%;">Sucursal</th>
+        </tr>
+        <tr>
+            <td rowspan="2">
+                @if($contact)
+                    <div class="receptor-name">{{ $contact->name ?? $contact->legal_name }}</div>
+                    @if($contact->tax_id)
+                        RFC: {{ $contact->tax_id }}<br>
+                    @endif
+                    @if(isset($contactAddress) && $contactAddress)
+                        @if($contactAddress->street)
+                            {{ $contactAddress->street }}<br>
+                        @endif
+                        @if($contactAddress->city || $contactAddress->state || $contactAddress->postal_code)
+                            {{ $contactAddress->city ?? '' }}{{ $contactAddress->state ? ', ' . $contactAddress->state : '' }}{{ $contactAddress->postal_code ? ', CP ' . $contactAddress->postal_code : '' }}<br>
+                        @endif
+                    @endif
+                    @if($contact->phone)
+                        Tel: {{ $contact->phone }}<br>
+                    @endif
+                    @if($contact->email)
+                        {{ $contact->email }}
+                    @endif
+                @else
+                    <span style="color: #999;">Sin cliente asignado</span>
                 @endif
-                @if($contactAddress->city || $contactAddress->state || $contactAddress->postal_code)
-                    {{ $contactAddress->city ?? '' }}{{ $contactAddress->state ? ', ' . $contactAddress->state : '' }} {{ $contactAddress->postal_code ?? '' }}<br>
-                @endif
-            @endif
-            @if($contact->email)
-                <strong>Email:</strong> {{ $contact->email }}
-            @endif
-            @if($contact->phone)
-                | <strong>Tel:</strong> {{ $contact->phone }}
-            @endif
-        </div>
-    </div>
-    @endif
+            </td>
+            <td>{{ $quote->quote_date->format('d/m/Y') }}</td>
+            <td>{{ $branch ?? 'Matriz' }}</td>
+        </tr>
+    </table>
 
-    <!-- Validity Notice -->
-    <div class="validity">
-        Esta cotizacion es valida hasta el <strong>{{ $quote->valid_until->format('d/m/Y') }}</strong>.
-        Los precios estan sujetos a cambios sin previo aviso despues de esta fecha.
-    </div>
-
-    <!-- Items Table -->
+    {{-- Items Table --}}
     <table class="items-table">
         <thead>
             <tr>
-                <th style="width: 8%;">Codigo</th>
-                <th style="width: 8%;">Imagen</th>
-                <th class="text-center" style="width: 8%;">Cant.</th>
+                <th style="width: 10%;">Cod</th>
+                <th style="width: 18%;">Producto</th>
+                <th class="text-center" style="width: 8%;">Cantidad</th>
                 <th class="text-center" style="width: 8%;">Unidad</th>
-                <th style="width: 38%;">Descripcion</th>
-                <th class="text-right" style="width: 15%;">P. Unitario</th>
-                <th class="text-right" style="width: 15%;">Importe</th>
+                <th style="width: 30%;">Descripcion</th>
+                <th class="text-right" style="width: 13%;">Precio Unitario</th>
+                <th class="text-right" style="width: 13%;">Importe</th>
             </tr>
         </thead>
         <tbody>
             @foreach($items as $item)
             <tr>
                 <td class="product-code">{{ $item->product_sku ?? 'N/A' }}</td>
-                <td>
-                    @if($item->product && $item->product->primary_image)
-                        <img src="{{ storage_path('app/public/' . $item->product->primary_image) }}" class="product-image" alt="">
-                    @else
-                        <div style="width: 40px; height: 40px; background: #e2e8f0; text-align: center; line-height: 40px; font-size: 8px; color: #a0aec0;">N/A</div>
-                    @endif
-                </td>
-                <td class="text-center">{{ number_format($item->quantity, 0) }}</td>
+                <td class="product-name">{{ $item->product_name ?? ($item->product ? $item->product->name : 'Producto') }}</td>
+                <td class="text-center">{{ number_format($item->quantity, 2) }}</td>
                 <td class="text-center">{{ $item->product->unit ?? 'PZA' }}</td>
                 <td>
-                    <span class="product-name">{{ $item->product_name ?? ($item->product ? $item->product->name : 'Producto') }}</span>
+                    @if($item->product && $item->product->description)
+                        {{ \Illuminate\Support\Str::limit(strip_tags($item->product->description), 120) }}
+                    @endif
                     @if($item->notes)
                         <div class="product-eta">{{ $item->notes }}</div>
                     @endif
                 </td>
-                <td class="text-right">${{ number_format($item->quoted_price, 2) }}</td>
-                <td class="text-right">${{ number_format($item->subtotal_before_discount, 2) }}</td>
+                <td class="text-right">{{ number_format($item->quoted_price, 2) }}</td>
+                <td class="text-right">{{ number_format($item->subtotal_before_discount, 2) }}</td>
             </tr>
             @endforeach
         </tbody>
     </table>
 
-    <!-- Totals -->
+    {{-- Amount in Words --}}
+    <table class="amount-words-row">
+        <tr>
+            <td class="amount-words-label">Importe con letra:</td>
+            <td>{{ $amountInWords ?? '' }}</td>
+        </tr>
+    </table>
+
+    {{-- Totals --}}
     <div class="totals-section">
         <table class="totals-table">
             <tr>
@@ -378,73 +384,65 @@
             </tr>
             @endif
             <tr>
-                <td class="label">IVA (16%):</td>
+                <td class="label">I.V.A.:</td>
                 <td class="value">${{ number_format($totals['tax'], 2) }}</td>
             </tr>
             <tr class="total-row">
-                <td class="label">TOTAL {{ $quote->currency ?? 'MXN' }}:</td>
+                <td class="label" style="color: white;">Total:</td>
                 <td class="value">${{ number_format($totals['total'], 2) }}</td>
             </tr>
         </table>
-        @if(isset($amountInWords))
-        <div class="amount-words">{{ $amountInWords }}</div>
-        @endif
     </div>
 
-    <!-- Bank Information -->
+    {{-- Bank Information --}}
     @if(isset($bankAccounts) && count($bankAccounts) > 0)
     <div class="bank-section">
-        <div class="bank-title">DATOS BANCARIOS PARA TRANSFERENCIA</div>
+        <div class="bank-title">Cuentas Bancarias: {{ $company->company_name ?? config('app.name') }}</div>
         @foreach($bankAccounts as $account)
-        <table class="bank-table" style="margin-bottom: 8px;">
-            <tr>
-                <td class="bank-label">Banco:</td>
-                <td>{{ $account['bank'] ?? '' }}</td>
-                <td class="bank-label">Moneda:</td>
-                <td>{{ $account['currency'] ?? 'MXN' }}</td>
-            </tr>
-            <tr>
-                <td class="bank-label">Cuenta:</td>
-                <td>{{ $account['account_number'] ?? '' }}</td>
-                <td class="bank-label">CLABE:</td>
-                <td>{{ $account['clabe'] ?? '' }}</td>
-            </tr>
-            @if(isset($account['swift']))
-            <tr>
-                <td class="bank-label">SWIFT:</td>
-                <td colspan="3">{{ $account['swift'] }}</td>
-            </tr>
-            @endif
-        </table>
+            Banco: {{ $account['bank'] ?? '' }}
+            @if(isset($account['branch'])) Sucursal: {{ $account['branch'] }} @endif
+            @if(isset($account['account_number'])) Clabe: {{ $account['account_number'] }} @endif
+            @if(isset($account['clabe'])) Clabe: {{ $account['clabe'] }} @endif
+            @if(isset($account['currency'])) | {{ $account['currency'] }} @endif
+            @if(isset($account['swift'])) | SWIFT: {{ $account['swift'] }} @endif
+            <br>
         @endforeach
     </div>
     @endif
 
-    <!-- Commercial Conditions -->
+    {{-- Commercial Conditions --}}
     @if(isset($conditions) && count($conditions) > 0)
     <div class="conditions-section">
-        <div class="conditions-title">CONDICIONES COMERCIALES</div>
-        <ul class="conditions-list">
-            @foreach($conditions as $condition)
-            <li>{{ $condition }}</li>
+        <div class="conditions-title">Condiciones:</div>
+        <div class="conditions-text">
+            @foreach($conditions as $index => $condition)
+                *{{ $condition }}<br>
             @endforeach
-        </ul>
+        </div>
     </div>
     @endif
 
-    <!-- Notes -->
+    {{-- Notes --}}
     @if($quote->notes)
-    <div style="background: #f7fafc; padding: 10px; margin-bottom: 15px; border: 1px solid #e2e8f0;">
-        <strong style="font-size: 9px;">Notas:</strong>
-        <p style="font-size: 9px; margin-top: 3px;">{{ $quote->notes }}</p>
+    <div class="notes-section">
+        <div class="notes-title">Notas:</div>
+        <div class="notes-text">{{ $quote->notes }}</div>
     </div>
     @endif
 
-    <!-- Footer -->
+    {{-- Footer --}}
     <div class="footer">
-        <p>Este documento es una cotizacion comercial, no tiene validez fiscal.</p>
-        <p>Para cualquier aclaracion, favor de comunicarse con nosotros.</p>
-        <p style="margin-top: 5px;">Generado el {{ now()->format('d/m/Y H:i') }}</p>
+        Pagina <script type="text/php">
+            if (isset($pdf)) {
+                $x = 530;
+                $y = 755;
+                $text = "Pagina {PAGE_NUM} de {PAGE_COUNT}";
+                $font = $fontMetrics->get_font("DejaVu Sans", "normal");
+                $size = 7;
+                $color = array(0.53, 0.53, 0.53);
+                $pdf->page_text($x, $y, $text, $font, $size, $color);
+            }
+        </script>
     </div>
 </body>
 </html>
