@@ -177,6 +177,43 @@ class SalesOrderController extends Controller
         ]);
     }
 
+    /**
+     * Cancel a sales order
+     * POST /api/v1/sales-orders/{salesOrder}/cancel
+     */
+    public function cancel(SalesOrder $salesOrder): JsonResponse
+    {
+        $user = request()->user('sanctum');
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        if (!$user->can('sales-orders.update') && !$user->hasAnyRole(['god', 'admin'])) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
+        if ($salesOrder->status === 'cancelled') {
+            return response()->json(['error' => 'La orden ya esta cancelada'], 400);
+        }
+
+        if ($salesOrder->status === 'completed') {
+            return response()->json(['error' => 'No se puede cancelar una orden completada'], 400);
+        }
+
+        $salesOrder->update(['status' => 'cancelled']);
+
+        return response()->json([
+            'message' => 'Orden cancelada exitosamente',
+            'data' => [
+                'type' => 'sales-orders',
+                'id' => (string) $salesOrder->id,
+                'attributes' => [
+                    'status' => 'cancelled',
+                    'orderNumber' => $salesOrder->order_number,
+                ],
+            ],
+        ]);
+    }
+
     // ==========================================================
     // SA-M011: PDF Generation Methods
     // ==========================================================
