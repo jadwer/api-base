@@ -11,30 +11,45 @@ class ContactDocumentAuthorizer implements Authorizer
     public function index(Request $request, string $modelClass): bool|Response
     {
         $user = $request->user();
+        if ($user && $user->hasAnyRole(['god', 'admin', 'administrator'])) {
+            return true;
+        }
         return $user?->can('contact-documents.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
     {
         $user = $request->user();
+        if ($user && $user->hasAnyRole(['god', 'admin', 'administrator'])) {
+            return true;
+        }
         return $user?->can('contact-documents.store') ?? false;
     }
-    
+
     public function show(Request $request, object $model): bool|Response
     {
         $user = $request->user();
+        if ($user && $user->hasAnyRole(['god', 'admin', 'administrator'])) {
+            return true;
+        }
         return $user?->can('contact-documents.show') ?? false;
     }
-    
+
     public function update(Request $request, object $model): bool|Response
     {
         $user = $request->user();
+        if ($user && $user->hasAnyRole(['god', 'admin', 'administrator'])) {
+            return true;
+        }
         return $user?->can('contact-documents.update') ?? false;
     }
-    
+
     public function destroy(Request $request, object $model): bool|Response
     {
         $user = $request->user();
+        if ($user && $user->hasAnyRole(['god', 'admin', 'administrator'])) {
+            return true;
+        }
         return $user?->can('contact-documents.destroy') ?? false;
     }
     
