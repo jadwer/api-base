@@ -459,7 +459,7 @@
                             @endif
                         </td>
                         <td class="text-center">{{ number_format($item->quantity, 0) }}</td>
-                        <td class="text-center">{{ $item->unit ?? 'PZA' }}</td>
+                        <td class="text-center">{{ $item->product && $item->product->unit ? $item->product->unit->name : 'PZA' }}</td>
                         <td class="text-right">${{ number_format($item->unit_price, 2) }}</td>
                         <td class="text-right">${{ number_format($item->subtotal ?? ($item->quantity * $item->unit_price), 2) }}</td>
                     </tr>

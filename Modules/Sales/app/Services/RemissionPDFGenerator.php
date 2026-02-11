@@ -77,7 +77,7 @@ class RemissionPDFGenerator
         $contactAddress = null;
 
         if ($contact) {
-            $contactAddress = $contact->contactAddresses->where('is_primary', true)->first()
+            $contactAddress = $contact->contactAddresses->where('is_default', true)->first()
                 ?? $contact->contactAddresses->first();
         }
 
@@ -86,7 +86,7 @@ class RemissionPDFGenerator
 
         return [
             'remission' => $remission,
-            'items' => $remission->items()->with('product')->get(),
+            'items' => $remission->items()->with(['product.unit'])->get(),
             'order' => $order,
             'contact' => $contact,
             'contactAddress' => $contactAddress,

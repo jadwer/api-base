@@ -445,7 +445,7 @@
                     @endif
                 </td>
                 <td class="text-center"><strong>{{ number_format($item->quantity, 0) }}</strong></td>
-                <td class="text-center">{{ $item->unit ?? 'PZA' }}</td>
+                <td class="text-center">{{ $item->product && $item->product->unit ? $item->product->unit->name : 'PZA' }}</td>
                 <td>
                     <span class="product-name">{{ $item->product_name ?? ($item->product ? $item->product->name : 'Producto') }}</span>
                     @if($item->batch_number)

@@ -60,7 +60,7 @@ class SalesOrderPDFGenerator
      */
     protected function prepareData(SalesOrder $order, ?CompanySetting $settings, array $options): array
     {
-        $order->load(['items.product', 'contact']);
+        $order->load(['items.product.unit', 'contact']);
 
         $totals = $this->calculateTotals($order);
         $currency = $order->metadata['currency'] ?? 'MXN';

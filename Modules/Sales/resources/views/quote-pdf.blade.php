@@ -239,18 +239,7 @@
             font-size: 8px;
         }
 
-        /* Footer */
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            text-align: right;
-            font-size: 8px;
-            color: #888;
-            padding: 5px 25px;
-            border-top: 1px solid #ddd;
-        }
+        /* Footer is rendered via DomPDF inline PHP (page_text) */
     </style>
 </head>
 <body>
@@ -346,7 +335,7 @@
                 <td class="product-code">{{ $item->product_sku ?? 'N/A' }}</td>
                 <td class="product-name">{{ $item->product_name ?? ($item->product ? $item->product->name : 'Producto') }}</td>
                 <td class="text-center">{{ number_format($item->quantity, 2) }}</td>
-                <td class="text-center">{{ $item->product->unit ?? 'PZA' }}</td>
+                <td class="text-center">{{ $item->product && $item->product->unit ? $item->product->unit->name : 'PZA' }}</td>
                 <td>
                     @if($item->product && $item->product->description)
                         {{ \Illuminate\Support\Str::limit(strip_tags($item->product->description), 120) }}
@@ -430,19 +419,17 @@
     </div>
     @endif
 
-    {{-- Footer --}}
-    <div class="footer">
-        Pagina <script type="text/php">
-            if (isset($pdf)) {
-                $x = 530;
-                $y = 755;
-                $text = "Pagina {PAGE_NUM} de {PAGE_COUNT}";
-                $font = $fontMetrics->get_font("DejaVu Sans", "normal");
-                $size = 7;
-                $color = array(0.53, 0.53, 0.53);
-                $pdf->page_text($x, $y, $text, $font, $size, $color);
-            }
-        </script>
-    </div>
+    {{-- Footer (page numbering via DomPDF inline PHP) --}}
+    <script type="text/php">
+        if (isset($pdf)) {
+            $x = 530;
+            $y = 755;
+            $text = "Pagina {PAGE_NUM} de {PAGE_COUNT}";
+            $font = $fontMetrics->get_font("DejaVu Sans", "normal");
+            $size = 7;
+            $color = array(0.53, 0.53, 0.53);
+            $pdf->page_text($x, $y, $text, $font, $size, $color);
+        }
+    </script>
 </body>
 </html>

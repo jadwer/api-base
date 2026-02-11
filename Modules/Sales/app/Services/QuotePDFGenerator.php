@@ -88,7 +88,7 @@ class QuotePDFGenerator
         if ($contact && $contact->relationLoaded('contactAddresses')) {
             $contactAddress = $contact->contactAddresses->first();
         } elseif ($contact) {
-            $contactAddress = $contact->contactAddresses()->where('is_primary', true)->first()
+            $contactAddress = $contact->contactAddresses()->where('is_default', true)->first()
                 ?? $contact->contactAddresses()->first();
         }
 
@@ -100,7 +100,7 @@ class QuotePDFGenerator
 
         return [
             'quote' => $quote,
-            'items' => $quote->items()->with('product.brand')->get(),
+            'items' => $quote->items()->with(['product.brand', 'product.unit'])->get(),
             'totals' => $this->calculateTotals($quote),
             'contact' => $contact,
             'contactAddress' => $contactAddress,
