@@ -86,7 +86,7 @@ class PublicProductSchema extends Schema
             Where::make('unit_id'),
             Where::make('category_id'),
             Where::make('brand_id'),
-            Where::make('is_on_sale'),
+            Where::make('is_on_sale')->asBoolean(),
             Scope::make('onSale', 'on_sale'),
             WhereIn::make('brands', 'brand_id')->delimiter(','),
             WhereIn::make('categories', 'category_id')->delimiter(','),

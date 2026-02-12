@@ -37,7 +37,7 @@ class PublicProductImageSchema extends Schema
         return [
             WhereIdIn::make($this),
             Where::make('product_id'),
-            Where::make('is_primary'),
+            Where::make('is_primary')->asBoolean(),
         ];
     }
 

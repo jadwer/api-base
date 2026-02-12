@@ -73,9 +73,9 @@ class ARInvoiceSchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('currency'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('status'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('journal_entry_id'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('is_active'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('is_active')->asBoolean(),
             // FI-M002: Discount filters
-            \LaravelJsonApi\Eloquent\Filters\Where::make('discount_applied'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('discount_applied')->asBoolean(),
             \LaravelJsonApi\Eloquent\Filters\Scope::make('withAvailableDiscount', 'with_available_discount'),
         ];
     }

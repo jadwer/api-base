@@ -45,8 +45,8 @@ class PaymentMethodSchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('code'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('name'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('type'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('requires_reference'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('is_active'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('requires_reference')->asBoolean(),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('is_active')->asBoolean(),
         ];
     }
 

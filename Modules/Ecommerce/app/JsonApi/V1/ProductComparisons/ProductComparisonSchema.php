@@ -48,7 +48,7 @@ class ProductComparisonSchema extends Schema
         return [
             WhereIdIn::make($this),
             Where::make('userId', 'user_id'),
-            Where::make('isPublic', 'is_public'),
+            Where::make('isPublic', 'is_public')->asBoolean(),
         ];
     }
 

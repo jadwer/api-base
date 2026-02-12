@@ -56,9 +56,9 @@ class LeaveTypeSchema extends Schema
         return [
             WhereIdIn::make($this),
             Where::make('code'),
-            Where::make('active'),
-            Where::make('paid'),
-            Where::make('requiresApproval', 'requires_approval'),
+            Where::make('active')->asBoolean(),
+            Where::make('paid')->asBoolean(),
+            Where::make('requiresApproval', 'requires_approval')->asBoolean(),
         ];
     }
 

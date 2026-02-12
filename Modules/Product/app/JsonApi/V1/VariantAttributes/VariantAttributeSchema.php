@@ -46,7 +46,7 @@ class VariantAttributeSchema extends Schema
             WhereIdIn::make($this),
             Where::make('name'),
             Where::make('code'),
-            Where::make('is_active'),
+            Where::make('is_active')->asBoolean(),
         ];
     }
 

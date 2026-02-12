@@ -58,8 +58,8 @@ class AccountSchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('nature'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('level'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('currency'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('isPostable', 'is_postable'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('isCashFlow', 'is_cash_flow'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('isPostable', 'is_postable')->asBoolean(),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('isCashFlow', 'is_cash_flow')->asBoolean(),
             \LaravelJsonApi\Eloquent\Filters\Where::make('status'),
         ];
     }

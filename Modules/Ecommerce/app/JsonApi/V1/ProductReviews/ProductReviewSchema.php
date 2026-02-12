@@ -73,7 +73,7 @@ class ProductReviewSchema extends Schema
             Where::make('userId', 'user_id'),
             Where::make('status'),
             Where::make('rating'),
-            Where::make('isVerifiedPurchase', 'is_verified_purchase'),
+            Where::make('isVerifiedPurchase', 'is_verified_purchase')->asBoolean(),
         ];
     }
 

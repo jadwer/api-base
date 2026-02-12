@@ -84,7 +84,7 @@ class WarehouseSchema extends Schema
                 static fn($value) => "%{$value}%"
             )->using('like'),
             Where::make('warehouse_type'),
-            Where::make('is_active'),
+            Where::make('is_active')->asBoolean(),
             WhereIn::make('warehouse_type'),
         ];
     }

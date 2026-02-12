@@ -49,7 +49,7 @@ class ShippingMethodSchema extends Schema
     {
         return [
             WhereIdIn::make($this),
-            Where::make('isActive', 'is_active'),
+            Where::make('isActive', 'is_active')->asBoolean(),
             Where::make('carrier'),
             Where::make('code'),
         ];

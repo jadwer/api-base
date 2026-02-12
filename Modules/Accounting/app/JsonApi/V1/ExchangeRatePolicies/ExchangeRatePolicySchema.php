@@ -48,7 +48,7 @@ class ExchangeRatePolicySchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('source'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('scope'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('max_age_days'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('isActive', 'is_active'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('isActive', 'is_active')->asBoolean(),
         ];
     }
 

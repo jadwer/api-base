@@ -70,7 +70,7 @@ class APInvoiceSchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('currency'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('status'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('journal_entry_id'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('is_active'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('is_active')->asBoolean(),
             \LaravelJsonApi\Eloquent\Filters\Where::make('reconciliation_status'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('reconciled_by'),
         ];

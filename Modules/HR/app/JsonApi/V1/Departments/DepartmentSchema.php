@@ -57,7 +57,7 @@ class DepartmentSchema extends Schema
         return [
             WhereIdIn::make($this),
             Where::make('name'),
-            Where::make('isActive', 'is_active'),
+            Where::make('isActive', 'is_active')->asBoolean(),
             Where::make('managerId', 'manager_id'),
         ];
     }

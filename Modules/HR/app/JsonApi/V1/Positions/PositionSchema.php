@@ -61,7 +61,7 @@ class PositionSchema extends Schema
             WhereIdIn::make($this),
             Where::make('title'),
             Where::make('level'),
-            Where::make('isActive', 'is_active'),
+            Where::make('isActive', 'is_active')->asBoolean(),
             Where::make('departmentId', 'department_id'),
         ];
     }

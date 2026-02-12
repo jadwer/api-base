@@ -55,9 +55,9 @@ class PipelineStageSchema extends Schema
             WhereIdIn::make($this),
             Where::make('name'),
             Where::make('stageType', 'type'),
-            Where::make('isActive', 'is_active'),
-            Where::make('isClosedWon', 'is_closed_won'),
-            Where::make('isClosedLost', 'is_closed_lost'),
+            Where::make('isActive', 'is_active')->asBoolean(),
+            Where::make('isClosedWon', 'is_closed_won')->asBoolean(),
+            Where::make('isClosedLost', 'is_closed_lost')->asBoolean(),
         ];
     }
 

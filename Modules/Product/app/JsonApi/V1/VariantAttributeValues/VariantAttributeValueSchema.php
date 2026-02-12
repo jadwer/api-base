@@ -50,7 +50,7 @@ class VariantAttributeValueSchema extends Schema
             Where::make('value'),
             Where::make('code'),
             Where::make('variant_attribute_id'),
-            Where::make('is_active'),
+            Where::make('is_active')->asBoolean(),
         ];
     }
 

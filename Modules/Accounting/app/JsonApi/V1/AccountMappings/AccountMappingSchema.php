@@ -47,7 +47,7 @@ class AccountMappingSchema extends Schema
             WhereIdIn::make($this),
             \LaravelJsonApi\Eloquent\Filters\Where::make('mappingType', 'mapping_type'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('version'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('isActive', 'is_active'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('isActive', 'is_active')->asBoolean(),
         ];
     }
 

@@ -70,8 +70,8 @@ class DiscountRuleSchema extends Schema
             WhereIdIn::make($this),
             Where::make('discountType', 'discount_type'),
             Where::make('appliesTo', 'applies_to'),
-            Where::make('isActive', 'is_active'),
-            Where::make('isCombinable', 'is_combinable'),
+            Where::make('isActive', 'is_active')->asBoolean(),
+            Where::make('isCombinable', 'is_combinable')->asBoolean(),
             Where::make('code'),
             Scope::make('search', 'forSearch'),
         ];

@@ -88,9 +88,9 @@ class WarehouseLocationSchema extends Schema
             )->using('like'),
             Where::make('location_type'),
             Where::make('warehouse_id'),
-            Where::make('is_active'),
-            Where::make('is_pickable'),
-            Where::make('is_receivable'),
+            Where::make('is_active')->asBoolean(),
+            Where::make('is_pickable')->asBoolean(),
+            Where::make('is_receivable')->asBoolean(),
             WhereIn::make('location_type'),
         ];
     }

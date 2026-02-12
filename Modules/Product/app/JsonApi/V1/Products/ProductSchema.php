@@ -74,7 +74,7 @@ class ProductSchema extends Schema
             Where::make('unit_id'),
             Where::make('category_id'),
             Where::make('brand_id'),
-            Where::make('is_active'),
+            Where::make('is_active')->asBoolean(),
             WhereIn::make('brands', 'brand_id')->delimiter(','),
             WhereIn::make('categories', 'category_id')->delimiter(','),
             WhereIn::make('units', 'unit_id')->delimiter(','),

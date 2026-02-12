@@ -66,7 +66,7 @@ class PaymentSchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('status'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('journal_entry_id'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('reference'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('is_active'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('is_active')->asBoolean(),
         ];
     }
 

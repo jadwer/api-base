@@ -50,7 +50,7 @@ class CouponSchema extends Schema
     {
         return [
             WhereIdIn::make($this),
-            Where::make('is_active'),
+            Where::make('is_active')->asBoolean(),
             Where::make('code'),
         ];
     }

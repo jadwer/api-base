@@ -51,7 +51,7 @@ class ProductAnswerSchema extends Schema
             WhereIdIn::make($this),
             Where::make('questionId', 'question_id'),
             Where::make('userId', 'user_id'),
-            Where::make('isVerified', 'is_verified'),
+            Where::make('isVerified', 'is_verified')->asBoolean(),
         ];
     }
 

@@ -64,7 +64,7 @@ class BankTransactionSchema extends Schema
             Where::make('reconciliation_status'),
             Where::make('statement_number'),
             Where::make('reference'),
-            Where::make('is_active'),
+            Where::make('is_active')->asBoolean(),
         ];
     }
 

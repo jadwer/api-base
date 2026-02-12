@@ -58,7 +58,7 @@ class ContactAddressSchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('state'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('country'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('postalCode', 'postal_code'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('isDefault', 'is_default'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('isDefault', 'is_default')->asBoolean(),
         ];
     }
 

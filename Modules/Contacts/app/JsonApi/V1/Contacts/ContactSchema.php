@@ -67,8 +67,8 @@ class ContactSchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('phone'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('website'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('status'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('isCustomer', 'is_customer'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('isSupplier', 'is_supplier'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('isCustomer', 'is_customer')->asBoolean(),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('isSupplier', 'is_supplier')->asBoolean(),
             \LaravelJsonApi\Eloquent\Filters\Where::make('classification'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('paymentTerms', 'payment_terms'),
         ];

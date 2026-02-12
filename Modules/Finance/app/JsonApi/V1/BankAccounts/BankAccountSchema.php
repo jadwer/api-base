@@ -55,7 +55,7 @@ class BankAccountSchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('currency'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('gl_account_id'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('status'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('is_active'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('is_active')->asBoolean(),
         ];
     }
 

@@ -53,8 +53,8 @@ class CurrencySchema extends Schema
         return [
             WhereIdIn::make($this),
             Where::make('code'),
-            Where::make('isActive', 'is_active'),
-            Where::make('isDefault', 'is_default'),
+            Where::make('isActive', 'is_active')->asBoolean(),
+            Where::make('isDefault', 'is_default')->asBoolean(),
         ];
     }
 

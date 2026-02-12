@@ -67,8 +67,8 @@ class WishlistSchema extends Schema
         return [
             WhereIdIn::make($this),
             Where::make('userId', 'user_id'),
-            Where::make('isDefault', 'is_default'),
-            Where::make('isPublic', 'is_public'),
+            Where::make('isDefault', 'is_default')->asBoolean(),
+            Where::make('isPublic', 'is_public')->asBoolean(),
         ];
     }
 

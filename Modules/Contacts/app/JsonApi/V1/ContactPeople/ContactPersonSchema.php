@@ -56,7 +56,7 @@ class ContactPersonSchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('email'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('phone'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('mobile'),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('is_primary'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('is_primary')->asBoolean(),
         ];
     }
 

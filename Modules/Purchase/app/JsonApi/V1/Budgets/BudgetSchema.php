@@ -75,7 +75,7 @@ class BudgetSchema extends Schema
             Where::make('categoryId', 'category_id'),
             Where::make('contactId', 'contact_id'),
             Where::make('fiscalYear', 'fiscal_year'),
-            Where::make('isActive', 'is_active'),
+            Where::make('isActive', 'is_active')->asBoolean(),
             Scope::make('current'),
             Scope::make('overWarning', 'over_warning'),
             Scope::make('overCritical', 'over_critical'),
