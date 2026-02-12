@@ -7,6 +7,7 @@ use Modules\Ecommerce\Models\CheckoutSession;
 use Modules\Ecommerce\Models\ShippingMethod;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Models\SalesOrderItem;
+use Modules\Sales\Models\FolioSequence;
 use Modules\Finance\Models\ARInvoice;
 use Modules\Contacts\Models\Contact;
 use Modules\User\Models\User;
@@ -245,7 +246,7 @@ class CheckoutService
             // Create sales order
             $order = SalesOrder::create([
                 'contact_id' => $contact->id,
-                'order_number' => $this->generateOrderNumber(),
+                'order_number' => FolioSequence::getNextFolio('sales_order'),
                 'order_date' => now(),
                 'status' => 'confirmed',
                 'order_source' => 'ecommerce',
@@ -345,29 +346,7 @@ class CheckoutService
         return $shippingMethod->calculateShippingCost($totalWeight);
     }
 
-    /**
-     * Generate unique order number
-     *
-     * @return string
-     */
-    private function generateOrderNumber(): string
-    {
-        $prefix = 'ORD';
-        $date = now()->format('Ymd');
-
-        // Retry loop to guarantee uniqueness
-        for ($i = 0; $i < 5; $i++) {
-            $random = strtoupper(\Illuminate\Support\Str::random(8));
-            $number = "{$prefix}-{$date}-{$random}";
-
-            if (!SalesOrder::where('order_number', $number)->exists()) {
-                return $number;
-            }
-        }
-
-        // Fallback: use timestamp-based suffix
-        return "{$prefix}-{$date}-" . strtoupper(dechex(time()));
-    }
+    // Order number generation now uses FolioSequence::getNextFolio('sales_order')
 
     /**
      * Get or create Contact for the given User

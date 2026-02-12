@@ -40,11 +40,13 @@ class SalesOrderSchema extends Schema
         return [
             ID::make(),
 
-            // Foreign key
+            // Foreign keys
             Number::make('contactId', 'contact_id'),
-            
-            // Relación con Contact
+            Number::make('quoteId', 'quote_id')->readOnly(),
+
+            // Relations
             BelongsTo::make('contact')->type('contacts'),
+            BelongsTo::make('quote')->type('quotes'),
             
             // Campos básicos - camelCase for JSON:API, mapped to snake_case in DB
             Str::make('orderNumber', 'order_number')->sortable(),
@@ -106,6 +108,7 @@ class SalesOrderSchema extends Schema
     {
         return [
             'contact',
+            'quote',
             'items',
             'items.product',
             // SA-M001: Shipments

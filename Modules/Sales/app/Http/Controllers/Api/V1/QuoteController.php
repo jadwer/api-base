@@ -13,6 +13,7 @@ use Modules\Sales\Models\Quote;
 use Modules\Sales\Models\QuoteItem;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Models\SalesOrderItem;
+use Modules\Sales\Models\FolioSequence;
 use Modules\Sales\Services\QuotePDFGenerator;
 use Modules\Ecommerce\Models\ShoppingCart;
 use Modules\Product\Models\Product;
@@ -218,7 +219,8 @@ class QuoteController extends Controller
             // Create sales order from quote
             $order = SalesOrder::create([
                 'contact_id' => $quote->contact_id,
-                'order_number' => 'SO-' . strtoupper(Str::random(8)),
+                'quote_id' => $quote->id,
+                'order_number' => FolioSequence::getNextFolio('sales_order'),
                 'status' => 'pending',
                 'order_date' => now(),
                 'subtotal' => $quote->subtotal_amount,

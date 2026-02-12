@@ -7,6 +7,8 @@ use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Models\SalesOrderItem;
 use Modules\Sales\Models\Shipment;
 use Modules\Sales\Models\ShipmentItem;
+use Modules\Inventory\Models\Stock;
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
 /**
@@ -91,6 +93,9 @@ class ShipmentService
                 $orderItem->updateFulfillmentStatus();
             }
 
+            // GAP-1: Deduct physical inventory and release reservation on ship
+            $this->deductInventoryOnShip($shipment);
+
             // Update order status if fully shipped
             $this->updateOrderStatus($shipment->salesOrder);
 
@@ -138,13 +143,16 @@ class ShipmentService
         }
 
         return DB::transaction(function () use ($shipment, $reason) {
-            // If shipment was already shipped, revert the shipped quantities
+            // If shipment was already shipped, revert the shipped quantities and restore inventory
             if ($shipment->status === 'shipped') {
                 foreach ($shipment->items as $shipmentItem) {
                     $orderItem = $shipmentItem->salesOrderItem;
                     $orderItem->shipped_quantity = max(0, $orderItem->shipped_quantity - $shipmentItem->quantity);
                     $orderItem->updateFulfillmentStatus();
                 }
+
+                // GAP-1: Restore inventory that was deducted on ship
+                $this->restoreInventoryOnCancel($shipment);
             }
 
             $shipment->update([
@@ -250,6 +258,96 @@ class ShipmentService
                 throw new InvalidArgumentException(
                     "Cannot ship {$quantity} of item {$orderItemId}. Only {$effectiveRemaining} available (accounting for pending shipments)."
                 );
+            }
+        }
+    }
+
+    /**
+     * GAP-1: Deduct physical inventory when shipment is marked as shipped.
+     * Decrements Stock.quantity and Stock.reserved_quantity.
+     */
+    protected function deductInventoryOnShip(Shipment $shipment): void
+    {
+        $warehouseId = $shipment->warehouse_id;
+
+        foreach ($shipment->items as $shipmentItem) {
+            $productId = $shipmentItem->salesOrderItem->product_id ?? null;
+            if (!$productId) {
+                continue;
+            }
+
+            try {
+                $stockQuery = Stock::where('product_id', $productId);
+                if ($warehouseId) {
+                    $stockQuery->where('warehouse_id', $warehouseId);
+                }
+                $stock = $stockQuery->lockForUpdate()->first();
+
+                if ($stock) {
+                    $qty = $shipmentItem->quantity;
+                    $stock->decrement('quantity', $qty);
+                    // Release reservation (guard against going below zero)
+                    $releaseQty = min($qty, $stock->reserved_quantity);
+                    if ($releaseQty > 0) {
+                        $stock->decrement('reserved_quantity', $releaseQty);
+                    }
+
+                    Log::info('Inventory deducted on shipment', [
+                        'shipment_id' => $shipment->id,
+                        'product_id' => $productId,
+                        'quantity' => $qty,
+                        'warehouse_id' => $warehouseId,
+                    ]);
+                }
+            } catch (\Exception $e) {
+                Log::error('Failed to deduct inventory on shipment', [
+                    'shipment_id' => $shipment->id,
+                    'product_id' => $productId,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+    }
+
+    /**
+     * GAP-1: Restore inventory when a shipped shipment is cancelled.
+     * Increments Stock.quantity and Stock.reserved_quantity back.
+     */
+    protected function restoreInventoryOnCancel(Shipment $shipment): void
+    {
+        $warehouseId = $shipment->warehouse_id;
+
+        foreach ($shipment->items as $shipmentItem) {
+            $productId = $shipmentItem->salesOrderItem->product_id ?? null;
+            if (!$productId) {
+                continue;
+            }
+
+            try {
+                $stockQuery = Stock::where('product_id', $productId);
+                if ($warehouseId) {
+                    $stockQuery->where('warehouse_id', $warehouseId);
+                }
+                $stock = $stockQuery->lockForUpdate()->first();
+
+                if ($stock) {
+                    $qty = $shipmentItem->quantity;
+                    $stock->increment('quantity', $qty);
+                    $stock->increment('reserved_quantity', $qty);
+
+                    Log::info('Inventory restored on shipment cancellation', [
+                        'shipment_id' => $shipment->id,
+                        'product_id' => $productId,
+                        'quantity' => $qty,
+                        'warehouse_id' => $warehouseId,
+                    ]);
+                }
+            } catch (\Exception $e) {
+                Log::error('Failed to restore inventory on shipment cancel', [
+                    'shipment_id' => $shipment->id,
+                    'product_id' => $productId,
+                    'error' => $e->getMessage(),
+                ]);
             }
         }
     }

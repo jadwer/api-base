@@ -51,7 +51,7 @@ class SalesOrder extends Model
     }
 
     protected $fillable = [
-        'contact_id', 'assigned_to', 'order_number', 'status', 'order_date',
+        'contact_id', 'assigned_to', 'quote_id', 'order_number', 'status', 'order_date',
         'approved_at', 'delivered_at', 'subtotal', 'tax_amount', 'total_amount',
         'discount_total', 'notes', 'metadata', 'shipping_address', 'billing_address',
         'ar_invoice_id', 'invoicing_status', 'financial_status', 'invoicing_notes',
@@ -62,6 +62,7 @@ class SalesOrder extends Model
         'id' => 'integer',
         'contact_id' => 'integer',
         'assigned_to' => 'integer',
+        'quote_id' => 'integer',
         'order_date' => 'date',
         'approved_at' => 'datetime',
         'delivered_at' => 'datetime',
@@ -108,6 +109,11 @@ class SalesOrder extends Model
     }
 
     // Relaciones
+    public function quote(): BelongsTo
+    {
+        return $this->belongsTo(Quote::class, 'quote_id');
+    }
+
     public function contact(): BelongsTo
     {
         return $this->belongsTo(Contact::class, 'contact_id');

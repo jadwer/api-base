@@ -58,6 +58,23 @@ class OrderStatusService
             );
         }
 
+        // GAP-2: If transitioning to 'delivered' and order has shipments,
+        // at least one must be in 'delivered' status.
+        // Orders without shipments can still be marked delivered (digital/services).
+        if ($newStatus === 'delivered') {
+            $totalShipped = $order->items->sum('shipped_quantity');
+            if ($totalShipped > 0) {
+                $hasDeliveredShipment = $order->shipments()
+                    ->where('status', 'delivered')
+                    ->exists();
+                if (!$hasDeliveredShipment) {
+                    throw new \Exception(
+                        "Order has shipments but none are marked as delivered yet. Mark at least one shipment as delivered first."
+                    );
+                }
+            }
+        }
+
         return DB::transaction(function () use ($order, $newStatus, $notes, $metadata) {
             $oldStatus = $order->status;
 
