@@ -126,6 +126,22 @@ class Product extends Model
     }
 
     /**
+     * Product images gallery, ordered by sort_order.
+     */
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class)->orderBy('sort_order');
+    }
+
+    /**
+     * Primary image only.
+     */
+    public function primaryImage(): HasMany
+    {
+        return $this->hasMany(ProductImage::class)->where('is_primary', true);
+    }
+
+    /**
      * PR-M003: Un producto puede tener múltiples variantes.
      */
     public function variants(): HasMany

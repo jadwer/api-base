@@ -20,6 +20,8 @@ class ProductPermissionSeeder extends Seeder
             'variant-attributes.index', 'variant-attributes.show', 'variant-attributes.store', 'variant-attributes.update', 'variant-attributes.destroy',
             'variant-attribute-values.index', 'variant-attribute-values.show', 'variant-attribute-values.store', 'variant-attribute-values.update', 'variant-attribute-values.destroy',
             'product-variants.index', 'product-variants.show', 'product-variants.store', 'product-variants.update', 'product-variants.destroy',
+            // Product Images Gallery
+            'product-images.index', 'product-images.show', 'product-images.store', 'product-images.update', 'product-images.destroy',
         ];
 
         $this->bulkCreatePermissions($permissions);

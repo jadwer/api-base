@@ -8,6 +8,7 @@ use Modules\Product\JsonApi\V1\PublicProducts\PublicProductSchema;
 use Modules\Product\JsonApi\V1\Units\UnitSchema;
 use Modules\Product\JsonApi\V1\Categories\CategorySchema;
 use Modules\Product\JsonApi\V1\Brands\BrandSchema;
+use Modules\Product\JsonApi\V1\PublicProductImages\PublicProductImageSchema;
 
 class PublicServer extends BaseServer
 {
@@ -38,6 +39,7 @@ class PublicServer extends BaseServer
         return [
             // Public Product Catalog - only what's needed for public access
             PublicProductSchema::class,
+            PublicProductImageSchema::class,
             UnitSchema::class,
             CategorySchema::class,
             BrandSchema::class,

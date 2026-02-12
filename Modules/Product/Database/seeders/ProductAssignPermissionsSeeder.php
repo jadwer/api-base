@@ -24,6 +24,7 @@ class ProductAssignPermissionsSeeder extends Seeder
                 ->orWhere('name', 'like', 'variant-attributes.%')
                 ->orWhere('name', 'like', 'variant-attribute-values.%')
                 ->orWhere('name', 'like', 'product-variants.%')
+                ->orWhere('name', 'like', 'product-images.%')
                 ->get();
             $god->givePermissionTo($permissions);
         }
@@ -80,6 +81,13 @@ class ProductAssignPermissionsSeeder extends Seeder
                 'product-variants.store',
                 'product-variants.update',
                 'product-variants.destroy',
+
+                // Product Images Gallery - Full access
+                'product-images.index',
+                'product-images.show',
+                'product-images.store',
+                'product-images.update',
+                'product-images.destroy',
             ]);
         }
 
@@ -102,6 +110,9 @@ class ProductAssignPermissionsSeeder extends Seeder
                 'variant-attribute-values.show',
                 'product-variants.index',
                 'product-variants.show',
+                // Product Images - Read only
+                'product-images.index',
+                'product-images.show',
             ]);
         }
     }

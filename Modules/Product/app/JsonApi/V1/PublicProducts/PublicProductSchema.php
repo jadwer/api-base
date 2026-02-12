@@ -9,6 +9,7 @@ use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Fields\Boolean;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
+use LaravelJsonApi\Eloquent\Fields\Relations\HasMany;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Filters\WhereIn;
@@ -59,6 +60,7 @@ class PublicProductSchema extends Schema
             BelongsTo::make('unit')->type('units'),
             BelongsTo::make('category')->type('categories'),
             BelongsTo::make('brand')->type('brands'),
+            HasMany::make('images')->type('product-images')->readOnly(),
 
             DateTime::make('createdAt', 'created_at')->readOnly()->sortable(),
             DateTime::make('updatedAt', 'updated_at')->readOnly()->sortable(),
@@ -96,8 +98,9 @@ class PublicProductSchema extends Schema
     {
         return [
             'unit',
-            'category', 
+            'category',
             'brand',
+            'images',
         ];
     }
 

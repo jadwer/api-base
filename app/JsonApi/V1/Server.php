@@ -111,6 +111,7 @@ class Server extends BaseServer
             \Modules\Product\JsonApi\V1\VariantAttributes\VariantAttributeSchema::class,
             \Modules\Product\JsonApi\V1\VariantAttributeValues\VariantAttributeValueSchema::class,
             \Modules\Product\JsonApi\V1\ProductVariants\ProductVariantSchema::class,
+            \Modules\Product\JsonApi\V1\ProductImages\ProductImageSchema::class,
 
             // Inventory Module
             WarehouseSchema::class,
@@ -245,6 +246,7 @@ class Server extends BaseServer
             'variant-attributes' => \Modules\Product\JsonApi\V1\VariantAttributes\VariantAttributeAuthorizer::class,
             'variant-attribute-values' => \Modules\Product\JsonApi\V1\VariantAttributeValues\VariantAttributeValueAuthorizer::class,
             'product-variants' => \Modules\Product\JsonApi\V1\ProductVariants\ProductVariantAuthorizer::class,
+            'product-images' => \Modules\Product\JsonApi\V1\ProductImages\ProductImageAuthorizer::class,
             'warehouses' => \Modules\Inventory\JsonApi\V1\Warehouses\WarehouseAuthorizer::class,
             'warehouse-locations' => \Modules\Inventory\JsonApi\V1\WarehouseLocations\WarehouseLocationAuthorizer::class,
             'stocks' => \Modules\Inventory\JsonApi\V1\Stocks\StockAuthorizer::class,

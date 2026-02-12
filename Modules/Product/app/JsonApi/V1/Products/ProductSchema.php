@@ -48,6 +48,7 @@ class ProductSchema extends Schema
             BelongsTo::make('category')->type('categories'),
             BelongsTo::make('brand')->type('brands'),
             HasMany::make('stock')->type('stocks'),
+            HasMany::make('images')->type('product-images'),
 
             DateTime::make('createdAt', 'created_at')->readOnly()->sortable(),
             DateTime::make('updatedAt', 'updated_at')->readOnly(),
@@ -88,6 +89,7 @@ class ProductSchema extends Schema
             'brand',
             'stock',
             'stock.warehouse',
+            'images',
         ];
     }
 

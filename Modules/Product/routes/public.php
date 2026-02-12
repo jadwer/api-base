@@ -23,5 +23,6 @@ JsonApiRoute::server('public')
                 $relationships->hasOne('unit')->readOnly();
                 $relationships->hasOne('category')->readOnly();
                 $relationships->hasOne('brand')->readOnly();
+                $relationships->hasMany('images')->readOnly();
             });
     });

@@ -9,6 +9,7 @@ use Modules\Product\Http\Controllers\Api\V1\BrandController;
 use Modules\Product\Http\Controllers\Api\V1\VariantAttributeController;
 use Modules\Product\Http\Controllers\Api\V1\VariantAttributeValueController;
 use Modules\Product\Http\Controllers\Api\V1\ProductVariantController;
+use Modules\Product\Http\Controllers\Api\V1\ProductImageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +22,13 @@ JsonApiRoute::server('v1')
     ->prefix('v1')
     ->middleware('auth:sanctum')
     ->resources(function (ResourceRegistrar $server) {
-        $server->resource('products', ProductController::class);
+        $server->resource('products', ProductController::class)
+            ->relationships(function ($relationships) {
+                $relationships->hasOne('unit');
+                $relationships->hasOne('category');
+                $relationships->hasOne('brand');
+                $relationships->hasMany('images');
+            });
         $server->resource('units', UnitController::class);
         $server->resource('categories', CategoryController::class);
         $server->resource('brands', BrandController::class);
@@ -40,5 +47,11 @@ JsonApiRoute::server('v1')
             ->relationships(function ($relationships) {
                 $relationships->hasOne('product');
                 $relationships->hasMany('attributeValues');
+            });
+
+        // Product Images Gallery
+        $server->resource('product-images', ProductImageController::class)
+            ->relationships(function ($relationships) {
+                $relationships->hasOne('product');
             });
     });

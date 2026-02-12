@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Product\Http\Controllers\Api\V1\ProductUploadController;
+use Modules\Product\Http\Controllers\Api\V1\ProductImageCustomController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,12 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
         ->name('products.upload-image');
     Route::post('products/upload-datasheet', [ProductUploadController::class, 'uploadDatasheet'])
         ->name('products.upload-datasheet');
+
+    // Product Images - Custom endpoints
+    Route::post('product-images/reorder', [ProductImageCustomController::class, 'reorder'])
+        ->name('product-images.reorder');
+    Route::post('product-images/{productImage}/set-primary', [ProductImageCustomController::class, 'setPrimary'])
+        ->name('product-images.set-primary');
 });
 
 /*
