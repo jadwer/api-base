@@ -91,7 +91,6 @@ class InvoiceSeriesSchema extends Schema
     public function pagination(): ?Paginator
     {
         return PagePagination::make()
-            ->withDefaultPerPage(25)
-            ->withMaxPerPage(100);
+            ->withDefaultPerPage(25);
     }
 }
