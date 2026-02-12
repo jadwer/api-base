@@ -88,7 +88,7 @@ class CompanySettingSchema extends Schema
             WhereIdIn::make($this),
             Where::make('rfc'),
             Where::make('taxRegime', 'tax_regime'),
-            Where::make('isActive', 'is_active'),
+            Where::make('isActive', 'is_active')->asBoolean(),
             Where::make('pacProvider', 'pac_provider'),
         ];
     }
