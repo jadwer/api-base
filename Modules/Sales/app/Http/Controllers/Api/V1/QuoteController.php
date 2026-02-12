@@ -143,9 +143,9 @@ class QuoteController extends Controller
      * Mark quote as accepted
      * POST /api/v1/quotes/{quote}/accept
      */
-    public function accept(Quote $quote): JsonResponse
+    public function accept(Request $request, Quote $quote): JsonResponse
     {
-        if (Gate::denies('quotes.update')) {
+        if (!$this->canCustomerManageQuote($request, $quote) && Gate::denies('quotes.update')) {
             abort(403, 'No tiene permisos para aceptar cotizaciones');
         }
 
@@ -169,7 +169,7 @@ class QuoteController extends Controller
      */
     public function reject(Request $request, Quote $quote): JsonResponse
     {
-        if (Gate::denies('quotes.update')) {
+        if (!$this->canCustomerManageQuote($request, $quote) && Gate::denies('quotes.update')) {
             abort(403, 'No tiene permisos para rechazar cotizaciones');
         }
 
@@ -715,6 +715,21 @@ class QuoteController extends Controller
                 ]
             ], 201);
         });
+    }
+
+    /**
+     * Check if the authenticated user is the customer who owns this quote.
+     * Allows customers to accept/reject their own quotes without needing quotes.update permission.
+     */
+    private function canCustomerManageQuote(Request $request, Quote $quote): bool
+    {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            return false;
+        }
+
+        $quote->loadMissing('contact');
+        return $quote->contact && $quote->contact->email === $user->email;
     }
 
     /**
