@@ -312,10 +312,52 @@ class ShoppingCartController extends Controller
         $this->authorizeCartAccess($shoppingCart);
 
         $request->validate([
-            'contact_id' => 'required|exists:contacts,id',
-            'billing_address' => 'required|array',
-            'shipping_address' => 'required|array',
+            'contact_id' => 'nullable|exists:contacts,id',
+            'billing_address' => 'nullable|array',
+            'shipping_address' => 'nullable|array',
+            'customer_name' => 'nullable|string',
+            'customer_email' => 'nullable|email',
+            'customer_phone' => 'nullable|string',
+            'shipping_address_line1' => 'nullable|string',
+            'shipping_address_line2' => 'nullable|string',
+            'shipping_city' => 'nullable|string',
+            'shipping_state' => 'nullable|string',
+            'shipping_postal_code' => 'nullable|string',
+            'shipping_country' => 'nullable|string',
+            'payment_intent_id' => 'nullable|string',
         ]);
+
+        // Resolve contact_id: use provided, or find by authenticated user email
+        $contactId = $request->input('contact_id');
+        if (!$contactId) {
+            $user = $request->user('sanctum');
+            if ($user) {
+                $contact = \Modules\Contacts\Models\Contact::where('email', $user->email)->first();
+                $contactId = $contact?->id;
+            }
+        }
+        if (!$contactId) {
+            return response()->json([
+                'error' => 'No contact found for this user. Please provide contact_id.'
+            ], 422);
+        }
+
+        // Build shipping_address from individual fields if not provided as array
+        $shippingAddress = $request->input('shipping_address');
+        if (!$shippingAddress && $request->input('shipping_address_line1')) {
+            $shippingAddress = [
+                'line1' => $request->input('shipping_address_line1'),
+                'line2' => $request->input('shipping_address_line2'),
+                'city' => $request->input('shipping_city'),
+                'state' => $request->input('shipping_state'),
+                'postal_code' => $request->input('shipping_postal_code'),
+                'country' => $request->input('shipping_country', 'Mexico'),
+            ];
+        }
+        $shippingAddress = $shippingAddress ?? [];
+
+        // Build billing_address: use provided or copy from shipping
+        $billingAddress = $request->input('billing_address') ?? $shippingAddress;
 
         if ($shoppingCart->isEmpty()) {
             return response()->json([
@@ -329,24 +371,28 @@ class ShoppingCartController extends Controller
             ], 400);
         }
 
-        return DB::transaction(function () use ($request, $shoppingCart) {
+        return DB::transaction(function () use ($request, $shoppingCart, $contactId, $shippingAddress, $billingAddress) {
             // Create sales order
             $order = SalesOrder::create([
                 'order_number' => FolioSequence::getNextFolio('sales_order'),
-                'contact_id' => $request->input('contact_id'),
+                'contact_id' => $contactId,
                 'status' => 'pending',
                 'order_date' => now(),
                 'subtotal' => $shoppingCart->subtotalAmount,
                 'discount_total' => $shoppingCart->discount_amount ?? 0,
-                'tax_amount' => $shoppingCart->tax_amount ?? 0,
+                'tax_amount' => $shoppingCart->computedTaxAmount,
                 'total_amount' => $shoppingCart->finalTotal,
-                'billing_address' => $request->input('billing_address'),
-                'shipping_address' => $request->input('shipping_address'),
+                'billing_address' => $billingAddress,
+                'shipping_address' => $shippingAddress,
                 'notes' => $shoppingCart->notes,
-                'metadata' => [
+                'metadata' => array_filter([
                     'currency' => $shoppingCart->currency,
                     'shipping_amount' => $shoppingCart->shipping_amount ?? 0,
-                ],
+                    'payment_intent_id' => $request->input('payment_intent_id'),
+                    'customer_name' => $request->input('customer_name'),
+                    'customer_email' => $request->input('customer_email'),
+                    'customer_phone' => $request->input('customer_phone'),
+                ]),
             ]);
 
             // Create order items

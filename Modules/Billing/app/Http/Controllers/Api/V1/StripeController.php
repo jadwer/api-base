@@ -26,13 +26,18 @@ class StripeController extends Controller
         private readonly StripeService $stripeService
     ) {}
 
-    private function authorizePaymentAction(Request $request): void
+    private function authorizePaymentAction(Request $request, bool $customerAllowed = false): void
     {
         $user = $request->user('sanctum');
         if (!$user) {
             abort(401, 'Unauthorized');
         }
-        if (!$user->hasAnyRole(['god', 'admin', 'tech'])) {
+        $allowedRoles = ['god', 'admin', 'tech'];
+        if ($customerAllowed) {
+            $allowedRoles[] = 'customer';
+            $allowedRoles[] = 'cliente';
+        }
+        if (!$user->hasAnyRole($allowedRoles)) {
             abort(403, 'No tiene permisos para gestionar pagos de Stripe');
         }
     }
@@ -69,7 +74,7 @@ class StripeController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $this->authorizePaymentAction($request);
+        $this->authorizePaymentAction($request, customerAllowed: true);
 
         $validator = Validator::make($request->all(), [
             'amount' => 'required|numeric|min:10|max:99999999',
@@ -149,7 +154,7 @@ class StripeController extends Controller
      */
     public function show(Request $request, string $id): JsonResponse
     {
-        $this->authorizePaymentAction($request);
+        $this->authorizePaymentAction($request, customerAllowed: true);
 
         try {
             $paymentIntent = $this->stripeService->retrievePaymentIntent($id);

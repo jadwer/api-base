@@ -214,26 +214,60 @@ class ShoppingCartCheckoutTest extends TestCase
         ]);
     }
 
-    public function test_checkout_requires_contact_id(): void
+    public function test_checkout_resolves_contact_from_user_email(): void
     {
         $user = $this->getCustomerUser();
+        // Create a contact with the same email as the user
+        $contact = Contact::factory()->create(['email' => $user->email]);
 
         $cart = ShoppingCart::factory()->create([
             'user_id' => $user->id,
             'status' => 'active',
         ]);
 
+        $product = Product::factory()->create();
+        CartItem::factory()->create([
+            'shopping_cart_id' => $cart->id,
+            'product_id' => $product->id,
+        ]);
+
         $response = $this->actingAs($user, 'sanctum')
             ->postJson("/api/v1/shopping-carts/{$cart->id}/checkout", [
-                'billing_address' => ['street' => 'Test'],
                 'shipping_address' => ['street' => 'Test'],
+                'billing_address' => ['street' => 'Test'],
+            ]);
+
+        $response->assertStatus(201);
+    }
+
+    public function test_checkout_fails_without_contact(): void
+    {
+        // User with no matching contact in contacts table
+        $user = User::factory()->create(['email' => 'nocontact@example.com']);
+        $user->assignRole('customer');
+
+        $cart = ShoppingCart::factory()->create([
+            'user_id' => $user->id,
+            'status' => 'active',
+        ]);
+
+        $product = Product::factory()->create();
+        CartItem::factory()->create([
+            'shopping_cart_id' => $cart->id,
+            'product_id' => $product->id,
+        ]);
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->postJson("/api/v1/shopping-carts/{$cart->id}/checkout", [
+                'shipping_address' => ['street' => 'Test'],
+                'billing_address' => ['street' => 'Test'],
             ]);
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['contact_id']);
+        $response->assertJson(['error' => 'No contact found for this user. Please provide contact_id.']);
     }
 
-    public function test_checkout_requires_billing_address(): void
+    public function test_checkout_uses_shipping_as_billing_when_not_provided(): void
     {
         $user = $this->getCustomerUser();
         $contact = Contact::factory()->create();
@@ -243,37 +277,22 @@ class ShoppingCartCheckoutTest extends TestCase
             'status' => 'active',
         ]);
 
-        $response = $this->actingAs($user, 'sanctum')
-            ->postJson("/api/v1/shopping-carts/{$cart->id}/checkout", [
-                'contact_id' => $contact->id,
-                'shipping_address' => ['street' => 'Test'],
-            ]);
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['billing_address']);
-    }
-
-    public function test_checkout_requires_shipping_address(): void
-    {
-        $user = $this->getCustomerUser();
-        $contact = Contact::factory()->create();
-
-        $cart = ShoppingCart::factory()->create([
-            'user_id' => $user->id,
-            'status' => 'active',
+        $product = Product::factory()->create();
+        CartItem::factory()->create([
+            'shopping_cart_id' => $cart->id,
+            'product_id' => $product->id,
         ]);
 
         $response = $this->actingAs($user, 'sanctum')
             ->postJson("/api/v1/shopping-carts/{$cart->id}/checkout", [
                 'contact_id' => $contact->id,
-                'billing_address' => ['street' => 'Test'],
+                'shipping_address' => ['street' => 'Test Street', 'city' => 'CDMX'],
             ]);
 
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['shipping_address']);
+        $response->assertStatus(201);
     }
 
-    public function test_checkout_validates_contact_exists(): void
+    public function test_checkout_validates_contact_exists_when_provided(): void
     {
         $user = $this->getCustomerUser();
 

@@ -23,7 +23,7 @@ class SalesOrderResource extends JsonApiResource
             'deliveredAt' => $this->delivered_at,
 
             // Amount fields - camelCase for JSON:API consistency
-            'subtotalAmount' => $this->subtotal_amount,
+            'subtotalAmount' => $this->subtotal,
             'taxAmount' => $this->tax_amount,
             'discountTotal' => $this->discount_total,
             'totalAmount' => $this->total_amount,

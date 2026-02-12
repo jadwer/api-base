@@ -28,11 +28,22 @@ class SalesOrderAuthorizer implements Authorizer
 
     /**
      * Authorize the show controller action.
+     * Customers can view their own orders (matched by contact email).
      */
     public function show(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('sales-orders.show') ?? false;
+        if (!$user) {
+            return false;
+        }
+        if ($user->can('sales-orders.show')) {
+            return true;
+        }
+        // Allow customers to view their own orders
+        if ($user->hasAnyRole(['customer', 'cliente']) && $model->contact) {
+            return $model->contact->email === $user->email;
+        }
+        return false;
     }
 
     /**
