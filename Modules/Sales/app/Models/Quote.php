@@ -45,6 +45,21 @@ class Quote extends Model
 {
     use HasFactory, LogsActivity;
 
+    protected static function booted(): void
+    {
+        static::creating(function (Quote $quote) {
+            if (empty($quote->quote_number)) {
+                $quote->quote_number = static::generateQuoteNumber();
+            }
+            if (empty($quote->status)) {
+                $quote->status = 'draft';
+            }
+            if (empty($quote->quote_date)) {
+                $quote->quote_date = now();
+            }
+        });
+    }
+
     protected $fillable = [
         'contact_id', 'shopping_cart_id', 'sales_order_id', 'purchase_order_id',
         'quote_number', 'status', 'quote_date', 'valid_until', 'estimated_eta',
