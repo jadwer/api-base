@@ -9,7 +9,9 @@ use Modules\Billing\Services\CFDI\CFDIXMLGenerator;
 use Modules\Billing\Services\CFDI\CFDIPDFGenerator;
 use Modules\Billing\Services\CFDI\CFDIStampingService;
 use Modules\Billing\Services\CFDI\PrefacturaPDFGenerator;
+use Modules\Billing\Services\CFDIAutomationService;
 use Modules\Sales\Models\SalesOrder;
+use Modules\Finance\Models\ARInvoice;
 use Modules\Billing\Exceptions\PacException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -675,6 +677,82 @@ class CFDIInvoiceController
         } catch (\Exception $e) {
             Log::error('Error al generar prefactura desde orden', ['error' => $e->getMessage()]);
             abort(500, 'Error al generar prefactura desde orden');
+        }
+    }
+
+    /**
+     * GAP-5: Create CFDI invoice from a SalesOrder automatically.
+     *
+     * Validates the order is delivered/completed, finds or verifies its ARInvoice,
+     * then uses CFDIAutomationService to generate the CFDI with items.
+     */
+    public function createFromOrder(
+        SalesOrder $salesOrder,
+        Request $request,
+        CFDIAutomationService $automationService
+    ): JsonResponse {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        if (!$user->can('cfdi-invoices.store')) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
+        // Validate order status
+        if (!in_array($salesOrder->status, ['delivered', 'completed'])) {
+            return response()->json([
+                'error' => "La orden debe estar en estado 'delivered' o 'completed' para facturar. Estado actual: {$salesOrder->status}",
+            ], 422);
+        }
+
+        // Find ARInvoice for the order
+        $arInvoice = ARInvoice::where('sales_order_id', $salesOrder->id)->first();
+        if (!$arInvoice) {
+            return response()->json([
+                'error' => 'La orden no tiene factura de cuentas por cobrar (ARInvoice). Verifique que la orden se proceso correctamente.',
+            ], 422);
+        }
+
+        // Check if CFDI already exists for this ARInvoice
+        $existingCfdi = CFDIInvoice::where('ar_invoice_id', $arInvoice->id)->first();
+        if ($existingCfdi) {
+            return response()->json([
+                'message' => 'Ya existe un CFDI para esta orden',
+                'data' => [
+                    'id' => $existingCfdi->id,
+                    'series' => $existingCfdi->series,
+                    'folio' => $existingCfdi->folio,
+                    'status' => $existingCfdi->status,
+                    'total' => $existingCfdi->total,
+                ],
+            ], 200);
+        }
+
+        try {
+            $cfdi = $automationService->generateFromARInvoice($arInvoice);
+
+            return response()->json([
+                'message' => 'CFDI generado exitosamente',
+                'data' => [
+                    'id' => $cfdi->id,
+                    'series' => $cfdi->series,
+                    'folio' => $cfdi->folio,
+                    'status' => $cfdi->status,
+                    'total' => $cfdi->total,
+                    'receptor_rfc' => $cfdi->receptor_rfc,
+                    'receptor_nombre' => $cfdi->receptor_nombre,
+                ],
+            ], 201);
+        } catch (\Exception $e) {
+            Log::error('Error al crear CFDI desde orden', [
+                'sales_order_id' => $salesOrder->id,
+                'ar_invoice_id' => $arInvoice->id,
+                'error' => $e->getMessage(),
+            ]);
+            return response()->json([
+                'error' => 'Error al generar CFDI: ' . $e->getMessage(),
+            ], 500);
         }
     }
 

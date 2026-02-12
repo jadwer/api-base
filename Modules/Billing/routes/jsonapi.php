@@ -65,6 +65,9 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     // Prefactura from SalesOrder (without creating CFDIInvoice)
     Route::get('sales-orders/{salesOrder}/prefactura', [\Modules\Billing\Http\Controllers\Api\V1\CFDIInvoiceController::class, 'prefacturaFromOrder']);
 
+    // GAP-5: Create CFDI invoice from SalesOrder (automated invoicing)
+    Route::post('sales-orders/{salesOrder}/facturar', [\Modules\Billing\Http\Controllers\Api\V1\CFDIInvoiceController::class, 'createFromOrder']);
+
     // Invoice Series Custom Endpoints (Phase 11)
     Route::get('invoice-series/available', [\Modules\Billing\Http\Controllers\Api\V1\InvoiceSeriesController::class, 'available']);
     Route::get('invoice-series/summary', [\Modules\Billing\Http\Controllers\Api\V1\InvoiceSeriesController::class, 'summary']);
