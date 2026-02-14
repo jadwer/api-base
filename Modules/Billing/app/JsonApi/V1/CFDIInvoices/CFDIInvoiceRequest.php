@@ -46,8 +46,8 @@ class CFDIInvoiceRequest extends ResourceRequest
             'receptorRfc' => [
                 $creating ? 'required' : 'sometimes',
                 'string',
-                'size:13',
-                'regex:/^[A-Z]{4}[0-9]{6}[A-Z0-9]{3}$/',
+                'between:12,13',
+                'regex:/^([A-Z&Ñ]{3}[0-9]{6}[A-Z0-9]{3}|[A-Z&Ñ]{4}[0-9]{6}[A-Z0-9]{3})$/',
             ],
             'receptorNombre' => [
                 $creating ? 'required' : 'sometimes',
@@ -183,8 +183,8 @@ class CFDIInvoiceRequest extends ResourceRequest
             'folio.min' => 'El folio debe ser mayor a 0.',
             'tipoComprobante.in' => 'El tipo de comprobante debe ser I, E, T, N o P.',
             'receptorRfc.required' => 'El RFC del receptor es obligatorio.',
-            'receptorRfc.size' => 'El RFC debe tener exactamente 13 caracteres.',
-            'receptorRfc.regex' => 'El formato del RFC es inválido.',
+            'receptorRfc.between' => 'El RFC debe tener 12 caracteres (persona moral) o 13 (persona física).',
+            'receptorRfc.regex' => 'El formato del RFC es inválido. Debe ser 3-4 letras + 6 dígitos + 3 alfanuméricos.',
             'receptorNombre.required' => 'El nombre del receptor es obligatorio.',
             'receptorDomicilioFiscal.regex' => 'El código postal debe tener 5 dígitos.',
             'subtotal.required' => 'El subtotal es obligatorio.',

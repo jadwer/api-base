@@ -83,6 +83,7 @@ class CFDIInvoice extends Model
         'iva_retenido' => 'integer',
         'tipo_cambio' => 'float',
         'cfdi_relacionado_uuids' => 'array',
+        'pac_response' => 'array',
         'metadata' => 'array',
         'fecha_emision' => 'datetime',
         'fecha_timbrado' => 'datetime',

@@ -205,17 +205,25 @@ class CleanCatalogsSeeder extends Seeder
     private function seedDefaultCompanySetting(): void
     {
         \Modules\Billing\Models\CompanySetting::firstOrCreate(
-            ['rfc' => 'XAXX010101000'], // RFC generico para pruebas
+            ['rfc' => 'EKU9003173C9'], // RFC de pruebas SAT (persona moral, 12 chars)
             [
-                'company_name' => 'Mi Empresa SA de CV',
+                'company_name' => 'ESCUELA KEMPER URGATE SA DE CV',
                 'tax_regime' => '601', // General de Ley Personas Morales
-                'postal_code' => '00000',
+                'postal_code' => '42501',
                 'invoice_series' => 'FAC',
                 'credit_note_series' => 'N',
                 'next_invoice_folio' => 1,
                 'next_credit_note_folio' => 1,
+                'pac_provider' => 'sw',
+                'pac_username' => env('SW_PAC_USERNAME', ''),
+                'pac_password' => env('SW_PAC_PASSWORD', ''),
                 'pac_production_mode' => false,
                 'is_active' => true,
+                'address' => 'Av. de las Americas 1254',
+                'city' => 'Pachuca de Soto',
+                'state' => 'Hidalgo',
+                'phone' => '7711234567',
+                'email' => 'facturacion@laborwasser.com',
             ]
         );
     }

@@ -108,8 +108,8 @@ class CFDIXMLGenerator
     {
         $emisor = $xml->createElement('cfdi:Emisor');
         $emisor->setAttribute('Rfc', $invoice->emisor_rfc ?? $settings->rfc);
-        $emisor->setAttribute('Nombre', $invoice->emisor_nombre ?? $settings->legal_name);
-        $emisor->setAttribute('RegimenFiscal', $invoice->emisor_regimen_fiscal ?? $settings->fiscal_regime);
+        $emisor->setAttribute('Nombre', $invoice->emisor_nombre ?? $settings->company_name);
+        $emisor->setAttribute('RegimenFiscal', $invoice->emisor_regimen_fiscal ?? $settings->tax_regime);
         $comprobante->appendChild($emisor);
     }
 
