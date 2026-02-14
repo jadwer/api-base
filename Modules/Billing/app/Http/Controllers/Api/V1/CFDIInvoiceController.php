@@ -695,7 +695,7 @@ class CFDIInvoiceController
         if (!$user) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-        if (!$user->can('cfdi-invoices.store')) {
+        if (!$user->can('billing.cfdi-invoices.store')) {
             return response()->json(['error' => 'Forbidden'], 403);
         }
 
