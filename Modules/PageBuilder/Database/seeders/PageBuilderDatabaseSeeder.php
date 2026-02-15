@@ -15,8 +15,7 @@ class PageBuilderDatabaseSeeder extends Seeder
         $this->call([
             PagePermissionSeeder::class,
             PageAssignPermissionsSeeder::class,
-            // ❌ DEMO DATA - Commented for presentation
-            // PageSeeder::class, // Sample pages
+            StaticPageSeeder::class,
         ]);
         Log::info('PageBuilderDatabaseSeeder executed successfully.');
     }
