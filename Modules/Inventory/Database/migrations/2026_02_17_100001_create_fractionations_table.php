@@ -35,8 +35,8 @@ return new class extends Migration
             $table->index('user_id');
         });
 
-        // Insert FolioSequence for fractionation
-        DB::table('folio_sequences')->insert([
+        // Insert FolioSequence for fractionation (idempotent)
+        DB::table('folio_sequences')->insertOrIgnore([
             'document_type' => 'fractionation',
             'prefix' => 'FRAC',
             'include_year' => true,

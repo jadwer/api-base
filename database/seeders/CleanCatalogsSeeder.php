@@ -40,6 +40,9 @@ class CleanCatalogsSeeder extends Seeder
         // App settings (company, branding, auth)
         $this->call(\Modules\AppConfig\Database\Seeders\AppSettingSeeder::class);
 
+        // Static pages (nosotros, laboratorios, certificados, etc.)
+        $this->call(\Modules\PageBuilder\Database\Seeders\StaticPageSeeder::class);
+
         $this->command->info('  - Essential catalogs created');
     }
 
@@ -343,6 +346,18 @@ class CleanCatalogsSeeder extends Seeder
                 'current_sequence' => 0,
                 'reset_yearly' => true,
                 'last_reset_year' => (int) date('Y'),
+                'is_active' => true,
+            ],
+            [
+                'document_type' => 'fractionation',
+                'prefix' => 'FRAC',
+                'include_year' => true,
+                'year_format' => 'y',
+                'separator' => '-',
+                'padding' => 6,
+                'current_sequence' => 0,
+                'reset_yearly' => false,
+                'last_reset_year' => null,
                 'is_active' => true,
             ],
         ];
