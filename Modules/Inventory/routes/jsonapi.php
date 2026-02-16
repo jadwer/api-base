@@ -8,6 +8,8 @@ use Modules\Inventory\Http\Controllers\Api\V1\ProductBatchController;
 use Modules\Inventory\Http\Controllers\Api\V1\StockController;
 use Modules\Inventory\Http\Controllers\Api\V1\InventoryMovementController;
 use Modules\Inventory\Http\Controllers\Api\V1\CycleCountController;
+use Modules\Inventory\Http\Controllers\Api\V1\ProductConversionController;
+use Modules\Inventory\Http\Controllers\Api\V1\FractionationController;
 
 JsonApiRoute::server('v1')
     ->prefix('v1')
@@ -24,5 +26,8 @@ JsonApiRoute::server('v1')
                 $relationships->hasOne('warehouseLocation');
                 $relationships->hasOne('product');
             });
+        $server->resource('product-conversions', ProductConversionController::class);
+        $server->resource('fractionations', FractionationController::class)
+            ->only('index', 'show');
     });
 

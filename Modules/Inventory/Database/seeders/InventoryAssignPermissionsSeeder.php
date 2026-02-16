@@ -23,6 +23,8 @@ class InventoryAssignPermissionsSeeder extends Seeder
                 ->orWhere('name', 'like', 'product-batches.%')
                 ->orWhere('name', 'like', 'inventory-movements.%')
                 ->orWhere('name', 'like', 'inventory.cycle-counts.%')
+                ->orWhere('name', 'like', 'product-conversions.%')
+                ->orWhere('name', 'like', 'fractionations.%')
                 ->get();
             $god->givePermissionTo($permissions);
         }
@@ -72,6 +74,20 @@ class InventoryAssignPermissionsSeeder extends Seeder
                 'inventory.cycle-counts.store',
                 'inventory.cycle-counts.update',
                 'inventory.cycle-counts.destroy',
+
+                // Product Conversions - Full access
+                'product-conversions.index',
+                'product-conversions.show',
+                'product-conversions.store',
+                'product-conversions.update',
+                'product-conversions.destroy',
+
+                // Fractionations - Full access
+                'fractionations.index',
+                'fractionations.show',
+                'fractionations.store',
+                'fractionations.update',
+                'fractionations.destroy',
             ]);
         }
 
@@ -105,6 +121,14 @@ class InventoryAssignPermissionsSeeder extends Seeder
                 // Cycle Counts - Read only (IV-M001)
                 'inventory.cycle-counts.index',
                 'inventory.cycle-counts.show',
+
+                // Product Conversions - Read only
+                'product-conversions.index',
+                'product-conversions.show',
+
+                // Fractionations - Read only
+                'fractionations.index',
+                'fractionations.show',
             ]);
         }
 

@@ -120,6 +120,8 @@ class Server extends BaseServer
             ProductBatchSchema::class,
             InventoryMovementSchema::class,
             CycleCountSchema::class,
+            \Modules\Inventory\JsonApi\V1\ProductConversions\ProductConversionSchema::class,
+            \Modules\Inventory\JsonApi\V1\Fractionations\FractionationSchema::class,
 
             // Purchase Module
             PurchaseOrderSchema::class,
@@ -253,6 +255,8 @@ class Server extends BaseServer
             'product-batches' => \Modules\Inventory\JsonApi\V1\ProductBatches\ProductBatchAuthorizer::class,
             'inventory-movements' => \Modules\Inventory\JsonApi\V1\InventoryMovements\InventoryMovementAuthorizer::class,
             'cycle-counts' => CycleCountAuthorizer::class,
+            'product-conversions' => \Modules\Inventory\JsonApi\V1\ProductConversions\ProductConversionAuthorizer::class,
+            'fractionations' => \Modules\Inventory\JsonApi\V1\Fractionations\FractionationAuthorizer::class,
             'purchase-orders' => \Modules\Purchase\JsonApi\V1\PurchaseOrders\PurchaseOrderAuthorizer::class,
             'purchase-order-items' => \Modules\Purchase\JsonApi\V1\PurchaseOrderItems\PurchaseOrderItemAuthorizer::class,
             'budgets' => \Modules\Purchase\JsonApi\V1\Budgets\BudgetAuthorizer::class,

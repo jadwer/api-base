@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Inventory\Http\Controllers\Api\V1\LotTraceabilityController;
+use Modules\Inventory\Http\Controllers\Api\V1\FractionationApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,5 +37,13 @@ Route::prefix('v1')->middleware(['auth:sanctum'])->group(function () {
             ->name('lot-traceability.expired');
         Route::get('search', [LotTraceabilityController::class, 'search'])
             ->name('lot-traceability.search');
+    });
+
+    // Fractionation custom endpoints
+    Route::prefix('fraccionamiento')->group(function () {
+        Route::post('calculate', [FractionationApiController::class, 'calculate'])
+            ->name('fraccionamiento.calculate');
+        Route::post('execute', [FractionationApiController::class, 'execute'])
+            ->name('fraccionamiento.execute');
     });
 });

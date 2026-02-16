@@ -58,6 +58,20 @@ class InventoryPermissionSeeder extends Seeder
             'inventory.cycle-counts.store',
             'inventory.cycle-counts.update',
             'inventory.cycle-counts.destroy',
+
+            // Product Conversion permissions
+            'product-conversions.index',
+            'product-conversions.show',
+            'product-conversions.store',
+            'product-conversions.update',
+            'product-conversions.destroy',
+
+            // Fractionation permissions
+            'fractionations.index',
+            'fractionations.show',
+            'fractionations.store',
+            'fractionations.update',
+            'fractionations.destroy',
         ];
 
         $this->bulkCreatePermissions($permissions);
