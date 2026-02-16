@@ -83,7 +83,7 @@ class ShoppingCartController extends Controller
             return response()->json([
                 'data' => null,
                 'message' => 'No active cart found'
-            ], 404);
+            ], 200);
         }
 
         return response()->json([

@@ -45,7 +45,7 @@ class ShoppingCartCurrentTest extends TestCase
         $this->assertEquals($cart->id, $response->json('data.id'));
     }
 
-    public function test_returns_404_when_no_active_cart_exists(): void
+    public function test_returns_null_data_when_no_active_cart_exists(): void
     {
         $user = $this->getCustomerUser();
         $this->deactivateUserCarts($user->id);
@@ -53,14 +53,14 @@ class ShoppingCartCurrentTest extends TestCase
         $response = $this->actingAs($user, 'sanctum')
             ->getJson('/api/v1/shopping-carts/current');
 
-        $response->assertStatus(404);
+        $response->assertOk();
         $response->assertJson([
             'data' => null,
             'message' => 'No active cart found',
         ]);
     }
 
-    public function test_returns_404_when_cart_is_expired(): void
+    public function test_returns_null_data_when_cart_is_expired(): void
     {
         $user = $this->getCustomerUser();
         $this->deactivateUserCarts($user->id);
@@ -74,10 +74,11 @@ class ShoppingCartCurrentTest extends TestCase
         $response = $this->actingAs($user, 'sanctum')
             ->getJson('/api/v1/shopping-carts/current');
 
-        $response->assertStatus(404);
+        $response->assertOk();
+        $response->assertJson(['data' => null]);
     }
 
-    public function test_returns_404_when_cart_is_not_active(): void
+    public function test_returns_null_data_when_cart_is_not_active(): void
     {
         $user = $this->getCustomerUser();
         $this->deactivateUserCarts($user->id);
@@ -91,7 +92,8 @@ class ShoppingCartCurrentTest extends TestCase
         $response = $this->actingAs($user, 'sanctum')
             ->getJson('/api/v1/shopping-carts/current');
 
-        $response->assertStatus(404);
+        $response->assertOk();
+        $response->assertJson(['data' => null]);
     }
 
     public function test_guest_can_get_current_cart_with_session_id(): void
@@ -126,7 +128,8 @@ class ShoppingCartCurrentTest extends TestCase
         $response = $this->actingAs($user1, 'sanctum')
             ->getJson('/api/v1/shopping-carts/current');
 
-        $response->assertStatus(404);
+        $response->assertOk();
+        $response->assertJson(['data' => null]);
     }
 
     public function test_response_includes_cart_items(): void
