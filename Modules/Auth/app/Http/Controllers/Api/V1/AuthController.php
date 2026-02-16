@@ -5,7 +5,9 @@ namespace Modules\Auth\Http\Controllers\Api\V1;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Modules\Auth\Http\Requests\LoginRequest;
+use Modules\Auth\Notifications\VerifyEmailNotification;
 use Modules\User\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -93,6 +95,13 @@ class AuthController extends Controller
     ]);
 
     $user->assignRole('customer');
+
+    // Send verification email (fire-and-forget)
+    try {
+        $user->notify(new VerifyEmailNotification());
+    } catch (\Exception $e) {
+        Log::warning('Failed to send verification email: ' . $e->getMessage());
+    }
 
     $token = $user->createToken('auth_token')->plainTextToken;
 
