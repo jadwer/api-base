@@ -81,11 +81,13 @@ class AppSettingController extends Controller
     {
         $company = AppSetting::getByGroup('company');
         $branding = AppSetting::getByGroup('branding');
+        $social = AppSetting::getByGroup('social');
 
         return response()->json([
             'data' => [
                 'company' => $company,
                 'branding' => $branding,
+                'social' => $social,
             ],
         ]);
     }
