@@ -1,0 +1,11 @@
+{
+    "name": "AppConfig",
+    "alias": "appconfig",
+    "description": "System-wide key-value configuration: company info, branding, auth settings",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\AppConfig\\Providers\\AppConfigServiceProvider"
+    ],
+    "files": []
+}

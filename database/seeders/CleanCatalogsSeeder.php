@@ -37,6 +37,9 @@ class CleanCatalogsSeeder extends Seeder
         $this->seedTestCategoryAndBrand();
         $this->seedTestProducts();
 
+        // App settings (company, branding, auth)
+        $this->call(\Modules\AppConfig\Database\Seeders\AppSettingSeeder::class);
+
         $this->command->info('  - Essential catalogs created');
     }
 

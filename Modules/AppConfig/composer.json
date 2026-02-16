@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/appconfig",
+    "description": "System-wide key-value configuration module",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\AppConfig\\": "app/",
+            "Modules\\AppConfig\\Database\\Factories\\": "database/factories/",
+            "Modules\\AppConfig\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\AppConfig\\Tests\\": "tests/"
+        }
+    }
+}

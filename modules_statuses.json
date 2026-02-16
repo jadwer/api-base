@@ -16,5 +16,6 @@
     "HR": true,
     "Billing": true,
     "CRM": true,
-    "SystemHealth": true
+    "SystemHealth": true,
+    "AppConfig": true
 }

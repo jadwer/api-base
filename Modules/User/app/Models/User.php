@@ -77,6 +77,15 @@ class User extends Authenticatable
             ->dontSubmitEmptyLogs();
     }
 
+    /**
+     * Send the password reset notification.
+     * Overrides default to point to frontend URL.
+     */
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new \Modules\Auth\Notifications\ResetPasswordNotification($token));
+    }
+
     public static function newFactory(): UserFactory
     {
         return UserFactory::new();
