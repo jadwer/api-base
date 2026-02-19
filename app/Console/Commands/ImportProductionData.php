@@ -86,8 +86,9 @@ class ImportProductionData extends Command
         $this->info('Importando marcas (brands)...');
 
         // Extract INSERT statement for brands
-        if (preg_match("/INSERT INTO `brands`[^;]+;/s", $content, $matches)) {
-            $data = $this->parseInsertStatement($matches[0], [
+        $statements = $this->extractInsertStatements($content, 'brands');
+        foreach ($statements as $matches0) {
+            $data = $this->parseInsertStatement($matches0, [
                 'id', 'name', 'description', 'slug', 'created_at', 'updated_at'
             ]);
 
@@ -122,8 +123,9 @@ class ImportProductionData extends Command
     {
         $this->info('Importando categorias...');
 
-        if (preg_match("/INSERT INTO `categories`[^;]+;/s", $content, $matches)) {
-            $data = $this->parseInsertStatement($matches[0], [
+        $statements = $this->extractInsertStatements($content, 'categories');
+        foreach ($statements as $matches0) {
+            $data = $this->parseInsertStatement($matches0, [
                 'id', 'name', 'description', 'slug', 'created_at', 'updated_at'
             ]);
 
@@ -158,8 +160,9 @@ class ImportProductionData extends Command
     {
         $this->info('Importando unidades...');
 
-        if (preg_match("/INSERT INTO `units`[^;]+;/s", $content, $matches)) {
-            $data = $this->parseInsertStatement($matches[0], [
+        $statements = $this->extractInsertStatements($content, 'units');
+        foreach ($statements as $matches0) {
+            $data = $this->parseInsertStatement($matches0, [
                 'id', 'type', 'code', 'name', 'created_at', 'updated_at'
             ]);
 
@@ -198,47 +201,46 @@ class ImportProductionData extends Command
         // id, name, sku, description, full_description, price, cost, iva, img_path, datasheet_path, unit_id, category_id, brand_id, created_at, updated_at
         $columns = ['id', 'name', 'sku', 'description', 'full_description', 'price', 'cost', 'iva', 'img_path', 'datasheet_path', 'unit_id', 'category_id', 'brand_id', 'created_at', 'updated_at'];
 
-        // phpMyAdmin puede generar múltiples INSERT statements, capturar todos
-        if (preg_match_all("/INSERT INTO `products`[^;]+;/s", $content, $allMatches)) {
-            foreach ($allMatches[0] as $insertStatement) {
-                $data = $this->parseInsertStatement($insertStatement, $columns);
+        // phpMyAdmin genera múltiples INSERT statements, extraer todos con parser SQL-aware
+        $insertStatements = $this->extractInsertStatements($content, 'products');
+        foreach ($insertStatements as $insertStatement) {
+            $data = $this->parseInsertStatement($insertStatement, $columns);
 
-                foreach ($data as $row) {
-                    $this->stats['products']++;
+            foreach ($data as $row) {
+                $this->stats['products']++;
 
-                    if (!$this->dryRun) {
-                        try {
-                            $insertData = [
-                                'name' => $row['name'] ?: 'Sin nombre',
-                                'sku' => $row['sku'] ?: null,
-                                'description' => $row['description'] ?: '',
-                                'full_description' => $row['full_description'] ?: '',
-                                'price' => is_numeric($row['price']) ? (float) $row['price'] : null,
-                                'cost' => is_numeric($row['cost']) ? (float) $row['cost'] : null,
-                                'iva' => (int) ($row['iva'] ?? 0),
-                                'img_path' => $row['img_path'] ?: null,
-                                'datasheet_path' => $row['datasheet_path'] ?: null,
-                                'unit_id' => (int) $row['unit_id'],
-                                'category_id' => (int) $row['category_id'],
-                                'brand_id' => (int) $row['brand_id'],
-                                'is_active' => true,
-                                'created_at' => $row['created_at'],
-                                'updated_at' => $row['updated_at'],
-                            ];
+                if (!$this->dryRun) {
+                    try {
+                        $insertData = [
+                            'name' => $row['name'] ?: 'Sin nombre',
+                            'sku' => $row['sku'] ?: null,
+                            'description' => $row['description'] ?: '',
+                            'full_description' => $row['full_description'] ?: '',
+                            'price' => is_numeric($row['price']) ? (float) $row['price'] : null,
+                            'cost' => is_numeric($row['cost']) ? (float) $row['cost'] : null,
+                            'iva' => (int) ($row['iva'] ?? 0),
+                            'img_path' => $row['img_path'] ?: null,
+                            'datasheet_path' => $row['datasheet_path'] ?: null,
+                            'unit_id' => (int) $row['unit_id'],
+                            'category_id' => (int) $row['category_id'],
+                            'brand_id' => (int) $row['brand_id'],
+                            'is_active' => true,
+                            'created_at' => $row['created_at'],
+                            'updated_at' => $row['updated_at'],
+                        ];
 
-                            DB::table('products')->updateOrInsert(
-                                ['id' => (int) $row['id']],
-                                $insertData
-                            );
-                        } catch (\Exception $e) {
-                            $this->stats['errors'][] = "Product {$row['id']}: " . $e->getMessage();
-                        }
+                        DB::table('products')->updateOrInsert(
+                            ['id' => (int) $row['id']],
+                            $insertData
+                        );
+                    } catch (\Exception $e) {
+                        $this->stats['errors'][] = "Product {$row['id']}: " . $e->getMessage();
                     }
+                }
 
-                    // Show progress every 100 products
-                    if ($this->stats['products'] % 100 === 0) {
-                        $this->line("  Procesados: {$this->stats['products']}...");
-                    }
+                // Show progress every 100 products
+                if ($this->stats['products'] % 100 === 0) {
+                    $this->line("  Procesados: {$this->stats['products']}...");
                 }
             }
         }
@@ -250,8 +252,9 @@ class ImportProductionData extends Command
     {
         $this->info('Importando usuarios...');
 
-        if (preg_match("/INSERT INTO `users`[^;]+;/s", $content, $matches)) {
-            $data = $this->parseInsertStatement($matches[0], [
+        $statements = $this->extractInsertStatements($content, 'users');
+        foreach ($statements as $matches0) {
+            $data = $this->parseInsertStatement($matches0, [
                 'id', 'name', 'email', 'email_verified_at', 'password', 'remember_token', 'created_at', 'updated_at'
             ]);
 
@@ -281,6 +284,59 @@ class ImportProductionData extends Command
         }
 
         $this->info("  Total: {$this->stats['users']} usuarios");
+    }
+
+    /**
+     * Extract all INSERT INTO statements for a given table from SQL content.
+     * Uses a quote-aware parser instead of regex to handle semicolons inside quoted strings.
+     */
+    private function extractInsertStatements(string $content, string $table): array
+    {
+        $statements = [];
+        $needle = "INSERT INTO `{$table}`";
+        $offset = 0;
+
+        while (($pos = strpos($content, $needle, $offset)) !== false) {
+            // Find the true end of this statement: a semicolon NOT inside quotes
+            $inQuote = false;
+            $escapeNext = false;
+            $end = null;
+
+            for ($i = $pos; $i < strlen($content); $i++) {
+                $char = $content[$i];
+
+                if ($escapeNext) {
+                    $escapeNext = false;
+                    continue;
+                }
+
+                if ($char === '\\') {
+                    $escapeNext = true;
+                    continue;
+                }
+
+                if ($char === "'") {
+                    $inQuote = !$inQuote;
+                    continue;
+                }
+
+                if ($char === ';' && !$inQuote) {
+                    $end = $i;
+                    break;
+                }
+            }
+
+            if ($end !== null) {
+                $statements[] = substr($content, $pos, $end - $pos + 1);
+                $offset = $end + 1;
+            } else {
+                // No closing semicolon found, take rest of content
+                $statements[] = substr($content, $pos);
+                break;
+            }
+        }
+
+        return $statements;
     }
 
     private function parseInsertStatement(string $sql, array $columns): array
