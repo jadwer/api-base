@@ -29,7 +29,7 @@ class ContactIndexTest extends TestCase
                     'id',
                     'type',
                     'attributes' => [
-                        'type',
+                        'contactType',
                         'name',
                         'legalName',
                         'taxId',
@@ -70,8 +70,8 @@ class ContactIndexTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        Contact::factory()->create(['type' => 'test string']);
-        Contact::factory()->create(['type' => 'test string']);
+        Contact::factory()->create(['contact_type' => 'test string']);
+        Contact::factory()->create(['contact_type' => 'test string']);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()

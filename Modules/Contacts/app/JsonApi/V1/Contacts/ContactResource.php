@@ -9,7 +9,7 @@ class ContactResource extends JsonApiResource
     public function attributes($request): iterable
     {
         return [
-            'type' => $this->type,
+            'contactType' => $this->contact_type,
             'name' => $this->name,
             'legalName' => $this->legal_name,
             'taxId' => $this->tax_id,

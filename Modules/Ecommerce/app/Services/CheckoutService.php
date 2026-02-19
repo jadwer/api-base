@@ -373,7 +373,7 @@ class CheckoutService
         $billingAddress = $session->billing_address ?? [];
 
         return Contact::create([
-            'type' => 'individual',
+            'contact_type' => 'individual',
             'name' => $user->name,
             'legal_name' => $user->name,
             'email' => $user->email,

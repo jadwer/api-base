@@ -64,7 +64,7 @@ class MigrateCustomersAndSuppliersToContacts extends Command
 
         foreach ($customers as $customer) {
             $contactData = [
-                'type' => 'company',
+                'contact_type' => 'company',
                 'name' => $customer->name,
                 'email' => $customer->email,
                 'phone' => $customer->phone,
@@ -106,7 +106,7 @@ class MigrateCustomersAndSuppliersToContacts extends Command
 
         foreach ($suppliers as $supplier) {
             $contactData = [
-                'type' => 'company',
+                'contact_type' => 'company',
                 'name' => $supplier->name,
                 'email' => $supplier->email,
                 'phone' => $supplier->phone,

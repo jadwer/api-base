@@ -25,7 +25,7 @@ class ContactSchema extends Schema
         return [
             ID::make(),
             
-            Str::make('contactType', 'type')->sortable(),
+            Str::make('contactType', 'contact_type')->sortable(),
             Str::make('name')->sortable(),
             Str::make('legalName', 'legal_name')->sortable(),
             Str::make('taxId', 'tax_id')->sortable(),
@@ -59,7 +59,7 @@ class ContactSchema extends Schema
     {
         return [
             WhereIdIn::make($this),
-            \LaravelJsonApi\Eloquent\Filters\Where::make('contactType', 'type'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('contactType', 'contact_type'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('name'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('legalName', 'legal_name'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('taxId', 'tax_id'),

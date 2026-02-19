@@ -208,7 +208,7 @@ class SalesOrderItemShowTest extends TestCase
             'is_customer' => true,
             'is_supplier' => false,
             'status' => 'active',
-            'type' => 'company'
+            'contact_type' => 'company'
         ]);
         
         $salesOrder = SalesOrder::factory()->create([

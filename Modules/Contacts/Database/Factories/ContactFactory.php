@@ -18,7 +18,7 @@ class ContactFactory extends Factory
         $currentCredit = $isCustomer ? $this->faker->randomFloat(2, 0, $creditLimit * 0.8) : 0.00; // Max 80% of limit
         
         return [
-            'type' => $this->faker->randomElement(['person', 'company']),
+            'contact_type' => $this->faker->randomElement(['person', 'company']),
             'name' => $this->faker->company(),
             'legal_name' => $this->faker->optional(0.8)->company(),
             'tax_id' => $this->faker->optional(0.7)->regexify('[A-Z]{3}[0-9]{6}[A-Z0-9]{3}'),

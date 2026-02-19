@@ -30,7 +30,7 @@ class Contact extends Model
     protected $table = 'contacts';
     
     protected $fillable = [
-        'type', 'name', 'legal_name', 'tax_id', 'email', 'phone', 'website', 'status', 'is_customer', 'is_supplier', 'credit_limit', 'credit_status', 'credit_hold_at', 'credit_hold_reason', 'minimum_payment_score', 'current_credit', 'classification', 'payment_terms', 'notes', 'metadata'
+        'contact_type', 'name', 'legal_name', 'tax_id', 'email', 'phone', 'website', 'status', 'is_customer', 'is_supplier', 'credit_limit', 'credit_status', 'credit_hold_at', 'credit_hold_reason', 'minimum_payment_score', 'current_credit', 'classification', 'payment_terms', 'notes', 'metadata'
     ];
 
     protected $casts = [
@@ -44,7 +44,7 @@ class Contact extends Model
     ];
 
     protected $attributes = [
-        'type' => 'company',
+        'contact_type' => 'company',
         'status' => 'active',
         'is_customer' => false,
         'is_supplier' => false,
@@ -87,7 +87,7 @@ class Contact extends Model
         }
 
         // Legal name required for companies
-        if ($this->type === 'company' && empty($this->legal_name)) {
+        if ($this->contact_type === 'company' && empty($this->legal_name)) {
             $this->legal_name = $this->name;
         }
 
@@ -129,7 +129,7 @@ class Contact extends Model
 
     public function scopeByType($query, $type)
     {
-        return $query->where('type', $type);
+        return $query->where('contact_type', $type);
     }
 
     public function scopeByStatus($query, $status)

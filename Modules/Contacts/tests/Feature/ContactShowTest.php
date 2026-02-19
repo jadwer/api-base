@@ -27,7 +27,7 @@ class ContactShowTest extends TestCase
                 'id',
                 'type',
                 'attributes' => [
-                        'type',
+                        'contactType',
                         'name',
                         'legalName',
                         'taxId',
@@ -54,7 +54,7 @@ class ContactShowTest extends TestCase
     {
         $admin = $this->getAdminUser();
         
-        $contact = Contact::factory()->create(['type' => 'test string', 'name' => 'Test Name', 'legal_name' => 'Test Name', 'email' => 'test@example.com', 'phone' => 'test string', 'website' => 'test string', 'status' => 'active', 'is_customer' => true, 'is_supplier' => true, 'credit_limit' => 99.99, 'current_credit' => 99.99, 'classification' => 'test string', 'payment_terms' => 100, 'notes' => 'test description', 'metadata' => 'test value']);
+        $contact = Contact::factory()->create(['contact_type' => 'test string', 'name' => 'Test Name', 'legal_name' => 'Test Name', 'email' => 'test@example.com', 'phone' => 'test string', 'website' => 'test string', 'status' => 'active', 'is_customer' => true, 'is_supplier' => true, 'credit_limit' => 99.99, 'current_credit' => 99.99, 'classification' => 'test string', 'payment_terms' => 100, 'notes' => 'test description', 'metadata' => 'test value']);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
@@ -67,7 +67,7 @@ class ContactShowTest extends TestCase
                 'id',
                 'type',
                 'attributes' => [
-                        'type',
+                        'contactType',
                         'name',
                         'legalName',
                         'taxId',

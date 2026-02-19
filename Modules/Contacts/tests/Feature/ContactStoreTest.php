@@ -44,7 +44,7 @@ class ContactStoreTest extends TestCase
 
         $response->assertCreated();
         
-        $this->assertDatabaseHas('contacts', ['type' => 'person', 'name' => 'Test Name', 'legal_name' => 'Test Name', 'email' => 'test@example.com', 'status' => 'active', 'is_customer' => true, 'is_supplier' => true]);
+        $this->assertDatabaseHas('contacts', ['contact_type' => 'person', 'name' => 'Test Name', 'legal_name' => 'Test Name', 'email' => 'test@example.com', 'status' => 'active', 'is_customer' => true, 'is_supplier' => true]);
     }
 
     public function test_admin_can_create_Contact_with_minimal_data(): void
