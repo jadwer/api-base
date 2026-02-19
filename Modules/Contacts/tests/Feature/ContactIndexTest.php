@@ -129,4 +129,26 @@ class ContactIndexTest extends TestCase
         $this->assertCount(10, $response->json('data'));
         $response->assertJsonStructure(['links', 'meta']);
     }
+
+    public function test_admin_can_filter_prospects(): void
+    {
+        $admin = $this->getAdminUser();
+
+        Contact::factory()->prospect()->create(['name' => 'Prospect A']);
+        Contact::factory()->customer()->create(['name' => 'Customer A']);
+        Contact::factory()->supplier()->create(['name' => 'Supplier A']);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('contacts')
+            ->get('/api/v1/contacts?filter[isProspect]=1');
+
+        $response->assertOk();
+
+        $data = $response->json('data');
+        $names = array_column(array_column($data, 'attributes'), 'name');
+        $this->assertContains('Prospect A', $names);
+        $this->assertNotContains('Customer A', $names);
+        $this->assertNotContains('Supplier A', $names);
+    }
 }

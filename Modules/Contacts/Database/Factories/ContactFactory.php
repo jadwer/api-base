@@ -12,7 +12,7 @@ class ContactFactory extends Factory
     public function definition(): array
     {
         $isCustomer = $this->faker->boolean(60);
-        $isSupplier = $isCustomer ? $this->faker->boolean(30) : true; // Ensure at least one is true
+        $isSupplier = $this->faker->boolean(30);
         
         $creditLimit = $isCustomer ? $this->faker->randomFloat(2, 1000, 100000) : 0.00;
         $currentCredit = $isCustomer ? $this->faker->randomFloat(2, 0, $creditLimit * 0.8) : 0.00; // Max 80% of limit
@@ -88,6 +88,19 @@ class ContactFactory extends Factory
             'is_supplier' => true,
             'credit_limit' => 0.00,
             'payment_terms' => $this->faker->randomElement([15, 30, 45]),
+        ]);
+    }
+
+    /**
+     * Prospect Contact (neither customer nor supplier)
+     */
+    public function prospect(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_customer' => false,
+            'is_supplier' => false,
+            'credit_limit' => 0.00,
+            'current_credit' => 0.00,
         ]);
     }
 

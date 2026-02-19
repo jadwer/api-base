@@ -158,4 +158,33 @@ class ContactStoreTest extends TestCase
 
         $response->assertStatus(422);
     }
+
+    public function test_admin_can_create_prospect_contact(): void
+    {
+        $admin = $this->getAdminUser();
+
+        $data = [
+            'type' => 'contacts',
+            'attributes' => [
+                'contactType' => 'person',
+                'name' => 'Prospect Contact',
+                'status' => 'active',
+                'isCustomer' => false,
+                'isSupplier' => false
+            ]
+        ];
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('contacts')
+            ->withData($data)
+            ->post('/api/v1/contacts');
+
+        $response->assertCreated();
+        $this->assertDatabaseHas('contacts', [
+            'name' => 'Prospect Contact',
+            'is_customer' => false,
+            'is_supplier' => false
+        ]);
+    }
 }

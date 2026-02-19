@@ -65,13 +65,6 @@ class Contact extends Model
 
     public function validateBusinessRules()
     {
-        // Must be either customer, supplier, or both
-        if (!$this->is_customer && !$this->is_supplier) {
-            throw ValidationException::withMessages([
-                'is_customer' => 'Contact must be either a customer, supplier, or both.'
-            ]);
-        }
-
         // Credit limit only applies to customers
         if (!$this->is_customer && $this->credit_limit > 0) {
             throw ValidationException::withMessages([
@@ -127,6 +120,11 @@ class Contact extends Model
         return $query->where('is_customer', true)->where('is_supplier', true);
     }
 
+    public function scopeProspects($query)
+    {
+        return $query->where('is_customer', false)->where('is_supplier', false);
+    }
+
     public function scopeByType($query, $type)
     {
         return $query->where('contact_type', $type);
@@ -156,6 +154,11 @@ class Contact extends Model
     public function isMixed(): bool
     {
         return $this->is_customer && $this->is_supplier;
+    }
+
+    public function isProspect(): bool
+    {
+        return !$this->is_customer && !$this->is_supplier;
     }
 
     public function isActive(): bool

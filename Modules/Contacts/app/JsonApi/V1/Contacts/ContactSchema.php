@@ -12,6 +12,7 @@ use LaravelJsonApi\Eloquent\Fields\ArrayHash;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
 use LaravelJsonApi\Eloquent\Fields\Relations\HasMany;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
+use LaravelJsonApi\Eloquent\Filters\Scope;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
 use Modules\Contacts\Models\Contact;
@@ -71,6 +72,7 @@ class ContactSchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('isSupplier', 'is_supplier')->asBoolean(),
             \LaravelJsonApi\Eloquent\Filters\Where::make('classification'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('paymentTerms', 'payment_terms'),
+            Scope::make('isProspect', 'prospects')->asBoolean(),
         ];
     }
 
