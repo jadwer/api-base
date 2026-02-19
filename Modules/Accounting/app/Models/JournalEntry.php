@@ -66,9 +66,19 @@ class JournalEntry extends Model
     ];
 
     // Scopes
-    public function scopeActive($query)
+    public function scopeDraft($query)
     {
         return $query->where('status', self::STATUS_DRAFT);
+    }
+
+    public function scopePosted($query)
+    {
+        return $query->where('status', self::STATUS_POSTED);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->whereIn('status', [self::STATUS_DRAFT, self::STATUS_APPROVED, self::STATUS_POSTED]);
     }
 
     public function journal()

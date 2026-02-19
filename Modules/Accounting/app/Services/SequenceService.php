@@ -102,8 +102,13 @@ class SequenceService
         $currentNumber = $this->getCurrentNumber($journal, $date->year);
         $nextNumber = $currentNumber + 1;
 
+        // Match getNextSequence() prefix fallback logic
+        $sequence = JournalSequence::where('journal_id', $journal->id)
+            ->where('fiscal_year', $date->year)
+            ->first();
+
         return sprintf('%s-%04d-%02d-%05d',
-            $journal->prefix,
+            $journal->prefix ?? $sequence?->prefix,
             $date->year,
             $date->month,
             $nextNumber

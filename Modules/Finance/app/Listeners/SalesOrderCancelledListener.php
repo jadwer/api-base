@@ -5,10 +5,15 @@ namespace Modules\Finance\Listeners;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Modules\Finance\Models\ARInvoice;
+use Modules\Accounting\Services\AccountingService;
 use Modules\Sales\Events\SalesOrderCancelled;
 
 class SalesOrderCancelledListener
 {
+    public function __construct(
+        private AccountingService $accountingService
+    ) {}
+
     /**
      * Handle the event.
      */
@@ -33,12 +38,31 @@ class SalesOrderCancelledListener
                 return;
             }
 
-            // Only void if invoice is in draft status
+            // Handle based on invoice status
             if ($arInvoice->status === 'draft') {
                 $arInvoice->update(['status' => 'voided']);
 
-                Log::info('SalesOrderCancelledListener: AR Invoice voided', [
+                Log::info('SalesOrderCancelledListener: AR Invoice voided (draft)', [
                     'ar_invoice_id' => $arInvoice->id
+                ]);
+            } elseif (in_array($arInvoice->status, ['posted', 'partial'])) {
+                // Void the invoice
+                $arInvoice->update(['status' => 'voided']);
+
+                // Reverse the GL entry if it exists
+                if ($arInvoice->journal_entry_id) {
+                    $journalEntry = $arInvoice->journalEntry;
+                    if ($journalEntry && $journalEntry->status === 'posted') {
+                        $this->accountingService->reverseJournalEntry(
+                            $journalEntry,
+                            "Sales Order #{$salesOrder->order_number} cancelled"
+                        );
+                    }
+                }
+
+                Log::info('SalesOrderCancelledListener: AR Invoice voided + GL reversed', [
+                    'ar_invoice_id' => $arInvoice->id,
+                    'journal_entry_id' => $arInvoice->journal_entry_id
                 ]);
             } else {
                 Log::warning('SalesOrderCancelledListener: AR Invoice cannot be voided', [

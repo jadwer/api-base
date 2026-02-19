@@ -101,11 +101,15 @@ class EarlyPaymentDiscountService
         $remaining = $invoice->total_amount - ($invoice->paid_amount ?? 0);
 
         if ($this->qualifiesForDiscount($invoice, $asOfDate)) {
-            $discountedRemaining = $remaining - $invoice->discount_amount;
+            // Proportional discount based on remaining balance
+            $effectiveDiscount = ($remaining >= $invoice->total_amount)
+                ? $invoice->discount_amount
+                : $this->calculateDiscountAmount($remaining, $invoice->discount_percent);
+            $discountedRemaining = $remaining - $effectiveDiscount;
             return [
                 'original_remaining' => $remaining,
                 'discount_available' => true,
-                'discount_amount' => $invoice->discount_amount,
+                'discount_amount' => $effectiveDiscount,
                 'discounted_remaining' => max(0, $discountedRemaining),
                 'discount_deadline' => $invoice->discount_date,
                 'days_until_deadline' => $asOfDate->diffInDays($invoice->discount_date, false),
@@ -133,7 +137,11 @@ class EarlyPaymentDiscountService
             return 0.0;
         }
 
-        $discountAmount = $invoice->discount_amount;
+        // Adjust discount for partial payments: proportional to remaining balance
+        $remaining = $invoice->total_amount - ($invoice->paid_amount ?? 0);
+        $discountAmount = ($remaining >= $invoice->total_amount)
+            ? $invoice->discount_amount
+            : $this->calculateDiscountAmount($remaining, $invoice->discount_percent);
 
         $invoice->discount_applied = true;
         $invoice->discount_applied_amount = $discountAmount;

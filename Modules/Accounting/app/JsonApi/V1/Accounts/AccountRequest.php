@@ -71,26 +71,35 @@ class AccountRequest extends ResourceRequest
             $data = $validator->validated();
 
             // Only validate if parentId is being set
-            if (!isset($data['parentId'])) {
+            if (!isset($data['parentId']) || $data['parentId'] === null) {
                 return;
             }
 
             $account = $this->model();
             $accountId = $account?->id;
 
-            // Skip validation if creating a new account (no ID yet)
-            if (!$accountId) {
-                return;
-            }
-
             $hierarchyService = app(AccountHierarchyService::class);
 
             try {
-                // Validate no circular reference
-                $hierarchyService->validateNoCircularReference($accountId, $data['parentId']);
+                // Validate parent account exists
+                $parentAccount = \Modules\Accounting\Models\Account::find($data['parentId']);
+                if (!$parentAccount) {
+                    $validator->errors()->add('parentId', 'La cuenta padre no existe.');
+                    return;
+                }
 
-                // Validate max depth (5 levels)
-                $hierarchyService->validateMaxDepth($accountId, 5);
+                // Validate max depth from parent (new account adds 1 level)
+                $parentDepth = $hierarchyService->calculateDepth($data['parentId']);
+                if ($parentDepth >= 4) { // Max 5 levels, parent at depth 4 = child at depth 5
+                    $validator->errors()->add('parentId', 'Se excede la profundidad máxima de jerarquía (5 niveles).');
+                    return;
+                }
+
+                // For updates, also validate circular reference
+                if ($accountId) {
+                    $hierarchyService->validateNoCircularReference($accountId, $data['parentId']);
+                    $hierarchyService->validateMaxDepth($accountId, 5);
+                }
             } catch (\Exception $e) {
                 $validator->errors()->add('parentId', $e->getMessage());
             }

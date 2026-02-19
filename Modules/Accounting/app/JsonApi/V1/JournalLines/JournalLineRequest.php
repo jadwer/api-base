@@ -16,12 +16,28 @@ class JournalLineRequest extends ResourceRequest
         return [
             'journalEntryId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
             'accountId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
-            'contact_id' => ['nullable', 'string'],
-            'debit' => [$isUpdate ? 'sometimes' : 'required', 'numeric'],
-            'credit' => [$isUpdate ? 'sometimes' : 'required', 'numeric'],
+            'contact_id' => ['nullable', 'integer'],
+            'debit' => [
+                $isUpdate ? 'sometimes' : 'required',
+                'numeric',
+                'min:0',
+                function ($attribute, $value, $fail) {
+                    $credit = $this->input('data.attributes.credit', 0);
+                    if ($value > 0 && $credit > 0) {
+                        $fail('Una línea de diario debe tener débito O crédito, no ambos.');
+                    }
+                    if ($value == 0 && $credit == 0 && !$this->isMethod('PATCH')) {
+                        $fail('Una línea de diario debe tener al menos un valor de débito o crédito mayor a cero.');
+                    }
+                },
+            ],
+            'credit' => [
+                $isUpdate ? 'sometimes' : 'required',
+                'numeric',
+                'min:0',
+            ],
             'description' => ['nullable', 'string'],
             'reference' => ['nullable', 'string', 'max:255'],
-            'metadata' => ['nullable', 'array'],
             'metadata' => ['nullable', 'array'],
         ];
     }

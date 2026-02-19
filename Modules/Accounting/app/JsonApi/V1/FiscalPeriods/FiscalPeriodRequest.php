@@ -19,11 +19,10 @@ class FiscalPeriodRequest extends ResourceRequest
             'month' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
             'startDate' => [$isUpdate ? 'sometimes' : 'required', 'date'],
             'endDate' => [$isUpdate ? 'sometimes' : 'required', 'date'],
-            'status' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
-            'closedAt' => ['nullable', 'string'],
+            'status' => [$isUpdate ? 'sometimes' : 'required', 'string', Rule::in(['open', 'closed', 'locked'])],
+            'closedAt' => ['nullable', 'date'],
             'closedById' => ['nullable', 'integer'],
             'closingEntryId' => ['nullable', 'integer'],
-            'metadata' => ['nullable', 'array'],
             'metadata' => ['nullable', 'array'],
         ];
     }
@@ -45,7 +44,7 @@ class FiscalPeriodRequest extends ResourceRequest
             'endDate.date' => 'El campo End date debe ser una fecha válida.',
             'status.required' => 'El campo Status es obligatorio.',
             'status.string' => 'El campo Status debe ser texto.',
-            'status.max' => 'El campo Status no puede tener más de 255 caracteres.',
+            'status.in' => 'El campo Status debe ser: open, closed o locked.',
             'metadata.array' => 'El campo Metadata debe ser un arreglo.',
         ];
     }

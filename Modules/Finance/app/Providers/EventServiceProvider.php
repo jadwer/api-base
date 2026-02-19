@@ -22,6 +22,11 @@ class EventServiceProvider extends ServiceProvider
             \Modules\Finance\Listeners\PurchaseOrderReceivedListener::class,
         ],
 
+        // Sales → Finance Cancellation
+        \Modules\Sales\Events\SalesOrderCancelled::class => [
+            \Modules\Finance\Listeners\SalesOrderCancelledListener::class,
+        ],
+
         // Finance Internal Events
         \Modules\Finance\Events\ARInvoicePosted::class => [
             \Modules\Finance\Listeners\ARInvoicePostedListener::class,

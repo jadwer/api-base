@@ -81,7 +81,7 @@ class PeriodCloseService
     protected function checkAllEntriesPosted(FiscalPeriod $period): array
     {
         $unpostedEntries = JournalEntry::where('fiscal_period_id', $period->id)
-            ->where('status', '!=', 'posted')
+            ->whereNotIn('status', ['posted', 'reversed'])
             ->count();
 
         return [

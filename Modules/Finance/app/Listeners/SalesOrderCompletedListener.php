@@ -3,7 +3,6 @@
 namespace Modules\Finance\Listeners;
 
 use Modules\Sales\Events\SalesOrderCompleted;
-use Modules\Finance\Models\ARInvoice;
 use Modules\Finance\Services\ARInvoiceService;
 use Illuminate\Support\Facades\Log;
 
@@ -34,18 +33,19 @@ class SalesOrderCompletedListener
             return;
         }
 
-        try {
-            // Create AR Invoice from Sales Order
-            $arInvoice = $this->createARInvoiceFromSalesOrder($salesOrder);
-
-            // Update Sales Order with invoice reference
-            $salesOrder->update([
-                'ar_invoice_id' => $arInvoice->id,
-                'invoicing_status' => 'invoiced',
-                'financial_status' => 'invoiced',
+        // Skip if invoice cannot be generated
+        if (!$this->arInvoiceService->canGenerateInvoice($salesOrder)) {
+            Log::info("SalesOrder does not meet conditions for AR Invoice generation", [
+                'sales_order_id' => $salesOrder->id,
+                'status' => $salesOrder->status,
             ]);
+            return;
+        }
 
-            Log::info("AR Invoice created from SalesOrder", [
+        try {
+            $arInvoice = $this->arInvoiceService->createFromSalesOrder($salesOrder);
+
+            Log::info("AR Invoice created from SalesOrder via listener", [
                 'sales_order_id' => $salesOrder->id,
                 'sales_order_number' => $salesOrder->order_number,
                 'ar_invoice_id' => $arInvoice->id,
@@ -63,36 +63,5 @@ class SalesOrderCompletedListener
             // Don't throw - let the sales order complete anyway
             // The invoice can be created manually later
         }
-    }
-
-    /**
-     * Create AR Invoice from Sales Order
-     *
-     * @param \Modules\Sales\Models\SalesOrder $salesOrder
-     * @return ARInvoice
-     */
-    private function createARInvoiceFromSalesOrder($salesOrder): ARInvoice
-    {
-        // Calculate totals from sales order items
-        $subtotal = $salesOrder->items->sum(fn($item) => $item->quantity * $item->unit_price);
-        $taxAmount = $salesOrder->items->sum('tax_amount');
-        $totalAmount = $subtotal + $taxAmount;
-
-        // Create AR Invoice using service
-        return $this->arInvoiceService->createInvoice([
-            'invoiceDate' => now()->toDateString(),
-            'dueDate' => now()->addDays($salesOrder->payment_terms ?? 30)->toDateString(),
-            'contactId' => $salesOrder->contact_id,
-            'currency' => $salesOrder->currency ?? 'MXN',
-            'subtotal' => $subtotal,
-            'taxAmount' => $taxAmount,
-            'totalAmount' => $totalAmount,
-            'notes' => "Auto-generated from Sales Order #{$salesOrder->order_number}",
-            'metadata' => [
-                'source' => 'sales_order',
-                'sales_order_id' => $salesOrder->id,
-                'sales_order_number' => $salesOrder->order_number,
-            ],
-        ]);
     }
 }

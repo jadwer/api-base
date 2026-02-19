@@ -289,7 +289,7 @@ class BankReconciliationService
                 'reconciliation_status' => 'reconciled',
                 'reconciled_at' => now(),
                 'reconciled_by_id' => $userId,
-                'journal_line_id' => $gl->id,
+                'reconciliation_notes' => "Matched with GL journal line #{$gl->id}",
             ]);
 
             // Update GL line metadata

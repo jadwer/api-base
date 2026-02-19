@@ -31,12 +31,17 @@ class FiscalPeriodController extends Controller
 
     /**
      * AC-M001: Get close checklist for a fiscal period.
-     *
-     * @param FiscalPeriod $fiscalPeriod
-     * @return JsonResponse
      */
-    public function closeChecklist(FiscalPeriod $fiscalPeriod): JsonResponse
+    public function closeChecklist(Request $request, FiscalPeriod $fiscalPeriod): JsonResponse
     {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        if (!$user->can('fiscal-periods.show')) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
         $checklist = $this->periodCloseService->getCloseChecklist($fiscalPeriod);
 
         return response()->json([
@@ -46,15 +51,18 @@ class FiscalPeriodController extends Controller
 
     /**
      * AC-M001: Close a fiscal period.
-     *
-     * @param Request $request
-     * @param FiscalPeriod $fiscalPeriod
-     * @return JsonResponse
      */
     public function close(Request $request, FiscalPeriod $fiscalPeriod): JsonResponse
     {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        if (!$user->can('fiscal-periods.update')) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
         $force = $request->boolean('force', false);
-        $user = $request->user();
 
         $result = $this->periodCloseService->closePeriod($fiscalPeriod, $user, $force);
 
@@ -65,15 +73,18 @@ class FiscalPeriodController extends Controller
 
     /**
      * AC-M001: Reopen a closed fiscal period.
-     *
-     * @param Request $request
-     * @param FiscalPeriod $fiscalPeriod
-     * @return JsonResponse
      */
     public function reopen(Request $request, FiscalPeriod $fiscalPeriod): JsonResponse
     {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        if (!$user->can('fiscal-periods.update')) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
         $reason = $request->input('reason');
-        $user = $request->user();
 
         $result = $this->periodCloseService->reopenPeriod($fiscalPeriod, $user, $reason);
 
@@ -84,12 +95,17 @@ class FiscalPeriodController extends Controller
 
     /**
      * AC-M001: Get period summary with financial totals.
-     *
-     * @param FiscalPeriod $fiscalPeriod
-     * @return JsonResponse
      */
-    public function summary(FiscalPeriod $fiscalPeriod): JsonResponse
+    public function summary(Request $request, FiscalPeriod $fiscalPeriod): JsonResponse
     {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        if (!$user->can('fiscal-periods.show')) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
         $summary = $this->periodCloseService->getPeriodSummary($fiscalPeriod);
 
         return response()->json([

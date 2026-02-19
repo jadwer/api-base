@@ -280,7 +280,7 @@ class ARInvoiceService
      */
     private function generateInvoiceNumber(): string
     {
-        $lastInvoice = ARInvoice::orderBy('id', 'desc')->first();
+        $lastInvoice = ARInvoice::lockForUpdate()->orderBy('id', 'desc')->first();
         $nextNumber = $lastInvoice ? ((int) substr($lastInvoice->invoice_number, 3)) + 1 : 1;
         return 'AR-' . str_pad($nextNumber, 6, '0', STR_PAD_LEFT);
     }

@@ -49,6 +49,8 @@ class JournalLineSchema extends Schema
     {
         return [
             WhereIdIn::make($this),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('journalEntryId', 'journal_entry_id'),
+            \LaravelJsonApi\Eloquent\Filters\Where::make('accountId', 'account_id'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('reference'),
         ];
     }
