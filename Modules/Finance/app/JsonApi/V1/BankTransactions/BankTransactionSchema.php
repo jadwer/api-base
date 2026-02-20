@@ -51,7 +51,7 @@ class BankTransactionSchema extends Schema
 
             // Relationships
             BelongsTo::make('bankAccount'),
-            BelongsTo::make('reconciledBy'),
+            BelongsTo::make('reconciledBy')->type('users'),
         ];
     }
 
