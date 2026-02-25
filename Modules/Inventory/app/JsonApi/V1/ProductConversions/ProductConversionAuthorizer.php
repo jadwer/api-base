@@ -10,57 +10,27 @@ class ProductConversionAuthorizer implements Authorizer
 {
     public function index(Request $request, string $modelClass): bool|Response
     {
-        $user = $request->user();
-
-        if ($user && $user->hasRole('customer')) {
-            return false;
-        }
-
-        return $user?->can('product-conversions.index') ?? false;
+        return $request->user()?->can('product-conversions.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
     {
-        $user = $request->user();
-
-        if ($user && $user->hasRole('customer')) {
-            return false;
-        }
-
-        return $user?->can('product-conversions.store') ?? false;
+        return $request->user()?->can('product-conversions.store') ?? false;
     }
 
     public function show(Request $request, object $model): bool|Response
     {
-        $user = $request->user();
-
-        if ($user && $user->hasRole('customer')) {
-            return false;
-        }
-
-        return $user?->can('product-conversions.show') ?? false;
+        return $request->user()?->can('product-conversions.show') ?? false;
     }
 
     public function update(Request $request, object $model): bool|Response
     {
-        $user = $request->user();
-
-        if ($user && $user->hasRole('customer')) {
-            return false;
-        }
-
-        return $user?->can('product-conversions.update') ?? false;
+        return $request->user()?->can('product-conversions.update') ?? false;
     }
 
     public function destroy(Request $request, object $model): bool|Response
     {
-        $user = $request->user();
-
-        if ($user && $user->hasRole('customer')) {
-            return false;
-        }
-
-        return $user?->can('product-conversions.destroy') ?? false;
+        return $request->user()?->can('product-conversions.destroy') ?? false;
     }
 
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response

@@ -10,8 +10,7 @@ class ProductComparisonItemAuthorizer implements Authorizer
 {
     public function index(Request $request, string $modelClass): bool|Response
     {
-        $user = $request->user();
-        return $user?->can('ecommerce.product-comparison-items.index') ?? false;
+        return $request->user()?->can('ecommerce.product-comparison-items.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
@@ -20,57 +19,38 @@ class ProductComparisonItemAuthorizer implements Authorizer
         if (!$user) {
             return false;
         }
-
-        // If admin/god, allow
-        if ($user->hasAnyRole(['god', 'admin'])) {
+        if ($user->can('ecommerce.product-comparison-items.store')) {
             return true;
         }
-
-        // For customers, check if they own the comparison they're adding to
+        // Ownership check: user must own the parent comparison
         $data = $request->json()->all();
         $comparisonId = null;
-
-        // Check in attributes (comparisonId as attribute)
         if (isset($data['data']['attributes']['comparisonId'])) {
             $comparisonId = $data['data']['attributes']['comparisonId'];
-        }
-        // Also check in relationships (comparison as relationship)
-        elseif (isset($data['data']['relationships']['comparison']['data']['id'])) {
+        } elseif (isset($data['data']['relationships']['comparison']['data']['id'])) {
             $comparisonId = $data['data']['relationships']['comparison']['data']['id'];
         }
-
         if ($comparisonId) {
             $comparison = \Modules\Ecommerce\Models\ProductComparison::find($comparisonId);
-
-            if (!$comparison) {
-                return false;
-            }
-
-            return $comparison->user_id === $user->id;
+            return $comparison && $comparison->user_id === $user->id;
         }
-
         return false;
     }
 
     public function show(Request $request, object $model): bool|Response
     {
+        $comparison = $model->comparison;
+        if ($comparison && $comparison->is_public) {
+            return true;
+        }
         $user = $request->user();
         if (!$user) {
             return false;
         }
-
-        // Tech users have read-only access to all comparison items
-        if ($user->hasAnyRole(['god', 'admin', 'tech'])) {
+        if ($user->can('ecommerce.product-comparison-items.show')) {
             return true;
         }
-
-        // Can view if they can view the parent comparison
-        $comparison = $model->comparison;
-        if ($comparison->is_public) {
-            return true;
-        }
-
-        return $comparison->user_id === $user->id;
+        return $comparison && $comparison->user_id === $user->id;
     }
 
     public function update(Request $request, object $model): bool|Response
@@ -79,14 +59,11 @@ class ProductComparisonItemAuthorizer implements Authorizer
         if (!$user) {
             return false;
         }
-
-        $comparison = $model->comparison;
-
-        if ($user->hasAnyRole(['god', 'admin'])) {
+        if ($user->can('ecommerce.product-comparison-items.update')) {
             return true;
         }
-
-        return $comparison->user_id === $user->id;
+        $comparison = $model->comparison;
+        return $comparison && $comparison->user_id === $user->id;
     }
 
     public function destroy(Request $request, object $model): bool|Response

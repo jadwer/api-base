@@ -8,93 +8,53 @@ use LaravelJsonApi\Contracts\Auth\Authorizer;
 
 class ProductReviewAuthorizer implements Authorizer
 {
-    /**
-     * Anyone can view approved reviews (including guests)
-     */
     public function index(Request $request, string $modelClass): bool|Response
     {
-        // Public endpoint - guests can view approved reviews
         return true;
     }
 
-    /**
-     * Admin, god, and customers can create reviews. Tech is read-only.
-     */
     public function store(Request $request, string $modelClass): bool|Response
     {
-        $user = $request->user();
-        return $user && ($user->can('ecommerce.product-reviews.store')
-            || $user->hasAnyRole(['god', 'admin', 'customer']));
+        return $request->user()?->can('ecommerce.product-reviews.store') ?? false;
     }
 
-    /**
-     * Anyone can view a single approved review (including guests)
-     */
     public function show(Request $request, object $model): bool|Response
     {
-        // If it's approved, anyone can see it
         if ($model->status === 'approved') {
             return true;
         }
-
-        // If not approved, only owner, admin, tech, or god can see it
         $user = $request->user();
         if (!$user) {
-            return Response::deny('Only approved reviews are public.');
+            return false;
         }
-
-        // Tech users have read-only access to all reviews
-        if ($user->hasAnyRole(['god', 'admin', 'tech'])) {
+        if ($user->can('ecommerce.product-reviews.show')) {
             return true;
         }
-
-        if (isset($model->user_id) && $model->user_id === $user->id) {
-            return true;
-        }
-
-        return Response::deny('You can only view approved reviews or your own reviews.');
+        return isset($model->user_id) && $model->user_id === $user->id;
     }
 
-    /**
-     * Only owner or admin can update review
-     */
     public function update(Request $request, object $model): bool|Response
     {
         $user = $request->user();
         if (!$user) {
             return false;
         }
-
-        if ($user->hasAnyRole(['god', 'admin'])) {
+        if ($user->can('ecommerce.product-reviews.update')) {
             return true;
         }
-
-        if (isset($model->user_id) && $model->user_id === $user->id) {
-            return true;
-        }
-
-        return Response::deny('You can only update your own reviews.');
+        return isset($model->user_id) && $model->user_id === $user->id;
     }
 
-    /**
-     * Only owner, admin, or tech can delete review
-     */
     public function destroy(Request $request, object $model): bool|Response
     {
         $user = $request->user();
         if (!$user) {
             return false;
         }
-
-        if ($user->hasAnyRole(['god', 'admin', 'tech'])) {
+        if ($user->can('ecommerce.product-reviews.destroy')) {
             return true;
         }
-
-        if (isset($model->user_id) && $model->user_id === $user->id) {
-            return true;
-        }
-
-        return Response::deny('You can only delete your own reviews.');
+        return isset($model->user_id) && $model->user_id === $user->id;
     }
 
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response
@@ -109,16 +69,16 @@ class ProductReviewAuthorizer implements Authorizer
 
     public function updateRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return false;
+        return $this->update($request, $model);
     }
 
     public function attachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return false;
+        return $this->update($request, $model);
     }
 
     public function detachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return false;
+        return $this->update($request, $model);
     }
 }

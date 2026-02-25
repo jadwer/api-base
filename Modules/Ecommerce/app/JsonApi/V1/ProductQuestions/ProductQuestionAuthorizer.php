@@ -10,34 +10,27 @@ class ProductQuestionAuthorizer implements Authorizer
 {
     public function index(Request $request, string $modelClass): bool|Response
     {
-        $user = $request->user();
-        return $user?->can('ecommerce.product-questions.index') ?? false;
+        return $request->user()?->can('ecommerce.product-questions.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
     {
-        $user = $request->user();
-        return $user?->can('ecommerce.product-questions.store') ?? false;
+        return $request->user()?->can('ecommerce.product-questions.store') ?? false;
     }
 
     public function show(Request $request, object $model): bool|Response
     {
+        if ($model->status === 'approved') {
+            return true;
+        }
         $user = $request->user();
         if (!$user) {
             return false;
         }
-
-        // Admin/tech can view all
-        if ($user->hasAnyRole(['god', 'admin', 'tech'])) {
+        if ($user->can('ecommerce.product-questions.show')) {
             return true;
         }
-
-        // Users can view approved questions or their own questions
-        if ($model->status === 'approved' || $model->user_id === $user->id) {
-            return true;
-        }
-
-        return false;
+        return $model->user_id === $user->id;
     }
 
     public function update(Request $request, object $model): bool|Response
@@ -46,22 +39,13 @@ class ProductQuestionAuthorizer implements Authorizer
         if (!$user) {
             return false;
         }
-
-        // Admin/god can update any question (including status changes)
-        if ($user->hasAnyRole(['god', 'admin'])) {
+        if ($user->can('ecommerce.product-questions.update')) {
             return true;
         }
-
-        // Tech can update status for moderation
-        if ($user->hasRole('tech')) {
-            return $user->can('ecommerce.product-questions.update');
-        }
-
-        // Users can only update their own pending questions (not status)
+        // Owner can only update their own pending questions
         if ($model->user_id === $user->id && $model->status === 'pending') {
             return true;
         }
-
         return false;
     }
 
@@ -71,17 +55,13 @@ class ProductQuestionAuthorizer implements Authorizer
         if (!$user) {
             return false;
         }
-
-        // Admin/god can delete any question
-        if ($user->hasAnyRole(['god', 'admin'])) {
+        if ($user->can('ecommerce.product-questions.destroy')) {
             return true;
         }
-
-        // Users can delete their own pending questions
+        // Owner can delete their own pending questions
         if ($model->user_id === $user->id && $model->status === 'pending') {
             return true;
         }
-
         return false;
     }
 

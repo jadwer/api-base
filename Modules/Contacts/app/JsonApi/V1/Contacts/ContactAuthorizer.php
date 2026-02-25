@@ -10,47 +10,27 @@ class ContactAuthorizer implements Authorizer
 {
     public function index(Request $request, string $modelClass): bool|Response
     {
-        $user = $request->user();
-        if ($user && $user->hasAnyRole(['god', 'admin', 'administrator'])) {
-            return true;
-        }
-        return $user?->can('contacts.index') ?? false;
+        return $request->user()?->can('contacts.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
     {
-        $user = $request->user();
-        if ($user && $user->hasAnyRole(['god', 'admin', 'administrator'])) {
-            return true;
-        }
-        return $user?->can('contacts.store') ?? false;
+        return $request->user()?->can('contacts.store') ?? false;
     }
 
     public function show(Request $request, object $model): bool|Response
     {
-        $user = $request->user();
-        if ($user && $user->hasAnyRole(['god', 'admin', 'administrator'])) {
-            return true;
-        }
-        return $user?->can('contacts.show') ?? false;
+        return $request->user()?->can('contacts.show') ?? false;
     }
 
     public function update(Request $request, object $model): bool|Response
     {
-        $user = $request->user();
-        if ($user && $user->hasAnyRole(['god', 'admin', 'administrator'])) {
-            return true;
-        }
-        return $user?->can('contacts.update') ?? false;
+        return $request->user()?->can('contacts.update') ?? false;
     }
 
     public function destroy(Request $request, object $model): bool|Response
     {
-        $user = $request->user();
-        if ($user && $user->hasAnyRole(['god', 'admin', 'administrator'])) {
-            return true;
-        }
-        return $user?->can('contacts.destroy') ?? false;
+        return $request->user()?->can('contacts.destroy') ?? false;
     }
 
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response

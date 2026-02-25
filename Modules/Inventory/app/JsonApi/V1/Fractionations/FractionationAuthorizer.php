@@ -10,67 +10,33 @@ class FractionationAuthorizer implements Authorizer
 {
     public function index(Request $request, string $modelClass): bool|Response
     {
-        $user = $request->user();
-
-        if ($user && $user->hasRole('customer')) {
-            return false;
-        }
-
-        return $user?->can('fractionations.index') ?? false;
+        return $request->user()?->can('fractionations.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
     {
-        $user = $request->user();
-
-        if ($user && $user->hasRole('customer')) {
-            return false;
-        }
-
-        return $user?->can('fractionations.store') ?? false;
+        return $request->user()?->can('fractionations.store') ?? false;
     }
 
     public function show(Request $request, object $model): bool|Response
     {
-        $user = $request->user();
-
-        if ($user && $user->hasRole('customer')) {
-            return false;
-        }
-
-        return $user?->can('fractionations.show') ?? false;
+        return $request->user()?->can('fractionations.show') ?? false;
     }
 
     public function update(Request $request, object $model): bool|Response
     {
-        $user = $request->user();
-
-        if ($user && $user->hasRole('customer')) {
-            return false;
-        }
-
-        // Completed fractionations cannot be modified
         if ($model->status === 'completed') {
             return Response::deny('No se pueden modificar fraccionamientos completados.');
         }
-
-        return $user?->can('fractionations.update') ?? false;
+        return $request->user()?->can('fractionations.update') ?? false;
     }
 
     public function destroy(Request $request, object $model): bool|Response
     {
-        $user = $request->user();
-
-        if ($user && $user->hasRole('customer')) {
-            return false;
-        }
-
-        // Completed fractionations cannot be deleted
         if ($model->status === 'completed') {
             return Response::deny('No se pueden eliminar fraccionamientos completados.');
         }
-
-        return $user?->can('fractionations.destroy') ?? false;
+        return $request->user()?->can('fractionations.destroy') ?? false;
     }
 
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response

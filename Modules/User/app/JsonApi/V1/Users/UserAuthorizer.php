@@ -5,8 +5,6 @@ namespace Modules\User\JsonApi\V1\Users;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
 use LaravelJsonApi\Contracts\Auth\Authorizer;
-use Illuminate\Support\Facades\Gate;
-
 
 class UserAuthorizer implements Authorizer
 {
@@ -17,15 +15,7 @@ class UserAuthorizer implements Authorizer
 
     public function store(Request $request, string $modelClass): bool|Response
     {
-        $user = $request->user();
-
-        if (!$user) return false;
-
-        if (! $user->can('users.store')) {
-            return Response::deny('No tienes permiso para crear usuarios.');
-        }
-
-        return Response::allow();
+        return $request->user()?->can('users.store') ?? false;
     }
 
     public function show(Request $request, object $model): bool|Response
@@ -41,54 +31,47 @@ class UserAuthorizer implements Authorizer
     public function destroy(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-
-        if (is_null($user)) {
+        if (!$user) {
             return false;
         }
-
-        $permission = Gate::forUser($user)->inspect('users.destroy');
-
-        if (!$permission->allowed()) {
-            return $permission;
+        if (!$user->can('users.destroy')) {
+            return false;
         }
-
-        // Reglas de jerarquía de roles
+        // Role hierarchy: only god can delete god
         if ($model->hasRole('god')) {
-            // Solo otro god puede eliminar a un god
             return $user->hasRole('god')
                 ? Response::allow()
                 : Response::deny('No puedes eliminar a un usuario god.');
         }
-
+        // Tech cannot delete admin
         if ($model->hasRole('admin') && $user->hasRole('tech')) {
             return Response::deny('Un técnico no puede eliminar a un administrador.');
         }
-
-        return Response::allow();
+        return true;
     }
 
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response
     {
-        return true;
+        return $this->show($request, $model);
     }
 
     public function showRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return true;
+        return $this->show($request, $model);
     }
 
     public function updateRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return true;
+        return $this->update($request, $model);
     }
 
     public function attachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return true;
+        return $this->update($request, $model);
     }
 
     public function detachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return true;
+        return $this->update($request, $model);
     }
 }

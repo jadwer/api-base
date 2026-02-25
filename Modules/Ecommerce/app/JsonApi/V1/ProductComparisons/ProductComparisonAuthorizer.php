@@ -10,34 +10,26 @@ class ProductComparisonAuthorizer implements Authorizer
 {
     public function index(Request $request, string $modelClass): bool|Response
     {
-        $user = $request->user();
-        return $user?->can('ecommerce.product-comparisons.index') ?? false;
+        return $request->user()?->can('ecommerce.product-comparisons.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
     {
-        $user = $request->user();
-        return $user?->can('ecommerce.product-comparisons.store') ?? false;
+        return $request->user()?->can('ecommerce.product-comparisons.store') ?? false;
     }
 
     public function show(Request $request, object $model): bool|Response
     {
+        if ($model->is_public) {
+            return true;
+        }
         $user = $request->user();
         if (!$user) {
             return false;
         }
-
-        // Tech users have read-only access to all comparisons
-        if ($user->hasAnyRole(['god', 'admin', 'tech'])) {
+        if ($user->can('ecommerce.product-comparisons.show')) {
             return true;
         }
-
-        // Public comparisons are viewable by anyone authenticated
-        if ($model->is_public) {
-            return true;
-        }
-
-        // Private comparisons only viewable by owner
         return $model->user_id === $user->id;
     }
 
@@ -47,11 +39,9 @@ class ProductComparisonAuthorizer implements Authorizer
         if (!$user) {
             return false;
         }
-
-        if ($user->hasAnyRole(['god', 'admin'])) {
+        if ($user->can('ecommerce.product-comparisons.update')) {
             return true;
         }
-
         return $model->user_id === $user->id;
     }
 
@@ -61,11 +51,9 @@ class ProductComparisonAuthorizer implements Authorizer
         if (!$user) {
             return false;
         }
-
-        if ($user->hasAnyRole(['god', 'admin'])) {
+        if ($user->can('ecommerce.product-comparisons.destroy')) {
             return true;
         }
-
         return $model->user_id === $user->id;
     }
 

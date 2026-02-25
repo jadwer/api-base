@@ -111,9 +111,9 @@ class ProductReviewDestroyTest extends TestCase
     }
 
     /**
-     * Test tech user can delete any product review.
+     * Test tech user cannot delete product reviews (read-only).
      */
-    public function test_tech_can_delete_any_product_review(): void
+    public function test_tech_cannot_delete_product_review(): void
     {
         $tech = $this->getTechUser();
         $user = User::factory()->create();
@@ -129,11 +129,7 @@ class ProductReviewDestroyTest extends TestCase
             ->expects('product-reviews')
             ->delete('/api/v1/product-reviews/' . $review->id);
 
-        $response->assertNoContent();
-
-        $this->assertDatabaseMissing('product_reviews', [
-            'id' => $review->id,
-        ]);
+        $response->assertStatus(403);
     }
 
     /**

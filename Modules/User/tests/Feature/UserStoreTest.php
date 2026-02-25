@@ -85,7 +85,6 @@ class UserStoreTest extends TestCase
             ->post('/api/v1/users');
 
         $response->assertForbidden();
-        $response->assertSeeText('No tienes permiso para crear usuarios.');
     }
 
     public function test_unauthenticated_user_cannot_create_user(): void

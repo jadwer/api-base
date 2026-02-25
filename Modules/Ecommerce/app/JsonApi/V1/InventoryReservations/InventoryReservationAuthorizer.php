@@ -10,45 +10,27 @@ class InventoryReservationAuthorizer implements Authorizer
 {
     public function index(Request $request, string $modelClass): bool|Response
     {
-        $user = $request->user();
-        return $user && $user->hasAnyRole(['god', 'admin', 'tech']);
+        return $request->user()?->can('ecommerce.inventory-reservations.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
     {
-        $user = $request->user();
-        return $user && $user->hasAnyRole(['god', 'admin']);
+        return $request->user()?->can('ecommerce.inventory-reservations.store') ?? false;
     }
 
     public function show(Request $request, object $model): bool|Response
     {
-        $user = $request->user();
-        if (!$user) {
-            return false;
-        }
-
-        if ($user->hasAnyRole(['god', 'admin', 'tech'])) {
-            return true;
-        }
-
-        $session = $model->checkoutSession ?? null;
-        if ($session && isset($session->user_id) && $session->user_id === $user->id) {
-            return true;
-        }
-
-        return Response::deny('You can only view your own inventory reservations.');
+        return $request->user()?->can('ecommerce.inventory-reservations.show') ?? false;
     }
 
     public function update(Request $request, object $model): bool|Response
     {
-        $user = $request->user();
-        return $user && $user->hasAnyRole(['god', 'admin']);
+        return $request->user()?->can('ecommerce.inventory-reservations.update') ?? false;
     }
 
     public function destroy(Request $request, object $model): bool|Response
     {
-        $user = $request->user();
-        return $user && $user->hasAnyRole(['god', 'admin']);
+        return $request->user()?->can('ecommerce.inventory-reservations.destroy') ?? false;
     }
 
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response
@@ -63,16 +45,16 @@ class InventoryReservationAuthorizer implements Authorizer
 
     public function updateRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return false;
+        return $this->update($request, $model);
     }
 
     public function attachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return false;
+        return $this->update($request, $model);
     }
 
     public function detachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return false;
+        return $this->update($request, $model);
     }
 }

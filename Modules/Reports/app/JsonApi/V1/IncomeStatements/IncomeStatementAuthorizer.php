@@ -4,31 +4,18 @@ namespace Modules\Reports\JsonApi\V1\IncomeStatements;
 
 use Illuminate\Http\Request;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Support\Facades\Log;
 use LaravelJsonApi\Contracts\Auth\Authorizer;
 
 class IncomeStatementAuthorizer implements Authorizer
 {
     public function index(Request $request, string $modelClass): bool|Response
     {
-        $user = $request->user();
-
-        if (!$user) {
-            return Response::deny('Unauthenticated', 401);
-        }
-
-        return $user->hasAnyRole(['god', 'admin']) || $user->hasPermissionTo('reports.income-statements.index');
+        return $request->user()?->can('reports.income-statements.index') ?? false;
     }
 
     public function show(Request $request, object $model): bool|Response
     {
-        $user = $request->user();
-
-        if (!$user) {
-            return Response::deny('Unauthenticated', 401);
-        }
-
-        return $user->hasAnyRole(['god', 'admin']) || $user->hasPermissionTo('reports.income-statements.show');
+        return $request->user()?->can('reports.income-statements.show') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response

@@ -10,16 +10,12 @@ class CheckoutSessionAuthorizer implements Authorizer
 {
     public function index(Request $request, string $modelClass): bool|Response
     {
-        $user = $request->user();
-        return $user && ($user->can('ecommerce.checkout-sessions.index')
-            || $user->hasAnyRole(['god', 'admin', 'tech']));
+        return $request->user()?->can('ecommerce.checkout-sessions.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
     {
-        $user = $request->user();
-        return $user && ($user->can('ecommerce.checkout-sessions.store')
-            || $user->hasAnyRole(['god', 'admin', 'tech', 'customer']));
+        return $request->user()?->can('ecommerce.checkout-sessions.store') ?? false;
     }
 
     public function show(Request $request, object $model): bool|Response
@@ -28,16 +24,10 @@ class CheckoutSessionAuthorizer implements Authorizer
         if (!$user) {
             return false;
         }
-
-        if ($user->hasAnyRole(['god', 'admin', 'tech'])) {
+        if ($user->can('ecommerce.checkout-sessions.show')) {
             return true;
         }
-
-        if (isset($model->user_id) && $model->user_id === $user->id) {
-            return true;
-        }
-
-        return Response::deny('You can only view your own checkout sessions.');
+        return isset($model->user_id) && $model->user_id === $user->id;
     }
 
     public function update(Request $request, object $model): bool|Response
@@ -46,20 +36,13 @@ class CheckoutSessionAuthorizer implements Authorizer
         if (!$user) {
             return false;
         }
-
         if (isset($model->status) && in_array($model->status, ['completed', 'cancelled'])) {
             return Response::deny('Cannot modify completed or cancelled checkout sessions.');
         }
-
-        if ($user->hasAnyRole(['god', 'admin'])) {
+        if ($user->can('ecommerce.checkout-sessions.update')) {
             return true;
         }
-
-        if (isset($model->user_id) && $model->user_id === $user->id) {
-            return true;
-        }
-
-        return Response::deny('You can only modify your own checkout sessions.');
+        return isset($model->user_id) && $model->user_id === $user->id;
     }
 
     public function destroy(Request $request, object $model): bool|Response
@@ -68,18 +51,16 @@ class CheckoutSessionAuthorizer implements Authorizer
         if (!$user) {
             return false;
         }
-
-        if ($user->hasAnyRole(['god', 'admin'])) {
+        if ($user->can('ecommerce.checkout-sessions.destroy')) {
             return true;
         }
-
+        // Owner can delete only if not completed
         if (isset($model->user_id) && isset($model->status)
             && $model->user_id === $user->id
             && !in_array($model->status, ['completed'])) {
             return true;
         }
-
-        return Response::deny('You cannot delete this checkout session.');
+        return false;
     }
 
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response
@@ -94,16 +75,16 @@ class CheckoutSessionAuthorizer implements Authorizer
 
     public function updateRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return false;
+        return $this->update($request, $model);
     }
 
     public function attachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return false;
+        return $this->update($request, $model);
     }
 
     public function detachRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return false;
+        return $this->update($request, $model);
     }
 }
