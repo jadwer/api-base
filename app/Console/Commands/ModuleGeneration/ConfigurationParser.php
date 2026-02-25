@@ -7,114 +7,103 @@ use Illuminate\Support\Facades\File;
 class ConfigurationParser
 {
     /**
-     * Parse configuration from JSON file
+     * Parse JSON config file and return ModuleConfig
      */
-    public function parseFromFile(string $configFile): array
+    public function parse(string $configFile): ModuleConfig
     {
         if (!File::exists($configFile)) {
-            throw new \Exception("Configuration file not found: {$configFile}");
+            throw new \InvalidArgumentException("Configuration file not found: {$configFile}");
         }
 
-        $config = json_decode(File::get($configFile), true);
-        
+        $raw = json_decode(File::get($configFile), true);
+
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \Exception("Invalid JSON in configuration file: " . json_last_error_msg());
+            throw new \InvalidArgumentException("Invalid JSON: " . json_last_error_msg());
         }
 
-        return $this->normalizeConfiguration($config);
+        $this->validate($raw);
+
+        return $this->buildModuleConfig($raw);
     }
 
     /**
-     * Transform entities from object to array format expected by generator
+     * Validate the raw config array
      */
-    public function normalizeConfiguration(array $config): array
+    private function validate(array $config): void
     {
-        $entitiesConfig = $config['entities'] ?? [];
-        $entities = [];
-        
-        foreach ($entitiesConfig as $entityName => $entityData) {
-            $entity = [
-                'name' => $entityData['name'],
-                'tableName' => $entityData['tableName'],
-                'fillable' => array_column($entityData['fields'], 'name'),
-                'fields' => $entityData['fields'],
-                'relationships' => []
-            ];
-            
-            $entities[] = $entity;
+        if (empty($config['module'])) {
+            throw new \InvalidArgumentException("Missing required key: 'module'");
         }
 
-        return [
-            'entities' => $entities,
-            'relationships' => $config['relationships'] ?? [],
-            'permissions' => $config['permissions'] ?? [],
-            'entitiesConfig' => $entitiesConfig
-        ];
-    }
-
-    /**
-     * Validate required configuration structure
-     */
-    public function validateConfiguration(array $config): void
-    {
-        $required = ['entities'];
-        
-        foreach ($required as $key) {
-            if (!isset($config[$key])) {
-                throw new \Exception("Missing required configuration key: {$key}");
-            }
+        if (!is_string($config['module'])) {
+            throw new \InvalidArgumentException("'module' must be a string");
         }
 
-        // Validate entities structure
+        if (empty($config['entities']) || !is_array($config['entities'])) {
+            throw new \InvalidArgumentException("Missing or invalid 'entities' key");
+        }
+
         foreach ($config['entities'] as $entityName => $entityData) {
             $this->validateEntity($entityName, $entityData);
         }
     }
 
     /**
-     * Validate individual entity configuration
+     * Validate individual entity config
      */
-    private function validateEntity(string $entityName, array $entityData): void
+    private function validateEntity(string $name, array $data): void
     {
-        $required = ['name', 'tableName', 'fields'];
-        
-        foreach ($required as $key) {
-            if (!isset($entityData[$key])) {
-                throw new \Exception("Entity '{$entityName}' missing required key: {$key}");
+        if (!preg_match('/^[A-Z][a-zA-Z0-9]+$/', $name)) {
+            throw new \InvalidArgumentException("Entity name '{$name}' must be PascalCase (e.g., ShipmentItem)");
+        }
+
+        if (empty($data['fields']) || !is_array($data['fields'])) {
+            throw new \InvalidArgumentException("Entity '{$name}' must have at least one field");
+        }
+
+        $validTypes = ['string', 'text', 'integer', 'bigInteger', 'decimal', 'boolean', 'date', 'datetime', 'json', 'enum'];
+
+        foreach ($data['fields'] as $i => $field) {
+            if (empty($field['name'])) {
+                throw new \InvalidArgumentException("Entity '{$name}' field #{$i} missing 'name'");
+            }
+            if (empty($field['type'])) {
+                throw new \InvalidArgumentException("Entity '{$name}' field '{$field['name']}' missing 'type'");
+            }
+            if (!in_array($field['type'], $validTypes)) {
+                throw new \InvalidArgumentException("Entity '{$name}' field '{$field['name']}' has invalid type: '{$field['type']}'. Valid types: " . implode(', ', $validTypes));
             }
         }
 
-        // Validate fields
-        if (!is_array($entityData['fields']) || empty($entityData['fields'])) {
-            throw new \Exception("Entity '{$entityName}' must have at least one field");
-        }
-
-        foreach ($entityData['fields'] as $index => $field) {
-            $this->validateField($entityName, $index, $field);
+        if (isset($data['relationships'])) {
+            foreach ($data['relationships'] as $j => $rel) {
+                if (empty($rel['type'])) {
+                    throw new \InvalidArgumentException("Entity '{$name}' relationship #{$j} missing 'type'");
+                }
+                if (!in_array($rel['type'], ['belongsTo', 'hasMany', 'hasOne'])) {
+                    throw new \InvalidArgumentException("Entity '{$name}' relationship #{$j} invalid type: '{$rel['type']}'");
+                }
+                if (empty($rel['model'])) {
+                    throw new \InvalidArgumentException("Entity '{$name}' relationship #{$j} missing 'model'");
+                }
+                // Must have either 'entity' (same module) or 'module' (cross-module)
+                if (empty($rel['entity']) && empty($rel['module'])) {
+                    throw new \InvalidArgumentException("Entity '{$name}' relationship to '{$rel['model']}' must specify 'entity' (same module) or 'module' (cross-module)");
+                }
+            }
         }
     }
 
     /**
-     * Validate individual field configuration
+     * Build ModuleConfig from validated raw config
      */
-    private function validateField(string $entityName, int $index, array $field): void
+    private function buildModuleConfig(array $config): ModuleConfig
     {
-        $required = ['name', 'type'];
-        
-        foreach ($required as $key) {
-            if (!isset($field[$key])) {
-                throw new \Exception("Entity '{$entityName}' field {$index} missing required key: {$key}");
-            }
+        $entities = [];
+        foreach ($config['entities'] as $name => $data) {
+            $entities[] = new EntityConfig($name, $data);
         }
 
-        // Validate field type
-        $validTypes = [
-            'string', 'text', 'integer', 'bigInteger', 'decimal', 
-            'boolean', 'date', 'datetime', 'timestamp', 'json', 'foreignId'
-        ];
-
-        if (!in_array($field['type'], $validTypes)) {
-            throw new \Exception("Entity '{$entityName}' field '{$field['name']}' has invalid type: {$field['type']}");
-        }
+        return new ModuleConfig($config['module'], $entities);
     }
 }
