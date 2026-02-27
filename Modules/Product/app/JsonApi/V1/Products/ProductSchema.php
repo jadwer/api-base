@@ -47,6 +47,7 @@ class ProductSchema extends Schema
             BelongsTo::make('unit')->type('units'),
             BelongsTo::make('category')->type('categories'),
             BelongsTo::make('brand')->type('brands'),
+            BelongsTo::make('currency')->type('currencies'),
             HasMany::make('stock')->type('stocks'),
             HasMany::make('images')->type('product-images'),
 
@@ -74,6 +75,7 @@ class ProductSchema extends Schema
             Where::make('unit_id'),
             Where::make('category_id'),
             Where::make('brand_id'),
+            Where::make('currency_id'),
             Where::make('is_active')->asBoolean(),
             WhereIn::make('brands', 'brand_id')->delimiter(','),
             WhereIn::make('categories', 'category_id')->delimiter(','),
@@ -87,6 +89,7 @@ class ProductSchema extends Schema
             'unit',
             'category',
             'brand',
+            'currency',
             'stock',
             'stock.warehouse',
             'images',

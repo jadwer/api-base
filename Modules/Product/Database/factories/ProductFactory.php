@@ -6,6 +6,7 @@ use Modules\Product\Models\Product;
 use Modules\Product\Models\Unit;
 use Modules\Product\Models\Category;
 use Modules\Product\Models\Brand;
+use Modules\Ecommerce\Models\Currency;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProductFactory extends Factory
@@ -29,6 +30,7 @@ class ProductFactory extends Factory
             'unit_id' => Unit::factory(),
             'category_id' => Category::factory(),
             'brand_id' => Brand::factory(),
+            'currency_id' => Currency::first()?->id ?? Currency::factory(),
             'is_active' => $this->faker->boolean(90), // 90% active
             'average_rating' => $this->faker->boolean(70) ? $this->faker->randomFloat(1, 3.0, 5.0) : null, // 70% have ratings
             'total_reviews' => $this->faker->boolean(70) ? $this->faker->numberBetween(1, 50) : 0, // 70% have reviews

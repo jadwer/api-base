@@ -8,6 +8,7 @@ use Modules\Product\Models\Product;
 use Modules\Product\Models\Unit;
 use Modules\Product\Models\Category;
 use Modules\Product\Models\Brand;
+use Modules\Ecommerce\Models\Currency;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProductStoreTest extends TestCase
@@ -27,6 +28,7 @@ class ProductStoreTest extends TestCase
         $unit = Unit::factory()->create();
         $category = Category::factory()->create();
         $brand = Brand::factory()->create();
+        $currency = Currency::where('code', 'MXN')->first() ?? Currency::factory()->create(['code' => 'MXN']);
 
         $data = [
             'type' => 'products',
@@ -51,6 +53,9 @@ class ProductStoreTest extends TestCase
                 'brand' => [
                     'data' => ['type' => 'brands', 'id' => (string) $brand->id]
                 ],
+                'currency' => [
+                    'data' => ['type' => 'currencies', 'id' => (string) $currency->id]
+                ],
             ],
         ];
 
@@ -65,6 +70,7 @@ class ProductStoreTest extends TestCase
             'unit_id' => $unit->id,
             'category_id' => $category->id,
             'brand_id' => $brand->id,
+            'currency_id' => $currency->id,
         ]);
     }
 

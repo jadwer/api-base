@@ -49,6 +49,7 @@ class Product extends Model
         'unit_id',
         'category_id',
         'brand_id',
+        'currency_id',
         'is_active',
         'average_rating',
         'total_reviews',
@@ -72,6 +73,7 @@ class Product extends Model
         'unit_id' => 'integer',
         'category_id' => 'integer',
         'brand_id' => 'integer',
+        'currency_id' => 'integer',
         'is_active' => 'boolean',
         'average_rating' => 'float',
         'total_reviews' => 'integer',
@@ -91,6 +93,11 @@ class Product extends Model
     public function brand(): BelongsTo
     {
         return $this->belongsTo(Brand::class);
+    }
+
+    public function currency(): BelongsTo
+    {
+        return $this->belongsTo(\Modules\Ecommerce\Models\Currency::class);
     }
 
     /**

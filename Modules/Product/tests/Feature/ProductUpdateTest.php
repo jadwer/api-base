@@ -8,6 +8,7 @@ use Modules\Product\Models\Product;
 use Modules\Product\Models\Unit;
 use Modules\Product\Models\Category;
 use Modules\Product\Models\Brand;
+use Modules\Ecommerce\Models\Currency;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProductUpdateTest extends TestCase
@@ -27,7 +28,8 @@ class ProductUpdateTest extends TestCase
         $unit = Unit::factory()->create();
         $category = Category::factory()->create();
         $brand = Brand::factory()->create();
-        
+        $currency = Currency::where('code', 'MXN')->first() ?? Currency::factory()->create(['code' => 'MXN']);
+
         $product = Product::factory()->create([
             'name' => 'Original Product',
             'sku' => 'ORIG-001',
@@ -35,11 +37,13 @@ class ProductUpdateTest extends TestCase
             'unit_id' => $unit->id,
             'category_id' => $category->id,
             'brand_id' => $brand->id,
+            'currency_id' => $currency->id,
         ]);
 
         $newUnit = Unit::factory()->create();
         $newCategory = Category::factory()->create();
         $newBrand = Brand::factory()->create();
+        $newCurrency = Currency::where('code', 'USD')->first() ?? Currency::factory()->create(['code' => 'USD']);
 
         $data = [
             'type' => 'products',
@@ -64,6 +68,9 @@ class ProductUpdateTest extends TestCase
                 ],
                 'brand' => [
                     'data' => ['type' => 'brands', 'id' => (string) $newBrand->id]
+                ],
+                'currency' => [
+                    'data' => ['type' => 'currencies', 'id' => (string) $newCurrency->id]
                 ],
             ],
         ];
@@ -93,6 +100,7 @@ class ProductUpdateTest extends TestCase
             'unit_id' => $newUnit->id,
             'category_id' => $newCategory->id,
             'brand_id' => $newBrand->id,
+            'currency_id' => $newCurrency->id,
         ]);
     }
 

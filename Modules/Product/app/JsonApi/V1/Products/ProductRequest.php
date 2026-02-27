@@ -30,6 +30,7 @@ class ProductRequest extends ResourceRequest
             'unit' => JsonApiRule::toOne(),
             'category' => JsonApiRule::toOne(),
             'brand' => JsonApiRule::toOne(),
+            'currency' => ['nullable', JsonApiRule::toOne()],
         ];
     }
 
