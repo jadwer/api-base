@@ -2,13 +2,13 @@
 
 namespace App\JsonApi\V1;
 
-use Illuminate\Support\Facades\Auth;
 use LaravelJsonApi\Core\Server\Server as BaseServer;
 use Modules\Product\JsonApi\V1\PublicProducts\PublicProductSchema;
 use Modules\Product\JsonApi\V1\Units\UnitSchema;
 use Modules\Product\JsonApi\V1\Categories\CategorySchema;
 use Modules\Product\JsonApi\V1\Brands\BrandSchema;
 use Modules\Product\JsonApi\V1\PublicProductImages\PublicProductImageSchema;
+use Modules\Ecommerce\JsonApi\V1\Currencies\CurrencySchema;
 
 class PublicServer extends BaseServer
 {
@@ -43,6 +43,7 @@ class PublicServer extends BaseServer
             UnitSchema::class,
             CategorySchema::class,
             BrandSchema::class,
+            CurrencySchema::class,
         ];
     }
 
@@ -53,6 +54,7 @@ class PublicServer extends BaseServer
             'units' => \Modules\Product\JsonApi\V1\Units\UnitAuthorizer::class,
             'categories' => \Modules\Product\JsonApi\V1\Categories\CategoryAuthorizer::class,
             'brands' => \Modules\Product\JsonApi\V1\Brands\BrandAuthorizer::class,
+            'currencies' => \Modules\Ecommerce\JsonApi\V1\Currencies\CurrencyAuthorizer::class,
         ];
     }
 }

@@ -60,6 +60,7 @@ class PublicProductSchema extends Schema
             BelongsTo::make('unit')->type('units'),
             BelongsTo::make('category')->type('categories'),
             BelongsTo::make('brand')->type('brands'),
+            BelongsTo::make('currency')->type('currencies'),
             HasMany::make('images')->type('product-images')->readOnly(),
 
             DateTime::make('createdAt', 'created_at')->readOnly()->sortable(),
@@ -100,6 +101,7 @@ class PublicProductSchema extends Schema
             'unit',
             'category',
             'brand',
+            'currency',
             'images',
         ];
     }

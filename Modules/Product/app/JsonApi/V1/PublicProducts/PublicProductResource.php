@@ -36,6 +36,7 @@ class PublicProductResource extends JsonApiResource
             'unit' => $this->relation('unit'),
             'category' => $this->relation('category'),
             'brand' => $this->relation('brand'),
+            'currency' => $this->relation('currency'),
             'images' => $this->relation('images'),
         ];
     }
