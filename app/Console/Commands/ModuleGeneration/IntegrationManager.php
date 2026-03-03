@@ -52,11 +52,9 @@ class IntegrationManager
         // 2. Add seeder to DatabaseSeeder
         $this->addSeederToDatabase();
         $this->info("✓ Added seeder to DatabaseSeeder.php for {$this->moduleName}");
-        
-        // 3. Add seeder to TestCase
-        $this->addSeederToTestCase();
-        $this->info("✓ Added seeder to TestCase.php for {$this->moduleName}");
-        
+
+        // Note: TestDatabaseSeeder integration is handled by GenerateModuleCommand::addToTestDatabaseSeeder()
+
         $this->info("✅ Module {$this->moduleName} integrated successfully");
     }
     
@@ -235,50 +233,18 @@ class IntegrationManager
     }
     
     /**
-     * Add seeder to TestCase.php
-     */
-    private function addSeederToTestCase(): void
-    {
-        $testCasePath = base_path('tests/TestCase.php');
-        if (!File::exists($testCasePath)) {
-            throw new \Exception("TestCase.php not found at: {$testCasePath}");
-        }
-        
-        $content = File::get($testCasePath);
-        
-        // Find the setUp method and add our seeder after PermissionManager
-        $lines = explode("\n", $content);
-        $permissionManagerIndex = -1;
-        
-        foreach ($lines as $index => $line) {
-            if (preg_match("/module:seed.*PermissionManager/", $line)) {
-                $permissionManagerIndex = $index;
-                break;
-            }
-        }
-        
-        if ($permissionManagerIndex !== -1) {
-            $seederEntry = "        \$this->artisan('module:seed', ['module' => '{$this->moduleName}']);";
-            array_splice($lines, $permissionManagerIndex + 1, 0, [$seederEntry]);
-        }
-        
-        $content = implode("\n", $lines);
-        File::put($testCasePath, $content);
-    }
-    
-    /**
      * Clean module integration from all files
      */
     public function cleanModuleIntegration(): void
     {
         $this->cleanServerSchemas();
         $this->info("✓ Cleaned Server.php schemas and authorizers for {$this->moduleName}");
-        
+
         $this->cleanDatabaseSeeder();
         $this->info("✓ Cleaned DatabaseSeeder.php for {$this->moduleName}");
-        
-        $this->cleanTestCase();
-        $this->info("✓ Cleaned TestCase.php for {$this->moduleName}");
+
+        // Note: TestDatabaseSeeder cleanup is not needed - the $requiredModules array
+        // is managed by GenerateModuleCommand::addToTestDatabaseSeeder()
     }
     
     /**
@@ -558,70 +524,4 @@ class IntegrationManager
         return true;
     }
     
-    /**
-     * Clean TestCase.php for specific module
-     */
-    private function cleanTestCase(): void
-    {
-        $testCasePath = base_path('tests/TestCase.php');
-        if (!File::exists($testCasePath)) {
-            return;
-        }
-
-        $content = File::get($testCasePath);
-        $originalContent = $content;
-        
-        // Use line-by-line processing for better precision
-        $lines = explode("\n", $content);
-        $cleanedLines = [];
-        
-        foreach ($lines as $line) {
-            // Check if line contains the module's test seeder call
-            $seederCall = "\$this->artisan('module:seed', ['module' => '{$this->moduleName}']);";
-            
-            if (strpos($line, $seederCall) !== false) {
-                $this->info("🗑️ Removing test seeder: " . trim($line));
-                // If the line only contains this seeder, remove it completely
-                $trimmedLine = trim($line);
-                if ($trimmedLine === $seederCall) {
-                    continue; // Skip this line
-                }
-                // If the line contains multiple commands stuck together, clean only the specific module
-                else {
-                    $cleanedLine = str_replace($seederCall, '', $line);
-                    $cleanedLines[] = $cleanedLine;
-                }
-            } else {
-                $cleanedLines[] = $line;
-            }
-        }
-        
-        $newContent = implode("\n", $cleanedLines);
-        
-        // Validation before saving
-        if ($this->validateTestCaseSyntax($newContent)) {
-            File::put($testCasePath, $newContent);
-        } else {
-            File::put($testCasePath, $originalContent);
-            throw new \Exception("TestCase.php cleanup would cause syntax errors");
-        }
-    }
-    
-    /**
-     * Validate that TestCase.php content has valid structure
-     */
-    private function validateTestCaseSyntax(string $content): bool
-    {
-        // Check that setUp method exists
-        if (!preg_match('/protected function setUp\(\): void/', $content)) {
-            return false;
-        }
-        
-        // Check that PermissionManager seeder exists (it should always be there)
-        if (!preg_match("/module:seed.*PermissionManager/", $content)) {
-            return false;
-        }
-        
-        return true;
-    }
 }

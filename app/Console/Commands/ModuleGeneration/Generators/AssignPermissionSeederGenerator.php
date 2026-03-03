@@ -15,6 +15,7 @@ class AssignPermissionSeederGenerator
         $namespace = "Modules\\{$module->name}\\Database\\Seeders";
         $godQuery = $this->buildGodQuery($module);
         $adminPerms = $this->buildAdminPermissions($module);
+        $techPerms = $this->buildReadOnlyPermissions($module);
         $customerPerms = $this->buildCustomerPermissions($module);
 
         $content = <<<PHP
@@ -47,11 +48,11 @@ class {$module->name}AssignPermissionsSeeder extends Seeder
             ]);
         }
 
-        // Tech: ALL permissions (same as admin by default)
+        // Tech: read-only (index + show)
         \$tech = Role::where('name', 'tech')->first();
         if (\$tech) {
             \$tech->givePermissionTo([
-{$adminPerms}
+{$techPerms}
             ]);
         }
 
@@ -99,6 +100,17 @@ PHP;
             foreach (['index', 'show', 'store', 'update', 'destroy'] as $action) {
                 $lines[] = "                '{$prefix}.{$action}',";
             }
+        }
+        return implode("\n", $lines);
+    }
+
+    private function buildReadOnlyPermissions(ModuleConfig $module): string
+    {
+        $lines = [];
+        foreach ($module->entities as $entity) {
+            $prefix = $entity->permissionPrefix;
+            $lines[] = "                '{$prefix}.index',";
+            $lines[] = "                '{$prefix}.show',";
         }
         return implode("\n", $lines);
     }

@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LWM Module Generator v2 - Documentacion & Wizard</title>
+<style>
+  :root {
+    --bg: #0f172a; --surface: #1e293b; --surface-2: #334155;
+    --border: #475569; --text: #e2e8f0; --text-muted: #94a3b8;
+    --primary: #3b82f6; --primary-hover: #2563eb; --primary-bg: #1e3a5f;
+    --success: #22c55e; --success-bg: #14532d; --warning: #f59e0b; --warning-bg: #78350f;
+    --danger: #ef4444; --danger-bg: #7f1d1d;
+    --code-bg: #0d1117; --radius: 8px; --font: 'Segoe UI', system-ui, sans-serif;
+    --mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  /* Layout */
+  .app { display: flex; min-height: 100vh; }
+  .sidebar { width: 260px; background: var(--surface); border-right: 1px solid var(--border); padding: 20px 0; position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; z-index: 10; }
+  .main { margin-left: 260px; flex: 1; padding: 32px 48px; max-width: 1100px; }
+
+  /* Sidebar */
+  .sidebar h1 { font-size: 16px; padding: 0 20px 16px; border-bottom: 1px solid var(--border); color: var(--primary); }
+  .sidebar h1 span { display: block; font-size: 11px; color: var(--text-muted); font-weight: normal; margin-top: 2px; }
+  .nav-section { padding: 12px 0 4px; }
+  .nav-section-title { font-size: 11px; text-transform: uppercase; color: var(--text-muted); padding: 0 20px; letter-spacing: 0.5px; font-weight: 600; }
+  .nav-item { display: block; padding: 6px 20px; color: var(--text-muted); text-decoration: none; font-size: 14px; cursor: pointer; border-left: 3px solid transparent; transition: all 0.15s; }
+  .nav-item:hover { color: var(--text); background: var(--surface-2); }
+  .nav-item.active { color: var(--primary); border-left-color: var(--primary); background: var(--primary-bg); }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 32px; }
+  .tab { padding: 12px 24px; cursor: pointer; color: var(--text-muted); font-weight: 500; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.15s; font-size: 15px; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+  /* Content sections */
+  .section { display: none; }
+  .section.active { display: block; }
+  h2 { font-size: 24px; margin-bottom: 16px; color: var(--text); }
+  h3 { font-size: 18px; margin: 24px 0 12px; color: var(--text); }
+  h4 { font-size: 15px; margin: 16px 0 8px; color: var(--primary); }
+  p { margin-bottom: 12px; color: var(--text-muted); }
+  p strong, li strong { color: var(--text); }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 14px; }
+  th, td { padding: 10px 14px; border: 1px solid var(--border); text-align: left; }
+  th { background: var(--surface-2); font-weight: 600; color: var(--text); font-size: 13px; }
+  td { color: var(--text-muted); }
+  td code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: var(--mono); font-size: 13px; color: var(--warning); }
+
+  /* Code blocks */
+  pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; overflow-x: auto; margin: 12px 0 20px; font-family: var(--mono); font-size: 13px; line-height: 1.5; color: #c9d1d9; }
+  code { font-family: var(--mono); }
+  .inline-code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; color: var(--warning); }
+
+  /* Badges */
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+  .badge-required { background: var(--danger-bg); color: var(--danger); }
+  .badge-optional { background: var(--surface-2); color: var(--text-muted); }
+  .badge-type { background: var(--primary-bg); color: var(--primary); }
+
+  /* Alert boxes */
+  .alert { padding: 12px 16px; border-radius: var(--radius); margin: 12px 0 20px; font-size: 14px; border-left: 4px solid; }
+  .alert-info { background: var(--primary-bg); border-color: var(--primary); color: #93c5fd; }
+  .alert-warning { background: var(--warning-bg); border-color: var(--warning); color: #fcd34d; }
+  .alert-success { background: var(--success-bg); border-color: var(--success); color: #86efac; }
+  .alert-danger { background: var(--danger-bg); border-color: var(--danger); color: #fca5a5; }
+
+  /* Lists */
+  ul, ol { margin: 8px 0 16px 24px; color: var(--text-muted); }
+  li { margin: 4px 0; }
+
+  /* ===== WIZARD STYLES ===== */
+  .wizard-container { display: flex; gap: 24px; }
+  .wizard-form { flex: 1; min-width: 0; }
+  .wizard-preview { width: 420px; flex-shrink: 0; }
+  .wizard-preview pre { position: sticky; top: 20px; max-height: 80vh; overflow-y: auto; }
+
+  /* Form elements */
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .form-group label .hint { font-weight: normal; color: var(--text-muted); font-size: 12px; }
+  input[type="text"], input[type="number"], select, textarea {
+    width: 100%; padding: 8px 12px; background: var(--code-bg); border: 1px solid var(--border);
+    border-radius: var(--radius); color: var(--text); font-family: var(--font); font-size: 14px;
+    transition: border-color 0.15s;
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); }
+  input::placeholder { color: var(--surface-2); }
+  input.invalid { border-color: var(--danger); }
+
+  .form-row { display: flex; gap: 12px; }
+  .form-row .form-group { flex: 1; }
+
+  /* Checkbox */
+  .checkbox-group { display: flex; gap: 16px; flex-wrap: wrap; margin: 8px 0; }
+  .checkbox-label { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--text-muted); cursor: pointer; }
+  .checkbox-label input { accent-color: var(--primary); width: 16px; height: 16px; }
+
+  /* Buttons */
+  .btn { padding: 8px 16px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.15s; font-family: var(--font); }
+  .btn-primary { background: var(--primary); color: white; border-color: var(--primary); }
+  .btn-primary:hover { background: var(--primary-hover); }
+  .btn-success { background: var(--success); color: white; border-color: var(--success); }
+  .btn-success:hover { opacity: 0.9; }
+  .btn-danger { background: transparent; color: var(--danger); border-color: var(--danger); }
+  .btn-danger:hover { background: var(--danger-bg); }
+  .btn-ghost { background: transparent; color: var(--text-muted); border-color: var(--border); }
+  .btn-ghost:hover { background: var(--surface-2); color: var(--text); }
+  .btn-sm { padding: 4px 10px; font-size: 13px; }
+  .btn-group { display: flex; gap: 8px; margin: 16px 0; }
+
+  /* Entity/Field cards */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin: 12px 0; }
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .card-header h4 { margin: 0; color: var(--text); }
+  .card-title-input { background: transparent; border: none; color: var(--text); font-size: 16px; font-weight: 600; font-family: var(--font); padding: 0; width: 200px; }
+  .card-title-input:focus { outline: none; border-bottom: 1px solid var(--primary); }
+
+  .field-row { display: grid; grid-template-columns: 1fr 120px 1fr 60px 60px 40px; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--surface-2); }
+  .field-row:last-child { border-bottom: none; }
+  .field-row input, .field-row select { padding: 6px 8px; font-size: 13px; }
+  .field-row .btn { padding: 4px 8px; }
+
+  .rel-row { display: grid; grid-template-columns: 120px 1fr 1fr 40px; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--surface-2); }
+
+  /* Validation errors */
+  .validation-errors { margin: 12px 0; }
+  .validation-error { padding: 8px 12px; background: var(--danger-bg); border-radius: var(--radius); color: #fca5a5; font-size: 13px; margin: 4px 0; }
+
+  /* Copy button */
+  .copy-btn { position: absolute; top: 8px; right: 8px; }
+  .preview-wrapper { position: relative; }
+
+  /* Command box */
+  .command-box { background: var(--code-bg); border: 1px solid var(--success); border-radius: var(--radius); padding: 16px; margin: 16px 0; }
+  .command-box .label { font-size: 12px; color: var(--success); margin-bottom: 8px; font-weight: 600; }
+  .command-box code { color: var(--success); font-size: 14px; }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .wizard-container { flex-direction: column; }
+    .wizard-preview { width: 100%; }
+    .wizard-preview pre { position: static; max-height: 400px; }
+  }
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 20px; }
+  }
+
+  /* Generated files tree */
+  .file-tree { font-family: var(--mono); font-size: 13px; color: var(--text-muted); }
+  .file-tree .dir { color: var(--primary); }
+  .file-tree .file { color: var(--success); }
+  .file-tree li { list-style: none; padding: 2px 0; }
+  .file-tree ul { margin: 0 0 0 20px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <h1>Module Generator v2 <span>LWM ERP - Documentacion & Wizard</span></h1>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Documentacion</div>
+      <a class="nav-item active" data-tab="overview" onclick="switchTab('docs','overview',this)">Vision General</a>
+      <a class="nav-item" data-tab="json-config" onclick="switchTab('docs','json-config',this)">Estructura JSON</a>
+      <a class="nav-item" data-tab="field-types" onclick="switchTab('docs','field-types',this)">Tipos de Campo</a>
+      <a class="nav-item" data-tab="relationships" onclick="switchTab('docs','relationships',this)">Relaciones</a>
+      <a class="nav-item" data-tab="validation-rules" onclick="switchTab('docs','validation-rules',this)">Reglas de Validacion</a>
+      <a class="nav-item" data-tab="naming" onclick="switchTab('docs','naming',this)">Convenciones de Nombres</a>
+      <a class="nav-item" data-tab="generated-files" onclick="switchTab('docs','generated-files',this)">Archivos Generados</a>
+      <a class="nav-item" data-tab="permissions" onclick="switchTab('docs','permissions',this)">Permisos por Rol</a>
+      <a class="nav-item" data-tab="example" onclick="switchTab('docs','example',this)">Ejemplo Completo</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Herramientas</div>
+      <a class="nav-item" data-tab="wizard" onclick="switchTab('wizard','wizard',this)">Wizard Interactivo</a>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- ==================== DOCS ==================== -->
+    <div id="page-docs">
+
+      <!-- Overview -->
+      <div id="sec-overview" class="section active">
+        <h2>Module Generator v2</h2>
+        <p>Generador de modulos completos para el ERP LWM. A partir de un archivo JSON de configuracion, genera <strong>todos</strong> los archivos necesarios para un modulo funcional con CRUD completo, tests, permisos y autorizacion.</p>
+
+        <div class="alert alert-info">El generador produce codigo que cumple los estandares del proyecto sin necesidad de edicion post-generacion.</div>
+
+        <h3>Que genera?</h3>
+        <p>Por cada <strong>entidad</strong> en la configuracion:</p>
+        <table>
+          <tr><th>Archivo</th><th>Descripcion</th></tr>
+          <tr><td><code>Migration</code></td><td>Tabla con columnas, FK, indices</td></tr>
+          <tr><td><code>Model</code></td><td>Eloquent con fillable, casts, relaciones, LogsActivity</td></tr>
+          <tr><td><code>Schema</code></td><td>JSON:API schema con fields, filters, includePaths, pagination</td></tr>
+          <tr><td><code>Authorizer</code></td><td>10 metodos con permisos <code>$user->can()</code></td></tr>
+          <tr><td><code>Request</code></td><td>Validacion con required/sometimes, unique ignore, toOne</td></tr>
+          <tr><td><code>Controller</code></td><td>JSON:API controller con Actions traits</td></tr>
+          <tr><td><code>Factory</code></td><td>Factory con faker apropiado por tipo</td></tr>
+          <tr><td><code>5 Tests</code></td><td>Index, Show, Store, Update, Destroy (CRUD completo)</td></tr>
+        </table>
+
+        <p>A nivel de <strong>modulo</strong>:</p>
+        <table>
+          <tr><th>Archivo</th><th>Descripcion</th></tr>
+          <tr><td><code>jsonapi.php</code></td><td>Rutas JSON:API con relaciones</td></tr>
+          <tr><td><code>RouteServiceProvider</code></td><td>Provider de rutas del modulo</td></tr>
+          <tr><td><code>PermissionSeeder</code></td><td>Creacion bulk de permisos (5 por entidad)</td></tr>
+          <tr><td><code>AssignPermissionsSeeder</code></td><td>Asignacion de permisos por rol</td></tr>
+          <tr><td><code>DatabaseSeeder</code></td><td>Seeder principal del modulo</td></tr>
+        </table>
+
+        <h3>Comando</h3>
+        <pre>php artisan module:generate NombreModulo --config=ruta/config.json</pre>
+
+        <h3>Pasos post-generacion</h3>
+        <pre>php artisan migrate
+php artisan test Modules/NombreModulo/
+# Revisar TODOs en el codigo generado para logica de negocio</pre>
+      </div>
+
+      <!-- JSON Config -->
+      <div id="sec-json-config" class="section">
+        <h2>Estructura del JSON de Configuracion</h2>
+        <p>El archivo JSON tiene dos niveles: <strong>modulo</strong> y <strong>entidades</strong>.</p>
+
+        <h3>Estructura raiz</h3>
+        <pre>{
+  "module": "NombreModulo",   // PascalCase, requerido
+  "entities": {
+    "Entidad1": { ... },      // PascalCase, al menos 1
+    "Entidad2": { ... }
+  }
+}</pre>
+        <div class="alert alert-warning"><code>module</code> debe coincidir exactamente con el argumento del comando: <code>php artisan module:generate <strong>NombreModulo</strong></code></div>
+
+        <h3>Estructura de entidad</h3>
+        <pre>{
+  "NombreEntidad": {
+    "table": "nombre_tabla",     // Opcional, snake_case plural auto-generado
+    "fields": [ ... ],           // Requerido, al menos 1 campo
+    "relationships": [ ... ]     // Opcional
+  }
+}</pre>
+
+        <h3>Estructura de campo</h3>
+        <pre>{
+  "name": "nombre_columna",    // Requerido, snake_case
+  "type": "string",            // Requerido (ver Tipos de Campo)
+  "rules": "required|max:100", // Opcional, pipe-delimited
+  "default": "valor",          // Opcional, cualquier tipo JSON
+  "sortable": true,            // Opcional, default false
+  "filterable": true           // Opcional, default false
+}</pre>
+
+        <h3>Estructura de relacion</h3>
+        <pre>// Relacion al mismo modulo:
+{
+  "type": "belongsTo",       // belongsTo | hasMany | hasOne
+  "model": "OtraEntidad",    // PascalCase
+  "entity": "OtraEntidad"    // Indica que esta en el mismo modulo
+}
+
+// Relacion a otro modulo:
+{
+  "type": "belongsTo",
+  "model": "Contact",
+  "module": "Contacts"       // Modulo externo
+}</pre>
+        <div class="alert alert-danger">Cada relacion debe tener <code>entity</code> (mismo modulo) <strong>O</strong> <code>module</code> (otro modulo), nunca ambos ni ninguno.</div>
+      </div>
+
+      <!-- Field Types -->
+      <div id="sec-field-types" class="section">
+        <h2>Tipos de Campo</h2>
+        <p>Cada tipo genera automaticamente la columna de migracion, cast del modelo, campo del schema, faker para factory y valor de test.</p>
+        <table>
+          <tr><th>Tipo</th><th>Migracion</th><th>Cast</th><th>Schema</th><th>Faker</th></tr>
+          <tr><td><code>string</code></td><td><code>string(max)</code></td><td>-</td><td><code>Str</code></td><td><code>words(3, true)</code></td></tr>
+          <tr><td><code>text</code></td><td><code>text</code></td><td>-</td><td><code>Str</code></td><td><code>paragraph()</code></td></tr>
+          <tr><td><code>integer</code></td><td><code>integer</code></td><td><code>integer</code></td><td><code>Number</code></td><td><code>numberBetween(1,100)</code></td></tr>
+          <tr><td><code>bigInteger</code></td><td><code>bigInteger</code></td><td><code>integer</code></td><td><code>Number</code></td><td><code>numberBetween(1,100)</code></td></tr>
+          <tr><td><code>decimal</code></td><td><code>decimal(10,2)</code></td><td><code>float</code></td><td><code>Number</code></td><td><code>randomFloat(2,0,999)</code></td></tr>
+          <tr><td><code>boolean</code></td><td><code>boolean</code></td><td><code>boolean</code></td><td><code>Boolean</code></td><td><code>boolean(80)</code></td></tr>
+          <tr><td><code>date</code></td><td><code>date</code></td><td><code>date</code></td><td><code>DateTime</code></td><td><code>date()</code></td></tr>
+          <tr><td><code>datetime</code></td><td><code>dateTime</code></td><td><code>datetime</code></td><td><code>DateTime</code></td><td><code>dateTime()</code></td></tr>
+          <tr><td><code>json</code></td><td><code>json</code></td><td><code>array</code></td><td><code>ArrayHash</code></td><td><code>[]</code></td></tr>
+          <tr><td><code>enum</code></td><td><code>string</code></td><td>-</td><td><code>Str</code></td><td><code>randomElement([...])</code></td></tr>
+        </table>
+        <div class="alert alert-info">Para <code>enum</code>, usa la regla <code>in:val1,val2,val3</code> para definir los valores permitidos. El faker generara <code>randomElement()</code> con esos valores.</div>
+        <div class="alert alert-info">Para <code>string</code>, si incluyes <code>max:N</code> en las reglas, la migracion usara <code>string(N)</code> en vez del default 255.</div>
+      </div>
+
+      <!-- Relationships -->
+      <div id="sec-relationships" class="section">
+        <h2>Relaciones</h2>
+
+        <h3>belongsTo (N:1)</h3>
+        <p>La entidad <strong>tiene</strong> la FK. Se genera automaticamente:</p>
+        <ul>
+          <li>Columna FK en migracion: <code>snake_case(Model)_id</code></li>
+          <li>Constraint <code>->constrained()->onDelete('restrict')</code></li>
+          <li>Metodo <code>belongsTo()</code> en modelo</li>
+          <li><code>BelongsTo::make()</code> en schema</li>
+          <li><code>JsonApiRule::toOne()</code> en request</li>
+          <li>Soporte <code>nullable</code> con la propiedad <code>"nullable": true</code></li>
+        </ul>
+        <pre>// Una orden pertenece a un contacto (modulo externo)
+{ "type": "belongsTo", "model": "Contact", "module": "Contacts" }
+
+// Un item pertenece a su orden (mismo modulo)
+{ "type": "belongsTo", "model": "Order", "entity": "Order" }
+
+// FK nullable
+{ "type": "belongsTo", "model": "Warehouse", "module": "Inventory", "nullable": true }</pre>
+
+        <h3>hasMany (1:N)</h3>
+        <p>La entidad <strong>no</strong> tiene FK (la tiene el hijo). Solo genera la relacion en modelo y schema.</p>
+        <pre>// Una orden tiene muchos items
+{ "type": "hasMany", "model": "OrderItem", "entity": "OrderItem" }</pre>
+
+        <h3>hasOne (1:1)</h3>
+        <p>Igual que hasMany pero para relaciones uno-a-uno.</p>
+        <pre>{ "type": "hasOne", "model": "Warranty", "entity": "Warranty" }</pre>
+
+        <h3>Dependencia entre entidades</h3>
+        <div class="alert alert-success">El generador ordena automaticamente las entidades por dependencia para que las migraciones se creen en el orden correcto. No necesitas preocuparte por el orden en el JSON.</div>
+      </div>
+
+      <!-- Validation Rules -->
+      <div id="sec-validation-rules" class="section">
+        <h2>Reglas de Validacion</h2>
+        <p>Las reglas se escriben en formato pipe-delimited (ej: <code>required|string|max:100</code>).</p>
+
+        <table>
+          <tr><th>Regla</th><th>Formato</th><th>Efecto en Store</th><th>Efecto en Update</th></tr>
+          <tr><td><code>required</code></td><td><code>required</code></td><td><code>'required'</code></td><td><code>'sometimes'</code> (auto)</td></tr>
+          <tr><td><code>nullable</code></td><td><code>nullable</code></td><td colspan="2">Columna nullable en migracion, permite NULL</td></tr>
+          <tr><td><code>unique</code></td><td><code>unique</code></td><td><code>Rule::unique(table, col)</code></td><td><code>Rule::unique(...)->ignore($model)</code></td></tr>
+          <tr><td><code>max</code></td><td><code>max:100</code></td><td colspan="2"><code>'max:100'</code> + <code>string(100)</code> en migracion</td></tr>
+          <tr><td><code>min</code></td><td><code>min:1</code></td><td colspan="2"><code>'min:1'</code></td></tr>
+          <tr><td><code>in</code></td><td><code>in:a,b,c</code></td><td colspan="2"><code>Rule::in(['a','b','c'])</code></td></tr>
+          <tr><td><code>string</code></td><td><code>string</code></td><td colspan="2"><code>'string'</code></td></tr>
+          <tr><td><code>numeric</code></td><td><code>numeric</code></td><td colspan="2"><code>'numeric'</code></td></tr>
+          <tr><td><code>integer</code></td><td><code>integer</code></td><td colspan="2"><code>'integer'</code></td></tr>
+          <tr><td><code>boolean</code></td><td><code>boolean</code></td><td colspan="2"><code>'boolean'</code></td></tr>
+          <tr><td><code>date</code></td><td><code>date</code></td><td colspan="2"><code>'date'</code></td></tr>
+          <tr><td><code>array</code></td><td><code>array</code></td><td colspan="2"><code>'array'</code></td></tr>
+        </table>
+
+        <h3>Combinaciones comunes</h3>
+        <pre>"rules": "required|string|max:100"            // Texto corto obligatorio
+"rules": "required|unique|string|max:50"       // Codigo unico (SKU, folio)
+"rules": "nullable|numeric|min:0"              // Numero opcional positivo
+"rules": "required|in:pending,active,closed"   // Enum obligatorio
+"rules": "required|boolean"                    // Boolean obligatorio
+"rules": "nullable|date"                       // Fecha opcional
+"rules": "nullable|array"                      // JSON opcional</pre>
+      </div>
+
+      <!-- Naming Conventions -->
+      <div id="sec-naming" class="section">
+        <h2>Convenciones de Nombres</h2>
+        <p>Todo se auto-genera a partir del nombre de la entidad. No necesitas especificar nada manualmente.</p>
+
+        <table>
+          <tr><th>Contexto</th><th>Convencion</th><th>Ejemplo (ShipmentItem)</th></tr>
+          <tr><td>Modelo</td><td>PascalCase (tal cual)</td><td><code>ShipmentItem</code></td></tr>
+          <tr><td>Tabla</td><td>snake_case plural</td><td><code>shipment_items</code></td></tr>
+          <tr><td>Columna DB</td><td>snake_case</td><td><code>tracking_number</code></td></tr>
+          <tr><td>Campo API</td><td>camelCase</td><td><code>trackingNumber</code></td></tr>
+          <tr><td>JSON:API type</td><td>kebab-case plural</td><td><code>shipment-items</code></td></tr>
+          <tr><td>Foreign Key</td><td>snake_case + _id</td><td><code>shipment_item_id</code></td></tr>
+          <tr><td>Permiso</td><td>jsonApiType.action</td><td><code>shipment-items.store</code></td></tr>
+          <tr><td>Metodo relacion</td><td>camelCase</td><td><code>shipmentItem()</code></td></tr>
+          <tr><td>Endpoint</td><td>/api/v1/{jsonApiType}</td><td><code>/api/v1/shipment-items</code></td></tr>
+        </table>
+
+        <div class="alert alert-warning">Los nombres de modulo y entidad <strong>deben</strong> ser PascalCase. Los nombres de campo <strong>deben</strong> ser snake_case.</div>
+      </div>
+
+      <!-- Generated Files -->
+      <div id="sec-generated-files" class="section">
+        <h2>Archivos Generados</h2>
+        <p>Estructura de archivos para un modulo <code>Logistics</code> con entidad <code>Shipment</code>:</p>
+        <pre>Modules/Logistics/
+  app/
+    Models/
+      Shipment.php
+    JsonApi/V1/
+      Shipments/
+        ShipmentSchema.php
+        ShipmentAuthorizer.php
+        ShipmentRequest.php
+    Http/Controllers/Api/V1/
+      ShipmentController.php
+    Providers/
+      RouteServiceProvider.php
+  Database/
+    migrations/
+      2026_03_02_120000_create_shipments_table.php
+    factories/
+      ShipmentFactory.php
+    seeders/
+      LogisticsDatabaseSeeder.php
+      LogisticsPermissionSeeder.php
+      LogisticsAssignPermissionsSeeder.php
+  routes/
+    jsonapi.php
+  tests/Feature/
+    ShipmentIndexTest.php
+    ShipmentShowTest.php
+    ShipmentStoreTest.php
+    ShipmentUpdateTest.php
+    ShipmentDestroyTest.php</pre>
+
+        <h3>Integracion automatica</h3>
+        <p>El generador tambien modifica estos archivos existentes:</p>
+        <table>
+          <tr><th>Archivo</th><th>Modificacion</th></tr>
+          <tr><td><code>app/JsonApi/V1/Server.php</code></td><td>Agrega schemas, authorizers e imports</td></tr>
+          <tr><td><code>database/seeders/DatabaseSeeder.php</code></td><td>Agrega el DatabaseSeeder del modulo</td></tr>
+          <tr><td><code>database/seeders/TestDatabaseSeeder.php</code></td><td>Agrega modulo a <code>$requiredModules</code></td></tr>
+        </table>
+      </div>
+
+      <!-- Permissions -->
+      <div id="sec-permissions" class="section">
+        <h2>Permisos por Rol</h2>
+        <p>El generador crea <strong>5 permisos</strong> por entidad y los asigna segun el rol:</p>
+
+        <table>
+          <tr><th>Rol</th><th>Permisos</th><th>Descripcion</th></tr>
+          <tr><td><code>god</code></td><td>Todos (wildcard query)</td><td>Acceso total</td></tr>
+          <tr><td><code>admin</code></td><td>index, show, store, update, destroy</td><td>CRUD completo</td></tr>
+          <tr><td><code>tech</code></td><td>index, show</td><td>Solo lectura</td></tr>
+          <tr><td><code>customer</code></td><td>index, show</td><td>Solo lectura</td></tr>
+          <tr><td><code>guest</code></td><td>Ninguno</td><td>Sin acceso (401)</td></tr>
+        </table>
+
+        <h3>Formato de permisos</h3>
+        <pre>// Para entidad ShipmentItem -> jsonApiType = shipment-items
+shipment-items.index
+shipment-items.show
+shipment-items.store
+shipment-items.update
+shipment-items.destroy</pre>
+
+        <div class="alert alert-info">Los permisos se crean con <code>BulkPermissions</code> trait usando <code>insertOrIgnore</code> para eficiencia.</div>
+      </div>
+
+      <!-- Example -->
+      <div id="sec-example" class="section">
+        <h2>Ejemplo Completo</h2>
+        <p>Modulo de logistica con dos entidades relacionadas:</p>
+        <pre>{
+  "module": "Logistics",
+  "entities": {
+    "Shipment": {
+      "fields": [
+        {
+          "name": "tracking_number",
+          "type": "string",
+          "rules": "required|unique|string|max:100",
+          "sortable": true,
+          "filterable": true
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "rules": "required|in:pending,shipped,in_transit,delivered,cancelled",
+          "default": "pending",
+          "filterable": true
+        },
+        {
+          "name": "total_weight",
+          "type": "decimal",
+          "rules": "nullable|numeric|min:0"
+        },
+        {
+          "name": "shipped_at",
+          "type": "datetime",
+          "rules": "nullable|date",
+          "sortable": true
+        },
+        {
+          "name": "is_fragile",
+          "type": "boolean",
+          "rules": "boolean",
+          "default": false,
+          "filterable": true
+        },
+        {
+          "name": "notes",
+          "type": "text",
+          "rules": "nullable|string"
+        }
+      ],
+      "relationships": [
+        {
+          "type": "belongsTo",
+          "model": "Contact",
+          "module": "Contacts"
+        },
+        {
+          "type": "hasMany",
+          "model": "ShipmentItem",
+          "entity": "ShipmentItem"
+        }
+      ]
+    },
+    "ShipmentItem": {
+      "fields": [
+        {
+          "name": "quantity",
+          "type": "integer",
+          "rules": "required|integer|min:1"
+        },
+        {
+          "name": "weight",
+          "type": "decimal",
+          "rules": "nullable|numeric|min:0"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "rules": "nullable|string|max:255"
+        }
+      ],
+      "relationships": [
+        {
+          "type": "belongsTo",
+          "model": "Shipment",
+          "entity": "Shipment"
+        },
+        {
+          "type": "belongsTo",
+          "model": "Product",
+          "module": "Product"
+        }
+      ]
+    }
+  }
+}</pre>
+
+        <h3>Comando para ejecutar</h3>
+        <div class="command-box">
+          <div class="label">Terminal</div>
+          <code>php artisan module:generate Logistics --config=logistics.json</code>
+        </div>
+
+        <h3>Resultado</h3>
+        <p>Genera ~22 archivos: 2 modelos, 2 migraciones, 2 schemas, 2 authorizers, 2 requests, 2 controllers, 2 factories, 10 tests, 1 ruta, 1 RSP, 3 seeders. Integra automaticamente en Server.php, DatabaseSeeder y TestDatabaseSeeder.</p>
+      </div>
+
+    </div><!-- /page-docs -->
+
+    <!-- ==================== WIZARD ==================== -->
+    <div id="page-wizard" style="display:none;">
+      <div id="sec-wizard" class="section active">
+        <h2>Wizard - Generador de Configuracion</h2>
+        <p>Construye visualmente tu configuracion JSON y exportala para usar con <code>php artisan module:generate</code>.</p>
+
+        <div class="wizard-container">
+          <div class="wizard-form">
+
+            <!-- Module name -->
+            <div class="card">
+              <div class="form-group">
+                <label>Nombre del Modulo <span class="hint">(PascalCase)</span></label>
+                <input type="text" id="w-module-name" placeholder="Logistics" oninput="updatePreview()">
+              </div>
+            </div>
+
+            <!-- Entities -->
+            <div id="w-entities"></div>
+
+            <div class="btn-group">
+              <button class="btn btn-primary" onclick="addEntity()">+ Agregar Entidad</button>
+            </div>
+
+            <!-- Validation -->
+            <div id="w-validation" class="validation-errors"></div>
+
+            <!-- Actions -->
+            <div class="btn-group" style="margin-top: 24px;">
+              <button class="btn btn-success" onclick="exportJSON()">Descargar JSON</button>
+              <button class="btn btn-ghost" onclick="copyJSON()">Copiar al portapapeles</button>
+              <button class="btn btn-ghost" onclick="loadExample()">Cargar Ejemplo</button>
+              <button class="btn btn-ghost" onclick="importJSON()">Importar JSON</button>
+            </div>
+
+            <!-- Command -->
+            <div id="w-command" class="command-box" style="display:none;">
+              <div class="label">Comando a ejecutar</div>
+              <code id="w-command-text"></code>
+            </div>
+
+          </div>
+
+          <!-- Live preview -->
+          <div class="wizard-preview">
+            <h4 style="margin-top:0;">Preview JSON</h4>
+            <div class="preview-wrapper">
+              <pre id="w-preview" style="min-height:200px;">{}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /page-wizard -->
+
+  </main>
+</div>
+
+<!-- Hidden file input for import -->
+<input type="file" id="file-import" accept=".json" style="display:none" onchange="handleImport(event)">
+
+<script>
+// ===== Navigation =====
+function switchTab(page, section, el) {
+  // Hide all pages
+  document.getElementById('page-docs').style.display = 'none';
+  document.getElementById('page-wizard').style.display = 'none';
+
+  // Show target page
+  document.getElementById('page-' + page).style.display = 'block';
+
+  // Hide all sections in target page, show target
+  const pageEl = document.getElementById('page-' + page);
+  pageEl.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  const sec = document.getElementById('sec-' + section);
+  if (sec) sec.classList.add('active');
+
+  // Update nav
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+}
+
+// ===== Wizard State =====
+let wizardState = { module: '', entities: [] };
+let entityCounter = 0;
+
+function addEntity(name) {
+  const id = entityCounter++;
+  wizardState.entities.push({
+    id, name: name || '', fields: [], relationships: []
+  });
+  renderEntities();
+  updatePreview();
+}
+
+function removeEntity(id) {
+  wizardState.entities = wizardState.entities.filter(e => e.id !== id);
+  renderEntities();
+  updatePreview();
+}
+
+function addField(entityId) {
+  const entity = wizardState.entities.find(e => e.id === entityId);
+  if (!entity) return;
+  entity.fields.push({ name: '', type: 'string', rules: '', default: undefined, sortable: false, filterable: false });
+  renderEntities();
+  updatePreview();
+}
+
+function removeField(entityId, fieldIdx) {
+  const entity = wizardState.entities.find(e => e.id === entityId);
+  if (!entity) return;
+  entity.fields.splice(fieldIdx, 1);
+  renderEntities();
+  updatePreview();
+}
+
+function addRelationship(entityId) {
+  const entity = wizardState.entities.find(e => e.id === entityId);
+  if (!entity) return;
+  entity.relationships.push({ type: 'belongsTo', model: '', target: 'module', targetValue: '' });
+  renderEntities();
+  updatePreview();
+}
+
+function removeRelationship(entityId, relIdx) {
+  const entity = wizardState.entities.find(e => e.id === entityId);
+  if (!entity) return;
+  entity.relationships.splice(relIdx, 1);
+  renderEntities();
+  updatePreview();
+}
+
+// ===== Rendering =====
+function renderEntities() {
+  const container = document.getElementById('w-entities');
+  container.innerHTML = wizardState.entities.map(entity => `
+    <div class="card" data-entity-id="${entity.id}">
+      <div class="card-header">
+        <div>
+          <input type="text" class="card-title-input" value="${esc(entity.name)}" placeholder="NombreEntidad"
+            oninput="updateEntityName(${entity.id}, this.value)">
+          <span style="font-size:12px;color:var(--text-muted);margin-left:8px;">
+            ${entity.name ? '&rarr; ' + toKebabPlural(entity.name) : ''}
+          </span>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="removeEntity(${entity.id})">Eliminar</button>
+      </div>
+
+      <!-- Fields -->
+      <h4 style="margin:8px 0 4px;">Campos</h4>
+      <div style="font-size:12px;color:var(--text-muted);padding:2px 0 6px;">
+        <span style="display:inline-block;width:calc(100% / 6)">Nombre (snake_case)</span>
+        <span style="display:inline-block;width:120px">Tipo</span>
+        <span style="display:inline-block;width:calc(100% / 6)">Reglas</span>
+        <span style="display:inline-block;width:60px">Sort</span>
+        <span style="display:inline-block;width:60px">Filter</span>
+      </div>
+      ${entity.fields.map((f, i) => `
+        <div class="field-row">
+          <input type="text" value="${esc(f.name)}" placeholder="nombre_campo"
+            oninput="updateField(${entity.id},${i},'name',this.value)">
+          <select onchange="updateField(${entity.id},${i},'type',this.value)">
+            ${['string','text','integer','bigInteger','decimal','boolean','date','datetime','json','enum'].map(t =>
+              `<option value="${t}" ${f.type===t?'selected':''}>${t}</option>`
+            ).join('')}
+          </select>
+          <input type="text" value="${esc(f.rules)}" placeholder="required|string|max:100"
+            oninput="updateField(${entity.id},${i},'rules',this.value)">
+          <div class="checkbox-label"><input type="checkbox" ${f.sortable?'checked':''}
+            onchange="updateField(${entity.id},${i},'sortable',this.checked)"></div>
+          <div class="checkbox-label"><input type="checkbox" ${f.filterable?'checked':''}
+            onchange="updateField(${entity.id},${i},'filterable',this.checked)"></div>
+          <button class="btn btn-danger btn-sm" onclick="removeField(${entity.id},${i})" title="Eliminar campo">&times;</button>
+        </div>
+      `).join('')}
+      <button class="btn btn-ghost btn-sm" onclick="addField(${entity.id})" style="margin-top:8px;">+ Campo</button>
+
+      <!-- Relationships -->
+      <h4 style="margin:16px 0 4px;">Relaciones</h4>
+      ${entity.relationships.map((r, i) => `
+        <div class="rel-row">
+          <select onchange="updateRel(${entity.id},${i},'type',this.value)">
+            <option value="belongsTo" ${r.type==='belongsTo'?'selected':''}>belongsTo</option>
+            <option value="hasMany" ${r.type==='hasMany'?'selected':''}>hasMany</option>
+            <option value="hasOne" ${r.type==='hasOne'?'selected':''}>hasOne</option>
+          </select>
+          <input type="text" value="${esc(r.model)}" placeholder="ModelName"
+            oninput="updateRel(${entity.id},${i},'model',this.value)">
+          <div style="display:flex;gap:4px;align-items:center;">
+            <select onchange="updateRel(${entity.id},${i},'target',this.value)" style="width:90px;">
+              <option value="entity" ${r.target==='entity'?'selected':''}>entity</option>
+              <option value="module" ${r.target==='module'?'selected':''}>module</option>
+            </select>
+            <input type="text" value="${esc(r.targetValue)}" placeholder="${r.target==='entity'?'EntityName':'ModuleName'}"
+              oninput="updateRel(${entity.id},${i},'targetValue',this.value)">
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="removeRelationship(${entity.id},${i})">&times;</button>
+        </div>
+      `).join('')}
+      <button class="btn btn-ghost btn-sm" onclick="addRelationship(${entity.id})" style="margin-top:8px;">+ Relacion</button>
+    </div>
+  `).join('');
+}
+
+// ===== Updates =====
+function updateEntityName(id, val) {
+  const entity = wizardState.entities.find(e => e.id === id);
+  if (entity) { entity.name = val; updatePreview(); }
+}
+
+function updateField(entityId, fieldIdx, key, val) {
+  const entity = wizardState.entities.find(e => e.id === entityId);
+  if (entity && entity.fields[fieldIdx]) {
+    entity.fields[fieldIdx][key] = val;
+    updatePreview();
+  }
+}
+
+function updateRel(entityId, relIdx, key, val) {
+  const entity = wizardState.entities.find(e => e.id === entityId);
+  if (entity && entity.relationships[relIdx]) {
+    entity.relationships[relIdx][key] = val;
+    updatePreview();
+  }
+}
+
+// ===== JSON Generation =====
+function buildJSON() {
+  const moduleName = document.getElementById('w-module-name').value.trim();
+  const obj = { module: moduleName, entities: {} };
+
+  for (const entity of wizardState.entities) {
+    if (!entity.name) continue;
+    const e = { fields: [], relationships: [] };
+
+    for (const f of entity.fields) {
+      if (!f.name) continue;
+      const field = { name: f.name, type: f.type };
+      if (f.rules) field.rules = f.rules;
+      if (f.sortable) field.sortable = true;
+      if (f.filterable) field.filterable = true;
+      e.fields.push(field);
+    }
+
+    for (const r of entity.relationships) {
+      if (!r.model) continue;
+      const rel = { type: r.type, model: r.model };
+      if (r.target === 'entity') rel.entity = r.targetValue || r.model;
+      else rel.module = r.targetValue;
+      e.relationships.push(rel);
+    }
+
+    if (e.relationships.length === 0) delete e.relationships;
+    obj.entities[entity.name] = e;
+  }
+
+  return obj;
+}
+
+function updatePreview() {
+  const obj = buildJSON();
+  document.getElementById('w-preview').textContent = JSON.stringify(obj, null, 2);
+
+  // Update command
+  const cmdEl = document.getElementById('w-command');
+  const cmdText = document.getElementById('w-command-text');
+  if (obj.module) {
+    cmdEl.style.display = 'block';
+    const filename = obj.module.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase() + '.json';
+    cmdText.textContent = `php artisan module:generate ${obj.module} --config=${filename}`;
+  } else {
+    cmdEl.style.display = 'none';
+  }
+
+  validate(obj);
+}
+
+// ===== Validation =====
+function validate(obj) {
+  const errors = [];
+
+  if (!obj.module) errors.push('El nombre del modulo es requerido.');
+  else if (!/^[A-Z][a-zA-Z0-9]*$/.test(obj.module)) errors.push('El nombre del modulo debe ser PascalCase (ej: Logistics).');
+
+  const entityNames = Object.keys(obj.entities);
+  if (entityNames.length === 0) errors.push('Se requiere al menos una entidad.');
+
+  for (const name of entityNames) {
+    if (!/^[A-Z][a-zA-Z0-9]*$/.test(name)) errors.push(`Entidad "${name}" debe ser PascalCase.`);
+
+    const e = obj.entities[name];
+    if (!e.fields || e.fields.length === 0) errors.push(`Entidad "${name}" necesita al menos un campo.`);
+
+    for (const f of (e.fields || [])) {
+      if (!/^[a-z][a-z0-9_]*$/.test(f.name)) errors.push(`Campo "${f.name}" en "${name}" debe ser snake_case.`);
+      const validTypes = ['string','text','integer','bigInteger','decimal','boolean','date','datetime','json','enum'];
+      if (!validTypes.includes(f.type)) errors.push(`Tipo "${f.type}" no es valido en campo "${f.name}".`);
+      if (f.type === 'enum' && f.rules && !f.rules.includes('in:')) errors.push(`Campo enum "${f.name}" en "${name}" necesita regla "in:val1,val2".`);
+    }
+
+    for (const r of (e.relationships || [])) {
+      if (!r.model) errors.push(`Relacion sin modelo en "${name}".`);
+      if (!r.entity && !r.module) errors.push(`Relacion "${r.model}" en "${name}" necesita "entity" o "module".`);
+      if (r.entity && r.module) errors.push(`Relacion "${r.model}" en "${name}" no puede tener entity Y module.`);
+    }
+  }
+
+  const el = document.getElementById('w-validation');
+  if (errors.length) {
+    el.innerHTML = errors.map(e => `<div class="validation-error">${esc(e)}</div>`).join('');
+  } else {
+    el.innerHTML = '<div class="alert alert-success" style="margin:0;">Configuracion valida</div>';
+  }
+}
+
+// ===== Actions =====
+function exportJSON() {
+  const obj = buildJSON();
+  const json = JSON.stringify(obj, null, 2);
+  const filename = (obj.module || 'module').replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase() + '.json';
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function copyJSON() {
+  const text = document.getElementById('w-preview').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = 'Copiado!';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+}
+
+function importJSON() {
+  document.getElementById('file-import').click();
+}
+
+function handleImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const obj = JSON.parse(e.target.result);
+      loadConfig(obj);
+    } catch (err) {
+      alert('Error al parsear JSON: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function loadConfig(obj) {
+  wizardState = { module: obj.module || '', entities: [] };
+  entityCounter = 0;
+
+  document.getElementById('w-module-name').value = obj.module || '';
+
+  for (const [name, data] of Object.entries(obj.entities || {})) {
+    const id = entityCounter++;
+    const entity = { id, name, fields: [], relationships: [] };
+
+    for (const f of (data.fields || [])) {
+      entity.fields.push({
+        name: f.name || '', type: f.type || 'string', rules: f.rules || '',
+        default: f.default, sortable: f.sortable || false, filterable: f.filterable || false
+      });
+    }
+
+    for (const r of (data.relationships || [])) {
+      entity.relationships.push({
+        type: r.type || 'belongsTo', model: r.model || '',
+        target: r.entity ? 'entity' : 'module',
+        targetValue: r.entity || r.module || ''
+      });
+    }
+
+    wizardState.entities.push(entity);
+  }
+
+  renderEntities();
+  updatePreview();
+}
+
+function loadExample() {
+  loadConfig({
+    "module": "Logistics",
+    "entities": {
+      "Shipment": {
+        "fields": [
+          { "name": "tracking_number", "type": "string", "rules": "required|unique|string|max:100", "sortable": true, "filterable": true },
+          { "name": "status", "type": "enum", "rules": "required|in:pending,shipped,in_transit,delivered,cancelled", "filterable": true },
+          { "name": "total_weight", "type": "decimal", "rules": "nullable|numeric|min:0" },
+          { "name": "shipped_at", "type": "datetime", "rules": "nullable|date", "sortable": true },
+          { "name": "is_fragile", "type": "boolean", "rules": "boolean" },
+          { "name": "notes", "type": "text", "rules": "nullable|string" }
+        ],
+        "relationships": [
+          { "type": "belongsTo", "model": "Contact", "module": "Contacts" },
+          { "type": "hasMany", "model": "ShipmentItem", "entity": "ShipmentItem" }
+        ]
+      },
+      "ShipmentItem": {
+        "fields": [
+          { "name": "quantity", "type": "integer", "rules": "required|integer|min:1" },
+          { "name": "weight", "type": "decimal", "rules": "nullable|numeric|min:0" },
+          { "name": "description", "type": "string", "rules": "nullable|string|max:255" }
+        ],
+        "relationships": [
+          { "type": "belongsTo", "model": "Shipment", "entity": "Shipment" },
+          { "type": "belongsTo", "model": "Product", "module": "Product" }
+        ]
+      }
+    }
+  });
+}
+
+// ===== Helpers =====
+function esc(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function toKebabPlural(name) {
+  if (!name) return '';
+  const kebab = name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+  // Simple pluralize
+  if (kebab.endsWith('y') && !kebab.endsWith('ey') && !kebab.endsWith('oy')) {
+    return kebab.slice(0, -1) + 'ies';
+  }
+  if (kebab.endsWith('s') || kebab.endsWith('x') || kebab.endsWith('ch') || kebab.endsWith('sh')) {
+    return kebab + 'es';
+  }
+  return kebab + 's';
+}
+
+// Init
+renderEntities();
+</script>
+</body>
+</html>
