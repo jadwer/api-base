@@ -27,6 +27,8 @@ class EcommerceServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'Database/migrations'));
+
+        \Modules\Ecommerce\Models\CartItem::observe(\Modules\Ecommerce\Observers\CartItemObserver::class);
     }
 
     /**

@@ -65,20 +65,28 @@ class QuoteFromCartWithETATest extends TestCase
             'currency' => 'MXN',
         ]);
 
-        // Add items to cart
-        CartItem::factory()->create([
-            'shopping_cart_id' => $this->cart->id,
-            'product_id' => $this->productWithETA->id,
-            'quantity' => 2,
-            'unit_price' => 100.00,
-        ]);
+        // Add items to cart (bypass observer to preserve exact prices)
+        CartItem::withoutEvents(function () {
+            CartItem::factory()->create([
+                'shopping_cart_id' => $this->cart->id,
+                'product_id' => $this->productWithETA->id,
+                'quantity' => 2,
+                'unit_price' => 100.00,
+                'subtotal' => 200.00,
+                'tax_amount' => 32.00,
+                'total' => 232.00,
+            ]);
 
-        CartItem::factory()->create([
-            'shopping_cart_id' => $this->cart->id,
-            'product_id' => $this->productWithoutETA->id,
-            'quantity' => 1,
-            'unit_price' => 200.00,
-        ]);
+            CartItem::factory()->create([
+                'shopping_cart_id' => $this->cart->id,
+                'product_id' => $this->productWithoutETA->id,
+                'quantity' => 1,
+                'unit_price' => 200.00,
+                'subtotal' => 200.00,
+                'tax_amount' => 32.00,
+                'total' => 232.00,
+            ]);
+        });
 
         // Use existing folio sequence from migration or create if not exists
         FolioSequence::updateOrCreate(

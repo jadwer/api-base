@@ -6,6 +6,7 @@ use Tests\TestCase;
 use Modules\User\Models\User;
 use Modules\Ecommerce\Models\ShoppingCart;
 use Modules\Ecommerce\Models\CartItem;
+use Modules\Ecommerce\Models\Currency;
 use Modules\Product\Models\Product;
 use Modules\Contacts\Models\Contact;
 
@@ -417,5 +418,94 @@ class ShoppingCartCheckoutTest extends TestCase
             ]);
 
         $response->assertStatus(404);
+    }
+
+    public function test_checkout_propagates_currency_to_sales_order(): void
+    {
+        $user = $this->getCustomerUser();
+        $contact = Contact::factory()->create();
+
+        // Ensure MXN and USD currencies exist
+        $mxn = Currency::firstOrCreate(['code' => 'MXN'], [
+            'name' => 'Mexican Peso', 'symbol' => '$', 'exchange_rate' => 1.0, 'is_active' => true,
+        ]);
+
+        $cart = ShoppingCart::factory()->create([
+            'user_id' => $user->id,
+            'status' => 'active',
+            'expires_at' => now()->addDays(7),
+            'currency' => 'MXN',
+            'currency_id' => $mxn->id,
+        ]);
+
+        $product = Product::factory()->create(['price' => 100]);
+        CartItem::factory()->create([
+            'shopping_cart_id' => $cart->id,
+            'product_id' => $product->id,
+            'quantity' => 1,
+            'unit_price' => 100,
+            'total' => 100,
+        ]);
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->postJson("/api/v1/shopping-carts/{$cart->id}/checkout", [
+                'contact_id' => $contact->id,
+                'billing_address' => ['street' => 'Test'],
+                'shipping_address' => ['street' => 'Test'],
+            ]);
+
+        $response->assertStatus(201);
+
+        // Verify sales order has currency field set
+        $this->assertDatabaseHas('sales_orders', [
+            'contact_id' => $contact->id,
+            'currency' => 'MXN',
+        ]);
+    }
+
+    public function test_checkout_propagates_currency_traceability_to_order_items(): void
+    {
+        $user = $this->getCustomerUser();
+        $contact = Contact::factory()->create();
+
+        $cart = ShoppingCart::factory()->create([
+            'user_id' => $user->id,
+            'status' => 'active',
+            'expires_at' => now()->addDays(7),
+            'currency' => 'MXN',
+        ]);
+
+        $product = Product::factory()->create(['price' => 1750]);
+
+        // Bypass observer to set exact currency traceability fields for testing propagation
+        CartItem::withoutEvents(function () use ($cart, $product) {
+            CartItem::factory()->create([
+                'shopping_cart_id' => $cart->id,
+                'product_id' => $product->id,
+                'quantity' => 1,
+                'unit_price' => 1750,
+                'total' => 1750,
+                'original_currency_code' => 'USD',
+                'original_unit_price' => 100,
+                'exchange_rate_used' => 17.5,
+            ]);
+        });
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->postJson("/api/v1/shopping-carts/{$cart->id}/checkout", [
+                'contact_id' => $contact->id,
+                'billing_address' => ['street' => 'Test'],
+                'shipping_address' => ['street' => 'Test'],
+            ]);
+
+        $response->assertStatus(201);
+
+        // Verify order items have currency traceability fields
+        $this->assertDatabaseHas('sales_order_items', [
+            'product_id' => $product->id,
+            'original_currency_code' => 'USD',
+            'original_unit_price' => 100,
+            'exchange_rate_used' => 17.5,
+        ]);
     }
 }

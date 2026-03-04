@@ -53,7 +53,8 @@ class SalesOrder extends Model
     protected $fillable = [
         'contact_id', 'assigned_to', 'quote_id', 'order_number', 'status', 'order_date',
         'approved_at', 'delivered_at', 'subtotal', 'tax_amount', 'total_amount',
-        'discount_total', 'notes', 'metadata', 'shipping_address', 'billing_address',
+        'discount_total', 'currency', 'exchange_rate_used',
+        'notes', 'metadata', 'shipping_address', 'billing_address',
         'ar_invoice_id', 'invoicing_status', 'financial_status', 'invoicing_notes',
         'order_source', 'checkout_session_id',
     ];
@@ -70,6 +71,7 @@ class SalesOrder extends Model
         'tax_amount' => 'float',
         'total_amount' => 'float',
         'discount_total' => 'float',
+        'exchange_rate_used' => 'float',
         'metadata' => 'array',
         'shipping_address' => 'array',
         'billing_address' => 'array',

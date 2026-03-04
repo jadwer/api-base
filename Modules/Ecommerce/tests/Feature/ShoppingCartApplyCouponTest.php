@@ -71,14 +71,16 @@ class ShoppingCartApplyCouponTest extends TestCase
         ]);
 
         $product = Product::factory()->create(['price' => 100]);
-        CartItem::factory()->create([
-            'shopping_cart_id' => $cart->id,
-            'product_id' => $product->id,
-            'quantity' => 1,
-            'unit_price' => 100,
-            'subtotal' => 100,
-            'total' => 100,
-        ]);
+        CartItem::withoutEvents(function () use ($cart, $product) {
+            CartItem::factory()->create([
+                'shopping_cart_id' => $cart->id,
+                'product_id' => $product->id,
+                'quantity' => 1,
+                'unit_price' => 100,
+                'subtotal' => 100,
+                'total' => 100,
+            ]);
+        });
 
         Coupon::factory()->create([
             'code' => 'PERCENT10',
@@ -377,14 +379,16 @@ class ShoppingCartApplyCouponTest extends TestCase
         ]);
 
         $product = Product::factory()->create(['price' => 1000]);
-        CartItem::factory()->create([
-            'shopping_cart_id' => $cart->id,
-            'product_id' => $product->id,
-            'quantity' => 1,
-            'unit_price' => 1000,
-            'subtotal' => 1000,
-            'total' => 1000,
-        ]);
+        CartItem::withoutEvents(function () use ($cart, $product) {
+            CartItem::factory()->create([
+                'shopping_cart_id' => $cart->id,
+                'product_id' => $product->id,
+                'quantity' => 1,
+                'unit_price' => 1000,
+                'subtotal' => 1000,
+                'total' => 1000,
+            ]);
+        });
 
         Coupon::factory()->create([
             'code' => 'CAPPED',
@@ -402,5 +406,122 @@ class ShoppingCartApplyCouponTest extends TestCase
 
         $response->assertOk();
         $this->assertEquals(100.0, $response->json('discount_amount'));
+    }
+
+    public function test_coupon_with_matching_currency_can_be_applied(): void
+    {
+        $user = $this->getCustomerUser();
+
+        $cart = ShoppingCart::factory()->create([
+            'user_id' => $user->id,
+            'status' => 'active',
+            'currency' => 'MXN',
+        ]);
+
+        $product = Product::factory()->create(['price' => 500]);
+        CartItem::factory()->create([
+            'shopping_cart_id' => $cart->id,
+            'product_id' => $product->id,
+            'quantity' => 1,
+            'unit_price' => 500,
+            'subtotal' => 500,
+            'total' => 500,
+        ]);
+
+        Coupon::factory()->create([
+            'code' => 'MXN_ONLY',
+            'type' => 'percentage',
+            'value' => 10,
+            'is_active' => true,
+            'currency' => 'MXN',
+            'min_amount' => null,
+        ]);
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->postJson("/api/v1/shopping-carts/{$cart->id}/apply-coupon", [
+                'coupon_code' => 'MXN_ONLY',
+            ]);
+
+        $response->assertOk();
+        $response->assertJson(['valid' => true]);
+    }
+
+    public function test_coupon_with_different_currency_cannot_be_applied(): void
+    {
+        $user = $this->getCustomerUser();
+
+        $cart = ShoppingCart::factory()->create([
+            'user_id' => $user->id,
+            'status' => 'active',
+            'currency' => 'MXN',
+        ]);
+
+        $product = Product::factory()->create(['price' => 500]);
+        CartItem::factory()->create([
+            'shopping_cart_id' => $cart->id,
+            'product_id' => $product->id,
+            'quantity' => 1,
+            'unit_price' => 500,
+            'subtotal' => 500,
+            'total' => 500,
+        ]);
+
+        Coupon::factory()->create([
+            'code' => 'USD_ONLY',
+            'type' => 'fixed_amount',
+            'value' => 10,
+            'is_active' => true,
+            'currency' => 'USD',
+            'min_amount' => null,
+        ]);
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->postJson("/api/v1/shopping-carts/{$cart->id}/apply-coupon", [
+                'coupon_code' => 'USD_ONLY',
+            ]);
+
+        $response->assertStatus(400);
+        $response->assertJson([
+            'valid' => false,
+            'error' => 'Coupon is only valid for USD carts',
+        ]);
+    }
+
+    public function test_coupon_without_currency_can_be_applied_to_any_cart(): void
+    {
+        $user = $this->getCustomerUser();
+
+        $cart = ShoppingCart::factory()->create([
+            'user_id' => $user->id,
+            'status' => 'active',
+            'currency' => 'USD',
+        ]);
+
+        $product = Product::factory()->create(['price' => 100]);
+        CartItem::factory()->create([
+            'shopping_cart_id' => $cart->id,
+            'product_id' => $product->id,
+            'quantity' => 1,
+            'unit_price' => 100,
+            'subtotal' => 100,
+            'total' => 100,
+        ]);
+
+        Coupon::factory()->create([
+            'code' => 'UNIVERSAL',
+            'type' => 'percentage',
+            'value' => 5,
+            'is_active' => true,
+            'currency' => null,
+            'min_amount' => null,
+        ]);
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->postJson("/api/v1/shopping-carts/{$cart->id}/apply-coupon", [
+                'coupon_code' => 'UNIVERSAL',
+            ]);
+
+        $response->assertOk();
+        $response->assertJson(['valid' => true]);
     }
 }

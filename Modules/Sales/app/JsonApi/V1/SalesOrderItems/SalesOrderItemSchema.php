@@ -7,6 +7,7 @@ use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\ArrayHash;
+use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
@@ -47,7 +48,12 @@ class SalesOrderItemSchema extends Schema
             Number::make('unitPrice', 'unit_price')->sortable(),
             Number::make('discount')->sortable(),
             Number::make('total')->sortable(),
-            
+
+            // Currency traceability fields
+            Str::make('originalCurrencyCode', 'original_currency_code')->readOnly(),
+            Number::make('originalUnitPrice', 'original_unit_price')->readOnly(),
+            Number::make('exchangeRateUsed', 'exchange_rate_used')->readOnly(),
+
             // Finance Integration Fields
             Number::make('arInvoiceLineId', 'ar_invoice_line_id'),
             Number::make('invoicedQuantity', 'invoiced_quantity')->sortable(),

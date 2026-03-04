@@ -32,7 +32,9 @@ class SalesOrderItem extends Model
 
     protected $fillable = [
         'sales_order_id', 'product_id', 'quantity', 'shipped_quantity',
-        'unit_price', 'discount', 'total', 'metadata', 'fulfillment_status',
+        'unit_price', 'discount', 'total',
+        'original_currency_code', 'original_unit_price', 'exchange_rate_used',
+        'metadata', 'fulfillment_status',
         'ar_invoice_line_id', 'invoiced_quantity', 'invoiced_amount',
     ];
 
@@ -45,6 +47,8 @@ class SalesOrderItem extends Model
         'unit_price' => 'float',
         'discount' => 'float',
         'total' => 'float',
+        'original_unit_price' => 'float',
+        'exchange_rate_used' => 'float',
         'metadata' => 'array',
         'ar_invoice_line_id' => 'integer',
         'invoiced_quantity' => 'float',

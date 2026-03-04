@@ -27,12 +27,13 @@ class ShoppingCart extends Model
     protected $table = 'shopping_carts';
     
     protected $fillable = [
-        'session_id', 'user_id', 'status', 'expires_at', 'total_amount', 'currency', 'coupon_code', 'discount_amount', 'tax_amount', 'shipping_amount', 'notes', 'metadata'
+        'session_id', 'user_id', 'status', 'expires_at', 'total_amount', 'currency', 'currency_id', 'coupon_code', 'discount_amount', 'tax_amount', 'shipping_amount', 'notes', 'metadata'
     ];
 
     protected $casts = [
         'expires_at' => 'datetime',
         'total_amount' => 'float',
+        'currency_id' => 'integer',
         'discount_amount' => 'float',
         'tax_amount' => 'float',
         'shipping_amount' => 'float',
@@ -125,6 +126,11 @@ class ShoppingCart extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function currencyRelation()
+    {
+        return $this->belongsTo(Currency::class, 'currency_id');
     }
 
     // Factory

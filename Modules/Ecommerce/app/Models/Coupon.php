@@ -18,7 +18,7 @@ class Coupon extends Model
     ];
 
     protected $fillable = [
-        'code', 'name', 'description', 'type', 'value', 'min_amount', 'max_amount', 'max_uses', 'used_count', 'starts_at', 'expires_at', 'is_active', 'customer_ids', 'product_ids', 'category_ids'
+        'code', 'name', 'description', 'type', 'value', 'min_amount', 'max_amount', 'max_uses', 'used_count', 'starts_at', 'expires_at', 'is_active', 'customer_ids', 'product_ids', 'category_ids', 'currency'
     ];
 
     protected $casts = [
@@ -58,9 +58,14 @@ class Coupon extends Model
     }
 
     // Business Logic Methods
-    public function canBeUsed(float $cartAmount = 0): bool
+    public function canBeUsed(float $cartAmount = 0, ?string $cartCurrency = null): bool
     {
         if (!$this->getIsValidAttribute()) {
+            return false;
+        }
+
+        // Validate currency if coupon is currency-specific
+        if ($this->currency && $cartCurrency && $this->currency !== $cartCurrency) {
             return false;
         }
 

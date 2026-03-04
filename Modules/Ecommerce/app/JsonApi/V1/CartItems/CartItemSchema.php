@@ -41,6 +41,11 @@ class CartItemSchema extends Schema
             ArrayHash::make('metadata'),
             Str::make('status'),
 
+            // Currency traceability fields
+            Str::make('originalCurrencyCode', 'original_currency_code')->readOnly(),
+            Number::make('originalUnitPrice', 'original_unit_price')->readOnly(),
+            Number::make('exchangeRateUsed', 'exchange_rate_used')->readOnly(),
+
             // Relationships
             BelongsTo::make('shoppingCart'),
             BelongsTo::make('product'),

@@ -27,7 +27,9 @@ class CartItem extends Model
     protected $table = 'cart_items';
     
     protected $fillable = [
-        'shopping_cart_id', 'product_id', 'quantity', 'unit_price', 'original_price', 'discount_percent', 'discount_amount', 'subtotal', 'tax_rate', 'tax_amount', 'total', 'metadata', 'status'
+        'shopping_cart_id', 'product_id', 'quantity', 'unit_price', 'original_price', 'discount_percent', 'discount_amount', 'subtotal', 'tax_rate', 'tax_amount', 'total',
+        'original_currency_code', 'original_unit_price', 'exchange_rate_used',
+        'metadata', 'status'
     ];
 
     protected $casts = [
@@ -40,6 +42,8 @@ class CartItem extends Model
         'tax_rate' => 'float',
         'tax_amount' => 'float',
         'total' => 'float',
+        'original_unit_price' => 'float',
+        'exchange_rate_used' => 'float',
         'metadata' => 'array'
     ];
 

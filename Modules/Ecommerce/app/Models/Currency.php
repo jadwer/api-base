@@ -67,47 +67,44 @@ class Currency extends Model
     }
 
     /**
-     * Convert amount from this currency to another currency
+     * Convert amount from this currency to another currency.
      *
-     * @param float $amount
-     * @param Currency $toCurrency
-     * @return float
+     * Exchange rates represent how many BASE units (MXN) equal 1 unit of this currency.
+     * Example: USD rate=17.5 means 1 USD = 17.5 MXN
+     * Formula: amount * fromRate / toRate
      */
     public function convertTo(float $amount, Currency $toCurrency): float
     {
-        if ($this->exchange_rate == 0) {
-            throw new \DivisionByZeroError('Exchange rate cannot be zero for currency: ' . $this->code);
+        if ($toCurrency->exchange_rate == 0) {
+            throw new \DivisionByZeroError('Exchange rate cannot be zero for currency: ' . $toCurrency->code);
         }
 
-        // Convert to base currency first, then to target currency
-        $baseAmount = $amount / $this->exchange_rate;
-        return $baseAmount * $toCurrency->exchange_rate;
+        // Convert: amount * (fromRate / toRate)
+        // 100 USD → MXN: 100 * (17.5 / 1.0) = 1750
+        // 1750 MXN → USD: 1750 * (1.0 / 17.5) = 100
+        return $amount * ($this->exchange_rate / $toCurrency->exchange_rate);
     }
 
     /**
-     * Convert amount from this currency to base currency
-     *
-     * @param float $amount
-     * @return float
+     * Convert amount from this currency to base currency (MXN).
+     * Example: 100 USD → 100 * 17.5 = 1750 MXN
      */
     public function toBaseCurrency(float $amount): float
+    {
+        return $amount * $this->exchange_rate;
+    }
+
+    /**
+     * Convert amount from base currency (MXN) to this currency.
+     * Example: 1750 MXN → 1750 / 17.5 = 100 USD
+     */
+    public function fromBaseCurrency(float $amount): float
     {
         if ($this->exchange_rate == 0) {
             throw new \DivisionByZeroError('Exchange rate cannot be zero for currency: ' . $this->code);
         }
 
         return $amount / $this->exchange_rate;
-    }
-
-    /**
-     * Convert amount from base currency to this currency
-     *
-     * @param float $amount
-     * @return float
-     */
-    public function fromBaseCurrency(float $amount): float
-    {
-        return $amount * $this->exchange_rate;
     }
 
     /**

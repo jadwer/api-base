@@ -23,6 +23,7 @@ use Modules\Inventory\Models\Warehouse;
 use Modules\Sales\Mail\QuoteConvertedMail;
 use Illuminate\Support\Facades\Mail;
 use Modules\Contacts\Models\Contact;
+use App\Services\CurrencyConversionService;
 
 class QuoteController extends Controller
 {
@@ -643,6 +644,7 @@ class QuoteController extends Controller
         $productIds = collect($request->input('items'))->pluck('product_id')->unique();
         $products = Product::whereIn('id', $productIds)
             ->where('is_active', true)
+            ->with(['brand', 'currency'])
             ->get()
             ->keyBy('id');
 
@@ -652,7 +654,10 @@ class QuoteController extends Controller
             ], 400);
         }
 
-        return DB::transaction(function () use ($request, $contact, $products) {
+        $currencyService = app(CurrencyConversionService::class);
+        $baseCurrency = 'MXN';
+
+        return DB::transaction(function () use ($request, $contact, $products, $currencyService, $baseCurrency) {
             // Create quote
             $quote = Quote::create([
                 'quote_number' => Quote::generateQuoteNumber(),
@@ -660,7 +665,7 @@ class QuoteController extends Controller
                 'status' => 'draft',
                 'quote_date' => now(),
                 'valid_until' => now()->addDays(30),
-                'currency' => 'MXN',
+                'currency' => $baseCurrency,
                 'notes' => $request->input('notes'),
                 'shipping_address' => $request->input('shipping_address'),
             ]);
@@ -668,6 +673,14 @@ class QuoteController extends Controller
             // Create quote items
             foreach ($request->input('items') as $item) {
                 $product = $products->get($item['product_id']);
+                $productPrice = $product->price ?? 0;
+
+                // Convert price if product is in a different currency
+                $productCurrencyCode = $product->currency?->code ?? $baseCurrency;
+                if ($productCurrencyCode !== $baseCurrency && $productPrice > 0) {
+                    $conversion = $currencyService->convert($productPrice, $productCurrencyCode, $baseCurrency);
+                    $productPrice = $conversion->convertedAmount;
+                }
 
                 // Get ETA from brand if available
                 $eta = null;
@@ -679,8 +692,8 @@ class QuoteController extends Controller
                     'quote_id' => $quote->id,
                     'product_id' => $product->id,
                     'quantity' => $item['quantity'],
-                    'unit_price' => $product->price ?? 0,
-                    'quoted_price' => $product->price ?? 0,
+                    'unit_price' => $productPrice,
+                    'quoted_price' => $productPrice,
                     'discount_percentage' => 0,
                     'tax_rate' => $product->iva ? 16 : 0,
                     'product_name' => $product->name,

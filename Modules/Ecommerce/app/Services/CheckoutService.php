@@ -243,6 +243,14 @@ class CheckoutService
             // Get or create Contact for the user
             $contact = $this->getOrCreateContactForUser($user, $session);
 
+            // Determine exchange rate at checkout time
+            $cartCurrency = $session->currency ?? $cart->currency ?? 'MXN';
+            $exchangeRateUsed = null;
+            if ($cartCurrency !== 'MXN') {
+                $currencyModel = \Modules\Ecommerce\Models\Currency::where('code', $cartCurrency)->first();
+                $exchangeRateUsed = $currencyModel?->exchange_rate;
+            }
+
             // Create sales order
             $order = SalesOrder::create([
                 'contact_id' => $contact->id,
@@ -255,18 +263,19 @@ class CheckoutService
                 'tax_amount' => $session->tax_amount,
                 'discount_total' => $session->discount_amount,
                 'total_amount' => $session->total_amount,
+                'currency' => $cartCurrency,
+                'exchange_rate_used' => $exchangeRateUsed,
                 'notes' => 'Order created from e-commerce checkout',
                 'shipping_address' => $session->shipping_address,
                 'billing_address' => $session->billing_address,
                 'metadata' => [
                     'checkout_session_id' => $session->id,
                     'payment_intent_id' => $session->payment_intent_id,
-                    'currency' => $session->currency,
                     'shipping_amount' => $session->shipping_amount,
                 ],
             ]);
 
-            // Create order items
+            // Create order items with currency traceability
             foreach ($cart->cartItems as $cartItem) {
                 SalesOrderItem::create([
                     'sales_order_id' => $order->id,
@@ -275,6 +284,9 @@ class CheckoutService
                     'unit_price' => $cartItem->unit_price ?? $cartItem->price ?? 0,
                     'discount' => $cartItem->discount_amount ?? 0,
                     'total' => $cartItem->total ?? 0,
+                    'original_currency_code' => $cartItem->original_currency_code,
+                    'original_unit_price' => $cartItem->original_unit_price,
+                    'exchange_rate_used' => $cartItem->exchange_rate_used,
                     'metadata' => [
                         'notes' => $cartItem->notes,
                         'original_price' => $cartItem->original_price,

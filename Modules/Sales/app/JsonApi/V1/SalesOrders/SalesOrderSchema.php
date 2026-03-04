@@ -63,6 +63,10 @@ class SalesOrderSchema extends Schema
             
             Str::make('notes'),
 
+            // Currency fields
+            Str::make('currency'),
+            Number::make('exchangeRateUsed', 'exchange_rate_used'),
+
             // Finance Integration Fields
             Number::make('arInvoiceId', 'ar_invoice_id'),
             Str::make('invoicingStatus', 'invoicing_status')->sortable(),

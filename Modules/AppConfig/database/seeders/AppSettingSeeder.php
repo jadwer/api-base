@@ -38,6 +38,13 @@ class AppSettingSeeder extends Seeder
 
             // Auth
             ['key' => 'auth.require_email_verification', 'value' => 'false', 'type' => 'boolean', 'group' => 'auth', 'label' => 'Requiere verificacion de email', 'description' => 'Si esta activo, los usuarios deben verificar su correo antes de acceder a funciones protegidas'],
+
+            // Currency
+            ['key' => 'currency.base_currency', 'value' => 'MXN', 'type' => 'string', 'group' => 'currency', 'label' => 'Moneda base', 'description' => 'Codigo ISO 4217 de la moneda base del sistema'],
+            ['key' => 'currency.exchange_rate_margin', 'value' => '2.0', 'type' => 'string', 'group' => 'currency', 'label' => 'Margen sobre tipo de cambio (%)', 'description' => 'Porcentaje de margen aplicado sobre el tipo de cambio para ventas'],
+            ['key' => 'currency.exchange_rate_source', 'value' => 'banxico', 'type' => 'string', 'group' => 'currency', 'label' => 'Fuente de tipo de cambio', 'description' => 'Proveedor de tipos de cambio: banxico o manual'],
+            ['key' => 'currency.auto_update_rates', 'value' => 'true', 'type' => 'boolean', 'group' => 'currency', 'label' => 'Actualizar tipos de cambio automaticamente', 'description' => 'Si esta activo, los tipos de cambio se actualizan diariamente via API de Banxico'],
+            ['key' => 'currency.banxico_api_token', 'value' => '', 'type' => 'string', 'group' => 'currency', 'label' => 'Token API Banxico', 'description' => 'Token de acceso para la API SIE de Banxico (obtener en banxico.org.mx)'],
         ];
 
         foreach ($settings as $setting) {

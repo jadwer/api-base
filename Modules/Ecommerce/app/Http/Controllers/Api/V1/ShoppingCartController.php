@@ -244,6 +244,14 @@ class ShoppingCartController extends Controller
                 ], 400);
             }
 
+            // Check currency compatibility
+            if ($coupon->currency && $coupon->currency !== ($shoppingCart->currency ?? 'MXN')) {
+                return response()->json([
+                    'valid' => false,
+                    'error' => "Coupon is only valid for {$coupon->currency} carts"
+                ], 400);
+            }
+
             // Check minimum amount
             $subtotal = $shoppingCart->subtotalAmount;
             if ($coupon->min_amount && $subtotal < $coupon->min_amount) {
@@ -372,6 +380,14 @@ class ShoppingCartController extends Controller
         }
 
         return DB::transaction(function () use ($request, $shoppingCart, $contactId, $shippingAddress, $billingAddress) {
+            // Determine the current exchange rate for the cart's currency
+            $cartCurrency = $shoppingCart->currency ?? 'MXN';
+            $exchangeRateUsed = null;
+            if ($cartCurrency !== 'MXN') {
+                $currencyModel = \Modules\Ecommerce\Models\Currency::where('code', $cartCurrency)->first();
+                $exchangeRateUsed = $currencyModel?->exchange_rate;
+            }
+
             // Create sales order
             $order = SalesOrder::create([
                 'order_number' => FolioSequence::getNextFolio('sales_order'),
@@ -382,11 +398,12 @@ class ShoppingCartController extends Controller
                 'discount_total' => $shoppingCart->discount_amount ?? 0,
                 'tax_amount' => $shoppingCart->computedTaxAmount,
                 'total_amount' => $shoppingCart->finalTotal,
+                'currency' => $cartCurrency,
+                'exchange_rate_used' => $exchangeRateUsed,
                 'billing_address' => $billingAddress,
                 'shipping_address' => $shippingAddress,
                 'notes' => $shoppingCart->notes,
                 'metadata' => array_filter([
-                    'currency' => $shoppingCart->currency,
                     'shipping_amount' => $shoppingCart->shipping_amount ?? 0,
                     'payment_intent_id' => $request->input('payment_intent_id'),
                     'customer_name' => $request->input('customer_name'),
@@ -395,7 +412,7 @@ class ShoppingCartController extends Controller
                 ]),
             ]);
 
-            // Create order items
+            // Create order items with currency traceability
             foreach ($shoppingCart->cartItems as $cartItem) {
                 SalesOrderItem::create([
                     'sales_order_id' => $order->id,
@@ -404,6 +421,9 @@ class ShoppingCartController extends Controller
                     'unit_price' => $cartItem->unit_price,
                     'discount' => $cartItem->discount_amount ?? 0,
                     'total' => $cartItem->total,
+                    'original_currency_code' => $cartItem->original_currency_code,
+                    'original_unit_price' => $cartItem->original_unit_price,
+                    'exchange_rate_used' => $cartItem->exchange_rate_used,
                 ]);
             }
 
