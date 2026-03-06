@@ -68,6 +68,19 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    /**
+     * Scope para filtrar usuarios eliminados.
+     * Valores: 'with' (todos), 'only' (solo eliminados), 'without' (solo activos, default)
+     */
+    public function scopeTrashedFilter($query, string $value)
+    {
+        return match ($value) {
+            'with' => $query->withTrashed(),
+            'only' => $query->onlyTrashed(),
+            default => $query,
+        };
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

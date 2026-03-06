@@ -8,7 +8,7 @@ use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsToMany;
 use LaravelJsonApi\Eloquent\Filters\Where;
-use LaravelJsonApi\Eloquent\Filters\WithTrashed;
+use LaravelJsonApi\Eloquent\Filters\Scope;
 use Modules\User\Models\User;
 
 class UserSchema extends Schema
@@ -41,7 +41,7 @@ class UserSchema extends Schema
     public function filters(): array
     {
         return [
-            WithTrashed::make('trashed'),
+            Scope::make('trashed', 'trashedFilter'),
             Where::make('name')->deserializeUsing(
                 static fn($value) => "%{$value}%"
             )->using('like'),
