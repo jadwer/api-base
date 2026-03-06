@@ -5,6 +5,7 @@ namespace Modules\Product\JsonApi\V1\Categories;
 use LaravelJsonApi\Eloquent\Schema;
 use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Str;
+use LaravelJsonApi\Eloquent\Fields\Boolean;
 use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\Relations\HasMany;
@@ -25,6 +26,7 @@ class CategorySchema extends Schema
             Str::make('name')->sortable(),
             Str::make('description'),
             Str::make('slug')->sortable(),
+            Boolean::make('isActive', 'is_active')->sortable(),
             Number::make('productsCount')
                 ->readOnly(),
             
@@ -42,6 +44,7 @@ class CategorySchema extends Schema
             WhereIdIn::make($this),
             Where::make('name'),
             Where::make('slug'),
+            Where::make('is_active')->asBoolean(),
         ];
     }
 

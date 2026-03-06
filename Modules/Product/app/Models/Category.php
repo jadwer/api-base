@@ -34,6 +34,7 @@ class Category extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'is_active' => 'boolean',
     ];
 
     public function products(): HasMany

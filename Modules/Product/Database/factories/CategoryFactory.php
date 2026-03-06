@@ -14,6 +14,7 @@ class CategoryFactory extends Factory
         return [
             'name' => $this->faker->words(2, true) . ' Category',
             'description' => $this->faker->sentence(10),
+            'is_active' => true,
         ];
     }
 

@@ -18,6 +18,9 @@ class CatalogController extends Controller
     public function products(Request $request): JsonResponse
     {
         $query = Product::query()
+            ->where('is_active', true)
+            ->whereHas('brand', fn($q) => $q->where('is_active', true))
+            ->whereHas('category', fn($q) => $q->where('is_active', true))
             ->with(['unit', 'category', 'brand']);
 
         // Basic filtering
@@ -112,6 +115,9 @@ class CatalogController extends Controller
     {
         $product = Product::with(['unit', 'category', 'brand'])
             ->where('id', $id)
+            ->where('is_active', true)
+            ->whereHas('brand', fn($q) => $q->where('is_active', true))
+            ->whereHas('category', fn($q) => $q->where('is_active', true))
             ->first();
 
         if (!$product) {
@@ -158,7 +164,8 @@ class CatalogController extends Controller
     public function categories(): JsonResponse
     {
         $categories = \Modules\Product\Models\Category::query()
-            ->withCount('products')
+            ->where('is_active', true)
+            ->withCount(['products' => fn($q) => $q->where('is_active', true)])
             ->having('products_count', '>', 0)
             ->orderBy('name')
             ->get(['id', 'name', 'description']);
@@ -183,7 +190,8 @@ class CatalogController extends Controller
     public function brands(): JsonResponse
     {
         $brands = \Modules\Product\Models\Brand::query()
-            ->withCount('products')
+            ->where('is_active', true)
+            ->withCount(['products' => fn($q) => $q->where('is_active', true)])
             ->having('products_count', '>', 0)
             ->orderBy('name')
             ->get(['id', 'name', 'description']);

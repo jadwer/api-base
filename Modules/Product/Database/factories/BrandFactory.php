@@ -14,6 +14,7 @@ class BrandFactory extends Factory
         return [
             'name' => $this->faker->words(2, true) . ' Brand',
             'description' => $this->faker->sentence(8),
+            'is_active' => true,
         ];
     }
 

@@ -295,6 +295,7 @@ class OnlineSalesE2ETest extends TestCase
         $contact = Contact::factory()->create([
             'is_customer' => true,
             'is_supplier' => false,
+            'status' => 'active',
             'credit_limit' => 100000, // High limit to avoid credit issues
             'credit_status' => 'active',
         ]);
@@ -304,7 +305,7 @@ class OnlineSalesE2ETest extends TestCase
         // Create sales order directly
         $salesOrder = SalesOrder::factory()->create([
             'contact_id' => $contact->id,
-            'status' => 'confirmed',
+            'status' => 'delivered',
             'order_source' => 'ecommerce',
             'subtotal' => 1000.00,
             'tax_amount' => 160.00,

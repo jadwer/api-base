@@ -20,6 +20,7 @@ class BrandRequest extends ResourceRequest
             ],
             'description' => ['nullable', 'string', 'max:500'],
             'defaultLeadTime' => ['nullable', 'string', 'max:100'],
+            'isActive' => ['sometimes', 'boolean'],
         ];
     }
 }

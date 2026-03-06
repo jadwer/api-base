@@ -19,6 +19,7 @@ class CategoryRequest extends ResourceRequest
                 Rule::unique('categories', 'name')->ignore($category),
             ],
             'description' => ['nullable', 'string', 'max:500'],
+            'isActive' => ['sometimes', 'boolean'],
         ];
     }
 }

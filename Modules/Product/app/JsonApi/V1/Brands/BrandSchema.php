@@ -5,6 +5,7 @@ namespace Modules\Product\JsonApi\V1\Brands;
 use LaravelJsonApi\Eloquent\Schema;
 use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Str;
+use LaravelJsonApi\Eloquent\Fields\Boolean;
 use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\Relations\HasMany;
@@ -26,6 +27,7 @@ class BrandSchema extends Schema
             Str::make('description'),
             Str::make('slug')->sortable(),
             Str::make('defaultLeadTime', 'default_lead_time'),
+            Boolean::make('isActive', 'is_active')->sortable(),
             Number::make('productsCount')
                 ->readOnly(),
             
@@ -43,6 +45,7 @@ class BrandSchema extends Schema
             WhereIdIn::make($this),
             Where::make('name'),
             Where::make('slug'),
+            Where::make('is_active')->asBoolean(),
         ];
     }
 
