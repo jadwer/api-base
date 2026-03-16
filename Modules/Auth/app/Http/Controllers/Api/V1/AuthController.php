@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Modules\Auth\Http\Requests\LoginRequest;
 use Modules\Auth\Notifications\VerifyEmailNotification;
+use Modules\Auth\Notifications\WelcomeNotification;
+use Modules\MailerManager\Models\SystemEmail;
 use Modules\User\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -80,36 +82,40 @@ class AuthController extends Controller
     }
 
     public function register(Request $request): JsonResponse
-{
-    $data = $request->validate([
-        'name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-        'password' => ['required', 'string', 'min:8'],
-    ]);
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8'],
+        ]);
 
-    $user = User::create([
-        'name' => $data['name'],
-        'email' => $data['email'],
-        'password' => $data['password'],
-        'status' => 'active', // o 'pending' si prefieres
-    ]);
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => $data['password'],
+            'status' => 'active',
+        ]);
 
-    $user->assignRole('customer');
+        $user->assignRole('customer');
 
-    // Send verification email (fire-and-forget)
-    try {
-        $user->notify(new VerifyEmailNotification());
-    } catch (\Exception $e) {
-        Log::warning('Failed to send verification email: ' . $e->getMessage());
+        // Send verification and welcome emails (fire-and-forget)
+        try {
+            if (SystemEmail::isEnabled('auth.verify_email')) {
+                $user->notify(new VerifyEmailNotification());
+            }
+            if (SystemEmail::isEnabled('auth.welcome')) {
+                $user->notify(new WelcomeNotification());
+            }
+        } catch (\Exception $e) {
+            Log::warning('Failed to send registration emails: ' . $e->getMessage());
+        }
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => $user,
+        ]);
     }
-
-    $token = $user->createToken('auth_token')->plainTextToken;
-
-    return response()->json([
-        'access_token' => $token,
-        'token_type' => 'Bearer',
-        'user' => $user,
-    ]);
-}
-
 }

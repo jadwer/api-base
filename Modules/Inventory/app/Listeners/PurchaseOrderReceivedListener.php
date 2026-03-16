@@ -4,6 +4,7 @@ namespace Modules\Inventory\Listeners;
 
 use Modules\Purchase\Events\PurchaseOrderReceived;
 use Modules\Inventory\Services\InventoryMovementService;
+use Modules\Inventory\Models\InventoryMovement;
 use Modules\Inventory\Models\Warehouse;
 use Illuminate\Support\Facades\Log;
 
@@ -29,6 +30,18 @@ class PurchaseOrderReceivedListener
     public function handle(PurchaseOrderReceived $event): void
     {
         $purchaseOrder = $event->purchaseOrder;
+
+        // Idempotency guard: skip if movements already exist for this PO
+        $existingMovements = InventoryMovement::where('reference_type', 'purchase')
+            ->where('reference_id', $purchaseOrder->id)
+            ->exists();
+
+        if ($existingMovements) {
+            Log::info('Inventory movements already exist for PurchaseOrder, skipping', [
+                'purchase_order_id' => $purchaseOrder->id,
+            ]);
+            return;
+        }
 
         // Skip if purchase order items not loaded
         if (!$purchaseOrder->relationLoaded('purchaseOrderItems')) {

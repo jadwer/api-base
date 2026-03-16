@@ -39,6 +39,16 @@ class AppSettingSeeder extends Seeder
             // Auth
             ['key' => 'auth.require_email_verification', 'value' => 'false', 'type' => 'boolean', 'group' => 'auth', 'label' => 'Requiere verificacion de email', 'description' => 'Si esta activo, los usuarios deben verificar su correo antes de acceder a funciones protegidas'],
 
+            // Mail / Email del sistema
+            ['key' => 'mail.system_email', 'value' => 'ventas@laborwasserdemexico.com', 'type' => 'string', 'group' => 'mail', 'label' => 'Email del sistema (remitente)', 'description' => 'Direccion de correo que aparece como remitente en todos los emails del sistema'],
+            ['key' => 'mail.system_name', 'value' => 'Labor Wasser de Mexico', 'type' => 'string', 'group' => 'mail', 'label' => 'Nombre del remitente'],
+            ['key' => 'mail.admin_notification_email', 'value' => 'admin@laborwasserdemexico.com', 'type' => 'string', 'group' => 'mail', 'label' => 'Email para notificaciones administrativas', 'description' => 'Email donde llegan avisos de nuevas cotizaciones, ordenes, etc.'],
+            ['key' => 'mail.smtp_host', 'value' => 'mail.laborwasserdemexico.com', 'type' => 'string', 'group' => 'mail', 'label' => 'SMTP Host'],
+            ['key' => 'mail.smtp_port', 'value' => '465', 'type' => 'string', 'group' => 'mail', 'label' => 'SMTP Puerto'],
+            ['key' => 'mail.smtp_username', 'value' => '', 'type' => 'string', 'group' => 'mail', 'label' => 'SMTP Usuario', 'description' => 'Email completo creado en cPanel (ej: ventas@laborwasserdemexico.com)'],
+            ['key' => 'mail.smtp_password', 'value' => '', 'type' => 'string', 'group' => 'mail', 'label' => 'SMTP Contrasena'],
+            ['key' => 'mail.smtp_encryption', 'value' => 'ssl', 'type' => 'string', 'group' => 'mail', 'label' => 'SMTP Encriptacion', 'description' => 'ssl (puerto 465) o tls (puerto 587)'],
+
             // Currency
             ['key' => 'currency.base_currency', 'value' => 'MXN', 'type' => 'string', 'group' => 'currency', 'label' => 'Moneda base', 'description' => 'Codigo ISO 4217 de la moneda base del sistema'],
             ['key' => 'currency.exchange_rate_margin', 'value' => '2.0', 'type' => 'string', 'group' => 'currency', 'label' => 'Margen sobre tipo de cambio (%)', 'description' => 'Porcentaje de margen aplicado sobre el tipo de cambio para ventas'],

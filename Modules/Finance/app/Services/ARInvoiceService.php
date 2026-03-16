@@ -65,7 +65,7 @@ class ARInvoiceService
             $invoiceNumber = $this->generateInvoiceNumber();
 
             // 3. Crear AR Invoice
-            $invoice = ARInvoice::create([
+            $invoiceData = [
                 'invoice_number' => $invoiceNumber,
                 'invoice_date' => $data['invoiceDate'],
                 'due_date' => $data['dueDate'],
@@ -79,7 +79,13 @@ class ARInvoiceService
                 'notes' => $data['notes'] ?? null,
                 'metadata' => $data['metadata'] ?? [],
                 'is_active' => true,
-            ]);
+            ];
+
+            if (isset($data['salesOrderId'])) {
+                $invoiceData['sales_order_id'] = $data['salesOrderId'];
+            }
+
+            $invoice = ARInvoice::create($invoiceData);
 
             // 4. Crear JournalEntry con AccountingService
             try {
@@ -170,6 +176,7 @@ class ARInvoiceService
             'invoiceDate' => now(),
             'dueDate' => $dueDate,
             'contactId' => $salesOrder->contact_id,
+            'salesOrderId' => $salesOrder->id,
             'currency' => 'MXN',
             'subtotal' => $subtotal,
             'taxAmount' => $taxAmount,
@@ -186,8 +193,8 @@ class ARInvoiceService
         // Create invoice using existing service method
         $arInvoice = $this->createInvoice($invoiceData);
 
-        // Update sales order with invoice reference
-        $salesOrder->update([
+        // Update sales order with invoice reference (use updateQuietly to avoid re-triggering observer)
+        $salesOrder->updateQuietly([
             'ar_invoice_id' => $arInvoice->id,
             'invoicing_status' => 'invoiced',
         ]);

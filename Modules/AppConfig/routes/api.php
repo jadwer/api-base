@@ -13,5 +13,6 @@ Route::prefix('v1')->group(function () {
         Route::get('app-settings/group/{group}', [AppSettingController::class, 'byGroup']);
         Route::patch('app-settings/{key}', [AppSettingController::class, 'update'])
             ->where('key', '[a-zA-Z0-9_.]+');
+        Route::post('app-settings/test-email', [AppSettingController::class, 'testEmail']);
     });
 });

@@ -12,6 +12,7 @@ use Modules\Sales\Models\Remission;
 use Modules\Sales\Models\RemissionItem;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Services\RemissionPDFGenerator;
+use Modules\Inventory\Models\Stock;
 
 /**
  * SA-M006: Remission Controller
@@ -54,6 +55,34 @@ class RemissionController extends Controller
         ]);
 
         $order = SalesOrder::with('items.product')->findOrFail($request->input('sales_order_id'));
+
+        // Validate stock availability
+        $insufficientItems = [];
+        foreach ($request->input('items') as $itemData) {
+            $orderItem = $order->items->firstWhere('id', $itemData['sales_order_item_id']);
+            if ($orderItem) {
+                $available = Stock::where('product_id', $orderItem->product_id)
+                    ->sum('available_quantity');
+                if ($available < $itemData['quantity']) {
+                    $insufficientItems[] = [
+                        'product_id' => $orderItem->product_id,
+                        'product_name' => $orderItem->product?->name ?? 'Producto',
+                        'sku' => $orderItem->product?->sku ?? '',
+                        'required' => (float) $itemData['quantity'],
+                        'available' => (float) $available,
+                        'deficit' => (float) ($itemData['quantity'] - $available),
+                    ];
+                }
+            }
+        }
+
+        if (!empty($insufficientItems)) {
+            return response()->json([
+                'error' => 'Stock insuficiente para generar la remision',
+                'insufficient_items' => $insufficientItems,
+                'suggestion' => 'Genere una Orden de Compra para reponer el inventario antes de crear la remision.',
+            ], 422);
+        }
 
         return DB::transaction(function () use ($request, $order) {
             // Create remission
@@ -135,6 +164,31 @@ class RemissionController extends Controller
             return response()->json([
                 'error' => 'Cannot create remission from order with no items'
             ], 400);
+        }
+
+        // Validate stock availability before creating remission
+        $insufficientItems = [];
+        foreach ($order->items as $orderItem) {
+            $available = Stock::where('product_id', $orderItem->product_id)
+                ->sum('available_quantity');
+            if ($available < $orderItem->quantity) {
+                $insufficientItems[] = [
+                    'product_id' => $orderItem->product_id,
+                    'product_name' => $orderItem->product?->name ?? 'Producto',
+                    'sku' => $orderItem->product?->sku ?? '',
+                    'required' => (float) $orderItem->quantity,
+                    'available' => (float) $available,
+                    'deficit' => (float) ($orderItem->quantity - $available),
+                ];
+            }
+        }
+
+        if (!empty($insufficientItems)) {
+            return response()->json([
+                'error' => 'Stock insuficiente para generar la remision',
+                'insufficient_items' => $insufficientItems,
+                'suggestion' => 'Genere una Orden de Compra para reponer el inventario antes de crear la remision.',
+            ], 422);
         }
 
         return DB::transaction(function () use ($request, $order) {
@@ -222,6 +276,24 @@ class RemissionController extends Controller
             $request->input('received_by'),
             $request->input('delivery_notes')
         );
+
+        // Check if all remissions for this SO are delivered -> update SO status
+        $salesOrder = $remission->salesOrder;
+        if ($salesOrder && $salesOrder->status !== 'delivered' && $salesOrder->status !== 'cancelled') {
+            $hasNonDeliveredRemissions = $salesOrder->remissions()
+                ->where('status', '!=', 'cancelled')
+                ->where('status', '!=', 'delivered')
+                ->exists();
+
+            $hasDeliveredRemissions = $salesOrder->remissions()
+                ->where('status', 'delivered')
+                ->exists();
+
+            if (!$hasNonDeliveredRemissions && $hasDeliveredRemissions) {
+                // This triggers SalesOrderObserver -> auto-creates AR Invoice
+                $salesOrder->update(['status' => 'delivered']);
+            }
+        }
 
         return response()->json([
             'data' => $this->transformRemission($remission->fresh()),

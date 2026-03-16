@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Observers\CacheInvalidationObserver;
+use App\Services\MailConfigService;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Login;
@@ -24,6 +25,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Configure mail from AppConfig database settings
+        if (!app()->runningUnitTests()) {
+            MailConfigService::configureMailer();
+        }
+
         // Register cache invalidation observers for critical models
         $this->registerCacheInvalidation();
 

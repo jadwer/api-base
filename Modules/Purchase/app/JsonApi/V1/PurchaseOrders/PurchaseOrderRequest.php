@@ -19,12 +19,17 @@ class PurchaseOrderRequest extends ResourceRequest
         
         return [
             'orderDate' => [$creating ? 'required' : 'sometimes', 'date'],
-            'status' => [$creating ? 'required' : 'sometimes', 'string', 'in:pending,approved,received,cancelled'],
+            'status' => [$creating ? 'required' : 'sometimes', 'string', Rule::in(['pending', 'approved', 'received', 'cancelled'])],
             'totalAmount' => [$creating ? 'required' : 'sometimes', 'numeric', 'min:0'],
+            'warehouseId' => ['nullable', 'integer', 'exists:warehouses,id'],
+            'approvalStatus' => ['sometimes', 'nullable', 'string'],
+            'invoicingStatus' => ['sometimes', 'nullable', 'string'],
+            'financialStatus' => ['sometimes', 'nullable', 'string'],
             'notes' => ['nullable', 'string'],
-            
+
             // Validaciones para relaciones
             'contact' => [$creating ? 'required' : 'sometimes', JsonApiRule::toOne()],
+            'warehouse' => ['nullable', JsonApiRule::toOne()],
         ];
     }
 }

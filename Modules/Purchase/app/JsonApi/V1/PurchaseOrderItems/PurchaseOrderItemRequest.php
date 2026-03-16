@@ -20,13 +20,15 @@ class PurchaseOrderItemRequest extends ResourceRequest
             // Campos obligatorios
             'purchaseOrderId' => [$creating ? 'required' : 'sometimes', 'exists:purchase_orders,id'],
             'productId' => [$creating ? 'required' : 'sometimes', 'exists:products,id'],
-            'quantity' => ['required', 'numeric', 'min:0.01'],
-            'unitPrice' => ['required', 'numeric', 'min:0'],
-            'discount' => ['sometimes', 'numeric', 'min:0'],
-            'receivedQuantity' => ['sometimes', 'numeric', 'min:0'],
-            'subtotal' => ['sometimes', 'numeric', 'min:0'],
-            'total' => ['sometimes', 'numeric', 'min:0'],
-            'metadata' => ['sometimes', 'array'],
+            'quantity' => [$creating ? 'required' : 'sometimes', 'numeric', 'min:0.01'],
+            'unitPrice' => [$creating ? 'required' : 'sometimes', 'numeric', 'min:0'],
+            'discount' => ['sometimes', 'nullable', 'numeric', 'min:0'],
+            'receivedQuantity' => ['sometimes', 'nullable', 'numeric', 'min:0'],
+            'subtotal' => ['sometimes', 'nullable', 'numeric', 'min:0'],
+            'total' => ['sometimes', 'nullable', 'numeric', 'min:0'],
+            'invoicedQuantity' => ['sometimes', 'nullable', 'numeric', 'min:0'],
+            'invoicedAmount' => ['sometimes', 'nullable', 'numeric', 'min:0'],
+            'metadata' => ['sometimes', 'nullable', 'array'],
 
             // Validaciones para relaciones
             'purchaseOrder' => JsonApiRule::toOne(),

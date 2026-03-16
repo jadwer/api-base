@@ -333,7 +333,20 @@
             @foreach($items as $item)
             <tr>
                 <td class="product-code">{{ $item->product_sku ?? 'N/A' }}</td>
-                <td class="product-name">{{ $item->product_name ?? ($item->product ? $item->product->name : 'Producto') }}</td>
+                <td class="product-name">
+                    @if($item->product && $item->product->img_path)
+                        @php
+                            $imgPath = storage_path('app/public/' . $item->product->img_path);
+                            if (!file_exists($imgPath)) {
+                                $imgPath = public_path('storage/' . $item->product->img_path);
+                            }
+                        @endphp
+                        @if(file_exists($imgPath))
+                            <img src="{{ $imgPath }}" style="max-width: 40px; max-height: 40px; margin-bottom: 4px; display: block;" alt="">
+                        @endif
+                    @endif
+                    {{ $item->product_name ?? ($item->product ? $item->product->name : 'Producto') }}
+                </td>
                 <td class="text-center">{{ number_format($item->quantity, 2) }}</td>
                 <td class="text-center">{{ $item->product && $item->product->unit ? $item->product->unit->name : 'PZA' }}</td>
                 <td>

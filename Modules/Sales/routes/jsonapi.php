@@ -39,6 +39,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::get('sales-orders/reports', [SalesOrderController::class, 'reports'])->name('sales-orders.reports');
     Route::get('sales-orders/customers', [SalesOrderController::class, 'customers'])->name('sales-orders.customers');
     Route::post('sales-orders/{salesOrder}/cancel', [SalesOrderController::class, 'cancel'])->name('sales-orders.cancel');
+    Route::get('sales-orders/{salesOrder}/stock-availability', [SalesOrderController::class, 'stockAvailability'])->name('sales-orders.stock-availability');
 
     // SA-M001: Shipment action endpoints
     Route::post('shipments/create-from-order', [ShipmentController::class, 'createFromOrder'])->name('shipments.create-from-order');

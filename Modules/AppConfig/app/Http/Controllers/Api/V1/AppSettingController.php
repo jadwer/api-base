@@ -5,6 +5,7 @@ namespace Modules\AppConfig\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Modules\AppConfig\Models\AppSetting;
 
 class AppSettingController extends Controller
@@ -72,6 +73,49 @@ class AppSettingController extends Controller
             ],
             'message' => 'Setting updated successfully',
         ]);
+    }
+
+    /**
+     * Send a test email to verify mail configuration.
+     * POST /api/v1/app-settings/test-email
+     */
+    public function testEmail(Request $request): JsonResponse
+    {
+        $user = $request->user('sanctum');
+        if (!$user || (!$user->can('app-settings.update') && !$user->hasRole(['god', 'admin', 'administrator']))) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        try {
+            $toEmail = $request->input('email');
+            $fromEmail = config('mail.from.address');
+            $fromName = config('mail.from.name');
+
+            Mail::raw(
+                "Este es un correo de prueba del sistema Labor Wasser de Mexico.\n\n"
+                . "Si recibiste este correo, la configuracion SMTP es correcta.\n\n"
+                . "Remitente configurado: {$fromEmail}\n"
+                . "Fecha: " . now()->format('d/m/Y H:i:s'),
+                function ($message) use ($toEmail, $fromName) {
+                    $message->to($toEmail)
+                        ->subject('Correo de prueba - ' . $fromName);
+                }
+            );
+
+            return response()->json([
+                'message' => 'Correo de prueba enviado exitosamente a ' . $toEmail,
+                'from' => $fromEmail,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al enviar correo de prueba',
+                'details' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**

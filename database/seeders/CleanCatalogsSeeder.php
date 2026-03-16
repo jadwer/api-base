@@ -30,6 +30,7 @@ class CleanCatalogsSeeder extends Seeder
         $this->seedPaymentMethods();
         $this->seedFiscalPeriods();
         $this->seedChartOfAccounts();
+        $this->seedJournals();
         $this->seedDefaultWarehouse();
         $this->seedFolioSequences();
         $this->seedDefaultCompanySetting();
@@ -175,6 +176,34 @@ class CleanCatalogsSeeder extends Seeder
         $this->callSilent([
             \Modules\Accounting\Database\Seeders\CatalogoCuentasMexicanoSeeder::class,
         ]);
+    }
+
+    /**
+     * Seed standard accounting journals (AR, AP, GL, CASH, BANK)
+     */
+    private function seedJournals(): void
+    {
+        $journals = [
+            ['code' => 'AR', 'name' => 'Accounts Receivable', 'description' => 'Journal for customer invoices and payments'],
+            ['code' => 'AP', 'name' => 'Accounts Payable', 'description' => 'Journal for supplier invoices and payments'],
+            ['code' => 'GL', 'name' => 'General Ledger', 'description' => 'General journal entries'],
+            ['code' => 'CASH', 'name' => 'Cash Receipts', 'description' => 'Cash receipt transactions'],
+            ['code' => 'BANK', 'name' => 'Bank Transactions', 'description' => 'Bank-related transactions'],
+        ];
+
+        foreach ($journals as $journalData) {
+            \Modules\Accounting\Models\Journal::firstOrCreate(
+                ['code' => $journalData['code']],
+                [
+                    'name' => $journalData['name'],
+                    'prefix' => $journalData['code'],
+                    'type' => 'general',
+                    'description' => $journalData['description'],
+                    'status' => 'active',
+                    'metadata' => ['created_by' => 'CleanCatalogsSeeder'],
+                ]
+            );
+        }
     }
 
     /**

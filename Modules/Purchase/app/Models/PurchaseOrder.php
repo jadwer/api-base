@@ -85,6 +85,16 @@ class PurchaseOrder extends Model
 
         // PU-001: Automatically set approval status on creation
         static::creating(function ($order) {
+            // Auto-generate order number if not set
+            if (empty($order->order_number)) {
+                try {
+                    $order->order_number = static::generateOrderNumber();
+                } catch (\Exception $e) {
+                    // Fallback if FolioSequence is not available (e.g., in tests)
+                    $order->order_number = 'OC-' . date('y') . '-' . str_pad(static::count() + 1, 5, '0', STR_PAD_LEFT);
+                }
+            }
+
             if (!isset($order->approval_status)) {
                 // Simple check during creation based on amount threshold only
                 // Full approval check (including first-time supplier, high-value items)

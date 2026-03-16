@@ -214,6 +214,51 @@ class SalesOrderController extends Controller
         ]);
     }
 
+    /**
+     * Get stock availability for each item in a sales order
+     * GET /api/v1/sales-orders/{salesOrder}/stock-availability
+     */
+    public function stockAvailability(SalesOrder $salesOrder): JsonResponse
+    {
+        $user = request()->user('sanctum');
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        if (!$user->can('sales-orders.show') && !$user->hasAnyRole(['god', 'admin'])) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
+        $salesOrder->load('items.product');
+
+        $items = [];
+        $allSufficient = true;
+
+        foreach ($salesOrder->items as $orderItem) {
+            $availableQty = \Modules\Inventory\Models\Stock::where('product_id', $orderItem->product_id)
+                ->sum('available_quantity');
+
+            $isSufficient = $availableQty >= $orderItem->quantity;
+            if (!$isSufficient) {
+                $allSufficient = false;
+            }
+
+            $items[] = [
+                'product_id' => $orderItem->product_id,
+                'product_name' => $orderItem->product?->name ?? $orderItem->product_name ?? 'Producto',
+                'sku' => $orderItem->product?->sku ?? '',
+                'required_quantity' => (float) $orderItem->quantity,
+                'available_quantity' => (float) $availableQty,
+                'is_sufficient' => $isSufficient,
+                'deficit' => $isSufficient ? 0 : (float) ($orderItem->quantity - $availableQty),
+            ];
+        }
+
+        return response()->json([
+            'items' => $items,
+            'all_sufficient' => $allSufficient,
+        ]);
+    }
+
     // ==========================================================
     // SA-M011: PDF Generation Methods
     // ==========================================================

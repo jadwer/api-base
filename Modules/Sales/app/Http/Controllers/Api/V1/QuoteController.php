@@ -21,9 +21,14 @@ use Modules\Purchase\Models\PurchaseOrder;
 use Modules\Purchase\Models\PurchaseOrderItem;
 use Modules\Inventory\Models\Warehouse;
 use Modules\Sales\Mail\QuoteConvertedMail;
+use Modules\Sales\Mail\QuoteRequestedMail;
+use Modules\Sales\Mail\QuoteSentMail;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use App\Services\MailConfigService;
 use Modules\Contacts\Models\Contact;
 use App\Services\CurrencyConversionService;
+use Modules\MailerManager\Models\SystemEmail;
 
 class QuoteController extends Controller
 {
@@ -107,6 +112,19 @@ class QuoteController extends Controller
             // Recalculate totals
             $quote->recalculateTotals();
 
+            // Send notification email to admin
+            try {
+                if (SystemEmail::isEnabled('sales.quote_requested.admin')) {
+                    $adminEmail = MailConfigService::getAdminEmail();
+                    Mail::to($adminEmail)->send(new QuoteRequestedMail($quote, true));
+                }
+            } catch (\Exception $e) {
+                Log::error('Failed to send quote requested email to admin', [
+                    'quote_id' => $quote->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
             return response()->json([
                 'data' => $this->transformQuote($quote->fresh(['items', 'contact'])),
                 'message' => 'Quote created successfully from cart'
@@ -132,8 +150,22 @@ class QuoteController extends Controller
 
         $quote->markAsSent();
 
-        // TODO: Send email notification to customer
-        // event(new QuoteSent($quote));
+        // Send quote email with PDF attachment to customer
+        try {
+            $customerEmail = $quote->contact?->email;
+            if ($customerEmail && SystemEmail::isEnabled('sales.quote_sent')) {
+                $pdfGenerator = app(QuotePDFGenerator::class);
+                $relativePath = $pdfGenerator->generate($quote);
+                $pdfPath = storage_path('app/public/' . $relativePath);
+                Mail::to($customerEmail)->send(new QuoteSentMail($quote, $pdfPath));
+            }
+        } catch (\Exception $e) {
+            Log::error('Failed to send quote email to customer', [
+                'quote_id' => $quote->id,
+                'quote_number' => $quote->quote_number,
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         return response()->json([
             'data' => $this->transformQuote($quote->fresh()),
@@ -569,7 +601,7 @@ class QuoteController extends Controller
         $order->load(['items.product']);
 
         // Send to customer
-        if ($quote->contact?->email) {
+        if ($quote->contact?->email && SystemEmail::isEnabled('sales.quote_converted.customer')) {
             try {
                 Mail::to($quote->contact->email)
                     ->queue(new QuoteConvertedMail($quote, $order, false));
@@ -584,7 +616,7 @@ class QuoteController extends Controller
 
         // Send to admin/sales team (optional - configurable)
         $adminEmail = config('sales.notifications.quote_converted_admin_email');
-        if ($adminEmail) {
+        if ($adminEmail && SystemEmail::isEnabled('sales.quote_converted.admin')) {
             try {
                 Mail::to($adminEmail)
                     ->queue(new QuoteConvertedMail($quote, $order, true));
@@ -718,6 +750,22 @@ class QuoteController extends Controller
                     'total_amount' => $quote->total_amount,
                 ])
                 ->log('Customer requested a quote');
+
+            // Send confirmation email to customer and notification to admin
+            try {
+                if ($contact->email && SystemEmail::isEnabled('sales.quote_requested.customer')) {
+                    Mail::to($contact->email)->send(new QuoteRequestedMail($quote, false));
+                }
+                if (SystemEmail::isEnabled('sales.quote_requested.admin')) {
+                    $adminEmail = MailConfigService::getAdminEmail();
+                    Mail::to($adminEmail)->send(new QuoteRequestedMail($quote, true));
+                }
+            } catch (\Exception $e) {
+                Log::error('Failed to send quote request emails', [
+                    'quote_id' => $quote->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
 
             return response()->json([
                 'success' => true,

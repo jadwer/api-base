@@ -39,10 +39,10 @@ class PurchaseOrderShowTest extends TestCase
                 'id',
                 'type',
                 'attributes' => [
-                    'contact_id',
+                    'orderNumber',
                     'contactId',
                     'orderDate',
-                    'status', 
+                    'status',
                     'totalAmount',
                     'notes',
                     'createdAt',
@@ -67,7 +67,6 @@ class PurchaseOrderShowTest extends TestCase
                 'id' => (string) $purchaseOrder->id,
                 'type' => 'purchase-orders',
                 'attributes' => [
-                    'contact_id' => $contact->id,
                     'contactId' => $contact->id,
                     'orderDate' => '2025-01-15T00:00:00.000000Z',
                     'status' => 'pending',

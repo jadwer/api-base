@@ -81,6 +81,7 @@ class PurchaseOrderItemUpdateTest extends TestCase
             'product_id' => $product->id,
             'quantity' => 5,
             'unit_price' => 20.00,
+            'discount' => 0,
         ]);
     }
 

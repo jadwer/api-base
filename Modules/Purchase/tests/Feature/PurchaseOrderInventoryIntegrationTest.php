@@ -14,6 +14,15 @@ use Modules\Contacts\Models\Contact;
 
 class PurchaseOrderInventoryIntegrationTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Clean up seeded inventory movements with reference_type=purchase
+        // to avoid collisions with random reference_ids from InventoryMovementSeeder
+        InventoryMovement::where('reference_type', 'purchase')->delete();
+    }
+
     /**
      * Test that inventory movements are created when purchase order is marked as received
      */

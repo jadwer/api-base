@@ -87,6 +87,7 @@ class PurchaseOrderReceivedListener
             'invoiceDate' => now()->toDateString(),
             'dueDate' => now()->addDays($purchaseOrder->payment_terms ?? 30)->toDateString(),
             'contactId' => $purchaseOrder->contact_id,
+            'purchaseOrderId' => $purchaseOrder->id,
             'currency' => $purchaseOrder->currency ?? 'MXN',
             'subtotal' => $subtotal,
             'taxAmount' => $taxAmount,

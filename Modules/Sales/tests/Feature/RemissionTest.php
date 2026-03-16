@@ -11,6 +11,7 @@ use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Models\SalesOrderItem;
 use Modules\Sales\Models\FolioSequence;
 use Modules\Inventory\Models\Warehouse;
+use Modules\Inventory\Models\Stock;
 use Modules\Contacts\Models\Contact;
 use Modules\Product\Models\Product;
 
@@ -44,6 +45,14 @@ class RemissionTest extends TestCase
             'product_id' => $this->product->id,
             'quantity' => 10,
             'unit_price' => 100.00,
+        ]);
+
+        // Create stock for the product so remission stock validation passes
+        Stock::create([
+            'product_id' => $this->product->id,
+            'warehouse_id' => $this->warehouse->id,
+            'quantity' => 100,
+            'reserved_quantity' => 0,
         ]);
 
         // Initialize folio sequence
