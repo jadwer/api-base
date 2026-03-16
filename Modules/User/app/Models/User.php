@@ -96,6 +96,9 @@ class User extends Authenticatable
      */
     public function sendPasswordResetNotification($token): void
     {
+        if (!\Modules\MailerManager\Models\SystemEmail::isEnabled('auth.reset_password')) {
+            return;
+        }
         $this->notify(new \Modules\Auth\Notifications\ResetPasswordNotification($token));
     }
 

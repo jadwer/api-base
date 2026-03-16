@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Modules\Inventory\Models\InventoryMovement;
+use Modules\MailerManager\Traits\UsesEmailTemplate;
 
 /**
  * Notification email for GL posting failures
@@ -17,11 +18,16 @@ use Modules\Inventory\Models\InventoryMovement;
  */
 class GLPostingFailedMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, UsesEmailTemplate;
 
     public InventoryMovement $movement;
     public string $errorMessage;
     public int $retryAttempts;
+
+    protected function getRegistryKey(): string
+    {
+        return 'inventory.gl_posting_failed';
+    }
 
     /**
      * Create a new message instance.
@@ -56,5 +62,16 @@ class GLPostingFailedMail extends Mailable
                 'retryAttempts' => $this->retryAttempts,
             ],
         );
+    }
+
+    protected function getTemplateVariables(): array
+    {
+        return [
+            'movement_id' => (string) $this->movement->id,
+            'movement_type' => $this->movement->type ?? '',
+            'error_message' => $this->errorMessage,
+            'retry_attempts' => (string) $this->retryAttempts,
+            'company_name' => config('app.name', 'Labor Wasser de Mexico'),
+        ];
     }
 }

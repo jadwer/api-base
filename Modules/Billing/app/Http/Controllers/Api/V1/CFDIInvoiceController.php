@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Modules\MailerManager\Models\SystemEmail;
 
 class CFDIInvoiceController
 {
@@ -405,6 +406,12 @@ class CFDIInvoiceController
             'message' => ['nullable', 'string', 'max:2000'],
             'include_xml' => ['nullable', 'boolean'],
         ]);
+
+        if (!SystemEmail::isEnabled('billing.cfdi_invoice_sent')) {
+            return response()->json([
+                'message' => 'El envío de CFDI por correo está deshabilitado',
+            ], 422);
+        }
 
         try {
             // Ensure PDF exists

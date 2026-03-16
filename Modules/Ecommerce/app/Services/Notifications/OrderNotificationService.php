@@ -3,6 +3,7 @@
 namespace Modules\Ecommerce\Services\Notifications;
 
 use Illuminate\Support\Facades\Mail;
+use Modules\MailerManager\Models\SystemEmail;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Ecommerce\Models\CheckoutSession;
 use Modules\Ecommerce\Models\PaymentTransaction;
@@ -36,6 +37,10 @@ class OrderNotificationService
      */
     public function sendOrderConfirmationNow(SalesOrder $order): void
     {
+        if (!SystemEmail::isEnabled('ecommerce.order_confirmation.customer')) {
+            return;
+        }
+
         $recipientEmail = $this->getOrderEmail($order);
 
         if (!$recipientEmail) {
@@ -65,6 +70,10 @@ class OrderNotificationService
      */
     public function sendPaymentConfirmationNow(PaymentTransaction $transaction): void
     {
+        if (!SystemEmail::isEnabled('ecommerce.payment_confirmation')) {
+            return;
+        }
+
         $order = $transaction->salesOrder;
 
         if (!$order) {
@@ -100,6 +109,10 @@ class OrderNotificationService
      */
     public function sendShippingNotificationNow(SalesOrder $order): void
     {
+        if (!SystemEmail::isEnabled('ecommerce.shipping_notification')) {
+            return;
+        }
+
         $recipientEmail = $this->getOrderEmail($order);
 
         if (!$recipientEmail) {
@@ -130,6 +143,10 @@ class OrderNotificationService
      */
     public function sendOrderStatusUpdateNow(SalesOrder $order, string $previousStatus, string $newStatus, ?string $notes = null): void
     {
+        if (!SystemEmail::isEnabled('ecommerce.order_status_update')) {
+            return;
+        }
+
         $recipientEmail = $this->getOrderEmail($order);
 
         if (!$recipientEmail) {
@@ -160,6 +177,10 @@ class OrderNotificationService
      */
     public function sendOrderCancellationNow(SalesOrder $order, ?string $reason = null): void
     {
+        if (!SystemEmail::isEnabled('ecommerce.order_cancellation')) {
+            return;
+        }
+
         $recipientEmail = $this->getOrderEmail($order);
 
         if (!$recipientEmail) {
@@ -190,6 +211,10 @@ class OrderNotificationService
      */
     public function sendReturnRequestConfirmationNow(SalesOrder $order, array $returnData): void
     {
+        if (!SystemEmail::isEnabled('ecommerce.order_return.customer')) {
+            return;
+        }
+
         $recipientEmail = $this->getOrderEmail($order);
 
         if (!$recipientEmail) {
@@ -311,6 +336,10 @@ class OrderNotificationService
      */
     public function sendRefundConfirmationNow(PaymentTransaction $transaction): void
     {
+        if (!SystemEmail::isEnabled('ecommerce.refund_confirmation')) {
+            return;
+        }
+
         $order = $transaction->salesOrder;
 
         if (!$order) {
@@ -337,6 +366,10 @@ class OrderNotificationService
      */
     public function notifyAdminNewOrder(SalesOrder $order): void
     {
+        if (!SystemEmail::isEnabled('ecommerce.order_confirmation.admin')) {
+            return;
+        }
+
         $adminEmail = config('mail.admin_notification_email');
 
         if (!$adminEmail) {
@@ -352,6 +385,10 @@ class OrderNotificationService
      */
     public function notifyAdminReturnRequest(SalesOrder $order, array $returnData): void
     {
+        if (!SystemEmail::isEnabled('ecommerce.order_return.admin')) {
+            return;
+        }
+
         $adminEmail = config('mail.admin_notification_email');
 
         if (!$adminEmail) {

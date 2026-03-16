@@ -17,5 +17,6 @@
     "Billing": true,
     "CRM": true,
     "SystemHealth": true,
-    "AppConfig": true
+    "AppConfig": true,
+    "MailerManager": true
 }

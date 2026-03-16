@@ -1,0 +1,28 @@
+{
+    "name": "nwidart/mailermanager",
+    "description": "Email template management with visual editor and system email registry",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\MailerManager\\": "app/",
+            "Modules\\MailerManager\\Database\\Factories\\": "Database/factories/",
+            "Modules\\MailerManager\\Database\\Seeders\\": "Database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\MailerManager\\Tests\\": "tests/"
+        }
+    }
+}

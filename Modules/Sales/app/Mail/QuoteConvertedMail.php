@@ -5,17 +5,25 @@ namespace Modules\Sales\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Modules\MailerManager\Traits\UsesEmailTemplate;
 use Modules\Sales\Models\Quote;
 use Modules\Sales\Models\SalesOrder;
 
 class QuoteConvertedMail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, UsesEmailTemplate;
 
     public Quote $quote;
     public SalesOrder $order;
     public array $quoteSummary;
     public bool $isAdmin;
+
+    protected function getRegistryKey(): string
+    {
+        return $this->isAdmin
+            ? 'sales.quote_converted.admin'
+            : 'sales.quote_converted.customer';
+    }
 
     /**
      * Create a new message instance.
@@ -34,6 +42,11 @@ class QuoteConvertedMail extends Mailable
      */
     public function build()
     {
+        $templateMail = $this->buildWithTemplate();
+        if ($templateMail) {
+            return $templateMail;
+        }
+
         $subject = $this->isAdmin
             ? 'Cotización convertida a pedido - ' . $this->quote->quote_number
             : 'Su cotización ha sido confirmada - ' . $this->quote->quote_number;
@@ -46,6 +59,18 @@ class QuoteConvertedMail extends Mailable
                 'quoteSummary' => $this->quoteSummary,
                 'isAdmin' => $this->isAdmin,
             ]);
+    }
+
+    protected function getTemplateVariables(): array
+    {
+        return [
+            'quote_number' => $this->quoteSummary['quote_number'],
+            'order_number' => $this->quoteSummary['order_number'],
+            'customer_name' => $this->quoteSummary['customer_name'],
+            'total' => number_format($this->quoteSummary['total'] ?? 0, 2),
+            'currency' => $this->quoteSummary['currency'] ?? 'MXN',
+            'company_name' => config('app.name', 'Labor Wasser de Mexico'),
+        ];
     }
 
     /**

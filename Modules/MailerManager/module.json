@@ -1,0 +1,11 @@
+{
+    "name": "MailerManager",
+    "alias": "mailermanager",
+    "description": "Email template management with visual editor and system email registry",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\MailerManager\\Providers\\MailerManagerServiceProvider"
+    ],
+    "files": []
+}

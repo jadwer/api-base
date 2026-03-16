@@ -228,6 +228,10 @@ class Server extends BaseServer
             // \Modules\CRM\JsonApi\V1\Quotes\QuoteSchema::class,
             // \Modules\CRM\JsonApi\V1\QuoteItems\QuoteItemSchema::class,
 
+            // MailerManager Module
+            \Modules\MailerManager\JsonApi\V1\EmailTemplates\EmailTemplateSchema::class,
+            \Modules\MailerManager\JsonApi\V1\SystemEmails\SystemEmailSchema::class,
+
         ];
 
         return $schemas;
@@ -357,6 +361,10 @@ class Server extends BaseServer
             'opportunities' => \Modules\CRM\JsonApi\V1\Opportunities\OpportunityAuthorizer::class,
             // 'quotes' => \Modules\CRM\JsonApi\V1\Quotes\QuoteAuthorizer::class,
             // 'quote-items' => \Modules\CRM\JsonApi\V1\QuoteItems\QuoteItemAuthorizer::class,
+
+            // MailerManager Module
+            'email-templates' => \Modules\MailerManager\JsonApi\V1\EmailTemplates\EmailTemplateAuthorizer::class,
+            'system-emails' => \Modules\MailerManager\JsonApi\V1\SystemEmails\SystemEmailAuthorizer::class,
         ];
 
         return $authorizers;

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Modules\Inventory\Events\InventoryMovementCreated;
 use Modules\Inventory\Mail\GLPostingFailedMail;
+use Modules\MailerManager\Models\SystemEmail;
 use Modules\Accounting\Services\AccountingService;
 use Modules\Accounting\Models\Account;
 
@@ -331,7 +332,7 @@ class PostInventoryMovementToGL
         // Send email notification to accounting team
         $notificationEmails = config('inventory.notifications.failed_posting_emails');
 
-        if ($notificationEmails) {
+        if ($notificationEmails && SystemEmail::isEnabled('inventory.gl_posting_failed')) {
             $recipients = is_array($notificationEmails)
                 ? $notificationEmails
                 : explode(',', $notificationEmails);
