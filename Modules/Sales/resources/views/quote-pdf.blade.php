@@ -336,9 +336,16 @@
                 <td class="product-name">
                     @if($item->product && $item->product->img_path)
                         @php
-                            $imgPath = storage_path('app/public/' . $item->product->img_path);
+                            $rawPath = $item->product->img_path;
+                            $imgPath = storage_path('app/public/' . $rawPath);
                             if (!file_exists($imgPath)) {
-                                $imgPath = public_path('storage/' . $item->product->img_path);
+                                $imgPath = storage_path('app/public/products/' . $rawPath);
+                            }
+                            if (!file_exists($imgPath)) {
+                                $imgPath = public_path('storage/' . $rawPath);
+                            }
+                            if (!file_exists($imgPath)) {
+                                $imgPath = public_path('storage/products/' . $rawPath);
                             }
                         @endphp
                         @if(file_exists($imgPath))
