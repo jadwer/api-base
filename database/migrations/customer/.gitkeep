@@ -1,0 +1,19 @@
+# Customer-specific migrations directory (LWM template / WordPress-style refactor)
+#
+# Purpose: when a client (e.g. clients/laborwasser/api) needs to add custom DB columns
+# or tables that are NOT part of the upstream api-base template, they go here.
+#
+# Usage from a client repo:
+#
+#   # Run only customer migrations:
+#   php artisan migrate --path=database/migrations/customer/
+#
+#   # Run template + customer migrations together (default behaviour):
+#   php artisan migrate
+#
+# Naming: keep the standard Laravel timestamp prefix and a descriptive suffix:
+#   2026_05_06_000001_add_internal_code_to_products.php
+#
+# Conflicts on upstream merge: if upstream renames or removes a column you depend on,
+# resolve in this directory by adding a new migration that re-adds it. Do NOT edit
+# upstream migrations.

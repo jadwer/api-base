@@ -2,6 +2,7 @@
 
 return [
     App\Providers\AppServiceProvider::class,
+    App\Providers\CustomerServiceProvider::class,
     App\Providers\TelescopeServiceProvider::class,
     LaravelJsonApi\Laravel\ServiceProvider::class,
 
