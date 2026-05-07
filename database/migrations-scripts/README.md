@@ -1,4 +1,4 @@
-# Scripts de Migracion de Datos - LWM
+# Scripts de Migracion de Datos
 
 ## Contexto
 Estos scripts migran datos desde el sistema de produccion actual hacia la nueva estructura.
@@ -45,12 +45,12 @@ php artisan db:seed --class=PermissionSeeder
 ### Paso 3: Importar Datos
 ```bash
 # Ejecutar script de importacion
-php artisan lwm:migrate-production-data --source=backup_produccion.sql
+php artisan system:migrate-production-data --source=backup_produccion.sql
 ```
 
 ### Paso 4: Verificar Integridad
 ```bash
-php artisan lwm:verify-migration
+php artisan system:verify-migration
 ```
 
 ## Mapeo de Tablas
@@ -84,16 +84,16 @@ php artisan lwm:verify-migration
 
 ```bash
 # Migrar datos de produccion
-php artisan lwm:migrate-production-data --source=file.sql
+php artisan system:migrate-production-data --source=file.sql
 
 # Verificar integracion
-php artisan lwm:verify-migration
+php artisan system:verify-migration
 
 # Regenerar folios
-php artisan lwm:regenerate-folios --type=quotes
+php artisan system:regenerate-folios --type=quotes
 
 # Limpiar datos de prueba
-php artisan lwm:clean-test-data
+php artisan system:clean-test-data
 ```
 
 ## Rollback

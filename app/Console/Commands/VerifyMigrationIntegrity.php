@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Schema;
 
 class VerifyMigrationIntegrity extends Command
 {
-    protected $signature = 'lwm:verify-migration {--fix : Attempt to fix issues found}';
+    protected $signature = 'system:verify-migration {--fix : Attempt to fix issues found}';
 
-    protected $description = 'Verify data integrity after migration to new LWM system';
+    protected $description = 'Verify data integrity after migration to the new system';
 
     private array $issues = [];
     private array $warnings = [];

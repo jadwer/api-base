@@ -36,9 +36,10 @@ class CleanUserSeeder extends Seeder
             $god->assignRole('god');
         }
 
-        // Create secondary admin user (Labor Wasser default)
+        // Create secondary admin user (template default; tenants override
+        // via env or by replacing this seeder in their client repo).
         $admin = User::firstOrCreate(
-            ['email' => 'admin@laborwasser.com'],
+            ['email' => env('CLEAN_SECONDARY_ADMIN_EMAIL', 'admin@example.com')],
             [
                 'name' => 'Administrador',
                 'password' => 'Admin2026!',
@@ -59,7 +60,7 @@ class CleanUserSeeder extends Seeder
         }
 
         $this->command->info("  - God user created: {$email}");
-        $this->command->info("  - Admin user created: admin@laborwasser.com");
+        $this->command->info("  - Admin user created: " . env('CLEAN_SECONDARY_ADMIN_EMAIL', 'admin@example.com'));
 
         // Show password hint in non-production
         if (app()->environment('local', 'development', 'staging')) {

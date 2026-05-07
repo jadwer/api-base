@@ -41,8 +41,9 @@ class CleanCatalogsSeeder extends Seeder
         // App settings (company, branding, auth)
         $this->call(\Modules\AppConfig\Database\Seeders\AppSettingSeeder::class);
 
-        // Static pages (nosotros, laboratorios, certificados, etc.)
-        $this->call(\Modules\PageBuilder\Database\Seeders\StaticPageSeeder::class);
+        // Demo static pages are opt-in. Tenants ship their own pages seeder.
+        // To populate placeholder pages locally, run:
+        //   php artisan db:seed --class=Modules\\PageBuilder\\Database\\Seeders\\DemoPagesSeeder
 
         $this->command->info('  - Essential catalogs created');
     }
@@ -258,7 +259,7 @@ class CleanCatalogsSeeder extends Seeder
                 'city' => 'Pachuca de Soto',
                 'state' => 'Hidalgo',
                 'phone' => '7711234567',
-                'email' => 'facturacion@laborwasser.com',
+                'email' => env('COMPANY_EMAIL', 'facturacion@example.com'),
             ]
         );
     }

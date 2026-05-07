@@ -95,8 +95,11 @@ class AppSettingController extends Controller
             $fromEmail = config('mail.from.address');
             $fromName = config('mail.from.name');
 
+            $companyName = app(\Modules\AppConfig\Services\AppSettingResolver::class)
+                ->get('company.name', config('app.name', 'Demo Company'));
+
             Mail::raw(
-                "Este es un correo de prueba del sistema Labor Wasser de Mexico.\n\n"
+                "Este es un correo de prueba del sistema {$companyName}.\n\n"
                 . "Si recibiste este correo, la configuracion SMTP es correcta.\n\n"
                 . "Remitente configurado: {$fromEmail}\n"
                 . "Fecha: " . now()->format('d/m/Y H:i:s'),

@@ -11,7 +11,7 @@ use Illuminate\Support\ServiceProvider;
  *
  * In api-base (the upstream template), this class is intentionally empty.
  *
- * In a client repo (e.g. clients/laborwasser/api), override this file to register
+ * In a client repo (e.g. clients/&lt;name&gt;/api), override this file to register
  * client-specific bindings without modifying any other template file. Examples:
  *
  *     public function register(): void
@@ -19,13 +19,13 @@ use Illuminate\Support\ServiceProvider;
  *         // Override request validation for Product:
  *         $this->app->bind(
  *             \Modules\Product\JsonApi\V1\Products\ProductRequest::class,
- *             \Clients\Laborwasser\Modules\Product\ProductRequestCustom::class,
+ *             \Clients\Acme\Modules\Product\ProductRequestCustom::class,
  *         );
  *
  *         // Override a service:
  *         $this->app->bind(
  *             \App\Services\MailConfigService::class,
- *             \Clients\Laborwasser\Services\MailConfigServiceCustom::class,
+ *             \Clients\Acme\Services\MailConfigServiceCustom::class,
  *         );
  *     }
  *

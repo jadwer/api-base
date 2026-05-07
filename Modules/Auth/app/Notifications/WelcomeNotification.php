@@ -18,7 +18,7 @@ class WelcomeNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $frontendUrl = config('app.frontend_url', 'http://localhost:3000');
-        $appName = config('app.name', 'Labor Wasser de Mexico');
+        $appName = app(\Modules\AppConfig\Services\AppSettingResolver::class)->get('company.name', config('app.name', 'Demo Company'));
 
         return (new MailMessage)
             ->subject('Bienvenido a ' . $appName)

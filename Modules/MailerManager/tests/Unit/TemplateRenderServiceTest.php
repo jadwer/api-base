@@ -63,14 +63,26 @@ class TemplateRenderServiceTest extends TestCase
 
         $result = $this->service->renderSubject($template, [
             'quote_number' => 'COT-001',
-            'company_name' => 'LWM',
+            'company_name' => 'Test Co',
         ]);
 
-        $this->assertEquals('Cotizacion COT-001 - LWM', $result);
+        $this->assertEquals('Cotizacion COT-001 - Test Co', $result);
     }
 
     public function test_render_preview_uses_default_sample_data(): void
     {
+        // The default sample data resolves company_name from AppSetting via
+        // AppSettingResolver. Seed the value so the assertion is deterministic
+        // regardless of .env APP_NAME or seeder run order.
+        \Modules\AppConfig\Models\AppSetting::create([
+            'key' => 'company.name',
+            'value' => 'Demo Company',
+            'type' => 'string',
+            'group' => 'company',
+            'label' => 'Company Name',
+        ]);
+        \Illuminate\Support\Facades\Cache::forget('app_setting:company.name');
+
         $template = EmailTemplate::factory()->create([
             'html' => '<p>{{customer_name}} - {{company_name}}</p>',
             'css' => '',
@@ -79,7 +91,7 @@ class TemplateRenderServiceTest extends TestCase
         $result = $this->service->renderPreview($template);
 
         $this->assertStringContainsString('Juan Perez', $result);
-        $this->assertStringContainsString('Labor Wasser de Mexico', $result);
+        $this->assertStringContainsString('Demo Company', $result);
     }
 
     public function test_render_preview_with_custom_sample_data(): void

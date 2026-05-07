@@ -46,7 +46,7 @@ class CleanDatabaseSeeder extends Seeder
         $this->command->info('');
         $this->command->info('Next steps:');
         $this->command->info('  1. Configure .env with your settings');
-        $this->command->info('  2. Login with: ' . config('clean.admin_email', 'admin@laborwasser.com'));
+        $this->command->info('  2. Login with: ' . config('clean.admin_email', 'admin@example.com'));
         $this->command->info('  3. Add your company settings in dashboard');
         $this->command->info('');
 

@@ -71,7 +71,7 @@ class GLPostingFailedMail extends Mailable
             'movement_type' => $this->movement->type ?? '',
             'error_message' => $this->errorMessage,
             'retry_attempts' => (string) $this->retryAttempts,
-            'company_name' => config('app.name', 'Labor Wasser de Mexico'),
+            'company_name' => app(\Modules\AppConfig\Services\AppSettingResolver::class)->get('company.name', config('app.name', 'Demo Company')),
         ];
     }
 }

@@ -130,11 +130,13 @@ class TemplateRenderService
 
     protected function getDefaultSampleData(): array
     {
+        $resolver = app(\Modules\AppConfig\Services\AppSettingResolver::class);
+
         return [
             'customer_name' => 'Juan Perez',
             'customer_email' => 'juan@example.com',
-            'company_name' => 'Labor Wasser de Mexico',
-            'company_email' => 'ventas@laborwasserdemexico.com',
+            'company_name' => $resolver->get('company.name', config('app.name', 'Demo Company')),
+            'company_email' => $resolver->get('company.email', 'info@example.com'),
             'quote_number' => 'COT-26000001',
             'order_number' => 'OV-26000001',
             'total' => 3015.98,

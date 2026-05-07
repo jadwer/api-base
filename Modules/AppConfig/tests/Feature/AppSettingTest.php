@@ -111,7 +111,7 @@ class AppSettingTest extends TestCase
 
     public function test_get_returns_correct_value_with_type_cast(): void
     {
-        $this->assertEquals('Labor Wasser de Mexico', AppSetting::get('company.name'));
+        $this->assertEquals('Demo Company', AppSetting::get('company.name'));
         $this->assertIsBool(AppSetting::get('auth.require_email_verification'));
     }
 

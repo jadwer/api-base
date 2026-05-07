@@ -9,13 +9,13 @@ use Illuminate\Support\Str;
 
 class ImportProductionData extends Command
 {
-    protected $signature = 'lwm:import-production
+    protected $signature = 'system:import-production
                             {--source= : Path to SQL dump file}
                             {--dry-run : Show what would be imported without making changes}
                             {--skip-products : Skip importing products}
                             {--skip-users : Skip importing users}';
 
-    protected $description = 'Import production data from daniel_crm_api dump to new LWM system';
+    protected $description = 'Import production data from a legacy CRM SQL dump into the current system.';
 
     private bool $dryRun = false;
     private array $stats = [

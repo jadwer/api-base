@@ -1,6 +1,6 @@
-# Customer-specific migrations directory (LWM template / WordPress-style refactor)
+# Customer-specific migrations directory (WordPress-style refactor)
 #
-# Purpose: when a client (e.g. clients/laborwasser/api) needs to add custom DB columns
+# Purpose: when a client (e.g. clients/<name>/api) needs to add custom DB columns
 # or tables that are NOT part of the upstream api-base template, they go here.
 #
 # Usage from a client repo:

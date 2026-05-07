@@ -62,7 +62,7 @@ class MailConfigService
             // Fallback
         }
 
-        return config('mail.from.address', 'noreply@laborwasserdemexico.com');
+        return config('mail.from.address', 'noreply@example.com');
     }
 
     /**
@@ -79,7 +79,7 @@ class MailConfigService
             // Fallback
         }
 
-        return config('mail.from.name', 'Labor Wasser de Mexico');
+        return config('mail.from.name', config('app.name', 'Demo Company'));
     }
 
     /**
@@ -96,6 +96,6 @@ class MailConfigService
             // Fallback
         }
 
-        return config('mail.from.address', 'admin@laborwasserdemexico.com');
+        return config('mail.from.address', 'admin@example.com');
     }
 }

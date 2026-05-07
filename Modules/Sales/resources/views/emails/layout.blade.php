@@ -226,7 +226,7 @@
                     <!-- Header -->
                     <tr>
                         <td class="email-header">
-                            <h1>{{ config('app.name', 'LWM Sistema') }}</h1>
+                            <h1>{{ config('app.name', 'Demo Company') }}</h1>
                         </td>
                     </tr>
 
@@ -240,7 +240,7 @@
                     <!-- Footer -->
                     <tr>
                         <td class="email-footer">
-                            <p><strong>{{ config('app.name', 'LWM Sistema') }}</strong></p>
+                            <p><strong>{{ config('app.name', 'Demo Company') }}</strong></p>
                             <p>
                                 Si tiene alguna pregunta, contactenos en
                                 <a href="mailto:{{ config('mail.from.address') }}">{{ config('mail.from.address') }}</a>

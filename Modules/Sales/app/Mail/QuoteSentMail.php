@@ -42,7 +42,7 @@ class QuoteSentMail extends Mailable
             return $templateMail;
         }
 
-        $mail = $this->subject('Cotizacion ' . $this->quote->quote_number . ' - ' . config('app.name', 'Labor Wasser de Mexico'))
+        $mail = $this->subject('Cotizacion ' . $this->quote->quote_number . ' - ' . app(\Modules\AppConfig\Services\AppSettingResolver::class)->get('company.name', config('app.name', 'Demo Company')))
             ->view('sales::emails.quote-sent')
             ->with([
                 'quote' => $this->quote,
@@ -77,7 +77,7 @@ class QuoteSentMail extends Mailable
             'currency' => $this->quoteSummary['currency'] ?? 'MXN',
             'notes' => $this->quoteSummary['notes'] ?? '',
             'items' => $items,
-            'company_name' => config('app.name', 'Labor Wasser de Mexico'),
+            'company_name' => app(\Modules\AppConfig\Services\AppSettingResolver::class)->get('company.name', config('app.name', 'Demo Company')),
         ];
     }
 

@@ -69,7 +69,7 @@ class OrderStatusUpdateMail extends Mailable
             'previous_status' => $this->getStatusLabel($this->previousStatus),
             'new_status' => $this->getStatusLabel($this->newStatus),
             'notes' => $this->notes ?? '',
-            'company_name' => config('app.name', 'Labor Wasser de Mexico'),
+            'company_name' => app(\Modules\AppConfig\Services\AppSettingResolver::class)->get('company.name', config('app.name', 'Demo Company')),
         ];
     }
 

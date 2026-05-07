@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 class VerifyProductFiles extends Command
 {
-    protected $signature = 'lwm:verify-files
+    protected $signature = 'system:verify-files
                             {--fix : Generate report of missing files}
                             {--images-path=products : Subdirectory for images}
                             {--datasheets-path=datasheets : Subdirectory for datasheets}';

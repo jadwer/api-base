@@ -68,7 +68,7 @@ class OrderReturnRequestMail extends Mailable
             'customer_name' => $this->order->customer?->name ?? 'Cliente',
             'customer_email' => $this->order->customer?->email ?? '',
             'return_reason' => $this->returnData['reason'] ?? '',
-            'company_name' => config('app.name', 'Labor Wasser de Mexico'),
+            'company_name' => app(\Modules\AppConfig\Services\AppSettingResolver::class)->get('company.name', config('app.name', 'Demo Company')),
         ];
     }
 }

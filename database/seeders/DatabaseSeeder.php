@@ -51,6 +51,10 @@ class DatabaseSeeder extends Seeder
 
             // Phase 3: Users (after all permissions exist and are assigned to roles)
             \Modules\User\Database\Seeders\UserDatabaseSeeder::class,
+
+            // Phase 4: AppSettings (placeholder values; tenants override via firstOrCreate
+            // in their own seeder under clients/<name>/api/Database/Seeders/).
+            \Modules\AppConfig\Database\Seeders\AppSettingSeeder::class,
         ]);
     }
 }

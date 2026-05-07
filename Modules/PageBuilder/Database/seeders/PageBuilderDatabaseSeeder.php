@@ -15,7 +15,9 @@ class PageBuilderDatabaseSeeder extends Seeder
         $this->call([
             PagePermissionSeeder::class,
             PageAssignPermissionsSeeder::class,
-            StaticPageSeeder::class,
+            // DemoPagesSeeder is opt-in. Run manually for local QA:
+            //   php artisan db:seed --class=Modules\\PageBuilder\\Database\\Seeders\\DemoPagesSeeder
+            // Tenants ship their own pages seeder (e.g. AcmePagesSeeder).
         ]);
         Log::info('PageBuilderDatabaseSeeder executed successfully.');
     }
