@@ -1,5 +1,13 @@
 <?php
 
+// Scribe is dev-only (require-dev). When deploying with `composer install
+// --no-dev` the Knuckles\Scribe\* classes are absent. Returning an empty
+// array early avoids fatal errors during config:cache / package:discover in
+// production, while keeping the full config available in development.
+if (! class_exists(\Knuckles\Scribe\Config\Defaults::class)) {
+    return [];
+}
+
 use Knuckles\Scribe\Extracting\Strategies;
 use Knuckles\Scribe\Config\Defaults;
 use function Knuckles\Scribe\Config\removeStrategies;

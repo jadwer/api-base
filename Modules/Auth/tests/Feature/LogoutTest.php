@@ -32,7 +32,11 @@ class LogoutTest extends TestCase
 
         // Verificar que la respuesta es un error 401 (no autorizado)
         $response->assertStatus(401)
-            ->assertJsonFragment(['message' => 'Unauthenticated.']);
+            ->assertJsonFragment([
+                'status' => '401',
+                'title'  => 'Unauthenticated',
+                'detail' => 'Unauthenticated.',
+            ]);
     }
 
 public function test_user_tokens_are_revoked_after_logout(): void
@@ -70,6 +74,10 @@ public function test_logout_with_invalid_token(): void
 
         // Verificar que la respuesta es un error 401
         $response->assertStatus(401)
-            ->assertJsonFragment(['message' => 'Unauthenticated.']);
+            ->assertJsonFragment([
+                'status' => '401',
+                'title'  => 'Unauthenticated',
+                'detail' => 'Unauthenticated.',
+            ]);
     }
 }
