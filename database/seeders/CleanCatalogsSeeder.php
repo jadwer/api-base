@@ -38,11 +38,19 @@ class CleanCatalogsSeeder extends Seeder
         $this->seedTestCategoryAndBrand();
         $this->seedTestProducts();
 
-        // App settings (company, branding, auth)
-        $this->call(\Modules\AppConfig\Database\Seeders\AppSettingSeeder::class);
-
-        // Demo static pages are opt-in. Tenants ship their own pages seeder.
-        // To populate placeholder pages locally, run:
+        // AppSettings (company.name, branding.*, etc.) are NOT seeded here
+        // anymore. Demo values are opt-in via DemoAppSettingsSeeder; tenants
+        // ship their own production seeder that creates these rows fresh.
+        // This avoids the deuda B8 problem where Demo Company values were
+        // created first and then never overwritten by the tenant seeder
+        // (which uses firstOrCreate).
+        //
+        // For dev/local: run `php artisan db:seed` (DatabaseSeeder), which
+        // still wires AppSettingSeeder. To populate demo values explicitly:
+        //   php artisan db:seed --class=Database\\Seeders\\DemoAppSettingsSeeder
+        //
+        // Demo static pages are also opt-in. Tenants ship their own pages
+        // seeder. To populate placeholder pages locally, run:
         //   php artisan db:seed --class=Modules\\PageBuilder\\Database\\Seeders\\DemoPagesSeeder
 
         $this->command->info('  - Essential catalogs created');
