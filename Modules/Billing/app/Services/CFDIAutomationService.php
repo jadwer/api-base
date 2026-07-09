@@ -36,7 +36,7 @@ class CFDIAutomationService
             // Determine serie and folio atomically
             $serie = $settings->invoice_series ?? 'F';
             $settings = CompanySetting::where('id', $settings->id)->lockForUpdate()->first();
-            $folio = $settings->next_folio_invoice ?? 1;
+            $folio = $settings->next_invoice_folio ?? 1;
 
             // Create CFDI Invoice
             $cfdi = CFDIInvoice::create([
@@ -129,7 +129,7 @@ class CFDIAutomationService
             }
 
             // Increment folio for next invoice
-            $settings->increment('next_folio_invoice');
+            $settings->increment('next_invoice_folio');
 
             Log::info('CFDI auto-generated from AR Invoice', [
                 'cfdi_id' => $cfdi->id,
