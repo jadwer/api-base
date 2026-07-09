@@ -286,6 +286,69 @@ class PublicProductIndexTest extends TestCase
         $this->assertLessThanOrEqual(3, count($products), 'Should return at most 3 products when page size is 3');
     }
 
+    public function test_guest_can_filter_public_products_by_price_range(): void
+    {
+        $unit = Unit::factory()->create();
+        $category = Category::factory()->create();
+        $brand = Brand::factory()->create();
+
+        $baseAttributes = [
+            'is_active' => true,
+            'unit_id' => $unit->id,
+            'category_id' => $category->id,
+            'brand_id' => $brand->id,
+        ];
+
+        Product::factory()->create(array_merge($baseAttributes, ['name' => 'Cheap Product', 'price' => 50.0]));
+        Product::factory()->create(array_merge($baseAttributes, ['name' => 'Mid Product', 'price' => 150.0]));
+        Product::factory()->create(array_merge($baseAttributes, ['name' => 'Boundary Product', 'price' => 200.0]));
+        Product::factory()->create(array_merge($baseAttributes, ['name' => 'Expensive Product', 'price' => 500.0]));
+
+        // Se combina con brand_id para aislar los productos de este test del catalogo seeded
+        $response = $this->jsonApi()->get("/api/public/v1/public-products?filter[price_min]=100&filter[price_max]=200&filter[brand_id]={$brand->id}");
+
+        $response->assertOk();
+        $products = $response->json('data');
+
+        $this->assertCount(2, $products, 'Should find only the 2 products within the 100-200 price range');
+
+        $names = array_column(array_column($products, 'attributes'), 'name');
+        sort($names);
+        $this->assertEquals(['Boundary Product', 'Mid Product'], $names);
+
+        foreach ($products as $product) {
+            $price = (float) $product['attributes']['price'];
+            $this->assertGreaterThanOrEqual(100, $price);
+            $this->assertLessThanOrEqual(200, $price);
+        }
+    }
+
+    public function test_guest_can_filter_public_products_by_price_min_only(): void
+    {
+        $unit = Unit::factory()->create();
+        $category = Category::factory()->create();
+        $brand = Brand::factory()->create();
+
+        $baseAttributes = [
+            'is_active' => true,
+            'unit_id' => $unit->id,
+            'category_id' => $category->id,
+            'brand_id' => $brand->id,
+        ];
+
+        Product::factory()->create(array_merge($baseAttributes, ['name' => 'Cheap Product', 'price' => 50.0]));
+        Product::factory()->create(array_merge($baseAttributes, ['name' => 'Expensive Product', 'price' => 500.0]));
+
+        // Se combina con brand_id para aislar los productos de este test del catalogo seeded
+        $response = $this->jsonApi()->get("/api/public/v1/public-products?filter[price_min]=100&filter[brand_id]={$brand->id}");
+
+        $response->assertOk();
+        $products = $response->json('data');
+
+        $this->assertCount(1, $products);
+        $this->assertEquals('Expensive Product', $products[0]['attributes']['name']);
+    }
+
     public function test_guest_can_combine_search_and_filters_in_public_catalog(): void
     {
         $this->artisan('db:seed', ['--class' => 'Modules\\Product\\Database\\Seeders\\ProductDatabaseSeeder']);

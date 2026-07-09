@@ -46,9 +46,15 @@ class SalesOrderController extends Controller
             ->sum('sales_order_items.total');
 
         // Sales by status
-        $salesByStatus = SalesOrder::where('created_at', '>=', $startDate)
-            ->select('status', DB::raw('count(*) as count'), DB::raw('sum((select sum(total) from sales_order_items where sales_order_id = sales_orders.id)) as revenue'))
-            ->groupBy('status')
+        $salesByStatus = DB::table('sales_orders')
+            ->leftJoin('sales_order_items', 'sales_orders.id', '=', 'sales_order_items.sales_order_id')
+            ->where('sales_orders.created_at', '>=', $startDate)
+            ->select(
+                'sales_orders.status',
+                DB::raw('count(distinct sales_orders.id) as count'),
+                DB::raw('coalesce(sum(sales_order_items.total), 0) as revenue')
+            )
+            ->groupBy('sales_orders.status')
             ->get();
 
         // Top customers by revenue

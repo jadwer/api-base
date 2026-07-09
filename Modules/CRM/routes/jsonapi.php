@@ -42,10 +42,10 @@ JsonApiRoute::server('v1')
         $server->resource('pipeline-stages', \Modules\CRM\Http\Controllers\Api\V1\PipelineStageController::class);
     });
 
-// Custom CRM endpoints (will be added in Phase 4)
+// Custom CRM endpoints
 Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
     // Lead operations
-    // Route::post('leads/{lead}/convert', [\Modules\CRM\Http\Controllers\Api\V1\LeadController::class, 'convert']);
+    Route::post('leads/{lead}/convert', [\Modules\CRM\Http\Controllers\Api\V1\LeadController::class, 'convert'])->name('leads.convert');
     // Route::post('leads/{lead}/qualify', [\Modules\CRM\Http\Controllers\Api\V1\LeadController::class, 'qualify']);
 
     // Opportunity operations
