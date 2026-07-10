@@ -1,0 +1,11 @@
+{
+    "name": "Commissions",
+    "alias": "commissions",
+    "description": "Sales commissions per salesperson over collected AR invoices",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Commissions\\Providers\\CommissionsServiceProvider"
+    ],
+    "files": []
+}

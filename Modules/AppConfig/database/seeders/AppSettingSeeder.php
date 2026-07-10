@@ -68,6 +68,12 @@ class AppSettingSeeder extends Seeder
             ['key' => 'currency.exchange_rate_source', 'value' => 'banxico', 'type' => 'string', 'group' => 'currency', 'label' => 'Fuente de tipo de cambio', 'description' => 'Proveedor de tipos de cambio: banxico o manual'],
             ['key' => 'currency.auto_update_rates', 'value' => 'true', 'type' => 'boolean', 'group' => 'currency', 'label' => 'Actualizar tipos de cambio automaticamente', 'description' => 'Si esta activo, los tipos de cambio se actualizan diariamente via API de Banxico'],
             ['key' => 'currency.banxico_api_token', 'value' => '', 'type' => 'string', 'group' => 'currency', 'label' => 'Token API Banxico', 'description' => 'Token de acceso para la API SIE de Banxico (obtener en banxico.org.mx)'],
+
+            // Commissions (WS5)
+            ['key' => 'commissions.enabled', 'value' => 'false', 'type' => 'boolean', 'group' => 'commissions', 'label' => 'Comisiones habilitadas', 'description' => 'Feature flag por tenant: si esta apagado, el sistema de comisiones no genera ni actualiza filas'],
+            ['key' => 'commissions.default_pct', 'value' => '5.0', 'type' => 'string', 'group' => 'commissions', 'label' => 'Porcentaje de comision default', 'description' => 'Porcentaje aplicado cuando ni el contacto ni el vendedor definen uno propio'],
+            ['key' => 'commissions.basis', 'value' => 'collected', 'type' => 'string', 'group' => 'commissions', 'label' => 'Base de calculo', 'description' => 'v1 solo soporta collected (comision sobre monto cobrado); invoiced queda reservado para v2'],
+            ['key' => 'commissions.payout_period', 'value' => 'monthly', 'type' => 'string', 'group' => 'commissions', 'label' => 'Periodo de corte', 'description' => 'Informativo para el reporte de corte de comisiones'],
         ];
 
         foreach ($settings as $setting) {

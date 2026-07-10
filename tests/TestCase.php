@@ -40,6 +40,7 @@ abstract class TestCase extends BaseTestCase
         'CRM',
         'Reports',
         'Audit',
+        'Commissions',
     ];
 
     /**

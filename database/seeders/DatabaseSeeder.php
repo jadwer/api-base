@@ -48,6 +48,7 @@ class DatabaseSeeder extends Seeder
             \Modules\CRM\Database\Seeders\CRMDatabaseSeeder::class,
             \Modules\Reports\Database\Seeders\ReportsDatabaseSeeder::class,
             \Modules\SystemHealth\Database\Seeders\SystemHealthDatabaseSeeder::class,
+            \Modules\Commissions\Database\Seeders\CommissionsDatabaseSeeder::class,
 
             // Phase 3: Users (after all permissions exist and are assigned to roles)
             \Modules\User\Database\Seeders\UserDatabaseSeeder::class,

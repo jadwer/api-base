@@ -18,5 +18,6 @@
     "CRM": true,
     "SystemHealth": true,
     "AppConfig": true,
-    "MailerManager": true
+    "MailerManager": true,
+    "Commissions": true
 }

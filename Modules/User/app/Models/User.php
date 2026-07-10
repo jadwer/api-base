@@ -52,6 +52,7 @@ class User extends Authenticatable
         'email',
         'password',
         'status', // Campo del módulo User
+        'commission_pct', // WS5 Commissions: % default del vendedor
     ];
 
     protected $hidden = [
@@ -66,6 +67,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'commission_pct' => 'float',
     ];
 
     /**

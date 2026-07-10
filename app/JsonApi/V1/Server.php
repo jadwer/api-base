@@ -232,6 +232,9 @@ class Server extends BaseServer
             \Modules\MailerManager\JsonApi\V1\EmailTemplates\EmailTemplateSchema::class,
             \Modules\MailerManager\JsonApi\V1\SystemEmails\SystemEmailSchema::class,
 
+            // Commissions Module (WS5)
+            \Modules\Commissions\JsonApi\V1\Commissions\CommissionSchema::class,
+
         ];
 
         return $schemas;
@@ -365,6 +368,9 @@ class Server extends BaseServer
             // MailerManager Module
             'email-templates' => \Modules\MailerManager\JsonApi\V1\EmailTemplates\EmailTemplateAuthorizer::class,
             'system-emails' => \Modules\MailerManager\JsonApi\V1\SystemEmails\SystemEmailAuthorizer::class,
+
+            // Commissions Module (WS5)
+            'commissions' => \Modules\Commissions\JsonApi\V1\Commissions\CommissionAuthorizer::class,
         ];
 
         return $authorizers;

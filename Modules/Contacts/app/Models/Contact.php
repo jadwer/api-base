@@ -30,7 +30,11 @@ class Contact extends Model
     protected $table = 'contacts';
     
     protected $fillable = [
-        'contact_type', 'name', 'legal_name', 'tax_id', 'email', 'phone', 'website', 'status', 'is_customer', 'is_supplier', 'credit_limit', 'credit_status', 'credit_hold_at', 'credit_hold_reason', 'minimum_payment_score', 'current_credit', 'classification', 'payment_terms', 'notes', 'metadata'
+        'contact_type', 'name', 'legal_name', 'tax_id', 'email', 'phone', 'website', 'status', 'is_customer', 'is_supplier', 'credit_limit', 'credit_status', 'credit_hold_at', 'credit_hold_reason', 'minimum_payment_score', 'current_credit', 'classification', 'payment_terms', 'notes', 'metadata',
+        // WS5 Commissions
+        'default_salesperson_id', 'collections_agent_id', 'commission_pct_override',
+        // WS7.1 Bind fields
+        'regimen_fiscal', 'uso_cfdi', 'credit_months', 'bank_account_number', 'referral_source', 'cuenta_contable', 'discount_pct',
     ];
 
     protected $casts = [
@@ -40,7 +44,12 @@ class Contact extends Model
         'minimum_payment_score' => 'float',
         'current_credit' => 'float',
         'credit_hold_at' => 'datetime',
-        'metadata' => 'array'
+        'metadata' => 'array',
+        'default_salesperson_id' => 'integer',
+        'collections_agent_id' => 'integer',
+        'commission_pct_override' => 'float',
+        'credit_months' => 'integer',
+        'discount_pct' => 'float',
     ];
 
     protected $attributes = [
@@ -250,6 +259,17 @@ class Contact extends Model
     public function contactPeople()
     {
         return $this->hasMany(ContactPerson::class);
+    }
+
+    // WS5 Commissions relationships
+    public function defaultSalesperson()
+    {
+        return $this->belongsTo(\Modules\User\Models\User::class, 'default_salesperson_id');
+    }
+
+    public function collectionsAgent()
+    {
+        return $this->belongsTo(\Modules\User\Models\User::class, 'collections_agent_id');
     }
 
     // Cross-module relationships

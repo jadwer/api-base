@@ -2,6 +2,8 @@
 
 namespace Modules\Finance\Services;
 
+use Modules\Finance\Events\ARInvoiceFullyPaid;
+use Modules\Finance\Events\ARInvoicePaymentReversed;
 use Modules\Finance\Models\Payment;
 use Modules\Finance\Models\PaymentApplication;
 use Modules\Finance\Models\ARInvoice;
@@ -59,6 +61,7 @@ class PaymentApplicationService
             // Actualizar status si está completamente pagada
             if ($this->arInvoiceService->isFullyPaid($invoice)) {
                 $invoice->update(['status' => 'paid']);
+                ARInvoiceFullyPaid::dispatch($invoice);
             } else {
                 $invoice->update(['status' => 'partial']);
             }
@@ -108,6 +111,8 @@ class PaymentApplicationService
             $invoice = $application->aRInvoice;
             $amount = $application->amount;
 
+            $wasPaid = $invoice->status === 'paid';
+
             // 1. Revertir invoice paid_amount
             $invoice->decrement('paid_amount', $amount);
 
@@ -116,6 +121,11 @@ class PaymentApplicationService
                 $invoice->update(['status' => 'posted']);
             } else {
                 $invoice->update(['status' => 'partial']);
+            }
+
+            // La invoice dejo de estar totalmente pagada
+            if ($wasPaid && $invoice->status !== 'paid') {
+                ARInvoicePaymentReversed::dispatch($invoice);
             }
 
             // 2. Revertir payment applied_amount

@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/commissions",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Commissions\\": "app/",
+            "Modules\\Commissions\\Database\\Factories\\": "Database/factories/",
+            "Modules\\Commissions\\Database\\Seeders\\": "Database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Commissions\\Tests\\": "tests/"
+        }
+    }
+}

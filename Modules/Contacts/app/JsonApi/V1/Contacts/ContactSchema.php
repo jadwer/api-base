@@ -42,7 +42,22 @@ class ContactSchema extends Schema
             Number::make('paymentTerms', 'payment_terms')->sortable(),
             Str::make('notes'),
             ArrayHash::make('metadata'),
-            
+
+            // WS5 Commissions
+            Number::make('defaultSalespersonId', 'default_salesperson_id'),
+            Number::make('collectionsAgentId', 'collections_agent_id'),
+            Number::make('commissionPctOverride', 'commission_pct_override'),
+
+            // WS7.1 Bind fields
+            Str::make('regimenFiscal', 'regimen_fiscal'),
+            Str::make('usoCfdi', 'uso_cfdi'),
+            Number::make('creditMonths', 'credit_months'),
+            Str::make('bankAccountNumber', 'bank_account_number'),
+            Str::make('referralSource', 'referral_source'),
+            Str::make('cuentaContable', 'cuenta_contable'),
+            Number::make('discountPct', 'discount_pct'),
+
+
             // Timestamps
             DateTime::make('createdAt')->sortable()->readOnly(),
             DateTime::make('updatedAt')->sortable()->readOnly(),
