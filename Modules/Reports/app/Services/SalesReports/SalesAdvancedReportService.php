@@ -417,8 +417,11 @@ class SalesAdvancedReportService
 
     /**
      * Calculate order cost from items
+     *
+     * Public so other report services (e.g. SalesHistoryReportService)
+     * reuse the exact same cost resolution instead of duplicating it.
      */
-    private function calculateOrderCost(SalesOrder $order): float
+    public function calculateOrderCost(SalesOrder $order): float
     {
         $cost = 0;
         foreach ($order->items as $item) {

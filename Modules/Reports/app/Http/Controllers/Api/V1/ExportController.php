@@ -14,6 +14,7 @@ use Modules\Reports\Services\FinancialStatements\TrialBalanceService;
 use Modules\Reports\Services\ManagementReports\AgingReportService;
 use Modules\Reports\Services\ManagementReports\SalesReportService;
 use Modules\Reports\Services\SalesReports\SalesAdvancedReportService;
+use Modules\Reports\Services\SalesReports\SalesHistoryReportService;
 use Carbon\Carbon;
 
 class ExportController extends Controller
@@ -359,6 +360,45 @@ class ExportController extends Controller
         $data = $service->generateProfitabilityReport($startDate, $endDate, $categoryId);
 
         return $this->handleExport('sales-profitability', $data, $request->input('format'));
+    }
+
+    /**
+     * Export Sales History Report (Historico de Ventas v1)
+     *
+     * GET /api/v1/reports/sales-history/export?format=csv&start_date=2026-07-01&end_date=2026-07-09
+     *
+     * Accepts the same filters as GET /api/v1/reports/sales-history
+     * (contact_id, assigned_to, product_id, category_id, brand_id, status CSV,
+     * currency, iva, order_number, group_by). Exports the FULL filtered set,
+     * without pagination.
+     *
+     * @param Request $request
+     * @param SalesHistoryReportService $service
+     * @return Response
+     */
+    public function salesHistory(Request $request, SalesHistoryReportService $service): Response
+    {
+        if ($error = $this->authorize($request, 'reports.sales-history.index')) {
+            return $error;
+        }
+
+        $request->validate(array_merge(
+            SalesHistoryReportController::filterRules(),
+            ['format' => 'required|in:csv,pdf,excel']
+        ));
+
+        $statuses = SalesHistoryReportController::parseStatuses($request);
+
+        [$startDate, $endDate] = SalesHistoryReportController::resolvePeriod($request);
+
+        $data = $service->generate(
+            $startDate,
+            $endDate,
+            SalesHistoryReportController::buildFilters($request, $statuses),
+            $request->input('group_by', 'none')
+        );
+
+        return $this->handleExport('sales-history', $data, $request->input('format'));
     }
 
     /**

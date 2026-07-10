@@ -126,8 +126,87 @@ class ExportService
             'trial-balance' => $this->trialBalanceToRows($data),
             'aging-ar', 'aging-ap' => $this->agingReportToRows($data),
             'sales-by-customer' => $this->salesByCustomerToRows($data),
+            'sales-history' => $this->salesHistoryToRows($data),
             default => $this->genericDataToRows($data),
         };
+    }
+
+    /**
+     * Convert sales history report data to CSV rows
+     *
+     * Columns follow the Bind ERP "Historico de Ventas" layout:
+     * Folio, Fecha, Cliente, Vendedor, Costo, Utilidad, Subtotal,
+     * Descuento, IVA, Total, Estatus (plus a totals row).
+     *
+     * @param array $data
+     * @return array
+     */
+    private function salesHistoryToRows(array $data): array
+    {
+        $rows = [];
+
+        $rows[] = ['Historico de Ventas'];
+        $rows[] = ['Periodo: ' . ($data['period']['start_date'] ?? '') . ' a ' . ($data['period']['end_date'] ?? '')];
+        $rows[] = ['Moneda: ' . ($data['currency'] ?? 'MXN')];
+        $rows[] = [];
+
+        $rows[] = [
+            'Folio', 'Fecha', 'Cliente', 'Vendedor', 'Costo', 'Utilidad',
+            'Subtotal', 'Descuento', 'IVA', 'Total', 'Estatus',
+        ];
+
+        foreach ($data['data'] ?? [] as $row) {
+            $rows[] = [
+                $row['order_number'] ?? '',
+                $row['date'] ?? '',
+                $row['customer_name'] ?? '',
+                $row['salesperson_name'] ?? '',
+                $row['cost'] ?? 0,
+                $row['profit'] ?? 0,
+                $row['subtotal'] ?? 0,
+                $row['discount'] ?? 0,
+                $row['iva'] ?? 0,
+                $row['total'] ?? 0,
+                $row['status'] ?? '',
+            ];
+        }
+
+        $totals = $data['totals'] ?? [];
+        $rows[] = [];
+        $rows[] = [
+            'TOTALES',
+            '',
+            'Ordenes: ' . ($totals['count'] ?? 0),
+            '',
+            $totals['cost'] ?? 0,
+            $totals['profit'] ?? 0,
+            $totals['subtotal'] ?? 0,
+            $totals['discount'] ?? 0,
+            $totals['iva'] ?? 0,
+            $totals['total'] ?? 0,
+            '',
+        ];
+
+        if (!empty($data['grouped'])) {
+            $rows[] = [];
+            $rows[] = ['Agrupado por: ' . ($data['group_by'] ?? '')];
+            $rows[] = ['Grupo', 'Costo', 'Utilidad', 'Subtotal', 'Descuento', 'IVA', 'Total', 'Ordenes'];
+
+            foreach ($data['grouped'] as $group) {
+                $rows[] = [
+                    $group['group_label'] ?? '',
+                    $group['cost'] ?? 0,
+                    $group['profit'] ?? 0,
+                    $group['subtotal'] ?? 0,
+                    $group['discount'] ?? 0,
+                    $group['iva'] ?? 0,
+                    $group['total'] ?? 0,
+                    $group['count'] ?? 0,
+                ];
+            }
+        }
+
+        return $rows;
     }
 
     /**

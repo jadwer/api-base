@@ -83,6 +83,13 @@ class PermissionsSeeder extends Seeder
 
         $this->bulkCreateAndAssignPermissions($advancedReportPermissions, ['god', 'admin']);
 
+        // Sales history report permissions (admin only - exposes cost/profit per order)
+        $salesHistoryPermissions = [
+            'reports.sales-history.index',
+        ];
+
+        $this->bulkCreateAndAssignPermissions($salesHistoryPermissions, ['god', 'admin']);
+
         // Analytics permissions (admin only - exposes KPIs and financial metrics)
         $analyticsPermissions = [
             'reports.analytics.index',

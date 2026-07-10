@@ -10,6 +10,7 @@ use Modules\Reports\Http\Controllers\Api\V1\TrialBalanceController;
 use Modules\Reports\Http\Controllers\Api\V1\AgingReportController;
 use Modules\Reports\Http\Controllers\Api\V1\SalesReportController;
 use Modules\Reports\Http\Controllers\Api\V1\SalesAdvancedReportController;
+use Modules\Reports\Http\Controllers\Api\V1\SalesHistoryReportController;
 use Modules\Reports\Http\Controllers\Api\V1\PurchaseReportController;
 use Modules\Reports\Http\Controllers\Api\V1\AnalyticsController;
 use Modules\Reports\Http\Controllers\Api\V1\ExportController;
@@ -53,6 +54,9 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
         Route::get('sales-profitability', [SalesAdvancedReportController::class, 'profitability']);
         Route::get('sales-trend', [SalesAdvancedReportController::class, 'trend']);
 
+        // Historico de Ventas (Bind ERP parity, v1)
+        Route::get('sales-history', [SalesHistoryReportController::class, 'index']);
+
     });
 
     // Analytics
@@ -79,5 +83,8 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
         Route::get('sales-by-employee/export', [ExportController::class, 'salesByEmployee']);
         Route::get('sales-by-batch/export', [ExportController::class, 'salesByBatch']);
         Route::get('sales-profitability/export', [ExportController::class, 'salesProfitability']);
+
+        // Historico de Ventas export
+        Route::get('sales-history/export', [ExportController::class, 'salesHistory']);
     });
 });
