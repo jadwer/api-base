@@ -79,53 +79,58 @@ class CFDIAutomationService
                 'status' => 'draft',
             ]);
 
-            // Copy items from AR Invoice (if it has items relationship)
-            if ($arInvoice->relationLoaded('items') || method_exists($arInvoice, 'items')) {
-                $lineNumber = 1;
+            // Copy items into the CFDI. In the automatic flow (facturar orden,
+            // post-pago Stripe) the real items live on the sales order linked
+            // to the AR invoice, each one with its product_id.
+            $lineNumber = 1;
 
-                foreach ($arInvoice->items as $item) {
-                    $cantidad = $item->quantity ?? 1;
-                    $valorUnitario = $this->toCents($item->unit_price ?? $item->amount);
-                    $importe = (int) ($cantidad * $valorUnitario);
+            foreach ($this->resolveSourceItems($arInvoice) as $item) {
+                $cantidad = $item->quantity ?? 1;
+                $valorUnitario = $this->toCents($item->unit_price ?? $item->amount ?? 0);
+                $importe = (int) ($cantidad * $valorUnitario);
 
-                    // Calculate IVA (16%)
-                    $iva = (int) ($importe * 0.16);
+                // Calculate IVA (16%)
+                $iva = (int) ($importe * 0.16);
 
-                    CFDIItem::create([
-                        'cfdi_invoice_id' => $cfdi->id,
-                        'numero_linea' => $lineNumber++,
+                $product = $item->product;
 
-                        // SAT Catalogs
-                        'clave_prod_serv' => '01010101', // Generic product/service
-                        'clave_unidad' => 'E48', // Service unit
-                        'unidad' => 'Servicio',
+                CFDIItem::create([
+                    'cfdi_invoice_id' => $cfdi->id,
+                    'product_id' => $product?->id,
+                    'numero_linea' => $lineNumber++,
 
-                        // Item details
-                        'cantidad' => $cantidad,
-                        'descripcion' => $item->description ?? 'Servicio',
-                        'no_identificacion' => $item->product->sku ?? null,
+                    // SAT Catalogs: snapshot the keys configured on the product
+                    // when present; otherwise keep the generic defaults. The XML
+                    // generator keeps its own product-first fallback on top.
+                    'clave_prod_serv' => $product?->sat_clave_prod_serv ?: '01010101', // Generic product/service
+                    'clave_unidad' => $product?->sat_clave_unidad ?: 'E48', // Service unit
+                    'unidad' => $product?->unit?->name ?? 'Servicio',
 
-                        // Amounts
-                        'valor_unitario' => $valorUnitario,
-                        'importe' => $importe,
-                        'descuento' => 0,
+                    // Item details
+                    'cantidad' => $cantidad,
+                    'descripcion' => $item->description ?? $product?->name ?? 'Servicio',
+                    'no_identificacion' => $product?->sku,
 
-                        // Taxes
-                        'objeto_imp' => '02', // Sí objeto de impuesto
-                        'impuestos' => [
-                            'traslados' => [
-                                [
-                                    'base' => $importe,
-                                    'impuesto' => '002', // IVA
-                                    'tipo_factor' => 'Tasa',
-                                    'tasa_o_cuota' => '0.160000',
-                                    'importe' => $iva,
-                                ]
-                            ],
-                            'retenciones' => []
+                    // Amounts
+                    'valor_unitario' => $valorUnitario,
+                    'importe' => $importe,
+                    'descuento' => 0,
+
+                    // Taxes
+                    'objeto_imp' => '02', // Sí objeto de impuesto
+                    'impuestos' => [
+                        'traslados' => [
+                            [
+                                'base' => $importe,
+                                'impuesto' => '002', // IVA
+                                'tipo_factor' => 'Tasa',
+                                'tasa_o_cuota' => '0.160000',
+                                'importe' => $iva,
+                            ]
                         ],
-                    ]);
-                }
+                        'retenciones' => []
+                    ],
+                ]);
             }
 
             // Increment folio for next invoice
@@ -207,6 +212,31 @@ class CFDIAutomationService
 
             return null;
         }
+    }
+
+    /**
+     * Resolve the line items to copy into the CFDI.
+     *
+     * ARInvoice has no items relation of its own: in the automatic flow the
+     * items come from the linked sales order (with product_id, so the SAT
+     * keys configured on each product can be applied). A preloaded `items`
+     * relation on the AR invoice keeps taking precedence (legacy behavior).
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    protected function resolveSourceItems(ARInvoice $arInvoice)
+    {
+        if ($arInvoice->relationLoaded('items')) {
+            return collect($arInvoice->getRelation('items'));
+        }
+
+        $salesOrder = $arInvoice->salesOrder;
+
+        if ($salesOrder) {
+            return $salesOrder->items()->with('product.unit')->get();
+        }
+
+        return collect();
     }
 
     /**

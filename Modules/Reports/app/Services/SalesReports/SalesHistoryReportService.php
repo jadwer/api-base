@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 /**
  * Historico de Ventas (v1)
  *
- * Reporte de trabajo diario estilo Bind ERP (ver docs/audit-lwm-migration/07, seccion 3.1).
+ * Reporte de trabajo diario estilo Bind ERP (ver auditoria de migracion, doc 07, seccion 3.1).
  * Una fila por orden de venta con costo, utilidad, subtotal, descuento, IVA, total y estatus.
  *
  * v1 cubre filtros sobre campos existentes. Pagos/NC/Saldo (join AR) y filtros de

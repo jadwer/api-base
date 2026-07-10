@@ -50,20 +50,36 @@ class CampaignFactory extends Factory
 
     public function active(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'status' => 'active',
-            'start_date' => $this->faker->dateTimeBetween('-2 months', 'now'),
-            'actual_cost' => $this->faker->optional(0.6)->randomFloat(2, 1000, $attributes['budget'] ?? 50000),
-        ]);
+        return $this->state(function (array $attributes) {
+            $startDate = $this->faker->dateTimeBetween('-2 months', 'now');
+
+            return [
+                'status' => 'active',
+                'start_date' => $startDate,
+                // Regenerate end_date relative to the overridden start_date.
+                // The base definition computes end_date from its own start_date,
+                // so overriding only start_date can leave end_date earlier than
+                // start_date and any later update fails the after_or_equal rule.
+                'end_date' => $this->faker->optional(0.7)->dateTimeBetween($startDate, '+6 months'),
+                'actual_cost' => $this->faker->optional(0.6)->randomFloat(2, 1000, $attributes['budget'] ?? 50000),
+            ];
+        });
     }
 
     public function paused(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'status' => 'paused',
-            'start_date' => $this->faker->dateTimeBetween('-2 months', '-1 week'),
-            'actual_cost' => $this->faker->optional(0.8)->randomFloat(2, 1000, $attributes['budget'] ?? 50000),
-        ]);
+        return $this->state(function (array $attributes) {
+            $startDate = $this->faker->dateTimeBetween('-2 months', '-1 week');
+
+            return [
+                'status' => 'paused',
+                'start_date' => $startDate,
+                // Same invariant as active(): keep end_date consistent with the
+                // overridden start_date.
+                'end_date' => $this->faker->optional(0.7)->dateTimeBetween($startDate, '+6 months'),
+                'actual_cost' => $this->faker->optional(0.8)->randomFloat(2, 1000, $attributes['budget'] ?? 50000),
+            ];
+        });
     }
 
     public function completed(): static
