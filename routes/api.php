@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DemoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -31,4 +32,14 @@ Route::get('/', function () {
         'routes' => $routes,
         'timestamp' => now()->toIso8601String(),
     ]);
+});
+
+// Demo mode endpoints (public demo instance, marca blanca).
+// status is public; reset requires auth and is throttled to 1 request per 5 minutes.
+Route::prefix('v1/demo')->group(function () {
+    Route::get('status', [DemoController::class, 'status'])->name('demo.status');
+
+    Route::post('reset', [DemoController::class, 'reset'])
+        ->middleware(['auth:sanctum', 'throttle:1,5'])
+        ->name('demo.reset');
 });

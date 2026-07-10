@@ -16,3 +16,10 @@ Schedule::command('inventory:check-reorder-alerts')->daily();
 
 // P47: Update exchange rates from Banxico daily at 13:00 CST
 Schedule::command('currency:update-rates')->dailyAt('13:00')->timezone('America/Mexico_City');
+
+// Demo mode: weekly database reset every Monday 03:00 (server time).
+// Only registered when APP_DEMO_MODE=true; the command itself also refuses
+// to run without demo mode, as a second layer of protection.
+if (config('app.demo_mode')) {
+    Schedule::command('demo:reset --force')->weeklyOn(1, '03:00');
+}

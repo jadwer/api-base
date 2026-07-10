@@ -30,6 +30,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Demo Mode
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, this instance behaves as a public product demo: outgoing
+    | mail is forced to the "log" driver, the demo:reset command becomes
+    | available (weekly scheduled reset + on-demand endpoint), and the
+    | /api/v1/demo/* endpoints report and trigger resets. Never enable this
+    | on a real tenant: demo:reset wipes the database.
+    |
+    */
+
+    'demo_mode' => env('APP_DEMO_MODE', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Debug Mode
     |--------------------------------------------------------------------------
     |

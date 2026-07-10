@@ -30,6 +30,14 @@ class AppServiceProvider extends ServiceProvider
             MailConfigService::configureMailer();
         }
 
+        // Demo mode hard lock: force the log mail driver AFTER the database
+        // mailer config so it always wins. Even if a prospect reaches the
+        // Mailer Manager SMTP screen or the .env is misconfigured, no email
+        // ever leaves a demo instance.
+        if (config('app.demo_mode')) {
+            config(['mail.default' => 'log']);
+        }
+
         // Register cache invalidation observers for critical models
         $this->registerCacheInvalidation();
 
