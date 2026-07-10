@@ -25,12 +25,43 @@ class QuoteItemRequest extends ResourceRequest
             'unitPrice' => [$isCreating ? 'required' : 'sometimes', 'numeric', 'min:0'],
             'quotedPrice' => [$isCreating ? 'required' : 'sometimes', 'numeric', 'min:0'],
             'discountPercentage' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'discountAmount' => ['nullable', 'numeric', 'min:0'],
             'taxRate' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'productName' => ['nullable', 'string', 'max:255'],
             'productSku' => ['nullable', 'string', 'max:100'],
             'notes' => ['nullable', 'string', 'max:1000'],
             'metadata' => ['nullable', 'array'],
         ];
+    }
+
+    /**
+     * Regla de precedencia del descuento:
+     * el cliente debe enviar discountPercentage O discountAmount, nunca ambos
+     * con valor en el mismo request. Si llegan ambos (no null) se responde 422.
+     * El campo que llega es la fuente de verdad y el modelo deriva el otro
+     * en QuoteItem::calculateTotals().
+     *
+     * Se valida sobre el payload crudo (json data.attributes) porque en updates
+     * el validador de JSON:API mezcla los valores existentes del recurso y
+     * marcaria falsos positivos.
+     */
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            $attributes = $this->json('data.attributes', []);
+
+            $hasPercentage = array_key_exists('discountPercentage', $attributes)
+                && $attributes['discountPercentage'] !== null;
+            $hasAmount = array_key_exists('discountAmount', $attributes)
+                && $attributes['discountAmount'] !== null;
+
+            if ($hasPercentage && $hasAmount) {
+                $validator->errors()->add(
+                    'discountAmount',
+                    'Send either discountPercentage or discountAmount, not both.'
+                );
+            }
+        });
     }
 
     /**
@@ -55,6 +86,8 @@ class QuoteItemRequest extends ResourceRequest
             'discountPercentage.numeric' => 'Discount percentage must be a number.',
             'discountPercentage.min' => 'Discount percentage must be at least 0.',
             'discountPercentage.max' => 'Discount percentage cannot exceed 100.',
+            'discountAmount.numeric' => 'Discount amount must be a number.',
+            'discountAmount.min' => 'Discount amount must be at least 0.',
             'taxRate.numeric' => 'Tax rate must be a number.',
             'taxRate.min' => 'Tax rate must be at least 0.',
             'taxRate.max' => 'Tax rate cannot exceed 100.',

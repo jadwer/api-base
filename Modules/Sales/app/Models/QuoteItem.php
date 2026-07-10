@@ -92,19 +92,38 @@ class QuoteItem extends Model
 
     /**
      * Calculate totals based on quantity, price, discount, and tax
+     *
+     * Regla de precedencia del descuento: si en este save solo cambio
+     * discount_amount (dirty) y NO discount_percentage, el monto es la fuente
+     * de verdad: se capea al subtotal y se deriva el porcentaje. En cualquier
+     * otro caso (solo porcentaje, ambos, o ninguno) el porcentaje manda y el
+     * monto se deriva de el, como siempre. Invariante: monto y porcentaje
+     * quedan consistentes tras guardar.
      */
     public function calculateTotals(): void
     {
         $quantity = $this->quantity ?? 1;
         $quotedPrice = $this->quoted_price ?? $this->unit_price ?? 0;
-        $discountPercentage = $this->discount_percentage ?? 0;
         $taxRate = $this->tax_rate ?? 16; // 16% IVA México
 
         // Calculate subtotal before discount
         $subtotal = $quantity * $quotedPrice;
 
-        // Calculate discount amount
-        $this->discount_amount = $subtotal * ($discountPercentage / 100);
+        $amountIsSource = $this->isDirty('discount_amount')
+            && ! $this->isDirty('discount_percentage');
+
+        if ($amountIsSource) {
+            // Explicit amount: clamp to [0, subtotal] and derive the percentage
+            $amount = min(max((float) ($this->discount_amount ?? 0), 0.0), $subtotal);
+            $this->discount_amount = $amount;
+            $this->discount_percentage = $subtotal > 0
+                ? round(($amount / $subtotal) * 100, 2)
+                : 0;
+        } else {
+            // Percentage drives the amount (default behavior)
+            $discountPercentage = $this->discount_percentage ?? 0;
+            $this->discount_amount = $subtotal * ($discountPercentage / 100);
+        }
 
         // Subtotal after discount
         $subtotalAfterDiscount = $subtotal - $this->discount_amount;

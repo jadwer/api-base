@@ -47,7 +47,7 @@ class QuoteItemSchema extends Schema
             Number::make('unitPrice', 'unit_price'), // Original price
             Number::make('quotedPrice', 'quoted_price'), // Quoted price (editable)
             Number::make('discountPercentage', 'discount_percentage'),
-            Number::make('discountAmount', 'discount_amount')->readOnly(),
+            Number::make('discountAmount', 'discount_amount'),
             Number::make('taxRate', 'tax_rate'),
             Number::make('taxAmount', 'tax_amount')->readOnly(),
             Number::make('total')->readOnly(),
