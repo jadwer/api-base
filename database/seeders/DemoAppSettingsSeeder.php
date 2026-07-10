@@ -9,7 +9,7 @@ use Illuminate\Database\Seeder;
  *
  * Why this exists: production tenants populate their own AppSettings
  * (company.name, branding.*, etc.) via their own tenant seeder (e.g.
- * AlphaLabSeeder, LaborwasserSeeder) using firstOrCreate. If CleanDatabaseSeeder
+ * AlphaLabSeeder or your tenant seeder) using firstOrCreate. If CleanDatabaseSeeder
  * creates Demo Company rows first, the tenant seeder finds them and skips
  * the insert, leaving production with "Demo Company" branding (deuda B8).
  *
