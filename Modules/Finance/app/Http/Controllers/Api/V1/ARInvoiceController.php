@@ -5,8 +5,11 @@ namespace Modules\Finance\Http\Controllers\Api\V1;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use LaravelJsonApi\Laravel\Http\Controllers\Actions;
 use Modules\Finance\Models\ARInvoice;
+use Modules\Finance\Services\ARInvoicePaymentRegistrationService;
 use Modules\Finance\Services\LatePenaltyService;
 
 class ARInvoiceController extends Controller
@@ -27,6 +30,69 @@ class ARInvoiceController extends Controller
     public function __construct(LatePenaltyService $latePenaltyService)
     {
         $this->latePenaltyService = $latePenaltyService;
+    }
+
+    /**
+     * Fase B CxC: Register a payment against an AR invoice.
+     *
+     * POST /api/v1/ar-invoices/{arInvoice}/register-payment
+     *
+     * Body: payment_date (date), amount (numeric > 0), forma_pago (clave SAT),
+     * reference (nullable), comments (nullable), bank_account_id (nullable).
+     *
+     * @param Request $request
+     * @param ARInvoice $arInvoice
+     * @param ARInvoicePaymentRegistrationService $registrationService
+     * @return JsonResponse
+     */
+    public function registerPayment(
+        Request $request,
+        ARInvoice $arInvoice,
+        ARInvoicePaymentRegistrationService $registrationService
+    ): JsonResponse {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        if (!$user->can('ar-invoices.update') && !$user->hasAnyRole(['god', 'admin'])) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
+        $validated = $request->validate([
+            'payment_date' => ['required', 'date'],
+            'amount' => ['required', 'numeric', 'gt:0'],
+            'forma_pago' => ['required', 'string', Rule::exists('sat_forma_pago', 'clave')],
+            'reference' => ['nullable', 'string', 'max:255'],
+            'comments' => ['nullable', 'string', 'max:2000'],
+            'bank_account_id' => ['nullable', 'integer', Rule::exists('bank_accounts', 'id')],
+        ]);
+
+        try {
+            $payment = $registrationService->register($arInvoice, $validated);
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            // Fallas de infraestructura contable (periodo fiscal cerrado,
+            // cuentas GL faltantes): la transaccion ya hizo rollback.
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
+
+        $arInvoice->refresh();
+
+        return response()->json([
+            'message' => 'Pago registrado exitosamente',
+            'payment' => [
+                'id' => $payment->id,
+                'payment_number' => $payment->payment_number,
+            ],
+            'invoice' => [
+                'id' => $arInvoice->id,
+                'total_amount' => round($arInvoice->total_amount, 2),
+                'paid_amount' => round($arInvoice->paid_amount, 2),
+                'balance' => round($arInvoice->total_amount - $arInvoice->paid_amount, 2),
+                'status' => $arInvoice->status,
+            ],
+        ]);
     }
 
     /**

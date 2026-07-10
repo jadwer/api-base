@@ -49,4 +49,8 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
         ->name('ar-invoices.penalty-summary');
     Route::get('ar-invoices/aging-report', [ARInvoiceController::class, 'agingReport'])
         ->name('ar-invoices.aging-report');
+
+    // Fase B CxC: registro de pago directo sobre factura AR
+    Route::post('ar-invoices/{arInvoice}/register-payment', [ARInvoiceController::class, 'registerPayment'])
+        ->name('ar-invoices.register-payment');
 });
