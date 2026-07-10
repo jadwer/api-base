@@ -102,7 +102,7 @@ class QuoteController extends Controller
                     'unit_price' => $cartItem->unit_price,
                     'quoted_price' => $cartItem->unit_price, // Initially same as unit price
                     'discount_percentage' => 0,
-                    'tax_rate' => ($product?->iva ?? false) ? 16 : 0,
+                    'tax_rate' => $product?->effective_tax_rate ?? 0,
                     'product_name' => $product?->name,
                     'product_sku' => $product?->sku,
                     'notes' => $notes,
@@ -727,7 +727,7 @@ class QuoteController extends Controller
                     'unit_price' => $productPrice,
                     'quoted_price' => $productPrice,
                     'discount_percentage' => 0,
-                    'tax_rate' => $product->iva ? 16 : 0,
+                    'tax_rate' => $product->effective_tax_rate ?? 0,
                     'product_name' => $product->name,
                     'product_sku' => $product->sku,
                     'notes' => $eta,

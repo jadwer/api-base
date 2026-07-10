@@ -41,6 +41,7 @@ abstract class TestCase extends BaseTestCase
         'Reports',
         'Audit',
         'Commissions',
+        'SatCatalogs',
     ];
 
     /**

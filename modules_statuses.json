@@ -19,5 +19,6 @@
     "SystemHealth": true,
     "AppConfig": true,
     "MailerManager": true,
-    "Commissions": true
+    "Commissions": true,
+    "SatCatalogs": true
 }

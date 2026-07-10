@@ -39,6 +39,10 @@ class CleanDatabaseSeeder extends Seeder
         $this->command->info('Phase 3: Essential Catalogs...');
         $this->call(CleanCatalogsSeeder::class);
 
+        // Phase 4: SAT catalogs subset (full load: php artisan sat:sync-catalogs)
+        $this->command->info('Phase 4: SAT Catalogs...');
+        $this->call(\Modules\SatCatalogs\Database\Seeders\SatCatalogsSeeder::class);
+
         $this->command->info('');
         $this->command->info('========================================');
         $this->command->info('  Clean Project Ready!');

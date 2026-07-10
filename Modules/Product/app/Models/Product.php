@@ -41,6 +41,10 @@ class Product extends Model
         'cost',
         'compare_at_price',
         'iva',
+        'sat_clave_prod_serv',
+        'sat_clave_unidad',
+        'product_type',
+        'tax_rate',
         'is_on_sale',
         'sale_starts_at',
         'sale_ends_at',
@@ -67,6 +71,7 @@ class Product extends Model
         'cost' => 'float',
         'compare_at_price' => 'float',
         'iva' => 'boolean',
+        'tax_rate' => 'float',
         'is_on_sale' => 'boolean',
         'sale_starts_at' => 'datetime',
         'sale_ends_at' => 'datetime',
@@ -240,6 +245,25 @@ class Product extends Model
         }
 
         return true;
+    }
+
+    /**
+     * Effective tax rate (percentage, e.g. 16.0).
+     *
+     * WS9: tax_rate is the configurable rate; NULL falls back to the legacy
+     * iva boolean (true = 16%, false = 0%) so products created before the SAT
+     * fields keep their behavior. To represent "Exento" fiscally, use the SAT
+     * tasa catalog (sat_tasa_o_cuota) at invoicing time; at product level a
+     * null tax_rate is NOT treated as Exento to avoid silently dropping IVA
+     * on legacy flows (quotes use effective_tax_rate ?? 0).
+     */
+    public function getEffectiveTaxRateAttribute(): float
+    {
+        if ($this->tax_rate !== null) {
+            return (float) $this->tax_rate;
+        }
+
+        return $this->iva ? 16.0 : 0.0;
     }
 
     /**

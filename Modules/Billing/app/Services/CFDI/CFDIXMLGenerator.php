@@ -137,14 +137,25 @@ class CFDIXMLGenerator
         foreach ($invoice->items as $index => $item) {
             $concepto = $xml->createElement('cfdi:Concepto');
 
-            $concepto->setAttribute('ClaveProdServ', $item->clave_prod_serv ?? '01010101');
+            // WS9: prefer the SAT keys configured on the linked product; fall
+            // back to the item-level value (legacy behavior: item key or the
+            // generic defaults 01010101 / E48).
+            $product = $item->product;
+
+            $concepto->setAttribute(
+                'ClaveProdServ',
+                $product?->sat_clave_prod_serv ?: ($item->clave_prod_serv ?? '01010101')
+            );
 
             if ($item->no_identificacion) {
                 $concepto->setAttribute('NoIdentificacion', $item->no_identificacion);
             }
 
             $concepto->setAttribute('Cantidad', number_format($item->cantidad, 6, '.', ''));
-            $concepto->setAttribute('ClaveUnidad', $item->clave_unidad ?? 'E48');
+            $concepto->setAttribute(
+                'ClaveUnidad',
+                $product?->sat_clave_unidad ?: ($item->clave_unidad ?? 'E48')
+            );
 
             if ($item->unidad) {
                 $concepto->setAttribute('Unidad', $item->unidad);

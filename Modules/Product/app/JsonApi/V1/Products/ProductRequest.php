@@ -25,6 +25,12 @@ class ProductRequest extends ResourceRequest
             'price' => ['required', 'numeric', 'min:0'],
             'cost' => ['nullable', 'numeric', 'min:0'],
             'iva' => ['required', 'boolean'],
+            // WS9 SAT fields. No exists rule: the SAT catalogs can be empty
+            // on fresh installs until sat:sync-catalogs runs.
+            'satClaveProdServ' => ['nullable', 'string', 'max:10'],
+            'satClaveUnidad' => ['nullable', 'string', 'max:20'],
+            'productType' => ['nullable', 'string', Rule::in(['finished', 'raw_material', 'both'])],
+            'taxRate' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'imgPath' => ['nullable', 'string', 'max:500', 'not_regex:/\.\./'],
             'datasheetPath' => ['nullable', 'string', 'max:500', 'not_regex:/\.\./'],
             'unit' => JsonApiRule::toOne(),

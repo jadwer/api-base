@@ -49,6 +49,10 @@ class PublicProductSchema extends Schema
             DateTime::make('saleEndsAt', 'sale_ends_at'),
             Str::make('saleBadge', 'sale_badge'),
             Boolean::make('iva'),
+            Str::make('satClaveProdServ', 'sat_clave_prod_serv'),
+            Str::make('satClaveUnidad', 'sat_clave_unidad'),
+            Str::make('productType', 'product_type'),
+            Number::make('taxRate', 'tax_rate'),
             Str::make('imgPath', 'img_path'),
             Str::make('datasheetPath', 'datasheet_path'),
             Str::make('imageUrl', 'img_path')->readOnly()->extractUsing(

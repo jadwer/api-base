@@ -1,0 +1,11 @@
+{
+    "name": "SatCatalogs",
+    "alias": "satcatalogs",
+    "description": "Self-hosted SAT catalogs (ClaveProdServ, ClaveUnidad, FormaPago, TasaOCuota) for CFDI 4.0",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\SatCatalogs\\Providers\\SatCatalogsServiceProvider"
+    ],
+    "files": []
+}
