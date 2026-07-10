@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use LaravelJsonApi\Laravel\Http\Controllers\Actions;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Services\SalesOrderPDFGenerator;
+use Modules\Sales\Services\StockAvailabilityService;
 use Modules\Contacts\Models\Contact;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -224,7 +225,7 @@ class SalesOrderController extends Controller
      * Get stock availability for each item in a sales order
      * GET /api/v1/sales-orders/{salesOrder}/stock-availability
      */
-    public function stockAvailability(SalesOrder $salesOrder): JsonResponse
+    public function stockAvailability(SalesOrder $salesOrder, StockAvailabilityService $stockService): JsonResponse
     {
         $user = request()->user('sanctum');
         if (!$user) {
@@ -236,33 +237,7 @@ class SalesOrderController extends Controller
 
         $salesOrder->load('items.product');
 
-        $items = [];
-        $allSufficient = true;
-
-        foreach ($salesOrder->items as $orderItem) {
-            $availableQty = \Modules\Inventory\Models\Stock::where('product_id', $orderItem->product_id)
-                ->sum('available_quantity');
-
-            $isSufficient = $availableQty >= $orderItem->quantity;
-            if (!$isSufficient) {
-                $allSufficient = false;
-            }
-
-            $items[] = [
-                'product_id' => $orderItem->product_id,
-                'product_name' => $orderItem->product?->name ?? $orderItem->product_name ?? 'Producto',
-                'sku' => $orderItem->product?->sku ?? '',
-                'required_quantity' => (float) $orderItem->quantity,
-                'available_quantity' => (float) $availableQty,
-                'is_sufficient' => $isSufficient,
-                'deficit' => $isSufficient ? 0 : (float) ($orderItem->quantity - $availableQty),
-            ];
-        }
-
-        return response()->json([
-            'items' => $items,
-            'all_sufficient' => $allSufficient,
-        ]);
+        return response()->json($stockService->check($salesOrder->items));
     }
 
     // ==========================================================

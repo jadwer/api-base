@@ -66,6 +66,10 @@ class QuoteSchema extends Schema
             Number::make('totalAmount', 'total_amount')->sortable(),
             Str::make('currency'),
 
+            // Fase A - Venta directa vs Pedido: condiciones de pago
+            Str::make('paymentMethod', 'payment_method'),
+            Number::make('creditDays', 'credit_days'),
+
             // Text fields
             Str::make('notes'),
             Str::make('internalNotes', 'internal_notes'),

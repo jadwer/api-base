@@ -37,6 +37,9 @@ class SalesOrderRequest extends ResourceRequest
             'taxAmount' => ['nullable', 'numeric', 'min:0'],
             'totalAmount' => [$isCreating ? 'required' : 'sometimes', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string', 'max:1000'],
+            'customerPoNumber' => ['nullable', 'string', 'max:100'],
+            'paymentMethod' => ['nullable', Rule::in(['PPD', 'PUE'])],
+            'creditDays' => ['nullable', 'integer', 'min:0', 'max:365'],
             'metadata' => ['nullable', 'array'],
         ];
     }
@@ -65,6 +68,11 @@ class SalesOrderRequest extends ResourceRequest
             'taxAmount.numeric' => 'Tax amount must be a number.',
             'taxAmount.min' => 'Tax amount must be at least 0.',
             'notes.max' => 'Notes cannot exceed 1000 characters.',
+            'customerPoNumber.max' => 'Customer PO number cannot exceed 100 characters.',
+            'paymentMethod.in' => 'Payment method must be PPD or PUE.',
+            'creditDays.integer' => 'Credit days must be an integer.',
+            'creditDays.min' => 'Credit days must be at least 0.',
+            'creditDays.max' => 'Credit days cannot exceed 365.',
         ];
     }
 

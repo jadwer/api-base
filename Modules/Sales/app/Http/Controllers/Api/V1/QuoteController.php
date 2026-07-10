@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use LaravelJsonApi\Laravel\Http\Controllers\Actions;
 use Modules\Sales\Models\Quote;
 use Modules\Sales\Models\QuoteItem;
@@ -15,6 +16,7 @@ use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Models\SalesOrderItem;
 use Modules\Sales\Models\FolioSequence;
 use Modules\Sales\Services\QuotePDFGenerator;
+use Modules\Sales\Services\StockAvailabilityService;
 use Modules\Ecommerce\Models\ShoppingCart;
 use Modules\Product\Models\Product;
 use Modules\Purchase\Models\PurchaseOrder;
@@ -230,6 +232,19 @@ class QuoteController extends Controller
     /**
      * Convert quote to sales order
      * POST /api/v1/quotes/{quote}/convert
+     *
+     * Fase A - Venta directa vs Pedido:
+     * - order_type=direct_sale: presupone stock; si falta stock de algun item la
+     *   conversion NO procede (422 con detalle por item). La orden nace 'confirmed'.
+     * - order_type=order (default): pedido con proceso completo; REQUIERE
+     *   customer_po_number. El faltante de stock no bloquea: se reporta en
+     *   items_requiring_purchase. La orden nace 'pending'.
+     *
+     * Regla de defaults para payment_method / credit_days (en este orden):
+     * 1. Valor explicito en el request.
+     * 2. Valor de la cotizacion (payment_method / credit_days).
+     * 3. Si la quote no los tiene: credit_days = contact.payment_terms ?? 30,
+     *    payment_method = PPD si credit_days > 0, si no PUE.
      */
     public function convert(Request $request, Quote $quote): JsonResponse
     {
@@ -243,18 +258,53 @@ class QuoteController extends Controller
             ], 400);
         }
 
-        $request->validate([
+        $validated = $request->validate([
+            'order_type' => ['nullable', Rule::in(['direct_sale', 'order'])],
+            'customer_po_number' => ['required_if:order_type,order', 'nullable', 'string', 'max:100'],
+            'payment_method' => ['nullable', Rule::in(['PPD', 'PUE'])],
+            'credit_days' => ['nullable', 'integer', 'min:0', 'max:365'],
             'shipping_address' => 'nullable|array',
             'billing_address' => 'nullable|array',
         ]);
 
-        return DB::transaction(function () use ($request, $quote) {
+        $orderType = $validated['order_type'] ?? 'order';
+
+        // Defaults documentados arriba: request > quote > contacto/regla PPD-PUE
+        $creditDays = $validated['credit_days'] ?? $quote->credit_days;
+        if ($creditDays === null) {
+            $quote->loadMissing('contact');
+            $creditDays = $quote->contact?->payment_terms ?? 30;
+        }
+        $creditDays = (int) $creditDays;
+
+        $paymentMethod = $validated['payment_method'] ?? $quote->payment_method;
+        if ($paymentMethod === null) {
+            $paymentMethod = $creditDays > 0 ? 'PPD' : 'PUE';
+        }
+
+        // Validacion de stock diferenciada por tipo de orden
+        $quote->loadMissing('items.product');
+        $stockService = app(StockAvailabilityService::class);
+        $insufficientItems = $stockService->insufficientItems($quote->items);
+
+        if ($orderType === 'direct_sale' && count($insufficientItems) > 0) {
+            return response()->json([
+                'message' => 'Stock insuficiente para venta directa',
+                'errors' => $insufficientItems,
+            ], 422);
+        }
+
+        return DB::transaction(function () use ($request, $quote, $validated, $orderType, $paymentMethod, $creditDays, $insufficientItems) {
             // Create sales order from quote
             $order = SalesOrder::create([
                 'contact_id' => $quote->contact_id,
                 'quote_id' => $quote->id,
                 'order_number' => FolioSequence::getNextFolio('sales_order'),
-                'status' => 'pending',
+                'status' => $orderType === 'direct_sale' ? 'confirmed' : 'pending',
+                'order_type' => $orderType,
+                'customer_po_number' => $validated['customer_po_number'] ?? null,
+                'payment_method' => $paymentMethod,
+                'credit_days' => $creditDays,
                 'order_date' => now(),
                 'subtotal' => $quote->subtotal_amount,
                 'discount_total' => $quote->discount_amount,
@@ -296,7 +346,7 @@ class QuoteController extends Controller
             // Send email notification to customer
             $this->sendQuoteConvertedEmail($quote, $order);
 
-            return response()->json([
+            $response = [
                 'data' => [
                     'quote' => $this->transformQuote($quote->fresh()),
                     'salesOrder' => [
@@ -305,12 +355,23 @@ class QuoteController extends Controller
                         'attributes' => [
                             'orderNumber' => $order->order_number,
                             'status' => $order->status,
+                            'orderType' => $order->order_type,
+                            'customerPoNumber' => $order->customer_po_number,
+                            'paymentMethod' => $order->payment_method,
+                            'creditDays' => $order->credit_days,
                             'totalAmount' => $order->total_amount,
                         ]
                     ]
                 ],
                 'message' => 'Quote converted to sales order successfully'
-            ], 201);
+            ];
+
+            // Pedido: los faltantes no bloquean, pero se reportan para compras
+            if ($orderType === 'order') {
+                $response['data']['items_requiring_purchase'] = $insufficientItems;
+            }
+
+            return response()->json($response, 201);
         });
     }
 
@@ -818,6 +879,8 @@ class QuoteController extends Controller
                 'taxAmount' => $quote->tax_amount,
                 'totalAmount' => $quote->total_amount,
                 'currency' => $quote->currency,
+                'paymentMethod' => $quote->payment_method,
+                'creditDays' => $quote->credit_days,
                 'notes' => $quote->notes,
                 'internalNotes' => $quote->internal_notes,
                 'termsAndConditions' => $quote->terms_and_conditions,

@@ -28,6 +28,8 @@ use Spatie\Activitylog\LogOptions;
  * @property float $tax_amount
  * @property float $total_amount
  * @property string $currency
+ * @property string|null $payment_method
+ * @property int|null $credit_days
  * @property string|null $notes
  * @property string|null $internal_notes
  * @property string|null $terms_and_conditions
@@ -64,6 +66,7 @@ class Quote extends Model
         'contact_id', 'shopping_cart_id', 'sales_order_id', 'purchase_order_id',
         'quote_number', 'status', 'quote_date', 'valid_until', 'estimated_eta',
         'subtotal_amount', 'discount_amount', 'tax_amount', 'total_amount', 'currency',
+        'payment_method', 'credit_days',
         'notes', 'internal_notes', 'terms_and_conditions',
         'shipping_address', 'billing_address', 'metadata',
         'sent_at', 'accepted_at', 'rejected_at', 'converted_at',
@@ -81,6 +84,7 @@ class Quote extends Model
         'discount_amount' => 'float',
         'tax_amount' => 'float',
         'total_amount' => 'float',
+        'credit_days' => 'integer',
         'shipping_address' => 'array',
         'billing_address' => 'array',
         'metadata' => 'array',

@@ -41,6 +41,10 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::post('sales-orders/{salesOrder}/cancel', [SalesOrderController::class, 'cancel'])->name('sales-orders.cancel');
     Route::get('sales-orders/{salesOrder}/stock-availability', [SalesOrderController::class, 'stockAvailability'])->name('sales-orders.stock-availability');
 
+    // Fase A - Venta directa vs Pedido: OC del cliente (PDF privado)
+    Route::post('sales-orders/{salesOrder}/upload-customer-po', [\Modules\Sales\Http\Controllers\Api\V1\SalesOrderCustomerPoController::class, 'upload'])->name('sales-orders.upload-customer-po');
+    Route::get('sales-orders/{salesOrder}/customer-po', [\Modules\Sales\Http\Controllers\Api\V1\SalesOrderCustomerPoController::class, 'download'])->name('sales-orders.customer-po');
+
     // SA-M001: Shipment action endpoints
     Route::post('shipments/create-from-order', [ShipmentController::class, 'createFromOrder'])->name('shipments.create-from-order');
     Route::post('shipments/{shipment}/ship', [ShipmentController::class, 'ship'])->name('shipments.ship');

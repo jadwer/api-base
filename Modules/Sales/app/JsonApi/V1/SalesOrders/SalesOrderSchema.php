@@ -63,6 +63,14 @@ class SalesOrderSchema extends Schema
             
             Str::make('notes'),
 
+            // Fase A - Venta directa vs Pedido
+            // order_type se fija al crear/convertir; customer_po_path solo via upload
+            Str::make('orderType', 'order_type')->readOnly(),
+            Str::make('customerPoNumber', 'customer_po_number'),
+            Str::make('customerPoPath', 'customer_po_path')->readOnly(),
+            Str::make('paymentMethod', 'payment_method'),
+            Number::make('creditDays', 'credit_days'),
+
             // Currency fields
             Str::make('currency'),
             Number::make('exchangeRateUsed', 'exchange_rate_used'),
@@ -96,6 +104,7 @@ class SalesOrderSchema extends Schema
             WhereIdIn::make($this),
             Where::make('order_number'),
             Where::make('status'),
+            Where::make('order_type'),
             Where::make('contact', 'contact_id'),
             Where::make('order_date'),
             Where::make('invoicing_status'),

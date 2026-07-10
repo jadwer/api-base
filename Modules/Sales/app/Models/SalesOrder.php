@@ -23,6 +23,11 @@ use Spatie\Activitylog\LogOptions;
  * @property float $tax_amount
  * @property float $total_amount
  * @property float|null $discount_total
+ * @property string $order_type
+ * @property string|null $customer_po_number
+ * @property string|null $customer_po_path
+ * @property string|null $payment_method
+ * @property int|null $credit_days
  * @property string|null $notes
  * @property array|null $metadata
  * @property int|null $ar_invoice_id
@@ -54,6 +59,7 @@ class SalesOrder extends Model
         'contact_id', 'assigned_to', 'quote_id', 'order_number', 'status', 'order_date',
         'approved_at', 'delivered_at', 'subtotal', 'tax_amount', 'total_amount',
         'discount_total', 'currency', 'exchange_rate_used',
+        'order_type', 'customer_po_number', 'customer_po_path', 'payment_method', 'credit_days',
         'notes', 'metadata', 'shipping_address', 'billing_address',
         'ar_invoice_id', 'invoicing_status', 'financial_status', 'invoicing_notes',
         'order_source', 'checkout_session_id',
@@ -72,6 +78,11 @@ class SalesOrder extends Model
         'total_amount' => 'float',
         'discount_total' => 'float',
         'exchange_rate_used' => 'float',
+        'order_type' => 'string',
+        'customer_po_number' => 'string',
+        'customer_po_path' => 'string',
+        'payment_method' => 'string',
+        'credit_days' => 'integer',
         'metadata' => 'array',
         'shipping_address' => 'array',
         'billing_address' => 'array',

@@ -11,6 +11,7 @@ use Modules\Billing\Services\CFDI\CFDIStampingService;
 use Modules\Billing\Services\CFDI\PrefacturaPDFGenerator;
 use Modules\Billing\Services\CFDIAutomationService;
 use Modules\Sales\Models\SalesOrder;
+use Modules\Sales\Services\StockAvailabilityService;
 use Modules\Finance\Models\ARInvoice;
 use Modules\Billing\Exceptions\PacException;
 use Illuminate\Http\JsonResponse;
@@ -734,6 +735,18 @@ class CFDIInvoiceController
                     'total' => $existingCfdi->total,
                 ],
             ], 200);
+        }
+
+        // Fase A - Regla fiscal de stock: los items sin stock suficiente bloquean
+        // la factura (422 con detalle por item). Se valida ANTES de crear nada.
+        // La prefactura (prefacturaFromOrder) NO aplica esta validacion.
+        $salesOrder->loadMissing('items.product');
+        $insufficientItems = app(StockAvailabilityService::class)->insufficientItems($salesOrder->items);
+        if (count($insufficientItems) > 0) {
+            return response()->json([
+                'message' => 'Stock insuficiente para facturar la orden',
+                'errors' => $insufficientItems,
+            ], 422);
         }
 
         try {
