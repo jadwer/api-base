@@ -311,6 +311,14 @@ class StripeService
             $transaction->card_last4 = $card->last4 ?? null;
         }
 
+        // Link transaction to the sales order when the intent carries order_id
+        // metadata (checkout creates the order before the payment intent)
+        $orderId = $paymentIntent->metadata['order_id'] ?? null;
+        if ($orderId && !$transaction->sales_order_id
+            && \Modules\Sales\Models\SalesOrder::whereKey($orderId)->exists()) {
+            $transaction->sales_order_id = (int) $orderId;
+        }
+
         // Set event timestamps
         if ($paymentIntent->status === 'succeeded') {
             $transaction->captured_at = now();

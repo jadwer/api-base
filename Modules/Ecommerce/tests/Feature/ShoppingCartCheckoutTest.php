@@ -241,11 +241,16 @@ class ShoppingCartCheckoutTest extends TestCase
         $response->assertStatus(201);
     }
 
-    public function test_checkout_fails_without_contact(): void
+    public function test_checkout_creates_contact_on_the_fly_for_user_without_contact(): void
     {
         // User with no matching contact in contacts table
-        $user = User::factory()->create(['email' => 'nocontact@example.com']);
+        $user = User::factory()->create([
+            'name' => 'Sin Contacto',
+            'email' => 'nocontact@example.com',
+        ]);
         $user->assignRole('customer');
+
+        $this->assertDatabaseMissing('contacts', ['email' => 'nocontact@example.com']);
 
         $cart = ShoppingCart::factory()->create([
             'user_id' => $user->id,
@@ -264,8 +269,80 @@ class ShoppingCartCheckoutTest extends TestCase
                 'billing_address' => ['street' => 'Test'],
             ]);
 
-        $response->assertStatus(422);
-        $response->assertJson(['error' => 'No contact found for this user. Please provide contact_id.']);
+        $response->assertStatus(201);
+
+        // Contact was created on-the-fly from the user data
+        $this->assertDatabaseHas('contacts', [
+            'email' => 'nocontact@example.com',
+            'name' => 'Sin Contacto',
+            'contact_type' => 'person',
+            'is_customer' => true,
+            'status' => 'active',
+        ]);
+
+        // Order is linked to the new contact (my-orders filters by contact_email)
+        $contact = Contact::where('email', 'nocontact@example.com')->first();
+        $this->assertDatabaseHas('sales_orders', [
+            'contact_id' => $contact->id,
+            'status' => 'pending',
+        ]);
+    }
+
+    public function test_guest_cannot_checkout(): void
+    {
+        // Checkout route requires auth:sanctum; guests never reach the controller
+        $cart = ShoppingCart::factory()->create([
+            'user_id' => null,
+            'session_id' => 'guest-session-401',
+            'status' => 'active',
+        ]);
+
+        $product = Product::factory()->create();
+        CartItem::factory()->create([
+            'shopping_cart_id' => $cart->id,
+            'product_id' => $product->id,
+        ]);
+
+        $response = $this->postJson("/api/v1/shopping-carts/{$cart->id}/checkout", [
+            'session_id' => 'guest-session-401',
+            'shipping_address' => ['street' => 'Test'],
+            'billing_address' => ['street' => 'Test'],
+        ]);
+
+        $response->assertStatus(401);
+    }
+
+    public function test_checkout_reuses_existing_contact_for_user_without_contact_id(): void
+    {
+        $user = User::factory()->create(['email' => 'existing@example.com']);
+        $user->assignRole('customer');
+
+        $existingContact = Contact::factory()->create(['email' => 'existing@example.com']);
+
+        $cart = ShoppingCart::factory()->create([
+            'user_id' => $user->id,
+            'status' => 'active',
+        ]);
+
+        $product = Product::factory()->create();
+        CartItem::factory()->create([
+            'shopping_cart_id' => $cart->id,
+            'product_id' => $product->id,
+        ]);
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->postJson("/api/v1/shopping-carts/{$cart->id}/checkout", [
+                'shipping_address' => ['street' => 'Test'],
+                'billing_address' => ['street' => 'Test'],
+            ]);
+
+        $response->assertStatus(201);
+
+        // No duplicate contact created
+        $this->assertEquals(1, Contact::where('email', 'existing@example.com')->count());
+        $this->assertDatabaseHas('sales_orders', [
+            'contact_id' => $existingContact->id,
+        ]);
     }
 
     public function test_checkout_uses_shipping_as_billing_when_not_provided(): void

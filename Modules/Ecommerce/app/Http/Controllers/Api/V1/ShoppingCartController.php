@@ -337,14 +337,14 @@ class ShoppingCartController extends Controller
 
         // Resolve contact_id: use provided, or find by authenticated user email
         $contactId = $request->input('contact_id');
-        if (!$contactId) {
-            $user = $request->user('sanctum');
-            if ($user) {
-                $contact = \Modules\Contacts\Models\Contact::where('email', $user->email)->first();
-                $contactId = $contact?->id;
-            }
+        $user = $request->user('sanctum');
+        if (!$contactId && $user) {
+            $contact = \Modules\Contacts\Models\Contact::where('email', $user->email)->first();
+            $contactId = $contact?->id;
         }
-        if (!$contactId) {
+        // Authenticated users without a Contact get one created on-the-fly
+        // inside the checkout transaction (below). Guests still need contact_id.
+        if (!$contactId && !$user) {
             return response()->json([
                 'error' => 'No contact found for this user. Please provide contact_id.'
             ], 422);
@@ -379,7 +379,22 @@ class ShoppingCartController extends Controller
             ], 400);
         }
 
-        return DB::transaction(function () use ($request, $shoppingCart, $contactId, $shippingAddress, $billingAddress) {
+        return DB::transaction(function () use ($request, $shoppingCart, $contactId, $user, $shippingAddress, $billingAddress) {
+            // Create Contact on-the-fly for authenticated users without one,
+            // so a registered customer can always complete checkout.
+            if (!$contactId && $user) {
+                $contact = \Modules\Contacts\Models\Contact::firstOrCreate(
+                    ['email' => $user->email],
+                    [
+                        'contact_type' => 'person',
+                        'name' => $user->name,
+                        'is_customer' => true,
+                        'status' => 'active',
+                    ]
+                );
+                $contactId = $contact->id;
+            }
+
             // Determine the current exchange rate for the cart's currency
             $cartCurrency = $shoppingCart->currency ?? 'MXN';
             $exchangeRateUsed = null;
