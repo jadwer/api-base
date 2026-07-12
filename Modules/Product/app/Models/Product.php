@@ -199,16 +199,191 @@ class Product extends Model
     }
 
     /**
-     * Scope para búsqueda global en nombre, SKU y descripción
+     * Numero maximo de filas que el fallback Levenshtein carga en memoria.
+     * Acota el universo para no traer toda la tabla cuando las capas 1+2
+     * devuelven cero resultados. Si se trunca, se deja rastro en el log.
+     */
+    public const FUZZY_CANDIDATE_CAP = 2000;
+
+    /**
+     * Scope para busqueda global tolerante a errores de escritura (typos).
+     *
+     * Tres capas en cascada, de barata a cara:
+     *   1. Normalizacion: el termino se pasa a minusculas y se le quitan
+     *      acentos (en PHP). La comparacion en SQL usa LOWER(columna), que
+     *      existe tanto en MySQL como en SQLite. LIMITE CONOCIDO: solo se
+     *      normaliza el termino, no la columna. Quitar acentos de la columna
+     *      de forma portable entre MySQL y SQLite no es viable sin una UDF o
+     *      columna generada, asi que se acepta que los acentos de la columna
+     *      permanezcan. Cubre el caso comun (usuario escribe sin acentos).
+     *   2. Tokens: el termino se parte en palabras y se exige que TODAS
+     *      aparezcan (AND), cada una en cualquier campo (name/sku/description).
+     *      Asi "lavadora industrial" encuentra "Industrial de Lavado Lavadora".
+     *   3. Fallback Levenshtein: SOLO si las capas 1+2 devuelven 0 resultados,
+     *      se aplica un filtro tolerante en PHP (portable, no depende de UDF).
+     *
+     * El Scope filter de JSON:API (Scope::make('search')) mapea a este metodo,
+     * por lo que aqui vive la logica completa para admin y publico.
      */
     public function scopeSearch($query, $term)
     {
-        $searchTerm = "%{$term}%";
-        return $query->where(function ($q) use ($searchTerm) {
-            $q->where('name', 'like', $searchTerm)
-              ->orWhere('sku', 'like', $searchTerm)
-              ->orWhere('description', 'like', $searchTerm);
+        $normalized = static::normalizeSearchTerm($term);
+
+        if ($normalized === '') {
+            return $query;
+        }
+
+        // Capas 1 + 2: tokens en AND, cada token en cualquier campo.
+        $tokens = preg_split('/\s+/', $normalized, -1, PREG_SPLIT_NO_EMPTY);
+
+        // Registra cuantas condiciones where existian antes (otros filtros
+        // JSON:API como category_id, is_active) para poder revertir SOLO las
+        // que agrega la busqueda si hay que ir al fallback, sin tocar el resto.
+        $base = $query->getQuery();
+        $whereCountBefore = count($base->wheres ?? []);
+        $bindingsBefore = $base->bindings['where'] ?? [];
+
+        $query->where(function ($outer) use ($tokens) {
+            foreach ($tokens as $token) {
+                $like = '%' . $token . '%';
+                $outer->where(function ($q) use ($like) {
+                    $q->whereRaw('LOWER(name) LIKE ?', [$like])
+                      ->orWhereRaw('LOWER(sku) LIKE ?', [$like])
+                      ->orWhereRaw('LOWER(description) LIKE ?', [$like]);
+                });
+            }
         });
+
+        // Capa 3: fallback Levenshtein solo si las capas 1+2 no matchearon nada.
+        // Se clona para contar sin consumir el builder original (que JSON:API
+        // sigue usando para aplicar orden, paginacion, etc.).
+        if ((clone $query)->count() === 0) {
+            $ids = static::fuzzyMatchIds($normalized, $tokens);
+
+            // Revierte SOLO la condicion que agrego la busqueda (el grupo where
+            // anidado) y sus bindings, preservando otros filtros previos. Luego
+            // aplica whereIn de ids. Si no hubo candidatos, whereIn([]) devuelve
+            // vacio (no explota trayendo toda la tabla).
+            $base->wheres = array_slice($base->wheres, 0, $whereCountBefore);
+            $base->bindings['where'] = $bindingsBefore;
+            $query->whereIn('id', $ids);
+        }
+
+        return $query;
+    }
+
+    /**
+     * Normaliza un termino de busqueda: minusculas y sin acentos.
+     * Usa iconv para transliterar (é -> e, ñ -> n) de forma portable en PHP.
+     */
+    public static function normalizeSearchTerm(?string $term): string
+    {
+        $term = trim((string) $term);
+
+        if ($term === '') {
+            return '';
+        }
+
+        // Transliteracion ASCII: quita acentos y diacriticos.
+        $ascii = @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $term);
+        if ($ascii !== false) {
+            // iconv puede dejar residuos como 'n para ñ segun locale; limpiar.
+            $ascii = preg_replace('/[^\x20-\x7E]/', '', $ascii);
+            $ascii = str_replace(['\'', '`', '^', '~', '"'], '', $ascii);
+            $term = $ascii;
+        }
+
+        return mb_strtolower(trim($term));
+    }
+
+    /**
+     * Fallback tolerante a typos con levenshtein() de PHP.
+     *
+     * Acota el universo de candidatos a FUZZY_CANDIDATE_CAP filas para no
+     * cargar toda la tabla. Compara cada token del termino contra las palabras
+     * del name normalizado (y el sku) con un umbral proporcional a la longitud.
+     * Un producto matchea si TODOS los tokens tienen al menos una palabra
+     * cercana (coherente con el AND de la capa 2).
+     *
+     * @param  array<int,string>  $tokens
+     * @return array<int,int>  ids de productos que matchean
+     */
+    protected static function fuzzyMatchIds(string $normalized, array $tokens): array
+    {
+        if ($tokens === []) {
+            return [];
+        }
+
+        // Universo acotado: solo columnas necesarias, con cap de filas.
+        $candidates = static::query()
+            ->select(['id', 'name', 'sku'])
+            ->limit(static::FUZZY_CANDIDATE_CAP)
+            ->get();
+
+        if ($candidates->count() === static::FUZZY_CANDIDATE_CAP) {
+            \Illuminate\Support\Facades\Log::warning(
+                'Product fuzzy search truncated candidate set',
+                ['cap' => static::FUZZY_CANDIDATE_CAP, 'term' => $normalized]
+            );
+        }
+
+        $ids = [];
+
+        foreach ($candidates as $candidate) {
+            $haystackWords = static::fuzzyHaystackWords($candidate->name, $candidate->sku);
+
+            $allTokensMatch = true;
+            foreach ($tokens as $token) {
+                if (!static::tokenHasCloseWord($token, $haystackWords)) {
+                    $allTokensMatch = false;
+                    break;
+                }
+            }
+
+            if ($allTokensMatch) {
+                $ids[] = (int) $candidate->id;
+            }
+        }
+
+        return $ids;
+    }
+
+    /**
+     * Palabras normalizadas del name y sku de un candidato.
+     *
+     * @return array<int,string>
+     */
+    protected static function fuzzyHaystackWords(?string $name, ?string $sku): array
+    {
+        $text = static::normalizeSearchTerm(trim(($name ?? '') . ' ' . ($sku ?? '')));
+
+        return preg_split('/\s+/', $text, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+    }
+
+    /**
+     * Un token esta "cerca" de una palabra si su distancia de Levenshtein
+     * cae bajo un umbral proporcional a la longitud del token.
+     *
+     * @param  array<int,string>  $haystackWords
+     */
+    protected static function tokenHasCloseWord(string $token, array $haystackWords): bool
+    {
+        $len = mb_strlen($token);
+        // Umbral: palabras cortas toleran menos que largas.
+        $threshold = $len <= 4 ? 1 : (int) floor($len / 4);
+
+        foreach ($haystackWords as $word) {
+            // Coincidencia por substring exacta cuenta como distancia 0.
+            if ($word === $token || str_contains($word, $token)) {
+                return true;
+            }
+
+            if (levenshtein($token, $word) <= $threshold) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
