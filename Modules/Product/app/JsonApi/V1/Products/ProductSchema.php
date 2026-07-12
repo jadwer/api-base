@@ -38,6 +38,7 @@ class ProductSchema extends Schema
             Str::make('productType', 'product_type'),
             Number::make('taxRate', 'tax_rate'),
             Boolean::make('isActive', 'is_active')->sortable(),
+            Boolean::make('isPublic', 'is_public')->sortable(),
             Str::make('imgPath', 'img_path'),
             Str::make('datasheetPath', 'datasheet_path'),
             Str::make('imgUrl')->readOnly()->extractUsing(
@@ -81,6 +82,7 @@ class ProductSchema extends Schema
             Where::make('brand_id'),
             Where::make('currency_id'),
             Where::make('is_active')->asBoolean(),
+            Where::make('is_public')->asBoolean(),
             WhereIn::make('brands', 'brand_id')->delimiter(','),
             WhereIn::make('categories', 'category_id')->delimiter(','),
             WhereIn::make('units', 'unit_id')->delimiter(','),

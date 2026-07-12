@@ -74,6 +74,86 @@ class ProductStoreTest extends TestCase
         ]);
     }
 
+    public function test_admin_can_create_internal_product_with_is_public_false(): void
+    {
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $this->actingAs($admin, 'sanctum');
+
+        $unit = Unit::factory()->create();
+        $category = Category::factory()->create();
+        $brand = Brand::factory()->create();
+        $currency = Currency::where('code', 'MXN')->first() ?? Currency::factory()->create(['code' => 'MXN']);
+
+        $data = [
+            'type' => 'products',
+            'attributes' => [
+                'name' => 'Internal Product',
+                'sku' => 'INT-001',
+                'description' => 'An internal product',
+                'fullDescription' => 'A complete internal product description',
+                'price' => 99.99,
+                'iva' => true,
+                'isPublic' => false,
+            ],
+            'relationships' => [
+                'unit' => ['data' => ['type' => 'units', 'id' => (string) $unit->id]],
+                'category' => ['data' => ['type' => 'categories', 'id' => (string) $category->id]],
+                'brand' => ['data' => ['type' => 'brands', 'id' => (string) $brand->id]],
+                'currency' => ['data' => ['type' => 'currencies', 'id' => (string) $currency->id]],
+            ],
+        ];
+
+        $response = $this->jsonApi()
+            ->withData($data)
+            ->post('/api/v1/products');
+
+        $response->assertCreated();
+        $this->assertFalse($response->json('data.attributes.isPublic'));
+        $this->assertDatabaseHas('products', [
+            'sku' => 'INT-001',
+            'is_public' => false,
+        ]);
+    }
+
+    public function test_product_defaults_to_public_when_is_public_omitted(): void
+    {
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $this->actingAs($admin, 'sanctum');
+
+        $unit = Unit::factory()->create();
+        $category = Category::factory()->create();
+        $brand = Brand::factory()->create();
+        $currency = Currency::where('code', 'MXN')->first() ?? Currency::factory()->create(['code' => 'MXN']);
+
+        $data = [
+            'type' => 'products',
+            'attributes' => [
+                'name' => 'Default Public Product',
+                'sku' => 'PUB-001',
+                'description' => 'A default public product',
+                'fullDescription' => 'A complete default public description',
+                'price' => 10.00,
+                'iva' => true,
+            ],
+            'relationships' => [
+                'unit' => ['data' => ['type' => 'units', 'id' => (string) $unit->id]],
+                'category' => ['data' => ['type' => 'categories', 'id' => (string) $category->id]],
+                'brand' => ['data' => ['type' => 'brands', 'id' => (string) $brand->id]],
+                'currency' => ['data' => ['type' => 'currencies', 'id' => (string) $currency->id]],
+            ],
+        ];
+
+        $response = $this->jsonApi()
+            ->withData($data)
+            ->post('/api/v1/products');
+
+        $response->assertCreated();
+        $this->assertDatabaseHas('products', [
+            'sku' => 'PUB-001',
+            'is_public' => true,
+        ]);
+    }
+
     public function test_customer_cannot_create_product(): void
     {
         $customer = User::where('email', 'cliente1@example.com')->firstOrFail();

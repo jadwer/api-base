@@ -104,6 +104,45 @@ class ProductUpdateTest extends TestCase
         ]);
     }
 
+    public function test_admin_can_toggle_is_public_to_make_product_internal(): void
+    {
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $this->actingAs($admin, 'sanctum');
+
+        $product = Product::factory()->create([
+            'is_public' => true,
+            'is_active' => true,
+        ]);
+
+        $data = [
+            'type' => 'products',
+            'id' => (string) $product->id,
+            'attributes' => [
+                'isPublic' => false,
+            ],
+        ];
+
+        $response = $this->jsonApi()
+            ->withData($data)
+            ->patch("/api/v1/products/{$product->id}");
+
+        $response->assertOk()->assertJson([
+            'data' => [
+                'type' => 'products',
+                'id' => (string) $product->id,
+                'attributes' => [
+                    'isPublic' => false,
+                ],
+            ],
+        ]);
+
+        $this->assertDatabaseHas('products', [
+            'id' => $product->id,
+            'is_public' => false,
+            'is_active' => true,
+        ]);
+    }
+
     public function test_customer_cannot_update_product(): void
     {
         $customer = User::where('email', 'cliente1@example.com')->firstOrFail();

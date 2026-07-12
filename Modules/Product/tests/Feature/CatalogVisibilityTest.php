@@ -86,6 +86,28 @@ class CatalogVisibilityTest extends TestCase
         $this->assertNotContains('Cat Hidden', $names);
     }
 
+    public function test_public_catalog_hides_internal_products(): void
+    {
+        // Public product (is_public true) -> visible
+        $public = $this->createProduct(['name' => 'Public Product', 'is_public' => true]);
+
+        // Internal product (is_public false) while still active -> hidden
+        $this->createProduct([
+            'name' => 'Internal Product',
+            'is_public' => false,
+            'is_active' => true,
+        ]);
+
+        $response = $this->jsonApi()->get('/api/public/v1/public-products');
+
+        $response->assertOk();
+        $names = collect($response->json('data'))->pluck('attributes.name')->toArray();
+        $ids = collect($response->json('data'))->pluck('id')->toArray();
+        $this->assertContains((string) $public->id, $ids);
+        $this->assertContains('Public Product', $names);
+        $this->assertNotContains('Internal Product', $names);
+    }
+
     public function test_only_active_products_with_active_brand_and_category_appear(): void
     {
         // Active product, active brand, active category -> visible

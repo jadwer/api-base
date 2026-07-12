@@ -31,6 +31,7 @@ class ProductRequest extends ResourceRequest
             'satClaveUnidad' => ['nullable', 'string', 'max:20'],
             'productType' => ['nullable', 'string', Rule::in(['finished', 'raw_material', 'both'])],
             'taxRate' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'isPublic' => ['sometimes', 'boolean'],
             'imgPath' => ['nullable', 'string', 'max:500', 'not_regex:/\.\./'],
             'datasheetPath' => ['nullable', 'string', 'max:500', 'not_regex:/\.\./'],
             'unit' => JsonApiRule::toOne(),

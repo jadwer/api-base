@@ -30,6 +30,7 @@ class PublicProductSchema extends Schema
     public function indexQuery(?Request $request, Builder $query): Builder
     {
         return $query->where('is_active', true)
+            ->where('is_public', true)
             ->whereHas('brand', fn($q) => $q->where('is_active', true))
             ->whereHas('category', fn($q) => $q->where('is_active', true));
     }

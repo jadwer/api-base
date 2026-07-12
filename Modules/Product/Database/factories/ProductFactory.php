@@ -32,6 +32,7 @@ class ProductFactory extends Factory
             'brand_id' => Brand::factory(),
             'currency_id' => Currency::first()?->id ?? Currency::factory(),
             'is_active' => $this->faker->boolean(90), // 90% active
+            'is_public' => true, // public by default (does not break the catalog)
             'average_rating' => $this->faker->boolean(70) ? $this->faker->randomFloat(1, 3.0, 5.0) : null, // 70% have ratings
             'total_reviews' => $this->faker->boolean(70) ? $this->faker->numberBetween(1, 50) : 0, // 70% have reviews
             'total_sales' => $this->faker->numberBetween(0, 200),
@@ -56,6 +57,18 @@ class ProductFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'price' => $this->faker->randomFloat(2, 1000, 5000),
             'cost' => $this->faker->randomFloat(2, 500, 2500),
+        ]);
+    }
+
+    /**
+     * Internal product: sellable and quotable but hidden from the public
+     * catalog (is_public false, is_active stays true).
+     */
+    public function internal(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_public' => false,
+            'is_active' => true,
         ]);
     }
 
