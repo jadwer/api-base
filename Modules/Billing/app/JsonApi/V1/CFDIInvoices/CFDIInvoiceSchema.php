@@ -81,6 +81,18 @@ class CFDIInvoiceSchema extends Schema
             Str::make('metodoPago', 'metodo_pago')->sortable(),
             Str::make('condicionesPago', 'condiciones_pago'),
 
+            // Payment complement (REP, type P): the collection this document settles
+            DateTime::make('fechaPago', 'fecha_pago'),
+            Number::make('montoPago', 'monto_pago'),
+            Str::make('formaPagoP', 'forma_pago_p'),
+            Number::make('arPaymentId', 'ar_payment_id'),
+            Number::make('numParcialidad')->extractUsing(
+                static fn ($model) => optional($model->paymentDocs->first())->num_parcialidad
+            )->readOnly(),
+            Number::make('impSaldoInsoluto')->extractUsing(
+                static fn ($model) => optional($model->paymentDocs->first())->imp_saldo_insoluto
+            )->readOnly(),
+
             // Related CFDI
             Str::make('cfdiRelacionadoTipo', 'cfdi_relacionado_tipo'),
             ArrayHash::make('cfdiRelacionadoUuids', 'cfdi_relacionado_uuids'),
