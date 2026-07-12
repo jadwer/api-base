@@ -193,6 +193,41 @@ class ProductBulkController extends Controller
     }
 
     /**
+     * Bulk assign a category to all products of a brand.
+     *
+     * POST /api/v1/products/bulk-assign-category-by-brand
+     */
+    public function bulkAssignCategoryByBrand(Request $request): JsonResponse
+    {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        if (!$user->can('products.update')) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
+        $request->validate([
+            'brand_id' => 'required|integer|exists:brands,id',
+            'category_id' => 'required|integer|exists:categories,id',
+        ]);
+
+        $brandId = $request->input('brand_id');
+        $categoryId = $request->input('category_id');
+        $affected = 0;
+
+        DB::transaction(function () use ($brandId, $categoryId, &$affected) {
+            $affected = Product::where('brand_id', $brandId)
+                ->update(['category_id' => $categoryId]);
+        });
+
+        return response()->json([
+            'message' => "{$affected} productos reasignados a la categoria",
+            'affected_count' => $affected,
+        ]);
+    }
+
+    /**
      * Bulk price update by brand (percentage increase/decrease).
      *
      * POST /api/v1/products/bulk-price-update

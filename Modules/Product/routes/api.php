@@ -36,6 +36,8 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
         ->name('products.bulk-toggle-by-category');
     Route::post('products/bulk-price-update', [ProductBulkController::class, 'bulkPriceUpdate'])
         ->name('products.bulk-price-update');
+    Route::post('products/bulk-assign-category-by-brand', [ProductBulkController::class, 'bulkAssignCategoryByBrand'])
+        ->name('products.bulk-assign-category-by-brand');
     Route::post('brands/{brand}/toggle-active', [ProductBulkController::class, 'toggleBrandActive'])
         ->name('brands.toggle-active');
     Route::post('categories/{category}/toggle-active', [ProductBulkController::class, 'toggleCategoryActive'])
