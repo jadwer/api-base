@@ -12,6 +12,9 @@ use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Modules\Contacts\Models\Contact;
 use Modules\Sales\Models\QuoteItem;
 
 class QuoteItemSchema extends Schema
@@ -29,6 +32,30 @@ class QuoteItemSchema extends Schema
     /**
      * Get the resource fields.
      */
+    /**
+     * Mirror QuoteSchema scoping: non-staff users only see items belonging to
+     * their own quotes (matched by contact email). Without this, granting
+     * quote-items.index to the customer role would expose every quote's items.
+     */
+    public function indexQuery(?Request $request, Builder $query): Builder
+    {
+        $user = $request?->user('sanctum');
+        if (!$user) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        if ($user->hasAnyRole(['god', 'admin', 'administrator', 'tech'])) {
+            return $query;
+        }
+
+        $contact = Contact::where('email', $user->email)->first();
+        if ($contact) {
+            return $query->whereHas('quote', fn ($q) => $q->where('contact_id', $contact->id));
+        }
+
+        return $query->whereRaw('1 = 0');
+    }
+
     public function fields(): array
     {
         return [
