@@ -39,11 +39,18 @@ class DemoWorkflowSeeder extends Seeder
     {
         $this->command->info('Seeding demo workflow data...');
 
+        // Commissions on for the demo so the full cotizacion -> cobro -> comision
+        // story plays out (the generic seeder ships it off by default).
+        \Modules\AppConfig\Models\AppSetting::updateOrCreate(
+            ['key' => 'commissions.enabled'],
+            ['value' => 'true', 'type' => 'boolean', 'group' => 'commissions', 'label' => 'Comisiones activas']
+        );
+
         $users = $this->seedPersonaUsers();
         $products = $this->seedCatalog();
-        $contacts = $this->seedContacts();
+        $contacts = $this->seedContacts($users['vendedor']);
         $this->seedQuotes($contacts, $products);
-        $this->seedSalesOrders($contacts, $products);
+        $this->seedSalesOrders($contacts, $products, $users['vendedor']);
         $this->seedShoppingCart($users['cliente'], $products);
 
         $this->command->info('Demo workflow data ready.');
@@ -80,6 +87,9 @@ class DemoWorkflowSeeder extends Seeder
 
             $users[$key] = $user;
         }
+
+        // The salesperson earns a 5% commission on collected sales.
+        $users['vendedor']->forceFill(['commission_pct' => 5.0])->save();
 
         $this->command->info('  - 3 persona users (admin/vendedor/cliente @demo.mx)');
 
@@ -178,7 +188,7 @@ class DemoWorkflowSeeder extends Seeder
      *
      * @return array<int, Contact>
      */
-    private function seedContacts(): array
+    private function seedContacts(User $vendedor): array
     {
         $companies = [
             [
@@ -262,6 +272,7 @@ class DemoWorkflowSeeder extends Seeder
                     : null,
                 'classification' => $company['classification'],
                 'payment_terms' => $company['payment_terms'],
+                'default_salesperson_id' => $vendedor->id,
                 'notes' => 'Contacto de demostracion generado por DemoWorkflowSeeder.',
             ]);
 
@@ -349,7 +360,7 @@ class DemoWorkflowSeeder extends Seeder
      * @param array<int, Contact> $contacts
      * @param array<string, Product> $products
      */
-    private function seedSalesOrders(array $contacts, array $products): void
+    private function seedSalesOrders(array $contacts, array $products, User $vendedor): void
     {
         $orders = [
             [
@@ -389,6 +400,7 @@ class DemoWorkflowSeeder extends Seeder
 
             $order = SalesOrder::create([
                 'contact_id' => $contacts[$plan['contact']]->id,
+                'assigned_to' => $vendedor->id, // salesperson for commission
                 'order_number' => FolioSequence::getNextFolio('sales_order'), // OV-yy-#####
                 'status' => $plan['status'],
                 'order_date' => $plan['order_date']->format('Y-m-d'),
