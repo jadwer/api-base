@@ -128,11 +128,15 @@ class QuoteItem extends Model
         // Subtotal after discount
         $subtotalAfterDiscount = $subtotal - $this->discount_amount;
 
-        // Calculate tax
-        $this->tax_amount = $subtotalAfterDiscount * ($taxRate / 100);
+        // Delegate the IVA math to the shared TaxCalculator so the tenant's
+        // pricing.prices_include_tax flag governs whether tax is added on top
+        // (B2B, default) or broken out from inside the price (B2C). When the
+        // flag is false this reproduces the historical result exactly.
+        $result = app(\App\Services\TaxCalculator::class)
+            ->netAndTax($subtotalAfterDiscount, $taxRate);
 
-        // Final total (subtotal after discount + tax)
-        $this->total = $subtotalAfterDiscount + $this->tax_amount;
+        $this->tax_amount = $result['tax'];
+        $this->total = $result['total'];
     }
 
     // Relationships

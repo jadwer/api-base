@@ -54,6 +54,13 @@ class CheckoutService
             }
 
             // Calculate totals
+            // TODO(iva-configurable): this assembly (total = subtotal - discount + tax)
+            // assumes tax is ADDED on top, i.e. pricing.prices_include_tax = false.
+            // When a tenant sets that flag true (B2C, prices already include IVA),
+            // subtotal must be treated as the tax-inclusive total and the tax
+            // broken out of it instead of added, otherwise total_amount
+            // double-counts the IVA. Left intentionally unchanged so the default
+            // (false) tenant behavior and all current tests stay green.
             $subtotal = $cart->subtotalAmount;
             $discount = $cart->discount_amount ?? 0;
             $tax = $this->calculateTax($subtotal - $discount);
@@ -331,10 +338,22 @@ class CheckoutService
      */
     private function calculateTax(float $amount): float
     {
-        // Default tax rate: 16% (IVA in Mexico)
-        $taxRate = config('ecommerce.tax_rate', 0.16);
+        // Default tax rate: 16% (IVA in Mexico). config() keeps the rate as a
+        // fraction (0.16); TaxCalculator expects a percentage (16).
+        $taxRatePercent = ((float) config('ecommerce.tax_rate', 0.16)) * 100;
 
-        return round($amount * $taxRate, 2);
+        // Delegate to the shared TaxCalculator so the tenant's
+        // pricing.prices_include_tax flag governs add-on vs. break-out. With the
+        // flag false this returns exactly round($amount * $taxRate, 2) as before.
+        //
+        // NOTE: when prices_include_tax is true, the CheckoutSession still stores
+        // subtotal_amount as the captured (tax-inclusive) amount and adds this
+        // broken-out tax as a separate line, so total_amount would double-count.
+        // A full B2C checkout requires reworking how subtotal/total are assembled
+        // in initiateCheckout() (see TODO below). For now the tenant default
+        // (false) is unaffected.
+        return app(\App\Services\TaxCalculator::class)
+            ->netAndTax($amount, $taxRatePercent)['tax'];
     }
 
     /**

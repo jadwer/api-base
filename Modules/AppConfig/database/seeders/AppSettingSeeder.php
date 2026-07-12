@@ -74,6 +74,12 @@ class AppSettingSeeder extends Seeder
             ['key' => 'commissions.default_pct', 'value' => '5.0', 'type' => 'string', 'group' => 'commissions', 'label' => 'Porcentaje de comision default', 'description' => 'Porcentaje aplicado cuando ni el contacto ni el vendedor definen uno propio'],
             ['key' => 'commissions.basis', 'value' => 'collected', 'type' => 'string', 'group' => 'commissions', 'label' => 'Base de calculo', 'description' => 'v1 solo soporta collected (comision sobre monto cobrado); invoiced queda reservado para v2'],
             ['key' => 'commissions.payout_period', 'value' => 'monthly', 'type' => 'string', 'group' => 'commissions', 'label' => 'Periodo de corte', 'description' => 'Informativo para el reporte de corte de comisiones'],
+
+            // Pricing (IVA configurable - etapa 2)
+            ['key' => 'pricing.prices_include_tax', 'value' => 'false', 'type' => 'boolean', 'group' => 'pricing', 'label' => 'Precios con IVA incluido', 'description' => 'false (B2B): los precios capturados son netos y el IVA se suma. true (B2C): los precios capturados son finales y el IVA se desglosa hacia adentro'],
+
+            // Billing / Complemento de Pagos (REP)
+            ['key' => 'billing.rep_auto_enabled', 'value' => 'true', 'type' => 'boolean', 'group' => 'billing', 'label' => 'Complemento de Pagos automatico', 'description' => 'Si esta activo y el PAC esta habilitado, cada abono a una factura PPD timbrada genera y timbra automaticamente un CFDI tipo P (REP). Si el PAC esta apagado, el REP queda en borrador sin timbrar.'],
         ];
 
         foreach ($settings as $setting) {
