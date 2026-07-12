@@ -109,6 +109,38 @@ class PurchaseOrderIndexTest extends TestCase
         $this->assertGreaterThanOrEqual(2, count($response->json('data')));
     }
 
+    /**
+     * Nota cliente #11: compras "por surtir".
+     * filter[pending_receipt]=1 debe devolver status pending+approved,
+     * nunca received ni cancelled.
+     */
+    public function test_pending_receipt_filter_returns_pending_and_approved(): void
+    {
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $this->actingAs($admin, 'sanctum');
+
+        // Proveedor dedicado para aislar de la data de seeders
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+
+        $pending = PurchaseOrder::factory()->create(['contact_id' => $contact->id, 'status' => 'pending']);
+        $approved = PurchaseOrder::factory()->create(['contact_id' => $contact->id, 'status' => 'approved']);
+        $received = PurchaseOrder::factory()->create(['contact_id' => $contact->id, 'status' => 'received']);
+        $cancelled = PurchaseOrder::factory()->create(['contact_id' => $contact->id, 'status' => 'cancelled']);
+
+        $response = $this->jsonApi()
+            ->get("/api/v1/purchase-orders?filter[pending_receipt]=1&filter[contact]={$contact->id}&page[size]=100");
+
+        $response->assertOk();
+
+        $ids = collect($response->json('data'))->pluck('id')->map(fn ($id) => (int) $id);
+
+        $this->assertTrue($ids->contains($pending->id), 'pending should be listed');
+        $this->assertTrue($ids->contains($approved->id), 'approved should be listed');
+        $this->assertFalse($ids->contains($received->id), 'received should NOT be listed');
+        $this->assertFalse($ids->contains($cancelled->id), 'cancelled should NOT be listed');
+        $this->assertCount(2, $ids, 'only the 2 open orders for this supplier');
+    }
+
     public function test_admin_can_include_supplier_data(): void
     {
         $admin = User::where('email', 'admin@example.com')->firstOrFail();

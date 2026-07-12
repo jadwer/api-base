@@ -9,6 +9,7 @@ use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
+use LaravelJsonApi\Eloquent\Filters\Scope;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
@@ -71,6 +72,8 @@ class PurchaseOrderSchema extends Schema
             Where::make('status'),
             Where::make('contact', 'contact_id'),
             Where::make('warehouse', 'warehouse_id'),
+            // Nota cliente #11: compras "por surtir" (status pending+approved)
+            Scope::make('pending_receipt', 'pendingReceipt'),
         ];
     }
 

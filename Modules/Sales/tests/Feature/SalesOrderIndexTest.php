@@ -173,6 +173,53 @@ class SalesOrderIndexTest extends TestCase
         $this->assertArrayHasKey('page', $response->json('meta'));
     }
 
+    /**
+     * Nota cliente #11: pedidos "por surtir".
+     * El filtro pending_fulfillment debe devolver solo ordenes abiertas
+     * (no delivered, completed, cancelled, returned ni refunded).
+     */
+    public function test_pending_fulfillment_filter_returns_only_open_orders(): void
+    {
+        $admin = $this->getAdminUser();
+
+        $customer = Contact::factory()->customer()->create();
+
+        // Abiertas (por surtir)
+        $open = collect([
+            SalesOrder::factory()->create(['contact_id' => $customer->id, 'status' => 'draft']),
+            SalesOrder::factory()->create(['contact_id' => $customer->id, 'status' => 'pending']),
+            SalesOrder::factory()->create(['contact_id' => $customer->id, 'status' => 'confirmed']),
+            SalesOrder::factory()->create(['contact_id' => $customer->id, 'status' => 'processing']),
+            SalesOrder::factory()->create(['contact_id' => $customer->id, 'status' => 'shipped']),
+        ]);
+
+        // Cerradas (no deben aparecer)
+        $closed = collect([
+            SalesOrder::factory()->create(['contact_id' => $customer->id, 'status' => 'delivered']),
+            SalesOrder::factory()->create(['contact_id' => $customer->id, 'status' => 'completed']),
+            SalesOrder::factory()->create(['contact_id' => $customer->id, 'status' => 'cancelled']),
+            SalesOrder::factory()->create(['contact_id' => $customer->id, 'status' => 'returned']),
+            SalesOrder::factory()->create(['contact_id' => $customer->id, 'status' => 'refunded']),
+        ]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('sales-orders')
+            ->get('/api/v1/sales-orders?filter[pending_fulfillment]=1&page[size]=100');
+
+        $response->assertOk();
+
+        $returnedIds = collect($response->json('data'))->pluck('id')->map(fn ($id) => (int) $id);
+
+        foreach ($open as $order) {
+            $this->assertTrue($returnedIds->contains($order->id), "Open order {$order->status} should be listed");
+        }
+
+        foreach ($closed as $order) {
+            $this->assertFalse($returnedIds->contains($order->id), "Closed order {$order->status} should NOT be listed");
+        }
+    }
+
     public function test_can_search_sales_orders_by_order_number(): void
     {
         $admin = $this->getAdminUser();

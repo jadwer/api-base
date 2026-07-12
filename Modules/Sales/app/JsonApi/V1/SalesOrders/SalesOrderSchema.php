@@ -111,6 +111,8 @@ class SalesOrderSchema extends Schema
             Where::make('ar_invoice_id'),
             // Customer Portal filter - filter by contact email
             Scope::make('contact_email', 'forContactEmail'),
+            // Nota cliente #11: pedidos "por surtir" (abiertos, no entregados/cerrados)
+            Scope::make('pending_fulfillment', 'pendingFulfillment'),
         ];
     }
 

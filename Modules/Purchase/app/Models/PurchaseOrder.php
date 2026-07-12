@@ -308,6 +308,29 @@ class PurchaseOrder extends Model
     // ========== SCOPES ==========
 
     /**
+     * Nota cliente #11: compras "por surtir" (pendientes de recibir).
+     *
+     * El enum status de purchase_orders es [pending, approved, received,
+     * cancelled]. "Por surtir" = ordenes abiertas que aun no se reciben ni se
+     * cancelan, es decir status IN (pending, approved). Se expone como filtro
+     * de un solo parametro (filter[pending_receipt]=1) para que el frontend
+     * haga una sola llamada en lugar de dos filtros por status.
+     *
+     * Acepta booleano; valor "falsy" no aplica el filtro.
+     */
+    public function scopePendingReceipt(Builder $query, $value = true): Builder
+    {
+        $enabled = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        $enabled = $enabled ?? true;
+
+        if (!$enabled) {
+            return $query;
+        }
+
+        return $query->whereIn('status', ['pending', 'approved']);
+    }
+
+    /**
      * Apply filters to the query.
      */
     public function scopeFilters(Builder $query, Request $request): Builder

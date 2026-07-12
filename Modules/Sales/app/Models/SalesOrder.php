@@ -112,6 +112,34 @@ class SalesOrder extends Model
     }
 
     /**
+     * Nota cliente #11: pedidos "por surtir".
+     *
+     * fulfillment_status es un accessor calculado (no columna), asi que no se
+     * puede filtrar por el en SQL. Aproximamos "por surtir" por el status de la
+     * orden: abiertas = todas menos las cerradas (delivered, completed,
+     * cancelled, returned, refunded). El enum de sales_orders admite 10 estados
+     * (draft, pending, confirmed, processing, shipped, delivered, completed,
+     * cancelled, returned, refunded).
+     *
+     * Se acepta valor booleano para poder exponerlo como filtro de un solo
+     * parametro (filter[pending_fulfillment]=1). Cualquier valor "falsy"
+     * (0, false, "false", "") no aplica el filtro.
+     */
+    public function scopePendingFulfillment($query, $value = true)
+    {
+        $closedStatuses = ['delivered', 'completed', 'cancelled', 'returned', 'refunded'];
+
+        $enabled = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        $enabled = $enabled ?? true;
+
+        if (!$enabled) {
+            return $query;
+        }
+
+        return $query->whereNotIn('status', $closedStatuses);
+    }
+
+    /**
      * Filter orders by contact email (for customer portal)
      */
     public function scopeForContactEmail($query, string $email)
