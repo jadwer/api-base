@@ -10,6 +10,9 @@ use Modules\Billing\Services\CFDI\CFDIPDFGenerator;
 use Modules\Billing\Services\CFDI\CFDIStampingService;
 use Modules\Billing\Services\CFDI\PrefacturaPDFGenerator;
 use Modules\Billing\Services\CFDIAutomationService;
+use Modules\Billing\Services\CFDI\REPService;
+use Modules\Finance\Models\Payment;
+use Modules\Finance\Models\PaymentApplication;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Services\StockAvailabilityService;
 use Modules\Finance\Models\ARInvoice;
@@ -772,6 +775,96 @@ class CFDIInvoiceController
             ]);
             return response()->json([
                 'error' => 'Error al generar CFDI: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Manually (re)emit a Complemento de Pagos (REP) for the latest abono
+     * registered on a PPD AR invoice.
+     *
+     * POST /api/v1/ar-invoices/{invoice}/payment-complement
+     * Optional body: payment_id (target a specific abono instead of the latest).
+     *
+     * Delegates to REPService, which applies every guard (PUE / not timbrada /
+     * idempotency). Returns 422 with a reason when no REP can be produced.
+     */
+    public function paymentComplement(
+        ARInvoice $invoice,
+        Request $request,
+        REPService $repService
+    ): JsonResponse {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        if (!$user->can('billing.cfdi-invoices.payment-complement')) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
+        // Resolve the target abono: an explicit payment_id, or the latest active
+        // application on this invoice.
+        $paymentId = $request->input('payment_id');
+
+        if ($paymentId) {
+            $payment = Payment::find($paymentId);
+            $belongs = $payment
+                && PaymentApplication::where('payment_id', $payment->id)
+                    ->where('ar_invoice_id', $invoice->id)
+                    ->where('is_active', true)
+                    ->exists();
+            if (!$belongs) {
+                return response()->json([
+                    'error' => 'El pago indicado no está aplicado a esta factura.',
+                ], 422);
+            }
+        } else {
+            $application = PaymentApplication::where('ar_invoice_id', $invoice->id)
+                ->where('is_active', true)
+                ->orderByDesc('id')
+                ->first();
+            if (!$application) {
+                return response()->json([
+                    'error' => 'La factura no tiene pagos aplicados para complementar.',
+                ], 422);
+            }
+            $payment = Payment::find($application->payment_id);
+        }
+
+        // Distinguish a fresh REP (201) from an idempotent hit (200).
+        $alreadyExisted = CFDIInvoice::where('ar_payment_id', $payment->id)
+            ->where('tipo_comprobante', 'P')
+            ->exists();
+
+        try {
+            $rep = $repService->generateFromPayment($payment);
+
+            if (!$rep) {
+                return response()->json([
+                    'error' => 'No aplica complemento de pago: la factura debe ser PPD y estar timbrada (con UUID).',
+                ], 422);
+            }
+
+            return response()->json([
+                'message' => 'Complemento de pago generado',
+                'data' => [
+                    'id' => $rep->id,
+                    'series' => $rep->series,
+                    'folio' => $rep->folio,
+                    'uuid' => $rep->uuid,
+                    'status' => $rep->status,
+                    'tipo_comprobante' => $rep->tipo_comprobante,
+                    'monto_pago' => $rep->monto_pago,
+                ],
+            ], $alreadyExisted ? 200 : 201);
+        } catch (PacException $e) {
+            return response()->json([
+                'message' => 'Error al timbrar el complemento de pago',
+                'error' => $e->getMessage(),
+            ], $e->getStatusCode());
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al generar complemento de pago: ' . $this->safeError($e, 'payment-complement'),
             ], 500);
         }
     }

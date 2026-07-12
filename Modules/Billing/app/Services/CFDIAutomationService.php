@@ -90,6 +90,19 @@ class CFDIAutomationService
                 $importe = (int) ($cantidad * $valorUnitario);
 
                 // Calculate IVA (16%)
+                // TODO(iva-configurable): this per-line IVA is computed on the
+                // item's unit_price treated as NET (add-on 16%), matching the
+                // default pricing.prices_include_tax = false. It also works in
+                // integer cents and hardcodes the 0.16 rate, so it is NOT routed
+                // through the shared TaxCalculator yet. When a tenant enables
+                // tax-inclusive pricing, these XML line importes/base must be
+                // recomputed by breaking the IVA out of the unit price (and the
+                // rate should come from the product, not a constant). Left as-is
+                // because the authoritative document totals (subtotal/iva/total on
+                // the CFDIInvoice header) already come from $arInvoice, whose
+                // amounts flow from the refactored line calculators. Touching the
+                // cents-based XML math risks SAT validation mismatches, so it is
+                // deferred deliberately.
                 $iva = (int) ($importe * 0.16);
 
                 $product = $item->product;

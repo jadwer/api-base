@@ -15,6 +15,10 @@ class EventServiceProvider extends ServiceProvider
         \Modules\Billing\Events\PaymentCaptured::class => [
             \Modules\Billing\Listeners\GenerateCFDIAfterPayment::class,
         ],
+        // Complemento de Pagos (REP): one CFDI tipo P per abono to a PPD invoice.
+        \Modules\Finance\Events\ARPaymentApplied::class => [
+            \Modules\Billing\Listeners\GenerateREPAfterPayment::class,
+        ],
         // Future: CFDIGenerated event can trigger stamping, GL posting, email sending, etc.
         // \Modules\Billing\Events\CFDIGenerated::class => [
         //     \Modules\Billing\Listeners\StampCFDIWithPAC::class,

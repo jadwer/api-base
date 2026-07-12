@@ -50,6 +50,8 @@ class PermissionsSeeder extends Seeder
             'billing.payment-transactions.destroy',
             'billing.cfdi-invoices.stamp',
             'billing.cfdi-invoices.cancel',
+            // Complemento de Pagos (REP): manual (re)emission
+            'billing.cfdi-invoices.payment-complement',
         ];
 
         $this->bulkCreateAndAssignPermissions($writePermissions, ['admin']);

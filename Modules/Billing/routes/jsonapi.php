@@ -68,6 +68,9 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     // GAP-5: Create CFDI invoice from SalesOrder (automated invoicing)
     Route::post('sales-orders/{salesOrder}/facturar', [\Modules\Billing\Http\Controllers\Api\V1\CFDIInvoiceController::class, 'createFromOrder']);
 
+    // Complemento de Pagos (REP): manual (re)emission for a PPD invoice's latest abono
+    Route::post('ar-invoices/{invoice}/payment-complement', [\Modules\Billing\Http\Controllers\Api\V1\CFDIInvoiceController::class, 'paymentComplement']);
+
     // Invoice Series Custom Endpoints (Phase 11)
     Route::get('invoice-series/available', [\Modules\Billing\Http\Controllers\Api\V1\InvoiceSeriesController::class, 'available']);
     Route::get('invoice-series/summary', [\Modules\Billing\Http\Controllers\Api\V1\InvoiceSeriesController::class, 'summary']);

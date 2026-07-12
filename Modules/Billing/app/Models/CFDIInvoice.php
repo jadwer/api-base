@@ -57,6 +57,11 @@ class CFDIInvoice extends Model
         'forma_pago',
         'metodo_pago',
         'condiciones_pago',
+        // Complemento de Pagos 2.0 (REP) - only used when tipo_comprobante='P'
+        'ar_payment_id',
+        'fecha_pago',
+        'monto_pago',
+        'forma_pago_p',
         'cfdi_relacionado_tipo',
         'cfdi_relacionado_uuids',
         'status',
@@ -82,6 +87,8 @@ class CFDIInvoice extends Model
         'isr_retenido' => 'integer',
         'iva_retenido' => 'integer',
         'tipo_cambio' => 'float',
+        'monto_pago' => 'integer',
+        'fecha_pago' => 'datetime',
         'cfdi_relacionado_uuids' => 'array',
         'pac_response' => 'array',
         'metadata' => 'array',
@@ -111,6 +118,27 @@ class CFDIInvoice extends Model
     public function items(): HasMany
     {
         return $this->hasMany(CFDIItem::class, 'cfdi_invoice_id');
+    }
+
+    /**
+     * DoctoRelacionado rows when this CFDI is a Complemento de Pagos (tipo P).
+     */
+    public function paymentDocs(): HasMany
+    {
+        return $this->hasMany(CfdiPaymentDoc::class, 'payment_cfdi_id');
+    }
+
+    /**
+     * The Finance abono (payments.id) that produced this REP, if tipo P.
+     */
+    public function arPayment(): BelongsTo
+    {
+        return $this->belongsTo(\Modules\Finance\Models\Payment::class, 'ar_payment_id');
+    }
+
+    public function isPago(): bool
+    {
+        return $this->tipo_comprobante === 'P';
     }
 
     /**

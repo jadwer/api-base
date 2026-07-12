@@ -3,6 +3,7 @@
 namespace Modules\Finance\Services;
 
 use Modules\Finance\Events\ARInvoiceFullyPaid;
+use Modules\Finance\Events\ARPaymentApplied;
 use Modules\Finance\Events\ARInvoicePaymentReversed;
 use Modules\Finance\Models\Payment;
 use Modules\Finance\Models\PaymentApplication;
@@ -89,6 +90,11 @@ class PaymentApplicationService
                 'amount' => $amount,
                 'application_id' => $application->id,
             ]);
+
+            // Anchor for the Complemento de Pagos (REP): fired for EVERY abono,
+            // not just the settling one. ARInvoiceFullyPaid above still fires
+            // only on liquidation (commissions depend on it) and is untouched.
+            ARPaymentApplied::dispatch($payment->fresh(), $invoice->fresh(), $application, $amount);
 
             return $application->fresh(['payment', 'aRInvoice']);
         });
