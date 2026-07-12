@@ -57,11 +57,31 @@ class QuoteController extends Controller
 
         $request->validate([
             'shopping_cart_id' => 'required|exists:shopping_carts,id',
-            'contact_id' => 'required|exists:contacts,id',
+            'contact_id' => 'nullable|exists:contacts,id',
             'valid_until' => 'nullable|date|after:today',
             'notes' => 'nullable|string|max:2000',
             'terms_and_conditions' => 'nullable|string|max:5000',
         ]);
+
+        // Customers quoting their own cart do not know (or have) a contact_id.
+        // Mirror the checkout behavior: resolve the contact by user email or
+        // create it on the fly.
+        if (!$request->input('contact_id')) {
+            $user = $request->user('sanctum');
+            if (!$user) {
+                abort(422, 'contact_id is required for unauthenticated requests.');
+            }
+            $contact = \Modules\Contacts\Models\Contact::firstOrCreate(
+                ['email' => $user->email],
+                [
+                    'contact_type' => 'person',
+                    'name' => $user->name ?? $user->email,
+                    'is_customer' => true,
+                    'status' => 'active',
+                ]
+            );
+            $request->merge(['contact_id' => $contact->id]);
+        }
 
         $cart = ShoppingCart::with('cartItems.product.brand')->findOrFail($request->input('shopping_cart_id'));
 

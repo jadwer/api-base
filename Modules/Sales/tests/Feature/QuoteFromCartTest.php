@@ -123,18 +123,34 @@ class QuoteFromCartTest extends TestCase
         $response->assertJsonValidationErrors(['shopping_cart_id']);
     }
 
-    public function test_requires_contact_id(): void
+    public function test_missing_contact_id_resolves_or_creates_contact_from_user(): void
     {
+        // Customers quoting their own cart do not send contact_id: the
+        // controller resolves it by user email or creates the contact on the
+        // fly (same behavior as checkout).
         $admin = $this->getAdminUser();
         $cart = ShoppingCart::factory()->create(['user_id' => $admin->id]);
+        $product = Product::factory()->create(['price' => 100]);
+
+        CartItem::factory()->create([
+            'shopping_cart_id' => $cart->id,
+            'product_id' => $product->id,
+            'quantity' => 1,
+            'unit_price' => 100,
+        ]);
 
         $response = $this->actingAs($admin, 'sanctum')
             ->postJson('/api/v1/quotes/from-cart', [
                 'shopping_cart_id' => $cart->id,
             ]);
 
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['contact_id']);
+        $response->assertStatus(201);
+        $this->assertDatabaseHas('contacts', ['email' => $admin->email]);
+        $contactId = Contact::where('email', $admin->email)->value('id');
+        $this->assertDatabaseHas('quotes', [
+            'shopping_cart_id' => $cart->id,
+            'contact_id' => $contactId,
+        ]);
     }
 
     public function test_returns_404_for_nonexistent_cart(): void
