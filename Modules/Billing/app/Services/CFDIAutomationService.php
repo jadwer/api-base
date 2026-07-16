@@ -89,23 +89,18 @@ class CFDIAutomationService
                 $valorUnitario = $this->toCents($item->unit_price ?? $item->amount ?? 0);
                 $importe = (int) ($cantidad * $valorUnitario);
 
-                // Calculate IVA (16%)
-                // TODO(iva-configurable): this per-line IVA is computed on the
-                // item's unit_price treated as NET (add-on 16%), matching the
-                // default pricing.prices_include_tax = false. It also works in
-                // integer cents and hardcodes the 0.16 rate, so it is NOT routed
-                // through the shared TaxCalculator yet. When a tenant enables
-                // tax-inclusive pricing, these XML line importes/base must be
-                // recomputed by breaking the IVA out of the unit price (and the
-                // rate should come from the product, not a constant). Left as-is
-                // because the authoritative document totals (subtotal/iva/total on
-                // the CFDIInvoice header) already come from $arInvoice, whose
-                // amounts flow from the refactored line calculators. Touching the
-                // cents-based XML math risks SAT validation mismatches, so it is
-                // deferred deliberately.
-                $iva = (int) ($importe * 0.16);
-
                 $product = $item->product;
+
+                // La tasa de IVA sale del producto, NO de una constante: hay
+                // productos exentos o tasa 0 (product->iva = false / tax_rate = 0)
+                // y hardcodear 0.16 producia un CFDI con Traslado de IVA que el
+                // Total no cuadra -> SAT CFDI40119. La tasa se toma como fraccion
+                // (tax_rate viene como 16 o 0). El importe se calcula en centavos
+                // sobre el importe neto de la linea.
+                $ivaRate = $product && $product->iva
+                    ? (float) ($product->tax_rate ?? 0) / 100
+                    : 0.0;
+                $iva = (int) round($importe * $ivaRate);
 
                 CFDIItem::create([
                     'cfdi_invoice_id' => $cfdi->id,
@@ -129,7 +124,10 @@ class CFDIAutomationService
                     'importe' => $importe,
                     'descuento' => 0,
 
-                    // Taxes
+                    // Taxes: la tasa y el importe salen del producto. Para tasa 0
+                    // (o exento) el traslado va con TasaOCuota 0.000000 e importe 0,
+                    // manteniendo ObjetoImp '02' (si objeto, tasa 0) para no
+                    // descuadrar el Total (SAT CFDI40119).
                     'objeto_imp' => '02', // Sí objeto de impuesto
                     'impuestos' => [
                         'traslados' => [
@@ -137,7 +135,7 @@ class CFDIAutomationService
                                 'base' => $importe,
                                 'impuesto' => '002', // IVA
                                 'tipo_factor' => 'Tasa',
-                                'tasa_o_cuota' => '0.160000',
+                                'tasa_o_cuota' => number_format($ivaRate, 6, '.', ''),
                                 'importe' => $iva,
                             ]
                         ],

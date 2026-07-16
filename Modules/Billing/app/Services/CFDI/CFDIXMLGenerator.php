@@ -273,11 +273,14 @@ class CFDIXMLGenerator
             }
         }
 
-        // Only add Impuestos node if there are taxes
-        if ($totalTraslados > 0 || $totalRetenciones > 0) {
+        // Agregar el nodo Impuestos cuando EXISTAN traslados/retenciones a nivel
+        // concepto, aunque su importe sea 0 (tasa 0%). El SAT exige el resumen a
+        // nivel comprobante si algun concepto declara un traslado (CFDI40999); no
+        // basta con que el importe sea > 0.
+        if (!empty($trasladosGrouped) || !empty($retencionesGrouped)) {
             $impuestos = $xml->createElement('cfdi:Impuestos');
 
-            if ($totalRetenciones > 0) {
+            if (!empty($retencionesGrouped)) {
                 $impuestos->setAttribute('TotalImpuestosRetenidos', $this->formatAmount($totalRetenciones));
 
                 // Add Retenciones node
@@ -291,7 +294,7 @@ class CFDIXMLGenerator
                 $impuestos->appendChild($retencionesNode);
             }
 
-            if ($totalTraslados > 0) {
+            if (!empty($trasladosGrouped)) {
                 $impuestos->setAttribute('TotalImpuestosTrasladados', $this->formatAmount($totalTraslados));
 
                 // Add Traslados node
