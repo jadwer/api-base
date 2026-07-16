@@ -127,7 +127,9 @@ class BillingServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        // $this->commands([]);
+        $this->commands([
+            \Modules\Billing\Console\UploadCsdToPacCommand::class,
+        ]);
     }
 
     /**

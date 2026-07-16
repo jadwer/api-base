@@ -46,9 +46,15 @@ class SWPacService
     }
 
     /**
-     * Stamp CFDI XML
+     * Stamp CFDI XML via SW's Emision (Issue) service.
      *
-     * @param string $xmlContent The XML content to stamp
+     * Emision recibe el XML SIN sellar, SW lo sella con el CSD previamente
+     * cargado (uploadCertificate) eligiendolo por el RFC del Emisor, y luego
+     * lo timbra. El endpoint /b64 es multipart/form-data con el campo `xml`
+     * (el XML en base64), no un JSON. Este metodo mantiene el nombre stamp()
+     * para no romper a CFDIStampingService.
+     *
+     * @param string $xmlContent The unsealed XML content to issue+stamp
      * @return array Response from PAC with UUID and stamped XML
      * @throws PacException
      */
@@ -59,18 +65,19 @@ class SWPacService
         }
 
         try {
-            // SW Sapien requires base64 encoded XML
+            // SW Sapien /b64 espera multipart con el campo `xml` en base64.
             $xmlBase64 = base64_encode($xmlContent);
 
             $response = Http::withToken($this->getAuthToken())
                 ->timeout($this->timeout)
                 ->retry($this->retryAttempts, $this->retryDelay)
-                ->post("{$this->baseUrl}/cfdi33/stamp/v4/b64", [
-                    'xml' => $xmlBase64,
+                ->asMultipart()
+                ->post("{$this->baseUrl}/cfdi33/issue/v4/b64", [
+                    ['name' => 'xml', 'contents' => $xmlBase64],
                 ]);
 
             if (!$response->successful()) {
-                Log::error('SW PAC stamp error', [
+                Log::error('SW PAC issue error', [
                     'status' => $response->status(),
                     'body' => $response->body(),
                 ]);
@@ -101,12 +108,66 @@ class SWPacService
         } catch (PacException $e) {
             throw $e;
         } catch (\Exception $e) {
-            Log::error('SW PAC stamp exception', [
+            Log::error('SW PAC issue exception', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
 
             throw new PacException('Error al conectar con el PAC: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Upload a CSD (certificate + key) to SW's certificate store (ADT).
+     *
+     * Required once per emisor before using the Emision service. SW stores the
+     * CSD keyed by RFC and picks it automatically by matching the Emisor RFC in
+     * the XML. Idempotent on SW's side: re-uploading updates the stored CSD.
+     *
+     * @param string $cerContent Raw contents of the .cer file
+     * @param string $keyContent Raw contents of the .key file
+     * @param string $keyPassword Password of the .key
+     * @return array SW response
+     * @throws PacException
+     */
+    public function uploadCertificate(string $cerContent, string $keyContent, string $keyPassword): array
+    {
+        if (!$this->enabled) {
+            throw new PacException('SW PAC integration is not enabled');
+        }
+
+        try {
+            $response = Http::withToken($this->getAuthToken())
+                ->timeout($this->timeout)
+                ->retry($this->retryAttempts, $this->retryDelay)
+                ->post("{$this->baseUrl}/certificates/save", [
+                    'type' => 'stamp',
+                    'b64Cer' => base64_encode($cerContent),
+                    'b64Key' => base64_encode($keyContent),
+                    'password' => $keyPassword,
+                ]);
+
+            if (!$response->successful()) {
+                Log::error('SW PAC certificate upload error', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+
+                throw new PacException(
+                    'Error al cargar el CSD en el PAC: ' . ($response->json()['message'] ?? 'Error desconocido'),
+                    $response->status()
+                );
+            }
+
+            return $response->json('data') ?? $response->json();
+        } catch (PacException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            Log::error('SW PAC certificate upload exception', [
+                'message' => $e->getMessage(),
+            ]);
+
+            throw new PacException('Error al cargar el CSD en el PAC: ' . $e->getMessage());
         }
     }
 
