@@ -65,16 +65,15 @@ class SWPacService
         }
 
         try {
-            // SW Sapien /b64 espera multipart con el campo `xml` en base64.
+            // SW Sapien Emision /b64: multipart con el campo `xml` = XML sin sellar
+            // en base64. NO es JSON (eso da "Xml vacio" o error de estructura).
             $xmlBase64 = base64_encode($xmlContent);
 
             $response = Http::withToken($this->getAuthToken())
                 ->timeout($this->timeout)
                 ->retry($this->retryAttempts, $this->retryDelay)
-                ->asMultipart()
-                ->post("{$this->baseUrl}/cfdi33/issue/v4/b64", [
-                    ['name' => 'xml', 'contents' => $xmlBase64],
-                ]);
+                ->attach('xml', $xmlBase64, 'cfdi.txt')
+                ->post("{$this->baseUrl}/cfdi33/issue/v4/b64");
 
             if (!$response->successful()) {
                 Log::error('SW PAC issue error', [
@@ -159,7 +158,10 @@ class SWPacService
                 );
             }
 
-            return $response->json('data') ?? $response->json();
+            // SW puede devolver `data` como objeto, string o null; normalizamos
+            // a array para el contrato del metodo.
+            $body = $response->json();
+            return is_array($body) ? $body : ['response' => $body];
         } catch (PacException $e) {
             throw $e;
         } catch (\Exception $e) {
