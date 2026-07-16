@@ -318,8 +318,13 @@
         <table class="header-table">
             <tr>
                 <td class="logo-cell">
-                    @if($company && $company->logo_path)
-                        <img src="{{ storage_path('app/public/' . $company->logo_path) }}" alt="Logo">
+                    @php
+                        $logoData = $company && $company->logo_path
+                            ? \Modules\Sales\Support\PdfImageHelper::productImageDataUri($company->logo_path)
+                            : null;
+                    @endphp
+                    @if($logoData)
+                        <img src="{{ $logoData }}" alt="Logo">
                     @endif
                 </td>
                 <td class="company-cell">
@@ -438,8 +443,13 @@
                 <td>{{ $index + 1 }}</td>
                 <td class="product-code">{{ $item->product_sku ?? 'N/A' }}</td>
                 <td>
-                    @if($item->product && $item->product->primary_image)
-                        <img src="{{ storage_path('app/public/' . $item->product->primary_image) }}" class="product-image" alt="">
+                    @php
+                        $imgData = $item->product
+                            ? \Modules\Sales\Support\PdfImageHelper::productImageDataUri($item->product->primary_image ?? $item->product->img_path)
+                            : null;
+                    @endphp
+                    @if($imgData)
+                        <img src="{{ $imgData }}" class="product-image" alt="">
                     @else
                         <div style="width: 40px; height: 40px; background: #e2e8f0; text-align: center; line-height: 40px; font-size: 8px; color: #a0aec0;">N/A</div>
                     @endif

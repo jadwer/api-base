@@ -363,9 +363,14 @@
             <table class="header-table">
                 <tr>
                     <td class="header-left">
-                        @if($settings && $settings->logo_path)
+                        @php
+                            $logoData = $settings && $settings->logo_path
+                                ? \Modules\Sales\Support\PdfImageHelper::productImageDataUri($settings->logo_path)
+                                : null;
+                        @endphp
+                        @if($logoData)
                         <div class="logo-section">
-                            <img src="{{ public_path('storage/' . $settings->logo_path) }}" alt="Logo">
+                            <img src="{{ $logoData }}" alt="Logo">
                         </div>
                         @else
                         <div class="company-name">{{ $settings->company_name ?? config('app.name') }}</div>

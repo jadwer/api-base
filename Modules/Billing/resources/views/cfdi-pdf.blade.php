@@ -238,6 +238,14 @@
                 </div>
             </div>
             <div class="header-right">
+                @php
+                    $logoData = $settings && $settings->logo_path
+                        ? \Modules\Sales\Support\PdfImageHelper::productImageDataUri($settings->logo_path)
+                        : null;
+                @endphp
+                @if($logoData)
+                    <img src="{{ $logoData }}" alt="Logo" style="max-width: 150px; max-height: 55px; margin-bottom: 6px;">
+                @endif
                 <div class="folio-box">
                     <div class="folio-title">FACTURA ELECTRÓNICA</div>
                     <div class="folio-number">{{ $invoice->series }}-{{ str_pad($invoice->folio, 6, '0', STR_PAD_LEFT) }}</div>
