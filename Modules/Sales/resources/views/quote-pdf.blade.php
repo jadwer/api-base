@@ -133,8 +133,26 @@
             font-weight: bold;
             color: #333;
         }
+        /* Columna Producto: SOLO la miniatura, centrada (layout de referencia LWM).
+           El nombre del producto va en la columna Descripcion. */
+        .product-image-cell {
+            text-align: center;
+            vertical-align: middle;
+        }
+        .product-image-cell img {
+            width: 45px;
+            max-height: 45px;
+        }
+        .product-description {
+            text-align: center;
+        }
         .product-name {
             color: #444;
+        }
+        .product-detail {
+            color: #777;
+            font-size: 7px;
+            margin-top: 2px;
         }
         .product-eta {
             color: #c53030;
@@ -321,10 +339,10 @@
         <thead>
             <tr>
                 <th style="width: 10%;">Cod</th>
-                <th style="width: 18%;">Producto</th>
+                <th class="text-center" style="width: 10%;">Producto</th>
                 <th class="text-center" style="width: 8%;">Cantidad</th>
                 <th class="text-center" style="width: 8%;">Unidad</th>
-                <th style="width: 30%;">Descripcion</th>
+                <th class="text-center" style="width: 38%;">Descripcion</th>
                 <th class="text-right" style="width: 13%;">Precio Unitario</th>
                 <th class="text-right" style="width: 13%;">Importe</th>
             </tr>
@@ -333,7 +351,7 @@
             @foreach($items as $item)
             <tr>
                 <td class="product-code">{{ $item->product_sku ?? 'N/A' }}</td>
-                <td class="product-name">
+                <td class="product-image-cell">
                     @if($item->product && $item->product->img_path)
                         @php
                             $rawPath = $item->product->img_path;
@@ -349,16 +367,17 @@
                             }
                         @endphp
                         @if(file_exists($imgPath))
-                            <img src="{{ $imgPath }}" style="max-width: 40px; max-height: 40px; margin-bottom: 4px; display: block;" alt="">
+                            {{-- width como atributo: dompdf ignora max-width en SVG y desborda la celda --}}
+                            <img src="{{ $imgPath }}" width="45" style="width: 45px; max-height: 45px;" alt="">
                         @endif
                     @endif
-                    {{ $item->product_name ?? ($item->product ? $item->product->name : 'Producto') }}
                 </td>
                 <td class="text-center">{{ number_format($item->quantity, 2) }}</td>
                 <td class="text-center">{{ $item->product && $item->product->unit ? $item->product->unit->name : 'PZA' }}</td>
-                <td>
+                <td class="product-description">
+                    <div class="product-name">{{ $item->product_name ?? ($item->product ? $item->product->name : 'Producto') }}</div>
                     @if($item->product && $item->product->description)
-                        {{ \Illuminate\Support\Str::limit(strip_tags($item->product->description), 120) }}
+                        <div class="product-detail">{{ \Illuminate\Support\Str::limit(strip_tags($item->product->description), 120) }}</div>
                     @endif
                     @if($item->notes)
                         <div class="product-eta">{{ $item->notes }}</div>
