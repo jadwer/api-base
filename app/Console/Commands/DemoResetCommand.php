@@ -46,6 +46,9 @@ class DemoResetCommand extends Command
 
         $steps = [
             'migrate:fresh' => fn () => Artisan::call('migrate:fresh', ['--force' => true], $this->output),
+            // El enlace public/storage se pierde en algunos reinicios del hosting;
+            // recrearlo aqui evita que las imagenes y PDFs devuelvan 404 tras el reset.
+            'storage:link' => fn () => Artisan::call('storage:link', [], $this->output),
             'CleanDatabaseSeeder' => fn () => Artisan::call('db:seed', [
                 '--class' => \Database\Seeders\CleanDatabaseSeeder::class,
                 '--force' => true,
