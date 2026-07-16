@@ -248,6 +248,16 @@ class CleanCatalogsSeeder extends Seeder
      */
     private function seedDefaultCompanySetting(): void
     {
+        // Logo de la empresa para los PDFs (cotizacion, pedido, remision).
+        // dompdf lo lee del filesystem local, asi que el archivo debe existir
+        // en storage; sin el, los PDFs salen sin logo (hallazgo E2E 2026-07-16).
+        $logoPath = 'company/logo.png';
+        $logoAsset = database_path('seeders/assets/company-logo.png');
+        if (!Storage::disk('public')->exists($logoPath) && file_exists($logoAsset)) {
+            Storage::disk('public')->makeDirectory('company');
+            Storage::disk('public')->put($logoPath, file_get_contents($logoAsset));
+        }
+
         \Modules\Billing\Models\CompanySetting::firstOrCreate(
             ['rfc' => 'EKU9003173C9'], // RFC de pruebas SAT (persona moral, 12 chars)
             [
@@ -268,6 +278,7 @@ class CleanCatalogsSeeder extends Seeder
                 'state' => 'Hidalgo',
                 'phone' => '7711234567',
                 'email' => env('COMPANY_EMAIL', 'facturacion@example.com'),
+                'logo_path' => $logoPath,
             ]
         );
     }
