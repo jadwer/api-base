@@ -289,8 +289,13 @@
                     @endif
                 </td>
                 <td class="logo-cell">
-                    @if($company && $company->logo_path)
-                        <img src="{{ storage_path('app/public/' . $company->logo_path) }}" alt="Logo">
+                    @php
+                        $logoData = $company && $company->logo_path
+                            ? \Modules\Sales\Support\PdfImageHelper::productImageDataUri($company->logo_path)
+                            : null;
+                    @endphp
+                    @if($logoData)
+                        <img src="{{ $logoData }}" alt="Logo">
                     @endif
                 </td>
             </tr>
@@ -352,24 +357,15 @@
             <tr>
                 <td class="product-code">{{ $item->product_sku ?? 'N/A' }}</td>
                 <td class="product-image-cell">
-                    @if($item->product && $item->product->img_path)
-                        @php
-                            $rawPath = $item->product->img_path;
-                            $imgPath = storage_path('app/public/' . $rawPath);
-                            if (!file_exists($imgPath)) {
-                                $imgPath = storage_path('app/public/products/' . $rawPath);
-                            }
-                            if (!file_exists($imgPath)) {
-                                $imgPath = public_path('storage/' . $rawPath);
-                            }
-                            if (!file_exists($imgPath)) {
-                                $imgPath = public_path('storage/products/' . $rawPath);
-                            }
-                        @endphp
-                        @if(file_exists($imgPath))
-                            {{-- width como atributo: dompdf ignora max-width en SVG y desborda la celda --}}
-                            <img src="{{ $imgPath }}" width="45" style="width: 45px; max-height: 45px;" alt="">
-                        @endif
+                    @php
+                        // Data URI (convierte webp->png; dompdf no soporta webp).
+                        $imgData = $item->product
+                            ? \Modules\Sales\Support\PdfImageHelper::productImageDataUri($item->product->img_path)
+                            : null;
+                    @endphp
+                    @if($imgData)
+                        {{-- width como atributo: dompdf ignora max-width y desborda la celda --}}
+                        <img src="{{ $imgData }}" width="45" style="width: 45px; max-height: 45px;" alt="">
                     @endif
                 </td>
                 <td class="text-center">{{ number_format($item->quantity, 2) }}</td>
