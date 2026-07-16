@@ -40,5 +40,8 @@ return [
         'storage_path' => env('CFDI_STORAGE_PATH', 'cfdi'),
         'xml_path' => env('CFDI_XML_PATH', 'cfdi/xml'),
         'pdf_path' => env('CFDI_PDF_PATH', 'cfdi/pdf'),
+        // Zona horaria del lugar de expedicion para la Fecha del CFDI. El SAT
+        // exige hora local del emisor; la app puede correr en UTC. Por tenant.
+        'timezone' => env('CFDI_TIMEZONE', 'America/Mexico_City'),
     ],
 ];

@@ -75,7 +75,15 @@ class CFDIXMLGenerator
         $comprobante->setAttribute('Version', '4.0');
         $comprobante->setAttribute('Serie', $invoice->series ?? 'F');
         $comprobante->setAttribute('Folio', (string)$invoice->folio);
-        $comprobante->setAttribute('Fecha', $invoice->fecha_emision->format('Y-m-d\TH:i:s'));
+        // El SAT exige la Fecha en hora LOCAL del lugar de expedicion (no UTC).
+        // La app puede correr en UTC (cPanel), asi que convertimos a la zona del
+        // emisor antes de formatear; de lo contrario el PAC rechaza con
+        // "401 - fecha de generacion mayor a 72 horas" por el desfase.
+        $emisorTz = config('billing.cfdi.timezone', 'America/Mexico_City');
+        $comprobante->setAttribute(
+            'Fecha',
+            $invoice->fecha_emision->copy()->setTimezone($emisorTz)->format('Y-m-d\TH:i:s')
+        );
         $comprobante->setAttribute('FormaPago', $invoice->forma_pago ?? '99');
         $comprobante->setAttribute('SubTotal', $this->formatAmount($invoice->subtotal));
 
