@@ -717,12 +717,20 @@ class CFDIInvoiceController
             ], 422);
         }
 
-        // Find ARInvoice for the order
+        // Find ARInvoice for the order. Si no existe (ej. la orden llego a
+        // delivered sin pasar por el Observer que lo crea, como ocurre con
+        // ordenes sembradas), lo generamos aqui con el mismo servicio que usa
+        // el listener, en vez de abortar. La orden ya se valido delivered/completed.
         $arInvoice = ARInvoice::where('sales_order_id', $salesOrder->id)->first();
         if (!$arInvoice) {
-            return response()->json([
-                'error' => 'La orden no tiene factura de cuentas por cobrar (ARInvoice). Verifique que la orden se proceso correctamente.',
-            ], 422);
+            try {
+                $arInvoice = app(\Modules\Finance\Services\ARInvoiceService::class)
+                    ->createFromSalesOrder($salesOrder);
+            } catch (\Throwable $e) {
+                return response()->json([
+                    'error' => 'No se pudo generar la factura de cuentas por cobrar (ARInvoice) de la orden: ' . $e->getMessage(),
+                ], 422);
+            }
         }
 
         // Check if CFDI already exists for this ARInvoice
