@@ -39,6 +39,17 @@ class ProductSchema extends Schema
             Number::make('taxRate', 'tax_rate'),
             Boolean::make('isActive', 'is_active')->sortable(),
             Boolean::make('isPublic', 'is_public')->sortable(),
+
+            // Oferta: el catalogo publico ya lee estos campos (PublicProductSchema
+            // + scope onSale con ventana de fechas), pero no estaban expuestos en
+            // el schema de administracion, asi que no habia forma de marcar un
+            // producto en oferta y la seccion "Ofertas del Mes" del sitio quedaba
+            // siempre vacia.
+            Boolean::make('isOnSale', 'is_on_sale')->sortable(),
+            DateTime::make('saleStartsAt', 'sale_starts_at'),
+            DateTime::make('saleEndsAt', 'sale_ends_at'),
+            Str::make('saleBadge', 'sale_badge'),
+
             Str::make('imgPath', 'img_path'),
             Str::make('datasheetPath', 'datasheet_path'),
             Str::make('imgUrl')->readOnly()->extractUsing(
@@ -83,6 +94,7 @@ class ProductSchema extends Schema
             Where::make('currency_id'),
             Where::make('is_active')->asBoolean(),
             Where::make('is_public')->asBoolean(),
+            Where::make('is_on_sale')->asBoolean(),
             WhereIn::make('brands', 'brand_id')->delimiter(','),
             WhereIn::make('categories', 'category_id')->delimiter(','),
             WhereIn::make('units', 'unit_id')->delimiter(','),

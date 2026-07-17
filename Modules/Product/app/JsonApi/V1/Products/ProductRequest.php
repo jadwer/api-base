@@ -32,6 +32,13 @@ class ProductRequest extends ResourceRequest
             'productType' => ['nullable', 'string', Rule::in(['finished', 'raw_material', 'both'])],
             'taxRate' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'isPublic' => ['sometimes', 'boolean'],
+            // Oferta. Las fechas son opcionales: sin ellas la oferta corre
+            // mientras isOnSale este activo (asi lo resuelve el scope onSale
+            // del modelo). Si se dan ambas, el fin debe ser posterior al inicio.
+            'isOnSale' => ['sometimes', 'boolean'],
+            'saleStartsAt' => ['nullable', 'date'],
+            'saleEndsAt' => ['nullable', 'date', 'after_or_equal:saleStartsAt'],
+            'saleBadge' => ['nullable', 'string', 'max:50'],
             'imgPath' => ['nullable', 'string', 'max:500', 'not_regex:/\.\./'],
             'datasheetPath' => ['nullable', 'string', 'max:500', 'not_regex:/\.\./'],
             'unit' => JsonApiRule::toOne(),

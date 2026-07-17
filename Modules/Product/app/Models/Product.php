@@ -48,6 +48,9 @@ class Product extends Model
         'is_on_sale',
         'sale_starts_at',
         'sale_ends_at',
+        // Faltaba en fillable: la columna y el schema publico ya lo exponian,
+        // pero al guardar se descartaba en silencio (mass assignment).
+        'sale_badge',
         'img_path',
         'datasheet_path',
         'unit_id',
