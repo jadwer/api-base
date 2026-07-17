@@ -118,7 +118,12 @@ class PostInventoryMovementToGL
      */
     private function postEntryMovement($movement)
     {
-        $amount = abs($movement->total_cost ?? ($movement->quantity * $movement->cost_per_unit));
+        // Refactor ciclo (Patron 3, bug importe-0): antes leia total_cost/cost_per_unit,
+        // que InventoryMovementService NUNCA llena (setea unit_cost; la BD calcula
+        // total_value = quantity*unit_cost como columna STORED). total_cost tiene
+        // default(0) y no es null, asi que el ?? nunca caia al fallback -> TODO asiento
+        // se posteaba con importe 0. Ahora usa total_value (o quantity*unit_cost) reales.
+        $amount = abs($movement->total_value ?? ($movement->quantity * $movement->unit_cost));
 
         // Get account codes from config
         $inventoryAssetCode = $this->getWarehouseAccount($movement->warehouse_id, 'inventory_asset')
@@ -143,7 +148,7 @@ class PostInventoryMovementToGL
                     'account_id' => $inventoryAsset->id,
                     'debit_amount' => $amount,
                     'credit_amount' => 0,
-                    'description' => "Stock increase - {$movement->quantity} units @ {$movement->cost_per_unit}",
+                    'description' => "Stock increase - {$movement->quantity} units @ {$movement->unit_cost}",
                 ],
                 [
                     'account_id' => $inventoryAccrual->id,
@@ -161,7 +166,12 @@ class PostInventoryMovementToGL
      */
     private function postExitMovement($movement)
     {
-        $amount = abs($movement->total_cost ?? ($movement->quantity * $movement->cost_per_unit));
+        // Refactor ciclo (Patron 3, bug importe-0): antes leia total_cost/cost_per_unit,
+        // que InventoryMovementService NUNCA llena (setea unit_cost; la BD calcula
+        // total_value = quantity*unit_cost como columna STORED). total_cost tiene
+        // default(0) y no es null, asi que el ?? nunca caia al fallback -> TODO asiento
+        // se posteaba con importe 0. Ahora usa total_value (o quantity*unit_cost) reales.
+        $amount = abs($movement->total_value ?? ($movement->quantity * $movement->unit_cost));
 
         // Get account codes from config
         $cogsCode = $this->getWarehouseAccount($movement->warehouse_id, 'cogs')
@@ -205,7 +215,12 @@ class PostInventoryMovementToGL
      */
     private function postAdjustmentMovement($movement)
     {
-        $amount = abs($movement->total_cost ?? ($movement->quantity * $movement->cost_per_unit));
+        // Refactor ciclo (Patron 3, bug importe-0): antes leia total_cost/cost_per_unit,
+        // que InventoryMovementService NUNCA llena (setea unit_cost; la BD calcula
+        // total_value = quantity*unit_cost como columna STORED). total_cost tiene
+        // default(0) y no es null, asi que el ?? nunca caia al fallback -> TODO asiento
+        // se posteaba con importe 0. Ahora usa total_value (o quantity*unit_cost) reales.
+        $amount = abs($movement->total_value ?? ($movement->quantity * $movement->unit_cost));
 
         // Get account codes from config
         $inventoryAssetCode = $this->getWarehouseAccount($movement->warehouse_id, 'inventory_asset')
@@ -324,7 +339,7 @@ class PostInventoryMovementToGL
             'movement_id' => $movement->id,
             'movement_type' => $movement->movement_type,
             'quantity' => $movement->quantity,
-            'total_cost' => $movement->total_cost,
+            'total_value' => $movement->total_value,
             'error' => $e->getMessage(),
             'retry_attempts' => $retryAttempts,
         ]);

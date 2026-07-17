@@ -35,8 +35,12 @@ class PurchaseOrderSchema extends Schema
             Number::make('warehouseId', 'warehouse_id'),
             DateTime::make('orderDate', 'order_date')
                 ->sortable(),
+            // Refactor ciclo (Patron 1): status NO editable por PATCH; transiciones por
+            // los endpoints approve/reject/receive/cancel. Un PATCH a 'received' saltaba
+            // la validacion de tolerancia y disparaba el Observer sin control.
             Str::make('status')
-                ->sortable(),
+                ->sortable()
+                ->readOnlyOnUpdate(),
             Number::make('totalAmount', 'total_amount')
                 ->sortable(),
             Str::make('notes'),

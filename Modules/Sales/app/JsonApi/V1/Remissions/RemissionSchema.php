@@ -51,7 +51,9 @@ class RemissionSchema extends Schema
 
             // Basic fields
             Str::make('remissionNumber', 'remission_number')->sortable(),
-            Str::make('status')->sortable(),
+            // Refactor ciclo (Patron 1): status de remision solo por print/deliver/cancel.
+            // Un PATCH a 'delivered' saltaba la entrega real (que ahora descuenta stock).
+            Str::make('status')->sortable()->readOnlyOnUpdate(),
             DateTime::make('remissionDate', 'remission_date')->sortable(),
             DateTime::make('deliveryDate', 'delivery_date'),
 

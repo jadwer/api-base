@@ -9,6 +9,7 @@ use LaravelJsonApi\Laravel\Http\Controllers\Actions;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Services\SalesOrderPDFGenerator;
 use Modules\Sales\Services\StockAvailabilityService;
+use Modules\Sales\Services\OrderStatusService;
 use Modules\Contacts\Models\Contact;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -188,7 +189,7 @@ class SalesOrderController extends Controller
      * Cancel a sales order
      * POST /api/v1/sales-orders/{salesOrder}/cancel
      */
-    public function cancel(SalesOrder $salesOrder): JsonResponse
+    public function cancel(SalesOrder $salesOrder, OrderStatusService $orderStatusService): JsonResponse
     {
         $user = request()->user('sanctum');
         if (!$user) {
@@ -206,7 +207,21 @@ class SalesOrderController extends Controller
             return response()->json(['error' => 'No se puede cancelar una orden completada'], 400);
         }
 
-        $salesOrder->update(['status' => 'cancelled']);
+        // Refactor ciclo (5b/F1): antes hacia update(status=cancelled) DIRECTO, saltando
+        // OrderStatusService -> nunca disparaba SalesOrderCancelled, no se anulaba la
+        // factura ni se revertia el GL/inventario. Ahora pasa por cancelOrder(), que valida
+        // la transicion, libera reserva, dispara el evento de dominio y (via listeners)
+        // anula la ARInvoice y repone el stock entregado.
+        // Nota: una orden 'delivered'/'completed' NO se cancela (se hace devolucion/return);
+        // cancelOrder lanza si la transicion no es valida y aqui se traduce a 422.
+        try {
+            $salesOrder = $orderStatusService->cancelOrder($salesOrder, 'Cancelada desde el dashboard');
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => 'No se puede cancelar la orden en su estado actual (' . $salesOrder->status
+                    . '). Si ya fue entregada, use una devolucion. Detalle: ' . $e->getMessage(),
+            ], 422);
+        }
 
         return response()->json([
             'message' => 'Orden cancelada exitosamente',

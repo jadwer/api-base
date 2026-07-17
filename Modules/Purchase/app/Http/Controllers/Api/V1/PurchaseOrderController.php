@@ -285,4 +285,162 @@ class PurchaseOrderController extends Controller
             ], 400);
         }
     }
+
+    /**
+     * Receive a purchase order (mark items as received).
+     * POST /api/v1/purchase-orders/{purchaseOrder}/receive
+     *
+     * Refactor ciclo (Patron 1): antes NO existia endpoint de recepcion; la unica via
+     * era un PATCH directo de status a 'received', que saltaba la validacion de
+     * tolerancia y recepcion parcial. Ahora la recepcion pasa por PurchaseOrder::receive()
+     * (valida +5% de tolerancia por item) que, al completar, hace update(status=received)
+     * -> dispara PurchaseOrderObserver -> PurchaseOrderReceived -> entrada de stock + APInvoice.
+     *
+     * Body: { items: [{ id, quantity }] }  (recepcion parcial soportada).
+     * Si no se envian items, se reciben todos completos.
+     */
+    public function receive(Request $request, PurchaseOrder $purchaseOrder): JsonResponse
+    {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        if (!$user->can('purchase-orders.update')) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
+        if (!in_array($purchaseOrder->status, ['pending', 'approved'])) {
+            return response()->json([
+                'errors' => [[
+                    'status' => '422',
+                    'title' => 'Invalid State',
+                    'detail' => "Solo se pueden recibir ordenes en estado 'pending' o 'approved'. Estado actual: {$purchaseOrder->status}",
+                ]]
+            ], 422);
+        }
+
+        // El FE ya consumia este endpoint con el contrato { itemId, receivedQuantity }.
+        // Aceptamos ese formato Y el simple { id, quantity } para robustez (5a: alinear
+        // BE con el contrato que el frontend ya enviaba).
+        $request->validate([
+            'items' => 'sometimes|array',
+            'items.*.id' => 'sometimes|integer',
+            'items.*.itemId' => 'sometimes|integer',
+            'items.*.quantity' => 'sometimes|numeric|min:0',
+            'items.*.receivedQuantity' => 'sometimes|numeric|min:0',
+        ]);
+
+        try {
+            // Normalizar los items al formato que espera PurchaseOrder::receive(): id + quantity.
+            $items = collect($request->input('items', []))->map(fn ($it) => [
+                'id' => $it['id'] ?? $it['itemId'] ?? null,
+                'quantity' => (float) ($it['quantity'] ?? $it['receivedQuantity'] ?? 0),
+            ])->filter(fn ($i) => $i['id'] && $i['quantity'] > 0)->values()->all();
+
+            // Sin items explicitos: recibir todo lo pendiente de cada linea.
+            if (empty($items)) {
+                $items = $purchaseOrder->purchaseOrderItems->map(fn ($it) => [
+                    'id' => $it->id,
+                    'quantity' => (float) $it->quantity - (float) $it->received_quantity,
+                ])->filter(fn ($i) => $i['quantity'] > 0)->values()->all();
+            }
+
+            $purchaseOrder->receive($items);
+            $purchaseOrder->refresh();
+
+            return response()->json([
+                'data' => [
+                    'id' => (string) $purchaseOrder->id,
+                    'type' => 'purchase-orders',
+                    'attributes' => [
+                        'status' => $purchaseOrder->status,
+                        'is_fully_received' => $purchaseOrder->isFullyReceived(),
+                    ],
+                ],
+                'meta' => [
+                    'message' => 'Purchase order received.',
+                ],
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => [[
+                    'status' => '400',
+                    'title' => 'Receive Failed',
+                    'detail' => $e->getMessage(),
+                ]]
+            ], 400);
+        }
+    }
+
+    /**
+     * Cancel a purchase order.
+     * POST /api/v1/purchase-orders/{purchaseOrder}/cancel
+     *
+     * Refactor ciclo (Patron 2): antes NO existia endpoint de cancelacion y no habia
+     * evento PurchaseOrderCancelled, asi que cancelar una OC ya recibida (PATCH status)
+     * dejaba stock fantasma + APInvoice viva. Ahora dispara PurchaseOrderCancelled con el
+     * status previo; los listeners de Inventory/Finance revierten stock y APInvoice si la
+     * OC estuvo en 'received'.
+     */
+    public function cancel(Request $request, PurchaseOrder $purchaseOrder): JsonResponse
+    {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        if (!$user->can('purchase-orders.update')) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
+        if ($purchaseOrder->status === 'cancelled') {
+            return response()->json([
+                'errors' => [[
+                    'status' => '422',
+                    'title' => 'Invalid State',
+                    'detail' => 'La orden ya esta cancelada.',
+                ]]
+            ], 422);
+        }
+
+        $request->validate([
+            'reason' => 'sometimes|nullable|string|max:500',
+        ]);
+
+        try {
+            $previousStatus = $purchaseOrder->status;
+
+            $purchaseOrder->update([
+                'status' => 'cancelled',
+                'metadata' => array_merge($purchaseOrder->metadata ?? [], [
+                    'cancelled_at' => now()->toIso8601String(),
+                    'cancellation_reason' => $request->input('reason'),
+                ]),
+            ]);
+
+            event(new \Modules\Purchase\Events\PurchaseOrderCancelled($purchaseOrder->fresh(), $previousStatus));
+
+            return response()->json([
+                'data' => [
+                    'id' => (string) $purchaseOrder->id,
+                    'type' => 'purchase-orders',
+                    'attributes' => [
+                        'status' => 'cancelled',
+                    ],
+                ],
+                'meta' => [
+                    'message' => 'Purchase order cancelled.',
+                ],
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => [[
+                    'status' => '400',
+                    'title' => 'Cancellation Failed',
+                    'detail' => $e->getMessage(),
+                ]]
+            ], 400);
+        }
+    }
 }

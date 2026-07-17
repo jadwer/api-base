@@ -17,6 +17,12 @@ class EventServiceProvider extends ServiceProvider
             \Modules\Finance\Listeners\SalesOrderCompletedListener::class,
         ],
 
+        // Refactor ciclo (Patron 2, D-c): camino UNICO de facturacion de venta.
+        // Reemplaza al SalesOrderObserver::updated. Dashboard y ecommerce disparan este.
+        \Modules\Sales\Events\SalesOrderDelivered::class => [
+            \Modules\Finance\Listeners\SalesOrderDeliveredListener::class,
+        ],
+
         // Purchase → Finance Integration
         \Modules\Purchase\Events\PurchaseOrderReceived::class => [
             \Modules\Finance\Listeners\PurchaseOrderReceivedListener::class,
@@ -25,6 +31,11 @@ class EventServiceProvider extends ServiceProvider
         // Sales → Finance Cancellation
         \Modules\Sales\Events\SalesOrderCancelled::class => [
             \Modules\Finance\Listeners\SalesOrderCancelledListener::class,
+        ],
+
+        // Refactor ciclo (Patron 2): cancelar una OC recibida anula su APInvoice.
+        \Modules\Purchase\Events\PurchaseOrderCancelled::class => [
+            \Modules\Finance\Listeners\PurchaseOrderCancelledListener::class,
         ],
 
         // Finance Internal Events

@@ -25,10 +25,15 @@ class SalesOrderRequest extends ResourceRequest
                 'max:50',
                 Rule::unique('sales_orders', 'order_number')->ignore($order?->id)
             ],
-            'status' => [
-                $isCreating ? 'required' : 'sometimes',
-                Rule::in(['draft', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'])
-            ],
+            // Refactor ciclo (Patron 1): en creacion se valida el status inicial con el
+            // enum completo de la maquina de OrderStatusService (antes omitia pending/
+            // completed/returned/refunded, que convert() sí usa). En update se acepta pero
+            // el Schema lo marca readOnlyOnUpdate -> el valor se IGNORA (no falla para no
+            // romper el form de edicion del FE que envia status). Las transiciones reales
+            // van por OrderStatusService (endpoint POST /orders/{id}/status).
+            'status' => $isCreating
+                ? ['required', Rule::in(['draft', 'pending', 'confirmed', 'processing', 'shipped', 'delivered', 'completed', 'cancelled', 'returned', 'refunded'])]
+                : ['sometimes', 'string'],
             'orderDate' => [$isCreating ? 'required' : 'sometimes', 'date'],
             'approvedAt' => ['nullable', 'date'],
             'deliveredAt' => ['nullable', 'date'],

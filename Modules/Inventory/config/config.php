@@ -24,11 +24,20 @@ return [
     | These can be overridden per warehouse in the warehouse_accounts config.
     |
     */
+    // Refactor ciclo (Patron 3, decision D-b): antes estos codigos con guion
+    // (115-001, 205-001, 500-001, 680-001) NO existian en el catalogo mexicano
+    // (CatalogoCuentasMexicanoSeeder usa codigos de 4 digitos), asi que TODO posting
+    // GL de inventario reventaba con "Required GL accounts not found". Se mapean a las
+    // cuentas REALES verificadas en el chart (todas is_postable=1):
+    //   1108 Almacen (activo) | 5101 Costo de Ventas | 2101 Proveedores.
+    // La variacion de inventario (mermas/sobrantes) va a 5101 (Costo de Ventas) por
+    // convencion; si el cliente quiere una cuenta de merma dedicada, se agrega al chart
+    // y se repunta aqui.
     'gl_accounts' => [
-        'inventory_asset' => env('INVENTORY_GL_ASSET', '115-001'),       // Inventario (activo)
-        'inventory_accrual' => env('INVENTORY_GL_ACCRUAL', '205-001'),   // Acreedores por inventario
-        'cogs' => env('INVENTORY_GL_COGS', '500-001'),                   // Costo de ventas
-        'inventory_variance' => env('INVENTORY_GL_VARIANCE', '680-001'), // Variación de inventario
+        'inventory_asset' => env('INVENTORY_GL_ASSET', '1108'),          // Almacen (activo)
+        'inventory_accrual' => env('INVENTORY_GL_ACCRUAL', '2101'),      // Proveedores (contrapartida entrada)
+        'cogs' => env('INVENTORY_GL_COGS', '5101'),                      // Costo de Ventas
+        'inventory_variance' => env('INVENTORY_GL_VARIANCE', '5101'),    // Variacion -> Costo de Ventas
     ],
 
     /*

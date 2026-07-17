@@ -379,6 +379,33 @@ class ShoppingCartController extends Controller
             ], 400);
         }
 
+        // Refactor ciclo (5b/F5/F6): pre-chequeo de stock best-effort (falla temprano con
+        // buen mensaje ANTES de crear contacto/orden). La GARANTIA real contra oversell
+        // esta en la reserva atomica con lockForUpdate DENTRO de la transaccion (mas
+        // abajo), que cierra la ventana de carrera TOCTOU. Este pre-chequeo no reserva.
+        $shoppingCart->loadMissing('cartItems');
+        $insufficient = [];
+        foreach ($shoppingCart->cartItems as $ci) {
+            if (!$ci->product_id) {
+                continue;
+            }
+            $available = (float) \Modules\Inventory\Models\Stock::where('product_id', $ci->product_id)
+                ->sum(DB::raw('quantity - reserved_quantity'));
+            if ($available < (float) $ci->quantity) {
+                $insufficient[] = [
+                    'product_id' => $ci->product_id,
+                    'requested' => (float) $ci->quantity,
+                    'available' => $available,
+                ];
+            }
+        }
+        if (!empty($insufficient)) {
+            return response()->json([
+                'error' => 'Stock insuficiente para uno o mas productos del carrito.',
+                'insufficient_items' => $insufficient,
+            ], 422);
+        }
+
         return DB::transaction(function () use ($request, $shoppingCart, $contactId, $user, $shippingAddress, $billingAddress) {
             // Create Contact on-the-fly for authenticated users without one,
             // so a registered customer can always complete checkout.
@@ -427,7 +454,15 @@ class ShoppingCartController extends Controller
                 ]),
             ]);
 
-            // Create order items with currency traceability
+            // Create order items with currency traceability.
+            // Refactor ciclo (5b/re-auditoria N1/N2): originalmente aqui se reservaba stock
+            // (reserved_quantity) con lockForUpdate. Se REVIRTIO: el subsistema de reservas
+            // (reserved_quantity) esta descuadrado con el de salidas (quantity) a nivel
+            // estructural -- createExit no libera reserved, releaseInventory libera un solo
+            // almacen, no hay expiracion de reservas pending. Reservar aqui amplificaba ese
+            // descuadre (reserva huerfana, doble compromiso). Se deja SOLO la validacion de
+            // stock (arriba, best-effort) hasta que se rediseñe el modelo reserva->salida.
+            // Ver docs/audit-lwm-migration/PENDIENTE_REDISENO_RESERVAS.md.
             foreach ($shoppingCart->cartItems as $cartItem) {
                 SalesOrderItem::create([
                     'sales_order_id' => $order->id,

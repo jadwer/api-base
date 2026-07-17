@@ -33,6 +33,12 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::post('purchase-orders/{purchaseOrder}/approve', [PurchaseOrderController::class, 'approve'])->name('purchase-orders.approve');
     Route::post('purchase-orders/{purchaseOrder}/reject', [PurchaseOrderController::class, 'reject'])->name('purchase-orders.reject');
 
+    // Refactor ciclo (Patron 1/2): endpoints de accion que antes no existian.
+    // La recepcion y la cancelacion solo se lograban por PATCH directo de status,
+    // saltando la validacion de tolerancia (receive) y la reversa de stock/APInvoice (cancel).
+    Route::post('purchase-orders/{purchaseOrder}/receive', [PurchaseOrderController::class, 'receive'])->name('purchase-orders.receive');
+    Route::post('purchase-orders/{purchaseOrder}/cancel', [PurchaseOrderController::class, 'cancel'])->name('purchase-orders.cancel');
+
     // PU-M003: Budget Control endpoints
     Route::get('budgets/summary', [BudgetController::class, 'summary'])->name('budgets.summary');
     Route::get('budgets/needs-attention', [BudgetController::class, 'needsAttention'])->name('budgets.needs-attention');

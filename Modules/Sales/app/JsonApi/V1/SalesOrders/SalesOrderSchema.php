@@ -50,7 +50,12 @@ class SalesOrderSchema extends Schema
             
             // Campos básicos - camelCase for JSON:API, mapped to snake_case in DB
             Str::make('orderNumber', 'order_number')->sortable(),
-            Str::make('status')->sortable(),
+            // Refactor ciclo (Patron 1): el status NO puede cambiarse por PATCH.
+            // Un PATCH directo a 'delivered'/'cancelled' saltaba OrderStatusService y
+            // evitaba reservar/descontar stock y disparar los eventos de dominio.
+            // Escribible solo en creacion (estado inicial); las transiciones van por
+            // los endpoints de accion (confirm/deliver/cancel) via OrderStatusService.
+            Str::make('status')->sortable()->readOnlyOnUpdate(),
             DateTime::make('orderDate', 'order_date')->sortable(),
             DateTime::make('approvedAt', 'approved_at')->sortable(),
             DateTime::make('deliveredAt', 'delivered_at')->sortable(),

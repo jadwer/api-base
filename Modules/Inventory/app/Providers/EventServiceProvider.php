@@ -17,6 +17,11 @@ class EventServiceProvider extends ServiceProvider
             \Modules\Inventory\Listeners\PurchaseOrderReceivedListener::class,
         ],
 
+        // Refactor ciclo (Patron 2): cancelar una OC recibida revierte la entrada de stock.
+        \Modules\Purchase\Events\PurchaseOrderCancelled::class => [
+            \Modules\Inventory\Listeners\PurchaseOrderCancelledListener::class,
+        ],
+
         // IV-010: Listen to inventory movements for GL integration
         \Modules\Inventory\Events\InventoryMovementCreated::class => [
             \Modules\Inventory\Listeners\PostInventoryMovementToGL::class,

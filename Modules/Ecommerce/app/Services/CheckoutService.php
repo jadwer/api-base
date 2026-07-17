@@ -188,12 +188,15 @@ class CheckoutService
         $cart = $session->shoppingCart;
 
         foreach ($cart->cartItems as $item) {
-            // Get available stock
-            $availableStock = $item->product->stocks()
-                ->whereRaw('(quantity - reserved_quantity) >= ?', [$item->quantity])
-                ->first();
+            // Refactor ciclo (Patron 3, bug activo): la relacion es stock() (HasMany),
+            // no stocks(). Antes lanzaba BadMethodCallException, pero como este metodo
+            // estaba en un camino muerto (nunca invocado en produccion) nadie lo detecto.
+            // Suma el disponible de TODOS los almacenes del producto (available =
+            // quantity - reserved_quantity) y lo compara con lo pedido.
+            $available = (float) $item->product->stock()
+                ->sum(DB::raw('quantity - reserved_quantity'));
 
-            if (!$availableStock) {
+            if ($available < (float) $item->quantity) {
                 return false;
             }
         }

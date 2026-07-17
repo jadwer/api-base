@@ -13,6 +13,7 @@ use Modules\Sales\Models\RemissionItem;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Services\RemissionPDFGenerator;
 use Modules\Inventory\Models\Stock;
+use Modules\Inventory\Services\InventoryMovementService;
 
 /**
  * SA-M006: Remission Controller
@@ -272,33 +273,132 @@ class RemissionController extends Controller
             ], 400);
         }
 
-        $remission->markAsDelivered(
-            $request->input('received_by'),
-            $request->input('delivery_notes')
-        );
+        // Refactor ciclo (Patron 3, C1 + 5b/F3): la entrega DESCUENTA stock real y todo
+        // el paso (descuento + markAsDelivered + update de la orden) va en UNA transaccion
+        // externa atomica. Antes corrian sueltos: un fallo entre el commit del exit y el
+        // update dejaba stock descontado sin entrega registrada. El evento de dominio
+        // SalesOrderDelivered se dispara DESPUES del commit (fuera de la transaccion) para
+        // que un fallo al crear la ARInvoice no revierta la entrega (el listener maneja su
+        // propio error). Cada item genera un 'exit' que descuenta Stock.quantity y postea
+        // el COGS (DR 5101 / CR 1108). Idempotente por reference_type='remission'+item.
+        $shouldFireDelivered = false;
+        try {
+            $salesOrder = DB::transaction(function () use ($remission, $request, &$shouldFireDelivered) {
+                $this->createExitMovementsForRemission($remission, $request->user()?->id);
 
-        // Check if all remissions for this SO are delivered -> update SO status
-        $salesOrder = $remission->salesOrder;
-        if ($salesOrder && $salesOrder->status !== 'delivered' && $salesOrder->status !== 'cancelled') {
-            $hasNonDeliveredRemissions = $salesOrder->remissions()
-                ->where('status', '!=', 'cancelled')
-                ->where('status', '!=', 'delivered')
-                ->exists();
+                $remission->markAsDelivered(
+                    $request->input('received_by'),
+                    $request->input('delivery_notes')
+                );
 
-            $hasDeliveredRemissions = $salesOrder->remissions()
-                ->where('status', 'delivered')
-                ->exists();
+                $salesOrder = $remission->salesOrder;
+                if ($salesOrder && $salesOrder->status !== 'delivered' && $salesOrder->status !== 'cancelled') {
+                    $hasNonDeliveredRemissions = $salesOrder->remissions()
+                        ->where('status', '!=', 'cancelled')
+                        ->where('status', '!=', 'delivered')
+                        ->exists();
 
-            if (!$hasNonDeliveredRemissions && $hasDeliveredRemissions) {
-                // This triggers SalesOrderObserver -> auto-creates AR Invoice
-                $salesOrder->update(['status' => 'delivered']);
-            }
+                    $hasDeliveredRemissions = $salesOrder->remissions()
+                        ->where('status', 'delivered')
+                        ->exists();
+
+                    if (!$hasNonDeliveredRemissions && $hasDeliveredRemissions) {
+                        $salesOrder->update(['status' => 'delivered']);
+                        $shouldFireDelivered = true;
+                    }
+                }
+
+                return $salesOrder;
+            });
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => 'No se pudo completar la entrega de la remision: ' . $e->getMessage(),
+            ], 422);
+        }
+
+        // Fuera de la transaccion: disparar el evento de facturacion solo si la orden
+        // paso a delivered. El listener crea la ARInvoice y maneja su propio error.
+        if ($shouldFireDelivered && $salesOrder) {
+            event(new \Modules\Sales\Events\SalesOrderDelivered($salesOrder->fresh()));
         }
 
         return response()->json([
             'data' => $this->transformRemission($remission->fresh()),
             'message' => 'Remission marked as delivered'
         ]);
+    }
+
+    /**
+     * Refactor ciclo (Patron 3, C1): crea el movimiento de salida de inventario por cada
+     * item de la remision al entregarla. Descuenta Stock.quantity y dispara el asiento
+     * COGS via InventoryMovementCreated.
+     *
+     * Idempotencia (5b/F7): por LINEA de remision (remission_item_id), no por producto.
+     * Antes se chequeaba por product_id, asi que dos lineas del mismo producto en una
+     * misma remision provocaban sub-descuento (la segunda se saltaba). Ahora se guarda
+     * el remission_item_id en metadata y se consulta por el.
+     *
+     * NO abre transaccion propia: el metodo deliver() lo envuelve en una transaccion
+     * externa (5b/F3) junto con markAsDelivered y el update de la orden.
+     *
+     * Warehouse: usa el de la remision si existe; si no, el warehouse del stock del
+     * producto (donde realmente hay existencias); como ultimo recurso el primer almacen.
+     *
+     * @throws \Throwable si algun item no tiene stock suficiente (createExit lanza) ->
+     *         la transaccion externa del deliver revierte todo.
+     */
+    private function createExitMovementsForRemission(Remission $remission, ?int $userId): void
+    {
+        $service = app(InventoryMovementService::class);
+
+        $remission->loadMissing('items');
+
+        foreach ($remission->items as $item) {
+            if (!$item->product_id || $item->quantity <= 0) {
+                continue;
+            }
+
+            // Idempotencia por LINEA: no descontar dos veces el mismo remission_item.
+            $already = \Modules\Inventory\Models\InventoryMovement::where('reference_type', 'remission')
+                ->where('reference_id', $remission->id)
+                ->whereJsonContains('metadata->remission_item_id', $item->id)
+                ->exists();
+            if ($already) {
+                continue;
+            }
+
+            // Resolver el warehouse: remision -> stock del producto -> primer almacen.
+            $warehouseId = $remission->warehouse_id;
+            if (!$warehouseId) {
+                $stock = Stock::where('product_id', $item->product_id)
+                    ->orderByDesc('quantity')
+                    ->first();
+                $warehouseId = $stock?->warehouse_id
+                    ?? \Modules\Inventory\Models\Warehouse::query()->value('id');
+            }
+
+            if (!$warehouseId) {
+                throw new \RuntimeException("No hay almacen para descontar el producto {$item->product_id}");
+            }
+
+            $service->createExit([
+                'product_id' => $item->product_id,
+                'warehouse_id' => $warehouseId,
+                'quantity' => $item->quantity,
+                'movement_date' => now(),
+                'reference_type' => 'remission',
+                'reference_id' => $remission->id,
+                'description' => "Salida por remision {$remission->remission_number}",
+                'user_id' => $userId,
+                'metadata' => ['remission_item_id' => $item->id],
+                // 5c/E2E: los exits requieren quality_checked (regla IV-009 del modelo).
+                // La entrega de una remision impresa y confirmada ES la validacion del
+                // ciclo de venta; se marca verificada automaticamente (no es una salida
+                // que exija inspeccion manual de calidad).
+                'quality_checked' => true,
+                'quality_checked_by' => $userId,
+            ]);
+        }
     }
 
     /**

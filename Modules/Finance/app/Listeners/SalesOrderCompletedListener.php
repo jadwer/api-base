@@ -9,7 +9,15 @@ use Illuminate\Support\Facades\Log;
 /**
  * SalesOrderCompletedListener
  *
- * Automatically creates an AR Invoice when a Sales Order is completed
+ * Automatically creates an AR Invoice when a Sales Order is completed.
+ *
+ * Refactor ciclo (5b/F10): coexiste con SalesOrderDeliveredListener. NO es duplicacion
+ * de factura (ambos son idempotentes por ar_invoice_id). Son dos PUNTOS DE ENTRADA:
+ * - SalesOrderDelivered: camino del dashboard + entrega por remision (el flujo principal).
+ * - SalesOrderCompleted: lo dispara Ecommerce\CheckoutService (flujo CheckoutSession) y
+ *   EventReplayService. Se conserva para no romper ese flujo alternativo.
+ * Cuando el checkout de ecommerce converja al flujo de entrega (reserva -> remision ->
+ * deliver), este listener podra retirarse. Por ahora ambos conviven de forma segura.
  */
 class SalesOrderCompletedListener
 {

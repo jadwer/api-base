@@ -40,7 +40,10 @@ class RemissionRequest extends ResourceRequest
         return [
             'shipmentId' => ['nullable', 'integer', 'exists:shipments,id'],
             'warehouseId' => ['nullable', 'integer', 'exists:warehouses,id'],
-            'status' => ['sometimes', Rule::in(['draft', 'printed', 'delivered', 'cancelled'])],
+            // Refactor ciclo (Patron 1): status se acepta pero el Schema lo marca
+            // readOnlyOnUpdate -> se IGNORA en update. Las transiciones van por los
+            // endpoints print/deliver/cancel (deliver ahora descuenta stock real).
+            'status' => ['sometimes', 'string'],
             'remissionDate' => ['sometimes', 'date'],
             'deliveryDate' => ['nullable', 'date'],
             'deliveredBy' => ['nullable', 'string', 'max:200'],

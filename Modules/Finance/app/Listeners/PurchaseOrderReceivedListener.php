@@ -78,7 +78,15 @@ class PurchaseOrderReceivedListener
             $purchaseOrder->load('purchaseOrderItems');
         }
 
-        $subtotal = $purchaseOrder->purchaseOrderItems->sum(fn($item) => $item->quantity * $item->unit_price);
+        // Refactor ciclo (re-auditoria N3): facturar por lo REALMENTE RECIBIDO
+        // (received_quantity), no por lo ordenado (quantity). Con la tolerancia +5% se
+        // puede recibir mas que lo ordenado; el stock/GL entra por lo recibido, asi que la
+        // factura del proveedor debe cuadrar con eso o la cuenta de acumulacion de
+        // inventario queda descuadrada. Fallback a quantity si received_quantity es 0/null.
+        $subtotal = $purchaseOrder->purchaseOrderItems->sum(function ($item) {
+            $qty = (float) ($item->received_quantity ?: $item->quantity);
+            return $qty * $item->unit_price;
+        });
         $taxAmount = $purchaseOrder->purchaseOrderItems->sum('tax_amount');
         $totalAmount = $subtotal + $taxAmount;
 

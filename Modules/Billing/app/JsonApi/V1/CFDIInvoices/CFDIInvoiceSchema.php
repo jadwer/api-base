@@ -98,7 +98,10 @@ class CFDIInvoiceSchema extends Schema
             ArrayHash::make('cfdiRelacionadoUuids', 'cfdi_relacionado_uuids'),
 
             // Status
-            Str::make('status')->sortable(),
+            // Refactor ciclo (Patron 1): el status del CFDI NO puede cambiarse por PATCH.
+            // Un PATCH a status='valid' producia una factura "timbrada" sin UUID ni sello.
+            // El status solo cambia por stamp()/cancel() de CFDIStampingService.
+            Str::make('status')->sortable()->readOnlyOnUpdate(),
 
             // Dates
             DateTime::make('fechaEmision', 'fecha_emision')->sortable(),

@@ -2,7 +2,6 @@
 
 namespace Modules\Billing\JsonApi\V1\CFDIInvoices;
 
-use Illuminate\Validation\Rule;
 use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
 
 class CFDIInvoiceRequest extends ResourceRequest
@@ -154,11 +153,14 @@ class CFDIInvoiceRequest extends ResourceRequest
                 'nullable',
                 'array',
             ],
-            'status' => [
-                'sometimes',
-                'string',
-                'in:draft,valid,cancelled,error',
-            ],
+            // Refactor ciclo (Patron 1): status solo se valida en creacion (draft/error).
+            // En update se acepta pero el Schema lo marca readOnlyOnUpdate -> se IGNORA
+            // (no falla para no romper el form de edicion del FE, que envia status).
+            // Pasar a 'valid'/'cancelled' es exclusivo de CFDIStampingService::stamp()/
+            // cancel() (que llaman al PAC). Un PATCH no puede fingir una factura timbrada.
+            'status' => $creating
+                ? ['sometimes', 'string', 'in:draft,error']
+                : ['sometimes', 'string'],
             'fechaEmision' => [
                 $creating ? 'required' : 'sometimes',
                 'date',

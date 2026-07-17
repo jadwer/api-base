@@ -251,6 +251,12 @@ class OrderStatusService
                         ['cancelled_at' => now()->toIso8601String()]
                     ),
                 ]);
+
+                // Refactor ciclo (Patron 2, P1): disparar el evento de dominio que ANTES
+                // nunca se disparaba. Finance\SalesOrderCancelledListener anula la ARInvoice
+                // y revierte el asiento GL. Sin esto, cancelar una venta facturada dejaba
+                // ingresos y saldo AR inflados.
+                event(new \Modules\Sales\Events\SalesOrderCancelled($order->fresh()));
                 break;
         }
     }

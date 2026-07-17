@@ -240,6 +240,12 @@ class PurchaseOrder extends Model
     public function receive(array $items): void
     {
         \DB::transaction(function () use ($items) {
+            $warehouseId = $this->warehouse_id
+                ?? \Modules\Inventory\Models\Warehouse::where('is_active', true)->value('id')
+                ?? \Modules\Inventory\Models\Warehouse::query()->value('id');
+
+            $inventoryService = app(\Modules\Inventory\Services\InventoryMovementService::class);
+
             foreach ($items as $itemData) {
                 $item = $this->purchaseOrderItems()->find($itemData['id']);
 
@@ -247,7 +253,12 @@ class PurchaseOrder extends Model
                     throw new \Exception("Purchase order item {$itemData['id']} not found");
                 }
 
-                $newReceived = $item->received_quantity + $itemData['quantity'];
+                $receivedNow = (float) $itemData['quantity'];
+                if ($receivedNow <= 0) {
+                    continue;
+                }
+
+                $newReceived = $item->received_quantity + $receivedNow;
                 $tolerance = $item->quantity * 1.05; // +5% tolerance
 
                 if ($newReceived > $tolerance) {
@@ -259,14 +270,41 @@ class PurchaseOrder extends Model
                 }
 
                 $item->update(['received_quantity' => $newReceived]);
+
+                // Refactor ciclo (5b/F8/F9): CADA tanda de recepcion genera su entrada de
+                // stock por lo RECIBIDO AHORA (received_quantity de la tanda), no por la
+                // cantidad ordenada ni esperando al 100%. Antes la recepcion parcial nunca
+                // subia stock (solo al llegar al total) y la entrada usaba quantity (ordenada)
+                // en vez de lo recibido. reference_type='purchase' + reference_id = PO, con
+                // el detalle de la tanda en metadata (para trazabilidad, no idempotencia:
+                // cada tanda es un movimiento legitimo distinto).
+                if ($warehouseId && $item->product_id) {
+                    $inventoryService->createEntry([
+                        'product_id' => $item->product_id,
+                        'warehouse_id' => $warehouseId,
+                        'quantity' => $receivedNow,
+                        'unit_cost' => $item->unit_price,
+                        'reference_type' => 'purchase',
+                        'reference_id' => $this->id,
+                        'movement_date' => now(),
+                        'description' => "Recepcion de OC #{$this->id} (item {$item->id})",
+                        'user_id' => auth()->id() ?? \Modules\User\Models\User::first()?->id ?? 1,
+                        'metadata' => [
+                            'purchase_order_id' => $this->id,
+                            'purchase_order_item_id' => $item->id,
+                            'batch_received' => $receivedNow,
+                        ],
+                    ]);
+                }
             }
 
-            // Check if fully received
+            // Al completar el 100%, marcar 'received'. El update dispara el
+            // PurchaseOrderObserver -> PurchaseOrderReceived, que hace que Finance cree la
+            // APInvoice. NO disparamos el evento aqui tambien (seria doble). El listener de
+            // Inventory de ese evento es idempotente (guard reference_type='purchase') y
+            // NO duplicara la entrada de stock que ya creamos por tanda arriba.
             if ($this->isFullyReceived()) {
                 $this->update(['status' => 'received']);
-
-                // Dispatch event if needed
-                // event(new PurchaseOrderReceived($this));
             }
         });
     }

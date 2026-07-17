@@ -19,7 +19,13 @@ class PurchaseOrderRequest extends ResourceRequest
         
         return [
             'orderDate' => [$creating ? 'required' : 'sometimes', 'date'],
-            'status' => [$creating ? 'required' : 'sometimes', 'string', Rule::in(['pending', 'approved', 'received', 'cancelled'])],
+            // Refactor ciclo (Patron 1): en creacion se valida el status inicial. En
+            // update se acepta pero el Schema lo marca readOnlyOnUpdate, asi que el valor
+            // se IGNORA (no lanza error para no romper el form de edicion del FE, que
+            // envia status). Las transiciones reales van por approve/reject/receive/cancel.
+            'status' => $creating
+                ? ['required', 'string', Rule::in(['pending', 'approved', 'received', 'cancelled'])]
+                : ['sometimes', 'string'],
             'totalAmount' => [$creating ? 'required' : 'sometimes', 'numeric', 'min:0'],
             'warehouseId' => ['nullable', 'integer', 'exists:warehouses,id'],
             'approvalStatus' => ['sometimes', 'nullable', 'string'],
