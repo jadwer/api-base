@@ -3,6 +3,7 @@
 use LaravelJsonApi\Laravel\Facades\JsonApiRoute;
 use LaravelJsonApi\Laravel\Routing\ResourceRegistrar;
 use Modules\Product\Http\Controllers\Api\V1\PublicProductController;
+use Modules\Product\Http\Controllers\Api\V1\PublicCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,4 +26,11 @@ JsonApiRoute::server('public')
                 $relationships->hasOne('brand')->readOnly();
                 $relationships->hasMany('images')->readOnly();
             });
+
+        // Public read-only categories for the footer/menu navigation of the
+        // public catalog (the authenticated /api/v1/categories returns 401 to
+        // guests). Uses the dedicated PublicCategorySchema (type
+        // 'public-categories'), index+show only.
+        $server->resource('public-categories', PublicCategoryController::class)
+            ->only('index', 'show');
     });

@@ -4,6 +4,7 @@ namespace App\JsonApi\V1;
 
 use LaravelJsonApi\Core\Server\Server as BaseServer;
 use Modules\Product\JsonApi\V1\PublicProducts\PublicProductSchema;
+use Modules\Product\JsonApi\V1\PublicCategories\PublicCategorySchema;
 use Modules\Product\JsonApi\V1\Units\UnitSchema;
 use Modules\Product\JsonApi\V1\Categories\CategorySchema;
 use Modules\Product\JsonApi\V1\Brands\BrandSchema;
@@ -40,6 +41,7 @@ class PublicServer extends BaseServer
             // Public Product Catalog - only what's needed for public access
             PublicProductSchema::class,
             PublicProductImageSchema::class,
+            PublicCategorySchema::class,
             UnitSchema::class,
             CategorySchema::class,
             BrandSchema::class,
