@@ -15,7 +15,10 @@ class JournalLineFactory extends Factory
         $isDebit = $this->faker->boolean();
 
         return [
-            'journal_entry_id' => \Modules\Accounting\Models\JournalEntry::factory(),
+            // Asiento padre en draft: uno posted es inmutable (lineas incluidas)
+            // y el status aleatorio del JournalEntryFactory haria flaky cualquier
+            // test que modifique la linea.
+            'journal_entry_id' => \Modules\Accounting\Models\JournalEntry::factory()->draft(),
             'account_id' => \Modules\Accounting\Models\Account::factory(),
             'contact_id' => null,
             'debit' => $isDebit ? $amount : 0,

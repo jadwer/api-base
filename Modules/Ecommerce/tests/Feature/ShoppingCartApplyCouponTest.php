@@ -108,7 +108,17 @@ class ShoppingCartApplyCouponTest extends TestCase
             'status' => 'active',
         ]);
 
-        $product = Product::factory()->create(['price' => 100]);
+        // MXN explicito: ProductFactory asigna Currency::first() y si no es MXN
+        // el CartItemObserver convierte los precios; el subtotal ya no seria 100
+        // y el min(value, subtotal) del descuento fijo toparia con el subtotal
+        // convertido (asi se destapo en la Fase 2.7).
+        $mxn = \Modules\Ecommerce\Models\Currency::firstOrCreate(['code' => 'MXN'], [
+            'name' => 'Peso Mexicano',
+            'symbol' => '$',
+            'exchange_rate' => 1.0,
+            'is_active' => true,
+        ]);
+        $product = Product::factory()->create(['price' => 100, 'currency_id' => $mxn->id]);
         CartItem::factory()->create([
             'shopping_cart_id' => $cart->id,
             'product_id' => $product->id,

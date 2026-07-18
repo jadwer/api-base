@@ -8,7 +8,14 @@ use Modules\Accounting\Models\FiscalPeriod;
 
 class JournalEntryUpdateTest extends TestCase
 {
-    public function test_admin_can_update_journal_entries(): void
+    /**
+     * Invariante: status NO es editable por PATCH (readOnlyOnUpdate). Postear un
+     * asiento va por AccountingService::postJournalEntry (validateBalance +
+     * validatePeriod + folio); un PATCH directo se los saltaria. La version
+     * anterior de este test verificaba exactamente el bypass (draft->posted por
+     * PATCH con assertOk) y consagraba el bug.
+     */
+    public function test_patch_ignores_status_changes(): void
     {
         $admin = $this->getAdminUser();
         $period = FiscalPeriod::factory()->open()->create();
@@ -29,20 +36,27 @@ class JournalEntryUpdateTest extends TestCase
             ->withData($data)
             ->patch("/api/v1/journal-entries/{$entity->id}");
 
-        $response->assertOk(); // assertOk is sufficient
+        $response->assertOk();
+        $entity->refresh();
+        $this->assertSame('draft', $entity->status, 'El PATCH no debe poder postear un asiento');
+        $this->assertSame('UPD-001', $entity->reference, 'Los campos editables si se actualizan');
     }
 
-    public function test_admin_can_partially_update_journal_entries(): void
+    public function test_posted_entry_is_immutable_via_patch(): void
     {
         $admin = $this->getAdminUser();
         $period = FiscalPeriod::factory()->open()->create();
-        $entity = JournalEntry::factory()->create(['fiscal_period_id' => $period->id, 'status' => 'draft']);
+        $entity = JournalEntry::factory()->create([
+            'fiscal_period_id' => $period->id,
+            'status' => 'posted',
+            'reference' => 'ORIGINAL',
+        ]);
 
         $data = [
             'type' => 'journal-entries',
             'id' => (string) $entity->id,
             'attributes' => [
-                'status' => 'posted'
+                'reference' => 'HACKED'
 ]
         ];
 
@@ -52,13 +66,16 @@ class JournalEntryUpdateTest extends TestCase
             ->withData($data)
             ->patch("/api/v1/journal-entries/{$entity->id}");
 
-        $response->assertOk();
+        $response->assertStatus(403);
+        $entity->refresh();
+        $this->assertSame('ORIGINAL', $entity->reference, 'Un asiento posteado es inmutable');
     }
 
     public function test_admin_can_update_metadata(): void
     {
         $admin = $this->getAdminUser();
-        $entity = JournalEntry::factory()->create();
+        // draft explicito: la factory randomiza status y un posted seria inmutable
+        $entity = JournalEntry::factory()->create(['status' => 'draft']);
 
         $metadata = [
             'updated_field' => 'new_value',
@@ -175,7 +192,7 @@ class JournalEntryUpdateTest extends TestCase
     public function test_cannot_update_with_invalid_data(): void
     {
         $admin = $this->getAdminUser();
-        $entity = JournalEntry::factory()->create();
+        $entity = JournalEntry::factory()->create(['status' => 'draft']);
 
         $data = [
             'type' => 'journal-entries',

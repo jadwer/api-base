@@ -13,7 +13,7 @@ class JournalLineStoreTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $journalEntry = JournalEntry::factory()->create();
+        $journalEntry = JournalEntry::factory()->draft()->create();
         $account = Account::factory()->create();
 
         $data = [
@@ -40,7 +40,7 @@ class JournalLineStoreTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $journalEntry = JournalEntry::factory()->create();
+        $journalEntry = JournalEntry::factory()->draft()->create();
         $account = Account::factory()->create();
 
         $data = [
@@ -124,10 +124,15 @@ class JournalLineStoreTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
+        // Draft explicito: contra un asiento posted el Authorizer deniega con
+        // 403 ANTES de la validacion y este test debe ver el 422 de campos
+        // requeridos (el id 1 sembrado tiene status aleatorio).
+        $entry = JournalEntry::factory()->draft()->create();
+
         $data = [
             'type' => 'journal-lines',
             'attributes' => [
-                'journalEntryId' => 1
+                'journalEntryId' => $entry->id
             ]
         ];
 

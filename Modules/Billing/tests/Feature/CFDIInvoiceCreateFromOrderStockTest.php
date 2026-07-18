@@ -15,10 +15,15 @@ use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Models\SalesOrderItem;
 
 /**
- * Fase A - Regla fiscal de stock al facturar.
+ * Facturar desde orden entregada.
  *
- * POST /api/v1/sales-orders/{id}/facturar: los items sin stock suficiente
- * bloquean la factura (422 con detalle por item). La prefactura NO valida stock.
+ * La "regla fiscal de stock" de la Fase A fue RETIRADA en c23c5d1: el endpoint
+ * solo acepta ordenes delivered y post-refactor el stock salio POR la entrega
+ * misma, asi que la regla fallaba siempre (bloqueaba facturar lo ya entregado).
+ * La garantia de inventario vive en createExit al entregar, no aqui. Los dos
+ * tests que consagraban la regla retirada se eliminaron en la Fase 2.7; el
+ * invariante real del ciclo (entrega descuenta stock -> factura -> cobro) lo
+ * cubre Modules/Sales/tests/Integration/CycleSaleInvariantTest.
  */
 class CFDIInvoiceCreateFromOrderStockTest extends TestCase
 {
@@ -85,44 +90,6 @@ class CFDIInvoiceCreateFromOrderStockTest extends TestCase
             'reserved_quantity' => 0,
             'status' => 'active',
         ]);
-    }
-
-    public function test_facturar_is_blocked_when_stock_is_insufficient(): void
-    {
-        $admin = $this->getAdminUser();
-        [$order, $product] = $this->makeDeliveredOrderWithArInvoice(quantity: 5);
-        $this->giveStock($product, 2);
-
-        $response = $this->actingAs($admin, 'sanctum')
-            ->postJson("/api/v1/sales-orders/{$order->id}/facturar");
-
-        $response->assertStatus(422);
-        $response->assertJsonStructure([
-            'message',
-            'errors' => [
-                ['product_id', 'product_name', 'requested', 'available'],
-            ],
-        ]);
-        $this->assertEquals($product->id, $response->json('errors.0.product_id'));
-        $this->assertEquals(5.0, $response->json('errors.0.requested'));
-        $this->assertEquals(2.0, $response->json('errors.0.available'));
-
-        // No CFDI was created for this order's ARInvoice
-        $this->assertEquals(0, CFDIInvoice::where('ar_invoice_id', $this->arInvoice->id)->count());
-    }
-
-    public function test_facturar_is_blocked_when_product_has_no_stock_at_all(): void
-    {
-        $admin = $this->getAdminUser();
-        [$order, $product] = $this->makeDeliveredOrderWithArInvoice(quantity: 3);
-        // Sin registros de stock
-
-        $response = $this->actingAs($admin, 'sanctum')
-            ->postJson("/api/v1/sales-orders/{$order->id}/facturar");
-
-        $response->assertStatus(422);
-        $this->assertEquals(0.0, $response->json('errors.0.available'));
-        $this->assertEquals(0, CFDIInvoice::where('ar_invoice_id', $this->arInvoice->id)->count());
     }
 
     public function test_facturar_proceeds_when_stock_is_sufficient(): void
