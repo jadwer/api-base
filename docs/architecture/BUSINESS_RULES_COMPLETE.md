@@ -1,8 +1,32 @@
-# Complete Business Rules Documentation
+# Business Rules Documentation
 
-**Date:** 2025-10-28
+**Date:** 2025-10-28 (corregido 2026-07-18)
 **Version:** 1.0
-**Status:** Production-Ready Phase 3 Complete
+**Status:** inventario de reglas; la completitud que afirmaba fue DESMENTIDA por
+la auditoria 2026-07-17 (ver advertencia)
+
+---
+
+## ADVERTENCIA (2026-07-18): este documento afirmaba mas de lo real
+
+El nombre del archivo ("COMPLETE") y su status anterior ("Production-Ready")
+daban confianza falsa. La auditoria modular del 2026-07-17 (docs en
+`base/docs/audit-lwm-migration/`, carpeta del workspace fuera de este repo)
+probo que varias reglas aqui marcadas "Implemented" NO operaban end-to-end:
+
+- **CM-001** (eventos Order-to-Cash / Procure-to-Pay): definidos pero varios
+  nunca se disparaban; cancelaciones sin evento ni reversa.
+- **CM-003** (Inventory a GL): el posting salia con importe 0 (leia un campo que
+  quedaba vacio) y las cuentas GL de inventario nunca se sembraron.
+- **SA-A001** (reservas): la reserva nunca se convertia en salida de inventario;
+  no existia el eslabon entrega, salida, COGS.
+- **Seccion 10 "Quality Metrics"**: "All event-driven flows tested" era falso;
+  los tests usaban Event::fake(), que finge el disparo y oculto todo lo anterior.
+
+El ciclo fue refactorizado y verificado end-to-end en dev el 2026-07-17
+(SINTESIS_AUDITORIA_MODULAR.md y PLAN_REFACTOR_CICLO.md en la carpeta de
+auditoria). Las reglas afectadas abajo llevan nota con su estado real. El resto
+del inventario sigue siendo util como catalogo, no como certificacion.
 
 ---
 
@@ -582,9 +606,13 @@ This document provides a comprehensive inventory of **all business rules** imple
 #### CM-001: Event-Driven Integration
 - **Rule**: Sales/Purchase completion triggers Finance invoice creation
 - **Enforcement**: Laravel Events + Listeners
-- **Implementation**: SalesOrderCompleted / PurchaseOrderReceived events
+- **Implementation**: SalesOrderDelivered/SalesOrderCompleted -> listener unico
+  CreateARInvoiceForSalesOrder; PurchaseOrderReceived -> APInvoice;
+  SalesOrderCancelled y PurchaseOrderCancelled revierten
 - **Modules**: Sales → Finance, Purchase → Finance
-- **Status**: ✅ Implemented (Phase 2)
+- **Status**: Reparado 2026-07. El "Implemented (Phase 2)" anterior era falso:
+  varios eventos nunca se disparaban (cancelaciones huerfanas, entrega sin
+  trigger). Refactor del ciclo 2026-07-17
 
 #### CM-002: Finance to Accounting Integration
 - **Rule**: Invoice posting automatically creates GL journal entry
@@ -597,8 +625,10 @@ This document provides a comprehensive inventory of **all business rules** imple
 - **Rule**: Inventory movements post to GL (entry/exit)
 - **Enforcement**: Event listeners
 - **Implementation**: Movement creates GL entry for COGS/Inventory Asset
+  (importe desde total_value; cuentas 1108 Almacen / 5101 COGS / 2101 Proveedores)
 - **Modules**: Inventory → Accounting
-- **Status**: ✅ Implemented (Phase 2)
+- **Status**: Reparado 2026-07. El "Implemented (Phase 2)" anterior era falso:
+  el asiento salia con importe 0 y las cuentas nunca se sembraron
 
 #### CM-004: Party Pattern Usage
 - **Rule**: All modules use Contacts with role flags (not separate customer/supplier tables)
@@ -609,10 +639,14 @@ This document provides a comprehensive inventory of **all business rules** imple
 
 #### CM-005: Idempotency Across Modules
 - **Rule**: Cross-module events protected from duplicate processing
-- **Enforcement**: IdempotencyKey table
-- **Implementation**: Check before event processing
+- **Enforcement**: IdempotencyKey table (Accounting) + idempotency_key UNIQUE en
+  inventory_movements (R1, 2026-07)
+- **Implementation**: Check before event processing; fast-path por clave natural
+  en createEntry/createExit
 - **Modules**: All event-driven integrations
-- **Status**: ✅ Implemented (Phase 3)
+- **Status**: Implemented. Nota 2026-07: el "todas las integraciones" anterior
+  era mas amplio que la realidad; los movimientos de inventario NO eran
+  idempotentes hasta el paquete R1 del refactor
 
 ### Missing Cross-Module Rules
 
@@ -739,8 +773,12 @@ This document provides a comprehensive inventory of **all business rules** imple
 
 #### Code Coverage
 - **Unit Tests**: 85%+ coverage on services
-- **Feature Tests**: 100% CRUD operations tested
-- **Integration Tests**: All event-driven flows tested
+- **Feature Tests**: 100% CRUD operations tested (de fachada: verifican status
+  HTTP y forma, no invariantes de negocio; rediseno en Fase 2.7)
+- **Integration Tests**: el "All event-driven flows tested" anterior era falso;
+  usaban Event::fake() y no probaban el ciclo real. Tests de invariante nuevos
+  desde 2026-07 (SalesOrderDeliveryByStatusInvariantTest,
+  PurchaseOrderInventoryIntegrationTest)
 
 #### Documentation Coverage
 - **API Documentation**: 100% endpoints documented

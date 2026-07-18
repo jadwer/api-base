@@ -18,10 +18,32 @@ This file provides guidance to Claude Code when working with this repository.
 
 ## Project Status
 
-**Version:** v1.0 (2026-01-06)
-**Production Readiness:** 100%
+**Version:** v1.0 (2026-01-06), auditado y refactorizado 2026-07
+**Estado real:** ver seccion "Auditoria 2026-07" abajo. NO asumir completitud.
 
-### Modules (14/14 Complete)
+### ADVERTENCIA: Auditoria 2026-07 (leer antes de confiar en este doc)
+
+La auditoria modular del 2026-07-17 (docs en `../docs/audit-lwm-migration/`, carpeta
+`base/` del workspace, fuera de este repo) encontro que el ciclo transaccional
+estaba ROTO de raiz pese a que este documento afirmaba "Production Readiness 100%":
+
+- Las ventas reconocian ingreso y cobro pero NO descontaban stock ni generaban COGS.
+- Los eventos de dominio estaban definidos pero varios nunca se disparaban
+  (SalesOrderCancelled huerfano, PurchaseOrderCancelled inexistente).
+- Cancelar una venta o compra no revertia nada (ni stock ni asientos).
+- El posting GL de inventario salia con importe 0 y las cuentas nunca se sembraron.
+- Los tests E2E usaban Event::fake(), que finge el disparo y oculto todo lo anterior.
+
+El ciclo fue REFACTORIZADO y verificado end-to-end en dev el 2026-07-17 (entrega
+descuenta stock + COGS cuadra, factura AR posted, CFDI timbrado sandbox, cobro,
+cancelaciones revierten). Commits 90ae514, 9a2b95d, 2581995, c23c5d1. Leer
+`SINTESIS_AUDITORIA_MODULAR.md` y `PLAN_REFACTOR_CICLO.md` en la carpeta de auditoria.
+
+Por que este bloque existe: las afirmaciones de completitud de la version anterior
+de este doc generaban confianza falsa; se corrigieron con el estado real en la
+Fase 2.5 del roadmap post-cutover (2026-07-18).
+
+### Modulos (14 implementados; completitud auditada, no asumida)
 
 | Module | Entities | Tests |
 |--------|----------|-------|
@@ -43,17 +65,22 @@ This file provides guidance to Claude Code when working with this repository.
 ### Metrics
 - **Models/Entities:** 85+
 - **API Endpoints:** 736+
-- **Tests (files):** 452
-- **Business Rules:** 175/175 (100%)
+- **Tests (files):** 452 (mayoria de fachada: verifican status HTTP, no invariantes
+  de negocio; rediseno pendiente en Fase 2.7, ver ANALISIS_CALIDAD_TESTS.md en la
+  carpeta de auditoria)
+- **Business Rules:** el conteo "175/175 (100%)" que decia aqui era FALSO; la
+  auditoria 2026-07 probo rotas varias reglas centrales marcadas como implementadas
+  (ver docs/architecture/BUSINESS_RULES_COMPLETE.md, corregido con la verdad)
 - **API Docs:** Scribe (664 endpoints)
 
-### v1.1 Features (All Complete)
+### v1.1 Features
 - PU-M003 Budget Control
 - IV-M001 Cycle Count Scheduling
 - CO-M001 Duplicate Detection
 - SA-M003 Automatic Discount Rules
 - FI-M002 Early Payment Discount
-- E2E Integration Tests
+- E2E Integration Tests (existian pero con Event::fake(): no probaban el ciclo real;
+  se reescriben por invariante en Fase 2.7)
 - Stripe Payment Gateway
 
 ---
@@ -186,12 +213,27 @@ When a test fails, check in this order:
 
 ---
 
-## Event-Driven Architecture
+## Event-Driven Architecture (actualizado post-refactor 2026-07)
 
-### Key Events
-- `SalesOrderCompleted` -> Creates ARInvoice automatically
-- `PurchaseOrderReceived` -> Creates APInvoice automatically
-- `InventoryMovementCreated` -> Posts to GL
+### Key Events (camino real del ciclo)
+- `SalesOrderDelivered` (tambien `SalesOrderCompleted`) -> listener unico
+  `Finance\CreateARInvoiceForSalesOrder` crea la ARInvoice. Los dos listeners
+  viejos se ELIMINARON (R3); no recrearlos.
+- `SalesOrderCancelled` -> Finance anula factura y repone stock entregado.
+- `PurchaseOrderReceived` -> Finance crea APInvoice; Inventory ya dio entrada
+  al stock por tanda en `PurchaseOrder::receive()`.
+- `PurchaseOrderCancelled` -> Inventory revierte stock si estaba recibida;
+  Finance anula la APInvoice.
+- `InventoryMovementCreated` -> posting a GL (cuentas 1108/5101/2101; importe
+  desde `total_value`).
+
+### Reglas duras del ciclo (no romper)
+- `status` es readOnlyOnUpdate en Sales/Purchase/CFDI/Remision: los cambios de
+  estado van por los endpoints de accion, nunca por PATCH directo.
+- Movimientos de inventario del ciclo llevan `idempotency_key` natural (R1);
+  las recepciones por tanda son la excepcion deliberada.
+- Despliegues: `artisan event:clear` obligatorio o los listeners nuevos no corren
+  (bootstrap/cache/events.php cachea los mapeos).
 
 ### Listeners Location
 - `Modules/Finance/app/Listeners/`

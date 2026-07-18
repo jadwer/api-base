@@ -2,6 +2,14 @@
 
 Complete architectural documentation for the Laravel Modular ERP system, covering system design, data models, business processes, and business rules.
 
+> Nota 2026-07-18: esta suite documenta el DISEÑO, no certifica que funcione. La
+> auditoria 2026-07-17 probo que los flujos Order-to-Cash y Procure-to-Pay aqui
+> diagramados no operaban end-to-end (eventos sin disparar, sin COGS, sin
+> reversas); el ciclo se refactorizo ese mismo dia. Las cifras de "Test Coverage
+> 94.5%" y "Phase 3 Complete (100%)" al final de este doc son de 2025-10 y no
+> reflejan calidad real (tests de fachada). Estado real: DEVELOPMENT_ROADMAP.md
+> y `base/docs/audit-lwm-migration/`.
+
 ## 📊 Documentation Overview
 
 This documentation suite provides comprehensive coverage of:

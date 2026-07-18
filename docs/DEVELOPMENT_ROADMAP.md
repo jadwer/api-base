@@ -1,31 +1,50 @@
-# Development Roadmap - v1.0
+# Development Roadmap
 
-**Last Updated:** 2026-01-06
-**Status:** v1.0 RELEASE READY
-**Production Readiness:** 100%
+**Last Updated:** 2026-07-18
+**Status:** auditado 2026-07-17, ciclo transaccional refactorizado y verificado en dev
+**Production Readiness:** NO afirmar porcentajes; ver "Correccion de la auditoria" abajo
 
 ---
 
+## Correccion de la auditoria (2026-07-18)
+
+Este documento decia "v1.0 RELEASE READY, Production Readiness 100%" y una tabla
+con los 14 modulos en "Complete". La auditoria modular del 2026-07-17 probo que eso
+era FALSO para el nucleo transaccional: las ventas no descontaban stock ni generaban
+COGS, las cancelaciones no revertian nada, y los eventos que este roadmap daba por
+funcionales (Order-to-Cash, Procure-to-Pay) no se disparaban en varios caminos. Los
+tests E2E que el checklist marca como "passing" usaban Event::fake() y por eso nunca
+lo detectaron.
+
+El ciclo fue refactorizado y verificado end-to-end en dev el 2026-07-17 (commits
+90ae514, 9a2b95d, 2581995, c23c5d1 y siguientes). Detalle completo, mapa de los 21
+modulos y plan en `base/docs/audit-lwm-migration/` (carpeta del workspace, fuera de
+este repo): SINTESIS_AUDITORIA_MODULAR.md, PLAN_REFACTOR_CICLO.md,
+ROADMAP_POST_CUTOVER.md.
+
+Se corrige con la verdad en vez de borrar para dejar constancia de que se audito,
+que se encontro y por que cambio el estado.
+
 ## Estado Actual
 
-### Modulos Completados (14/14)
+### Modulos implementados (14) con estado auditado 2026-07
 
-| Modulo | Entidades | Tests | Status |
-|--------|-----------|-------|--------|
-| Product | Products, Units, Categories, Brands, Variants | 26 | Complete |
-| Inventory | Warehouses, Locations, Stock, Batches, Movements, CycleCounts | 24 | Complete |
-| Purchase | Suppliers, Orders, Items, Approval Workflow, Budgets | 18 | Complete |
-| Sales | Customers, Orders, Items, Shipments, Backorders, DiscountRules | 24 | Complete |
-| Ecommerce | Carts, Checkout, Payments, Wishlists, Reviews, Recommendations | 64 | Complete |
-| Finance | AP/AR Invoices, Payments, Bank Accounts, EarlyPaymentDiscount | 39 | Complete |
-| Accounting | Accounts, Journal Entries, Fiscal Periods, Exchange Rates | 61 | Complete |
-| Reports | Financial Statements, Management Reports, KPIs | 50 | Complete |
-| HR | Employees, Attendance, Payroll, Leave, Performance | 45 | Complete |
-| CRM | Pipeline, Leads, Campaigns, Activities, Opportunities | 25 | Complete |
-| Billing | CFDI Invoices, PAC Integration (SW Sapien), Stripe | 25 | Complete |
-| Contacts | Contacts, Addresses, Documents, Duplicate Detection | 20 | Complete |
-| Audit | Activity Logging, Audit Trails | 3 | Complete |
-| SystemHealth | Health Checks, Metrics | 1 | Complete |
+| Modulo | Entidades | Tests | Status auditado |
+|--------|-----------|-------|-----------------|
+| Product | Products, Units, Categories, Brands, Variants | 26 | Sano (ofertas y price/cost verificados) |
+| Inventory | Warehouses, Locations, Stock, Batches, Movements, CycleCounts | 24 | Refactorizado 2026-07 (GL importe-0 y cuentas sin sembrar, corregido) |
+| Purchase | Suppliers, Orders, Items, Approval Workflow, Budgets | 18 | Refactorizado 2026-07 (receive/cancel reales, reversa de stock) |
+| Sales | Customers, Orders, Items, Shipments, Backorders, DiscountRules | 24 | Refactorizado 2026-07 (entrega descuenta stock + COGS, cancel revierte) |
+| Ecommerce | Carts, Checkout, Payments, Wishlists, Reviews, Recommendations | 64 | Parcial (reserva de stock revertida, rediseno pendiente) |
+| Finance | AP/AR Invoices, Payments, Bank Accounts, EarlyPaymentDiscount | 39 | Refactorizado 2026-07 (listener unico de facturacion, reversas) |
+| Accounting | Accounts, Journal Entries, Fiscal Periods, Exchange Rates | 61 | Sano (motor de asientos verificado) |
+| Reports | Financial Statements, Management Reports, KPIs | 50 | Sano |
+| HR | Employees, Attendance, Payroll, Leave, Performance | 45 | A medias (CRUD sin motor de nomina) |
+| CRM | Pipeline, Leads, Campaigns, Activities, Opportunities | 25 | A medias (CRUD sin motor) |
+| Billing | CFDI Invoices, PAC Integration (SW Sapien), Stripe | 25 | Refactorizado 2026-07 (timbrado verificado en sandbox) |
+| Contacts | Contacts, Addresses, Documents, Duplicate Detection | 20 | Sano |
+| Audit | Activity Logging, Audit Trails | 3 | Sano |
+| SystemHealth | Health Checks, Metrics | 1 | Sano |
 
 ### Metricas
 
@@ -33,8 +52,8 @@
 |---------|-------|
 | Modelos/Entidades | 85+ |
 | Endpoints API | 736+ |
-| Tests (archivos) | 452 |
-| Reglas de negocio | 175/175 (100%) |
+| Tests (archivos) | 452, mayoria de fachada (rediseno por invariante en Fase 2.7) |
+| Reglas de negocio | el "175/175 (100%)" anterior era falso; ver architecture/BUSINESS_RULES_COMPLETE.md corregido |
 | Documentacion API | Scribe (664 endpoints) |
 
 ---
@@ -43,9 +62,13 @@
 
 ### P1 - Criticas (5/5 Complete)
 - [x] **PU-A001** Purchase Approval Workflow
-- [x] **IV-A001** Inventory GL Integration
+- [x] **IV-A001** Inventory GL Integration. Nota auditoria 2026-07: posteaba con
+  importe 0 y las cuentas nunca se sembraron; corregido (total_value + chart
+  1108/5101/2101)
 - [x] **IV-A002** FEFO Batch Selection
-- [x] **SA-A001** Sales Reservation System
+- [ ] **SA-A001** Sales Reservation System. Nota auditoria 2026-07: la reserva
+  nunca se convertia en salida; la reserva de ecommerce se REVIRTIO por
+  descuadre estructural (ver PENDIENTE_REDISENO_RESERVAS.md en la auditoria)
 - [x] **SA-A002** Line Calculation Engine
 
 ### P2 - Alta Prioridad (12/12 Complete)
@@ -58,7 +81,9 @@
 - [x] **SA-M002** Backorder Management
 - [x] **AC-M001** Period Close Checklist
 - [x] **FI-M001** Late Payment Penalties
-- [x] **Cross-Module** Event Listeners (Order-to-Cash, Procure-to-Pay)
+- [x] **Cross-Module** Event Listeners (Order-to-Cash, Procure-to-Pay). Nota
+  auditoria 2026-07: varios eventos no se disparaban (cancelaciones, entrega);
+  reparado en el refactor del ciclo
 - [x] **Audit** Comprehensive activity logging (37 models)
 - [x] **PU-M003** Budget Control for Purchase Orders
 
@@ -67,7 +92,9 @@
 - [x] **CO-M001** Duplicate Detection (Contacts)
 - [x] **SA-M003** Automatic Discount Rules
 - [x] **FI-M002** Early Payment Discount (pronto pago)
-- [x] **E2E Tests** Online Sales Integration (Cart->Checkout->Order->Invoice)
+- [x] **E2E Tests** Online Sales Integration (Cart->Checkout->Order->Invoice).
+  Nota auditoria 2026-07: usaban Event::fake(), no probaban el ciclo real; se
+  reescriben por invariante en Fase 2.7
 - [x] **Stripe** Payment Gateway Integration
 
 ### Integraciones Externas
@@ -79,14 +106,20 @@
 
 ## Checklist Pre-Release v1.0
 
-- [x] All modules implemented and tested
-- [x] PAC integration configured and tested
+Nota 2026-07: este checklist se marco completo en enero pero la auditoria probo
+que tres items no eran ciertos en la practica. Se anota el estado real en cada uno.
+
+- [x] All modules implemented and tested (implementados si; "tested" era de fachada,
+  Fase 2.7 pendiente)
+- [x] PAC integration configured and tested (timbrado verificado en sandbox 2026-07)
 - [x] Stripe integration configured and tested
-- [x] Event listeners functional (Order-to-Cash, Procure-to-Pay)
+- [x] Event listeners functional (Order-to-Cash, Procure-to-Pay): FALSO en enero,
+  reparado en el refactor 2026-07
 - [x] Audit logging active (37 models)
 - [x] Database migrations consolidated
 - [x] API documentation generated (Scribe - 664 endpoints)
-- [x] E2E integration tests passing
+- [x] E2E integration tests passing: pasaban con Event::fake(), no probaban el ciclo;
+  reescritura en Fase 2.7
 - [x] All v1.1 roadmap features implemented
 - [ ] Production environment configured
 
@@ -119,6 +152,8 @@
 | v1.0-rc1 | 2026-01-03 | Test optimization (SQLite), PAC/Stripe tests |
 | v1.0-rc2 | 2026-01-05 | PU-M003 Budget Control, Scribe API docs |
 | v1.0 | 2026-01-06 | All v1.1 features, E2E tests, Stripe gateway |
+| auditoria | 2026-07-17 | Auditoria modular: ciclo transaccional roto pese al "100%"; refactor ejecutado y verificado en dev |
+| correccion | 2026-07-18 | Este doc corregido con el estado real (Fase 2.5, purga de confianza falsa) |
 
 ---
 

@@ -2,7 +2,14 @@
 
 **Creado:** 2026-01-03
 **Completado:** 2026-01-06
-**Estado:** TODAS LAS FEATURES IMPLEMENTADAS
+**Estado:** features v1.1 entregadas; las metricas globales de este doc fueron
+desmentidas por la auditoria 2026-07-17 (ver nota)
+
+> Nota 2026-07-18 (Fase 2.5): "14 completamente funcionales" y "reglas 175/175"
+> eran falsos; el ciclo transaccional estaba roto (sin COGS, sin descuento de
+> stock, cancelaciones sin reversa) y se refactorizo el 2026-07-17. El E2E de la
+> tabla de abajo pasaba con Event::fake(), no probaba el ciclo real. Estado real
+> en DEVELOPMENT_ROADMAP.md y en `base/docs/audit-lwm-migration/`.
 
 ---
 
@@ -12,11 +19,11 @@
 
 | Metrica | Valor |
 |---------|-------|
-| Modulos | 14 completamente funcionales |
+| Modulos | 14 implementados (completitud auditada 2026-07, ver nota arriba) |
 | Modelos/Entidades | 85+ |
 | Endpoints API | 736+ |
 | Tests (archivos) | 452 |
-| Reglas de negocio | 175/175 (100%) |
+| Reglas de negocio | el "175/175 (100%)" anterior era falso (ver nota arriba) |
 | Documentacion API | Scribe (664 endpoints) |
 | Integraciones | SW Sapien PAC, Stripe, Spatie Audit |
 
