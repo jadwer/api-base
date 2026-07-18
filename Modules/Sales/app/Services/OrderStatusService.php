@@ -247,6 +247,12 @@ class OrderStatusService
                 // remisiones o shipments, esos flujos son duenos del stock y aqui no
                 // se toca (evita doble descuento).
                 $this->createDeliveryExitMovements($order);
+
+                // Fase 2.7: liberar la reserva del confirm. Sin esto, el exit fisico
+                // descuenta quantity con reserved_quantity aun viva y available
+                // queda descontado doble para siempre (fuga cazada por el test de
+                // invariante del ciclo).
+                $this->releaseInventory($order);
                 break;
 
             case 'completed':
@@ -502,13 +508,19 @@ class OrderStatusService
     /**
      * Release inventory reservation for sales order (SA-004)
      *
-     * Decrements Stock.reserved_quantity and increments Stock.quantity
-     * when order is cancelled.
+     * Solo decrementa Stock.reserved_quantity (quantity no se toca aqui; la
+     * reponen o descuentan los movimientos de inventario). Se llama al cancelar
+     * Y al entregar: si la reserva del confirm no se libera en la entrega, el
+     * exit fisico descuenta quantity con la reserva aun viva y available
+     * (quantity - reserved) descuenta doble para siempre.
+     *
+     * Publico porque el camino de entrega por remision (RemissionController)
+     * actualiza el status de la orden directo y tambien debe liberar.
      *
      * @param SalesOrder $order
      * @return void
      */
-    private function releaseInventory(SalesOrder $order): void
+    public function releaseInventory(SalesOrder $order): void
     {
         // Load items if not already loaded
         if (!$order->relationLoaded('items')) {

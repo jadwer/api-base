@@ -316,10 +316,14 @@ class PurchaseOrder extends Model
      */
     public function isFullyReceived(): bool
     {
-        // Load items if not loaded
-        if (!$this->relationLoaded('purchaseOrderItems')) {
-            $this->load('purchaseOrderItems');
-        }
+        // Fase 2.7 (bug cazado por PurchaseOrderCancelInvariantTest): recargar
+        // SIEMPRE. receive() actualiza los items con instancias frescas via
+        // purchaseOrderItems()->find(); si la relacion venia precargada (el
+        // fallback "recibir todo" del controller la precarga), aqui se leia la
+        // coleccion STALE con received_quantity viejo y la OC se quedaba en
+        // approved: stock dentro pero sin evento ni APInvoice.
+        $this->unsetRelation('purchaseOrderItems');
+        $this->load('purchaseOrderItems');
 
         foreach ($this->purchaseOrderItems as $item) {
             if ($item->received_quantity < $item->quantity) {

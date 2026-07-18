@@ -43,6 +43,28 @@ class CleanDatabaseSeeder extends Seeder
         $this->command->info('Phase 4: SAT Catalogs...');
         $this->call(\Modules\SatCatalogs\Database\Seeders\SatCatalogsSeeder::class);
 
+        // Phase 5: Fiscal periods (Fase 2.7). Sin periodos fiscales abiertos, TODO
+        // posting a GL (COGS, facturas AR/AP) falla con "No open fiscal period
+        // found" y los listeners lo tragan en silencio: el ciclo contable
+        // simplemente no nace en una instalacion limpia. Anio pasado + actual +
+        // siguiente, todos abiertos.
+        $this->command->info('Phase 5: Fiscal Periods...');
+        foreach ([now()->year - 1, now()->year, now()->year + 1] as $year) {
+            for ($month = 1; $month <= 12; $month++) {
+                $startDate = \Carbon\Carbon::create($year, $month, 1);
+                \Modules\Accounting\Models\FiscalPeriod::firstOrCreate(
+                    ['year' => $year, 'month' => $month],
+                    [
+                        'name' => sprintf('%d-%02d', $year, $month),
+                        'start_date' => $startDate->format('Y-m-d'),
+                        'end_date' => $startDate->copy()->endOfMonth()->format('Y-m-d'),
+                        'status' => 'open',
+                        'metadata' => [],
+                    ]
+                );
+            }
+        }
+
         $this->command->info('');
         $this->command->info('========================================');
         $this->command->info('  Clean Project Ready!');

@@ -503,7 +503,10 @@ class ShoppingCartController extends Controller
     {
         $discount = match ($coupon->type) {
             'percentage' => $subtotal * ($coupon->value / 100),
-            'fixed_amount' => $coupon->value,
+            // Tope al subtotal, igual que Coupon::calculateDiscount. Sin el min,
+            // un cupon mayor al carrito persistia descuento > subtotal y dejaba
+            // totales NEGATIVOS que el checkout copiaba a la orden.
+            'fixed_amount' => min($coupon->value, $subtotal),
             'free_shipping' => 0, // Handled separately
             default => 0,
         };

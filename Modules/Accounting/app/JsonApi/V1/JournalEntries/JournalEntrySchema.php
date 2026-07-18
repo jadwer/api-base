@@ -33,7 +33,10 @@ class JournalEntrySchema extends Schema
             Str::make('description'),
             Number::make('totalDebit', 'total_debit')->sortable()->readOnly(),
             Number::make('totalCredit', 'total_credit')->sortable()->readOnly(),
-            Str::make('status')->sortable(),
+            // Los cambios de estado van por AccountingService::postJournalEntry
+            // (validateBalance + validatePeriod + folio); un PATCH directo se los
+            // saltaria por completo. Mismo patron que Sales/Purchase/CFDI.
+            Str::make('status')->sortable()->readOnlyOnUpdate(),
             DateTime::make('approvedAt')->sortable()->readOnly(),
             Number::make('approvedById')->readOnly(),
             DateTime::make('postedAt', 'posted_at')->sortable()->readOnly(),

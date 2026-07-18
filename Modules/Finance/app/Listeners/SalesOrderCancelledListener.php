@@ -113,9 +113,9 @@ class SalesOrderCancelledListener
             // Refactor ciclo (5b/F2): reponer el stock que SALIO por las entregas.
             // Antes cancelar una orden entregada anulaba la factura pero el stock
             // descontado (createExit al entregar) NUNCA volvia -> inventario perdido y
-            // COGS no revertido. Ahora, por cada movimiento 'exit' de remision de esta
-            // orden, se crea un 'entry' compensatorio (repone stock y postea el asiento
-            // inverso DR inventario / CR COGS). Idempotente por reference_type.
+            // COGS no revertido. Por cada 'exit' de la entrega (remision o entrega por
+            // status) se crea un 'entry' compensatorio (repone stock y postea el
+            // asiento inverso DR inventario / CR COGS). Idempotente por idempotency_key.
             $this->reverseDeliveredStock($salesOrder);
 
             // Update Sales Order status. invoicing_status es enum sin 'cancelled'
@@ -133,24 +133,36 @@ class SalesOrderCancelledListener
     /**
      * Refactor ciclo (5b/F2): repone el stock descontado por las entregas de la orden.
      *
-     * Busca los movimientos 'exit' con reference_type='remission' de las remisiones de
-     * esta orden y crea un 'entry' compensatorio por cada uno (misma cantidad, warehouse
-     * y unit_cost). El 'entry' repone Stock.quantity y, via InventoryMovementCreated,
-     * postea el asiento inverso (DR inventario / CR COGS).
+     * La entrega deja exits por DOS caminos excluyentes (C1): si hubo remisiones,
+     * reference_type='remission' (reference_id = la remision); si la orden se entrego
+     * por el endpoint de status sin remisiones, reference_type='sales_order'
+     * (reference_id = la orden). Hay que revertir ambos; la version anterior solo
+     * buscaba remisiones y una orden entregada por status jamas reponia stock ni
+     * revertia COGS (lo cazo el test de invariante de cancelacion).
      *
-     * Idempotente: marca la reversa con reference_type='sales_cancel' + reference_id =
-     * el id del movimiento exit original, para no reponer dos veces.
+     * Por cada exit se crea un 'entry' compensatorio (misma cantidad, warehouse y
+     * unit_cost) que repone Stock.quantity y, via InventoryMovementCreated, postea
+     * el asiento inverso (DR inventario / CR COGS).
+     *
+     * Idempotente: idempotency_key sales_cancel:exit:{id del exit original}.
      */
     private function reverseDeliveredStock($salesOrder): void
     {
         $remissionIds = $salesOrder->remissions()->pluck('id');
-        if ($remissionIds->isEmpty()) {
-            return;
-        }
 
-        $exitMovements = InventoryMovement::where('reference_type', 'remission')
-            ->whereIn('reference_id', $remissionIds)
-            ->where('movement_type', InventoryMovement::MOVEMENT_TYPE_EXIT)
+        $exitMovements = InventoryMovement::where('movement_type', InventoryMovement::MOVEMENT_TYPE_EXIT)
+            ->where(function ($query) use ($salesOrder, $remissionIds) {
+                $query->where(function ($q) use ($salesOrder) {
+                    $q->where('reference_type', 'sales_order')
+                        ->where('reference_id', $salesOrder->id);
+                });
+                if ($remissionIds->isNotEmpty()) {
+                    $query->orWhere(function ($q) use ($remissionIds) {
+                        $q->where('reference_type', 'remission')
+                            ->whereIn('reference_id', $remissionIds);
+                    });
+                }
+            })
             ->get();
 
         foreach ($exitMovements as $exit) {

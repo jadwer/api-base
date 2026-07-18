@@ -317,6 +317,11 @@ class RemissionController extends Controller
 
                     if (!$hasNonDeliveredRemissions && $hasDeliveredRemissions) {
                         $salesOrder->update(['status' => 'delivered']);
+                        // Fase 2.7: liberar la reserva del confirm tambien en este
+                        // camino (el exit ya desconto quantity; con la reserva viva,
+                        // available descuenta doble para siempre).
+                        app(\Modules\Sales\Services\OrderStatusService::class)
+                            ->releaseInventory($salesOrder);
                         $shouldFireDelivered = true;
                     }
                 }

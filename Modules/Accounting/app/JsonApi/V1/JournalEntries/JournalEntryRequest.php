@@ -23,7 +23,11 @@ class JournalEntryRequest extends ResourceRequest
             'description' => ['nullable', 'string'],
             'totalDebit' => ['nullable', 'numeric'],
             'totalCredit' => ['nullable', 'numeric'],
-            'status' => [$isUpdate ? 'sometimes' : 'required', 'string', Rule::in(JournalEntry::STATUSES)],
+            // En update el Schema ignora status (readOnlyOnUpdate); la regla queda
+            // suave para no romper con 422 a clientes que aun lo envian.
+            'status' => $isUpdate
+                ? ['sometimes', 'string']
+                : ['required', 'string', Rule::in(JournalEntry::STATUSES)],
             'approvedAt' => ['nullable', 'string'],
             'approvedById' => ['nullable', 'integer'],
             'postedAt' => ['nullable', 'string'],
