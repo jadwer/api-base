@@ -14,7 +14,6 @@ use Modules\Billing\Services\CFDI\REPService;
 use Modules\Finance\Models\Payment;
 use Modules\Finance\Models\PaymentApplication;
 use Modules\Sales\Models\SalesOrder;
-use Modules\Sales\Services\StockAvailabilityService;
 use Modules\Finance\Models\ARInvoice;
 use Modules\Billing\Exceptions\PacException;
 use Illuminate\Http\JsonResponse;
@@ -750,17 +749,13 @@ class CFDIInvoiceController
             ], 200);
         }
 
-        // Fase A - Regla fiscal de stock: los items sin stock suficiente bloquean
-        // la factura (422 con detalle por item). Se valida ANTES de crear nada.
-        // La prefactura (prefacturaFromOrder) NO aplica esta validacion.
-        $salesOrder->loadMissing('items.product');
-        $insufficientItems = app(StockAvailabilityService::class)->insufficientItems($salesOrder->items);
-        if (count($insufficientItems) > 0) {
-            return response()->json([
-                'message' => 'Stock insuficiente para facturar la orden',
-                'errors' => $insufficientItems,
-            ], 422);
-        }
+        // E2E dev post-refactor: se RETIRA la "regla fiscal de stock" (Fase A) de este
+        // endpoint. La regla nacio cuando la entrega NO descontaba inventario: validar
+        // disponibilidad antes de facturar tenia sentido. Ahora la entrega SI descuenta
+        // (createExit en deliver), y este endpoint solo acepta ordenes delivered/completed:
+        // el stock salio PRECISAMENTE por la entrega, asi que la validacion fallaba
+        // SIEMPRE (422 "stock insuficiente" con available=0 tras entregar). La garantia
+        // de stock vive ahora en la entrega misma (createExit lanza si no alcanza).
 
         try {
             $cfdi = $automationService->generateFromARInvoice($arInvoice);
