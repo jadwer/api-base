@@ -84,6 +84,10 @@ class SalesOrderSchema extends Schema
             Number::make('arInvoiceId', 'ar_invoice_id'),
             Str::make('invoicingStatus', 'invoicing_status')->sortable(),
             Str::make('invoicingNotes', 'invoicing_notes'),
+            // Bloque FE del ciclo: el detalle de venta necesita pintar el estado
+            // financiero (cancelled tras anular factura) que antes no se exponia;
+            // el QA visual lo marco como gap (orden cancelada sin señal en UI).
+            Str::make('financialStatus', 'financial_status')->sortable()->readOnly(),
             
             // Metadata JSON
             ArrayHash::make('metadata'),
