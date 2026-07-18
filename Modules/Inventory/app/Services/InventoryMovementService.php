@@ -143,7 +143,13 @@ class InventoryMovementService
                 'warehouse_id' => $data['warehouse_id'],
                 'warehouse_location_id' => $data['warehouse_location_id'] ?? null,
                 'quantity' => $data['quantity'],
-                'unit_cost' => $stock->unit_cost,
+                // QA post-commit (A2): antes se forzaba $stock->unit_cost ignorando el
+                // payload; con stock entrado sin costo (unit_cost=0) el COGS se posteaba
+                // en $0. Prioridad: costo del stock si es real (>0), si no el costo que
+                // aporte el caller (ej. costo del producto en la entrega por remision).
+                'unit_cost' => ((float) $stock->unit_cost > 0)
+                    ? $stock->unit_cost
+                    : (float) ($data['unit_cost'] ?? 0),
                 'status' => InventoryMovement::STATUS_COMPLETED,
                 'user_id' => $data['user_id'],
                 'previous_stock' => $previousStock,

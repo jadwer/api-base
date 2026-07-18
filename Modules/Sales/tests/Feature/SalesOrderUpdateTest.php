@@ -41,24 +41,30 @@ class SalesOrderUpdateTest extends TestCase
             ->patch("/api/v1/sales-orders/{$salesOrder->id}");
 
         $response->assertOk();
-        
-        // Verificar que se actualizó en base de datos
+
+        // Refactor ciclo (Patron 1): el status es readOnlyOnUpdate. Los demas campos
+        // se actualizan; el status del payload se IGNORA y la orden conserva 'draft'.
+        // Las transiciones van por POST /orders/{id}/status (OrderStatusService).
         $this->assertDatabaseHas('sales_orders', [
             'id' => $salesOrder->id,
             'order_number' => 'SO-UPDATED-001',
-            'status' => 'confirmed',
+            'status' => 'draft',
             'total_amount' => 1500.00,
             'notes' => 'Updated order notes'
         ]);
 
         // Verificar respuesta
         $this->assertEquals('SO-UPDATED-001', $response->json('data.attributes.orderNumber'));
-        $this->assertEquals('confirmed', $response->json('data.attributes.status'));
+        $this->assertEquals('draft', $response->json('data.attributes.status'));
         $this->assertEquals(1500.00, $response->json('data.attributes.totalAmount'));
     }
 
-    public function test_admin_can_update_sales_order_status(): void
+    public function test_patch_ignores_status_changes(): void
     {
+        // Refactor ciclo (Patron 1): antes este test verificaba que un PATCH cambiaba
+        // el status (test_admin_can_update_sales_order_status). Ese contrato era el bug:
+        // saltarse OrderStatusService evitaba reservar stock, facturar y disparar
+        // eventos. Ahora el invariante es el inverso: el PATCH NO cambia el status.
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
@@ -81,11 +87,11 @@ class SalesOrderUpdateTest extends TestCase
             ->patch("/api/v1/sales-orders/{$salesOrder->id}");
 
         $response->assertOk();
-        $this->assertEquals('confirmed', $response->json('data.attributes.status'));
-        
+        $this->assertEquals('draft', $response->json('data.attributes.status'));
+
         $this->assertDatabaseHas('sales_orders', [
             'id' => $salesOrder->id,
-            'status' => 'confirmed'
+            'status' => 'draft'
         ]);
     }
 
@@ -223,12 +229,17 @@ class SalesOrderUpdateTest extends TestCase
         $response->assertStatus(404);
     }
 
-    public function test_cannot_update_with_invalid_status(): void
+    public function test_invalid_status_on_patch_is_ignored(): void
     {
+        // Refactor ciclo (Patron 1): antes se esperaba 422 por enum invalido. Ahora el
+        // status es readOnlyOnUpdate: cualquier valor (valido o no) se IGNORA en el
+        // PATCH y la orden conserva su estado. La validacion de transiciones vive en
+        // OrderStatusService (endpoint de accion), no en el update JSON:API.
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create();
         $salesOrder = SalesOrder::factory()->create([
-            'contact_id' => $customer->id
+            'contact_id' => $customer->id,
+            'status' => 'draft'
         ]);
 
         $data = [
@@ -245,13 +256,11 @@ class SalesOrderUpdateTest extends TestCase
             ->withData($data)
             ->patch("/api/v1/sales-orders/{$salesOrder->id}");
 
-        $response->assertStatus(422);
-        $errors = $response->json('errors');
-        $this->assertNotEmpty($errors);
-        $statusError = collect($errors)->first(function ($error) {
-            return str_contains($error['source']['pointer'] ?? '', 'status');
-        });
-        $this->assertNotNull($statusError, 'Expected status validation error');
+        $response->assertOk();
+        $this->assertDatabaseHas('sales_orders', [
+            'id' => $salesOrder->id,
+            'status' => 'draft'
+        ]);
     }
 
     public function test_cannot_update_order_number_to_duplicate(): void

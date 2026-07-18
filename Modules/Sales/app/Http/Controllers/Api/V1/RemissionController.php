@@ -273,6 +273,19 @@ class RemissionController extends Controller
             ], 400);
         }
 
+        // QA post-commit (C2): los shipments descuentan Stock.quantity DIRECTO (sin
+        // movimiento ni COGS) y la remision descuenta via createExit. Si la orden ya
+        // desconto por shipments, entregar la remision descontaria DOS veces. Regla de
+        // negocio puente: no mezclar flujos (la unificacion del camino de salida es R9
+        // del diseno de arquitectura).
+        $orderForGuard = $remission->salesOrder;
+        if ($orderForGuard && $orderForGuard->shipments()->whereIn('status', ['shipped', 'delivered'])->exists()) {
+            return response()->json([
+                'error' => 'Esta orden ya descuenta inventario por envios (shipments). '
+                    . 'No se puede entregar tambien por remision: use un solo flujo de salida.',
+            ], 422);
+        }
+
         // Refactor ciclo (Patron 3, C1 + 5b/F3): la entrega DESCUENTA stock real y todo
         // el paso (descuento + markAsDelivered + update de la orden) va en UNA transaccion
         // externa atomica. Antes corrian sueltos: un fallo entre el commit del exit y el
@@ -390,6 +403,9 @@ class RemissionController extends Controller
                 'reference_id' => $remission->id,
                 'description' => "Salida por remision {$remission->remission_number}",
                 'user_id' => $userId,
+                // QA post-commit (A2): fallback de costo para el COGS cuando el stock
+                // no trae unit_cost real (createExit prioriza el costo del stock).
+                'unit_cost' => (float) (\Modules\Product\Models\Product::find($item->product_id)?->cost ?? 0),
                 'metadata' => ['remission_item_id' => $item->id],
                 // 5c/E2E: los exits requieren quality_checked (regla IV-009 del modelo).
                 // La entrega de una remision impresa y confirmada ES la validacion del

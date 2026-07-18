@@ -75,7 +75,7 @@ class OrderStatusService
             }
         }
 
-        return DB::transaction(function () use ($order, $newStatus, $notes, $metadata) {
+        $updated = DB::transaction(function () use ($order, $newStatus, $notes, $metadata) {
             $oldStatus = $order->status;
 
             // Build status history entry
@@ -116,6 +116,18 @@ class OrderStatusService
 
             return $order->fresh();
         });
+
+        // QA post-commit (C1): marcar 'delivered' por este servicio (endpoint de status
+        // del admin, POST /orders/{id}/status) debe facturar igual que la entrega por
+        // remision. Antes el Observer neutralizado dejo este camino sin ARInvoice. El
+        // evento se dispara DESPUES del commit (mismo patron que RemissionController::
+        // deliver): un fallo del listener no revierte la entrega, y el listener es
+        // idempotente por ar_invoice_id, asi que no duplica si la orden ya se facturo.
+        if ($newStatus === 'delivered') {
+            event(new \Modules\Sales\Events\SalesOrderDelivered($updated));
+        }
+
+        return $updated;
     }
 
     /**
@@ -228,6 +240,13 @@ class OrderStatusService
                         ['delivered_at' => now()->toIso8601String()]
                     ),
                 ]);
+
+                // QA post-commit (C1): la entrega por este camino tambien descuenta
+                // stock (antes solo la remision lo hacia; una orden entregada por el
+                // endpoint de status quedaba sin salida ni COGS). Si la orden tiene
+                // remisiones o shipments, esos flujos son duenos del stock y aqui no
+                // se toca (evita doble descuento).
+                $this->createDeliveryExitMovements($order);
                 break;
 
             case 'completed':
@@ -258,6 +277,85 @@ class OrderStatusService
                 // ingresos y saldo AR inflados.
                 event(new \Modules\Sales\Events\SalesOrderCancelled($order->fresh()));
                 break;
+
+            case 'returned':
+                // QA post-commit (M1): la maquina prohibe delivered->cancelled; el camino
+                // REAL para revertir una venta entregada es 'returned'. Antes este case no
+                // existia: marcar returned no reponia stock ni anulaba la factura. Se
+                // reutiliza la reversa de SalesOrderCancelledListener (anula ARInvoice,
+                // revierte GL, repone el stock de las entregas) como PUENTE hasta que
+                // exista un flujo formal de nota de credito/devolucion.
+                event(new \Modules\Sales\Events\SalesOrderCancelled($order->fresh()));
+                break;
+        }
+    }
+
+    /**
+     * QA post-commit (C1): salidas de inventario para ordenes entregadas por el
+     * endpoint de status (sin remision ni shipment). Descuenta Stock.quantity via
+     * InventoryMovementService::createExit, lo que postea el COGS por el evento
+     * InventoryMovementCreated.
+     *
+     * Reglas:
+     * - Si la orden tiene remisiones, la remision es duena del stock: no tocar.
+     * - Si la orden tiene shipments shipped/delivered, ya descontaron directo: no tocar
+     *   (la unificacion de ese camino es R9 del diseno).
+     * - Idempotente por orden: si ya existen exits reference_type='sales_order' para
+     *   esta orden, no re-descuenta (la maquina ademas impide re-entrar a delivered).
+     * - Producto sin registro de Stock: se omite con log (ordenes de servicios/digital
+     *   no llevan inventario). Stock existente pero insuficiente: lanza y revierte la
+     *   transicion completa (mismo criterio que la entrega por remision).
+     */
+    private function createDeliveryExitMovements(SalesOrder $order): void
+    {
+        if ($order->remissions()->exists()) {
+            return;
+        }
+        if ($order->shipments()->whereIn('status', ['shipped', 'delivered'])->exists()) {
+            return;
+        }
+
+        $already = \Modules\Inventory\Models\InventoryMovement::where('reference_type', 'sales_order')
+            ->where('reference_id', $order->id)
+            ->exists();
+        if ($already) {
+            return;
+        }
+
+        $service = app(\Modules\Inventory\Services\InventoryMovementService::class);
+        $order->loadMissing('items');
+
+        foreach ($order->items as $item) {
+            if (!$item->product_id || $item->quantity <= 0) {
+                continue;
+            }
+
+            $stock = \Modules\Inventory\Models\Stock::where('product_id', $item->product_id)
+                ->orderByDesc('quantity')
+                ->first();
+
+            if (!$stock) {
+                // Sin registro de stock: producto de servicio/digital. No bloquear la entrega.
+                Log::info('Entrega sin registro de stock, se omite salida de inventario', [
+                    'sales_order_id' => $order->id,
+                    'product_id' => $item->product_id,
+                ]);
+                continue;
+            }
+
+            $service->createExit([
+                'product_id' => $item->product_id,
+                'warehouse_id' => $stock->warehouse_id,
+                'quantity' => $item->quantity,
+                'movement_date' => now(),
+                'reference_type' => 'sales_order',
+                'reference_id' => $order->id,
+                'description' => "Salida por entrega de orden {$order->order_number}",
+                'user_id' => auth()->id() ?? \Modules\User\Models\User::first()?->id ?? 1,
+                'metadata' => ['sales_order_item_id' => $item->id],
+                // Exit del sistema: la entrega confirmada ES la validacion (IV-009).
+                'quality_checked' => true,
+            ]);
         }
     }
 

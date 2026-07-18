@@ -148,8 +148,11 @@ class ARInvoiceService
      */
     public function createFromSalesOrder($salesOrder): ARInvoice
     {
-        // Validate sales order is delivered
-        if ($salesOrder->status !== 'delivered') {
+        // QA post-commit (A1): aceptar delivered O completed. La maquina de estados es
+        // delivered -> completed, asi que una orden completed YA fue entregada; exigir
+        // solo 'delivered' dejaba muerto el EventReplayService (busca completed sin
+        // factura, el gate las rechazaba y reportaba exito sin crear nada).
+        if (!in_array($salesOrder->status, ['delivered', 'completed'], true)) {
             throw new \Exception("Sales Order #{$salesOrder->order_number} must be delivered before invoicing.");
         }
 
@@ -231,8 +234,8 @@ class ARInvoiceService
      */
     public function canGenerateInvoice($salesOrder): bool
     {
-        // Must be delivered
-        if ($salesOrder->status !== 'delivered') {
+        // QA post-commit (A1): delivered O completed (ver createFromSalesOrder).
+        if (!in_array($salesOrder->status, ['delivered', 'completed'], true)) {
             return false;
         }
 

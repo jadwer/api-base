@@ -186,8 +186,12 @@ class CFDIInvoiceUpdateTest extends TestCase
             ]);
     }
 
-    public function test_can_update_status()
+    public function test_status_cannot_be_changed_via_patch()
     {
+        // Refactor ciclo (Patron 1): este test verificaba el BUG (un PATCH podia poner
+        // status='valid' fingiendo una factura timbrada sin UUID ni sello del PAC).
+        // El invariante nuevo es el inverso: el status del CFDI solo cambia por
+        // stamp()/cancel() de CFDIStampingService; el PATCH lo IGNORA.
         $user = $this->getAdminUser();
         $invoice = CFDIInvoice::factory()->draft()->create();
 
@@ -209,10 +213,15 @@ class CFDIInvoiceUpdateTest extends TestCase
             ->assertJson([
                 'data' => [
                     'attributes' => [
-                        'status' => 'valid'
+                        'status' => 'draft'
                     ]
                 ]
             ]);
+
+        $this->assertDatabaseHas('cfdi_invoices', [
+            'id' => $invoice->id,
+            'status' => 'draft',
+        ]);
     }
 
     public function test_can_add_discount()

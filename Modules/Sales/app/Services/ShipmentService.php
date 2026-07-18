@@ -268,6 +268,25 @@ class ShipmentService
      */
     protected function deductInventoryOnShip(Shipment $shipment): void
     {
+        // QA post-commit (C2, guardia simetrica): si la orden ya desconto inventario
+        // por REMISION (movimientos exit reference_type='remission'), este shipment no
+        // debe descontar de nuevo. Un solo flujo de salida por orden; la unificacion
+        // completa (shipments creando movimientos con COGS) es R9 del diseno.
+        $remissionIds = \Modules\Sales\Models\Remission::where('sales_order_id', $shipment->sales_order_id)
+            ->pluck('id');
+        if ($remissionIds->isNotEmpty()) {
+            $alreadyByRemission = \Modules\Inventory\Models\InventoryMovement::where('reference_type', 'remission')
+                ->whereIn('reference_id', $remissionIds)
+                ->exists();
+            if ($alreadyByRemission) {
+                Log::warning('Shipment no descuenta inventario: la orden ya desconto por remision', [
+                    'shipment_id' => $shipment->id,
+                    'sales_order_id' => $shipment->sales_order_id,
+                ]);
+                return;
+            }
+        }
+
         $warehouseId = $shipment->warehouse_id;
 
         foreach ($shipment->items as $shipmentItem) {

@@ -135,12 +135,16 @@ class InventoryMovementGLIntegrationTest extends TestCase
         $initialCount = JournalEntry::count();
 
         // Act: Create entry movement
+        // QA post-commit: el listener GL lee total_value (= quantity * unit_cost,
+        // columna generada por BD), no total_cost/cost_per_unit. Los fixtures de este
+        // archivo pueblan unit_cost por eso.
         $movement = InventoryMovement::create([
             'movement_type' => 'entry',
             'movement_date' => now(),
             'product_id' => $product->id,
             'warehouse_id' => $warehouse->id,
             'quantity' => 100.0,
+            'unit_cost' => 50.00,
             'cost_per_unit' => 50.00,
             'total_cost' => 5000.00,
             'status' => 'completed',
@@ -188,6 +192,7 @@ class InventoryMovementGLIntegrationTest extends TestCase
             'product_id' => $product->id,
             'warehouse_id' => $warehouse->id,
             'quantity' => 50.0,
+            'unit_cost' => 50.00,
             'cost_per_unit' => 50.00,
             'total_cost' => 2500.00,
             'status' => 'completed',
@@ -228,6 +233,7 @@ class InventoryMovementGLIntegrationTest extends TestCase
             'product_id' => $product->id,
             'warehouse_id' => $warehouse->id,
             'quantity' => 10.0,
+            'unit_cost' => 50.00,
             'cost_per_unit' => 50.00,
             'total_cost' => 500.00,
             'status' => 'completed',
@@ -267,6 +273,7 @@ class InventoryMovementGLIntegrationTest extends TestCase
             'warehouse_id' => $warehouse1->id,
             'destination_warehouse_id' => $warehouse2->id,
             'quantity' => 25.0,
+            'unit_cost' => 50.00,
             'cost_per_unit' => 50.00,
             'total_cost' => 1250.00,
             'status' => 'completed',
@@ -308,6 +315,7 @@ class InventoryMovementGLIntegrationTest extends TestCase
             'product_id' => $product->id,
             'warehouse_id' => $warehouse->id,
             'quantity' => 100.0,
+            'unit_cost' => 50.00,
             'cost_per_unit' => 50.00,
             'total_cost' => 5000.00,
             'status' => 'completed',
@@ -343,6 +351,7 @@ class InventoryMovementGLIntegrationTest extends TestCase
             'product_id' => $product->id,
             'warehouse_id' => $warehouse->id,
             'quantity' => 100.0,
+            'unit_cost' => 50.00,
             'cost_per_unit' => 50.00,
             'total_cost' => 5000.00,
             'status' => 'completed',

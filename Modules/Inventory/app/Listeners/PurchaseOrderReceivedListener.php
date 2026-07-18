@@ -67,7 +67,10 @@ class PurchaseOrderReceivedListener
                     'product_id' => $item->product_id,
                     'warehouse_id' => $warehouse->id,
                     'warehouse_location_id' => null, // Can be enhanced to use specific location
-                    'quantity' => $item->quantity,
+                    // QA post-commit (B2): entrar por lo RECIBIDO, no lo ordenado. Con
+                    // tolerancia +5% difieren, y la APInvoice ya factura por
+                    // received_quantity: entrar por quantity descuadraba stock vs factura.
+                    'quantity' => (float) ($item->received_quantity ?: $item->quantity),
                     'unit_cost' => $item->unit_price,
                     'reference_type' => 'purchase',
                     'reference_id' => $purchaseOrder->id,

@@ -379,10 +379,11 @@ class ShoppingCartController extends Controller
             ], 400);
         }
 
-        // Refactor ciclo (5b/F5/F6): pre-chequeo de stock best-effort (falla temprano con
-        // buen mensaje ANTES de crear contacto/orden). La GARANTIA real contra oversell
-        // esta en la reserva atomica con lockForUpdate DENTRO de la transaccion (mas
-        // abajo), que cierra la ventana de carrera TOCTOU. Este pre-chequeo no reserva.
+        // QA post-commit (M3): chequeo de stock BEST-EFFORT, sin reserva ni lock. La
+        // reserva atomica que existio aqui se REVIRTIO (el subsistema reserved_quantity
+        // esta descuadrado de base; ver PENDIENTE_REDISENO_RESERVAS.md). Consecuencia
+        // conocida: ventana TOCTOU, dos checkouts concurrentes pueden pasar ambos. Es
+        // el limite aceptado hasta el rediseno de reservas (R7 del diseno).
         $shoppingCart->loadMissing('cartItems');
         $insufficient = [];
         foreach ($shoppingCart->cartItems as $ci) {

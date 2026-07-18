@@ -12,6 +12,26 @@ use Modules\Contacts\Models\Contact;
 
 class ShoppingCartCheckoutTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // QA post-commit: el checkout ahora VALIDA stock antes de crear la orden
+        // (422 con detalle si no alcanza). Estos tests prueban el flujo del checkout,
+        // no el inventario: todo producto creado recibe stock amplio automaticamente
+        // para no acoplar cada caso al fixture de inventario.
+        $warehouse = \Modules\Inventory\Models\Warehouse::factory()->create();
+        Product::created(function ($product) use ($warehouse) {
+            \Modules\Inventory\Models\Stock::factory()->create([
+                'product_id' => $product->id,
+                'warehouse_id' => $warehouse->id,
+                'warehouse_location_id' => null,
+                'quantity' => 10000,
+                'reserved_quantity' => 0,
+            ]);
+        });
+    }
+
     public function test_user_can_checkout_own_cart(): void
     {
         $user = $this->getCustomerUser();
