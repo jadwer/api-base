@@ -114,6 +114,16 @@ class ProductSchema extends Schema
         ];
     }
 
+    /**
+     * Bloque FE del ciclo (cierre del riesgo 39k): sin default, una peticion SIN
+     * page devolvia los ~39,000 productos de golpe; PHP moria sin headers CORS y el
+     * navegador reportaba "CORS" (mismo sintoma que el falso-CORS de Ofertas). Esta
+     * version de laravel-json-api no tiene withDefaultPerPage en PagePagination; el
+     * mecanismo es la propiedad defaultPagination del Schema, que aplica cuando el
+     * cliente no manda parametros page.
+     */
+    protected ?array $defaultPagination = ['number' => 1, 'size' => 50];
+
     public function pagination(): ?Paginator
     {
         return PagePagination::make();

@@ -120,6 +120,14 @@ class PublicProductSchema extends Schema
         return PagePagination::make();
     }
 
+    /**
+     * Bloque FE del ciclo (cierre del riesgo 39k): el catalogo publico sin page
+     * intentaba materializar los ~39,000 productos (el escenario que mataba PHP en
+     * la auditoria post-cutover). El default del Schema aplica cuando el cliente no
+     * manda parametros page; ya no depende de que el frontend siempre pagine.
+     */
+    protected ?array $defaultPagination = ['number' => 1, 'size' => 50];
+
     public static function type(): string
     {
         return 'public-products';

@@ -9,6 +9,12 @@ use Modules\Product\Models\Product;
 use Modules\Product\Models\Unit;
 use Tests\TestCase;
 
+/**
+ * Nota (cierre del riesgo 39k): el catalogo publico ahora tiene defaultPagination
+ * (size 50) en el Schema. Estos tests siembran mas de 50 productos y buscan el suyo
+ * en el listado, asi que piden page[size]=200 explicito; antes dependian del
+ * comportamiento sin paginar que era justo la bomba que se cerro.
+ */
 class CatalogVisibilityTest extends TestCase
 {
     use RefreshDatabase;
@@ -45,7 +51,7 @@ class CatalogVisibilityTest extends TestCase
         $active = $this->createProduct(['name' => 'Active Product']);
         $this->createProduct(['name' => 'Inactive Product', 'is_active' => false]);
 
-        $response = $this->jsonApi()->get('/api/public/v1/public-products');
+        $response = $this->jsonApi()->get('/api/public/v1/public-products?page[size]=200');
 
         $response->assertOk();
         $ids = collect($response->json('data'))->pluck('id')->toArray();
@@ -60,7 +66,7 @@ class CatalogVisibilityTest extends TestCase
             'brand_id' => $this->inactiveBrand->id,
         ]);
 
-        $response = $this->jsonApi()->get('/api/public/v1/public-products');
+        $response = $this->jsonApi()->get('/api/public/v1/public-products?page[size]=200');
 
         $response->assertOk();
         $ids = collect($response->json('data'))->pluck('id')->toArray();
@@ -78,7 +84,7 @@ class CatalogVisibilityTest extends TestCase
             'category_id' => $this->inactiveCategory->id,
         ]);
 
-        $response = $this->jsonApi()->get('/api/public/v1/public-products');
+        $response = $this->jsonApi()->get('/api/public/v1/public-products?page[size]=200');
 
         $response->assertOk();
         $names = collect($response->json('data'))->pluck('attributes.name')->toArray();
@@ -98,7 +104,7 @@ class CatalogVisibilityTest extends TestCase
             'is_active' => true,
         ]);
 
-        $response = $this->jsonApi()->get('/api/public/v1/public-products');
+        $response = $this->jsonApi()->get('/api/public/v1/public-products?page[size]=200');
 
         $response->assertOk();
         $names = collect($response->json('data'))->pluck('attributes.name')->toArray();
@@ -131,7 +137,7 @@ class CatalogVisibilityTest extends TestCase
             'is_active' => false,
         ]);
 
-        $response = $this->jsonApi()->get('/api/public/v1/public-products');
+        $response = $this->jsonApi()->get('/api/public/v1/public-products?page[size]=200');
 
         $response->assertOk();
         $names = collect($response->json('data'))->pluck('attributes.name')->toArray();
