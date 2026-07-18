@@ -300,8 +300,8 @@ class OrderStatusService
      * - Si la orden tiene remisiones, la remision es duena del stock: no tocar.
      * - Si la orden tiene shipments shipped/delivered, ya descontaron directo: no tocar
      *   (la unificacion de ese camino es R9 del diseno).
-     * - Idempotente por orden: si ya existen exits reference_type='sales_order' para
-     *   esta orden, no re-descuenta (la maquina ademas impide re-entrar a delivered).
+     * - Idempotente por linea via idempotency_key "sales_order:{id}:item:{itemId}"
+     *   con UNIQUE en BD (R1); la maquina ademas impide re-entrar a delivered.
      * - Producto sin registro de Stock: se omite con log (ordenes de servicios/digital
      *   no llevan inventario). Stock existente pero insuficiente: lanza y revierte la
      *   transicion completa (mismo criterio que la entrega por remision).
@@ -312,13 +312,6 @@ class OrderStatusService
             return;
         }
         if ($order->shipments()->whereIn('status', ['shipped', 'delivered'])->exists()) {
-            return;
-        }
-
-        $already = \Modules\Inventory\Models\InventoryMovement::where('reference_type', 'sales_order')
-            ->where('reference_id', $order->id)
-            ->exists();
-        if ($already) {
             return;
         }
 
@@ -350,11 +343,11 @@ class OrderStatusService
                 'movement_date' => now(),
                 'reference_type' => 'sales_order',
                 'reference_id' => $order->id,
+                'idempotency_key' => "sales_order:{$order->id}:item:{$item->id}",
                 'description' => "Salida por entrega de orden {$order->order_number}",
                 'user_id' => auth()->id() ?? \Modules\User\Models\User::first()?->id ?? 1,
                 'metadata' => ['sales_order_item_id' => $item->id],
-                // Exit del sistema: la entrega confirmada ES la validacion (IV-009).
-                'quality_checked' => true,
+                // R4: exencion de IV-009 por origen (reference_type='sales_order').
             ]);
         }
     }

@@ -154,14 +154,7 @@ class SalesOrderCancelledListener
             ->get();
 
         foreach ($exitMovements as $exit) {
-            // Idempotencia: ya revertido este exit?
-            $already = InventoryMovement::where('reference_type', 'sales_cancel')
-                ->where('reference_id', $exit->id)
-                ->exists();
-            if ($already) {
-                continue;
-            }
-
+            // R1: idempotencia via idempotency_key (UNIQUE en BD) dentro de createEntry.
             try {
                 $this->inventoryMovementService->createEntry([
                     'product_id' => $exit->product_id,
@@ -170,6 +163,7 @@ class SalesOrderCancelledListener
                     'unit_cost' => $exit->unit_cost,
                     'reference_type' => 'sales_cancel',
                     'reference_id' => $exit->id,
+                    'idempotency_key' => "sales_cancel:exit:{$exit->id}",
                     'movement_date' => now(),
                     'description' => "Reposicion por cancelacion de venta {$salesOrder->order_number}",
                     'user_id' => auth()->id() ?? \Modules\User\Models\User::first()?->id ?? 1,

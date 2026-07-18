@@ -17,7 +17,7 @@ use Illuminate\Queue\SerializesModels;
  *   3. fallback en Billing\CFDIInvoiceController::createFromOrder.
  * Ahora dashboard y ecommerce convergen a este evento, disparado desde el servicio de
  * entrega (RemissionController::deliver / CheckoutService). Un solo camino, un solo
- * listener (Finance\SalesOrderDeliveredListener) que crea la ARInvoice.
+ * listener (Finance\CreateARInvoiceForSalesOrder, R3) que crea la ARInvoice.
  */
 class SalesOrderDelivered
 {

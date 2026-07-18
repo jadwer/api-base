@@ -20,6 +20,16 @@ class InventoryMovementService
     public function createEntry(array $data): InventoryMovement
     {
         return DB::transaction(function () use ($data) {
+            // R1: idempotencia por clave natural con UNIQUE en BD. Fast-path legible
+            // aqui; la garantia real es el constraint (un insert duplicado concurrente
+            // viola el unique y revierte, la BD nunca permite el doble movimiento).
+            if (!empty($data['idempotency_key'])) {
+                $existing = InventoryMovement::where('idempotency_key', $data['idempotency_key'])->first();
+                if ($existing) {
+                    return $existing;
+                }
+            }
+
             // Lock stock record to prevent race conditions
             $stock = Stock::where('product_id', $data['product_id'])
                 ->where('warehouse_id', $data['warehouse_id'])
@@ -63,6 +73,7 @@ class InventoryMovementService
                 'movement_type' => InventoryMovement::MOVEMENT_TYPE_ENTRY,
                 'reference_type' => $data['reference_type'] ?? InventoryMovement::REFERENCE_TYPE_MANUAL,
                 'reference_id' => $data['reference_id'] ?? null,
+                'idempotency_key' => $data['idempotency_key'] ?? null,
                 'movement_date' => $data['movement_date'] ?? now(),
                 'description' => $data['description'] ?? 'Inventory entry',
                 'product_id' => $data['product_id'],
@@ -101,6 +112,14 @@ class InventoryMovementService
     public function createExit(array $data): InventoryMovement
     {
         return DB::transaction(function () use ($data) {
+            // R1: idempotencia por clave natural con UNIQUE en BD (ver createEntry).
+            if (!empty($data['idempotency_key'])) {
+                $existing = InventoryMovement::where('idempotency_key', $data['idempotency_key'])->first();
+                if ($existing) {
+                    return $existing;
+                }
+            }
+
             // Lock stock record to prevent race conditions
             $stock = Stock::where('product_id', $data['product_id'])
                 ->where('warehouse_id', $data['warehouse_id'])
@@ -137,6 +156,7 @@ class InventoryMovementService
                 'movement_type' => InventoryMovement::MOVEMENT_TYPE_EXIT,
                 'reference_type' => $data['reference_type'] ?? InventoryMovement::REFERENCE_TYPE_MANUAL,
                 'reference_id' => $data['reference_id'] ?? null,
+                'idempotency_key' => $data['idempotency_key'] ?? null,
                 'movement_date' => $data['movement_date'] ?? now(),
                 'description' => $data['description'] ?? 'Inventory exit',
                 'product_id' => $data['product_id'],

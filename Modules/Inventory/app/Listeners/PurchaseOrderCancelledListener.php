@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Log;
  * no existia -> cancelar una OC recibida dejaba stock fantasma para siempre.
  *
  * Solo actua si previousStatus == 'received' (solo entonces hubo entrada que revertir).
- * Idempotente: no revierte dos veces (reference_type='purchase_cancel').
+ * Idempotente por item via idempotency_key "purchase_cancel:{poId}:item:{itemId}" (R1).
  */
 class PurchaseOrderCancelledListener
 {
@@ -33,16 +33,9 @@ class PurchaseOrderCancelledListener
             return;
         }
 
-        // Idempotencia: no revertir dos veces.
-        $alreadyReversed = InventoryMovement::where('reference_type', 'purchase_cancel')
-            ->where('reference_id', $purchaseOrder->id)
-            ->exists();
-        if ($alreadyReversed) {
-            Log::info('PurchaseOrderCancelled: stock ya revertido, skip', [
-                'purchase_order_id' => $purchaseOrder->id,
-            ]);
-            return;
-        }
+        // R1: idempotencia por item via idempotency_key (UNIQUE en BD) en createExit;
+        // el guard por orden anterior (SELECT exists) tenia ventana de carrera y
+        // ademas impedia reintentar items que fallaron en un primer intento parcial.
 
         if (!$purchaseOrder->relationLoaded('purchaseOrderItems')) {
             $purchaseOrder->load('purchaseOrderItems');
@@ -74,6 +67,7 @@ class PurchaseOrderCancelledListener
                     'unit_cost' => $item->unit_price,
                     'reference_type' => 'purchase_cancel',
                     'reference_id' => $purchaseOrder->id,
+                    'idempotency_key' => "purchase_cancel:{$purchaseOrder->id}:item:{$item->id}",
                     'movement_date' => now(),
                     'description' => "Reversa por cancelacion de OC #{$purchaseOrder->id}",
                     'user_id' => auth()->id() ?? \Modules\User\Models\User::first()?->id ?? 1,
@@ -81,8 +75,7 @@ class PurchaseOrderCancelledListener
                         'purchase_order_id' => $purchaseOrder->id,
                         'reversal' => true,
                     ],
-                    // Exit del sistema (reversa), no requiere inspeccion manual (IV-009).
-                    'quality_checked' => true,
+                    // R4: exencion de IV-009 por origen (reference_type='purchase_cancel').
                 ]);
 
                 Log::info('PurchaseOrderCancelled: entrada de stock revertida', [

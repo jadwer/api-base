@@ -68,7 +68,10 @@ class SalesOrderDeliveryByStatusInvariantTest extends TestCase
             ->first();
         $this->assertNotNull($exit, 'La entrega por status debe crear el movimiento de salida');
         $this->assertEquals(4.0, (float) $exit->quantity);
-        $this->assertTrue((bool) $exit->quality_checked, 'Exit del sistema exento de IV-009');
+        // R4: la exencion de IV-009 vive en la regla (por reference_type), no se finge
+        // una inspeccion. El movimiento completa sin quality_checked.
+        $this->assertEquals('completed', $exit->status, 'R4: exit del sistema completa sin inspeccion');
+        $this->assertFalse((bool) $exit->quality_checked, 'R4: no se marca inspeccion que no ocurrio');
 
         // Invariante 3: el evento de facturacion se dispara por ESTE camino.
         Event::assertDispatched(SalesOrderDelivered::class, function ($event) use ($order) {

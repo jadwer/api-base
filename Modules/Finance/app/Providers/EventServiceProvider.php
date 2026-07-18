@@ -12,15 +12,15 @@ class EventServiceProvider extends ServiceProvider
      * @var array<string, array<int, string>>
      */
     protected $listen = [
-        // Sales → Finance Integration
-        \Modules\Sales\Events\SalesOrderCompleted::class => [
-            \Modules\Finance\Listeners\SalesOrderCompletedListener::class,
-        ],
-
-        // Refactor ciclo (Patron 2, D-c): camino UNICO de facturacion de venta.
-        // Reemplaza al SalesOrderObserver::updated. Dashboard y ecommerce disparan este.
+        // R3 (diseno post-refactor): UN solo listener crea la ARInvoice, invocado por
+        // ambos eventos. SalesOrderCompleted se conserva por el flujo CheckoutSession
+        // de ecommerce y el EventReplayService; se retira cuando ecommerce converja a
+        // SalesOrderDelivered (R8).
         \Modules\Sales\Events\SalesOrderDelivered::class => [
-            \Modules\Finance\Listeners\SalesOrderDeliveredListener::class,
+            \Modules\Finance\Listeners\CreateARInvoiceForSalesOrder::class,
+        ],
+        \Modules\Sales\Events\SalesOrderCompleted::class => [
+            \Modules\Finance\Listeners\CreateARInvoiceForSalesOrder::class,
         ],
 
         // Purchase → Finance Integration

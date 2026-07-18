@@ -346,10 +346,10 @@ class RemissionController extends Controller
      * item de la remision al entregarla. Descuenta Stock.quantity y dispara el asiento
      * COGS via InventoryMovementCreated.
      *
-     * Idempotencia (5b/F7): por LINEA de remision (remission_item_id), no por producto.
-     * Antes se chequeaba por product_id, asi que dos lineas del mismo producto en una
-     * misma remision provocaban sub-descuento (la segunda se saltaba). Ahora se guarda
-     * el remission_item_id en metadata y se consulta por el.
+     * Idempotencia (5b/F7 + R1): por LINEA de remision via idempotency_key
+     * "remission:{id}:item:{itemId}" con UNIQUE en BD. Antes se chequeaba por
+     * product_id (dos lineas del mismo producto sub-descontaban) y luego por
+     * whereJsonContains (fragil por driver); la clave natural resuelve ambos.
      *
      * NO abre transaccion propia: el metodo deliver() lo envuelve en una transaccion
      * externa (5b/F3) junto con markAsDelivered y el update de la orden.
@@ -371,14 +371,9 @@ class RemissionController extends Controller
                 continue;
             }
 
-            // Idempotencia por LINEA: no descontar dos veces el mismo remission_item.
-            $already = \Modules\Inventory\Models\InventoryMovement::where('reference_type', 'remission')
-                ->where('reference_id', $remission->id)
-                ->whereJsonContains('metadata->remission_item_id', $item->id)
-                ->exists();
-            if ($already) {
-                continue;
-            }
+            // R1: la idempotencia por linea vive en la idempotency_key (UNIQUE en BD)
+            // que se pasa a createExit; el whereJsonContains anterior era fragil por
+            // driver y tenia ventana de carrera.
 
             // Resolver el warehouse: remision -> stock del producto -> primer almacen.
             $warehouseId = $remission->warehouse_id;
@@ -401,18 +396,15 @@ class RemissionController extends Controller
                 'movement_date' => now(),
                 'reference_type' => 'remission',
                 'reference_id' => $remission->id,
+                'idempotency_key' => "remission:{$remission->id}:item:{$item->id}",
                 'description' => "Salida por remision {$remission->remission_number}",
                 'user_id' => $userId,
                 // QA post-commit (A2): fallback de costo para el COGS cuando el stock
                 // no trae unit_cost real (createExit prioriza el costo del stock).
                 'unit_cost' => (float) (\Modules\Product\Models\Product::find($item->product_id)?->cost ?? 0),
                 'metadata' => ['remission_item_id' => $item->id],
-                // 5c/E2E: los exits requieren quality_checked (regla IV-009 del modelo).
-                // La entrega de una remision impresa y confirmada ES la validacion del
-                // ciclo de venta; se marca verificada automaticamente (no es una salida
-                // que exija inspeccion manual de calidad).
-                'quality_checked' => true,
-                'quality_checked_by' => $userId,
+                // R4: la exencion de IV-009 vive en la REGLA (reference_type='remission'
+                // esta en QUALITY_EXEMPT_REFERENCE_TYPES), no en flags por call-site.
             ]);
         }
     }

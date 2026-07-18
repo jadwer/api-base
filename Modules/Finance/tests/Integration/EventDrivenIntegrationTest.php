@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Event;
  * Tests for event-driven integration between Sales/Purchase and Finance modules
  *
  * Fase C: Event Listeners Cross-Module
- * - C.1: SalesOrderCompletedListener
+ * - C.1: CreateARInvoiceForSalesOrder (antes SalesOrderCompletedListener, R3)
  * - C.2: PurchaseOrderReceivedListener
  */
 class EventDrivenIntegrationTest extends TestCase

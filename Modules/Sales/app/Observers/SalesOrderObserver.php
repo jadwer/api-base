@@ -25,7 +25,7 @@ class SalesOrderObserver
      * facturacion inconsistentes (observer + evento ecommerce + fallback en Billing) y
      * ademas se disparaba con cualquier PATCH a 'delivered' (que ya bloqueamos en el
      * Schema). El camino UNICO ahora es el evento SalesOrderDelivered ->
-     * Finance\SalesOrderDeliveredListener, disparado explicitamente desde el servicio de
+     * Finance\CreateARInvoiceForSalesOrder, disparado explicitamente desde el servicio de
      * entrega (RemissionController::deliver / CheckoutService).
      *
      * Se deja el observer registrado pero sin efecto de facturacion, por si se quiere
@@ -34,6 +34,6 @@ class SalesOrderObserver
     public function updated(SalesOrder $salesOrder): void
     {
         // Intencionalmente vacio. La facturacion en entrega la maneja
-        // Finance\SalesOrderDeliveredListener via el evento SalesOrderDelivered.
+        // Finance\CreateARInvoiceForSalesOrder via el evento SalesOrderDelivered.
     }
 }

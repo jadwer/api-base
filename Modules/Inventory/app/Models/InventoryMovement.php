@@ -120,6 +120,21 @@ class InventoryMovement extends Model
     public const REFERENCE_TYPE_MANUAL = 'manual';
 
     /**
+     * R4 (diseno post-refactor): reference_type de movimientos generados por el
+     * SISTEMA como parte de un flujo ya validado (entrega de remision u orden,
+     * reversas por cancelacion de venta/compra). La regla IV-009 regula inspecciones
+     * de calidad de operaciones manuales; estos quedan exentos POR ORIGEN, en la
+     * regla y no en cada call-site: un caller nuevo que olvide un flag no puede
+     * revivir el 422 de "requieren verificacion de calidad".
+     */
+    public const QUALITY_EXEMPT_REFERENCE_TYPES = [
+        'remission',
+        'sales_order',
+        'sales_cancel',
+        'purchase_cancel',
+    ];
+
+    /**
      * Boot method to dispatch events
      * IV-010: Trigger GL posting when movement is created
      */
@@ -301,6 +316,12 @@ class InventoryMovement extends Model
      */
     public function requiresQualityCheck(): bool
     {
+        // R4: exencion por origen para movimientos del sistema (la entrega o reversa
+        // confirmada ES la validacion del flujo; no son inspecciones de calidad).
+        if (in_array($this->reference_type, self::QUALITY_EXEMPT_REFERENCE_TYPES, true)) {
+            return false;
+        }
+
         return in_array($this->movement_type, [
             self::MOVEMENT_TYPE_EXIT,
             self::MOVEMENT_TYPE_TRANSFER,

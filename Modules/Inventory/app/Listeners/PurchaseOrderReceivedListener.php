@@ -74,6 +74,10 @@ class PurchaseOrderReceivedListener
                     'unit_cost' => $item->unit_price,
                     'reference_type' => 'purchase',
                     'reference_id' => $purchaseOrder->id,
+                    // R1: clave del camino FALLBACK (una entrada por item). Las tandas
+                    // de receive() no llevan clave: cada tanda es un movimiento
+                    // legitimo distinto sin clave natural.
+                    'idempotency_key' => "purchase_fallback:{$purchaseOrder->id}:item:{$item->id}",
                     'movement_date' => now(),
                     'description' => "Received from Purchase Order #{$purchaseOrder->id}",
                     'user_id' => auth()->id() ?? \Modules\User\Models\User::first()?->id ?? 1, // System user if not authenticated
