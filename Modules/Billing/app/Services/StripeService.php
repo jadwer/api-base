@@ -518,6 +518,11 @@ class StripeService
                 'transaction_id' => $transaction->id,
                 'charge_id' => $charge->id,
             ]);
+
+            // DESIGN_ECOMMERCE_PAGO_STOCK (H-C): espejo de PaymentCaptured.
+            // Sales marca la orden como refunded (y con eso deja de comprometer
+            // stock); la reversa operativa sigue siendo decision humana.
+            event(new \Modules\Billing\Events\PaymentRefunded($transaction));
         }
     }
 }

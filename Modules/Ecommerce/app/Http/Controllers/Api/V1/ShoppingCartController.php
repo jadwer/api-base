@@ -379,24 +379,26 @@ class ShoppingCartController extends Controller
             ], 400);
         }
 
-        // QA post-commit (M3): chequeo de stock BEST-EFFORT, sin reserva ni lock. La
-        // reserva atomica que existio aqui se REVIRTIO (el subsistema reserved_quantity
-        // esta descuadrado de base; ver PENDIENTE_REDISENO_RESERVAS.md). Consecuencia
-        // conocida: ventana TOCTOU, dos checkouts concurrentes pueden pasar ambos. Es
-        // el limite aceptado hasta el rediseno de reservas (R7 del diseno).
+        // DESIGN_ECOMMERCE_PAGO_STOCK (H-A): disponible = fisico - reservado -
+        // COMPROMETIDO en ordenes pagadas no entregadas (CommittedStockService).
+        // Cierra el oversell secuencial: una compra pagada resta disponibilidad
+        // aunque el fisico salga hasta la entrega. Riesgo residual aceptado en
+        // el diseno: dos pagos capturados casi simultaneos (ventana de
+        // segundos); mitigacion futura anotada, fuera de alcance.
         $shoppingCart->loadMissing('cartItems');
+        $committedStock = app(\Modules\Sales\Services\CommittedStockService::class);
         $insufficient = [];
         foreach ($shoppingCart->cartItems as $ci) {
             if (!$ci->product_id) {
                 continue;
             }
-            $available = (float) \Modules\Inventory\Models\Stock::where('product_id', $ci->product_id)
-                ->sum(DB::raw('quantity - reserved_quantity'));
+            $available = $committedStock->availableForSale((int) $ci->product_id);
             if ($available < (float) $ci->quantity) {
                 $insufficient[] = [
                     'product_id' => $ci->product_id,
+                    'product_name' => $ci->product?->name,
                     'requested' => (float) $ci->quantity,
-                    'available' => $available,
+                    'available' => max(0, $available),
                 ];
             }
         }
@@ -404,6 +406,8 @@ class ShoppingCartController extends Controller
             return response()->json([
                 'error' => 'Stock insuficiente para uno o mas productos del carrito.',
                 'insufficient_items' => $insufficient,
+                // El FE ofrece cotizar en vez de comprar (registro ya requerido)
+                'quote_cta' => true,
             ], 422);
         }
 

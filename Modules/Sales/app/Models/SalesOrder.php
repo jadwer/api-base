@@ -49,7 +49,8 @@ class SalesOrder extends Model
         return LogOptions::defaults()
             ->logOnly([
                 'order_number', 'status', 'order_date', 'contact_id',
-                'total_amount', 'discount_total', 'invoicing_status', 'financial_status'
+                'total_amount', 'discount_total', 'invoicing_status', 'financial_status',
+                'payment_status',
             ])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
@@ -63,6 +64,7 @@ class SalesOrder extends Model
         'notes', 'metadata', 'shipping_address', 'billing_address',
         'ar_invoice_id', 'invoicing_status', 'financial_status', 'invoicing_notes',
         'order_source', 'checkout_session_id',
+        'payment_status', 'paid_at',
     ];
 
     protected $casts = [
@@ -89,6 +91,8 @@ class SalesOrder extends Model
         'ar_invoice_id' => 'integer',
         'invoicing_status' => 'string',
         'financial_status' => 'string',
+        'payment_status' => 'string',
+        'paid_at' => 'datetime',
         'order_source' => 'string',
         'checkout_session_id' => 'integer',
         'created_at' => 'datetime',

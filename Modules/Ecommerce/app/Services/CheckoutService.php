@@ -187,14 +187,13 @@ class CheckoutService
     {
         $cart = $session->shoppingCart;
 
+        $committedStock = app(\Modules\Sales\Services\CommittedStockService::class);
+
         foreach ($cart->cartItems as $item) {
-            // Refactor ciclo (Patron 3, bug activo): la relacion es stock() (HasMany),
-            // no stocks(). Antes lanzaba BadMethodCallException, pero como este metodo
-            // estaba en un camino muerto (nunca invocado en produccion) nadie lo detecto.
-            // Suma el disponible de TODOS los almacenes del producto (available =
-            // quantity - reserved_quantity) y lo compara con lo pedido.
-            $available = (float) $item->product->stock()
-                ->sum(DB::raw('quantity - reserved_quantity'));
+            // DESIGN_ECOMMERCE_PAGO_STOCK (H-A): misma formula que el checkout
+            // real (fisico - reservado - comprometido en ordenes pagadas), para
+            // que este camino (hoy sin uso en produccion) no diverja.
+            $available = $committedStock->availableForSale((int) $item->product_id);
 
             if ($available < (float) $item->quantity) {
                 return false;

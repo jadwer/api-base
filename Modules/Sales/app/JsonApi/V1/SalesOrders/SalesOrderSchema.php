@@ -88,6 +88,9 @@ class SalesOrderSchema extends Schema
             // financiero (cancelled tras anular factura) que antes no se exponia;
             // el QA visual lo marco como gap (orden cancelada sin señal en UI).
             Str::make('financialStatus', 'financial_status')->sortable()->readOnly(),
+            // DESIGN_ECOMMERCE_PAGO_STOCK: lo escriben solo los listeners de pago
+            Str::make('paymentStatus', 'payment_status')->sortable()->readOnly(),
+            DateTime::make('paidAt', 'paid_at')->readOnly(),
             
             // Metadata JSON
             ArrayHash::make('metadata'),

@@ -11,7 +11,15 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array<string, array<int, string>>
      */
-    protected $listen = [];
+    protected $listen = [
+        // DESIGN_ECOMMERCE_PAGO_STOCK (H-C): eslabon pago Stripe -> orden
+        \Modules\Billing\Events\PaymentCaptured::class => [
+            \Modules\Sales\Listeners\MarkOrderPaidOnPaymentCaptured::class,
+        ],
+        \Modules\Billing\Events\PaymentRefunded::class => [
+            \Modules\Sales\Listeners\MarkOrderRefundedOnPaymentRefunded::class,
+        ],
+    ];
 
     /**
      * Indicates if events should be discovered.

@@ -44,4 +44,14 @@ return [
         // exige hora local del emisor; la app puede correr en UTC. Por tenant.
         'timezone' => env('CFDI_TIMEZONE', 'America/Mexico_City'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Stripe -> AR (DESIGN_ECOMMERCE_PAGO_STOCK, decisiones Gabino 2026-07-18)
+    |--------------------------------------------------------------------------
+    | Al nacer la AR de una orden pagada por Stripe, el cobro se aplica solo
+    | via ARInvoicePaymentRegistrationService con estos valores por tenant.
+    */
+    'stripe_forma_pago' => env('STRIPE_FORMA_PAGO', '04'), // 04 tarjeta credito, 28 debito
+    'stripe_bank_account_id' => env('STRIPE_BANK_ACCOUNT_ID'), // cuenta puente Stripe (nullable)
 ];
