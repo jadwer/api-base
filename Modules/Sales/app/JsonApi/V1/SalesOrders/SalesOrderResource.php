@@ -32,6 +32,12 @@ class SalesOrderResource extends JsonApiResource
             'arInvoiceId' => $this->ar_invoice_id,
             'invoicingStatus' => $this->invoicing_status,
             'invoicingNotes' => $this->invoicing_notes,
+            // E2E de coherencia 2026-07-18: este Resource manual PISA al Schema
+            // y estos campos nunca viajaban aunque el Schema los declarara (el
+            // badge Facturada del FE funcionaba de rebote via arInvoiceId).
+            'financialStatus' => $this->financial_status,
+            'paymentStatus' => $this->payment_status,
+            'paidAt' => $this->paid_at,
 
             // Text fields
             'notes' => $this->notes,
