@@ -50,7 +50,6 @@ class PublicProductIndexTest extends TestCase
                         'description',
                         'fullDescription',
                         'price',
-                        'cost',
                         'iva',
                         'imgPath',
                         'datasheetPath',
@@ -66,6 +65,9 @@ class PublicProductIndexTest extends TestCase
         $products = $response->json('data');
         foreach ($products as $product) {
             $this->assertEquals('public-products', $product['type']);
+            // Regresion de seguridad (auditoria 2026-07): el costo de compra NO
+            // debe exponerse en el catalogo publico anonimo.
+            $this->assertArrayNotHasKey('cost', $product['attributes']);
         }
 
         $this->assertGreaterThanOrEqual(8, count($products), 'Should have at least 8 seeded products + 3 factory products');

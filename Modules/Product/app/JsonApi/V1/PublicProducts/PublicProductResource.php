@@ -14,7 +14,10 @@ class PublicProductResource extends JsonApiResource
             'description'     => $this->description,
             'fullDescription' => $this->full_description,
             'price'           => $this->price,
-            'cost'            => $this->cost,
+            // FUGA DE SEGURIDAD (auditoria 2026-07): 'cost' es el costo de compra
+            // (revela margen) y NO debe salir en el catalogo publico anonimo. El
+            // PublicProductSchema ya lo omitia; este Resource manual lo pisaba y
+            // lo filtraba. NO reagregar.
             'compareAtPrice'  => $this->compare_at_price,
             'isOnSale'        => $this->is_on_sale,
             'saleStartsAt'    => $this->sale_starts_at,
