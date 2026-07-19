@@ -80,6 +80,13 @@ class AppSettingSeeder extends Seeder
 
             // Billing / Complemento de Pagos (REP)
             ['key' => 'billing.rep_auto_enabled', 'value' => 'true', 'type' => 'boolean', 'group' => 'billing', 'label' => 'Complemento de Pagos automatico', 'description' => 'Si esta activo y el PAC esta habilitado, cada abono a una factura PPD timbrada genera y timbra automaticamente un CFDI tipo P (REP). Si el PAC esta apagado, el REP queda en borrador sin timbrar.'],
+
+            // Landing (Fase 3): textos y cantidades del home publico. El grupo
+            // se expone en publicSettings() y se edita desde app-config.
+            ['key' => 'landing.hero_title', 'value' => 'MEJORAMOS EL MUNDO DE TU LABORATORIO', 'type' => 'string', 'group' => 'landing', 'label' => 'Titulo del hero', 'description' => 'Encabezado principal del home'],
+            ['key' => 'landing.hero_subtitle', 'value' => 'Encuentra los mejores productos, marcas reconocidas y la mejor atencion para tu laboratorio', 'type' => 'string', 'group' => 'landing', 'label' => 'Subtitulo del hero', 'description' => 'Texto secundario bajo el titulo del home'],
+            ['key' => 'landing.offers_count', 'value' => '3', 'type' => 'integer', 'group' => 'landing', 'label' => 'Ofertas en el home', 'description' => 'Cuantas ofertas del mes se muestran en el home'],
+            ['key' => 'landing.latest_products_count', 'value' => '6', 'type' => 'integer', 'group' => 'landing', 'label' => 'Ultimos productos en el home', 'description' => 'Cuantos productos recientes se muestran en el home'],
         ];
 
         foreach ($settings as $setting) {

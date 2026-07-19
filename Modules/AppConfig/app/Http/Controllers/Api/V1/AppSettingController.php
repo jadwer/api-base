@@ -130,6 +130,9 @@ class AppSettingController extends Controller
         $branding = AppSetting::getByGroup('branding');
         $social = AppSetting::getByGroup('social');
         $pricing = AppSetting::getByGroup('pricing');
+        // Fase 3: textos/cantidades del home (landing.*), editable desde
+        // /dashboard/settings/app-config y consumido por el frontend publico.
+        $landing = AppSetting::getByGroup('landing');
 
         return response()->json([
             'data' => [
@@ -137,6 +140,7 @@ class AppSettingController extends Controller
                 'branding' => $branding,
                 'social' => $social,
                 'pricing' => $pricing,
+                'landing' => $landing,
             ],
         ]);
     }

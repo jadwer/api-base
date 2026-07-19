@@ -36,13 +36,31 @@ class AppSetting extends Model
 
     /**
      * Set a setting value by key, invalidating cache.
+     *
+     * Fase 3 (landing.*): antes solo ACTUALIZABA; si la key no existia, el set
+     * se perdia en silencio (gap documentado en la auditoria). Ahora crea la
+     * key cuando falta: group se deriva del prefijo antes del punto (o se pasa
+     * explicito), type default string, label default la key.
      */
-    public static function set(string $key, mixed $value): void
-    {
+    public static function set(
+        string $key,
+        mixed $value,
+        ?string $group = null,
+        string $type = 'string',
+        ?string $label = null
+    ): void {
         $setting = static::where('key', $key)->first();
 
         if ($setting) {
             $setting->update(['value' => static::serializeValue($value, $setting->type)]);
+        } else {
+            static::create([
+                'key' => $key,
+                'value' => static::serializeValue($value, $type),
+                'type' => $type,
+                'group' => $group ?? (str_contains($key, '.') ? explode('.', $key, 2)[0] : 'general'),
+                'label' => $label ?? $key,
+            ]);
         }
 
         Cache::forget("app_setting:{$key}");
