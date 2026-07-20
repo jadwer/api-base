@@ -5,7 +5,11 @@ namespace Modules\Inventory\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Product\Models\Product;
-use App\Models\User;
+// Paquete A: era App\Models\User, la clase DOCUMENTADA COMO NO USADA (deuda de
+// las dos clases User). Al exponer assignedUser/countedByUser en el Schema, la
+// serializacion tronaba con "Unable to resolve App\Models\User to a resource
+// object" porque el UserSchema registrado es el del modulo.
+use Modules\User\Models\User;
 
 /**
  * IV-M001: Cycle Count Model

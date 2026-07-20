@@ -50,11 +50,13 @@ class CycleCountSchema extends Schema
             BelongsTo::make('warehouse')->readOnly(),
             BelongsTo::make('warehouseLocation')->readOnly(),
             BelongsTo::make('product')->readOnly(),
-            // Paquete A (auditoria 10 pasos): el FE pedia include=assignedTo,
-            // countedBy pero el Schema no declaraba estas relaciones (existen en
-            // el modelo como belongsTo User) y el include era invalido.
-            BelongsTo::make('assignedTo')->type('users')->readOnly(),
-            BelongsTo::make('countedBy')->type('users')->readOnly(),
+            // Paquete A (auditoria 10 pasos): el FE pedia incluir al usuario
+            // asignado/contador pero el Schema no declaraba las relaciones y el
+            // include era invalido. Nombres assignedUser/countedByUser porque
+            // assignedTo/countedBy ya existen arriba como ATRIBUTOS Number (el
+            // FK escribible) y un schema no admite el mismo nombre en ambos.
+            BelongsTo::make('assignedUser', 'assignedTo')->type('users')->readOnly(),
+            BelongsTo::make('countedByUser', 'countedBy')->type('users')->readOnly(),
         ];
     }
 
@@ -92,8 +94,8 @@ class CycleCountSchema extends Schema
             'warehouse',
             'warehouseLocation',
             'product',
-            'assignedTo',
-            'countedBy',
+            'assignedUser',
+            'countedByUser',
         ];
     }
 }
