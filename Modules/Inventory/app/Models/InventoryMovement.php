@@ -197,6 +197,25 @@ class InventoryMovement extends Model
     /**
      * Scopes útiles
      */
+
+    /**
+     * Paquete A (auditoria 10 pasos): buscador del listado. El FE ya mandaba
+     * filter[search] pero el Schema no lo declaraba y el backend respondia 400.
+     */
+    public function scopeSearch($query, string $term)
+    {
+        $term = trim($term);
+
+        return $query->where(function ($q) use ($term) {
+            $q->where('description', 'like', "%{$term}%")
+                ->orWhere('reference_type', 'like', "%{$term}%")
+                ->orWhereHas('product', function ($p) use ($term) {
+                    $p->where('name', 'like', "%{$term}%")
+                        ->orWhere('sku', 'like', "%{$term}%");
+                });
+        });
+    }
+
     public function scopeEntries($query)
     {
         return $query->where('movement_type', self::MOVEMENT_TYPE_ENTRY);

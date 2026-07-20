@@ -10,6 +10,7 @@ use LaravelJsonApi\Eloquent\Fields\Boolean;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\ArrayHash;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
+use LaravelJsonApi\Eloquent\Filters\Scope;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Filters\WhereIn;
@@ -124,6 +125,10 @@ class InventoryMovementSchema extends Schema
             Where::make('movementDate', 'movement_date'),
             Where::make('dateFrom', 'movement_date')->using('>='),
             Where::make('dateTo', 'movement_date')->using('<='),
+            // Paquete A (auditoria 10 pasos): buscador del listado (descripcion,
+            // tipo de referencia, nombre/SKU del producto). El FE ya lo mandaba;
+            // sin declararlo, 400 al teclear.
+            Scope::make('search'),
         ];
     }
 

@@ -153,6 +153,24 @@ class SalesOrder extends Model
         });
     }
 
+    /**
+     * Paquete A (auditoria 10 pasos): buscador del listado. El FE ya mandaba
+     * filter[search] pero el Schema no lo declaraba y el backend respondia 400.
+     */
+    public function scopeSearch($query, string $term)
+    {
+        $term = trim($term);
+
+        return $query->where(function ($q) use ($term) {
+            $q->where('order_number', 'like', "%{$term}%")
+                ->orWhere('customer_po_number', 'like', "%{$term}%")
+                ->orWhereHas('contact', function ($c) use ($term) {
+                    $c->where('name', 'like', "%{$term}%")
+                        ->orWhere('email', 'like', "%{$term}%");
+                });
+        });
+    }
+
     // Relaciones
     public function quote(): BelongsTo
     {

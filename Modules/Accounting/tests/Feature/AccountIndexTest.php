@@ -11,6 +11,38 @@ class AccountIndexTest extends TestCase
 
 
 
+    /**
+     * Paquete A (auditoria 10 pasos): filter[search] es el contrato del buscador
+     * del FE; antes no existia y el listado respondia 400 al teclear.
+     */
+    public function test_admin_can_search_Accounts(): void
+    {
+        $admin = $this->getAdminUser();
+
+        $match = Account::factory()->create(['code' => '9901', 'name' => 'Cuenta Buscable Unica']);
+        Account::factory()->create(['code' => '9902', 'name' => 'Otra Cuenta']);
+
+        // Por codigo
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('accounts')
+            ->get('/api/v1/accounts?filter[search]=9901');
+
+        $response->assertOk();
+        $this->assertContains((string) $match->id, collect($response->json('data'))->pluck('id'));
+
+        // Por nombre
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('accounts')
+            ->get('/api/v1/accounts?filter[search]=Buscable Unica');
+
+        $response->assertOk();
+        $ids = collect($response->json('data'))->pluck('id');
+        $this->assertContains((string) $match->id, $ids);
+        $this->assertCount(1, $ids);
+    }
+
     public function test_admin_can_list_Accounts(): void
     {
         $admin = $this->getAdminUser();

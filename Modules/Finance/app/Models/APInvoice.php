@@ -61,6 +61,23 @@ class APInvoice extends Model
         return $query->where('is_active', true);
     }
 
+    /**
+     * Paquete A (auditoria 10 pasos): buscador del listado. El FE ya mandaba
+     * filter[search] pero el Schema no lo declaraba y el backend respondia 400.
+     */
+    public function scopeSearch($query, string $term)
+    {
+        $term = trim($term);
+
+        return $query->where(function ($q) use ($term) {
+            $q->where('invoice_number', 'like', "%{$term}%")
+                ->orWhereHas('contact', function ($c) use ($term) {
+                    $c->where('name', 'like', "%{$term}%")
+                        ->orWhere('email', 'like', "%{$term}%");
+                });
+        });
+    }
+
     public function contact()
     {
         return $this->belongsTo(Contact::class, 'contact_id');

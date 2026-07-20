@@ -91,6 +91,28 @@ class ARInvoiceIndexTest extends TestCase
         $response->assertOk();
     }
 
+    /**
+     * Paquete A (auditoria 10 pasos): filter[search] es el contrato del buscador
+     * del FE; antes no existia y el listado respondia 400 al teclear.
+     */
+    public function test_admin_can_search_ARInvoices(): void
+    {
+        $admin = $this->getAdminUser();
+
+        $match = ARInvoice::factory()->create(['invoice_number' => 'AR-SEARCH-777']);
+        ARInvoice::factory()->create(['invoice_number' => 'AR-OTRA-001']);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('ar-invoices')
+            ->get('/api/v1/ar-invoices?filter[search]=SEARCH-777');
+
+        $response->assertOk();
+        $ids = collect($response->json('data'))->pluck('id');
+        $this->assertContains((string) $match->id, $ids);
+        $this->assertCount(1, $ids);
+    }
+
     public function test_tech_user_can_list_ARInvoices_with_permission(): void
     {
         $tech = $this->getTechUser();

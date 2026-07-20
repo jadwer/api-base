@@ -78,6 +78,10 @@ class PurchaseOrderSchema extends Schema
             Where::make('warehouse', 'warehouse_id'),
             // Nota cliente #11: compras "por surtir" (status pending+approved)
             Scope::make('pending_receipt', 'pendingReceipt'),
+            // Paquete A (auditoria 10 pasos): buscador del listado (order_number,
+            // nombre/email del proveedor). El FE ya lo mandaba; sin declararlo
+            // el backend daba 400 al teclear.
+            Scope::make('search'),
         ];
     }
 

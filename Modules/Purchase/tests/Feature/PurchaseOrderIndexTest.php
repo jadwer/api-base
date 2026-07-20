@@ -110,6 +110,38 @@ class PurchaseOrderIndexTest extends TestCase
     }
 
     /**
+     * Paquete A (auditoria 10 pasos): filter[search] es el contrato del buscador
+     * del FE; antes no existia y el listado respondia 400 al teclear.
+     */
+    public function test_admin_can_search_purchase_orders(): void
+    {
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $this->actingAs($admin, 'sanctum');
+
+        $supplier = Contact::factory()->create(['is_supplier' => true, 'name' => 'Proveedor Buscable Unico']);
+        $match = PurchaseOrder::factory()->create([
+            'contact_id' => $supplier->id,
+            'order_number' => 'OC-SEARCH-555',
+        ]);
+        PurchaseOrder::factory()->create([
+            'contact_id' => Contact::factory()->create(['is_supplier' => true])->id,
+            'order_number' => 'OC-OTRA-001',
+        ]);
+
+        // Por folio
+        $response = $this->jsonApi()->get('/api/v1/purchase-orders?filter[search]=SEARCH-555');
+        $response->assertOk();
+        $ids = collect($response->json('data'))->pluck('id');
+        $this->assertContains((string) $match->id, $ids);
+        $this->assertCount(1, $ids);
+
+        // Por nombre del proveedor
+        $response = $this->jsonApi()->get('/api/v1/purchase-orders?filter[search]=Proveedor Buscable');
+        $response->assertOk();
+        $this->assertContains((string) $match->id, collect($response->json('data'))->pluck('id'));
+    }
+
+    /**
      * Nota cliente #11: compras "por surtir".
      * filter[pending_receipt]=1 debe devolver status pending+approved,
      * nunca received ni cancelled.

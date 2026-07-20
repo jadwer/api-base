@@ -61,6 +61,9 @@ class AccountSchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('isPostable', 'is_postable')->asBoolean(),
             \LaravelJsonApi\Eloquent\Filters\Where::make('isCashFlow', 'is_cash_flow')->asBoolean(),
             \LaravelJsonApi\Eloquent\Filters\Where::make('status'),
+            // Paquete A (auditoria 10 pasos): buscador del listado (codigo y
+            // nombre de la cuenta). El FE ya lo mandaba; sin declararlo, 400.
+            \LaravelJsonApi\Eloquent\Filters\Scope::make('search'),
         ];
     }
 

@@ -41,6 +41,20 @@ class Account extends Model
         return $query->where('status', 'active');
     }
 
+    /**
+     * Paquete A (auditoria 10 pasos): buscador del listado. El FE ya mandaba
+     * filter[search] pero el Schema no lo declaraba y el backend respondia 400.
+     */
+    public function scopeSearch($query, string $term)
+    {
+        $term = trim($term);
+
+        return $query->where(function ($q) use ($term) {
+            $q->where('code', 'like', "%{$term}%")
+                ->orWhere('name', 'like', "%{$term}%");
+        });
+    }
+
     public function accounts()
     {
         return $this->hasMany(Account::class);

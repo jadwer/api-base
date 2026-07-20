@@ -50,6 +50,11 @@ class CycleCountSchema extends Schema
             BelongsTo::make('warehouse')->readOnly(),
             BelongsTo::make('warehouseLocation')->readOnly(),
             BelongsTo::make('product')->readOnly(),
+            // Paquete A (auditoria 10 pasos): el FE pedia include=assignedTo,
+            // countedBy pero el Schema no declaraba estas relaciones (existen en
+            // el modelo como belongsTo User) y el include era invalido.
+            BelongsTo::make('assignedTo')->type('users')->readOnly(),
+            BelongsTo::make('countedBy')->type('users')->readOnly(),
         ];
     }
 
@@ -66,6 +71,10 @@ class CycleCountSchema extends Schema
             Scope::make('scheduledBefore'),
             Scope::make('hasVariance'),
             Scope::make('overdue'),
+            // Paquete A (auditoria 10 pasos): buscador del listado (folio del
+            // conteo, nombre/SKU del producto, nombre del almacen). El FE ya lo
+            // mandaba; sin declararlo, 400 al teclear.
+            Scope::make('search'),
         ];
     }
 
@@ -83,6 +92,8 @@ class CycleCountSchema extends Schema
             'warehouse',
             'warehouseLocation',
             'product',
+            'assignedTo',
+            'countedBy',
         ];
     }
 }

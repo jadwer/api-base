@@ -73,6 +73,9 @@ class APInvoiceSchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('is_active')->asBoolean(),
             \LaravelJsonApi\Eloquent\Filters\Where::make('reconciliation_status'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('reconciled_by'),
+            // Paquete A (auditoria 10 pasos): buscador del listado (folio +
+            // nombre/email del proveedor). El FE ya lo mandaba; sin declararlo, 400.
+            \LaravelJsonApi\Eloquent\Filters\Scope::make('search'),
         ];
     }
 

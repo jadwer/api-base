@@ -153,6 +153,26 @@ class CycleCount extends Model
     }
 
     // Scopes
+    /**
+     * Paquete A (auditoria 10 pasos): buscador del listado. El FE ya mandaba
+     * filter[search] pero el Schema no lo declaraba y el backend respondia 400.
+     */
+    public function scopeSearch($query, string $term)
+    {
+        $term = trim($term);
+
+        return $query->where(function ($q) use ($term) {
+            $q->where('count_number', 'like', "%{$term}%")
+                ->orWhereHas('product', function ($p) use ($term) {
+                    $p->where('name', 'like', "%{$term}%")
+                        ->orWhere('sku', 'like', "%{$term}%");
+                })
+                ->orWhereHas('warehouse', function ($w) use ($term) {
+                    $w->where('name', 'like', "%{$term}%");
+                });
+        });
+    }
+
     public function scopeScheduled($query)
     {
         return $query->where('status', self::STATUS_SCHEDULED);

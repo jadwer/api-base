@@ -87,6 +87,45 @@ class SalesOrderIndexTest extends TestCase
         $this->assertGreaterThanOrEqual(2, count($response->json('data')));
     }
 
+    /**
+     * Paquete A (auditoria 10 pasos): filter[search] es el contrato del buscador
+     * del FE; antes no existia y el listado respondia 400 al teclear.
+     */
+    public function test_admin_can_search_sales_orders(): void
+    {
+        $admin = $this->getAdminUser();
+
+        $customer = Contact::factory()->customer()->create(['name' => 'Cliente Buscable Unico']);
+        $match = SalesOrder::factory()->create([
+            'contact_id' => $customer->id,
+            'order_number' => 'SO-SEARCH-XYZ',
+        ]);
+        SalesOrder::factory()->create([
+            'contact_id' => Contact::factory()->customer()->create()->id,
+            'order_number' => 'SO-OTRO-123',
+        ]);
+
+        // Por folio
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('sales-orders')
+            ->get('/api/v1/sales-orders?filter[search]=SEARCH-XYZ');
+
+        $response->assertOk();
+        $ids = collect($response->json('data'))->pluck('id');
+        $this->assertContains((string) $match->id, $ids);
+        $this->assertCount(1, $ids);
+
+        // Por nombre del contacto
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('sales-orders')
+            ->get('/api/v1/sales-orders?filter[search]=Buscable Unico');
+
+        $response->assertOk();
+        $this->assertContains((string) $match->id, collect($response->json('data'))->pluck('id'));
+    }
+
     public function test_admin_can_filter_sales_orders_by_customer(): void
     {
         $admin = $this->getAdminUser();

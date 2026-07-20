@@ -81,6 +81,21 @@ class JournalEntry extends Model
         return $query->whereIn('status', [self::STATUS_DRAFT, self::STATUS_APPROVED, self::STATUS_POSTED]);
     }
 
+    /**
+     * Paquete A (auditoria 10 pasos): buscador del listado. El FE ya mandaba
+     * filter[search] pero el Schema no lo declaraba y el backend respondia 400.
+     */
+    public function scopeSearch($query, string $term)
+    {
+        $term = trim($term);
+
+        return $query->where(function ($q) use ($term) {
+            $q->where('number', 'like', "%{$term}%")
+                ->orWhere('reference', 'like', "%{$term}%")
+                ->orWhere('description', 'like', "%{$term}%");
+        });
+    }
+
     public function journal()
     {
         return $this->belongsTo(Journal::class);

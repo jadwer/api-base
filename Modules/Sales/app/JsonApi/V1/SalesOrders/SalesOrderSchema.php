@@ -125,6 +125,11 @@ class SalesOrderSchema extends Schema
             Scope::make('contact_email', 'forContactEmail'),
             // Nota cliente #11: pedidos "por surtir" (abiertos, no entregados/cerrados)
             Scope::make('pending_fulfillment', 'pendingFulfillment'),
+            // Paquete A (auditoria 10 pasos): buscador del listado (order_number,
+            // PO del cliente, nombre/email del contacto) y filtro por estado de
+            // pago. El FE ya los mandaba; sin declararlos el backend daba 400.
+            Scope::make('search'),
+            Where::make('payment_status'),
         ];
     }
 

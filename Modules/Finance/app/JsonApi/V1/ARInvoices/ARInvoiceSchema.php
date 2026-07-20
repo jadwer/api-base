@@ -77,6 +77,9 @@ class ARInvoiceSchema extends Schema
             // FI-M002: Discount filters
             \LaravelJsonApi\Eloquent\Filters\Where::make('discount_applied')->asBoolean(),
             \LaravelJsonApi\Eloquent\Filters\Scope::make('withAvailableDiscount', 'with_available_discount'),
+            // Paquete A (auditoria 10 pasos): buscador del listado (folio +
+            // nombre/email del cliente). El FE ya lo mandaba; sin declararlo, 400.
+            \LaravelJsonApi\Eloquent\Filters\Scope::make('search'),
         ];
     }
 

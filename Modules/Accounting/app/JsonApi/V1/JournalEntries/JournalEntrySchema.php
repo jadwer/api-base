@@ -67,6 +67,9 @@ class JournalEntrySchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('number'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('reference'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('status'),
+            // Paquete A (auditoria 10 pasos): buscador del listado (folio,
+            // referencia, descripcion). El FE ya lo mandaba; sin declararlo, 400.
+            \LaravelJsonApi\Eloquent\Filters\Scope::make('search'),
         ];
     }
 
