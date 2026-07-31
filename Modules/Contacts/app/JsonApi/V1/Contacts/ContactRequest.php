@@ -4,6 +4,7 @@ namespace Modules\Contacts\JsonApi\V1\Contacts;
 
 use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
 use Illuminate\Validation\Rule;
+use Modules\Contacts\Support\SatCatalogs;
 
 class ContactRequest extends ResourceRequest
 {
@@ -31,7 +32,7 @@ class ContactRequest extends ResourceRequest
             'isSupplier' => ['boolean'],
             'creditLimit' => ['nullable', 'numeric', 'min:0', 'max:999999.99'],
             'currentCredit' => ['nullable', 'numeric', 'min:0', 'max:999999.99'],
-            'classification' => ['nullable', Rule::in(['premium', 'standard', 'basic'])],
+            'classification' => ['nullable', Rule::in(SatCatalogs::classificationCodes())],
             'paymentTerms' => ['nullable', 'integer', 'min:0', 'max:365'],
             'notes' => ['nullable', 'string', 'max:65535'],
             'metadata' => ['nullable', 'array'],
@@ -41,17 +42,10 @@ class ContactRequest extends ResourceRequest
             'collectionsAgentId' => ['nullable', 'integer', Rule::exists('users', 'id')],
             'commissionPctOverride' => ['nullable', 'numeric', 'min:0', 'max:100'],
 
-            // WS7.1 Bind fields (SAT basic catalogs)
-            'regimenFiscal' => ['nullable', 'string', Rule::in([
-                '601', '603', '605', '606', '607', '608', '610', '611', '612',
-                '614', '615', '616', '620', '621', '622', '623', '624', '625', '626',
-            ])],
-            'usoCfdi' => ['nullable', 'string', Rule::in([
-                'G01', 'G02', 'G03',
-                'I01', 'I02', 'I03', 'I04', 'I05', 'I06', 'I07', 'I08',
-                'D01', 'D02', 'D03', 'D04', 'D05', 'D06', 'D07', 'D08', 'D09', 'D10',
-                'S01', 'CP01', 'CN01',
-            ])],
+            // WS7.1 Bind fields. Fuente unica: SatCatalogs, la misma que
+            // sirve el endpoint contact-catalogs al frontend (regla 7).
+            'regimenFiscal' => ['nullable', 'string', Rule::in(SatCatalogs::regimenFiscalCodes())],
+            'usoCfdi' => ['nullable', 'string', Rule::in(SatCatalogs::usoCfdiCodes())],
             'creditMonths' => ['nullable', 'integer', 'min:0', 'max:120'],
             'bankAccountNumber' => ['nullable', 'string', 'max:34'],
             'referralSource' => ['nullable', 'string', 'max:255'],

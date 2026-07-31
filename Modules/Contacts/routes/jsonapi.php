@@ -7,6 +7,7 @@ use Modules\Contacts\Http\Controllers\Api\V1\ContactDocumentController;
 use Modules\Contacts\Http\Controllers\Api\V1\ContactAddressController;
 use Modules\Contacts\Http\Controllers\Api\V1\ContactPersonController;
 use Modules\Contacts\Http\Controllers\Api\V1\ContactDocumentUploadController;
+use Modules\Contacts\Http\Controllers\Api\V1\ContactCatalogController;
 use Illuminate\Support\Facades\Route;
 
 JsonApiRoute::server('v1')
@@ -26,6 +27,11 @@ JsonApiRoute::server('v1')
  * Authentication is handled manually in the controller.
  */
 Route::prefix('v1')->group(function () {
+    // Catalogos del formulario de contactos (fuente unica = SatCatalogs,
+    // la misma que valida ContactRequest). Autenticacion manual en el
+    // controller, como el resto de las rutas custom de este grupo.
+    Route::get('contact-catalogs', [ContactCatalogController::class, 'index'])->name('contact-catalogs.index');
+
     Route::post('contact-documents/upload', [ContactDocumentUploadController::class, 'store'])->name('contact-documents.upload');
     Route::get('contact-documents/{document}/download', [ContactDocumentUploadController::class, 'download'])->name('contact-documents.download');
     Route::get('contact-documents/{document}/view', [ContactDocumentUploadController::class, 'view'])->name('contact-documents.view');
