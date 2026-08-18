@@ -87,6 +87,16 @@ class AppSettingSeeder extends Seeder
             ['key' => 'landing.hero_subtitle', 'value' => 'Encuentra los mejores productos, marcas reconocidas y la mejor atencion para tu laboratorio', 'type' => 'string', 'group' => 'landing', 'label' => 'Subtitulo del hero', 'description' => 'Texto secundario bajo el titulo del home'],
             ['key' => 'landing.offers_count', 'value' => '3', 'type' => 'integer', 'group' => 'landing', 'label' => 'Ofertas en el home', 'description' => 'Cuantas ofertas del mes se muestran en el home'],
             ['key' => 'landing.latest_products_count', 'value' => '6', 'type' => 'integer', 'group' => 'landing', 'label' => 'Ultimos productos en el home', 'description' => 'Cuantos productos recientes se muestran en el home'],
+            // Rediseno 2026-08: preguntas frecuentes del home. JSON con la forma
+            // [{"question": "...", "answer": "..."}]. El frontend trae las 5 del
+            // Figma como fallback si esta vacio o mal formado.
+            ['key' => 'landing.faq', 'value' => json_encode([
+                ['question' => '¿Que productos ofrece Labor Wasser de Mexico?', 'answer' => 'Reactivos, material y equipo de laboratorio, consumibles, medios de cultivo, equipo de proteccion personal y soluciones para monitoreo y tratamiento de agua, de marcas lideres nacionales e internacionales.'],
+                ['question' => '¿Como puedo hacer una cotizacion?', 'answer' => 'Agrega los productos que necesitas al carrito y elige "Cotizar", o escribenos con el boton "Cotiza con nosotros". Un asesor te respondera con precios, disponibilidad y tiempos de entrega.'],
+                ['question' => '¿Realizan envios a toda la Republica Mexicana?', 'answer' => 'Si. Enviamos a todo el pais; el costo y el tiempo de entrega dependen del destino y del tipo de producto (algunos reactivos requieren transporte especializado).'],
+                ['question' => '¿Los productos cuentan con certificados de calidad?', 'answer' => 'Si. Trabajamos con marcas certificadas y podemos entregar certificados de analisis (COA) y hojas de seguridad (SDS) de los productos que lo requieran.'],
+                ['question' => '¿Como puedo buscar un producto?', 'answer' => 'Usa el buscador de la parte superior (por nombre, marca o modelo) o navega por categorias en el menu Productos. Si no lo encuentras, contactanos y lo localizamos por ti.'],
+            ], JSON_UNESCAPED_UNICODE), 'type' => 'json', 'group' => 'landing', 'label' => 'Preguntas frecuentes del home', 'description' => 'JSON: lista de {question, answer} que muestra la seccion Preguntas Frecuentes'],
         ];
 
         foreach ($settings as $setting) {
