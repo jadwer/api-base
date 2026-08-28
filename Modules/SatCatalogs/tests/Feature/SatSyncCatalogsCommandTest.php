@@ -27,7 +27,7 @@ class SatSyncCatalogsCommandTest extends TestCase
         parent::tearDown();
     }
 
-    public function test_command_upserts_the_four_tables_from_a_local_file(): void
+    public function test_command_upserts_the_catalog_tables_from_a_local_file(): void
     {
         $path = $this->createFixtureDatabase();
 
@@ -72,6 +72,26 @@ class SatSyncCatalogsCommandTest extends TestCase
                 ->where('valor', 0.35)
                 ->exists()
         );
+
+        // Codigos postales: nombres de estado/municipio denormalizados
+        $this->assertDatabaseHas('sat_codigos_postales', [
+            'codigo_postal' => '06600',
+            'estado_clave' => 'CMX',
+            'estado' => 'Ciudad de México',
+            'municipio_clave' => '015',
+            'municipio' => 'Cuauhtémoc',
+        ]);
+        // CP sin municipio: claves vacias quedan null
+        $this->assertDatabaseHas('sat_codigos_postales', [
+            'codigo_postal' => '99999',
+            'estado_clave' => 'ZAC',
+            'municipio_clave' => null,
+        ]);
+        $this->assertDatabaseHas('sat_colonias', [
+            'codigo_postal' => '06600',
+            'clave' => '0930',
+            'nombre' => 'Juárez',
+        ]);
     }
 
     public function test_command_is_idempotent(): void
@@ -85,12 +105,17 @@ class SatSyncCatalogsCommandTest extends TestCase
         $formaPagoCount = SatFormaPago::count();
         $tasaCount = SatTasaOCuota::count();
 
+        $cpCount = \Modules\SatCatalogs\Models\SatCodigoPostal::count();
+        $coloniaCount = \Modules\SatCatalogs\Models\SatColonia::count();
+
         $this->artisan('sat:sync-catalogs', ['--path' => $path])->assertExitCode(0);
 
         $this->assertSame($prodServCount, SatClaveProdServ::count());
         $this->assertSame($unidadCount, SatClaveUnidad::count());
         $this->assertSame($formaPagoCount, SatFormaPago::count());
         $this->assertSame($tasaCount, SatTasaOCuota::count());
+        $this->assertSame($cpCount, \Modules\SatCatalogs\Models\SatCodigoPostal::count());
+        $this->assertSame($coloniaCount, \Modules\SatCatalogs\Models\SatColonia::count());
     }
 
     public function test_command_fails_with_clear_error_when_file_is_missing(): void
@@ -157,6 +182,38 @@ class SatSyncCatalogsCommandTest extends TestCase
                 ('Fijo', '', '0.160000', 'IVA', 'Tasa', 1, 0, '2022-01-01', ''),
                 ('Fijo', '', '0.265000', 'IEPS', 'Tasa', 1, 1, '2022-01-01', ''),
                 ('Rango', '0.000000', '0.350000', 'ISR', 'Tasa', 0, 1, '2022-01-01', '');
+
+            CREATE TABLE cfdi_40_codigos_postales (
+                id text not null, estado text not null,
+                municipio text not null, localidad text not null,
+                PRIMARY KEY("id")
+            );
+            CREATE TABLE cfdi_40_estados (
+                estado text not null, pais text not null, texto text not null
+            );
+            CREATE TABLE cfdi_40_municipios (
+                municipio text not null, estado text not null, texto text not null
+            );
+            CREATE TABLE cfdi_40_colonias (
+                colonia text not null, codigo_postal text not null, texto text not null
+            );
+
+            INSERT INTO cfdi_40_codigos_postales VALUES
+                ('06600', 'CMX', '015', '06'),
+                ('99999', 'ZAC', '', '');
+
+            INSERT INTO cfdi_40_estados VALUES
+                ('CMX', 'MEX', 'Ciudad de México'),
+                ('ZAC', 'MEX', 'Zacatecas'),
+                ('CMX', 'USA', 'Estado gringo homonimo (no debe usarse)');
+
+            INSERT INTO cfdi_40_municipios VALUES
+                ('015', 'CMX', 'Cuauhtémoc'),
+                ('015', 'ZAC', 'Otro municipio 015 (otro estado)');
+
+            INSERT INTO cfdi_40_colonias VALUES
+                ('0930', '06600', 'Juárez'),
+                ('0001', '99999', 'Colonia ficticia');
             SQL);
 
         return $path;

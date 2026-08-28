@@ -14,7 +14,9 @@ class ContactAddress extends Model
     protected $table = 'contact_addresses';
     
     protected $fillable = [
-        'contact_id', 'address_type', 'address_line_1', 'address_line_2', 'city', 'state', 'country', 'postal_code', 'is_default', 'metadata'
+        'contact_id', 'address_type', 'address_line_1', 'address_line_2',
+        'street', 'exterior_number', 'interior_number', 'neighborhood', 'municipality',
+        'city', 'state', 'country', 'postal_code', 'reference', 'is_default', 'metadata'
     ];
 
     protected $casts = [
@@ -121,6 +123,25 @@ class ContactAddress extends Model
 
     public function getFullAddress(): string
     {
+        // Campos SAT cuando existen; las direcciones legadas (solo
+        // address_line_1/2) se siguen mostrando tal cual.
+        if ($this->street) {
+            $streetLine = trim($this->street
+                . ($this->exterior_number ? ' ' . $this->exterior_number : '')
+                . ($this->interior_number ? ' Int. ' . $this->interior_number : ''));
+
+            $parts = array_filter([
+                $streetLine,
+                $this->neighborhood ? 'Col. ' . $this->neighborhood : null,
+                $this->municipality ?: $this->city,
+                $this->state,
+                $this->postal_code,
+                $this->country
+            ]);
+
+            return implode(', ', $parts);
+        }
+
         $parts = array_filter([
             $this->address_line_1,
             $this->address_line_2,

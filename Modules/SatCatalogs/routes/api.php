@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\SatCatalogs\Http\Controllers\Api\V1\AddressCatalogController;
 use Modules\SatCatalogs\Http\Controllers\Api\V1\SatCatalogController;
 
 /*
@@ -18,4 +19,9 @@ Route::middleware('auth:sanctum')->prefix('v1/sat')->name('sat.')->group(functio
     Route::get('clave-unidad', [SatCatalogController::class, 'claveUnidad'])->name('clave-unidad');
     Route::get('forma-pago', [SatCatalogController::class, 'formaPago'])->name('forma-pago');
     Route::get('tasa-o-cuota', [SatCatalogController::class, 'tasaOCuota'])->name('tasa-o-cuota');
+
+    // Catalogos de domicilio (autollenado por CP + cascada estado/municipio)
+    Route::get('address/postal-codes/{codigoPostal}', [AddressCatalogController::class, 'postalCode'])->name('address.postal-code');
+    Route::get('address/estados', [AddressCatalogController::class, 'estados'])->name('address.estados');
+    Route::get('address/estados/{estadoClave}/municipios', [AddressCatalogController::class, 'municipios'])->name('address.municipios');
 });

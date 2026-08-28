@@ -29,6 +29,13 @@ class ContactAddressSchema extends Schema
             Str::make('addressType', 'address_type')->sortable(),
             Str::make('addressLine1', 'address_line_1')->sortable(),
             Str::make('addressLine2', 'address_line_2')->sortable(),
+            // Campos SAT (nodo Domicilio CFDI); legacy address_line_1/2 se conservan
+            Str::make('street'),
+            Str::make('exteriorNumber', 'exterior_number'),
+            Str::make('interiorNumber', 'interior_number'),
+            Str::make('neighborhood'),
+            Str::make('municipality'),
+            Str::make('reference'),
             Str::make('city')->sortable(),
             Str::make('state')->sortable(),
             Str::make('country')->sortable(),

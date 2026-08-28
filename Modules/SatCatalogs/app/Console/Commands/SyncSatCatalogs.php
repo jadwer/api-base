@@ -6,6 +6,8 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Modules\SatCatalogs\Models\SatClaveProdServ;
 use Modules\SatCatalogs\Models\SatClaveUnidad;
+use Modules\SatCatalogs\Models\SatCodigoPostal;
+use Modules\SatCatalogs\Models\SatColonia;
 use Modules\SatCatalogs\Models\SatFormaPago;
 use Modules\SatCatalogs\Models\SatTasaOCuota;
 
@@ -13,13 +15,17 @@ use Modules\SatCatalogs\Models\SatTasaOCuota;
  * Sync the SAT catalogs from phpcfdi/resources-sat-catalogs.
  *
  * Downloads the latest release asset (catalogs.db.bz2, a SQLite database),
- * decompresses it and upserts ONLY the 4 tables this project uses:
+ * decompresses it and upserts ONLY the tables this project uses:
  *
  *   Source (catalogs.db)            Target (our DB)
  *   cfdi_40_productos_servicios ->  sat_clave_prod_serv
  *   cfdi_40_claves_unidades     ->  sat_clave_unidad
  *   cfdi_40_formas_pago         ->  sat_forma_pago
  *   cfdi_40_reglas_tasa_cuota   ->  sat_tasa_o_cuota (only "Fijo" rows)
+ *   cfdi_40_codigos_postales    ->  sat_codigos_postales (denormalizado con
+ *                                   nombres de estado/municipio, para el
+ *                                   autollenado de direcciones por CP)
+ *   cfdi_40_colonias            ->  sat_colonias
  *
  * Use --path to point to a local catalogs.db (tests, air-gapped installs).
  */
@@ -64,6 +70,8 @@ class SyncSatCatalogs extends Command
                 'sat_clave_unidad' => $this->syncClaveUnidad($source),
                 'sat_forma_pago' => $this->syncFormaPago($source),
                 'sat_tasa_o_cuota' => $this->syncTasaOCuota($source),
+                'sat_codigos_postales' => $this->syncCodigosPostales($source),
+                'sat_colonias' => $this->syncColonias($source),
             ];
 
             $this->newLine();
@@ -283,6 +291,62 @@ class SyncSatCatalogs extends Command
     /**
      * Stream rows from the source SQLite and upsert them in batches.
      */
+    /**
+     * cfdi_40_codigos_postales -> sat_codigos_postales
+     *
+     * Denormaliza los NOMBRES de estado y municipio en el sync (verificado
+     * contra catalogs.db v10.15: 0 CPs sin nombre de estado o municipio)
+     * para que el lookup por CP no haga joins en runtime.
+     */
+    protected function syncCodigosPostales(\PDO $source): int
+    {
+        $query = 'SELECT cp.id, cp.estado, cp.municipio, cp.localidad,'
+            . ' e.texto AS estado_nombre, m.texto AS municipio_nombre'
+            . ' FROM cfdi_40_codigos_postales cp'
+            . " LEFT JOIN cfdi_40_estados e ON e.estado = cp.estado AND e.pais = 'MEX'"
+            . ' LEFT JOIN cfdi_40_municipios m ON m.municipio = cp.municipio AND m.estado = cp.estado';
+
+        return $this->upsertInBatches(
+            $source,
+            $query,
+            fn (array $row): array => [
+                'codigo_postal' => $row['id'],
+                'estado_clave' => $row['estado'],
+                'estado' => mb_substr((string) ($row['estado_nombre'] ?? ''), 0, 40),
+                'municipio_clave' => ($row['municipio'] ?? '') !== '' ? $row['municipio'] : null,
+                'municipio' => ($row['municipio_nombre'] ?? '') !== '' ? mb_substr($row['municipio_nombre'], 0, 60) : null,
+                'localidad_clave' => ($row['localidad'] ?? '') !== '' ? $row['localidad'] : null,
+            ],
+            fn (array $batch) => SatCodigoPostal::upsert(
+                $batch,
+                ['codigo_postal'],
+                ['estado_clave', 'estado', 'municipio_clave', 'municipio', 'localidad_clave']
+            )
+        );
+    }
+
+    /**
+     * cfdi_40_colonias -> sat_colonias
+     * Columns: colonia (clave), codigo_postal, texto (nombre).
+     */
+    protected function syncColonias(\PDO $source): int
+    {
+        return $this->upsertInBatches(
+            $source,
+            'SELECT colonia, codigo_postal, texto FROM cfdi_40_colonias',
+            fn (array $row): array => [
+                'codigo_postal' => $row['codigo_postal'],
+                'clave' => $row['colonia'],
+                'nombre' => mb_substr((string) $row['texto'], 0, 100),
+            ],
+            fn (array $batch) => SatColonia::upsert(
+                $batch,
+                ['codigo_postal', 'clave'],
+                ['nombre']
+            )
+        );
+    }
+
     protected function upsertInBatches(\PDO $source, string $query, callable $map, callable $flush): int
     {
         $statement = $source->query($query);
