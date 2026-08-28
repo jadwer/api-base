@@ -40,10 +40,16 @@ JsonApiRoute::server('v1')
             ->relationships(function ($relationships) {
                 $relationships->hasOne('companySetting');
             });
+
+        // Document Legends (leyendas configurables por tipo de documento)
+        $api->resource('document-legends', \Modules\Billing\Http\Controllers\Api\V1\DocumentLegendController::class);
     });
 
 // CFDI Generation Endpoints (Custom actions outside JSON:API spec)
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
+    // Catalogo de placeholders de leyendas (chips del editor)
+    Route::get('document-legends-placeholders', [\Modules\Billing\Http\Controllers\Api\V1\DocumentLegendController::class, 'placeholders']);
+
     Route::post('cfdi-invoices/{cfdiInvoice}/generate-xml', [\Modules\Billing\Http\Controllers\Api\V1\CFDIInvoiceController::class, 'generateXml']);
     Route::post('cfdi-invoices/{cfdiInvoice}/generate-pdf', [\Modules\Billing\Http\Controllers\Api\V1\CFDIInvoiceController::class, 'generatePdf']);
     Route::get('cfdi-invoices/{cfdiInvoice}/download-pdf', [\Modules\Billing\Http\Controllers\Api\V1\CFDIInvoiceController::class, 'downloadPdf']);

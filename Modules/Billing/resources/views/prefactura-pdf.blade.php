@@ -446,6 +446,15 @@
             </p>
         </div>
 
+        <!-- Configurable Legend -->
+        @if(!empty($legendLines))
+        <div class="section" style="padding: 8px 10px; border: 1px solid #dee2e6; background-color: #f8f9fa; margin-top: 10px; font-size: 8pt;">
+            @foreach($legendLines as $legendLine)
+                {{ $legendLine }}<br/>
+            @endforeach
+        </div>
+        @endif
+
         <!-- Footer -->
         <div class="footer">
             <p><strong>PREFACTURA - DOCUMENTO SIN VALIDEZ FISCAL</strong></p>

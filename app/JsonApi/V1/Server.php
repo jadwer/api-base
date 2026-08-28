@@ -218,6 +218,7 @@ class Server extends BaseServer
             \Modules\Billing\JsonApi\V1\CFDIInvoices\CFDIInvoiceSchema::class,
             \Modules\Billing\JsonApi\V1\CFDIItems\CFDIItemSchema::class,
             \Modules\Billing\JsonApi\V1\InvoiceSeries\InvoiceSeriesSchema::class,
+            \Modules\Billing\JsonApi\V1\DocumentLegends\DocumentLegendSchema::class,
 
             // CRM Module (Phase 4.5)
             \Modules\CRM\JsonApi\V1\Leads\LeadSchema::class,
@@ -355,6 +356,7 @@ class Server extends BaseServer
             'cfdi-invoices' => \Modules\Billing\JsonApi\V1\CFDIInvoices\CFDIInvoiceAuthorizer::class,
             'cfdi-items' => \Modules\Billing\JsonApi\V1\CFDIItems\CFDIItemAuthorizer::class,
             'invoice-series' => \Modules\Billing\JsonApi\V1\InvoiceSeries\InvoiceSeriesAuthorizer::class,
+            'document-legends' => \Modules\Billing\JsonApi\V1\DocumentLegends\DocumentLegendAuthorizer::class,
 
             // CRM Module (Phase 4.5)
             'leads' => \Modules\CRM\JsonApi\V1\Leads\LeadAuthorizer::class,

@@ -487,6 +487,18 @@
         </table>
     </div>
 
+    <!-- Configurable Legend -->
+    @if(!empty($legendLines))
+    <div class="notes-section">
+        <div class="notes-title">CONDICIONES</div>
+        <div class="notes-content">
+            @foreach($legendLines as $legendLine)
+                {{ $legendLine }}<br>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
     <!-- Delivery Notes -->
     @if($remission->delivery_notes)
     <div class="notes-section">

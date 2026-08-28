@@ -88,6 +88,22 @@ class PermissionsSeeder extends Seeder
 
         $this->bulkCreateAndAssignPermissions($seriesWritePermissions, ['admin']);
 
+        // Document Legends (leyendas configurables por tipo de documento)
+        $legendReadPermissions = [
+            'billing.document-legends.index',
+            'billing.document-legends.show',
+        ];
+
+        $this->bulkCreateAndAssignPermissions($legendReadPermissions, ['admin', 'tech']);
+
+        $legendWritePermissions = [
+            'billing.document-legends.store',
+            'billing.document-legends.update',
+            'billing.document-legends.destroy',
+        ];
+
+        $this->bulkCreateAndAssignPermissions($legendWritePermissions, ['admin']);
+
         $this->command->info('Permissions seeded successfully!');
     }
 }

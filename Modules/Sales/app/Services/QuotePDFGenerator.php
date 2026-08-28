@@ -4,6 +4,8 @@ namespace Modules\Sales\Services;
 
 use Modules\Sales\Models\Quote;
 use Modules\Billing\Models\CompanySetting;
+use Modules\Billing\Models\DocumentLegend;
+use Modules\Billing\Services\DocumentLegendRenderer;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 
@@ -98,6 +100,19 @@ class QuotePDFGenerator
         // Branch from quote metadata or options
         $branch = $quote->metadata['branch'] ?? $options['branch'] ?? 'Matriz';
 
+        // Leyenda configurable por tipo de documento (fallback: commercial_conditions -> defaults)
+        $legendLines = app(DocumentLegendRenderer::class)->render(DocumentLegend::TYPE_QUOTE, [
+            'folio' => $quote->quote_number,
+            'fecha_emision' => $quote->created_at?->format('d/m/Y'),
+            'fecha_vencimiento' => $quote->valid_until?->format('d/m/Y'),
+            'total' => '$' . number_format((float) $quote->total_amount, 2) . ' ' . ($quote->currency ?? 'MXN'),
+            'total_letra' => $this->amountInWords((float) $quote->total_amount, $quote->currency ?? 'MXN'),
+            'cliente' => $contact?->name,
+            'rfc_cliente' => $contact?->tax_id,
+            'empresa' => $company?->company_name,
+            'dias_credito' => $quote->credit_days ?? $contact?->payment_terms,
+        ]);
+
         return [
             'quote' => $quote,
             'items' => $quote->items()->with(['product.brand', 'product.unit'])->get(),
@@ -109,7 +124,7 @@ class QuotePDFGenerator
             'companyPhone' => $company?->phone ?? $company?->additional_settings['phone'] ?? null,
             'companyEmail' => $company?->email ?? $company?->additional_settings['email'] ?? null,
             'bankAccounts' => $options['bank_accounts'] ?? $company?->getBankAccounts() ?? $this->defaultBankAccounts,
-            'conditions' => $options['conditions'] ?? $company?->getCommercialConditions() ?? $this->defaultConditions,
+            'conditions' => $options['conditions'] ?? $legendLines ?? $company?->getCommercialConditions() ?? $this->defaultConditions,
             'amountInWords' => $this->amountInWords($quote->total_amount, $quote->currency ?? 'MXN'),
             'elaboratedBy' => $options['elaborated_by'] ?? $elaboratedBy,
             'branch' => $branch,

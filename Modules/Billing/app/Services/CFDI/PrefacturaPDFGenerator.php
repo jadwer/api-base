@@ -4,6 +4,8 @@ namespace Modules\Billing\Services\CFDI;
 
 use Modules\Billing\Models\CFDIInvoice;
 use Modules\Billing\Models\CompanySetting;
+use Modules\Billing\Models\DocumentLegend;
+use Modules\Billing\Services\DocumentLegendRenderer;
 use Modules\Sales\Models\SalesOrder;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
@@ -16,6 +18,8 @@ use Illuminate\Support\Facades\Storage;
  */
 class PrefacturaPDFGenerator
 {
+    use BuildsCfdiLegendContext;
+
     /**
      * Generate prefactura PDF from an existing CFDIInvoice in draft status
      *
@@ -36,6 +40,10 @@ class PrefacturaPDFGenerator
             'settings' => $settings,
             'items' => $invoice->items,
             'totals' => $this->calculateTotals($invoice),
+            'legendLines' => app(DocumentLegendRenderer::class)->render(
+                DocumentLegend::TYPE_CFDI_INVOICE,
+                $this->legendContext($invoice, $settings)
+            ),
         ];
 
         // Generate PDF

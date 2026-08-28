@@ -4,6 +4,8 @@ namespace Modules\Sales\Services;
 
 use Modules\Sales\Models\SalesOrder;
 use Modules\Billing\Models\CompanySetting;
+use Modules\Billing\Models\DocumentLegend;
+use Modules\Billing\Services\DocumentLegendRenderer;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Luecano\NumeroALetras\NumeroALetras;
@@ -88,6 +90,19 @@ class SalesOrderPDFGenerator
             ?? $settings?->getQuoteSettings()['show_commercial_conditions']
             ?? true;
 
+        // Leyenda configurable por tipo de documento (fallback: commercial_conditions)
+        $legendLines = app(DocumentLegendRenderer::class)->render(DocumentLegend::TYPE_SALES_ORDER, [
+            'folio' => $order->order_number,
+            'fecha_emision' => $order->order_date?->format('d/m/Y') ?? $order->created_at?->format('d/m/Y'),
+            'fecha_vencimiento' => '',
+            'total' => '$' . number_format((float) $totals['total'], 2) . ' ' . $currency,
+            'total_letra' => $totalInWords,
+            'cliente' => $order->contact?->name,
+            'rfc_cliente' => $order->contact?->tax_id,
+            'empresa' => $settings?->company_name,
+            'dias_credito' => $order->credit_days ?? $order->contact?->payment_terms,
+        ]);
+
         return [
             'order' => $order,
             'items' => $order->items,
@@ -101,7 +116,7 @@ class SalesOrderPDFGenerator
             'statusLabels' => self::STATUS_LABELS,
             'showBankAccounts' => $showBankAccounts,
             'showConditions' => $showConditions,
-            'conditions' => $settings?->getCommercialConditions() ?? [],
+            'conditions' => $legendLines ?? $settings?->getCommercialConditions() ?? [],
         ];
     }
 

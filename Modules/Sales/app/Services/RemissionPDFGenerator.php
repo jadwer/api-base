@@ -4,6 +4,8 @@ namespace Modules\Sales\Services;
 
 use Modules\Sales\Models\Remission;
 use Modules\Billing\Models\CompanySetting;
+use Modules\Billing\Models\DocumentLegend;
+use Modules\Billing\Services\DocumentLegendRenderer;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 
@@ -84,6 +86,21 @@ class RemissionPDFGenerator
         // Effective shipping address (remission override or order shipping)
         $shippingAddress = $remission->shipping_address ?? $order?->shipping_address;
 
+        // Leyenda configurable por tipo de documento (la remision no tiene fallback historico)
+        $legendLines = app(DocumentLegendRenderer::class)->render(DocumentLegend::TYPE_REMISSION, [
+            'folio' => $remission->remission_number,
+            'fecha_emision' => $remission->remission_date?->format('d/m/Y'),
+            'fecha_vencimiento' => '',
+            'total' => $order?->total_amount !== null
+                ? '$' . number_format((float) $order->total_amount, 2)
+                : '',
+            'total_letra' => '',
+            'cliente' => $contact?->name,
+            'rfc_cliente' => $contact?->tax_id,
+            'empresa' => $company?->company_name,
+            'dias_credito' => $order?->credit_days ?? $contact?->payment_terms,
+        ]);
+
         return [
             'remission' => $remission,
             'items' => $remission->items()->with(['product.unit'])->get(),
@@ -98,6 +115,7 @@ class RemissionPDFGenerator
             'companyEmail' => $company?->email ?? $company?->additional_settings['email'] ?? null,
             'showSignatureLines' => $options['show_signature_lines'] ?? true,
             'copies' => $options['copies'] ?? 2, // Default: original + copy
+            'legendLines' => $legendLines,
         ];
     }
 

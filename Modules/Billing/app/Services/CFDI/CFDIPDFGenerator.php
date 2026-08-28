@@ -4,6 +4,8 @@ namespace Modules\Billing\Services\CFDI;
 
 use Modules\Billing\Models\CFDIInvoice;
 use Modules\Billing\Models\CompanySetting;
+use Modules\Billing\Models\DocumentLegend;
+use Modules\Billing\Services\DocumentLegendRenderer;
 use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
@@ -16,6 +18,8 @@ use Illuminate\Support\Facades\Storage;
  */
 class CFDIPDFGenerator
 {
+    use BuildsCfdiLegendContext;
+
     /**
      * Generate PDF for CFDI invoice
      *
@@ -46,6 +50,10 @@ class CFDIPDFGenerator
             'qrCode' => $qrCodeBase64,
             'items' => $invoice->items,
             'totals' => $this->calculateTotals($invoice),
+            'legendLines' => app(DocumentLegendRenderer::class)->render(
+                DocumentLegend::TYPE_CFDI_INVOICE,
+                $this->legendContext($invoice, $settings)
+            ),
         ];
 
         // Generate PDF
