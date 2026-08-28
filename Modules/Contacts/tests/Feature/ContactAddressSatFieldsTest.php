@@ -51,6 +51,16 @@ class ContactAddressSatFieldsTest extends TestCase
             'municipality' => 'Benito Juárez',
             'reference' => 'Frente a una escuela',
         ]);
+
+        // El RESPONSE tambien debe traer los campos SAT: el Resource manual
+        // pisa al Schema y sin esto el API guarda pero nunca los devuelve
+        // (hallazgo E2E 2026-08-28, mismo patron SalesOrderResource 2026-07)
+        $attributes = $response->json('data.attributes');
+        $this->assertSame('Av. Insurgentes Sur', $attributes['street']);
+        $this->assertSame('1234', $attributes['exteriorNumber']);
+        $this->assertSame('Del Valle', $attributes['neighborhood']);
+        $this->assertSame('Benito Juárez', $attributes['municipality']);
+        $this->assertSame('Frente a una escuela', $attributes['reference']);
     }
 
     public function test_mz_lt_addresses_are_accepted_as_free_text(): void
