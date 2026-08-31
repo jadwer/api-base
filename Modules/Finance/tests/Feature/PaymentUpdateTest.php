@@ -11,7 +11,7 @@ class PaymentUpdateTest extends TestCase
 
     public function test_admin_can_update_Payment(): void
     {
-        $payment = Payment::factory()->create();
+        $payment = Payment::factory()->create(['status' => 'unapplied']);
         $this->actingAs($this->getAdminUser(), 'sanctum')->jsonApi()->expects('payments')->withData([
             'type' => 'payments', 'id' => (string) $payment->id, 'attributes' => ['amount' => 199.99, 'isActive' => false]
         ])->patch("/api/v1/payments/{$payment->id}")->assertOk();
@@ -19,7 +19,7 @@ class PaymentUpdateTest extends TestCase
 
     public function test_admin_can_partially_update_Payment(): void
     {
-        $payment = Payment::factory()->create();
+        $payment = Payment::factory()->create(['status' => 'unapplied']);
         $this->actingAs($this->getAdminUser(), 'sanctum')->jsonApi()->expects('payments')->withData([
             'type' => 'payments', 'id' => (string) $payment->id, 'attributes' => ['amount' => 1500.00]
         ])->patch("/api/v1/payments/{$payment->id}")->assertOk();
@@ -27,7 +27,7 @@ class PaymentUpdateTest extends TestCase
 
     public function test_admin_can_update_Payment_metadata(): void
     {
-        $payment = Payment::factory()->create();
+        $payment = Payment::factory()->create(['status' => 'unapplied']);
         $this->actingAs($this->getAdminUser(), 'sanctum')->jsonApi()->expects('payments')->withData([
             'type' => 'payments', 'id' => (string) $payment->id, 'attributes' => ['metadata' => ['test' => 'val']]
         ])->patch("/api/v1/payments/{$payment->id}")->assertOk();
@@ -35,7 +35,7 @@ class PaymentUpdateTest extends TestCase
 
     public function test_customer_user_cannot_update_Payment(): void
     {
-        $payment = Payment::factory()->create();
+        $payment = Payment::factory()->create(['status' => 'unapplied']);
         $this->actingAs($this->getCustomerUser(), 'sanctum')->jsonApi()->expects('payments')->withData([
             'type' => 'payments', 'id' => (string) $payment->id, 'attributes' => ['amount' => 999.99]
         ])->patch("/api/v1/payments/{$payment->id}")->assertStatus(403);
@@ -43,7 +43,7 @@ class PaymentUpdateTest extends TestCase
 
     public function test_guest_cannot_update_Payment(): void
     {
-        $payment = Payment::factory()->create();
+        $payment = Payment::factory()->create(['status' => 'unapplied']);
         $this->jsonApi()->expects('payments')->withData([
             'type' => 'payments', 'id' => (string) $payment->id, 'attributes' => ['amount' => 999.99]
         ])->patch("/api/v1/payments/{$payment->id}")->assertStatus(401);
@@ -58,7 +58,7 @@ class PaymentUpdateTest extends TestCase
 
     public function test_cannot_update_Payment_with_invalid_data(): void
     {
-        $payment = Payment::factory()->create();
+        $payment = Payment::factory()->create(['status' => 'unapplied']);
         $this->actingAs($this->getAdminUser(), 'sanctum')->jsonApi()->expects('payments')->withData([
             'type' => 'payments', 'id' => (string) $payment->id,
             'attributes' => ['amount' => 'not_numeric', 'isActive' => 'bad']

@@ -26,7 +26,7 @@ class ARInvoiceUpdateTest extends TestCase
     public function test_admin_can_update_ARInvoice(): void
     {
         $admin = $this->getAdminUser();
-        $aRInvoice = ARInvoice::factory()->create();
+        $aRInvoice = ARInvoice::factory()->create(['status' => 'draft']);
 
         $data = [
             'type' => 'ar-invoices',
@@ -59,7 +59,8 @@ class ARInvoiceUpdateTest extends TestCase
         $admin = $this->getAdminUser();
         $aRInvoice = ARInvoice::factory()->create([
             'invoice_number' => 'Original Name',
-            'notes' => 'Original Description'
+            'notes' => 'Original Description',
+            'status' => 'draft',
         ]);
 
         $data = [
@@ -89,7 +90,7 @@ class ARInvoiceUpdateTest extends TestCase
     public function test_admin_can_update_ARInvoice_metadata(): void
     {
         $admin = $this->getAdminUser();
-        $aRInvoice = ARInvoice::factory()->create();
+        $aRInvoice = ARInvoice::factory()->create(['status' => 'draft']);
 
         $metadata = [
             'updated_field' => 'new_value',
@@ -120,7 +121,7 @@ class ARInvoiceUpdateTest extends TestCase
     public function test_customer_user_cannot_update_ARInvoice(): void
     {
         $customer = $this->getCustomerUser();
-        $aRInvoice = ARInvoice::factory()->create();
+        $aRInvoice = ARInvoice::factory()->create(['status' => 'draft']);
 
         $data = [
             'type' => 'ar-invoices',
@@ -141,7 +142,7 @@ class ARInvoiceUpdateTest extends TestCase
 
     public function test_guest_cannot_update_ARInvoice(): void
     {
-        $aRInvoice = ARInvoice::factory()->create();
+        $aRInvoice = ARInvoice::factory()->create(['status' => 'draft']);
 
         $data = [
             'type' => 'ar-invoices',
@@ -183,7 +184,7 @@ class ARInvoiceUpdateTest extends TestCase
     public function test_cannot_update_ARInvoice_with_invalid_data(): void
     {
         $admin = $this->getAdminUser();
-        $aRInvoice = ARInvoice::factory()->create();
+        $aRInvoice = ARInvoice::factory()->create(['status' => 'draft']);
 
         $data = [
             'type' => 'ar-invoices',

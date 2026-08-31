@@ -47,6 +47,19 @@ class CFDIInvoiceResource extends JsonApiResource
             'pdfPath' => $this->pdf_path,
             'errorMessage' => $this->error_message,
             'metadata' => $this->metadata,
+            // Barrido Paquete B 2026-08-31: el Resource manual pisa al
+            // Schema; todo campo del Schema debe estar aqui o el API
+            // guarda pero nunca lo devuelve.
+            'companySettingId' => $this->company_setting_id,
+            'contactId' => $this->contact_id,
+            'arInvoiceId' => $this->ar_invoice_id,
+            'fechaPago' => $this->fecha_pago,
+            'montoPago' => $this->monto_pago,
+            'formaPagoP' => $this->forma_pago_p,
+            'arPaymentId' => $this->ar_payment_id,
+            'numParcialidad' => $this->num_parcialidad,
+            'impSaldoInsoluto' => $this->imp_saldo_insoluto,
+            'pacResponse' => $this->pac_response,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
         ];

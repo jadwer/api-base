@@ -32,6 +32,11 @@ class CFDIItemResource extends JsonApiResource
             'cuentaPredial' => $this->cuenta_predial,
             'informacionAduanera' => $this->informacion_aduanera,
             'metadata' => $this->metadata,
+            // Barrido Paquete B 2026-08-31: el Resource manual pisa al
+            // Schema; todo campo del Schema debe estar aqui o el API
+            // guarda pero nunca lo devuelve.
+            'cfdiInvoiceId' => $this->cfdi_invoice_id,
+            'productId' => $this->product_id,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
         ];

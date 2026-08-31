@@ -24,6 +24,17 @@ class ARInvoiceResource extends JsonApiResource
             'notes' => $this->notes,
             'metadata' => $this->metadata,
             'isActive' => $this->is_active,
+            // Barrido Paquete B 2026-08-31: el Resource manual pisa al
+            // Schema; todo campo del Schema debe estar aqui o el API
+            // guarda pero nunca lo devuelve.
+            'paidDate' => $this->paid_date,
+            'discountPercent' => $this->discount_percent,
+            'discountDays' => $this->discount_days,
+            'discountDate' => $this->discount_date,
+            'discountAmount' => $this->discount_amount,
+            'discountApplied' => $this->discount_applied,
+            'discountAppliedAmount' => $this->discount_applied_amount,
+            'discountAppliedDate' => $this->discount_applied_date,
             "createdAt" => $this->created_at,
             "updatedAt" => $this->updated_at,
         ];

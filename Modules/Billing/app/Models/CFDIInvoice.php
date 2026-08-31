@@ -62,6 +62,11 @@ class CFDIInvoice extends Model
         'fecha_pago',
         'monto_pago',
         'forma_pago_p',
+        // num_parcialidad e imp_saldo_insoluto NO estaban en fillable y el
+        // REPService los pasa en create(): se perdian EN SILENCIO (dato
+        // fiscal del complemento). Hallazgo Paquete B 2026-08-31.
+        'num_parcialidad',
+        'imp_saldo_insoluto',
         'cfdi_relacionado_tipo',
         'cfdi_relacionado_uuids',
         'status',
@@ -88,6 +93,8 @@ class CFDIInvoice extends Model
         'iva_retenido' => 'integer',
         'tipo_cambio' => 'float',
         'monto_pago' => 'integer',
+        'num_parcialidad' => 'integer',
+        'imp_saldo_insoluto' => 'integer',
         'fecha_pago' => 'datetime',
         'cfdi_relacionado_uuids' => 'array',
         'pac_response' => 'array',

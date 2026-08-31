@@ -22,6 +22,14 @@ class ARPaymentResource extends JsonApiResource
             'notes' => $this->resource->notes,
             'voidedAt' => $this->resource->voided_at,
             'voidReason' => $this->resource->void_reason,
+            // Barrido Paquete B 2026-08-31: el Resource manual pisa al
+            // Schema; todo campo del Schema debe estar aqui o el API
+            // guarda pero nunca lo devuelve.
+            'contactId' => $this->contact_id,
+            'fiscalPeriodId' => $this->fiscal_period_id,
+            'bankAccountId' => $this->bank_account_id,
+            'journalEntryId' => $this->journal_entry_id,
+            'voidedById' => $this->voided_by_id,
             'createdAt' => $this->resource->created_at,
             'updatedAt' => $this->resource->updated_at,
         ];

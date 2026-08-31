@@ -3,11 +3,18 @@
 namespace Modules\Finance\JsonApi\V1\ARInvoices;
 
 use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
+use Modules\Finance\JsonApi\Concerns\ValidatesFinancialImmutability;
 use Illuminate\Validation\Rule;
 use Modules\Contacts\Models\Contact;
 
 class ARInvoiceRequest extends ResourceRequest
 {
+    use ValidatesFinancialImmutability;
+
+    protected function immutableStatuses(): array
+    {
+        return ['posted', 'partial', 'paid', 'void', 'voided', 'cancelled'];
+    }
     public function rules(): array
     {
         $arinvoice = $this->model();
@@ -33,7 +40,7 @@ class ARInvoiceRequest extends ResourceRequest
             'taxAmount' => ['required', 'numeric'],
             'totalAmount' => ['required', 'numeric'],
             'paidAmount' => ['nullable', 'numeric'],
-            'status' => ['nullable', 'string', 'max:255'],
+            'status' => ['nullable', 'string', \Illuminate\Validation\Rule::in(['draft', 'pending', 'posted', 'partial', 'paid', 'void', 'voided', 'cancelled'])],
             'journalEntryId' => ['nullable', 'integer'],
             'notes' => ['nullable', 'string'],
             'metadata' => ['nullable', 'array'],

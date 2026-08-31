@@ -27,6 +27,12 @@ class PaymentTransactionResource extends JsonApiResource
             'failedAt' => $this->resource->failed_at,
             'refundedAt' => $this->resource->refunded_at,
             'metadata' => $this->resource->metadata,
+            // Barrido Paquete B 2026-08-31: el Resource manual pisa al
+            // Schema; todo campo del Schema debe estar aqui o el API
+            // guarda pero nunca lo devuelve.
+            'checkoutSessionId' => $this->checkout_session_id,
+            'salesOrderId' => $this->sales_order_id,
+            'arInvoiceId' => $this->ar_invoice_id,
             'createdAt' => $this->resource->created_at,
             'updatedAt' => $this->resource->updated_at,
         ];

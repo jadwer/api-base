@@ -13,6 +13,7 @@ use Modules\Finance\Models\PaymentApplication;
 use Modules\Finance\Models\PaymentMethod;
 use Modules\Sales\Models\SalesOrder;
 use Modules\User\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
@@ -25,6 +26,7 @@ use Tests\TestCase;
  */
 class ARInvoiceRegisterPaymentTest extends TestCase
 {
+    use RefreshDatabase;
     protected function setUp(): void
     {
         parent::setUp();

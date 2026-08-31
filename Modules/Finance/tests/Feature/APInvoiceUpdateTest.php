@@ -26,7 +26,7 @@ class APInvoiceUpdateTest extends TestCase
     public function test_admin_can_update_APInvoice(): void
     {
         $admin = $this->getAdminUser();
-        $aPInvoice = APInvoice::factory()->create();
+        $aPInvoice = APInvoice::factory()->create(['status' => 'draft']);
 
         $data = [
             'type' => 'ap-invoices',
@@ -89,7 +89,7 @@ class APInvoiceUpdateTest extends TestCase
     public function test_admin_can_update_APInvoice_metadata(): void
     {
         $admin = $this->getAdminUser();
-        $aPInvoice = APInvoice::factory()->create();
+        $aPInvoice = APInvoice::factory()->create(['status' => 'draft']);
 
         $metadata = [
             'updated_field' => 'new_value',
@@ -120,7 +120,7 @@ class APInvoiceUpdateTest extends TestCase
     public function test_customer_user_cannot_update_APInvoice(): void
     {
         $customer = $this->getCustomerUser();
-        $aPInvoice = APInvoice::factory()->create();
+        $aPInvoice = APInvoice::factory()->create(['status' => 'draft']);
 
         $data = [
             'type' => 'ap-invoices',
@@ -141,7 +141,7 @@ class APInvoiceUpdateTest extends TestCase
 
     public function test_guest_cannot_update_APInvoice(): void
     {
-        $aPInvoice = APInvoice::factory()->create();
+        $aPInvoice = APInvoice::factory()->create(['status' => 'draft']);
 
         $data = [
             'type' => 'ap-invoices',
@@ -183,7 +183,7 @@ class APInvoiceUpdateTest extends TestCase
     public function test_cannot_update_APInvoice_with_invalid_data(): void
     {
         $admin = $this->getAdminUser();
-        $aPInvoice = APInvoice::factory()->create();
+        $aPInvoice = APInvoice::factory()->create(['status' => 'draft']);
 
         $data = [
             'type' => 'ap-invoices',

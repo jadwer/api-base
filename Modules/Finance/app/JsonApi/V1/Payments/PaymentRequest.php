@@ -3,11 +3,18 @@
 namespace Modules\Finance\JsonApi\V1\Payments;
 
 use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
+use Modules\Finance\JsonApi\Concerns\ValidatesFinancialImmutability;
 use Illuminate\Validation\Rule;
 use Modules\Contacts\Models\Contact;
 
 class PaymentRequest extends ResourceRequest
 {
+    use ValidatesFinancialImmutability;
+
+    protected function immutableStatuses(): array
+    {
+        return ['applied', 'fully_applied', 'partial', 'void', 'voided'];
+    }
     public function rules(): array
     {
         $payment = $this->model();
@@ -34,7 +41,7 @@ class PaymentRequest extends ResourceRequest
             'currency' => ['nullable', 'string', 'max:255'],
             'appliedAmount' => ['nullable', 'numeric'],
             'unappliedAmount' => ['nullable', 'numeric'],
-            'status' => ['nullable', 'string', 'max:255'],
+            'status' => ['nullable', 'string', \Illuminate\Validation\Rule::in(['draft', 'unapplied', 'partial', 'applied', 'fully_applied', 'void', 'voided'])],
             'journalEntryId' => ['nullable', 'integer'],
             'reference' => ['nullable', 'string', 'max:255'],
             'notes' => ['nullable', 'string'],
