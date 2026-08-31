@@ -61,6 +61,18 @@ class DemoResetCommand extends Command
                 '--class' => \Database\Seeders\DemoWorkflowSeeder::class,
                 '--force' => true,
             ], $this->output),
+            // migrate:fresh borra los catalogos SAT completos y el seeder
+            // offline solo cubre un subset basico: sin este paso el demo
+            // queda sin claves completas NI codigos postales/colonias
+            // (autollenado de direcciones) tras cada reset semanal.
+            // Con un catalogs.db cacheado en storage/app no hay red de por
+            // medio; sin cache, descarga la release de phpcfdi.
+            'sat:sync-catalogs' => function () {
+                $cached = storage_path('app/catalogs.db');
+                $params = is_file($cached) ? ['--path' => $cached] : [];
+
+                return Artisan::call('sat:sync-catalogs', $params, $this->output);
+            },
         ];
 
         foreach ($steps as $name => $step) {
