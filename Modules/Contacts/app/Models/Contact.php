@@ -30,7 +30,7 @@ class Contact extends Model
     protected $table = 'contacts';
     
     protected $fillable = [
-        'contact_type', 'name', 'legal_name', 'tax_id', 'email', 'phone', 'website', 'status', 'is_customer', 'is_supplier', 'credit_limit', 'credit_status', 'credit_hold_at', 'credit_hold_reason', 'minimum_payment_score', 'current_credit', 'classification', 'payment_terms', 'notes', 'metadata',
+        'contact_type', 'name', 'legal_name', 'tax_id', 'email', 'phone', 'phone_extension', 'website', 'status', 'is_customer', 'is_supplier', 'credit_limit', 'credit_status', 'credit_hold_at', 'credit_hold_reason', 'minimum_payment_score', 'current_credit', 'classification', 'payment_terms', 'notes', 'metadata',
         // WS5 Commissions
         'default_salesperson_id', 'collections_agent_id', 'commission_pct_override',
         // WS7.1 Bind fields
@@ -249,6 +249,20 @@ class Contact extends Model
     public function contactDocuments()
     {
         return $this->hasMany(ContactDocument::class);
+    }
+
+    /**
+     * Acceso al portal: existe un usuario del sistema con el email del
+     * contacto (el vinculo contacto-usuario es por email, no hay FK).
+     * Computed para la ficha; el exists() usa el indice de users.email.
+     */
+    public function getHasPortalUserAttribute(): bool
+    {
+        if (!$this->email) {
+            return false;
+        }
+
+        return \Modules\User\Models\User::where('email', $this->email)->exists();
     }
 
     public function contactAddresses()

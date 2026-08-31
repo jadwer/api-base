@@ -32,6 +32,7 @@ class ContactSchema extends Schema
             Str::make('taxId', 'tax_id')->sortable(),
             Str::make('email')->sortable(),
             Str::make('phone')->sortable(),
+            Str::make('phoneExtension', 'phone_extension'),
             Str::make('website')->sortable(),
             Str::make('status')->sortable(),
             Boolean::make('isCustomer', 'is_customer')->sortable(),
@@ -56,6 +57,9 @@ class ContactSchema extends Schema
             Str::make('referralSource', 'referral_source'),
             Str::make('cuentaContable', 'cuenta_contable'),
             Number::make('discountPct', 'discount_pct'),
+
+            // Acceso al portal: computed, existe un User con el email del contacto
+            Boolean::make('hasPortalUser', 'has_portal_user')->readOnly(),
 
 
             // Timestamps
