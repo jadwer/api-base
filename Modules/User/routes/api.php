@@ -57,6 +57,7 @@ Route::middleware('auth:sanctum')
         })->name('v1.profile.show');
 
         Route::post('users/{id}/restore', [UserController::class, 'restore'])
+            ->whereNumber('id')
             ->name('users.restore');
 
         Route::patch('profile', function (\Illuminate\Http\Request $request) {

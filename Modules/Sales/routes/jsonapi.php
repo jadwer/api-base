@@ -57,7 +57,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::post('backorders/{backorder}/cancel', [BackorderController::class, 'cancel'])->name('backorders.cancel');
     Route::get('sales-orders/{order}/backorder-summary', [BackorderController::class, 'orderSummary'])->name('sales-orders.backorder-summary');
     Route::post('backorders/fulfill-for-product', [BackorderController::class, 'fulfillForProduct'])->name('backorders.fulfill-for-product');
-    Route::get('backorders/pending-for-product/{productId}', [BackorderController::class, 'pendingForProduct'])->name('backorders.pending-for-product');
+    Route::get('backorders/pending-for-product/{productId}', [BackorderController::class, 'pendingForProduct'])->whereNumber('productId')->name('backorders.pending-for-product');
 
     // SA-M004: Quote action endpoints
     // Customer quote request (simplified flow - no contact selection needed)

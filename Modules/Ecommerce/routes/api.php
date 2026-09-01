@@ -25,7 +25,8 @@ Route::prefix('v1')->group(function () {
     Route::post('shopping-carts/{shoppingCart}/remove-coupon', [ShoppingCartController::class, 'removeCoupon']);
 
     // Product view tracking (guests and authenticated users)
-    Route::post('products/{id}/track-view', [ProductViewController::class, 'trackView']);
+    Route::post('products/{id}/track-view', [ProductViewController::class, 'trackView'])
+        ->whereNumber('id');
 });
 
 // Authenticated routes - operations that require user identity
