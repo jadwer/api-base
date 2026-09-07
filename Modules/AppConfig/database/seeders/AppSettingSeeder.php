@@ -29,6 +29,7 @@ class AppSettingSeeder extends Seeder
             ['key' => 'company.phone_tertiary', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Telefono terciario'],
             ['key' => 'company.whatsapp_number', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'WhatsApp (numero internacional)'],
             ['key' => 'company.whatsapp_display', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'WhatsApp (texto visible)'],
+            ['key' => 'company.whatsapp_message', 'value' => 'Hola, me interesa recibir más información sobre sus productos', 'type' => 'string', 'group' => 'company', 'label' => 'WhatsApp (mensaje prellenado del widget)'],
             ['key' => 'company.email', 'value' => 'info@example.com', 'type' => 'string', 'group' => 'company', 'label' => 'Email de contacto'],
             ['key' => 'company.address', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Direccion'],
             ['key' => 'company.city', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Ciudad'],

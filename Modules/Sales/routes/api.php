@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Sales\Http\Controllers\Api\V1\FolioSequenceController;
 use Modules\Sales\Http\Controllers\Api\V1\OrderTrackingController;
 use Modules\Sales\Http\Controllers\Api\V1\CustomerOrderController;
+use Modules\Sales\Http\Controllers\Api\V1\PublicCartQuotePdfController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,13 @@ use Modules\Sales\Http\Controllers\Api\V1\CustomerOrderController;
 | Order tracking and customer portal routes
 |
 */
+
+// Publico SIN auth: el carrito del sitio es anonimo (localStorage). Precios
+// calculados en backend desde products (regla 7); sin efectos ni persistencia.
+Route::prefix('v1')->middleware('throttle:10,1')->group(function () {
+    Route::post('public/cart-quote-pdf', [PublicCartQuotePdfController::class, 'download'])
+        ->name('public.cart-quote-pdf');
+});
 
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
 
