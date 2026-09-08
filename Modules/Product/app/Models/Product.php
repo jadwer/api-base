@@ -237,7 +237,11 @@ class Product extends Model
         }
 
         // Capas 1 + 2: tokens en AND, cada token en cualquier campo.
-        $tokens = preg_split('/\s+/', $normalized, -1, PREG_SPLIT_NO_EMPTY);
+        // Se parte tambien por guiones y diagonales: un SKU capturado como
+        // "9093-03" se busca como 9093 AND 03 y encuentra "9093 03",
+        // "9093/03" o "9093-03" sin caer al fallback fuzzy (P1 buscador,
+        // queja del cliente: esa consulta tardaba por entrar al Levenshtein).
+        $tokens = preg_split('/[\s\/\-]+/', $normalized, -1, PREG_SPLIT_NO_EMPTY);
 
         // Registra cuantas condiciones where existian antes (otros filtros
         // JSON:API como category_id, is_active) para poder revertir SOLO las
@@ -257,10 +261,18 @@ class Product extends Model
             }
         });
 
-        // Capa 3: fallback Levenshtein solo si las capas 1+2 no matchearon nada.
-        // Se clona para contar sin consumir el builder original (que JSON:API
-        // sigue usando para aplicar orden, paginacion, etc.).
-        if ((clone $query)->count() === 0) {
+        // Capa 3: fallback Levenshtein solo si las capas 1+2 no matchearon
+        // nada Y el tenant lo tiene habilitado (search.fuzzy_enabled;
+        // configurable por AppSettings: LWM prefiere velocidad sin typos,
+        // el template lo conserva encendido). exists() en vez de count():
+        // con LIKE '%...%' sin indice, el count barria la tabla completa
+        // en CADA busqueda; exists() corta en la primera fila.
+        if (!(clone $query)->exists()) {
+            if (!app(\Modules\AppConfig\Services\AppSettingResolver::class)
+                ->getBool('search.fuzzy_enabled', true)) {
+                return $query;
+            }
+
             $ids = static::fuzzyMatchIds($normalized, $tokens);
 
             // Revierte SOLO la condicion que agrego la busqueda (el grupo where
@@ -318,9 +330,14 @@ class Product extends Model
         }
 
         // Universo acotado: solo columnas necesarias, con cap de filas.
+        // toBase(): filas stdClass sin hidratar modelos Eloquent (el costo
+        // real del fallback era instanciar 2000 modelos); orderBy para que
+        // el subconjunto bajo el cap sea deterministico y no filas al azar.
         $candidates = static::query()
             ->select(['id', 'name', 'sku'])
+            ->orderBy('id')
             ->limit(static::FUZZY_CANDIDATE_CAP)
+            ->toBase()
             ->get();
 
         if ($candidates->count() === static::FUZZY_CANDIDATE_CAP) {

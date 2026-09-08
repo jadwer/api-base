@@ -91,6 +91,12 @@ class AppSettingSeeder extends Seeder
             // Rediseno 2026-08: preguntas frecuentes del home. JSON con la forma
             // [{"question": "...", "answer": "..."}]. El frontend trae las 5 del
             // Figma como fallback si esta vacio o mal formado.
+            // Search (P1 junta 2026-09-01): comportamiento del buscador
+            // publico por tenant. LWM prefiere velocidad (fuzzy off, 5
+            // sugerencias); el default del producto conserva el buscador
+            // completo.
+            ['key' => 'search.fuzzy_enabled', 'value' => 'true', 'type' => 'boolean', 'group' => 'search', 'label' => 'Buscador: tolerancia a errores de escritura (typos)'],
+            ['key' => 'search.results_limit', 'value' => '8', 'type' => 'integer', 'group' => 'search', 'label' => 'Buscador: numero de sugerencias del typeahead'],
             ['key' => 'landing.faq', 'value' => json_encode([
                 ['question' => '¿Qué productos ofrece Labor Wasser de México?', 'answer' => 'Reactivos, material y equipo de laboratorio, consumibles, medios de cultivo, equipo de protección personal y soluciones para monitoreo y tratamiento de agua, de marcas líderes nacionales e internacionales.'],
                 ['question' => '¿Cómo puedo hacer una cotización?', 'answer' => 'Agrega los productos que necesitas al carrito y elige "Cotizar", o escríbenos con el botón "Cotiza con nosotros". Un asesor te responderá con precios, disponibilidad y tiempos de entrega.'],

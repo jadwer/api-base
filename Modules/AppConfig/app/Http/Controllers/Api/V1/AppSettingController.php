@@ -133,6 +133,8 @@ class AppSettingController extends Controller
         // Fase 3: textos/cantidades del home (landing.*), editable desde
         // /dashboard/settings/app-config y consumido por el frontend publico.
         $landing = AppSetting::getByGroup('landing');
+        // P1 buscador: limite de sugerencias del typeahead por tenant.
+        $search = AppSetting::getByGroup('search');
 
         return response()->json([
             'data' => [
@@ -141,6 +143,7 @@ class AppSettingController extends Controller
                 'social' => $social,
                 'pricing' => $pricing,
                 'landing' => $landing,
+                'search' => $search,
             ],
         ]);
     }
