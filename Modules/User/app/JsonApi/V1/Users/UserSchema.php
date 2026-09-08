@@ -9,6 +9,8 @@ use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsToMany;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\Scope;
+use LaravelJsonApi\Contracts\Pagination\Paginator;
+use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use Modules\User\Models\User;
 
 class UserSchema extends Schema
@@ -48,7 +50,21 @@ class UserSchema extends Schema
             Where::make('email')->deserializeUsing(
                 static fn($value) => "%{$value}%"
             )->using('like'),
+            // Users v2: busqueda unificada, rol por nombre y status exacto.
+            Scope::make('search', 'searchFilter'),
+            Scope::make('role', 'roleFilter'),
+            Where::make('status'),
         ];
+    }
+
+    /**
+     * Users v2: paginacion opcional (SIN defaultPagination a proposito:
+     * los consumidores existentes piden la lista completa para selects;
+     * la lista nueva siempre manda page[number]/page[size]).
+     */
+    public function pagination(): ?Paginator
+    {
+        return PagePagination::make();
     }
 
     public function includePaths(): array

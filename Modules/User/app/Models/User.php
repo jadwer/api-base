@@ -83,6 +83,26 @@ class User extends Authenticatable
         };
     }
 
+    /**
+     * Busqueda unificada para el modulo de usuarios v2: un solo termino
+     * matchea nombre O email (antes la UI tenia que elegir columna).
+     */
+    public function scopeSearchFilter($query, string $value)
+    {
+        $like = '%' . $value . '%';
+
+        return $query->where(function ($q) use ($like) {
+            $q->where('name', 'like', $like)
+                ->orWhere('email', 'like', $like);
+        });
+    }
+
+    /** Filtra por nombre de rol Spatie (users v2: select de rol en la lista). */
+    public function scopeRoleFilter($query, string $value)
+    {
+        return $query->whereHas('roles', fn ($q) => $q->where('name', $value));
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
