@@ -31,3 +31,4 @@ Thumbs.db
 docs/api/documentation.md
 CLAUDE.md
 .env.testing
+graphify-out/
