@@ -65,6 +65,11 @@ class CleanDatabaseSeeder extends Seeder
             }
         }
 
+        // Phase 6: catalogo de permisos (labels legibles para la UI de
+        // roles). Al final: requiere todos los permisos ya sembrados.
+        $this->command->info('Phase 6: Permission catalog labels...');
+        $this->call(\Modules\PermissionManager\Database\Seeders\PermissionCatalogSeeder::class);
+
         $this->command->info('');
         $this->command->info('========================================');
         $this->command->info('  Clean Project Ready!');

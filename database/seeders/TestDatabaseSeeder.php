@@ -40,5 +40,9 @@ class TestDatabaseSeeder extends Seeder
         foreach ($this->requiredModules as $module) {
             Artisan::call('module:seed', ['module' => $module, '--quiet' => true]);
         }
+
+        // Catalogo de permisos al final (labels legibles): requiere que
+        // todos los modulos ya hayan sembrado sus permisos.
+        $this->call(\Modules\PermissionManager\Database\Seeders\PermissionCatalogSeeder::class);
     }
 }

@@ -23,6 +23,14 @@ class PermissionResource extends JsonApiResource
         return [
             'name' => $this->resource->name,
             'guard_name' => $this->resource->guard_name,
+            // El Resource manual PISA al Schema: los campos del catalogo
+            // deben declararse tambien aqui o jamas salen en la API.
+            'label' => $this->resource->label,
+            'description' => $this->resource->description,
+            'module' => $this->resource->module,
+            'moduleLabel' => $this->resource->module_label,
+            'resource' => $this->resource->resource,
+            'resourceLabel' => $this->resource->resource_label,
             'createdAt' => $this->resource->created_at,
             'updatedAt' => $this->resource->updated_at,
         ];

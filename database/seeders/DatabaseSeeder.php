@@ -57,6 +57,10 @@ class DatabaseSeeder extends Seeder
             // Phase 4: AppSettings (placeholder values; tenants override via firstOrCreate
             // in their own seeder under clients/<name>/api/Database/Seeders/).
             \Modules\AppConfig\Database\Seeders\AppSettingSeeder::class,
+
+            // Phase 5: catalogo de permisos (labels legibles). SIEMPRE al final:
+            // necesita que TODOS los modulos ya hayan sembrado sus permisos.
+            \Modules\PermissionManager\Database\Seeders\PermissionCatalogSeeder::class,
         ]);
     }
 }

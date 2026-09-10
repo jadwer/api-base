@@ -6,6 +6,8 @@ use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Str;
+use LaravelJsonApi\Eloquent\Filters\Scope;
+use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
@@ -32,6 +34,15 @@ class PermissionSchema extends Schema
             ID::make(),
             Str::make('name')->sortable(),
             Str::make('guard_name'),
+            // Catalogo legible (poblado por PermissionCatalogSeeder);
+            // readOnly: la fuente es el catalogo, no la API.
+            Str::make('label')->sortable()->readOnly(),
+            Str::make('description')->readOnly(),
+            Str::make('module')->sortable()->readOnly(),
+            Str::make('resource')->readOnly(),
+            // Derivados del catalogo (accessors, no columnas): solo salida.
+            Str::make('moduleLabel')->readOnly(),
+            Str::make('resourceLabel')->readOnly(),
             DateTime::make('createdAt')->sortable()->readOnly(),
             DateTime::make('updatedAt')->sortable()->readOnly(),
         ];
@@ -46,6 +57,9 @@ class PermissionSchema extends Schema
     {
         return [
             WhereIdIn::make($this),
+            Where::make('module'),
+            Where::make('resource'),
+            Scope::make('search', 'searchFilter'),
         ];
     }
 
