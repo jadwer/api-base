@@ -83,17 +83,32 @@ class AuthController extends Controller
 
     public function register(Request $request): JsonResponse
     {
+        // Honeypot anti-bots (hardening pre Stripe LIVE, decision
+        // 2026-09-08): el formulario renderiza un campo "website"
+        // invisible que un humano deja vacio. Si viene con contenido se
+        // responde exito generico SIN crear nada, para no darle senal
+        // al bot de que fue detectado.
+        if (filled($request->input('website'))) {
+            return response()->json([
+                'message' => 'Registro recibido. Revisa tu correo para activar tu cuenta.',
+            ], 201);
+        }
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8'],
         ]);
 
+        // La cuenta nace inactive y sin token: el login se habilita al
+        // verificar el correo (EmailVerificationController::verify la
+        // activa). Corta el registro masivo de bots con gmail-con-puntos
+        // detectado en prod 2026-09-08.
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => $data['password'],
-            'status' => 'active',
+            'status' => 'inactive',
         ]);
 
         $user->assignRole('customer');
@@ -110,12 +125,9 @@ class AuthController extends Controller
             Log::warning('Failed to send registration emails: ' . $e->getMessage());
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
-
         return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
+            'message' => 'Registro exitoso. Revisa tu correo para activar tu cuenta.',
             'user' => $user,
-        ]);
+        ], 201);
     }
 }

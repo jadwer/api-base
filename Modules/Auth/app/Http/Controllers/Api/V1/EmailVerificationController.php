@@ -51,8 +51,15 @@ class EmailVerificationController extends Controller
 
         $user->markEmailAsVerified();
 
+        // El registro publico nace inactive (hardening 2026-09):
+        // verificar el correo es lo que habilita la cuenta. Solo
+        // inactive -> active; un usuario banned NO se reactiva aqui.
+        if ($user->status === 'inactive') {
+            $user->forceFill(['status' => 'active'])->save();
+        }
+
         return response()->json([
-            'message' => 'Tu correo ha sido verificado exitosamente.',
+            'message' => 'Tu correo ha sido verificado exitosamente. Ya puedes iniciar sesión.',
         ]);
     }
 }

@@ -72,7 +72,7 @@ class EmailVerificationTest extends TestCase
 
         $response->assertOk()
             ->assertJsonFragment([
-                'message' => 'Tu correo ha sido verificado exitosamente.',
+                'message' => 'Tu correo ha sido verificado exitosamente. Ya puedes iniciar sesión.',
             ]);
 
         $user->refresh();
@@ -126,7 +126,8 @@ class EmailVerificationTest extends TestCase
             'password' => 'securepassword',
         ]);
 
-        $response->assertOk();
+        // Hardening 2026-09: el registro responde 201 sin token.
+        $response->assertCreated();
 
         $user = User::where('email', 'newuser@example.com')->first();
         Notification::assertSentTo($user, VerifyEmailNotification::class);
