@@ -467,7 +467,7 @@ class ShoppingCartController extends Controller
             // almacen, no hay expiracion de reservas pending. Reservar aqui amplificaba ese
             // descuadre (reserva huerfana, doble compromiso). Se deja SOLO la validacion de
             // stock (arriba, best-effort) hasta que se rediseñe el modelo reserva->salida.
-            // Ver docs/audit-lwm-migration/PENDIENTE_REDISENO_RESERVAS.md.
+            // Ver PENDIENTE_REDISENO_RESERVAS.md (docs de auditoria del workspace).
             foreach ($shoppingCart->cartItems as $cartItem) {
                 SalesOrderItem::create([
                     'sales_order_id' => $order->id,

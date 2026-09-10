@@ -133,7 +133,7 @@
             font-weight: bold;
             color: #333;
         }
-        /* Columna Producto: SOLO la miniatura, centrada (layout de referencia LWM).
+        /* Columna Producto: SOLO la miniatura, centrada (layout del tenant de referencia).
            El nombre del producto va en la columna Descripcion. */
         .product-image-cell {
             text-align: center;

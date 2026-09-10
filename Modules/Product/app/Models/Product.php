@@ -263,7 +263,7 @@ class Product extends Model
 
         // Capa 3: fallback Levenshtein solo si las capas 1+2 no matchearon
         // nada Y el tenant lo tiene habilitado (search.fuzzy_enabled;
-        // configurable por AppSettings: LWM prefiere velocidad sin typos,
+        // configurable por AppSettings: el tenant de referencia prefiere velocidad sin typos,
         // el template lo conserva encendido). exists() en vez de count():
         // con LIKE '%...%' sin indice, el count barria la tabla completa
         // en CADA busqueda; exists() corta en la primera fila.

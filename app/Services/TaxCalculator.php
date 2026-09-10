@@ -11,7 +11,7 @@ use Modules\AppConfig\Services\AppSettingResolver;
  * Centralizing the calculation lets a tenant flip between two capture modes
  * via the AppSetting `pricing.prices_include_tax` (group `pricing`):
  *
- *   - false (default, B2B like LWM): captured prices are NET. Tax is ADDED
+ *   - false (default, B2B): captured prices are NET. Tax is ADDED
  *     on top. This is the historical, already-correct behavior.
  *   - true (B2C): captured prices are FINAL (tax included). The tax is broken
  *     OUT of the price: net = price / (1 + rate), tax = price - net. The total

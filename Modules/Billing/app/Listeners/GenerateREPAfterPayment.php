@@ -15,7 +15,7 @@ use Modules\Finance\Events\ARPaymentApplied;
  * guards (PUE / not timbrada / idempotency), so this listener is a thin adapter.
  *
  * ShouldQueue: on QUEUE=sync (apimb demo) it runs inline; on QUEUE=database
- * (LWM/staging) it requires the queue worker (hallazgo H1).
+ * (produccion/staging) it requires the queue worker (hallazgo H1).
  */
 class GenerateREPAfterPayment implements ShouldQueue
 {
