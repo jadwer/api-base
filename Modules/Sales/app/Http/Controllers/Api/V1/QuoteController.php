@@ -205,9 +205,15 @@ class QuoteController extends Controller
             abort(403, 'No tiene permisos para aceptar cotizaciones');
         }
 
-        if ($quote->status !== 'sent') {
+        // El vendedor (quotes.update) puede aceptar desde borrador: la
+        // aceptacion suele llegar por telefono/mostrador y el envio por
+        // correo NO es prerequisito del ciclo (decision 2026-09-10).
+        // El cliente del portal solo acepta cotizaciones enviadas.
+        $acceptable = Gate::allows('quotes.update') ? ['draft', 'sent'] : ['sent'];
+
+        if (!in_array($quote->status, $acceptable, true)) {
             return response()->json([
-                'error' => 'Only sent quotes can be accepted'
+                'error' => 'This quote cannot be accepted in its current status'
             ], 400);
         }
 

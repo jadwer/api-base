@@ -265,7 +265,11 @@ class Quote extends Model
 
     public function markAsAccepted(): bool
     {
-        if ($this->status !== 'sent') {
+        // draft tambien es aceptable: el vendedor registra aceptaciones
+        // telefonicas sin pasar por el envio (decision 2026-09-10). El
+        // control de QUIEN puede aceptar que estado vive en el
+        // controller (cliente del portal: solo sent).
+        if (! in_array($this->status, ['draft', 'sent'], true)) {
             return false;
         }
 

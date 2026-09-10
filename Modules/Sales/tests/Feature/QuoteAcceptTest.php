@@ -59,8 +59,11 @@ class QuoteAcceptTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_cannot_accept_draft_quote(): void
+    public function test_vendedor_puede_aceptar_borrador_por_aceptacion_telefonica(): void
     {
+        // Decision 2026-09-10: el envio por correo NO es prerequisito
+        // del ciclo; el vendedor registra la aceptacion recibida por
+        // telefono o mostrador directamente desde el borrador.
         $admin = $this->getAdminUser();
 
         $contact = Contact::factory()->customer()->create();
@@ -72,10 +75,51 @@ class QuoteAcceptTest extends TestCase
         $response = $this->actingAs($admin, 'sanctum')
             ->postJson("/api/v1/quotes/{$quote->id}/accept");
 
+        $response->assertOk();
+        $this->assertEquals('accepted', $response->json('data.attributes.status'));
+    }
+
+    public function test_cliente_del_portal_no_puede_aceptar_un_borrador(): void
+    {
+        // El borrador sigue siendo del vendedor: el cliente solo acepta
+        // cotizaciones que le fueron enviadas.
+        $customer = $this->getCustomerUser();
+
+        $contact = Contact::factory()->customer()->create([
+            'email' => $customer->email,
+        ]);
+        $quote = Quote::factory()->create([
+            'contact_id' => $contact->id,
+            'status' => 'draft',
+        ]);
+
+        $response = $this->actingAs($customer, 'sanctum')
+            ->postJson("/api/v1/quotes/{$quote->id}/accept");
+
         $response->assertStatus(400);
         $response->assertJson([
-            'error' => 'Only sent quotes can be accepted',
+            'error' => 'This quote cannot be accepted in its current status',
         ]);
+    }
+
+    public function test_cliente_del_portal_si_puede_aceptar_una_enviada(): void
+    {
+        $customer = $this->getCustomerUser();
+
+        $contact = Contact::factory()->customer()->create([
+            'email' => $customer->email,
+        ]);
+        $quote = Quote::factory()->create([
+            'contact_id' => $contact->id,
+            'status' => 'sent',
+            'sent_at' => now(),
+        ]);
+
+        $response = $this->actingAs($customer, 'sanctum')
+            ->postJson("/api/v1/quotes/{$quote->id}/accept");
+
+        $response->assertOk();
+        $this->assertEquals('accepted', $response->json('data.attributes.status'));
     }
 
     public function test_cannot_accept_already_accepted_quote(): void
