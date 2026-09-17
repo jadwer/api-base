@@ -28,6 +28,8 @@ class ProductSchema extends Schema
             ID::make(),
             Str::make('name')->sortable(),
             Str::make('sku')->sortable(),
+            // Solo lectura: lo genera ProductObserver (SEO Bloque 1b).
+            Str::make('slug')->readOnly()->sortable(),
             Str::make('description'),
             Str::make('fullDescription', 'full_description'),
             Number::make('price')->sortable(),

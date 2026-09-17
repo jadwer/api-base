@@ -4,8 +4,11 @@ namespace Modules\Product\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Product\Console\Commands\BackfillProductSlugs;
+use Modules\Product\Models\Product;
 use Modules\Product\Models\ProductImage;
 use Modules\Product\Observers\ProductImageObserver;
+use Modules\Product\Observers\ProductObserver;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -31,6 +34,7 @@ class ProductServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(module_path($this->name, 'Database/migrations'));
 
         ProductImage::observe(ProductImageObserver::class);
+        Product::observe(ProductObserver::class);
     }
 
     /**
@@ -47,7 +51,9 @@ class ProductServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        // $this->commands([]);
+        $this->commands([
+            BackfillProductSlugs::class,
+        ]);
     }
 
     /**

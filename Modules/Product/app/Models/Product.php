@@ -35,6 +35,8 @@ class Product extends Model
     protected $fillable = [
         'name',
         'sku',
+        // Generado por ProductObserver (SEO Bloque 1b); estable, no se edita por API.
+        'slug',
         'description',
         'full_description',
         'price',

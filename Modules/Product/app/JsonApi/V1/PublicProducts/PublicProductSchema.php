@@ -41,6 +41,8 @@ class PublicProductSchema extends Schema
             ID::make(),
             Str::make('name')->sortable(),
             Str::make('sku')->sortable(),
+            // URL legible /productos/<slug> (SEO Bloque 1b); lo genera el backend.
+            Str::make('slug')->readOnly()->sortable(),
             Str::make('description'),
             Str::make('fullDescription', 'full_description'),
             Number::make('price')->sortable(),
@@ -81,6 +83,8 @@ class PublicProductSchema extends Schema
             WhereIdIn::make($this),
             Where::make('name'),
             Where::make('sku'),
+            // Resolver la ficha por slug: /productos/<slug> -> filter[slug]=<slug>
+            Where::make('slug'),
             Where::make('search_name', 'name')->deserializeUsing(
                 static fn($value) => "%{$value}%"
             )->using('like'),
