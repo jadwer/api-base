@@ -57,7 +57,12 @@ class APInvoiceUpdateTest extends TestCase
     public function test_admin_can_partially_update_APInvoice(): void
     {
         $admin = $this->getAdminUser();
+        // status draft explicito: el factory lo elige al azar entre
+        // draft/posted/void y el guard de inmutabilidad del Paquete B
+        // rechaza editar invoiceNumber en posted/void (422). Sin esto el
+        // test falla ~2 de cada 3 corridas.
         $aPInvoice = APInvoice::factory()->create([
+            'status' => 'draft',
             'invoice_number' => 'Original Name',
             'notes' => 'Original Description'
         ]);
