@@ -26,6 +26,12 @@ final class ProductSlug
      */
     public static function build(?string $name, ?string $brand = null, ?string $sku = null): string
     {
+        $name = is_string($name) ? trim($name) : '';
+        // Muchos nombres de LWM ya traen la marca ("... Repair Hach") o el sku
+        // ("758IIOEM-123-4A" con sku "MY-758IIOEM-123-4A"): no repetir tokens.
+        $brand = self::absentIn($name, $brand);
+        $sku = self::absentIn($name, $sku);
+
         $parts = array_filter([$name, $brand, $sku], static fn ($v) => is_string($v) && trim($v) !== '');
         $slug = Str::slug(implode(' ', $parts), '-', 'es');
 
@@ -76,6 +82,24 @@ final class ProductSlug
         $taken[$candidate] = true;
 
         return $candidate;
+    }
+
+    /** Devuelve $token solo si NO aparece ya dentro de $haystack (sin distinguir mayusculas). */
+    private static function absentIn(string $haystack, ?string $token): ?string
+    {
+        if (!is_string($token) || trim($token) === '') {
+            return null;
+        }
+        $token = trim($token);
+        if ($haystack !== '' && mb_stripos($haystack, $token) !== false) {
+            return null;
+        }
+        // Tambien cubre el caso en que el sku contiene al nombre ("MY-758..." vs "758...")
+        if ($haystack !== '' && mb_stripos($token, $haystack) !== false) {
+            return $token === $haystack ? null : $token;
+        }
+
+        return $token;
     }
 
     private static function exists(string $slug, ?int $ignoreId): bool

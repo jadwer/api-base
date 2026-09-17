@@ -3,6 +3,7 @@
 namespace Modules\Product\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Modules\Product\Models\Brand;
 use Modules\Product\Models\Category;
 use Modules\Product\Models\Product;
@@ -27,6 +28,21 @@ class ProductSlugTest extends TestCase
         $this->assertSame('acido-clorhidrico-fermont', ProductSlug::build('Ácido Clorhídrico', 'Fermont', null));
         $this->assertSame('producto', ProductSlug::build('***', null, null));
         $this->assertSame('producto', ProductSlug::build(null));
+    }
+
+    public function test_build_does_not_repeat_brand_or_sku_already_in_the_name(): void
+    {
+        // Marca ya en el nombre (caso real: ":Parts Service Repair Hach")
+        $this->assertSame(
+            'jumper-2-pos-lo-pro-parts-service-repair-hach-ha-001215',
+            ProductSlug::build('JUMPER, 2 POS. LO PRO :Parts Service Repair Hach', 'Hach', 'HA-001215')
+        );
+        // SKU que contiene al nombre (caso real: "758IIOEM-123-4A" / "MY-758IIOEM-123-4A")
+        $this->assertSame('758iioem-123-4a-marca-my-758iioem-123-4a', ProductSlug::build('758IIOEM-123-4A', 'Marca', 'MY-758IIOEM-123-4A'));
+        // SKU identico al nombre: una sola vez
+        $this->assertSame('abc-123-marca', ProductSlug::build('ABC-123', 'Marca', 'abc-123'));
+        // Sin coincidencias: todo
+        $this->assertSame('metanol-hplc-jt-baker-9093-03', ProductSlug::build('Metanol HPLC', 'J.T. Baker', '9093-03'));
     }
 
     public function test_build_truncates_without_cutting_a_word(): void
@@ -79,7 +95,7 @@ class ProductSlugTest extends TestCase
     public function test_observer_fills_missing_slug_on_update(): void
     {
         $product = $this->makeProduct(['name' => 'Sin slug', 'sku' => 'SS-1']);
-        \DB::table('products')->where('id', $product->id)->update(['slug' => null]);
+        DB::table('products')->where('id', $product->id)->update(['slug' => null]);
 
         $product->fresh()->update(['price' => 10]);
 
