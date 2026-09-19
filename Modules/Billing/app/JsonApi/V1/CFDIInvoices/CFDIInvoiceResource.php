@@ -53,6 +53,7 @@ class CFDIInvoiceResource extends JsonApiResource
             'companySettingId' => $this->company_setting_id,
             'contactId' => $this->contact_id,
             'arInvoiceId' => $this->ar_invoice_id,
+            'branchId' => $this->branch_id,
             'fechaPago' => $this->fecha_pago,
             'montoPago' => $this->monto_pago,
             'formaPagoP' => $this->forma_pago_p,
@@ -77,6 +78,7 @@ class CFDIInvoiceResource extends JsonApiResource
             $this->relation('companySetting'),
             $this->relation('contact'),
             $this->relation('arInvoice'),
+            $this->relation('branch'),
             $this->relation('items'),
         ];
     }

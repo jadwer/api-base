@@ -72,6 +72,9 @@ return [
         'users' => ['usuarios', 'usuario', 'usuarios', 'un'],
         'profile' => ['usuarios', 'perfil propio', 'perfiles', 'un'],
 
+        // Sucursales (multi-sucursal 2026-09)
+        'branches' => ['configuracion', 'sucursal', 'sucursales', 'una'],
+
         // Roles y permisos
         'roles' => ['roles-permisos', 'rol', 'roles', 'un'],
         'permissions' => ['roles-permisos', 'permiso', 'permisos', 'un'],

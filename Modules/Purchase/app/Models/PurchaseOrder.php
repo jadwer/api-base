@@ -44,6 +44,13 @@ class PurchaseOrder extends Model
      */
     protected $guarded = [];
 
+    /** Sucursal de origen (multi-sucursal 2026-09). */
+    public function branch(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\Modules\Branch\Models\Branch::class);
+    }
+
+
     /**
      * Get the attributes that should be cast.
      *
@@ -85,6 +92,10 @@ class PurchaseOrder extends Model
 
         // PU-001: Automatically set approval status on creation
         static::creating(function ($order) {
+            // Multi-sucursal (2026-09): sucursal del usuario autenticado o la Matriz.
+            if (empty($order->branch_id)) {
+                $order->branch_id = \Modules\Branch\Models\Branch::defaultId();
+            }
             // Auto-generate order number if not set
             if (empty($order->order_number)) {
                 try {

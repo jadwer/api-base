@@ -27,6 +27,8 @@ class UserRequest extends ResourceRequest
                 : ['required', 'string', 'min:8'],
             'status' => ['required', Rule::in(['active', 'inactive', 'banned'])],
             'roles' => JsonApiRule::toMany(),
+            'branch' => ['nullable', JsonApiRule::toOne()],
+            'branches' => JsonApiRule::toMany(),
         ];
     }
 

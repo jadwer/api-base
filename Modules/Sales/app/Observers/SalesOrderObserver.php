@@ -31,6 +31,14 @@ class SalesOrderObserver
      * Se deja el observer registrado pero sin efecto de facturacion, por si se quiere
      * enganchar aqui logica futura ligada al ciclo de vida del modelo (no de dominio).
      */
+    /** Multi-sucursal 2026-09: sucursal del usuario autenticado o la Matriz. */
+    public function creating(SalesOrder $salesOrder): void
+    {
+        if (empty($salesOrder->branch_id)) {
+            $salesOrder->branch_id = \Modules\Branch\Models\Branch::defaultId();
+        }
+    }
+
     public function updated(SalesOrder $salesOrder): void
     {
         // Intencionalmente vacio. La facturacion en entrega la maneja

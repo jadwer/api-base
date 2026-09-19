@@ -28,6 +28,7 @@ class PurchaseOrderRequest extends ResourceRequest
                 : ['sometimes', 'string'],
             'totalAmount' => [$creating ? 'required' : 'sometimes', 'numeric', 'min:0'],
             'warehouseId' => ['nullable', 'integer', 'exists:warehouses,id'],
+            'branchId' => ['nullable', 'integer', 'exists:branches,id'],
             'approvalStatus' => ['sometimes', 'nullable', 'string'],
             'invoicingStatus' => ['sometimes', 'nullable', 'string'],
             'financialStatus' => ['sometimes', 'nullable', 'string'],
@@ -36,6 +37,7 @@ class PurchaseOrderRequest extends ResourceRequest
             // Validaciones para relaciones
             'contact' => [$creating ? 'required' : 'sometimes', JsonApiRule::toOne()],
             'warehouse' => ['nullable', JsonApiRule::toOne()],
+            'branch' => ['nullable', JsonApiRule::toOne()],
         ];
     }
 }

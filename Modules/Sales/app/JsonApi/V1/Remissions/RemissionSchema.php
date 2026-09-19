@@ -43,11 +43,13 @@ class RemissionSchema extends Schema
             Number::make('salesOrderId', 'sales_order_id'),
             Number::make('shipmentId', 'shipment_id'),
             Number::make('warehouseId', 'warehouse_id'),
+            Number::make('branchId', 'branch_id'),
 
             // Relations
             BelongsTo::make('salesOrder')->type('sales-orders'),
             BelongsTo::make('shipment')->type('shipments'),
             BelongsTo::make('warehouse')->type('warehouses'),
+            BelongsTo::make('branch')->type('branches'),
 
             // Basic fields
             Str::make('remissionNumber', 'remission_number')->sortable(),
@@ -96,6 +98,7 @@ class RemissionSchema extends Schema
             Where::make('remission_number'),
             Where::make('salesOrder', 'sales_order_id'),
             Where::make('warehouse', 'warehouse_id'),
+            Where::make('branch', 'branch_id'),
             Where::make('remission_date'),
             WhereIn::make('status'),
         ];
@@ -111,6 +114,7 @@ class RemissionSchema extends Schema
             'salesOrder.contact',
             'shipment',
             'warehouse',
+            'branch',
             'items',
             'items.product',
         ];

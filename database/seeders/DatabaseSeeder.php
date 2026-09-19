@@ -61,6 +61,7 @@ class DatabaseSeeder extends Seeder
             // Phase 5: catalogo de permisos (labels legibles). SIEMPRE al final:
             // necesita que TODOS los modulos ya hayan sembrado sus permisos.
             \Modules\PermissionManager\Database\Seeders\PermissionCatalogSeeder::class,
+            \Modules\Branch\Database\Seeders\BranchDatabaseSeeder::class,
         ]);
     }
 }

@@ -27,6 +27,7 @@ class CFDIInvoiceRequest extends ResourceRequest
                 'integer',
                 'exists:ar_invoices,id',
             ],
+            'branchId' => ['sometimes', 'nullable', 'integer', 'exists:branches,id'],
             'series' => [
                 $creating ? 'required' : 'sometimes',
                 'string',

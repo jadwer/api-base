@@ -53,6 +53,7 @@ class User extends Authenticatable
         'password',
         'status', // Campo del módulo User
         'commission_pct', // WS5 Commissions: % default del vendedor
+        'branch_id', // Multi-sucursal 2026-09: sucursal principal
     ];
 
     protected $hidden = [
@@ -68,6 +69,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'commission_pct' => 'float',
+        'branch_id' => 'integer',
     ];
 
     /**
@@ -101,6 +103,39 @@ class User extends Authenticatable
     public function scopeRoleFilter($query, string $value)
     {
         return $query->whereHas('roles', fn ($q) => $q->where('name', $value));
+    }
+
+    /**
+     * Multi-sucursal (2026-09, referencia Bind): sucursal principal del usuario.
+     * Null solo en datos anteriores a la migracion (el backfill los deja en Matriz).
+     */
+    public function branch(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\Modules\Branch\Models\Branch::class);
+    }
+
+    /** Sucursales con acceso (pivot branch_user), ademas de la principal. */
+    public function branches(): BelongsToMany
+    {
+        return $this->belongsToMany(\Modules\Branch\Models\Branch::class, 'branch_user')->withTimestamps();
+    }
+
+    /**
+     * Ids de sucursal que el usuario puede ver: principal + con acceso.
+     * god/admin ven todo (devuelve null = sin restriccion).
+     */
+    public function accessibleBranchIds(): ?array
+    {
+        if ($this->hasAnyRole(['god', 'admin'])) {
+            return null;
+        }
+
+        $ids = $this->branches()->pluck('branches.id')->all();
+        if ($this->branch_id) {
+            $ids[] = (int) $this->branch_id;
+        }
+
+        return array_values(array_unique($ids));
     }
 
     public function getActivitylogOptions(): LogOptions

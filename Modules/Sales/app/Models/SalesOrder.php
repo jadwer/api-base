@@ -56,6 +56,12 @@ class SalesOrder extends Model
             ->dontSubmitEmptyLogs();
     }
 
+    /** Sucursal de origen (multi-sucursal 2026-09). */
+    public function branch(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\Modules\Branch\Models\Branch::class);
+    }
+
     protected $fillable = [
         'contact_id', 'assigned_to', 'quote_id', 'order_number', 'status', 'order_date',
         'approved_at', 'delivered_at', 'subtotal', 'tax_amount', 'total_amount',
@@ -65,11 +71,13 @@ class SalesOrder extends Model
         'ar_invoice_id', 'invoicing_status', 'financial_status', 'invoicing_notes',
         'order_source', 'checkout_session_id',
         'payment_status', 'paid_at',
+        'branch_id',
     ];
 
     protected $casts = [
         'id' => 'integer',
         'contact_id' => 'integer',
+        'branch_id' => 'integer',
         'assigned_to' => 'integer',
         'quote_id' => 'integer',
         'order_date' => 'date',

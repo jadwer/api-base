@@ -67,6 +67,7 @@ use Modules\Reports\JsonApi\V1\SalesByCustomerReports\SalesByCustomerReportSchem
 use Modules\Reports\JsonApi\V1\SalesByProductReports\SalesByProductReportSchema;
 use Modules\Reports\JsonApi\V1\PurchaseBySupplierReports\PurchaseBySupplierReportSchema;
 use Modules\Reports\JsonApi\V1\PurchaseByProductReports\PurchaseByProductReportSchema;
+use Modules\Branch\JsonApi\V1\Branches\BranchSchema;
 
 class Server extends BaseServer
 {
@@ -236,6 +237,10 @@ class Server extends BaseServer
             // Commissions Module (WS5)
             \Modules\Commissions\JsonApi\V1\Commissions\CommissionSchema::class,
 
+
+            // Branch Module
+            BranchSchema::class,
+
         ];
 
         return $schemas;
@@ -373,6 +378,9 @@ class Server extends BaseServer
 
             // Commissions Module (WS5)
             'commissions' => \Modules\Commissions\JsonApi\V1\Commissions\CommissionAuthorizer::class,
+            
+            // Branch Module
+            'branches' => \Modules\Branch\JsonApi\V1\Branches\BranchAuthorizer::class,
         ];
 
         return $authorizers;

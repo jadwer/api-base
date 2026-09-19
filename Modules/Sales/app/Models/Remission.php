@@ -45,6 +45,7 @@ class Remission extends Model
         'delivered_by', 'received_by', 'delivery_notes',
         'shipping_address', 'pdf_path', 'pdf_generated_at',
         'internal_notes', 'metadata', 'delivered_at', 'printed_at',
+        'branch_id',
     ];
 
     protected $casts = [
@@ -52,6 +53,7 @@ class Remission extends Model
         'sales_order_id' => 'integer',
         'shipment_id' => 'integer',
         'warehouse_id' => 'integer',
+        'branch_id' => 'integer',
         'remission_date' => 'date',
         'delivery_date' => 'date',
         'delivered_at' => 'datetime',
@@ -257,6 +259,12 @@ class Remission extends Model
         return \Modules\Sales\Database\Factories\RemissionFactory::new();
     }
 
+    /** Sucursal de origen (multi-sucursal 2026-09). */
+    public function branch(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\Modules\Branch\Models\Branch::class);
+    }
+
     // Boot
 
     protected static function booted()
@@ -267,6 +275,10 @@ class Remission extends Model
             }
             if (empty($remission->remission_date)) {
                 $remission->remission_date = now();
+            }
+            // Multi-sucursal (2026-09): sucursal del usuario autenticado o la Matriz.
+            if (empty($remission->branch_id)) {
+                $remission->branch_id = \Modules\Branch\Models\Branch::defaultId();
             }
         });
     }

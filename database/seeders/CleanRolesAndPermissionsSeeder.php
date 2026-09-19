@@ -93,6 +93,7 @@ class CleanRolesAndPermissionsSeeder extends Seeder
             \Modules\Billing\Database\Seeders\PermissionsSeeder::class,
             \Modules\SystemHealth\Database\Seeders\SystemHealthPermissionsSeeder::class,
             \Modules\Commissions\Database\Seeders\CommissionsPermissionSeeder::class,
+            \Modules\Branch\Database\Seeders\BranchPermissionSeeder::class,
         ]);
     }
 

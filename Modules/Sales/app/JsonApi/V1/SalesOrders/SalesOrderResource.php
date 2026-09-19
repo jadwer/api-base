@@ -14,6 +14,7 @@ class SalesOrderResource extends JsonApiResource
         return [
             // Foreign key - camelCase for JSON:API consistency
             'contactId' => $this->contact_id,
+            'branchId' => $this->branch_id,
 
             // Order fields - camelCase for JSON:API consistency
             'orderNumber' => $this->order_number,
@@ -58,6 +59,7 @@ class SalesOrderResource extends JsonApiResource
     {
         return [
             'contact' => $this->relation('contact'),
+            'branch' => $this->relation('branch'),
             'items' => $this->relation('items'),
         ];
     }

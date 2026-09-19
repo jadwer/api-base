@@ -22,6 +22,7 @@ class PositionResource extends JsonApiResource
             'minSalary' => $this->resource->min_salary,
             'maxSalary' => $this->resource->max_salary,
             'isActive' => $this->resource->is_active,
+            'defaultRole' => $this->resource->default_role,
             'createdAt' => $this->resource->created_at,
             'updatedAt' => $this->resource->updated_at,
         ];

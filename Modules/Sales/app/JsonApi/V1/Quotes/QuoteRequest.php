@@ -20,6 +20,8 @@ class QuoteRequest extends ResourceRequest
                 ? ['required', 'exists:contacts,id']
                 : ['sometimes', 'exists:contacts,id'],
             'shoppingCartId' => ['nullable', 'exists:shopping_carts,id'],
+            'branchId' => ['nullable', 'integer', 'exists:branches,id'],
+            'branch' => ['nullable', \LaravelJsonApi\Validation\Rule::toOne()],
             'quoteNumber' => [
                 $isCreating ? 'nullable' : 'sometimes', // Auto-generated if not provided
                 'string',

@@ -33,6 +33,7 @@ class TestDatabaseSeeder extends Seeder
         'SystemHealth',
         'Commissions',
         'SatCatalogs',
+        'Branch',
     ];
 
     public function run(): void

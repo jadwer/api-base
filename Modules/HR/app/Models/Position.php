@@ -20,7 +20,7 @@ class Position extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['title', 'description', 'department_id', 'level', 'min_salary', 'max_salary', 'is_active'])
+            ->logOnly(['title', 'description', 'department_id', 'level', 'min_salary', 'max_salary', 'is_active', 'default_role'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
@@ -33,6 +33,7 @@ class Position extends Model
         'min_salary',
         'max_salary',
         'is_active',
+        'default_role', // rol Spatie por defecto al ligar empleado con usuario (2026-09)
     ];
 
     protected $casts = [

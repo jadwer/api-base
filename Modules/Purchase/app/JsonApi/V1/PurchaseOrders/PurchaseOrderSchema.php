@@ -33,6 +33,7 @@ class PurchaseOrderSchema extends Schema
             Str::make('orderNumber', 'order_number'),
             Number::make('contactId', 'contact_id'),
             Number::make('warehouseId', 'warehouse_id'),
+            Number::make('branchId', 'branch_id'),
             DateTime::make('orderDate', 'order_date')
                 ->sortable(),
             // Refactor ciclo (Patron 1): status NO editable por PATCH; transiciones por
@@ -61,6 +62,7 @@ class PurchaseOrderSchema extends Schema
 
             BelongsTo::make('contact')->type('contacts'),
             BelongsTo::make('warehouse')->type('warehouses'),
+            BelongsTo::make('branch')->type('branches'),
             HasMany::make('purchaseOrderItems')
                 ->type('purchase-order-items'),
         ];
@@ -76,6 +78,7 @@ class PurchaseOrderSchema extends Schema
             Where::make('status'),
             Where::make('contact', 'contact_id'),
             Where::make('warehouse', 'warehouse_id'),
+            Where::make('branch', 'branch_id'),
             // Nota cliente #11: compras "por surtir" (status pending+approved)
             Scope::make('pending_receipt', 'pendingReceipt'),
             // Paquete A (auditoria 10 pasos): buscador del listado (order_number,
@@ -101,6 +104,7 @@ class PurchaseOrderSchema extends Schema
         return [
             'contact',
             'warehouse',
+            'branch',
             'purchaseOrderItems',
         ];
     }

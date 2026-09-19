@@ -41,6 +41,7 @@ class PositionSchema extends Schema
             Number::make('minSalary', 'min_salary')->sortable(),
             Number::make('maxSalary', 'max_salary')->sortable(),
             Boolean::make('isActive', 'is_active')->sortable(),
+            Str::make('defaultRole', 'default_role'),
 
             // Relationships
             BelongsTo::make('department')->type('departments'),

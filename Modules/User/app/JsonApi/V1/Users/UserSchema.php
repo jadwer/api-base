@@ -2,6 +2,7 @@
 
 namespace Modules\User\JsonApi\V1\Users;
 
+use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
 use LaravelJsonApi\Eloquent\Schema;
 use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Str;
@@ -31,6 +32,9 @@ class UserSchema extends Schema
                     return $model->getRoleNames()->first();
                 }),
             BelongsToMany::make('roles')->type('roles'),
+            // Multi-sucursal 2026-09: principal + con acceso
+            BelongsTo::make('branch')->type('branches'),
+            BelongsToMany::make('branches')->type('branches'),
             Str::make('password')->hidden(),
             Str::make('password_confirmation')->hidden(),
             DateTime::make('email_verified_at')->readOnly(),
@@ -54,6 +58,7 @@ class UserSchema extends Schema
             Scope::make('search', 'searchFilter'),
             Scope::make('role', 'roleFilter'),
             Where::make('status'),
+            Where::make('branch', 'branch_id'),
         ];
     }
 
@@ -71,6 +76,8 @@ class UserSchema extends Schema
     {
         return [
             'roles',
+            'branch',
+            'branches',
         ];
     }
 

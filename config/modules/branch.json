@@ -1,0 +1,21 @@
+{
+  "module": "Branch",
+  "entities": {
+    "Branch": {
+      "table": "branches",
+      "fields": [
+        { "name": "name", "type": "string", "rules": "required|string|max:100", "sortable": true, "filterable": true },
+        { "name": "code", "type": "string", "rules": "required|string|max:20|unique", "sortable": true, "filterable": true },
+        { "name": "address", "type": "text", "rules": "nullable|string" },
+        { "name": "city", "type": "string", "rules": "nullable|string|max:100", "sortable": true, "filterable": true },
+        { "name": "state", "type": "string", "rules": "nullable|string|max:100", "filterable": true },
+        { "name": "postal_code", "type": "string", "rules": "nullable|string|max:10" },
+        { "name": "phone", "type": "string", "rules": "nullable|string|max:30" },
+        { "name": "email", "type": "string", "rules": "nullable|email|max:150" },
+        { "name": "is_active", "type": "boolean", "rules": "nullable|boolean", "default": true, "sortable": true, "filterable": true },
+        { "name": "is_main", "type": "boolean", "rules": "nullable|boolean", "default": false, "filterable": true }
+      ],
+      "relationships": []
+    }
+  }
+}

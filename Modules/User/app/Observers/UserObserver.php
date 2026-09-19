@@ -6,6 +6,14 @@ use Modules\User\Models\User;
 
 class UserObserver
 {
+    /** Multi-sucursal 2026-09: sin sucursal explicita, el usuario nace en la Matriz. */
+    public function creating(User $user): void
+    {
+        if (empty($user->branch_id)) {
+            $user->branch_id = \Modules\Branch\Models\Branch::mainId();
+        }
+    }
+
     public function created(User $user): void
     {
         // Si hay un campo 'role' temporal, asignarlo después de la creación

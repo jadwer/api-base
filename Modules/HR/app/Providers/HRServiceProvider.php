@@ -27,6 +27,7 @@ class HRServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'Database/migrations'));
+        \Modules\HR\Models\Employee::observe(\Modules\HR\Observers\EmployeeObserver::class);
     }
 
     /**

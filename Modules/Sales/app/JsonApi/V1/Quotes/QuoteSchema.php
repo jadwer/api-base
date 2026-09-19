@@ -51,6 +51,9 @@ class QuoteSchema extends Schema
             BelongsTo::make('shoppingCart')->type('shopping-carts'),
             BelongsTo::make('salesOrder')->type('sales-orders'),
             BelongsTo::make('purchaseOrder')->type('purchase-orders'),
+            // Multi-sucursal 2026-09
+            Number::make('branchId', 'branch_id'),
+            BelongsTo::make('branch')->type('branches'),
 
             // Basic fields
             Str::make('quoteNumber', 'quote_number')->sortable(),
@@ -109,6 +112,7 @@ class QuoteSchema extends Schema
             Where::make('quote_number'),
             Where::make('status'),
             Where::make('contact', 'contact_id'),
+            Where::make('branch', 'branch_id'),
             Where::make('quote_date'),
             Where::make('valid_until'),
             // Customer Portal filter - filter by contact email
@@ -126,6 +130,7 @@ class QuoteSchema extends Schema
             'shoppingCart',
             'salesOrder',
             'purchaseOrder',
+            'branch',
             'items',
             'items.product',
             'items.product.stock',

@@ -43,11 +43,13 @@ class CFDIInvoiceSchema extends Schema
             Number::make('companySettingId', 'company_setting_id'),
             Number::make('contactId', 'contact_id'),
             Number::make('arInvoiceId', 'ar_invoice_id'),
+            Number::make('branchId', 'branch_id'),
 
             // Relations
             BelongsTo::make('companySetting')->type('company-settings'),
             BelongsTo::make('contact')->type('contacts'),
             BelongsTo::make('arInvoice')->type('ar-invoices'),
+            BelongsTo::make('branch')->type('branches'),
             HasMany::make('items')->type('cfdi-items')->readOnly(),
 
             // CFDI Identification
@@ -143,6 +145,7 @@ class CFDIInvoiceSchema extends Schema
             Where::make('companySettingId', 'company_setting_id'),
             Where::make('contactId', 'contact_id'),
             Where::make('arInvoiceId', 'ar_invoice_id'),
+            Where::make('branchId', 'branch_id'),
             Scope::make('search', 'forSearch'),
             Scope::make('dateFrom', 'dateFrom'),
             Scope::make('dateTo', 'dateTo'),
@@ -160,6 +163,7 @@ class CFDIInvoiceSchema extends Schema
             'companySetting',
             'contact',
             'arInvoice',
+            'branch',
             'items',
         ];
     }

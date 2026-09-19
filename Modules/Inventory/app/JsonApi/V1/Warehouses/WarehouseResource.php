@@ -38,6 +38,7 @@ class WarehouseResource extends JsonApiResource
             'locations' => $this->relation('locations'),
             'stock' => $this->relation('stock'),
             'productBatches' => $this->relation('productBatches'),
+            'branch' => $this->relation('branch'),
         ];
     }
 }

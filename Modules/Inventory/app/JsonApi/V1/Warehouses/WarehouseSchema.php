@@ -2,6 +2,7 @@
 
 namespace Modules\Inventory\JsonApi\V1\Warehouses;
 
+use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
 use LaravelJsonApi\Eloquent\Schema;
 use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Str;
@@ -65,6 +66,7 @@ class WarehouseSchema extends Schema
             HasMany::make('locations', 'locations')->type('warehouse-locations'),
             HasMany::make('stock', 'stock')->type('stocks'),
             HasMany::make('productBatches', 'productBatches')->type('product-batches'),
+            BelongsTo::make('branch')->type('branches'),
         ];
     }
 
@@ -86,6 +88,7 @@ class WarehouseSchema extends Schema
             Where::make('warehouse_type'),
             Where::make('is_active')->asBoolean(),
             WhereIn::make('warehouse_type'),
+            Where::make('branch', 'branch_id'),
         ];
     }
 
@@ -98,6 +101,7 @@ class WarehouseSchema extends Schema
             'locations',
             'stock',
             'productBatches',
+            'branch',
         ];
     }
 

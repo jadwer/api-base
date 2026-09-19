@@ -44,6 +44,7 @@ class WarehouseRequest extends ResourceRequest
             'operatingHours' => ['nullable', 'array'],
             'metadata' => ['nullable', 'array'],
             'isActive' => ['sometimes', 'boolean'],
+            'branch' => ['nullable', \LaravelJsonApi\Validation\Rule::toOne()],
         ];
     }
 

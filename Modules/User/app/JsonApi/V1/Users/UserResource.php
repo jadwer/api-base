@@ -24,6 +24,8 @@ class UserResource extends JsonApiResource
     {
         return [
             'roles' => $this->relation('roles'),
+            'branch' => $this->relation('branch'),
+            'branches' => $this->relation('branches'),
         ];
     }
 }

@@ -19,6 +19,7 @@ class RemissionRequest extends ResourceRequest
             'salesOrderId' => ['required', 'integer', 'exists:sales_orders,id'],
             'shipmentId' => ['nullable', 'integer', 'exists:shipments,id'],
             'warehouseId' => ['nullable', 'integer', 'exists:warehouses,id'],
+            'branchId' => ['nullable', 'integer', 'exists:branches,id'],
             'remissionNumber' => ['sometimes', 'string', 'max:50'],
             'status' => ['sometimes', Rule::in(['draft', 'printed', 'delivered', 'cancelled'])],
             'remissionDate' => ['sometimes', 'date'],
@@ -40,6 +41,7 @@ class RemissionRequest extends ResourceRequest
         return [
             'shipmentId' => ['nullable', 'integer', 'exists:shipments,id'],
             'warehouseId' => ['nullable', 'integer', 'exists:warehouses,id'],
+            'branchId' => ['nullable', 'integer', 'exists:branches,id'],
             // Refactor ciclo (Patron 1): status se acepta pero el Schema lo marca
             // readOnlyOnUpdate -> se IGNORA en update. Las transiciones van por los
             // endpoints print/deliver/cancel (deliver ahora descuenta stock real).

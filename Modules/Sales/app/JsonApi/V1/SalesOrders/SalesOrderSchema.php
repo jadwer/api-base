@@ -47,6 +47,9 @@ class SalesOrderSchema extends Schema
             // Relations
             BelongsTo::make('contact')->type('contacts'),
             BelongsTo::make('quote')->type('quotes'),
+            // Multi-sucursal 2026-09
+            Number::make('branchId', 'branch_id'),
+            BelongsTo::make('branch')->type('branches'),
             
             // Campos básicos - camelCase for JSON:API, mapped to snake_case in DB
             Str::make('orderNumber', 'order_number')->sortable(),
@@ -118,6 +121,7 @@ class SalesOrderSchema extends Schema
             Where::make('status'),
             Where::make('order_type'),
             Where::make('contact', 'contact_id'),
+            Where::make('branch', 'branch_id'),
             Where::make('order_date'),
             Where::make('invoicing_status'),
             Where::make('ar_invoice_id'),
@@ -141,6 +145,7 @@ class SalesOrderSchema extends Schema
         return [
             'contact',
             'quote',
+            'branch',
             'items',
             'items.product',
             // SA-M001: Shipments

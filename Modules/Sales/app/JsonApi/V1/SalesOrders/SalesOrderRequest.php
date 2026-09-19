@@ -35,6 +35,8 @@ class SalesOrderRequest extends ResourceRequest
                 ? ['required', Rule::in(['draft', 'pending', 'confirmed', 'processing', 'shipped', 'delivered', 'completed', 'cancelled', 'returned', 'refunded'])]
                 : ['sometimes', 'string'],
             'orderDate' => [$isCreating ? 'required' : 'sometimes', 'date'],
+            'branchId' => ['nullable', 'integer', 'exists:branches,id'],
+            'branch' => ['nullable', \LaravelJsonApi\Validation\Rule::toOne()],
             'approvedAt' => ['nullable', 'date'],
             'deliveredAt' => ['nullable', 'date'],
             'discountTotal' => ['nullable', 'numeric', 'min:0'],

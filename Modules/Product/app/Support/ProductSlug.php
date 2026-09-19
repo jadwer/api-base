@@ -27,7 +27,7 @@ final class ProductSlug
     public static function build(?string $name, ?string $brand = null, ?string $sku = null): string
     {
         $name = is_string($name) ? trim($name) : '';
-        // Muchos nombres de LWM ya traen la marca ("... Repair Hach") o el sku
+        // Muchos nombres del catalogo ya traen la marca ("... Repair Hach") o el sku
         // ("758IIOEM-123-4A" con sku "MY-758IIOEM-123-4A"): no repetir tokens.
         $brand = self::absentIn($name, $brand);
         $sku = self::absentIn($name, $sku);

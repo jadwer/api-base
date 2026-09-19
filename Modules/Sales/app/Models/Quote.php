@@ -59,7 +59,17 @@ class Quote extends Model
             if (empty($quote->quote_date)) {
                 $quote->quote_date = now();
             }
+            // Multi-sucursal (2026-09): sucursal del usuario autenticado o la Matriz.
+            if (empty($quote->branch_id)) {
+                $quote->branch_id = \Modules\Branch\Models\Branch::defaultId();
+            }
         });
+    }
+
+    /** Sucursal de origen (multi-sucursal 2026-09). */
+    public function branch(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\Modules\Branch\Models\Branch::class);
     }
 
     protected $fillable = [
@@ -70,6 +80,7 @@ class Quote extends Model
         'notes', 'internal_notes', 'terms_and_conditions',
         'shipping_address', 'billing_address', 'metadata',
         'sent_at', 'accepted_at', 'rejected_at', 'converted_at',
+        'branch_id',
     ];
 
     protected $casts = [
@@ -78,6 +89,7 @@ class Quote extends Model
         'shopping_cart_id' => 'integer',
         'sales_order_id' => 'integer',
         'purchase_order_id' => 'integer',
+        'branch_id' => 'integer',
         'quote_date' => 'date',
         'valid_until' => 'date',
         'subtotal_amount' => 'float',

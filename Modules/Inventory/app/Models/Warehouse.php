@@ -69,6 +69,22 @@ class Warehouse extends Model
         'updated_at' => 'datetime',
     ];
 
+    protected static function booted(): void
+    {
+        static::creating(function (Warehouse $warehouse) {
+            // Multi-sucursal (2026-09): sucursal del usuario autenticado o la Matriz.
+            if (empty($warehouse->branch_id)) {
+                $warehouse->branch_id = \Modules\Branch\Models\Branch::defaultId();
+            }
+        });
+    }
+
+    /** Sucursal de origen (multi-sucursal 2026-09). */
+    public function branch(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\Modules\Branch\Models\Branch::class);
+    }
+
     /**
      * Una bodega puede tener muchas ubicaciones internas.
      */

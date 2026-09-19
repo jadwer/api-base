@@ -42,6 +42,12 @@ class PositionRequest extends ResourceRequest
                 'sometimes',
                 'boolean',
             ],
+            'defaultRole' => [
+                'nullable',
+                'string',
+                'max:100',
+                \Illuminate\Validation\Rule::exists('roles', 'name')->where('guard_name', 'api'),
+            ],
             'department' => [
                 'required',
                 JsonApiRule::toOne(),

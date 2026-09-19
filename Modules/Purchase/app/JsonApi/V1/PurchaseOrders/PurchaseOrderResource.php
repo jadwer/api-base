@@ -19,6 +19,7 @@ class PurchaseOrderResource extends JsonApiResource
             'orderNumber' => $this->order_number,
             'contactId' => $this->contact_id,
             'warehouseId' => $this->warehouse_id,
+            'branchId' => $this->branch_id,
             'orderDate' => $this->order_date,
             'status' => $this->status,
             'totalAmount' => $this->total_amount,
@@ -46,6 +47,7 @@ class PurchaseOrderResource extends JsonApiResource
         return [
             'contact' => $this->relation('contact'),
             'warehouse' => $this->relation('warehouse'),
+            'branch' => $this->relation('branch'),
             'purchaseOrderItems' => $this->relation('purchaseOrderItems'),
         ];
     }

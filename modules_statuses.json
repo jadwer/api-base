@@ -20,5 +20,6 @@
     "AppConfig": true,
     "MailerManager": true,
     "Commissions": true,
-    "SatCatalogs": true
+    "SatCatalogs": true,
+    "Branch": true
 }

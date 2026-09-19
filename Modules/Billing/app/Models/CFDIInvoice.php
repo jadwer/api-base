@@ -32,10 +32,21 @@ class CFDIInvoice extends Model
 
     protected $table = 'cfdi_invoices';
 
+    protected static function booted(): void
+    {
+        static::creating(function (CFDIInvoice $invoice) {
+            // Multi-sucursal (2026-09): sucursal del usuario autenticado o la Matriz.
+            if (empty($invoice->branch_id)) {
+                $invoice->branch_id = \Modules\Branch\Models\Branch::defaultId();
+            }
+        });
+    }
+
     protected $fillable = [
         'company_setting_id',
         'contact_id',
         'ar_invoice_id',
+        'branch_id',
         'series',
         'folio',
         'uuid',
@@ -121,6 +132,13 @@ class CFDIInvoice extends Model
     {
         return $this->belongsTo(ARInvoice::class);
     }
+
+    /** Sucursal de origen (multi-sucursal 2026-09). */
+    public function branch(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\Modules\Branch\Models\Branch::class);
+    }
+
 
     public function items(): HasMany
     {
