@@ -41,7 +41,9 @@ class PaymentApplicationSchema extends Schema
             // Relationships
             BelongsTo::make('payment'),
             // Relationships
-            BelongsTo::make('aRInvoice'),
+            // Sin ->type() JSON:API infiere 'a-r-invoices' y TODO /ar-payments
+            // responde 500 cuando hay aplicaciones (E2E dev 2026-09-18, H4).
+            BelongsTo::make('aRInvoice')->type('ar-invoices'),
         ];
     }
 

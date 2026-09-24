@@ -104,10 +104,6 @@ class ARPayment extends Model
         return $this->belongsTo(\App\Models\User::class, 'voided_by_id');
     }
 
-    public function applications()
-    {
-        return $this->hasMany(PaymentApplication::class, 'ar_payment_id');
-    }
 
     // Factory
     protected static function newFactory()

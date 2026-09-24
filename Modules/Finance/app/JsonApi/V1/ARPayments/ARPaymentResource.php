@@ -42,7 +42,6 @@ class ARPaymentResource extends JsonApiResource
             $this->relation('fiscalPeriod'),
             $this->relation('bankAccount'),
             $this->relation('journalEntry'),
-            $this->relation('applications'),
         ];
     }
 }

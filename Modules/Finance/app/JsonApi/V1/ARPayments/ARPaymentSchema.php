@@ -64,7 +64,6 @@ class ARPaymentSchema extends Schema
             BelongsTo::make('fiscalPeriod')->type('fiscal-periods'),
             BelongsTo::make('bankAccount')->type('bank-accounts'),
             BelongsTo::make('journalEntry')->type('journal-entries'),
-            HasMany::make('applications')->type('payment-applications')->readOnly(),
         ];
     }
 

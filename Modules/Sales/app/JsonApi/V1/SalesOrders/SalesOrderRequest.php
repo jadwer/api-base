@@ -36,6 +36,8 @@ class SalesOrderRequest extends ResourceRequest
                 : ['sometimes', 'string'],
             'orderDate' => [$isCreating ? 'required' : 'sometimes', 'date'],
             'branchId' => ['nullable', 'integer', 'exists:branches,id'],
+            'shippingAddress' => ['nullable', 'array'],
+            'billingAddress' => ['nullable', 'array'],
             'branch' => ['nullable', \LaravelJsonApi\Validation\Rule::toOne()],
             'approvedAt' => ['nullable', 'date'],
             'deliveredAt' => ['nullable', 'date'],

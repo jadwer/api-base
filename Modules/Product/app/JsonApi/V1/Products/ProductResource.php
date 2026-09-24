@@ -40,6 +40,9 @@ class ProductResource extends JsonApiResource
             'brand' => $this->relation('brand'),
             'currency' => $this->relation('currency'),
             'images' => $this->relation('images'),
+            // E2E dev 2026-09-18: el Schema declara stock (include=stock) pero el
+            // Resource no lo listaba y el detalle de cotizacion veia todo sin stock.
+            'stock' => $this->relation('stock'),
         ];
     }
 }

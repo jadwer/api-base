@@ -97,6 +97,10 @@ class SalesOrderSchema extends Schema
             
             // Metadata JSON
             ArrayHash::make('metadata'),
+            // Direcciones capturadas en checkout (E2E dev 2026-09-18, H6): se
+            // guardaban pero ningun recurso las exponia al ERP.
+            ArrayHash::make('shippingAddress', 'shipping_address'),
+            ArrayHash::make('billingAddress', 'billing_address'),
             
             // Relación con Items
             HasMany::make('items')->type('sales-order-items'),

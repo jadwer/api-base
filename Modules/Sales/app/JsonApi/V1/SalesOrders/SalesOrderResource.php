@@ -4,63 +4,15 @@ namespace Modules\Sales\JsonApi\V1\SalesOrders;
 
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * E2E dev 2026-09-18 (bloques 1 y 2): este Resource mantenia a mano las listas
+ * de atributos y relaciones y PISABA al Schema: orderType, customerPoNumber,
+ * paymentMethod, creditDays, currency, quote, shipments y branch nunca
+ * viajaban aunque el Schema los declarara (regla 8 del CLAUDE.md, tercera vez
+ * que el patron reaparece aqui). Sin overrides, JsonApiResource serializa
+ * exactamente lo que el Schema declara; si un dia hay que ocultar algo, se
+ * hace en el Schema con ->hidden(), no aqui.
+ */
 class SalesOrderResource extends JsonApiResource
 {
-    /**
-     * Get the resource attributes.
-     */
-    public function attributes($request): iterable
-    {
-        return [
-            // Foreign key - camelCase for JSON:API consistency
-            'contactId' => $this->contact_id,
-            'branchId' => $this->branch_id,
-
-            // Order fields - camelCase for JSON:API consistency
-            'orderNumber' => $this->order_number,
-            'status' => $this->status,
-            'orderDate' => $this->order_date,
-            'approvedAt' => $this->approved_at,
-            'deliveredAt' => $this->delivered_at,
-
-            // Amount fields - camelCase for JSON:API consistency
-            'subtotalAmount' => $this->subtotal,
-            'taxAmount' => $this->tax_amount,
-            'discountTotal' => $this->discount_total,
-            'totalAmount' => $this->total_amount,
-
-            // Finance Integration Fields
-            'arInvoiceId' => $this->ar_invoice_id,
-            'invoicingStatus' => $this->invoicing_status,
-            'invoicingNotes' => $this->invoicing_notes,
-            // E2E de coherencia 2026-07-18: este Resource manual PISA al Schema
-            // y estos campos nunca viajaban aunque el Schema los declarara (el
-            // badge Facturada del FE funcionaba de rebote via arInvoiceId).
-            'financialStatus' => $this->financial_status,
-            'paymentStatus' => $this->payment_status,
-            'paidAt' => $this->paid_at,
-
-            // Text fields
-            'notes' => $this->notes,
-
-            // JSON fields
-            'metadata' => $this->metadata,
-
-            // Timestamps - camelCase for JSON:API consistency
-            'createdAt' => $this->created_at,
-            'updatedAt' => $this->updated_at,
-        ];
-    }
-
-    /**
-     * Get the resource relationships.
-     */
-    public function relationships($request): iterable
-    {
-        return [
-            'contact' => $this->relation('contact'),
-            'branch' => $this->relation('branch'),
-            'items' => $this->relation('items'),
-        ];
-    }
 }

@@ -28,7 +28,6 @@ JsonApiRoute::server('v1')
                 $relationships->hasOne('fiscalPeriod');
                 $relationships->hasOne('bankAccount');
                 $relationships->hasOne('journalEntry');
-                $relationships->hasMany('applications');
             });
         $server->resource('bank-transactions', BankTransactionController::class)
             ->relationships(function ($relationships) {
