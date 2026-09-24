@@ -14,6 +14,9 @@ return [
     |
     */
     'auto_invoice_on_delivery' => env('SALES_AUTO_INVOICE', true),
+    // Decision 2026-09-23: la orden pagada en la tienda (Stripe) genera su AR y
+    // su cobro al capturar el pago (CreateARInvoiceOnPaymentCaptured).
+    'auto_invoice_on_payment' => env('SALES_AUTO_INVOICE_ON_PAYMENT', true),
 
     /*
     |--------------------------------------------------------------------------

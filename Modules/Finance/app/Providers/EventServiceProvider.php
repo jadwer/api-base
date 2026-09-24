@@ -23,6 +23,11 @@ class EventServiceProvider extends ServiceProvider
             \Modules\Finance\Listeners\CreateARInvoiceForSalesOrder::class,
         ],
 
+        // Decision 2026-09-23: AR + cobro al capturar el pago Stripe (antes solo
+        // en la entrega). Idempotente con el camino de entrega.
+        \Modules\Billing\Events\PaymentCaptured::class => [
+            \Modules\Finance\Listeners\CreateARInvoiceOnPaymentCaptured::class,
+        ],
         // Purchase → Finance Integration
         \Modules\Purchase\Events\PurchaseOrderReceived::class => [
             \Modules\Finance\Listeners\PurchaseOrderReceivedListener::class,

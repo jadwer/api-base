@@ -34,8 +34,19 @@ class MarkOrderPaidOnPaymentCaptured
         }
 
         // Idempotencia (segundo candado; el retry del webhook ya es no-op a
-        // nivel transaccion): si ya esta paid, no reescribir.
+        // nivel transaccion): si ya esta paid, no reescribir paid_at. Desde
+        // 2026-09-23 la AR nace y se cobra en este mismo evento (Finance) y su
+        // ARInvoiceFullyPaid puede marcar la orden ANTES que este listener;
+        // en ese caso solo se completa el rastro de la transaccion Stripe.
         if ($order->payment_status === 'paid') {
+            if (empty($order->metadata['payment_transaction_id'])) {
+                $order->update([
+                    'metadata' => array_merge($order->metadata ?? [], [
+                        'payment_transaction_id' => $transaction->id,
+                        'payment_intent_id' => $transaction->payment_intent_id,
+                    ]),
+                ]);
+            }
             return;
         }
 

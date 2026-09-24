@@ -19,6 +19,13 @@ class EventServiceProvider extends ServiceProvider
         \Modules\Billing\Events\PaymentRefunded::class => [
             \Modules\Sales\Listeners\MarkOrderRefundedOnPaymentRefunded::class,
         ],
+        // Decision 2026-09-23: el cobro de la AR (Cuentas por Cobrar) propaga a la orden.
+        \Modules\Finance\Events\ARInvoiceFullyPaid::class => [
+            \Modules\Sales\Listeners\MarkOrderPaidOnInvoiceFullyPaid::class,
+        ],
+        \Modules\Finance\Events\ARInvoicePaymentReversed::class => [
+            \Modules\Sales\Listeners\MarkOrderUnpaidOnInvoicePaymentReversed::class,
+        ],
     ];
 
     /**

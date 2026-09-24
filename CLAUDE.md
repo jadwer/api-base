@@ -219,6 +219,12 @@ When a test fails, check in this order:
 - `SalesOrderDelivered` (tambien `SalesOrderCompleted`) -> listener unico
   `Finance\CreateARInvoiceForSalesOrder` crea la ARInvoice. Los dos listeners
   viejos se ELIMINARON (R3); no recrearlos.
+- `PaymentCaptured` (Stripe, tienda) -> Sales marca la orden paid y Finance
+  `CreateARInvoiceOnPaymentCaptured` crea la ARInvoice y le aplica el cobro EN
+  EL PAGO (decision 2026-09-23; switch sales.auto_invoice_on_payment). Al
+  entregar, el listener de entrega ve la AR y no duplica.
+- `ARInvoiceFullyPaid` / `ARInvoicePaymentReversed` -> Sales marca la orden
+  paid / unpaid (decision 2026-09-23): un cobro manual en CxC propaga a la OV.
 - `SalesOrderCancelled` -> Finance anula factura y repone stock entregado.
 - `PurchaseOrderReceived` -> Finance crea APInvoice; Inventory ya dio entrada
   al stock por tanda en `PurchaseOrder::receive()`.

@@ -200,13 +200,15 @@ class StripeWebhookInvariantTest extends TestCase
         $this->assertSame('pi_inv_paid', $order->metadata['payment_intent_id'] ?? null);
         $this->assertArrayHasKey('payment_transaction_id', $order->metadata ?? []);
 
-        // Dimension SEPARADA: pagar NO factura. financial_status es de
-        // facturacion y sigue not_invoiced hasta que la AR nazca en la entrega.
-        $this->assertSame(
-            'not_invoiced',
-            $order->financial_status,
-            'payment_status y financial_status son dimensiones separadas: pagar no debe tocar la de facturacion'
-        );
+        // Decision Gabino 2026-09-23: el pago capturado en la tienda genera la
+        // cuenta por cobrar y aplica el cobro en ese momento (antes esperaba a
+        // la entrega y el dinero no existia en Finanzas). Una sola AR, pagada.
+        $this->assertNotNull($order->ar_invoice_id, 'El pago capturado debe crear la AR de la orden');
+        $this->assertSame('invoiced', $order->invoicing_status);
+        $arInvoices = ARInvoice::where('sales_order_id', $order->id)->where('is_active', true)->get();
+        $this->assertCount(1, $arInvoices);
+        $this->assertSame('paid', $arInvoices->first()->status, 'La AR debe nacer cobrada con la transaccion Stripe');
+        $this->assertEqualsWithDelta((float) $order->total_amount, (float) $arInvoices->first()->paid_amount, 0.01);
 
         // Reintento de Stripe (mismo evento) con el reloj corrido: si el
         // listener re-marcara, paid_at cambiaria. Debe quedar identico.
@@ -221,6 +223,7 @@ class StripeWebhookInvariantTest extends TestCase
             $order->paid_at->toDateTimeString(),
             'El reintento del mismo webhook no debe re-marcar la orden (paid_at debe ser estable)'
         );
+        $this->assertSame(1, ARInvoice::where('sales_order_id', $order->id)->where('is_active', true)->count(), 'El reintento no debe duplicar la AR');
     }
 
     /**

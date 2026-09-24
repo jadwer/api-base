@@ -156,6 +156,25 @@ class ARInvoiceService
             throw new \Exception("Sales Order #{$salesOrder->order_number} must be delivered before invoicing.");
         }
 
+        return $this->buildFromSalesOrder($salesOrder, 'Auto-generated from Sales Order #' . $salesOrder->order_number);
+    }
+
+    /**
+     * Decision 2026-09-23: una orden pagada en la tienda se factura (AR) al capturar
+     * el pago, sin esperar la entrega. Mismo constructor que el camino de entrega;
+     * solo cambia la precondicion de estado (cualquiera menos cancelada).
+     */
+    public function createFromPaidSalesOrder($salesOrder): ARInvoice
+    {
+        if ($salesOrder->status === 'cancelled') {
+            throw new \Exception("Sales Order #{$salesOrder->order_number} is cancelled; cannot invoice.");
+        }
+
+        return $this->buildFromSalesOrder($salesOrder, 'Auto-generated on payment from Sales Order #' . $salesOrder->order_number);
+    }
+
+    private function buildFromSalesOrder($salesOrder, string $notes): ARInvoice
+    {
         // Check if invoice already exists for this order
         if ($this->invoiceExistsForOrder($salesOrder->id)) {
             throw new \Exception("AR Invoice already exists for Sales Order #{$salesOrder->order_number}.");
@@ -184,7 +203,7 @@ class ARInvoiceService
             'subtotal' => $subtotal,
             'taxAmount' => $taxAmount,
             'totalAmount' => $salesOrder->total_amount,
-            'notes' => "Auto-generated from Sales Order #{$salesOrder->order_number}",
+            'notes' => $notes,
             'metadata' => [
                 'auto_generated' => true,
                 'generated_at' => now()->toDateTimeString(),
