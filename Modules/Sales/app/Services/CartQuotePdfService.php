@@ -4,7 +4,7 @@ namespace Modules\Sales\Services;
 
 use App\Services\TaxCalculator;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Modules\Billing\Models\CompanySetting;
+use Modules\Sales\Support\QuoteIssuer;
 use Modules\Product\Models\Product;
 
 /**
@@ -94,7 +94,8 @@ class CartQuotePdfService
      */
     public function render(array $lines, array $totals): string
     {
-        $company = CompanySetting::getActive();
+        // Emisor separado de la configuracion fiscal (2026-09-23).
+        $company = QuoteIssuer::resolve();
 
         $pdf = Pdf::loadView('sales::cart-quote-pdf', [
             'lines' => $lines,

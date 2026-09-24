@@ -3,7 +3,7 @@
 namespace Modules\Sales\Services;
 
 use Modules\Sales\Models\Quote;
-use Modules\Billing\Models\CompanySetting;
+use Modules\Sales\Support\QuoteIssuer;
 use Modules\Billing\Models\DocumentLegend;
 use Modules\Billing\Services\DocumentLegendRenderer;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -67,22 +67,9 @@ class QuotePDFGenerator
      */
     protected function prepareData(Quote $quote, array $options = []): array
     {
-        $company = CompanySetting::getActive();
-
-        // Build company address from new fields or fallback to additional_settings
-        $companyAddress = null;
-        if ($company) {
-            if ($company->address || $company->city || $company->state) {
-                $companyAddress = [
-                    'street' => $company->address,
-                    'city' => $company->city,
-                    'state' => $company->state,
-                    'postal_code' => $company->postal_code,
-                ];
-            } else {
-                $companyAddress = $company->additional_settings['address'] ?? null;
-            }
-        }
+        // Emisor de la cotizacion: separado de la configuracion fiscal (2026-09-23).
+        $company = QuoteIssuer::resolve();
+        $companyAddress = $company->address;
 
         // Load contact with addresses
         $contact = $quote->contact;
@@ -109,7 +96,7 @@ class QuotePDFGenerator
             'total_letra' => $this->amountInWords((float) $quote->total_amount, $quote->currency ?? 'MXN'),
             'cliente' => $contact?->name,
             'rfc_cliente' => $contact?->tax_id,
-            'empresa' => $company?->company_name,
+            'empresa' => $company->company_name,
             'dias_credito' => $quote->credit_days ?? $contact?->payment_terms,
         ]);
 
@@ -121,10 +108,10 @@ class QuotePDFGenerator
             'contactAddress' => $contactAddress,
             'company' => $company,
             'companyAddress' => $companyAddress,
-            'companyPhone' => $company?->phone ?? $company?->additional_settings['phone'] ?? null,
-            'companyEmail' => $company?->email ?? $company?->additional_settings['email'] ?? null,
-            'bankAccounts' => $options['bank_accounts'] ?? $company?->getBankAccounts() ?? $this->defaultBankAccounts,
-            'conditions' => $options['conditions'] ?? $legendLines ?? $company?->getCommercialConditions() ?? $this->defaultConditions,
+            'companyPhone' => $company->phone,
+            'companyEmail' => $company->email,
+            'bankAccounts' => $options['bank_accounts'] ?? ($company->bank_accounts ?: $this->defaultBankAccounts),
+            'conditions' => $options['conditions'] ?? $legendLines ?? $company->conditions ?? $this->defaultConditions,
             'amountInWords' => $this->amountInWords($quote->total_amount, $quote->currency ?? 'MXN'),
             'elaboratedBy' => $options['elaborated_by'] ?? $elaboratedBy,
             'branch' => $branch,

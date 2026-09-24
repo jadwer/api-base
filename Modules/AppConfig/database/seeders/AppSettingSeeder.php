@@ -97,6 +97,18 @@ class AppSettingSeeder extends Seeder
             // completo.
             ['key' => 'search.fuzzy_enabled', 'value' => 'true', 'type' => 'boolean', 'group' => 'search', 'label' => 'Buscador: tolerancia a errores de escritura (typos)'],
             ['key' => 'search.results_limit', 'value' => '8', 'type' => 'integer', 'group' => 'search', 'label' => 'Buscador: numero de sugerencias del typeahead'],
+            // Documentos: emisor de las cotizaciones, separado de la configuracion fiscal (2026-09-23)
+            ['key' => 'documents.issuer_source', 'value' => 'company', 'type' => 'string', 'group' => 'documents', 'label' => 'Origen de los datos del emisor en cotizaciones', 'description' => 'company = datos de la empresa (Configuracion > Empresa); manual = los campos de abajo; billing = configuracion fiscal de facturacion'],
+            ['key' => 'documents.issuer_name', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: razon social o nombre (manual)'],
+            ['key' => 'documents.issuer_rfc', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: RFC (vacio = no se imprime)'],
+            ['key' => 'documents.issuer_address', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: calle y numero (manual)'],
+            ['key' => 'documents.issuer_city', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: ciudad (manual)'],
+            ['key' => 'documents.issuer_state', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: estado (manual)'],
+            ['key' => 'documents.issuer_postal_code', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: codigo postal (manual)'],
+            ['key' => 'documents.issuer_phone', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: telefono (manual)'],
+            ['key' => 'documents.issuer_email', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: correo (manual)'],
+            ['key' => 'documents.issuer_logo_path', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: ruta del logo (manual, vacio = logo de la empresa)'],
+            ['key' => 'documents.quote_bank_accounts', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Cuentas bancarias en cotizaciones', 'description' => 'Una por linea: Banco | Cuenta o CLABE | Moneda. Vacio = no se imprimen. En origen billing se usan las de facturacion.'],
             ['key' => 'landing.faq', 'value' => json_encode([
                 ['question' => '¿Qué productos ofrece la empresa?', 'answer' => 'Reactivos, material y equipo de laboratorio, consumibles, medios de cultivo, equipo de protección personal y soluciones para monitoreo y tratamiento de agua, de marcas líderes nacionales e internacionales.'],
                 ['question' => '¿Cómo puedo hacer una cotización?', 'answer' => 'Agrega los productos que necesitas al carrito y elige "Cotizar", o escríbenos con el botón "Cotiza con nosotros". Un asesor te responderá con precios, disponibilidad y tiempos de entrega.'],
