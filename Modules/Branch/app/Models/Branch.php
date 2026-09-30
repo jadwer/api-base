@@ -70,6 +70,19 @@ class Branch extends Model
             }
         });
 
+        // Borrar una sucursal con datos ligados chocaba con la FK restrict (500
+        // generico). Ahora se rechaza con 409 y el motivo; la principal nunca.
+        static::deleting(function (Branch $branch) {
+            if ($branch->is_main) {
+                abort(409, 'La sucursal principal no se puede eliminar. Marca otra como principal primero.');
+            }
+            $links = $branch->linkedRecordCounts();
+            if ($links !== []) {
+                $detail = implode(', ', array_map(fn ($k, $v) => "{$v} {$k}", array_keys($links), $links));
+                abort(409, "No se puede eliminar la sucursal: tiene {$detail}. Desactivala en su lugar.");
+            }
+        });
+
         static::deleted(fn () => static::$mainIdCache = null);
     }
 
@@ -100,9 +113,50 @@ class Branch extends Model
         return $userBranch ?: static::mainId();
     }
 
+    /**
+     * Ids de sucursal a los que se limita el usuario autenticado, o null si no
+     * hay restriccion (sin usuario, god, admin o customer). Memo por instancia
+     * de usuario: se recalcula si el objeto del usuario cambia (fresh()).
+     *
+     * @return int[]|null
+     */
+    public static function restrictedIdsForCurrentUser(): ?array
+    {
+        $user = auth()->user();
+        if (! $user || ! method_exists($user, 'accessibleBranchIds')) {
+            return null;
+        }
+
+        static $memo = null;
+        $memo ??= new \WeakMap();
+        if (! isset($memo[$user])) {
+            $memo[$user] = ['ids' => $user->hasAnyRole(['god', 'admin', 'customer']) ? null : $user->accessibleBranchIds()];
+        }
+
+        return $memo[$user]['ids'];
+    }
+
     public static function forgetMainCache(): void
     {
         static::$mainIdCache = null;
+    }
+
+    /** Registros que impiden borrar la sucursal (solo los que existen). */
+    public function linkedRecordCounts(): array
+    {
+        $db = \Illuminate\Support\Facades\DB::connection();
+        $checks = [
+            'usuarios' => fn () => $db->table('users')->where('branch_id', $this->id)->count()
+                + $db->table('branch_user')->where('branch_id', $this->id)->count(),
+            'almacenes' => fn () => $db->table('warehouses')->where('branch_id', $this->id)->count(),
+            'cotizaciones' => fn () => $db->table('quotes')->where('branch_id', $this->id)->count(),
+            'ventas' => fn () => $db->table('sales_orders')->where('branch_id', $this->id)->count(),
+            'compras' => fn () => $db->table('purchase_orders')->where('branch_id', $this->id)->count(),
+            'remisiones' => fn () => $db->table('remissions')->where('branch_id', $this->id)->count(),
+            'facturas' => fn () => $db->table('cfdi_invoices')->where('branch_id', $this->id)->count(),
+        ];
+
+        return array_filter(array_map(fn ($check) => $check(), $checks));
     }
 
     public function scopeActive($query)

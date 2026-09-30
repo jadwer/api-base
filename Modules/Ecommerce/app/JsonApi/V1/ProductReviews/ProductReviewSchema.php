@@ -81,7 +81,7 @@ class ProductReviewSchema extends Schema
     {
         $user = $request?->user();
 
-        if ($user && $user->hasAnyRole(['god', 'admin', 'tech'])) {
+        if ($user && \Modules\User\Support\UserAccess::seesAll($user, static::type() . '.index')) {
             return $query;
         }
 

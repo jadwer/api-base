@@ -94,7 +94,7 @@ class WishlistItemSchema extends Schema
     {
         $user = $request?->user();
 
-        if ($user && !$user->hasAnyRole(['god', 'admin', 'tech'])) {
+        if ($user && !\Modules\User\Support\UserAccess::seesAll($user, static::type() . '.index')) {
             return $query->whereHas('wishlist', function (Builder $q) use ($user) {
                 $q->where('user_id', $user->id)
                   ->orWhere('is_public', true);

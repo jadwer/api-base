@@ -14,7 +14,7 @@ use Modules\Contacts\Models\Contact;
 
 class CFDIInvoice extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, LogsActivity, \Modules\Branch\Concerns\BranchScoped;
 
     /**
      * Activity Log Configuration

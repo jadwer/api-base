@@ -54,6 +54,7 @@ class User extends Authenticatable
         'status', // Campo del módulo User
         'commission_pct', // WS5 Commissions: % default del vendedor
         'branch_id', // Multi-sucursal 2026-09: sucursal principal
+        'permission_template', // plantilla (rol) de la que salieron sus permisos
     ];
 
     protected $hidden = [

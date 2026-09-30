@@ -109,6 +109,12 @@ class Stock extends Model
     /**
      * Scope para búsqueda general
      */
+    /** Stock de los almacenes de una sucursal (inventario compartido, solo filtro). */
+    public function scopeForBranch($query, $branchId)
+    {
+        return $query->whereHas('warehouse', fn ($q) => $q->where('branch_id', $branchId));
+    }
+
     public function scopeSearch($query, $value)
     {
         return $query->whereHas('product', function ($q) use ($value) {

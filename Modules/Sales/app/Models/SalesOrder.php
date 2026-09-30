@@ -39,7 +39,7 @@ use Spatie\Activitylog\LogOptions;
  */
 class SalesOrder extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, LogsActivity, \Modules\Branch\Concerns\BranchScoped;
 
     /**
      * Activity Log Configuration

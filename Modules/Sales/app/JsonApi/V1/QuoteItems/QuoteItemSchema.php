@@ -44,7 +44,7 @@ class QuoteItemSchema extends Schema
             return $query->whereRaw('1 = 0');
         }
 
-        if ($user->hasAnyRole(['god', 'admin', 'administrator', 'tech'])) {
+        if (\Modules\User\Support\UserAccess::seesAll($user, static::type() . '.index')) {
             return $query;
         }
 

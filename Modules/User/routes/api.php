@@ -49,12 +49,24 @@ Route::middleware('auth:sanctum')
                                 'guard_name' => $permission->guard_name,
                             ];
                         }),
+                        // Multi-sucursal: default de los formularios y filtros.
+                        'branch_id'   => $user->branch_id ? (string) $user->branch_id : null,
+                        // null = sin restriccion (god/admin).
+                        'branch_ids'  => ($ids = $user->accessibleBranchIds()) === null ? null : array_map('strval', $ids),
                         'created_at'  => $user->created_at,
                         'updated_at'  => $user->updated_at,
                     ],
                 ],
             ]);
         })->name('v1.profile.show');
+
+        // Permisos por usuario (rol = plantilla, 2026-09-24)
+        Route::get('users/{id}/access', [\Modules\User\Http\Controllers\Api\V1\UserAccessController::class, 'show'])
+            ->whereNumber('id')
+            ->name('users.access.show');
+        Route::put('users/{id}/access', [\Modules\User\Http\Controllers\Api\V1\UserAccessController::class, 'update'])
+            ->whereNumber('id')
+            ->name('users.access.update');
 
         Route::post('users/{id}/restore', [UserController::class, 'restore'])
             ->whereNumber('id')

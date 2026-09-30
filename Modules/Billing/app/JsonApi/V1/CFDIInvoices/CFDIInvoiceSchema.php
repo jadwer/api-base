@@ -146,6 +146,8 @@ class CFDIInvoiceSchema extends Schema
             Where::make('contactId', 'contact_id'),
             Where::make('arInvoiceId', 'ar_invoice_id'),
             Where::make('branchId', 'branch_id'),
+            // Alias homogeneo con quotes/sales-orders/purchase-orders/remissions.
+            Where::make('branch', 'branch_id'),
             Scope::make('search', 'forSearch'),
             Scope::make('dateFrom', 'dateFrom'),
             Scope::make('dateTo', 'dateTo'),
@@ -179,7 +181,7 @@ class CFDIInvoiceSchema extends Schema
 
         $user = $request->user('sanctum');
 
-        if ($user->hasAnyRole(['god', 'admin', 'administrator', 'tech'])) {
+        if (\Modules\User\Support\UserAccess::seesAll($user, static::type() . '.index')) {
             return $query;
         }
 

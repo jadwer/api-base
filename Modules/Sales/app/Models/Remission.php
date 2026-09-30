@@ -37,7 +37,7 @@ use Spatie\Activitylog\LogOptions;
  */
 class Remission extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, LogsActivity, \Modules\Branch\Concerns\BranchScoped;
 
     protected $fillable = [
         'sales_order_id', 'shipment_id', 'warehouse_id',

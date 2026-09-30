@@ -21,7 +21,7 @@ use Modules\Sales\Models\FolioSequence;
 
 class PurchaseOrder extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, LogsActivity, \Modules\Branch\Concerns\BranchScoped;
 
     /**
      * Activity Log Configuration

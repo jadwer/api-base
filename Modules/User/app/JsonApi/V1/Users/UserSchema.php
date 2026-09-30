@@ -25,6 +25,7 @@ class UserSchema extends Schema
             Str::make('name')->sortable(),
             Str::make('email')->sortable(),
             Str::make('status'),
+            Str::make('permissionTemplate', 'permission_template')->readOnly(),
             Str::make('role')
                 ->readOnly()
                 ->serializeUsing(function ($model, $column) {

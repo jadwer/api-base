@@ -130,7 +130,7 @@ class CheckoutSessionSchema extends Schema
 
         $user = $request->user('sanctum');
 
-        if ($user->hasAnyRole(['god', 'admin', 'administrator', 'tech'])) {
+        if (\Modules\User\Support\UserAccess::seesAll($user, static::type() . '.index')) {
             return $query;
         }
 

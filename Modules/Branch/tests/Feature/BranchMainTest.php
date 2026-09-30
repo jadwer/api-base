@@ -57,4 +57,45 @@ class BranchMainTest extends TestCase
 
         $response->assertStatus(422);
     }
+
+    public function test_main_branch_cannot_be_deleted(): void
+    {
+        $admin = $this->getAdminUser();
+        $main = Branch::main();
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->delete("/api/v1/branches/{$main->id}");
+
+        $response->assertStatus(409);
+        $this->assertNotNull(Branch::find($main->id));
+    }
+
+    public function test_branch_with_linked_users_cannot_be_deleted_and_says_why(): void
+    {
+        $admin = $this->getAdminUser();
+        $toluca = Branch::factory()->create(['code' => 'TOL']);
+        \Modules\User\Models\User::factory()->create(['branch_id' => $toluca->id]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->delete("/api/v1/branches/{$toluca->id}");
+
+        $response->assertStatus(409);
+        $this->assertStringContainsString('usuarios', json_encode($response->json()));
+        $this->assertNotNull(Branch::find($toluca->id));
+    }
+
+    public function test_empty_branch_can_be_deleted(): void
+    {
+        $admin = $this->getAdminUser();
+        $empty = Branch::factory()->create(['code' => 'VAC']);
+
+        $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->delete("/api/v1/branches/{$empty->id}")
+            ->assertNoContent();
+
+        $this->assertNull(Branch::find($empty->id));
+    }
 }

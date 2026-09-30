@@ -84,8 +84,9 @@ class QuotePDFGenerator
         // Get the salesperson name from metadata or options
         $elaboratedBy = $quote->metadata['elaborated_by'] ?? null;
 
-        // Branch from quote metadata or options
-        $branch = $quote->metadata['branch'] ?? $options['branch'] ?? 'Matriz';
+        // Sucursal real del documento (multi-sucursal 2026-09); metadata y
+        // options quedan como respaldo para cotizaciones previas sin branch_id.
+        $branch = $quote->branch?->name ?? $quote->metadata['branch'] ?? $options['branch'] ?? 'Matriz';
 
         // Leyenda configurable por tipo de documento (fallback: commercial_conditions -> defaults)
         $legendLines = app(DocumentLegendRenderer::class)->render(DocumentLegend::TYPE_QUOTE, [

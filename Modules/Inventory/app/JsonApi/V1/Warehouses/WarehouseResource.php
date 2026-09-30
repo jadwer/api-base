@@ -27,6 +27,7 @@ class WarehouseResource extends JsonApiResource
             'operatingHours' => $this->operatingHours,
             'metadata' => $this->metadata,
             'isActive' => $this->is_active,
+            'branchId' => $this->branch_id,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
         ];

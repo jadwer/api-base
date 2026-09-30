@@ -105,6 +105,8 @@ class StockSchema extends Schema
             Scope::make('low_stock', 'lowStock'),
             Scope::make('out_of_stock', 'outOfStock'),
             Scope::make('min_quantity', 'minQuantity'),
+            // Multi-sucursal: el inventario es compartido; se filtra por la sucursal del almacen.
+            Scope::make('branch', 'forBranch'),
             Scope::make('max_quantity', 'maxQuantity'),
         ];
     }

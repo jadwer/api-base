@@ -17,6 +17,7 @@ class UserResource extends JsonApiResource
             'updatedAt'        => $this->updated_at,
             'deletedAt'        => $this->deleted_at,
             'role'             => $this->getRoleNames()->first(),
+            'permissionTemplate' => $this->permission_template,
         ];
     }
 

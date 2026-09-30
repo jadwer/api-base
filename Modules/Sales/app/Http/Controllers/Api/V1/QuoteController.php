@@ -61,6 +61,9 @@ class QuoteController extends Controller
             'valid_until' => 'nullable|date|after:today',
             'notes' => 'nullable|string|max:2000',
             'terms_and_conditions' => 'nullable|string|max:5000',
+            // Multi-sucursal: opcional; sin valor aplica la del usuario o la Matriz.
+            // BranchScoped rechaza (422) una sucursal sin acceso.
+            'branch_id' => 'nullable|integer|exists:branches,id',
         ]);
 
         // Customers quoting their own cart do not know (or have) a contact_id.
@@ -105,6 +108,7 @@ class QuoteController extends Controller
                 'terms_and_conditions' => $request->input('terms_and_conditions'),
                 'shipping_address' => $request->input('shipping_address'),
                 'billing_address' => $request->input('billing_address'),
+                ...($request->filled('branch_id') ? ['branch_id' => (int) $request->input('branch_id')] : []),
             ]);
 
             // Create quote items from cart items

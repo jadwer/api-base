@@ -45,7 +45,7 @@ use Spatie\Activitylog\LogOptions;
  */
 class Quote extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, LogsActivity, \Modules\Branch\Concerns\BranchScoped;
 
     protected static function booted(): void
     {
