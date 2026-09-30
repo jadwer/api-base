@@ -38,6 +38,10 @@ class CFDIAutomationService
             $settings = CompanySetting::where('id', $settings->id)->lockForUpdate()->first();
             $folio = $settings->next_invoice_folio ?? 1;
 
+            $receptor = \Modules\Billing\Support\CfdiReceptor::fromContact($contact, $settings->postal_code);
+            $receptor['receptor_domicilio_fiscal'] = $receptor['receptor_domicilio_fiscal'] ?: '00000';
+            $creditDays = (int) ($arInvoice->salesOrder?->credit_days ?? $contact->payment_terms ?? 30);
+
             // Create CFDI Invoice
             $cfdi = CFDIInvoice::create([
                 'company_setting_id' => $settings->id,
@@ -49,12 +53,10 @@ class CFDIAutomationService
                 'folio' => $folio,
                 'fecha_emision' => now(),
 
-                // Receptor (customer)
-                'receptor_rfc' => $contact->tax_id ?? 'XAXX010101000', // Generic RFC for foreign
-                'receptor_nombre' => $contact->name,
-                'receptor_domicilio_fiscal' => $contact->postal_code ?? '00000',
-                'receptor_regimen_fiscal' => $contact->fiscal_regime ?? '616', // Sin obligaciones fiscales
-                'receptor_uso_cfdi' => $contact->cfdi_use ?? 'G03', // Gastos en general
+                // Receptor (customer): fuente unica en CfdiReceptor. Si el
+                // cliente no tiene CP fiscal queda '00000' y el timbrado lo
+                // rechaza con detalle, en vez de timbrar con datos falsos.
+                ...$receptor,
 
                 // Amounts (convert from decimal to cents if needed)
                 'subtotal' => $this->toCents($arInvoice->subtotal),
@@ -70,7 +72,7 @@ class CFDIAutomationService
                 // Payment info
                 'forma_pago' => '99', // Por definir (will be updated when payment is linked)
                 'metodo_pago' => $arInvoice->status === 'paid' ? 'PUE' : 'PPD', // PUE=paid, PPD=to be paid
-                'condiciones_pago' => $arInvoice->status === 'paid' ? null : 'Crédito a 30 días',
+                'condiciones_pago' => $arInvoice->status === 'paid' ? null : "Crédito a {$creditDays} días",
 
                 // Type
                 'tipo_comprobante' => 'I', // Ingreso

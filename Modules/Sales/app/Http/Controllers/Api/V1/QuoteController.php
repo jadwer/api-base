@@ -161,12 +161,31 @@ class QuoteController extends Controller
     /**
      * Send quote to customer
      * POST /api/v1/quotes/{quote}/send
+     *
+     * Body opcional (2026-09-30, peticion de Jasim):
+     * - recipients: correos elegidos en el modal (principal, adicionales,
+     *   personas o escritos en caliente). Sin body se envia al correo
+     *   principal del contacto, como antes.
+     * - saveToContact: guarda los correos nuevos como adicionales del
+     *   contacto para la proxima vez.
      */
-    public function send(Quote $quote): JsonResponse
+    public function send(Request $request, Quote $quote): JsonResponse
     {
         if (Gate::denies('quotes.update')) {
             abort(403, 'No tiene permisos para enviar cotizaciones');
         }
+
+        $request->validate([
+            'recipients' => ['nullable', 'array', 'max:20'],
+            'recipients.*' => ['string', 'max:255', function ($attribute, $value, $fail) {
+                if ($error = \Modules\Contacts\Support\ContactChannels::singleEmailError($value)) {
+                    $fail(str_replace('correo principal', 'destinatario', $error));
+                }
+            }],
+            'saveToContact' => ['nullable', 'boolean'],
+        ], [
+            'recipients.max' => 'Se permiten hasta 20 destinatarios.',
+        ]);
 
         if (!$quote->canBeSent) {
             return response()->json([
@@ -174,28 +193,61 @@ class QuoteController extends Controller
             ], 400);
         }
 
+        $contact = $quote->contact;
+        $recipients = $request->has('recipients')
+            ? \Modules\Contacts\Support\ContactChannels::normalizeEmails($request->input('recipients', []))
+            : array_values(array_filter([$contact?->email ? mb_strtolower($contact->email) : null]));
+
+        if ($request->boolean('saveToContact') && $contact && $recipients !== []) {
+            // Solo los que el cliente no conoce: ni principal, ni adicionales,
+            // ni correos de sus personas de contacto (evita duplicarlos).
+            $known = array_map('mb_strtolower', array_filter(array_merge(
+                [$contact->email],
+                $contact->additional_emails ?? [],
+                $contact->contactPeople()->pluck('email')->all()
+            )));
+            $new = array_values(array_diff($recipients, $known));
+            if ($new !== []) {
+                $contact->additional_emails = array_merge($contact->additional_emails ?? [], $new);
+                $contact->save();
+            }
+        }
+
         $quote->markAsSent();
 
-        // Send quote email with PDF attachment to customer
+        // Send quote email with PDF attachment to the chosen recipients
+        $emailSent = false;
+        $emailError = null;
         try {
-            $customerEmail = $quote->contact?->email;
-            if ($customerEmail && SystemEmail::isEnabled('sales.quote_sent')) {
+            if ($recipients === []) {
+                $emailError = 'El cliente no tiene correo y no se eligio ningun destinatario.';
+            } elseif (!SystemEmail::isEnabled('sales.quote_sent')) {
+                $emailError = 'El correo de cotizacion enviada esta desactivado en Mailer Manager.';
+            } else {
                 $pdfGenerator = app(QuotePDFGenerator::class);
                 $relativePath = $pdfGenerator->generate($quote);
                 $pdfPath = storage_path('app/public/' . $relativePath);
-                Mail::to($customerEmail)->send(new QuoteSentMail($quote, $pdfPath));
+                Mail::to($recipients)->send(new QuoteSentMail($quote, $pdfPath));
+                $emailSent = true;
             }
         } catch (\Exception $e) {
+            $emailError = 'No se pudo enviar el correo: ' . $e->getMessage();
             Log::error('Failed to send quote email to customer', [
                 'quote_id' => $quote->id,
                 'quote_number' => $quote->quote_number,
+                'recipients' => $recipients,
                 'error' => $e->getMessage(),
             ]);
         }
 
         return response()->json([
             'data' => $this->transformQuote($quote->fresh()),
-            'message' => 'Quote sent successfully'
+            'meta' => [
+                'recipients' => $recipients,
+                'emailSent' => $emailSent,
+                'emailError' => $emailError,
+            ],
+            'message' => $emailSent ? 'Quote sent successfully' : 'Quote marked as sent; email not sent',
         ]);
     }
 

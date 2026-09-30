@@ -164,8 +164,7 @@ class SalesOrderPDFGenerator
      */
     protected function generateFilename(SalesOrder $order): string
     {
-        $number = str_replace(['/', '\\'], '-', $order->order_number);
-        return "OV_{$number}.pdf";
+        return \App\Support\DownloadFilename::sanitize("OV_{$order->order_number}.pdf");
     }
 
     /**

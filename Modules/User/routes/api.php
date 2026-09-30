@@ -26,6 +26,7 @@ Route::middleware('auth:sanctum')
                     'attributes' => [
                         'name'        => $user->name,
                         'email'       => $user->email,
+                        'avatar'      => \Modules\User\Http\Controllers\Api\V1\ProfileController::avatarValue($user->avatar),
                         'status'      => $user->status,
                         'role'        => $user->getRoleNames()->first(), // Rol principal
                         'roles'       => $user->roles->map(function ($role) {
@@ -72,21 +73,13 @@ Route::middleware('auth:sanctum')
             ->whereNumber('id')
             ->name('users.restore');
 
-        Route::patch('profile', function (\Illuminate\Http\Request $request) {
-            $user = Auth::user();
-            $data = $request->only(['name', 'email', 'status']); // o los campos que permitas actualizar
-            $user->update($data);
-            return response()->json([
-                'data' => [
-                    'type'       => 'users',
-                    'id'         => (string) $user->id,
-                    'attributes' => [
-                        'name'   => $user->name,
-                        'email'  => $user->email,
-                    ],
-                ],
-            ]);
-        })->name('v1.profile.update');
+        // Perfil propio (2026-09-30): nombre validado (bug H3) y avatar.
+        Route::patch('profile', [\Modules\User\Http\Controllers\Api\V1\ProfileController::class, 'update'])
+            ->name('v1.profile.update');
+        Route::post('profile/avatar', [\Modules\User\Http\Controllers\Api\V1\ProfileController::class, 'updateAvatar'])
+            ->name('v1.profile.avatar.update');
+        Route::delete('profile/avatar', [\Modules\User\Http\Controllers\Api\V1\ProfileController::class, 'deleteAvatar'])
+            ->name('v1.profile.avatar.delete');
 
     });
 

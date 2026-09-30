@@ -185,8 +185,9 @@ class ARInvoiceService
             throw new \Exception("Customer must be active to create invoice.");
         }
 
-        // Calculate due date based on payment terms (default 30 days)
-        $paymentTerms = $salesOrder->contact->payment_terms ?? 30;
+        // Vencimiento (2026-09-30): manda lo pactado en la OV (credit_days);
+        // si no trae, los terminos de pago del cliente; si tampoco, 30 dias.
+        $paymentTerms = $salesOrder->credit_days ?? $salesOrder->contact->payment_terms ?? 30;
         $dueDate = now()->addDays($paymentTerms);
 
         // Prepare data for invoice creation

@@ -135,6 +135,9 @@ class ShoppingCartCurrentTest extends TestCase
     public function test_response_includes_cart_items(): void
     {
         $user = $this->getCustomerUser();
+        // /current toma el primer carrito activo sin orden: si el seeder dejo
+        // otro activo del mismo cliente, la prueba fallaba al azar (30-sep).
+        ShoppingCart::where('user_id', $user->id)->update(['status' => 'abandoned']);
 
         $cart = ShoppingCart::factory()->create([
             'user_id' => $user->id,

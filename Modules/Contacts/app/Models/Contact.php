@@ -30,7 +30,7 @@ class Contact extends Model
     protected $table = 'contacts';
     
     protected $fillable = [
-        'contact_type', 'name', 'legal_name', 'tax_id', 'email', 'phone', 'phone_extension', 'website', 'status', 'is_customer', 'is_supplier', 'credit_limit', 'credit_status', 'credit_hold_at', 'credit_hold_reason', 'minimum_payment_score', 'current_credit', 'classification', 'payment_terms', 'notes', 'metadata',
+        'contact_type', 'name', 'legal_name', 'tax_id', 'email', 'additional_emails', 'phone', 'phone_extension', 'phones', 'website', 'status', 'is_customer', 'is_supplier', 'credit_limit', 'credit_status', 'credit_hold_at', 'credit_hold_reason', 'minimum_payment_score', 'current_credit', 'classification', 'payment_terms', 'notes', 'metadata',
         // WS5 Commissions
         'default_salesperson_id', 'collections_agent_id', 'commission_pct_override',
         // WS7.1 Bind fields
@@ -45,6 +45,8 @@ class Contact extends Model
         'current_credit' => 'float',
         'credit_hold_at' => 'datetime',
         'metadata' => 'array',
+        'additional_emails' => 'array',
+        'phones' => 'array',
         'default_salesperson_id' => 'integer',
         'collections_agent_id' => 'integer',
         'commission_pct_override' => 'float',
@@ -69,6 +71,7 @@ class Contact extends Model
         
         static::saving(function ($contact) {
             $contact->validateBusinessRules();
+            $contact->syncChannels();
         });
     }
 
@@ -98,6 +101,33 @@ class Contact extends Model
             throw ValidationException::withMessages([
                 'tax_id' => 'Invalid Mexican RFC format.'
             ]);
+        }
+    }
+
+    /**
+     * Correos y telefonos (2026-09-30): normaliza las listas y mantiene
+     * `phone`/`phone_extension` como reflejo del primer telefono. Si otro
+     * flujo (checkout, CRM) escribe solo `phone`, se arma la lista con el.
+     */
+    public function syncChannels(): void
+    {
+        if ($this->email !== null) {
+            $this->email = trim($this->email) === '' ? null : trim($this->email);
+        }
+        $this->additional_emails = \Modules\Contacts\Support\ContactChannels::normalizeEmails(
+            $this->additional_emails ?? [],
+            $this->email
+        ) ?: null;
+
+        if ($this->isDirty('phones')) {
+            $phones = \Modules\Contacts\Support\ContactChannels::normalizePhones($this->phones ?? []);
+            $this->phones = $phones ?: null;
+            $first = $phones[0] ?? null;
+            $this->phone = $first ? \Modules\Contacts\Support\ContactChannels::formatPhone($first) : null;
+            $this->phone_extension = $first['ext'] ?? null;
+        } elseif ($this->isDirty('phone') && empty($this->phones) && $this->phone) {
+            $legacy = \Modules\Contacts\Support\ContactChannels::fromLegacyPhone($this->phone, $this->phone_extension);
+            $this->phones = $legacy ? [$legacy] : null;
         }
     }
 
@@ -268,6 +298,29 @@ class Contact extends Model
     public function contactAddresses()
     {
         return $this->hasMany(ContactAddress::class);
+    }
+
+    /**
+     * Direccion fiscal (2026-09-30): la de tipo fiscal; si no hay, la de
+     * facturacion predeterminada, luego cualquier predeterminada, luego la
+     * primera. Fuente unica para CFDI y PDFs.
+     */
+    public function fiscalAddress(): ?ContactAddress
+    {
+        $addresses = $this->relationLoaded('contactAddresses')
+            ? $this->contactAddresses
+            : $this->contactAddresses()->get();
+
+        return $addresses->firstWhere('address_type', 'fiscal')
+            ?? $addresses->first(fn ($a) => $a->is_default && in_array($a->address_type, ['billing', 'both'], true))
+            ?? $addresses->firstWhere('is_default', true)
+            ?? $addresses->first();
+    }
+
+    /** Razon social para documentos fiscales; si no hay, el nombre. */
+    public function fiscalName(): string
+    {
+        return trim((string) $this->legal_name) !== '' ? $this->legal_name : (string) $this->name;
     }
 
     public function contactPeople()

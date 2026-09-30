@@ -216,10 +216,10 @@ class CFDIPDFGenerator
         $folio = str_pad($invoice->folio, 6, '0', STR_PAD_LEFT);
 
         if ($invoice->uuid) {
-            return "CFDI_{$serie}_{$folio}_{$invoice->uuid}.pdf";
+            return \App\Support\DownloadFilename::sanitize("CFDI_{$serie}_{$folio}_{$invoice->uuid}.pdf");
         }
 
-        return "CFDI_{$serie}_{$folio}_DRAFT.pdf";
+        return \App\Support\DownloadFilename::sanitize("CFDI_{$serie}_{$folio}_DRAFT.pdf");
     }
 
     /**

@@ -4,6 +4,7 @@ namespace Modules\Contacts\JsonApi\V1\Contacts;
 
 use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
 use Illuminate\Validation\Rule;
+use Modules\Contacts\Support\ContactChannels;
 use Modules\Contacts\Support\SatCatalogs;
 
 class ContactRequest extends ResourceRequest
@@ -24,7 +25,25 @@ class ContactRequest extends ResourceRequest
                 'regex:/^[A-ZÑ&]{3,4}[0-9]{6}[A-Z0-9]{3}$/',
                 Rule::unique('contacts', 'tax_id')->ignore($contact?->id),
             ],
-            'email' => ['nullable', 'email', 'max:255'],
+            // Un solo correo: tambien es la llave del portal del cliente.
+            'email' => ['nullable', 'string', 'max:255', function ($attribute, $value, $fail) {
+                if ($error = ContactChannels::singleEmailError($value)) {
+                    $fail($error);
+                }
+            }],
+            'additionalEmails' => ['nullable', 'array', 'max:' . ContactChannels::MAX_ADDITIONAL_EMAILS],
+            'additionalEmails.*' => ['string', 'max:255', function ($attribute, $value, $fail) {
+                if ($error = ContactChannels::singleEmailError($value)) {
+                    $fail(str_replace('correo principal', 'correo adicional', $error));
+                }
+            }],
+            'phones' => ['nullable', 'array', 'max:' . ContactChannels::MAX_PHONES],
+            'phones.*' => [function ($attribute, $value, $fail) {
+                if ($error = ContactChannels::phoneError($value)) {
+                    $n = (int) substr($attribute, strrpos($attribute, '.') + 1) + 1;
+                    $fail("Telefono {$n}: {$error}");
+                }
+            }],
             'phone' => ['nullable', 'string', 'max:20'],
             'phoneExtension' => ['nullable', 'string', 'max:10'],
             'website' => ['nullable', 'url', 'max:255'],
@@ -64,6 +83,22 @@ class ContactRequest extends ResourceRequest
         return $rules;
     }
 
+    /**
+     * En un PATCH, laravel-json-api valida tambien los valores EXISTENTES del
+     * contacto. Las reglas de correo y telefono (2026-09-30) son mas
+     * estrictas que las de antes: un contacto viejo con un telefono raro no
+     * debe quedar sin poder editarse por un campo que no se esta tocando.
+     * Estos campos solo se validan cuando vienen en la peticion.
+     */
+    protected function withExisting($model, array $resource): array
+    {
+        foreach (['email', 'additionalEmails', 'phones'] as $field) {
+            unset($resource['attributes'][$field]);
+        }
+
+        return $resource;
+    }
+
     // Moved complex business logic to the model boot() method
     // This keeps the Request class focused on basic validation
 
@@ -83,6 +118,8 @@ class ContactRequest extends ResourceRequest
             'taxId.regex' => 'El formato del RFC no es válido.',
             'email.email' => 'El formato del email no es válido.',
             'email.max' => 'El email no puede tener más de 255 caracteres.',
+            'additionalEmails.max' => 'Se permiten hasta 20 correos adicionales.',
+            'phones.max' => 'Se permiten hasta 10 telefonos.',
             'phone.string' => 'El teléfono debe ser texto.',
             'phone.max' => 'El teléfono no puede tener más de 20 caracteres.',
             'phoneExtension.max' => 'La extensión no puede tener más de 10 caracteres.',

@@ -107,7 +107,7 @@ class ContactDocumentUploadController extends Controller
 
         return Storage::disk('private')->download(
             $document->file_path, 
-            $document->original_filename
+            \App\Support\DownloadFilename::sanitize($document->original_filename, 'documento')
         );
     }
 

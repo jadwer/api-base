@@ -45,9 +45,14 @@ class AccountingService
                 throw new Exception("Journal with code '{$journalCode}' not found or not active");
             }
 
-            // Find fiscal period for this date
-            $fiscalPeriod = FiscalPeriod::where('start_date', '<=', $entryDate)
-                ->where('end_date', '>=', $entryDate)
+            // Find fiscal period for this date. Se compara SOLO la fecha
+            // (2026-09-30): algunos llamadores mandan fecha con hora
+            // ("2026-09-30 08:55:37") y contra end_date '2026-09-30' (00:00)
+            // el ultimo dia de cada mes no encontraba periodo y la factura AR
+            // no se creaba. whereDate funciona igual en MySQL y SQLite.
+            $entryDay = \Illuminate\Support\Carbon::parse($entryDate)->toDateString();
+            $fiscalPeriod = FiscalPeriod::whereDate('start_date', '<=', $entryDay)
+                ->whereDate('end_date', '>=', $entryDay)
                 ->where('status', 'open')
                 ->first();
 

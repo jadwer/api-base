@@ -413,12 +413,13 @@
                 <td>
                     <div class="info-block">
                         <h4>Cliente</h4>
-                        <p><strong>{{ $contact->business_name ?? $contact->full_name }}</strong></p>
-                        @if($contact->rfc)<p><strong>RFC:</strong> {{ $contact->rfc }}</p>@endif
-                        @if($contact->email)<p><strong>Email:</strong> {{ $contact->email }}</p>@endif
-                        @if($contact->phone)<p><strong>Tel:</strong> {{ $contact->phone }}</p>@endif
-                        @if($contact->address)
-                        <p>{{ $contact->address }}, {{ $contact->city }}, {{ $contact->state }} {{ $contact->postal_code }}</p>
+                        @php($fiscalAddress = $contact?->fiscalAddress())
+                        <p><strong>{{ $contact?->fiscalName() }}</strong></p>
+                        @if($contact?->tax_id)<p><strong>RFC:</strong> {{ $contact->tax_id }}</p>@endif
+                        @if($contact?->email)<p><strong>Email:</strong> {{ $contact->email }}</p>@endif
+                        @if($contact?->phone)<p><strong>Tel:</strong> {{ $contact->phone }}@if($contact->phone_extension) ext. {{ $contact->phone_extension }}@endif</p>@endif
+                        @if($fiscalAddress)
+                        <p>{{ $fiscalAddress->getFullAddress() }}</p>
                         @endif
                     </div>
                 </td>

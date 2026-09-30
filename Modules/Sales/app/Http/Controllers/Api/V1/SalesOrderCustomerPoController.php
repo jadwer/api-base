@@ -92,7 +92,7 @@ class SalesOrderCustomerPoController extends Controller
             ], 404);
         }
 
-        $downloadName = 'oc-cliente-' . ($salesOrder->customer_po_number ?: $salesOrder->order_number) . '.pdf';
+        $downloadName = \App\Support\DownloadFilename::sanitize('oc-cliente-' . ($salesOrder->customer_po_number ?: $salesOrder->order_number) . '.pdf');
 
         return Storage::disk('private')->download($salesOrder->customer_po_path, $downloadName, [
             'Content-Type' => 'application/pdf',

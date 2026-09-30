@@ -9,6 +9,7 @@ use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Fields\Boolean;
 use LaravelJsonApi\Eloquent\Fields\ArrayHash;
+use LaravelJsonApi\Eloquent\Fields\ArrayList;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
 use LaravelJsonApi\Eloquent\Fields\Relations\HasMany;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
@@ -31,8 +32,10 @@ class ContactSchema extends Schema
             Str::make('legalName', 'legal_name')->sortable(),
             Str::make('taxId', 'tax_id')->sortable(),
             Str::make('email')->sortable(),
+            ArrayList::make('additionalEmails', 'additional_emails'),
             Str::make('phone')->sortable(),
             Str::make('phoneExtension', 'phone_extension'),
+            ArrayList::make('phones'),
             Str::make('website')->sortable(),
             Str::make('status')->sortable(),
             Boolean::make('isCustomer', 'is_customer')->sortable(),

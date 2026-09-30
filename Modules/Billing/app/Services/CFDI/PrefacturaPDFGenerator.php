@@ -109,16 +109,18 @@ class PrefacturaPDFGenerator
     protected function buildPseudoInvoice(SalesOrder $order, array $cfdiData, CompanySetting $settings): object
     {
         $contact = $order->contact;
+        $receptor = \Modules\Billing\Support\CfdiReceptor::fromContact($contact, $settings->postal_code);
 
         return (object)[
             'id' => $order->id,
             'series' => $cfdiData['series'] ?? $settings->invoice_series ?? 'F',
             'folio' => $cfdiData['folio'] ?? $settings->next_invoice_folio ?? 1,
-            'receptor_nombre' => $contact->business_name ?? $contact->full_name ?? 'Publico en General',
-            'receptor_rfc' => $cfdiData['receptor_rfc'] ?? $contact->rfc ?? 'XAXX010101000',
-            'receptor_uso_cfdi' => $cfdiData['receptor_uso_cfdi'] ?? 'G03',
-            'receptor_regimen_fiscal' => $cfdiData['receptor_regimen_fiscal'] ?? $contact->tax_regime ?? '616',
-            'receptor_domicilio_fiscal' => $cfdiData['receptor_domicilio_fiscal'] ?? $contact->postal_code ?? $settings->postal_code,
+            // Receptor: lo capturado en $cfdiData manda; si no, CfdiReceptor.
+            'receptor_nombre' => $cfdiData['receptor_nombre'] ?? $receptor['receptor_nombre'],
+            'receptor_rfc' => $cfdiData['receptor_rfc'] ?? $receptor['receptor_rfc'],
+            'receptor_uso_cfdi' => $cfdiData['receptor_uso_cfdi'] ?? $receptor['receptor_uso_cfdi'],
+            'receptor_regimen_fiscal' => $cfdiData['receptor_regimen_fiscal'] ?? $receptor['receptor_regimen_fiscal'],
+            'receptor_domicilio_fiscal' => $cfdiData['receptor_domicilio_fiscal'] ?? $receptor['receptor_domicilio_fiscal'] ?? $settings->postal_code,
             'fecha_emision' => now(),
             'tipo_comprobante' => 'I',
             'metodo_pago' => $cfdiData['metodo_pago'] ?? 'PUE',
@@ -223,7 +225,7 @@ class PrefacturaPDFGenerator
         $folio = str_pad($invoice->folio, 6, '0', STR_PAD_LEFT);
         $timestamp = now()->format('YmdHis');
 
-        return "PREFACTURA_{$serie}_{$folio}_{$timestamp}.pdf";
+        return \App\Support\DownloadFilename::sanitize("PREFACTURA_{$serie}_{$folio}_{$timestamp}.pdf");
     }
 
     /**
@@ -271,7 +273,7 @@ class PrefacturaPDFGenerator
 
         return response($content, 200, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="PREFACTURA_OV_' . $order->order_number . '.pdf"',
+            'Content-Disposition' => 'inline; filename="' . \App\Support\DownloadFilename::sanitize('PREFACTURA_OV_' . $order->order_number . '.pdf') . '"',
         ]);
     }
 
@@ -288,7 +290,7 @@ class PrefacturaPDFGenerator
 
         return response($content, 200, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="PREFACTURA_OV_' . $order->order_number . '.pdf"',
+            'Content-Disposition' => 'attachment; filename="' . \App\Support\DownloadFilename::sanitize('PREFACTURA_OV_' . $order->order_number . '.pdf') . '"',
         ]);
     }
 }

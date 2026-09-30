@@ -117,6 +117,32 @@ class JournalEntryBalanceInvariantTest extends TestCase
         $this->assertSame(2, DB::table('journal_lines')->where('journal_entry_id', $entry->id)->count());
     }
 
+    /**
+     * Bug 2026-09-30: con fecha+hora el ultimo dia del mes (o fecha el dia 1
+     * en SQLite) no se encontraba periodo y la factura AR no se creaba.
+     */
+    public function test_entry_on_period_edges_with_time_finds_the_period(): void
+    {
+        $this->ensureGlJournal();
+        $this->openPeriodFor(4);
+        $debitAccount = $this->postableAccount('asset', 'debit');
+        $creditAccount = $this->postableAccount('revenue', 'credit');
+
+        foreach (['2032-04-30 18:45:10', '2032-04-01', '2032-04-01 00:00:01'] as $i => $date) {
+            $entry = $this->accounting->createJournalEntry(
+                'GL',
+                $date,
+                'Borde de periodo',
+                "INV-EDGE-{$i}",
+                [
+                    ['account_id' => $debitAccount->id, 'debit_amount' => 10, 'credit_amount' => 0],
+                    ['account_id' => $creditAccount->id, 'debit_amount' => 0, 'credit_amount' => 10],
+                ]
+            );
+            $this->assertSame(JournalEntry::STATUS_POSTED, $entry->fresh()->status, "fecha {$date}");
+        }
+    }
+
     public function test_unbalanced_entry_is_rejected_and_leaves_no_orphan_rows(): void
     {
         $this->ensureGlJournal();

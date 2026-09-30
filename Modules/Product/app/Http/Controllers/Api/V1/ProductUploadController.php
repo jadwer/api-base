@@ -146,9 +146,9 @@ class ProductUploadController extends Controller
 
         // Get the file
         $fullPath = Storage::disk('public')->path($path);
-        $filename = $product->sku
+        $filename = \App\Support\DownloadFilename::sanitize($product->sku
             ? "ficha-tecnica-{$product->sku}.pdf"
-            : "ficha-tecnica-{$product->id}.pdf";
+            : "ficha-tecnica-{$product->id}.pdf");
 
         // Return file download response
         return response()->download($fullPath, $filename, [
