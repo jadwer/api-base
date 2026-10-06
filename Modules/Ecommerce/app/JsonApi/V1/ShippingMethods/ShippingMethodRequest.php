@@ -85,6 +85,8 @@ class ShippingMethodRequest extends ResourceRequest
                 'nullable',
                 'array',
             ],
+            'availableCountries' => ['sometimes', 'nullable', 'array'],
+            'availableCountries.*' => ['string', 'size:2'],
             'metadata' => [
                 'sometimes',
                 'nullable',

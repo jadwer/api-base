@@ -4,6 +4,7 @@ namespace Modules\Billing\JsonApi\V1\CFDIInvoices;
 
 use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use LaravelJsonApi\Eloquent\Fields\ArrayHash;
+use LaravelJsonApi\Eloquent\Fields\ArrayList;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Number;
@@ -88,16 +89,18 @@ class CFDIInvoiceSchema extends Schema
             Number::make('montoPago', 'monto_pago'),
             Str::make('formaPagoP', 'forma_pago_p'),
             Number::make('arPaymentId', 'ar_payment_id'),
+            // Columnas propias desde el Paquete B (87efe13); la relacion
+            // paymentDocs queda como respaldo para REP anteriores.
             Number::make('numParcialidad')->extractUsing(
-                static fn ($model) => optional($model->paymentDocs->first())->num_parcialidad
+                static fn ($model) => $model->num_parcialidad ?? optional($model->paymentDocs->first())->num_parcialidad
             )->readOnly(),
             Number::make('impSaldoInsoluto')->extractUsing(
-                static fn ($model) => optional($model->paymentDocs->first())->imp_saldo_insoluto
+                static fn ($model) => $model->imp_saldo_insoluto ?? optional($model->paymentDocs->first())->imp_saldo_insoluto
             )->readOnly(),
 
             // Related CFDI
             Str::make('cfdiRelacionadoTipo', 'cfdi_relacionado_tipo'),
-            ArrayHash::make('cfdiRelacionadoUuids', 'cfdi_relacionado_uuids'),
+            ArrayList::make('cfdiRelacionadoUuids', 'cfdi_relacionado_uuids'),
 
             // Status
             // Refactor ciclo (Patron 1): el status del CFDI NO puede cambiarse por PATCH.
@@ -123,6 +126,8 @@ class CFDIInvoiceSchema extends Schema
 
             DateTime::make('createdAt')->sortable()->readOnly(),
             DateTime::make('updatedAt')->sortable()->readOnly(),
+            // Recuperados del Resource manual retirado (2026-09-30): mismo nombre y valor.
+            Str::make('pacResponse', 'pac_response')->readOnly(),
         ];
     }
 

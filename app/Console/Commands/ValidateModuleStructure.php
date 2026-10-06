@@ -212,8 +212,18 @@ class ValidateModuleStructure extends Command
 
     private function validateResourceFile(string $content, string $fileName): void
     {
-        if (!str_contains($content, 'public function attributes(')) {
-            $this->addError("Missing attributes() method in {$fileName}");
+        // Regla 2026-09-30: el Schema es la fuente unica de la salida. Un
+        // Resource que redefine attributes()/relationships() sin partir del
+        // padre duplica la lista y se desalinea (campos que no viajan, hidden
+        // del Schema ignorado).
+        // Excepcion documentada: entidades que no son modelos (reportes).
+        if (str_contains($content, '@serializacion-propia')) {
+            return;
+        }
+        foreach (['attributes', 'relationships'] as $method) {
+            if (str_contains($content, "public function {$method}(") && !str_contains($content, "parent::{$method}(")) {
+                $this->addError("{$fileName} redefine {$method}() sin parent::{$method}(): usa el Schema (campo readOnly) o parte del padre");
+            }
         }
 
         // Check for hybrid approach (fields + relationships)

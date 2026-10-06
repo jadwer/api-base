@@ -2,43 +2,18 @@
 
 namespace Modules\HR\JsonApi\V1\Positions;
 
-use Illuminate\Http\Request;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * La salida la define el Schema (fuente unica, 2026-09-30).
+ *
+ * Antes este Resource repetia a mano la lista de campos y se desalineaba del
+ * Schema: campos que se guardaban y nunca se devolvian, y los ->hidden() del
+ * Schema no aplicaban. Si hace falta un campo calculado, va en el Schema
+ * (campo de solo lectura) o como accesor del modelo; si de verdad se
+ * necesita logica aqui, partir de parent::attributes($request).
+ * El candado de la salida es tests/Feature/Contracts/JsonApiContractTest.
+ */
 class PositionResource extends JsonApiResource
 {
-    /**
-     * Get the resource's attributes.
-     *
-     * @param Request|null $request
-     * @return iterable
-     */
-    public function attributes($request): iterable
-    {
-        return [
-            'title' => $this->resource->title,
-            'description' => $this->resource->description,
-            'level' => $this->resource->level,
-            'minSalary' => $this->resource->min_salary,
-            'maxSalary' => $this->resource->max_salary,
-            'isActive' => $this->resource->is_active,
-            'defaultRole' => $this->resource->default_role,
-            'createdAt' => $this->resource->created_at,
-            'updatedAt' => $this->resource->updated_at,
-        ];
-    }
-
-    /**
-     * Get the resource's relationships.
-     *
-     * @param Request|null $request
-     * @return iterable
-     */
-    public function relationships($request): iterable
-    {
-        return [
-            $this->relation('department'),
-            $this->relation('employees'),
-        ];
-    }
 }

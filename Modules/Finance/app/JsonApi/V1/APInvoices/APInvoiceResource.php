@@ -4,45 +4,16 @@ namespace Modules\Finance\JsonApi\V1\APInvoices;
 
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * La salida la define el Schema (fuente unica, 2026-09-30).
+ *
+ * Antes este Resource repetia a mano la lista de campos y se desalineaba del
+ * Schema: campos que se guardaban y nunca se devolvian, y los ->hidden() del
+ * Schema no aplicaban. Si hace falta un campo calculado, va en el Schema
+ * (campo de solo lectura) o como accesor del modelo; si de verdad se
+ * necesita logica aqui, partir de parent::attributes($request).
+ * El candado de la salida es tests/Feature/Contracts/JsonApiContractTest.
+ */
 class APInvoiceResource extends JsonApiResource
 {
-    public function attributes($request): iterable
-    {
-        return [
-            'invoiceNumber' => $this->invoice_number,
-            'invoiceDate' => $this->invoice_date,
-            'dueDate' => $this->due_date,
-            'contactId' => $this->contact_id,
-            'purchaseOrderId' => $this->purchase_order_id,
-            'currency' => $this->currency,
-            'subtotal' => $this->subtotal,
-            'taxAmount' => $this->tax_amount,
-            'totalAmount' => $this->total_amount,
-            'paidAmount' => $this->paid_amount,
-            'status' => $this->status,
-            'journalEntryId' => $this->journal_entry_id,
-            'notes' => $this->notes,
-            'metadata' => $this->metadata,
-            'isActive' => $this->is_active,
-            // Barrido Paquete B 2026-08-31: el Resource manual pisa al
-            // Schema; todo campo del Schema debe estar aqui o el API
-            // guarda pero nunca lo devuelve.
-            'reconciliationStatus' => $this->reconciliation_status,
-            'reconciledAt' => $this->reconciled_at,
-            'reconciledBy' => $this->reconciled_by,
-            'reconciliationNotes' => $this->reconciliation_notes,
-            'discrepancies' => $this->discrepancies,
-            "createdAt" => $this->created_at,
-            "updatedAt" => $this->updated_at,
-        ];
-    }
-
-    public function relationships($request): iterable
-    {
-        return [
-            'contact' => $this->relation('contact'),
-            'purchaseOrder' => $this->relation('purchaseOrder'),
-            'journalEntry' => $this->relation('journalEntry'),
-        ];
-    }
 }

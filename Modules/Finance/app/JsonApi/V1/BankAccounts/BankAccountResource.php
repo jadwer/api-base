@@ -4,31 +4,16 @@ namespace Modules\Finance\JsonApi\V1\BankAccounts;
 
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * La salida la define el Schema (fuente unica, 2026-09-30).
+ *
+ * Antes este Resource repetia a mano la lista de campos y se desalineaba del
+ * Schema: campos que se guardaban y nunca se devolvian, y los ->hidden() del
+ * Schema no aplicaban. Si hace falta un campo calculado, va en el Schema
+ * (campo de solo lectura) o como accesor del modelo; si de verdad se
+ * necesita logica aqui, partir de parent::attributes($request).
+ * El candado de la salida es tests/Feature/Contracts/JsonApiContractTest.
+ */
 class BankAccountResource extends JsonApiResource
 {
-    public function attributes($request): iterable
-    {
-        return [
-            'accountNumber' => $this->account_number,
-            'accountName' => $this->account_name,
-            'bankName' => $this->bank_name,
-            'currency' => $this->currency,
-            'glAccountId' => $this->gl_account_id,
-            'currentBalance' => $this->current_balance,
-            'openingBalance' => $this->opening_balance,
-            'status' => $this->status,
-            'metadata' => $this->metadata,
-            'isActive' => $this->is_active,
-            "createdAt" => $this->created_at,
-            "updatedAt" => $this->updated_at,
-        ];
-    }
-
-    public function relationships($request): iterable
-    {
-        return [
-            'payment' => $this->relation('payment'),
-            'account' => $this->relation('account'),
-        ];
-    }
 }

@@ -46,7 +46,14 @@ class APInvoiceAuthorizer implements Authorizer
     public function destroy(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('ap-invoices.destroy') ?? false;
+        if (! ($user?->can('ap-invoices.destroy') ?? false)) {
+            return false;
+        }
+
+        // Paquete B: un documento con efectos contables o cobros no se borra.
+        $reason = \Modules\Finance\Support\FinancialDeletionGuard::reason($model, ['posted', 'partial', 'paid', 'void', 'voided', 'cancelled'], ['paid_amount']);
+
+        return $reason ? Response::deny($reason) : true;
     }
     
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response

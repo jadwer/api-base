@@ -37,6 +37,8 @@ class ExchangeRatePolicySchema extends Schema
             DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
             DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
 
+            // Recuperados del Resource manual retirado (2026-09-30): mismo nombre y valor.
+            Number::make('companyId', 'company_id')->readOnly(),
         ];
     }
 

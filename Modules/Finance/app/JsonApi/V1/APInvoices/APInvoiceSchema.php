@@ -36,6 +36,8 @@ class APInvoiceSchema extends Schema
             Number::make('totalAmount')->sortable(),
             Number::make('paidAmount')->sortable(),
             Str::make('status')->sortable(),
+            // Periodo fiscal asignado por el posteo (auditoria 2026-07, hallazgo MEDIO).
+            Number::make('fiscalPeriodId', 'fiscal_period_id')->readOnly(),
             Number::make('journalEntryId')->sortable(),
             Str::make('notes'),
             ArrayHash::make('metadata'),
@@ -57,6 +59,8 @@ class APInvoiceSchema extends Schema
             BelongsTo::make('purchaseOrder'),
             BelongsTo::make('journalEntry'),
             BelongsTo::make('reconciledBy', 'reconciledBy')->type('users'),
+            // Recuperados del Resource manual retirado (2026-09-30): mismo nombre y valor.
+            Number::make('reconciledBy', 'reconciled_by')->readOnly(),
         ];
     }
 

@@ -4,6 +4,7 @@ namespace Modules\Sales\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\User\Models\User;
+use Modules\Product\Models\Product;
 use Modules\Sales\Models\DiscountRule;
 
 class DiscountRuleUpdateTest extends TestCase
@@ -103,6 +104,48 @@ class DiscountRuleUpdateTest extends TestCase
             ->patch('/api/v1/discount-rules/' . $discountRule->id);
 
         $response->assertOk();
+    }
+
+    public function test_rule_with_product_list_can_be_updated_and_returns_the_list(): void
+    {
+        // Regresion: productIds/categoryIds/customerIds son listas; con ArrayHash el PATCH
+        // tronaba (500) aunque el cliente no tocara el campo, porque la libreria vuelve a
+        // llenar los valores existentes.
+        $admin = $this->getAdminUser();
+        $productIds = Product::query()->orderBy('id')->limit(2)->pluck('id')->map(fn ($id) => (int) $id)->all();
+        $this->assertCount(2, $productIds);
+
+        $discountRule = DiscountRule::factory()->forProduct($productIds)->create([
+            'name' => 'Lista de productos',
+            'customer_classifications' => ['premium', 'standard'],
+        ]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('discount-rules')
+            ->withData([
+                'type' => 'discount-rules',
+                'id' => (string) $discountRule->id,
+                'attributes' => ['name' => 'Lista renombrada'],
+            ])
+            ->patch("/api/v1/discount-rules/{$discountRule->id}");
+
+        $response->assertOk();
+        $response->assertJsonPath('data.attributes.productIds', $productIds);
+        $response->assertJsonPath('data.attributes.customerClassifications', ['premium', 'standard']);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('discount-rules')
+            ->withData([
+                'type' => 'discount-rules',
+                'id' => (string) $discountRule->id,
+                'attributes' => ['productIds' => [$productIds[0]]],
+            ])
+            ->patch("/api/v1/discount-rules/{$discountRule->id}");
+
+        $response->assertOk();
+        $this->assertSame([$productIds[0]], $discountRule->fresh()->product_ids);
     }
 
     public function test_update_validates_discount_type(): void

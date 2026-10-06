@@ -72,9 +72,4 @@ class ProductConversionSchema extends Schema
     {
         return 'product-conversions';
     }
-
-    public function relationships(): array
-    {
-        return [];
-    }
 }

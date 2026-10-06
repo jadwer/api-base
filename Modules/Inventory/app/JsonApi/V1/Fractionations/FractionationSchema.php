@@ -100,9 +100,4 @@ class FractionationSchema extends Schema
     {
         return 'fractionations';
     }
-
-    public function relationships(): array
-    {
-        return [];
-    }
 }

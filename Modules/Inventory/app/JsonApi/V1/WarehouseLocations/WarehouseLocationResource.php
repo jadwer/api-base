@@ -4,40 +4,16 @@ namespace Modules\Inventory\JsonApi\V1\WarehouseLocations;
 
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * La salida la define el Schema (fuente unica, 2026-09-30).
+ *
+ * Antes este Resource repetia a mano la lista de campos y se desalineaba del
+ * Schema: campos que se guardaban y nunca se devolvian, y los ->hidden() del
+ * Schema no aplicaban. Si hace falta un campo calculado, va en el Schema
+ * (campo de solo lectura) o como accesor del modelo; si de verdad se
+ * necesita logica aqui, partir de parent::attributes($request).
+ * El candado de la salida es tests/Feature/Contracts/JsonApiContractTest.
+ */
 class WarehouseLocationResource extends JsonApiResource
 {
-    public function attributes($request): iterable
-    {
-        return [
-            'name' => $this->name,
-            'code' => $this->code,
-            'description' => $this->description,
-            'locationType' => $this->location_type,
-            'aisle' => $this->aisle,
-            'rack' => $this->rack,
-            'shelf' => $this->shelf,
-            'level' => $this->level,
-            'position' => $this->position,
-            'barcode' => $this->barcode,
-            'maxWeight' => $this->max_weight,
-            'maxVolume' => $this->max_volume,
-            'dimensions' => $this->dimensions,
-            'isActive' => $this->is_active,
-            'isPickable' => $this->is_pickable,
-            'isReceivable' => $this->is_receivable,
-            'priority' => $this->priority,
-            'metadata' => $this->metadata,
-            'createdAt' => $this->created_at,
-            'updatedAt' => $this->updated_at,
-        ];
-    }
-
-    public function relationships($request): iterable
-    {
-        return [
-            'warehouse' => $this->relation('warehouse'),
-            'stock' => $this->relation('stock'),
-            'productBatches' => $this->relation('productBatches'),
-        ];
-    }
 }

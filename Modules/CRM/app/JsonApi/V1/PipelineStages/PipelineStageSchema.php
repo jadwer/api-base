@@ -41,6 +41,8 @@ class PipelineStageSchema extends Schema
             Boolean::make('isClosedLost', 'is_closed_lost')->sortable(),
             DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
             DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
+            // Recuperados del Resource manual retirado (2026-09-30): mismo nombre y valor.
+            Str::make('type')->readOnly(),
         ];
     }
 

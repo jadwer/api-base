@@ -2,48 +2,18 @@
 
 namespace Modules\Billing\JsonApi\V1\PaymentTransactions;
 
-use Illuminate\Http\Request;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * La salida la define el Schema (fuente unica, 2026-09-30).
+ *
+ * Antes este Resource repetia a mano la lista de campos y se desalineaba del
+ * Schema: campos que se guardaban y nunca se devolvian, y los ->hidden() del
+ * Schema no aplicaban. Si hace falta un campo calculado, va en el Schema
+ * (campo de solo lectura) o como accesor del modelo; si de verdad se
+ * necesita logica aqui, partir de parent::attributes($request).
+ * El candado de la salida es tests/Feature/Contracts/JsonApiContractTest.
+ */
 class PaymentTransactionResource extends JsonApiResource
 {
-    public function attributes($request): iterable
-    {
-        return [
-            'gateway' => $this->resource->gateway,
-            'paymentIntentId' => $this->resource->payment_intent_id,
-            'transactionId' => $this->resource->transaction_id,
-            // clientSecret is intentionally excluded for security
-            'amount' => $this->resource->amount,
-            'currency' => $this->resource->currency,
-            'status' => $this->resource->status,
-            'paymentMethod' => $this->resource->payment_method,
-            'cardBrand' => $this->resource->card_brand,
-            'cardLast4' => $this->resource->card_last4,
-            'gatewayResponse' => $this->resource->gateway_response,
-            'errorMessage' => $this->resource->error_message,
-            'authorizedAt' => $this->resource->authorized_at,
-            'capturedAt' => $this->resource->captured_at,
-            'failedAt' => $this->resource->failed_at,
-            'refundedAt' => $this->resource->refunded_at,
-            'metadata' => $this->resource->metadata,
-            // Barrido Paquete B 2026-08-31: el Resource manual pisa al
-            // Schema; todo campo del Schema debe estar aqui o el API
-            // guarda pero nunca lo devuelve.
-            'checkoutSessionId' => $this->checkout_session_id,
-            'salesOrderId' => $this->sales_order_id,
-            'arInvoiceId' => $this->ar_invoice_id,
-            'createdAt' => $this->resource->created_at,
-            'updatedAt' => $this->resource->updated_at,
-        ];
-    }
-
-    public function relationships($request): iterable
-    {
-        return [
-            $this->relation('checkoutSession'),
-            $this->relation('salesOrder'),
-            $this->relation('arInvoice'),
-        ];
-    }
 }

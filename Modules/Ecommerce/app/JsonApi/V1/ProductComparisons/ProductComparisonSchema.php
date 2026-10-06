@@ -2,6 +2,7 @@
 
 namespace Modules\Ecommerce\JsonApi\V1\ProductComparisons;
 
+use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\ID;
@@ -37,6 +38,8 @@ class ProductComparisonSchema extends Schema
             HasMany::make('items', 'items')->type('product-comparison-items'),
             DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
             DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
+            // Recuperados del Resource manual retirado (2026-09-30): mismo nombre y valor.
+            Number::make('userId', 'user_id')->readOnly(),
         ];
     }
 

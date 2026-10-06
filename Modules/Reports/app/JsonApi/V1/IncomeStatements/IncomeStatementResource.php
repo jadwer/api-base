@@ -4,6 +4,11 @@ namespace Modules\Reports\JsonApi\V1\IncomeStatements;
 
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * @serializacion-propia La entidad no es un modelo Eloquent: el reporte se
+ * calcula y este Resource arma la salida desde el arreglo de datos. Aqui SI
+ * aplica un Resource con attributes() propio (regla 2026-09-30).
+ */
 class IncomeStatementResource extends JsonApiResource
 {
     public function attributes($request): iterable

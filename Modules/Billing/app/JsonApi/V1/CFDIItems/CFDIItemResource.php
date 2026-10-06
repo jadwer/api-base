@@ -2,57 +2,18 @@
 
 namespace Modules\Billing\JsonApi\V1\CFDIItems;
 
-use Illuminate\Http\Request;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * La salida la define el Schema (fuente unica, 2026-09-30).
+ *
+ * Antes este Resource repetia a mano la lista de campos y se desalineaba del
+ * Schema: campos que se guardaban y nunca se devolvian, y los ->hidden() del
+ * Schema no aplicaban. Si hace falta un campo calculado, va en el Schema
+ * (campo de solo lectura) o como accesor del modelo; si de verdad se
+ * necesita logica aqui, partir de parent::attributes($request).
+ * El candado de la salida es tests/Feature/Contracts/JsonApiContractTest.
+ */
 class CFDIItemResource extends JsonApiResource
 {
-    /**
-     * Get the resource's attributes.
-     *
-     * @param Request|null $request
-     * @return iterable
-     */
-    public function attributes($request): iterable
-    {
-        return [
-            'numeroLinea' => $this->numero_linea,
-            'claveProdServ' => $this->clave_prod_serv,
-            'claveUnidad' => $this->clave_unidad,
-            'unidad' => $this->unidad,
-            'cantidad' => $this->cantidad,
-            'descripcion' => $this->descripcion,
-            'noIdentificacion' => $this->no_identificacion,
-            'valorUnitario' => $this->valor_unitario,
-            'importe' => $this->importe,
-            'descuento' => $this->descuento,
-            'impuestos' => $this->impuestos,
-            'objetoImp' => $this->objeto_imp,
-            'numeroPedimento' => $this->numero_pedimento,
-            'cuentaPredial' => $this->cuenta_predial,
-            'informacionAduanera' => $this->informacion_aduanera,
-            'metadata' => $this->metadata,
-            // Barrido Paquete B 2026-08-31: el Resource manual pisa al
-            // Schema; todo campo del Schema debe estar aqui o el API
-            // guarda pero nunca lo devuelve.
-            'cfdiInvoiceId' => $this->cfdi_invoice_id,
-            'productId' => $this->product_id,
-            'createdAt' => $this->created_at,
-            'updatedAt' => $this->updated_at,
-        ];
-    }
-
-    /**
-     * Get the resource's relationships.
-     *
-     * @param Request|null $request
-     * @return iterable
-     */
-    public function relationships($request): iterable
-    {
-        return [
-            $this->relation('cfdiInvoice'),
-            $this->relation('product'),
-        ];
-    }
 }

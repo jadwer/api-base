@@ -4,30 +4,16 @@ namespace Modules\Finance\JsonApi\V1\PaymentApplications;
 
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * La salida la define el Schema (fuente unica, 2026-09-30).
+ *
+ * Antes este Resource repetia a mano la lista de campos y se desalineaba del
+ * Schema: campos que se guardaban y nunca se devolvian, y los ->hidden() del
+ * Schema no aplicaban. Si hace falta un campo calculado, va en el Schema
+ * (campo de solo lectura) o como accesor del modelo; si de verdad se
+ * necesita logica aqui, partir de parent::attributes($request).
+ * El candado de la salida es tests/Feature/Contracts/JsonApiContractTest.
+ */
 class PaymentApplicationResource extends JsonApiResource
 {
-    public function attributes($request): iterable
-    {
-        return [
-            'paymentId' => $this->payment_id,
-            'arInvoiceId' => $this->ar_invoice_id,
-            'amount' => $this->amount,
-            'applicationDate' => $this->application_date,
-            'notes' => $this->notes,
-            'metadata' => $this->metadata,
-            'isActive' => $this->is_active,
-            "createdAt" => $this->created_at,
-            "updatedAt" => $this->updated_at,
-        ];
-    }
-
-    public function relationships($request): iterable
-    {
-        return [
-            'aRInvoices' => $this->relation('aRInvoices'),
-            'payments' => $this->relation('payments'),
-            'payment' => $this->relation('payment'),
-            'aRInvoice' => $this->relation('aRInvoice'),
-        ];
-    }
 }

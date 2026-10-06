@@ -110,14 +110,4 @@ class SalesOrderItemSchema extends Schema
     {
         return 'sales-order-items';
     }
-
-    /**
-     * Get the resource relationships.
-     */
-    public function relationships(): array
-    {
-        return [
-            //
-        ];
-    }
 }

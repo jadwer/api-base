@@ -4,41 +4,16 @@ namespace Modules\Sales\JsonApi\V1\SalesOrderItems;
 
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * La salida la define el Schema (fuente unica, 2026-09-30).
+ *
+ * Antes este Resource repetia a mano la lista de campos y se desalineaba del
+ * Schema: campos que se guardaban y nunca se devolvian, y los ->hidden() del
+ * Schema no aplicaban. Si hace falta un campo calculado, va en el Schema
+ * (campo de solo lectura) o como accesor del modelo; si de verdad se
+ * necesita logica aqui, partir de parent::attributes($request).
+ * El candado de la salida es tests/Feature/Contracts/JsonApiContractTest.
+ */
 class SalesOrderItemResource extends JsonApiResource
 {
-    /**
-     * Get the resource attributes.
-     */
-    public function attributes($request): iterable
-    {
-        return [
-            // Direct foreign key fields (following SalesOrder pattern)
-            'salesOrderId' => $this->sales_order_id,
-            'productId' => $this->product_id,
-            
-            // Numeric fields (camelCase in JSON API)
-            'quantity' => $this->quantity,
-            'unitPrice' => $this->unit_price,
-            'discount' => $this->discount,
-            'total' => $this->total,
-            
-            // JSON fields
-            'metadata' => $this->metadata,
-            
-            // Timestamps
-            'createdAt' => $this->created_at,
-            'updatedAt' => $this->updated_at,
-        ];
-    }
-
-    /**
-     * Get the resource relationships.
-     */
-    public function relationships($request): iterable
-    {
-        return [
-            'salesOrder' => $this->relation('salesOrder'),
-            'product' => $this->relation('product'),
-        ];
-    }
 }

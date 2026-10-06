@@ -9,6 +9,7 @@ use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Fields\Boolean;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\ArrayHash;
+use LaravelJsonApi\Eloquent\Fields\ArrayList;
 use LaravelJsonApi\Eloquent\Filters\Scope;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIn;
@@ -35,10 +36,11 @@ class DiscountRuleSchema extends Schema
             Number::make('minOrderAmount'),
             Number::make('minQuantity'),
             Number::make('maxDiscountAmount'),
-            ArrayHash::make('productIds'),
-            ArrayHash::make('categoryIds'),
-            ArrayHash::make('customerIds'),
-            ArrayHash::make('customerClassifications'),
+            // Listas (la validacion es productIds.* etc.); ArrayHash truena en PATCH con listas
+            ArrayList::make('productIds'),
+            ArrayList::make('categoryIds'),
+            ArrayList::make('customerIds'),
+            ArrayList::make('customerClassifications'),
             DateTime::make('startDate')->sortable(),
             DateTime::make('endDate')->sortable(),
             Number::make('usageLimit'),

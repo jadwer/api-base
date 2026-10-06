@@ -37,6 +37,8 @@ class ARInvoiceSchema extends Schema
             Number::make('paidAmount')->sortable(),
             DateTime::make('paidDate')->sortable(),
             Str::make('status')->sortable(),
+            // Periodo fiscal asignado por el posteo (auditoria 2026-07, hallazgo MEDIO).
+            Number::make('fiscalPeriodId', 'fiscal_period_id')->readOnly(),
             Number::make('journalEntryId')->sortable(),
             Str::make('notes'),
             ArrayHash::make('metadata'),

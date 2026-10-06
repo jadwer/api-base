@@ -4,32 +4,16 @@ namespace Modules\Accounting\JsonApi\V1\ExchangeRatePolicies;
 
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * La salida la define el Schema (fuente unica, 2026-09-30).
+ *
+ * Antes este Resource repetia a mano la lista de campos y se desalineaba del
+ * Schema: campos que se guardaban y nunca se devolvian, y los ->hidden() del
+ * Schema no aplicaban. Si hace falta un campo calculado, va en el Schema
+ * (campo de solo lectura) o como accesor del modelo; si de verdad se
+ * necesita logica aqui, partir de parent::attributes($request).
+ * El candado de la salida es tests/Feature/Contracts/JsonApiContractTest.
+ */
 class ExchangeRatePolicyResource extends JsonApiResource
 {
-    public function attributes($request): iterable
-    {
-        return [
-            'companyId' => $this->company_id,
-            'currency' => $this->currency,
-            'source' => $this->source,
-            'scope' => $this->scope,
-            'maxAgeDays' => $this->max_age_days,
-            'tolerancePercentage' => $this->tolerance_percentage,
-            'requireApprovalOver' => $this->require_approval_over,
-            'isActive' => $this->is_active,
-            // Barrido Paquete B 2026-08-31: el Resource manual pisa al
-            // Schema; todo campo del Schema debe estar aqui o el API
-            // guarda pero nunca lo devuelve.
-            'metadata' => $this->metadata,
-            "createdAt" => $this->created_at,
-            "updatedAt" => $this->updated_at,
-        ];
-    }
-
-    public function relationships($request): iterable
-    {
-        return [
-
-        ];
-    }
 }

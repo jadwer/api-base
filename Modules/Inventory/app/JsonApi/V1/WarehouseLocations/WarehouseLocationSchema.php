@@ -2,6 +2,7 @@
 
 namespace Modules\Inventory\JsonApi\V1\WarehouseLocations;
 
+use LaravelJsonApi\Eloquent\Fields\ArrayHash;
 use LaravelJsonApi\Eloquent\Schema;
 use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Str;
@@ -9,7 +10,6 @@ use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Fields\Boolean;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
-use LaravelJsonApi\Eloquent\Fields\ArrayList;
 use LaravelJsonApi\Eloquent\Fields\Relations\HasMany;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
@@ -58,7 +58,8 @@ class WarehouseLocationSchema extends Schema
             Boolean::make('isPickable', 'is_pickable'),
             Boolean::make('isReceivable', 'is_receivable'),
             Number::make('priority')->sortable(),
-            ArrayList::make('metadata')->readOnly(),
+            // Es un objeto (zone, access_level, notes): ArrayList le quitaba las llaves.
+            ArrayHash::make('metadata')->readOnly(),
             
             // Timestamps
             DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),

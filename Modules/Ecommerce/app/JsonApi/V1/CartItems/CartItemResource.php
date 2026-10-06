@@ -4,32 +4,16 @@ namespace Modules\Ecommerce\JsonApi\V1\CartItems;
 
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * La salida la define el Schema (fuente unica, 2026-09-30).
+ *
+ * Antes este Resource repetia a mano la lista de campos y se desalineaba del
+ * Schema: campos que se guardaban y nunca se devolvian, y los ->hidden() del
+ * Schema no aplicaban. Si hace falta un campo calculado, va en el Schema
+ * (campo de solo lectura) o como accesor del modelo; si de verdad se
+ * necesita logica aqui, partir de parent::attributes($request).
+ * El candado de la salida es tests/Feature/Contracts/JsonApiContractTest.
+ */
 class CartItemResource extends JsonApiResource
 {
-    public function attributes($request): iterable
-    {
-        return [
-            'shoppingCartId' => $this->shopping_cart_id,
-            'productId' => $this->product_id,
-            'quantity' => $this->quantity,
-            'unitPrice' => $this->unit_price,
-            'originalPrice' => $this->original_price,
-            'discountPercent' => $this->discount_percent,
-            'discountAmount' => $this->discount_amount,
-            'subtotal' => $this->subtotal,
-            'taxRate' => $this->tax_rate,
-            'taxAmount' => $this->tax_amount,
-            'total' => $this->total,
-            "createdAt" => $this->created_at,
-            "updatedAt" => $this->updated_at,
-        ];
-    }
-
-    public function relationships($request): iterable
-    {
-        return [
-            'shoppingCart' => $this->relation('shoppingCart'),
-            'product' => $this->relation('product'),
-        ];
-    }
 }

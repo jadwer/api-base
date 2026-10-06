@@ -4,31 +4,16 @@ namespace Modules\Accounting\JsonApi\V1\JournalLines;
 
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * La salida la define el Schema (fuente unica, 2026-09-30).
+ *
+ * Antes este Resource repetia a mano la lista de campos y se desalineaba del
+ * Schema: campos que se guardaban y nunca se devolvian, y los ->hidden() del
+ * Schema no aplicaban. Si hace falta un campo calculado, va en el Schema
+ * (campo de solo lectura) o como accesor del modelo; si de verdad se
+ * necesita logica aqui, partir de parent::attributes($request).
+ * El candado de la salida es tests/Feature/Contracts/JsonApiContractTest.
+ */
 class JournalLineResource extends JsonApiResource
 {
-    public function attributes($request): iterable
-    {
-        return [
-            'journalEntryId' => $this->journal_entry_id,
-            'accountId' => $this->account_id,
-            'contactId' => $this->contact_id,
-            'debit' => $this->debit,
-            'credit' => $this->credit,
-            'description' => $this->description,
-            'reference' => $this->reference,
-            'metadata' => $this->metadata,
-            "createdAt" => $this->created_at,
-            "updatedAt" => $this->updated_at,
-        ];
-    }
-
-    public function relationships($request): iterable
-    {
-        return [
-            'journalEntry' => $this->relation('journalEntry'),
-            'account' => $this->relation('account'),
-            'journalEntries' => $this->relation('journalEntries'),
-            'accounts' => $this->relation('accounts'),
-        ];
-    }
 }

@@ -86,9 +86,8 @@ class ShippingMethodUpdateTest extends TestCase
             ->patch('/api/v1/shipping-methods/' . $method->id);
 
         $response->assertOk();
-        $this->assertDatabaseHas('shipping_methods', [
-            'id' => $method->id,
-        ]);
+        $response->assertJsonPath('data.attributes.availableCountries', ['MX', 'US', 'CA']);
+        $this->assertSame(['MX', 'US', 'CA'], $method->fresh()->available_countries);
     }
 
     public function test_admin_can_partially_update_shipping_method(): void

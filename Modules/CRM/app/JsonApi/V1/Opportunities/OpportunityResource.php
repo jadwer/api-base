@@ -2,38 +2,18 @@
 
 namespace Modules\CRM\JsonApi\V1\Opportunities;
 
-use Illuminate\Http\Request;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * La salida la define el Schema (fuente unica, 2026-09-30).
+ *
+ * Antes este Resource repetia a mano la lista de campos y se desalineaba del
+ * Schema: campos que se guardaban y nunca se devolvian, y los ->hidden() del
+ * Schema no aplicaban. Si hace falta un campo calculado, va en el Schema
+ * (campo de solo lectura) o como accesor del modelo; si de verdad se
+ * necesita logica aqui, partir de parent::attributes($request).
+ * El candado de la salida es tests/Feature/Contracts/JsonApiContractTest.
+ */
 class OpportunityResource extends JsonApiResource
 {
-    /**
-     * Get the resource's attributes.
-     *
-     * @param  Request|null  $request
-     * @return array
-     */
-    public function attributes($request): array
-    {
-        return [
-            'name' => $this->name,
-            'description' => $this->description,
-            'amount' => $this->amount,
-            'probability' => $this->probability,
-            'expectedRevenue' => $this->expected_revenue,
-            'actualRevenue' => $this->actual_revenue,
-            'closeDate' => $this->close_date,
-            'status' => $this->status,
-            'stage' => $this->stage,
-            'forecastCategory' => $this->forecast_category,
-            'source' => $this->source,
-            'nextStep' => $this->next_step,
-            'lossReason' => $this->loss_reason,
-            'wonAt' => $this->won_at,
-            'lostAt' => $this->lost_at,
-            'metadata' => $this->metadata,
-            'createdAt' => $this->created_at,
-            'updatedAt' => $this->updated_at,
-        ];
-    }
 }

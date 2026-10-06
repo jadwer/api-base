@@ -4,29 +4,16 @@ namespace Modules\Contacts\JsonApi\V1\ContactPeople;
 
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * La salida la define el Schema (fuente unica, 2026-09-30).
+ *
+ * Antes este Resource repetia a mano la lista de campos y se desalineaba del
+ * Schema: campos que se guardaban y nunca se devolvian, y los ->hidden() del
+ * Schema no aplicaban. Si hace falta un campo calculado, va en el Schema
+ * (campo de solo lectura) o como accesor del modelo; si de verdad se
+ * necesita logica aqui, partir de parent::attributes($request).
+ * El candado de la salida es tests/Feature/Contracts/JsonApiContractTest.
+ */
 class ContactPersonResource extends JsonApiResource
 {
-    public function attributes($request): iterable
-    {
-        return [
-            'contactId' => $this->contact_id,
-            'name' => $this->name,
-            'position' => $this->position,
-            'department' => $this->department,
-            'email' => $this->email,
-            'phone' => $this->phone,
-            'mobile' => $this->mobile,
-            'isPrimary' => $this->is_primary,
-            "createdAt" => $this->created_at,
-            "updatedAt" => $this->updated_at,
-        ];
-    }
-
-    public function relationships($request): iterable
-    {
-        return [
-            'contact' => $this->relation('contact'),
-            'contacts' => $this->relation('contacts'),
-        ];
-    }
 }

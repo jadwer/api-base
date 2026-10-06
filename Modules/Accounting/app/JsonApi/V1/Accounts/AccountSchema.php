@@ -45,6 +45,8 @@ class AccountSchema extends Schema
             BelongsTo::make('account'),
             // Relationships
             HasMany::make('journalLines'),
+            // Recuperados del Resource manual retirado (2026-09-30): mismo nombre y valor.
+            Number::make('companyId', 'company_id')->readOnly(),
         ];
     }
 

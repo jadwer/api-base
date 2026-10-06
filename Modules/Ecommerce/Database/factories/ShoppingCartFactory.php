@@ -2,6 +2,8 @@
 
 namespace Modules\Ecommerce\Database\Factories;
 
+use Illuminate\Support\Arr;
+
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Ecommerce\Models\ShoppingCart;
 
@@ -35,13 +37,14 @@ class ShoppingCartFactory extends Factory
                 'Cliente preferencial VIP',
                 'Primera compra - bienvenida'
             ]),
-            'metadata' => $this->faker->optional(0.6)->randomElements([
+            // Hash con llaves: ArrayHash rechaza listas (randomElements las perdia)
+            'metadata' => $this->faker->optional(0.6)->passthrough(Arr::only([
                 'utm_source' => $this->faker->randomElement(['google', 'facebook', 'instagram', 'direct']),
                 'device' => $this->faker->randomElement(['mobile', 'desktop', 'tablet']),
                 'referrer' => $this->faker->randomElement(['homepage', 'product-page', 'search', 'promo-email']),
                 'session_duration' => $this->faker->numberBetween(120, 3600), // segundos
                 'pages_viewed' => $this->faker->numberBetween(1, 15)
-            ], rand(2, 5))
+            ], $this->faker->randomElements(['utm_source', 'device', 'referrer', 'session_duration', 'pages_viewed'], rand(2, 5))))
         ];
     }
 

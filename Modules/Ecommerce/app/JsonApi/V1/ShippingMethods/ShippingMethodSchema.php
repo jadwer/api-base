@@ -4,6 +4,7 @@ namespace Modules\Ecommerce\JsonApi\V1\ShippingMethods;
 
 use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use LaravelJsonApi\Eloquent\Fields\ArrayHash;
+use LaravelJsonApi\Eloquent\Fields\ArrayList;
 use LaravelJsonApi\Eloquent\Fields\Boolean;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\ID;
@@ -35,7 +36,7 @@ class ShippingMethodSchema extends Schema
             Number::make('estimatedDaysMax', 'estimated_days_max')->sortable(),
 
             Boolean::make('isActive', 'is_active')->sortable(),
-            ArrayHash::make('availableCountries', 'available_countries'),
+            ArrayList::make('availableCountries', 'available_countries'),
             ArrayHash::make('metadata'),
 
             Str::make('estimatedDelivery', 'estimated_delivery')->readOnly(),

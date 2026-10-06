@@ -46,6 +46,9 @@ class PageSchema extends Schema
             Str::make('status')->sortable(),
             DateTime::make('publishedAt')->sortable(),
             BelongsTo::make('user'),
+            // Recuperados del Resource manual retirado (2026-09-30): mismo nombre y valor.
+            DateTime::make('createdAt', 'created_at')->readOnly(),
+            DateTime::make('updatedAt', 'updated_at')->readOnly(),
         ];
     }
 

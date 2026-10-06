@@ -4,41 +4,16 @@ namespace Modules\Ecommerce\JsonApi\V1\Coupons;
 
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * La salida la define el Schema (fuente unica, 2026-09-30).
+ *
+ * Antes este Resource repetia a mano la lista de campos y se desalineaba del
+ * Schema: campos que se guardaban y nunca se devolvian, y los ->hidden() del
+ * Schema no aplicaban. Si hace falta un campo calculado, va en el Schema
+ * (campo de solo lectura) o como accesor del modelo; si de verdad se
+ * necesita logica aqui, partir de parent::attributes($request).
+ * El candado de la salida es tests/Feature/Contracts/JsonApiContractTest.
+ */
 class CouponResource extends JsonApiResource
 {
-    public function attributes($request): iterable
-    {
-        return [
-            'code' => $this->code,
-            'name' => $this->name,
-            'description' => $this->description,
-            'couponType' => $this->type,
-            'value' => $this->value,
-            'minAmount' => $this->min_amount,
-            'maxAmount' => $this->max_amount,
-            'maxUses' => $this->max_uses,
-            'usedCount' => $this->used_count,
-            'startsAt' => $this->starts_at,
-            'expiresAt' => $this->expires_at,
-            'isActive' => $this->is_active,
-            'customerIds' => $this->customer_ids,
-            'productIds' => $this->product_ids,
-            'categoryIds' => $this->category_ids,
-            
-            // ✅ CAMPOS CALCULADOS (NUEVOS - similar a Finance)
-            'isValid' => $this->isValid,
-            'remainingUses' => $this->remainingUses,
-            'isExpired' => $this->isExpired,
-            
-            "createdAt" => $this->created_at,
-            "updatedAt" => $this->updated_at,
-        ];
-    }
-
-    public function relationships($request): iterable
-    {
-        return [
-
-        ];
-    }
 }

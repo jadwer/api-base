@@ -2,30 +2,18 @@
 
 namespace Modules\CRM\JsonApi\V1\Activities;
 
-use Illuminate\Http\Request;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * La salida la define el Schema (fuente unica, 2026-09-30).
+ *
+ * Antes este Resource repetia a mano la lista de campos y se desalineaba del
+ * Schema: campos que se guardaban y nunca se devolvian, y los ->hidden() del
+ * Schema no aplicaban. Si hace falta un campo calculado, va en el Schema
+ * (campo de solo lectura) o como accesor del modelo; si de verdad se
+ * necesita logica aqui, partir de parent::attributes($request).
+ * El candado de la salida es tests/Feature/Contracts/JsonApiContractTest.
+ */
 class ActivityResource extends JsonApiResource
 {
-    /**
-     * Get the resource's attributes.
-     *
-     * @param  Request|null  $request
-     * @return array
-     */
-    public function attributes($request): array
-    {
-        return [
-            'activityType' => $this->activity_type,
-            'subject' => $this->subject,
-            'description' => $this->description,
-            'activityDate' => $this->activity_date,
-            'duration' => $this->duration,
-            'outcome' => $this->outcome,
-            'status' => $this->status,
-            'metadata' => $this->metadata,
-            'createdAt' => $this->created_at,
-            'updatedAt' => $this->updated_at,
-        ];
-    }
 }

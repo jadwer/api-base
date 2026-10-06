@@ -4,40 +4,16 @@ namespace Modules\Ecommerce\JsonApi\V1\ShoppingCarts;
 
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * La salida la define el Schema (fuente unica, 2026-09-30).
+ *
+ * Antes este Resource repetia a mano la lista de campos y se desalineaba del
+ * Schema: campos que se guardaban y nunca se devolvian, y los ->hidden() del
+ * Schema no aplicaban. Si hace falta un campo calculado, va en el Schema
+ * (campo de solo lectura) o como accesor del modelo; si de verdad se
+ * necesita logica aqui, partir de parent::attributes($request).
+ * El candado de la salida es tests/Feature/Contracts/JsonApiContractTest.
+ */
 class ShoppingCartResource extends JsonApiResource
 {
-    public function attributes($request): iterable
-    {
-        return [
-            'sessionId' => $this->session_id,
-            'userId' => $this->user_id,
-            'status' => $this->status,
-            'expiresAt' => $this->expires_at,
-            'totalAmount' => $this->total_amount,
-            'currency' => $this->currency,
-            'couponCode' => $this->coupon_code,
-            'discountAmount' => $this->discount_amount,
-            'taxAmount' => $this->tax_amount,
-            'shippingAmount' => $this->shipping_amount,
-            'notes' => $this->notes,
-            
-            // ✅ CAMPOS CALCULADOS (NUEVOS - similar a Finance)
-            'itemsCount' => $this->itemsCount,
-            'subtotalAmount' => $this->subtotalAmount,
-            'finalTotal' => $this->finalTotal,
-            'isExpired' => $this->isExpired,
-            'canApplyCoupon' => $this->canApplyCoupon,
-            
-            "createdAt" => $this->created_at,
-            "updatedAt" => $this->updated_at,
-        ];
-    }
-
-    public function relationships($request): iterable
-    {
-        return [
-            'cartItems' => $this->relation('cartItems'),
-            'user' => $this->relation('user'),
-        ];
-    }
 }

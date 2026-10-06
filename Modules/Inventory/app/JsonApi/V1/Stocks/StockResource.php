@@ -2,50 +2,18 @@
 
 namespace Modules\Inventory\JsonApi\V1\Stocks;
 
-use Illuminate\Http\Request;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * La salida la define el Schema (fuente unica, 2026-09-30).
+ *
+ * Antes este Resource repetia a mano la lista de campos y se desalineaba del
+ * Schema: campos que se guardaban y nunca se devolvian, y los ->hidden() del
+ * Schema no aplicaban. Si hace falta un campo calculado, va en el Schema
+ * (campo de solo lectura) o como accesor del modelo; si de verdad se
+ * necesita logica aqui, partir de parent::attributes($request).
+ * El candado de la salida es tests/Feature/Contracts/JsonApiContractTest.
+ */
 class StockResource extends JsonApiResource
 {
-    /**
-     * Get the resource's attributes.
-     *
-     * @param Request|null $request
-     * @return iterable
-     */
-    public function attributes($request): iterable
-    {
-        return [
-            'quantity' => $this->quantity,
-            'reservedQuantity' => $this->reserved_quantity,
-            'availableQuantity' => $this->available_quantity,
-            'minimumStock' => $this->minimum_stock,
-            'maximumStock' => $this->maximum_stock,
-            'reorderPoint' => $this->reorder_point,
-            'unitCost' => $this->unit_cost,
-            'totalValue' => $this->total_value,
-            'status' => $this->status,
-            'lastMovementDate' => $this->last_movement_date,
-            'lastMovementType' => $this->last_movement_type,
-            'batchInfo' => $this->batch_info,
-            'metadata' => $this->metadata,
-            'createdAt' => $this->created_at,
-            'updatedAt' => $this->updated_at,
-        ];
-    }
-
-    /**
-     * Get the resource's relationships.
-     *
-     * @param Request|null $request
-     * @return iterable
-     */
-    public function relationships($request): iterable
-    {
-        return [
-            $this->relation('product'),
-            $this->relation('warehouse'),
-            $this->relation('location'),
-        ];
-    }
 }

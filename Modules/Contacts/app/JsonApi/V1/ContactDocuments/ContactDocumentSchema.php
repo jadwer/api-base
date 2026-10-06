@@ -36,6 +36,11 @@ class ContactDocumentSchema extends Schema
             DateTime::make('expiresAt', 'expires_at'),
             Str::make('notes'),
             ArrayHash::make('metadata'),
+            // Recuperados del Resource manual retirado (2026-09-30): mismo nombre y valor.
+            Str::make('fileSizeFormatted')->readOnly()->extractUsing(static fn ($model) => $model->getFileSizeFormatted()),
+            Str::make('status')->readOnly()->extractUsing(static fn ($model) => $model->status),
+            Str::make('downloadUrl')->readOnly()->extractUsing(static fn ($model) => $model->getKey() ? route('contact-documents.download', $model->getKey()) : null),
+            Str::make('viewUrl')->readOnly()->extractUsing(static fn ($model) => $model->getKey() ? route('contact-documents.view', $model->getKey()) : null),
             
             // Relationships
             BelongsTo::make('contact')->type('contacts'),

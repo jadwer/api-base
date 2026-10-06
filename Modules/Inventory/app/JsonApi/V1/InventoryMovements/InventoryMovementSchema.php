@@ -162,15 +162,4 @@ class InventoryMovementSchema extends Schema
     {
         return 'inventory-movements';
     }
-
-    /**
-     * Get the resource relationships.
-     * ⚠️ CRÍTICO: Mantener vacío - las relaciones van en fields()
-     */
-    public function relationships(): array
-    {
-        return [
-            //
-        ];
-    }
 }

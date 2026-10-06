@@ -39,12 +39,10 @@ class AuditSchema extends Schema
             DateTime::make('updatedAt', 'updated_at')->sortable(),
 
             // MorphTo::make('causer')->types('users', 'users')->readOnly(),
+            // Recuperados del Resource manual retirado (2026-09-30): mismo nombre y valor.
+            Str::make('causer')->readOnly()->extractUsing(static fn ($model) => $model->causer),
+            Str::make('subject')->readOnly()->extractUsing(static fn ($model) => $model->subject),
         ];
-    }
-
-    public function relationships(): array
-    {
-        return [];
     }
 
     public function filters(): array

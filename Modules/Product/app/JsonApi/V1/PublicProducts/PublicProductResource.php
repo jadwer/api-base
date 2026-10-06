@@ -4,48 +4,16 @@ namespace Modules\Product\JsonApi\V1\PublicProducts;
 
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * La salida la define el Schema (fuente unica, 2026-09-30).
+ *
+ * Antes este Resource repetia a mano la lista de campos y se desalineaba del
+ * Schema: campos que se guardaban y nunca se devolvian, y los ->hidden() del
+ * Schema no aplicaban. Si hace falta un campo calculado, va en el Schema
+ * (campo de solo lectura) o como accesor del modelo; si de verdad se
+ * necesita logica aqui, partir de parent::attributes($request).
+ * El candado de la salida es tests/Feature/Contracts/JsonApiContractTest.
+ */
 class PublicProductResource extends JsonApiResource
 {
-    public function attributes($request): iterable
-    {
-        return [
-            'name'            => $this->name,
-            'sku'             => $this->sku,
-            'slug'            => $this->slug,
-            'description'     => $this->description,
-            'fullDescription' => $this->full_description,
-            'price'           => $this->price,
-            // FUGA DE SEGURIDAD (auditoria 2026-07): 'cost' es el costo de compra
-            // (revela margen) y NO debe salir en el catalogo publico anonimo. El
-            // PublicProductSchema ya lo omitia; este Resource manual lo pisaba y
-            // lo filtraba. NO reagregar.
-            'compareAtPrice'  => $this->compare_at_price,
-            'isOnSale'        => $this->is_on_sale,
-            'saleStartsAt'    => $this->sale_starts_at,
-            'saleEndsAt'      => $this->sale_ends_at,
-            'saleBadge'       => $this->sale_badge,
-            'iva'             => $this->iva,
-            'satClaveProdServ' => $this->sat_clave_prod_serv,
-            'satClaveUnidad'  => $this->sat_clave_unidad,
-            'productType'     => $this->product_type,
-            'taxRate'         => $this->tax_rate,
-            'imgPath'         => $this->img_path,
-            'datasheetPath'   => $this->datasheet_path,
-            'imageUrl'        => $this->img_url,
-            'datasheetUrl'    => $this->datasheet_url,
-            'createdAt'       => $this->created_at,
-            'updatedAt'       => $this->updated_at,
-        ];
-    }
-
-    public function relationships($request): iterable
-    {
-        return [
-            'unit' => $this->relation('unit'),
-            'category' => $this->relation('category'),
-            'brand' => $this->relation('brand'),
-            'currency' => $this->relation('currency'),
-            'images' => $this->relation('images'),
-        ];
-    }
 }

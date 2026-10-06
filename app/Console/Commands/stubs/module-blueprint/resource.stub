@@ -4,21 +4,12 @@ namespace Modules\{{moduleName}}\JsonApi\V1\{{modelName}}s;
 
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * La salida la define {{modelName}}Schema (fuente unica). No repetir aqui la
+ * lista de campos: se desalinea del Schema. Campos calculados van en el
+ * Schema como readOnly() con extractUsing(); si de verdad se necesita logica
+ * aqui, partir de parent::attributes($request).
+ */
 class {{modelName}}Resource extends JsonApiResource
 {
-    public function attributes($request): iterable
-    {
-        return [
-{{directFields}}
-            "createdAt" => $this->created_at,
-            "updatedAt" => $this->updated_at,
-        ];
-    }
-
-    public function relationships($request): iterable
-    {
-        return [
-{{relationships}}
-        ];
-    }
 }

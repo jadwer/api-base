@@ -43,6 +43,10 @@ class CouponSchema extends Schema
             ArrayList::make('categoryIds', 'category_ids'),
             DateTime::make("createdAt")->sortable()->readOnly(),
             DateTime::make("updatedAt")->sortable()->readOnly(),
+            // Recuperados del Resource manual retirado (2026-09-30): mismo nombre y valor.
+            Boolean::make('isValid')->readOnly()->extractUsing(static fn ($model) => $model->isValid),
+            Number::make('remainingUses')->readOnly()->extractUsing(static fn ($model) => $model->remainingUses),
+            Boolean::make('isExpired')->readOnly()->extractUsing(static fn ($model) => $model->isExpired),
         ];
     }
 

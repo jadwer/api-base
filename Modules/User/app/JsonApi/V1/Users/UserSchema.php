@@ -26,22 +26,22 @@ class UserSchema extends Schema
             Str::make('email')->sortable(),
             Str::make('status'),
             Str::make('permissionTemplate', 'permission_template')->readOnly(),
+            // Primer rol del usuario (extractUsing recibe el modelo; serializeUsing
+            // solo recibe el valor y truena con dos parametros).
             Str::make('role')
                 ->readOnly()
-                ->serializeUsing(function ($model, $column) {
-                    // Devolver el primer rol del usuario
-                    return $model->getRoleNames()->first();
-                }),
+                ->extractUsing(static fn ($model) => $model->getRoleNames()->first()),
             BelongsToMany::make('roles')->type('roles'),
             // Multi-sucursal 2026-09: principal + con acceso
             BelongsTo::make('branch')->type('branches'),
             BelongsToMany::make('branches')->type('branches'),
             Str::make('password')->hidden(),
             Str::make('password_confirmation')->hidden(),
-            DateTime::make('email_verified_at')->readOnly(),
-            DateTime::make('created_at')->readOnly()->sortable(),
-            DateTime::make('updated_at')->readOnly(),
-            DateTime::make('deleted_at')->readOnly(),
+            // camelCase como las devolvia el Resource manual (el frontend las lee asi).
+            DateTime::make('emailVerifiedAt', 'email_verified_at')->readOnly(),
+            DateTime::make('createdAt', 'created_at')->readOnly()->sortable(),
+            DateTime::make('updatedAt', 'updated_at')->readOnly(),
+            DateTime::make('deletedAt', 'deleted_at')->readOnly(),
         ];
     }
 

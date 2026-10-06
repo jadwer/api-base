@@ -2,34 +2,18 @@
 
 namespace Modules\HR\JsonApi\V1\PerformanceReviews;
 
-use Illuminate\Http\Request;
 use LaravelJsonApi\Core\Resources\JsonApiResource;
 
+/**
+ * La salida la define el Schema (fuente unica, 2026-09-30).
+ *
+ * Antes este Resource repetia a mano la lista de campos y se desalineaba del
+ * Schema: campos que se guardaban y nunca se devolvian, y los ->hidden() del
+ * Schema no aplicaban. Si hace falta un campo calculado, va en el Schema
+ * (campo de solo lectura) o como accesor del modelo; si de verdad se
+ * necesita logica aqui, partir de parent::attributes($request).
+ * El candado de la salida es tests/Feature/Contracts/JsonApiContractTest.
+ */
 class PerformanceReviewResource extends JsonApiResource
 {
-    public function attributes($request): iterable
-    {
-        return [
-            'reviewDate' => $this->resource->review_date,
-            'reviewPeriodStart' => $this->resource->review_period_start,
-            'reviewPeriodEnd' => $this->resource->review_period_end,
-            'overallRating' => $this->resource->overall_rating,
-            'goalsRating' => $this->resource->goals_rating,
-            'skillsRating' => $this->resource->skills_rating,
-            'attendanceRating' => $this->resource->attendance_rating,
-            'comments' => $this->resource->comments,
-            'employeeComments' => $this->resource->employee_comments,
-            'status' => $this->resource->status,
-            'createdAt' => $this->resource->created_at,
-            'updatedAt' => $this->resource->updated_at,
-        ];
-    }
-
-    public function relationships($request): iterable
-    {
-        return [
-            $this->relation('employee'),
-            $this->relation('reviewer'),
-        ];
-    }
 }

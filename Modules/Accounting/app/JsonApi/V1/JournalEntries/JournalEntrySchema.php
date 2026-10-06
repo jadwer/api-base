@@ -57,6 +57,8 @@ class JournalEntrySchema extends Schema
             BelongsTo::make('journalEntry'),
             // Relationships
             HasMany::make('journalLines'),
+            // Recuperados del Resource manual retirado (2026-09-30): mismo nombre y valor.
+            Number::make('companyId', 'company_id')->readOnly(),
         ];
     }
 

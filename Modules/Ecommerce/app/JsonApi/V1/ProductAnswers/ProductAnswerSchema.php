@@ -2,6 +2,7 @@
 
 namespace Modules\Ecommerce\JsonApi\V1\ProductAnswers;
 
+use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use LaravelJsonApi\Eloquent\Fields\Boolean;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
@@ -39,6 +40,9 @@ class ProductAnswerSchema extends Schema
             BelongsTo::make('user')->type('users')->readOnly(),
             DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
             DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
+            // Recuperados del Resource manual retirado (2026-09-30): mismo nombre y valor.
+            Number::make('questionId', 'question_id')->readOnly(),
+            Number::make('userId', 'user_id')->readOnly(),
         ];
     }
 
