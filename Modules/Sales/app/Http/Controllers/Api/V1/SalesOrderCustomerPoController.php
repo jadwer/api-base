@@ -37,12 +37,17 @@ class SalesOrderCustomerPoController extends Controller
             return response()->json(['error' => 'Forbidden - requires sales-orders.update permission'], 403);
         }
 
+        // Constancia de autorizacion (2026-10-06): PDF de la OC o captura de
+        // pantalla (WhatsApp, correo). 10 MB.
         $request->validate([
-            'file' => 'required|file|mimes:pdf|max:10240', // 10MB
+            'file' => 'required|file|mimes:' . implode(',', \Modules\Sales\Support\CustomerAcceptance::EVIDENCE_MIMES) . '|max:10240',
+        ], [
+            'file.mimes' => 'La constancia debe ser PDF o imagen (JPG, PNG, WEBP).',
+            'file.max' => 'La constancia no puede pesar mas de 10 MB.',
         ]);
 
         $file = $request->file('file');
-        $filename = Str::uuid() . '.pdf';
+        $filename = Str::uuid() . '.' . strtolower($file->extension() ?: 'pdf');
 
         // Replace previous file if one exists
         if ($salesOrder->customer_po_path && Storage::disk('private')->exists($salesOrder->customer_po_path)) {
@@ -59,7 +64,7 @@ class SalesOrderCustomerPoController extends Controller
             'originalName' => $file->getClientOriginalName(),
             'mimeType' => $file->getMimeType(),
             'size' => $file->getSize(),
-            'message' => 'Orden de compra del cliente subida correctamente',
+            'message' => 'Constancia de autorizacion del cliente subida correctamente',
         ]);
     }
 
@@ -82,7 +87,7 @@ class SalesOrderCustomerPoController extends Controller
 
         if (!$salesOrder->customer_po_path) {
             return response()->json([
-                'error' => 'Esta orden no tiene orden de compra del cliente adjunta',
+                'error' => 'Esta orden no tiene constancia de autorizacion del cliente adjunta',
             ], 404);
         }
 
@@ -92,10 +97,13 @@ class SalesOrderCustomerPoController extends Controller
             ], 404);
         }
 
-        $downloadName = \App\Support\DownloadFilename::sanitize('oc-cliente-' . ($salesOrder->customer_po_number ?: $salesOrder->order_number) . '.pdf');
+        $extension = pathinfo($salesOrder->customer_po_path, PATHINFO_EXTENSION) ?: 'pdf';
+        $downloadName = \App\Support\DownloadFilename::sanitize(
+            'autorizacion-cliente-' . ($salesOrder->customer_po_number ?: $salesOrder->order_number) . '.' . $extension
+        );
 
         return Storage::disk('private')->download($salesOrder->customer_po_path, $downloadName, [
-            'Content-Type' => 'application/pdf',
+            'Content-Type' => Storage::disk('private')->mimeType($salesOrder->customer_po_path) ?: 'application/octet-stream',
         ]);
     }
 }

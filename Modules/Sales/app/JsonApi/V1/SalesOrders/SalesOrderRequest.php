@@ -47,6 +47,7 @@ class SalesOrderRequest extends ResourceRequest
             'totalAmount' => [$isCreating ? 'required' : 'sometimes', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string', 'max:1000'],
             'customerPoNumber' => ['nullable', 'string', 'max:100'],
+            'acceptanceChannel' => ['nullable', Rule::in(array_keys(\Modules\Sales\Support\CustomerAcceptance::CHANNELS))],
             'paymentMethod' => ['nullable', Rule::in(['PPD', 'PUE'])],
             'creditDays' => ['nullable', 'integer', 'min:0', 'max:365'],
             'metadata' => ['nullable', 'array'],

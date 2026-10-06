@@ -342,7 +342,17 @@ class QuoteController extends Controller
 
         $validated = $request->validate([
             'order_type' => ['nullable', Rule::in(['direct_sale', 'order'])],
-            'customer_po_number' => ['required_if:order_type,order', 'nullable', 'string', 'max:100'],
+            // Pedido (2026-10-06): se registra COMO autorizo el cliente; el
+            // numero de OC solo es obligatorio cuando el canal es la OC.
+            // Un numero de OC sin canal se entiende como canal "orden de compra"
+            // (clientes del API anteriores a este cambio).
+            'acceptance_channel' => [
+                // Solo cuando el cliente pide 'order' explicito: sin body sigue siendo pedido sin datos (compatibilidad).
+                Rule::requiredIf(fn () => $request->input('order_type') === 'order' && ! $request->filled('customer_po_number')),
+                'nullable',
+                Rule::in(array_keys(\Modules\Sales\Support\CustomerAcceptance::CHANNELS)),
+            ],
+            'customer_po_number' => ['required_if:acceptance_channel,' . \Modules\Sales\Support\CustomerAcceptance::PURCHASE_ORDER, 'nullable', 'string', 'max:100'],
             'payment_method' => ['nullable', Rule::in(['PPD', 'PUE'])],
             'credit_days' => ['nullable', 'integer', 'min:0', 'max:365'],
             'shipping_address' => 'nullable|array',
@@ -385,6 +395,9 @@ class QuoteController extends Controller
                 'status' => $orderType === 'direct_sale' ? 'confirmed' : 'pending',
                 'order_type' => $orderType,
                 'customer_po_number' => $validated['customer_po_number'] ?? null,
+                'acceptance_channel' => $orderType === 'order'
+                    ? ($validated['acceptance_channel'] ?? (! empty($validated['customer_po_number']) ? \Modules\Sales\Support\CustomerAcceptance::PURCHASE_ORDER : null))
+                    : null,
                 'payment_method' => $paymentMethod,
                 'credit_days' => $creditDays,
                 'order_date' => now(),

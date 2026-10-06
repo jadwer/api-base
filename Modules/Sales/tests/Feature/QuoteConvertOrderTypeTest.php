@@ -126,7 +126,7 @@ class QuoteConvertOrderTypeTest extends TestCase
 
     // ==================== order (pedido) ====================
 
-    public function test_order_type_order_requires_customer_po_number(): void
+    public function test_order_type_order_requires_how_the_customer_authorized(): void
     {
         $admin = $this->getAdminUser();
         [$quote] = $this->makeAcceptedQuote();
@@ -137,7 +137,39 @@ class QuoteConvertOrderTypeTest extends TestCase
             ]);
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['customer_po_number']);
+        $response->assertJsonValidationErrors(['acceptance_channel']);
+    }
+
+    public function test_order_authorized_by_purchase_order_requires_its_number(): void
+    {
+        $admin = $this->getAdminUser();
+        [$quote] = $this->makeAcceptedQuote();
+
+        $this->actingAs($admin, 'sanctum')
+            ->postJson("/api/v1/quotes/{$quote->id}/convert", [
+                'order_type' => 'order',
+                'acceptance_channel' => 'purchase_order',
+            ])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['customer_po_number']);
+    }
+
+    public function test_order_authorized_by_whatsapp_does_not_need_a_po_number(): void
+    {
+        $admin = $this->getAdminUser();
+        [$quote] = $this->makeAcceptedQuote();
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->postJson("/api/v1/quotes/{$quote->id}/convert", [
+                'order_type' => 'order',
+                'acceptance_channel' => 'whatsapp',
+            ]);
+
+        $response->assertStatus(201);
+        $order = \Modules\Sales\Models\SalesOrder::find($response->json('data.salesOrder.id'));
+        $this->assertSame('whatsapp', $order->acceptance_channel);
+        $this->assertNull($order->customer_po_number);
+        $this->assertSame('pending', $order->status);
     }
 
     public function test_order_without_stock_is_not_blocked_and_reports_items_requiring_purchase(): void

@@ -12,7 +12,7 @@ use Modules\Sales\Models\SalesOrder;
  * Fase A - Venta directa vs Pedido.
  *
  * Upload y descarga del PDF de la orden de compra del cliente:
- * - POST /api/v1/sales-orders/{id}/upload-customer-po (pdf, max 10MB, disco private)
+ * - POST /api/v1/sales-orders/{id}/upload-customer-po (pdf o imagen, max 10MB, disco private)
  * - GET  /api/v1/sales-orders/{id}/customer-po
  */
 class SalesOrderCustomerPoTest extends TestCase
@@ -93,6 +93,24 @@ class SalesOrderCustomerPoTest extends TestCase
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['file']);
+    }
+
+    public function test_upload_accepts_a_screenshot_as_evidence(): void
+    {
+        $admin = $this->getAdminUser();
+        $order = $this->makeOrder();
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->postJson("/api/v1/sales-orders/{$order->id}/upload-customer-po", [
+                'file' => UploadedFile::fake()->image('whatsapp.png', 400, 800),
+            ]);
+
+        $response->assertOk();
+        $this->assertStringEndsWith('.png', $order->fresh()->customer_po_path);
+
+        $download = $this->actingAs($admin, 'sanctum')->get("/api/v1/sales-orders/{$order->id}/customer-po");
+        $download->assertOk();
+        $download->assertHeader('Content-Type', 'image/png');
     }
 
     public function test_upload_rejects_files_over_10mb(): void
