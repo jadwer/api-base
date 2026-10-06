@@ -18,7 +18,7 @@ class AnalyzeHeavyQueries extends Command
 {
     protected $signature = 'analyze:queries
                             {--sample=500 : Number of sample operations to run}
-                            {--verbose : Show detailed query information}';
+                            {--details : Show detailed query information}';
 
     protected $description = 'Analyze database query patterns and identify heavy operations';
 
@@ -175,7 +175,7 @@ class AnalyzeHeavyQueries extends Command
         $this->newLine();
 
         // Show slow queries if verbose
-        if ($this->option('verbose') && count($slowQueries) > 0) {
+        if ($this->option('details') && count($slowQueries) > 0) {
             $this->warn('Slow Queries Detected:');
             foreach ($slowQueries as $query) {
                 $this->line('  SQL: ' . $query['query']);

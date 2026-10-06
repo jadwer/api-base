@@ -32,3 +32,4 @@ docs/api/documentation.md
 CLAUDE.md
 .env.testing
 graphify-out/
+.phpstan-cache/

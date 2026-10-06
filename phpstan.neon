@@ -1,0 +1,25 @@
+# Larastan nivel 5 (adoptado 2026-10-06, mismo nivel que AtomoPlatform).
+#
+# La linea base (phpstan-baseline.neon) congela los 2,011 avisos que habia
+# ese dia: casi todos son propiedades de Eloquent sin @property (1,591) y
+# env() fuera de config. Congelar NO es aprobar: la base se va bajando y
+# cada entrada que se corrige se borra. Lo nuevo si frena:
+#   composer analyse        (antes de empujar)
+#   composer analyse:baseline  (solo cuando se decide congelar algo nuevo)
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - phpstan-baseline.neon
+
+parameters:
+    level: 5
+    paths:
+        - app
+        - Modules
+    excludePaths:
+        - Modules/*/tests/*
+        - Modules/*/Tests/*
+        - Modules/*/Database/*
+        - Modules/*/database/*
+        - Modules/*/resources/*
+    tmpDir: .phpstan-cache
+    reportUnmatchedIgnoredErrors: false

@@ -28,6 +28,7 @@
         "barryvdh/laravel-debugbar": "^3.15",
         "brianium/paratest": "^7.8",
         "knuckleswtf/scribe": "^5.6",
+        "larastan/larastan": "^3.0",
         "laravel-json-api/testing": "^3.1",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.13",
@@ -72,7 +73,9 @@
         "test": [
             "@php artisan config:clear --ansi",
             "@php artisan test"
-        ]
+        ],
+        "analyse": "phpstan analyse --memory-limit=2G",
+        "analyse:baseline": "phpstan analyse --memory-limit=2G --generate-baseline"
     },
     "extra": {
         "laravel": {
