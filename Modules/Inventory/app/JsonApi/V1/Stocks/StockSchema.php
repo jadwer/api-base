@@ -33,9 +33,9 @@ class StockSchema extends Schema
             ID::make(),
             
             // Foreign keys
-            Number::make('productId', 'product_id'),
-            Number::make('warehouseId', 'warehouse_id'), 
-            Number::make('locationId', 'warehouse_location_id'),
+            Number::make('productId', 'product_id')->acceptStrings(),
+            Number::make('warehouseId', 'warehouse_id')->acceptStrings(), 
+            Number::make('locationId', 'warehouse_location_id')->acceptStrings(),
             
             // Cantidades
             Number::make('quantity')

@@ -92,6 +92,62 @@ class WarehouseLocationStoreTest extends TestCase
         $this->assertEquals('shelf', $data['attributes']['locationType']);
     }
 
+    public function test_warehouse_id_as_numeric_string_is_accepted(): void
+    {
+        $admin = $this->createUserWithPermissions('admin', ['warehouse-locations.store']);
+        $this->actingAs($admin, 'sanctum');
+
+        $warehouse = Warehouse::factory()->create();
+
+        $locationData = [
+            'type' => 'warehouse-locations',
+            'attributes' => [
+                'name' => 'New Location',
+                'code' => 'E2E-STR-NEW-001',
+                'description' => 'A new location for testing',
+                'locationType' => 'shelf',
+                'aisle' => 'A1',
+                'rack' => 'R01',
+                'shelf' => 'S01',
+                'level' => 'L1',
+                'position' => '001',
+                'barcode' => 'BC-STR-BC123456',
+                'maxWeight' => 1000.50,
+                'maxVolume' => 50.25,
+                'dimensions' => '2x1x3',
+                'isActive' => true,
+                'isPickable' => true,
+                'isReceivable' => true,
+                'priority' => 5,
+                'warehouseId' => (string) $warehouse->id, // los selects del frontend entregan strings
+                'metadata' => [
+                    'zone' => 'Z1',
+                    'access_level' => 'public'
+                ]
+            ]
+        ];
+
+        $response = $this->jsonApi()
+            ->expects('warehouse-locations')
+            ->withData($locationData)
+            ->post('/api/v1/warehouse-locations');
+
+        $response->assertCreated();
+        
+        $this->assertDatabaseHas('warehouse_locations', [
+            'name' => 'New Location',
+            'code' => 'E2E-STR-NEW-001',
+            'warehouse_id' => $warehouse->id,
+            'location_type' => 'shelf',
+            'is_active' => true,
+        ]);
+
+        $data = $response->json('data');
+        $this->assertEquals('New Location', $data['attributes']['name']);
+        $this->assertEquals('E2E-STR-NEW-001', $data['attributes']['code']);
+        $this->assertEquals('shelf', $data['attributes']['locationType']);
+    }
+
     public function test_warehouse_location_creation_validates_required_fields(): void
     {
         $admin = $this->createUserWithPermissions('admin', ['warehouse-locations.store']);

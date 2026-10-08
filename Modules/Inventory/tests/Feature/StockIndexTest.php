@@ -190,6 +190,58 @@ class StockIndexTest extends TestCase
         $this->assertEquals($stock1->id, $stockData['id']);
     }
 
+    public function test_admin_can_search_stocks_with_partial_term()
+    {
+        $admin = $this->createUserWithPermissions('admin', ['stocks.index']);
+
+        $warehouse = Warehouse::factory()->create();
+        $product = Product::factory()->create(['name' => 'Reactivo Zqxparcial Grado A']);
+        $stock = Stock::factory()->create([
+            'product_id' => $product->id,
+            'warehouse_id' => $warehouse->id,
+        ]);
+        Stock::factory()->create(['warehouse_id' => $warehouse->id]);
+
+        // Termino parcial: antes la busqueda era exacta (like sin comodines)
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('stocks')
+            ->get('/api/v1/stocks?filter[search]=zqxparcial');
+
+        $response->assertStatus(200);
+        $response->assertJsonCount(1, 'data');
+        $this->assertEquals($stock->id, $response->json('data.0.id'));
+    }
+
+    public function test_search_filter_is_scoped_with_warehouse_filter()
+    {
+        $admin = $this->createUserWithPermissions('admin', ['stocks.index']);
+
+        $warehouse1 = Warehouse::factory()->create();
+        $warehouse2 = Warehouse::factory()->create();
+        $product = Product::factory()->create(['name' => 'Solvente Zqxfuga']);
+
+        // Mismo producto en dos almacenes
+        $stock1 = Stock::factory()->create([
+            'product_id' => $product->id,
+            'warehouse_id' => $warehouse1->id,
+        ]);
+        Stock::factory()->create([
+            'product_id' => $product->id,
+            'warehouse_id' => $warehouse2->id,
+        ]);
+
+        // El OR del buscador no debe fugar sobre el filtro de almacen
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('stocks')
+            ->get("/api/v1/stocks?filter[warehouse_id]={$warehouse1->id}&filter[search]=Zqxfuga");
+
+        $response->assertStatus(200);
+        $response->assertJsonCount(1, 'data');
+        $this->assertEquals($stock1->id, $response->json('data.0.id'));
+    }
+
     public function test_tech_can_list_stocks()
     {
         $tech = $this->createUserWithPermissions('tech', ['stocks.index']);

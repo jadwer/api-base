@@ -38,7 +38,7 @@ class WarehouseLocationSchema extends Schema
             ID::make(),
             
             // Foreign keys
-            Number::make('warehouseId', 'warehouse_id'),
+            Number::make('warehouseId', 'warehouse_id')->acceptStrings(),
             
             // Campos básicos
             Str::make('name')->sortable(),

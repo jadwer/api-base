@@ -57,7 +57,7 @@ class WarehouseSchema extends Schema
             Str::make('operatingHours', 'operating_hours')->readOnly(),
             Str::make('metadata')->readOnly(),
             Boolean::make('isActive', 'is_active')->sortable(),
-            Number::make('branchId', 'branch_id'),
+            Number::make('branchId', 'branch_id')->acceptStrings(),
             
             // Timestamps
             DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),

@@ -9,6 +9,7 @@ use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
 use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Fields\ArrayHash;
+use LaravelJsonApi\Eloquent\Filters\Scope;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
@@ -37,11 +38,12 @@ class ProductBatchSchema extends Schema
                 ->sortable(),
             
             // Fechas importantes
-            DateTime::make('manufacturingDate', 'manufacturing_date')
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('manufacturingDate', 'manufacturing_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))
                 ->sortable(),
-            DateTime::make('expirationDate', 'expiration_date')
+            DateTime::make('expirationDate', 'expiration_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))
                 ->sortable(),
-            DateTime::make('bestBeforeDate', 'best_before_date')
+            DateTime::make('bestBeforeDate', 'best_before_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))
                 ->sortable(),
             
             // Cantidades
@@ -105,6 +107,10 @@ class ProductBatchSchema extends Schema
             Where::make('product_id'),
             Where::make('warehouse_id'),
             Where::make('warehouse_location_id'),
+            // Buscador del listado (numero de lote, lote del proveedor,
+            // proveedor, nombre/SKU del producto). Agrupado en el scope para
+            // no fugar el OR sobre los demas filtros.
+            Scope::make('search'),
         ];
     }
 

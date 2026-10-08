@@ -28,11 +28,11 @@ class FractionationSchema extends Schema
             Str::make('folioNumber', 'folio_number')->sortable(),
 
             // Foreign keys
-            Number::make('sourceProductId', 'source_product_id'),
-            Number::make('destinationProductId', 'destination_product_id'),
-            Number::make('productConversionId', 'product_conversion_id'),
-            Number::make('warehouseId', 'warehouse_id'),
-            Number::make('userId', 'user_id'),
+            Number::make('sourceProductId', 'source_product_id')->acceptStrings(),
+            Number::make('destinationProductId', 'destination_product_id')->acceptStrings(),
+            Number::make('productConversionId', 'product_conversion_id')->acceptStrings(),
+            Number::make('warehouseId', 'warehouse_id')->acceptStrings(),
+            Number::make('userId', 'user_id')->acceptStrings(),
 
             // Quantities
             Number::make('sourceQuantity', 'source_quantity')->sortable(),
@@ -42,8 +42,8 @@ class FractionationSchema extends Schema
             Number::make('conversionFactorUsed', 'conversion_factor_used'),
 
             // Movement IDs
-            Number::make('exitMovementId', 'exit_movement_id'),
-            Number::make('entryMovementId', 'entry_movement_id'),
+            Number::make('exitMovementId', 'exit_movement_id')->acceptStrings(),
+            Number::make('entryMovementId', 'entry_movement_id')->acceptStrings(),
 
             // Status
             Str::make('status')->sortable(),

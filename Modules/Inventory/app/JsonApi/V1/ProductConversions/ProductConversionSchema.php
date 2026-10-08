@@ -26,8 +26,8 @@ class ProductConversionSchema extends Schema
             ID::make(),
 
             // Foreign keys
-            Number::make('sourceProductId', 'source_product_id'),
-            Number::make('destinationProductId', 'destination_product_id'),
+            Number::make('sourceProductId', 'source_product_id')->acceptStrings(),
+            Number::make('destinationProductId', 'destination_product_id')->acceptStrings(),
 
             // Conversion data
             Number::make('conversionFactor', 'conversion_factor')->sortable(),

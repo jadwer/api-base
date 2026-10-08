@@ -106,27 +106,33 @@ class Stock extends Model
         return $this->belongsTo(WarehouseLocation::class, 'warehouse_location_id');
     }
 
-    /**
-     * Scope para búsqueda general
-     */
     /** Stock de los almacenes de una sucursal (inventario compartido, solo filtro). */
     public function scopeForBranch($query, $branchId)
     {
         return $query->whereHas('warehouse', fn ($q) => $q->where('branch_id', $branchId));
     }
 
+    /**
+     * Buscador del listado: producto (nombre, SKU, descripcion), almacen y
+     * ubicacion (nombre, codigo), busqueda parcial. Agrupado en where(function)
+     * para que el OR no fugue sobre status, warehouse_id o branch.
+     */
     public function scopeSearch($query, $value)
     {
-        return $query->whereHas('product', function ($q) use ($value) {
-            $q->where('name', 'like', $value)
-              ->orWhere('sku', 'like', $value)
-              ->orWhere('description', 'like', $value);
-        })->orWhereHas('warehouse', function ($q) use ($value) {
-            $q->where('name', 'like', $value)
-              ->orWhere('code', 'like', $value);
-        })->orWhereHas('location', function ($q) use ($value) {
-            $q->where('name', 'like', $value)
-              ->orWhere('code', 'like', $value);
+        $term = '%' . trim((string) $value) . '%';
+
+        return $query->where(function ($q) use ($term) {
+            $q->whereHas('product', function ($p) use ($term) {
+                $p->where('name', 'like', $term)
+                    ->orWhere('sku', 'like', $term)
+                    ->orWhere('description', 'like', $term);
+            })->orWhereHas('warehouse', function ($w) use ($term) {
+                $w->where('name', 'like', $term)
+                    ->orWhere('code', 'like', $term);
+            })->orWhereHas('location', function ($l) use ($term) {
+                $l->where('name', 'like', $term)
+                    ->orWhere('code', 'like', $term);
+            });
         });
     }
 

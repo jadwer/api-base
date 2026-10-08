@@ -183,6 +183,26 @@ class ProductBatch extends Model
     }
 
     /**
+     * Buscador del listado: numero de lote, lote, proveedor y nombre/SKU del
+     * producto. Agrupado en where(function) para que el OR no fugue sobre los
+     * demas filtros (status, almacen).
+     */
+    public function scopeSearch($query, string $term)
+    {
+        $term = trim($term);
+
+        return $query->where(function ($q) use ($term) {
+            $q->where('batch_number', 'like', "%{$term}%")
+                ->orWhere('lot_number', 'like', "%{$term}%")
+                ->orWhere('supplier_name', 'like', "%{$term}%")
+                ->orWhereHas('product', function ($p) use ($term) {
+                    $p->where('name', 'like', "%{$term}%")
+                        ->orWhere('sku', 'like', "%{$term}%");
+                });
+        });
+    }
+
+    /**
      * Create a new factory instance for the model.
      */
     protected static function newFactory()
