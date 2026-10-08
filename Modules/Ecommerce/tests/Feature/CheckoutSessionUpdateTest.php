@@ -101,7 +101,7 @@ class CheckoutSessionUpdateTest extends TestCase
             'type' => 'checkout-sessions',
             'id' => (string) $session->id,
             'attributes' => [
-                'status' => 'cancelled',
+                'status' => 'failed',
             ]
         ];
 
@@ -144,7 +144,7 @@ class CheckoutSessionUpdateTest extends TestCase
             'type' => 'checkout-sessions',
             'id' => (string) $session->id,
             'attributes' => [
-                'status' => 'cancelled',
+                'status' => 'failed',
             ]
         ];
 
@@ -175,5 +175,23 @@ class CheckoutSessionUpdateTest extends TestCase
             ->patch('/api/v1/checkout-sessions/999999');
 
         $response->assertStatus(404);
+    }
+
+    // B3: el Request acepta exactamente el enum de la tabla (failed si, cancelled/address_set/step cart no)
+    public function test_status_and_step_follow_the_table_enum(): void
+    {
+        $admin = $this->getAdminUser();
+        $session = CheckoutSession::factory()->create(['status' => 'initiated']);
+        $patch = fn (array $attributes) => $this->actingAs($admin, 'sanctum')->jsonApi()->expects('checkout-sessions')
+            ->withData(['type' => 'checkout-sessions', 'id' => (string) $session->id, 'attributes' => $attributes])
+            ->patch('/api/v1/checkout-sessions/' . $session->id);
+
+        $patch(['status' => 'failed'])->assertOk();
+        $this->assertDatabaseHas('checkout_sessions', ['id' => $session->id, 'status' => 'failed']);
+
+        foreach (['cancelled', 'address_set', 'shipping_selected'] as $status) {
+            $patch(['status' => $status])->assertStatus(422);
+        }
+        $patch(['step' => 'cart'])->assertStatus(422);
     }
 }

@@ -28,7 +28,8 @@ class ExchangeRateSchema extends Schema
             Str::make('fromCurrency', 'from_currency')->sortable(),
             Str::make('toCurrency', 'to_currency')->sortable(),
             Number::make('rate')->sortable(),
-            DateTime::make('effectiveDate', 'effective_date')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('effectiveDate', 'effective_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
             Str::make('source')->sortable(),
             Str::make('status')->sortable(),
             ArrayHash::make('metadata'),

@@ -46,8 +46,9 @@ class BackorderSchema extends Schema
             Number::make('remainingQuantity', 'remaining_quantity')->readOnly(),
 
             // Dates
-            DateTime::make('expectedDate', 'expected_date')->sortable(),
-            DateTime::make('promisedDate', 'promised_date')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('expectedDate', 'expected_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
+            DateTime::make('promisedDate', 'promised_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
 
             // Notes
             Str::make('notes'),

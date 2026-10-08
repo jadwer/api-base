@@ -11,6 +11,12 @@ use Spatie\Activitylog\LogOptions;
 
 class CheckoutSession extends Model
 {
+    /** Enum de la columna status (create_checkout_sessions_table); fuente unica para el Request. */
+    public const STATUSES = ['initiated', 'payment_pending', 'payment_confirmed', 'completed', 'failed', 'expired'];
+
+    /** Enum de la columna step. */
+    public const STEPS = ['address', 'shipping', 'payment', 'confirmation'];
+
     use HasFactory, LogsActivity;
 
     /**
@@ -152,7 +158,8 @@ class CheckoutSession extends Model
         return $this->belongsTo(ShoppingCart::class);
     }
 
-    public function user()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<User, $this> */
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }

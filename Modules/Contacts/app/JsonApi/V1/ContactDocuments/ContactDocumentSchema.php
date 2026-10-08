@@ -31,9 +31,10 @@ class ContactDocumentSchema extends Schema
             Str::make('mimeType', 'mime_type'),
             Number::make('fileSize', 'file_size'),
             Number::make('uploadedBy', 'uploaded_by'),
-            DateTime::make('verifiedAt', 'verified_at'),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('verifiedAt', 'verified_at')->serializeUsing(static fn ($value) => $value?->format('Y-m-d')),
             Number::make('verifiedBy', 'verified_by'),
-            DateTime::make('expiresAt', 'expires_at'),
+            DateTime::make('expiresAt', 'expires_at')->serializeUsing(static fn ($value) => $value?->format('Y-m-d')),
             Str::make('notes'),
             ArrayHash::make('metadata'),
             // Recuperados del Resource manual retirado (2026-09-30): mismo nombre y valor.

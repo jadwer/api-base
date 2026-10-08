@@ -30,11 +30,12 @@ class PurchaseOrderSchema extends Schema
     {
         return [
             ID::make(),
-            Str::make('orderNumber', 'order_number'),
-            Number::make('contactId', 'contact_id'),
+            Str::make('orderNumber', 'order_number')->readOnly(),
+            Number::make('contactId', 'contact_id')->readOnly(),
             Number::make('warehouseId', 'warehouse_id'),
             Number::make('branchId', 'branch_id'),
-            DateTime::make('orderDate', 'order_date')
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('orderDate', 'order_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))
                 ->sortable(),
             // Refactor ciclo (Patron 1): status NO editable por PATCH; transiciones por
             // los endpoints approve/reject/receive/cancel. Un PATCH a 'received' saltaba
@@ -53,7 +54,7 @@ class PurchaseOrderSchema extends Schema
             Str::make('financialStatus', 'financial_status')->sortable(),
 
             // Finance integration fields
-            Number::make('apInvoiceId', 'ap_invoice_id')->sortable(),
+            Number::make('apInvoiceId', 'ap_invoice_id')->sortable()->readOnly(),
             Str::make('invoicingStatus', 'invoicing_status')->sortable(),
             Str::make('invoicingNotes', 'invoicing_notes'),
 

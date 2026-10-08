@@ -14,7 +14,8 @@ class QuoteSendTest extends TestCase
     {
         $admin = $this->getAdminUser();
 
-        $contact = Contact::factory()->customer()->create();
+        // email explicito: el del factory es opcional (80 %) y sin el la respuesta es "email not sent"
+        $contact = Contact::factory()->customer()->create(['email' => 'cliente.envio@example.com']);
         $quote = Quote::factory()->create([
             'contact_id' => $contact->id,
             'status' => 'draft',
@@ -41,7 +42,8 @@ class QuoteSendTest extends TestCase
     {
         $tech = $this->getTechUser();
 
-        $contact = Contact::factory()->customer()->create();
+        // email explicito: el del factory es opcional (80 %) y sin el la respuesta es "email not sent"
+        $contact = Contact::factory()->customer()->create(['email' => 'cliente.envio@example.com']);
         $quote = Quote::factory()->create([
             'contact_id' => $contact->id,
             'status' => 'draft',

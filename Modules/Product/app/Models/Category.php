@@ -18,13 +18,13 @@ class Category extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['name', 'description', 'parent_id', 'is_active'])
+            ->logOnly(['name', 'description', 'is_active'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
 
     protected $fillable = [
-        'name', 'description', 'parent_id', 'slug', 'is_active', 'sort_order',
+        'name', 'description', 'slug', 'is_active',
     ];
 
     /**

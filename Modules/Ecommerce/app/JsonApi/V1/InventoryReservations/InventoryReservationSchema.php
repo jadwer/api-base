@@ -34,8 +34,8 @@ class InventoryReservationSchema extends Schema
             Str::make('status'),
 
             DateTime::make('expiresAt', 'expires_at'),
-            DateTime::make('releasedAt', 'released_at'),
-            DateTime::make('fulfilledAt', 'fulfilled_at'),
+            DateTime::make('releasedAt', 'released_at')->readOnly(),
+            DateTime::make('fulfilledAt', 'fulfilled_at')->readOnly(),
             Str::make('notes'),
 
             DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),

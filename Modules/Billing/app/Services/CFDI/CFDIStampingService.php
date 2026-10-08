@@ -45,82 +45,51 @@ class CFDIStampingService
         // Validate invoice can be stamped
         $this->validateForStamping($invoice);
 
-        DB::beginTransaction();
+        $mustSaveXml = $regenerateXml || empty($invoice->xml_original);
 
+        // PAC fuera de la transaccion: es una llamada externa que no se puede revertir
         try {
-            // Generate or use existing XML
-            $xml = $regenerateXml || empty($invoice->xml_original)
+            $xml = $mustSaveXml
                 ? $this->xmlGenerator->generate($invoice)
                 : $invoice->xml_original;
 
-            // Save original XML if regenerated
-            if ($regenerateXml || empty($invoice->xml_original)) {
-                $invoice->update(['xml_original' => $xml]);
-            }
-
-            // Call PAC to stamp
             $stampData = $this->pacService->stamp($xml);
-
-            // Update invoice with stamping data
-            $invoice->update([
-                'uuid' => $stampData['uuid'],
-                'fecha_timbrado' => $stampData['fecha_timbrado'],
-                'xml_timbrado' => $stampData['xml_timbrado'],
-                'qr_code' => $stampData['qr_code'] ?? null,
-                'pac_response' => $stampData['pac_response'],
-                'status' => 'valid',
-            ]);
-
-            // Save stamped XML to storage
-            $this->saveStampedXml($invoice, $stampData['xml_timbrado']);
-
-            // Generate PDF with stamped data
-            try {
-                $this->pdfGenerator->generate($invoice->fresh());
-            } catch (\Exception $e) {
-                Log::warning('PDF generation failed after stamping', [
-                    'invoice_id' => $invoice->id,
-                    'error' => $e->getMessage(),
-                ]);
-                // Don't fail the stamping if PDF generation fails
-            }
-
-            DB::commit();
-
-            // Dispatch event
-            event(new CFDIStamped($invoice->fresh()));
-
-            Log::info('CFDI stamped successfully', [
-                'invoice_id' => $invoice->id,
-                'uuid' => $stampData['uuid'],
-            ]);
-
-            return $invoice->fresh();
         } catch (PacException $e) {
-            DB::rollBack();
-
-            // Save error message
-            $invoice->update([
-                'error_message' => $e->getMessage(),
-            ]);
-
-            Log::error('CFDI stamping failed', [
-                'invoice_id' => $invoice->id,
-                'error' => $e->getMessage(),
-            ]);
-
+            $this->recordFailure($invoice, $e, 'CFDI stamping failed');
             throw $e;
         } catch (\Exception $e) {
-            DB::rollBack();
-
-            Log::error('Unexpected error during CFDI stamping', [
-                'invoice_id' => $invoice->id,
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            throw new PacException('Error inesperado al timbrar CFDI: ' . $e->getMessage());
+            throw $this->unexpected($invoice, $e, 'Unexpected error during CFDI stamping', 'Error inesperado al timbrar CFDI: ');
         }
+
+        // Solo las escrituras van en la transaccion. Si falla, revierte su
+        // propio savepoint y nunca el trabajo del llamador.
+        try {
+            DB::transaction(function () use ($invoice, $mustSaveXml, $xml, $stampData) {
+                $invoice->update(array_merge($mustSaveXml ? ['xml_original' => $xml] : [], [
+                    'uuid' => $stampData['uuid'],
+                    'fecha_timbrado' => $stampData['fecha_timbrado'],
+                    'xml_timbrado' => $stampData['xml_timbrado'],
+                    'qr_code' => $stampData['qr_code'] ?? null,
+                    'pac_response' => $stampData['pac_response'],
+                    'status' => 'valid',
+                ]));
+            });
+        } catch (\Exception $e) {
+            throw $this->unexpected($invoice, $e, 'Unexpected error during CFDI stamping', 'Error inesperado al timbrar CFDI: ');
+        }
+
+        Log::info('CFDI stamped successfully', [
+            'invoice_id' => $invoice->id,
+            'uuid' => $stampData['uuid'],
+        ]);
+
+        // Efectos secundarios tras el commit: el CFDI ya esta timbrado ante el
+        // SAT, un fallo aqui se registra pero no deshace ni oculta el timbrado.
+        $this->afterCommit($invoice, 'Failed to save stamped XML', fn () => $this->saveStampedXml($invoice, $stampData['xml_timbrado']));
+        $this->afterCommit($invoice, 'PDF generation failed after stamping', fn () => $this->pdfGenerator->generate($invoice->fresh()));
+        $this->afterCommit($invoice, 'CFDIStamped listener failed', fn () => event(new CFDIStamped($invoice->fresh())));
+
+        return $invoice->fresh();
     }
 
     /**
@@ -140,7 +109,7 @@ class CFDIStampingService
         // Validate invoice can be cancelled
         $this->validateForCancellation($invoice);
 
-        DB::beginTransaction();
+        $uuidSustitucion = null;
 
         try {
             // Get company settings for RFC
@@ -149,7 +118,6 @@ class CFDIStampingService
                 throw new PacException('No se encontró configuración de empresa');
             }
 
-            $uuidSustitucion = null;
             if ($invoiceSustitucion) {
                 if (!$invoiceSustitucion->uuid) {
                     throw new PacException('El CFDI de sustitución no está timbrado');
@@ -157,7 +125,7 @@ class CFDIStampingService
                 $uuidSustitucion = $invoiceSustitucion->uuid;
             }
 
-            // Call PAC to cancel
+            // Call PAC to cancel (fuera de la transaccion)
             $cancelData = $this->pacService->cancel(
                 uuid: $invoice->uuid,
                 rfcEmisor: $companySetting->rfc,
@@ -166,54 +134,75 @@ class CFDIStampingService
                 motivoCancelacion: $motivoCancelacion,
                 uuidSustitucion: $uuidSustitucion
             );
-
-            // Update invoice
-            $invoice->update([
-                'status' => 'cancelled',
-                'fecha_cancelacion' => $cancelData['fecha_cancelacion'],
-                'cfdi_relacionado_tipo' => $motivoCancelacion,
-                'cfdi_relacionado_uuids' => $uuidSustitucion ? [$uuidSustitucion] : null,
-                'pac_response' => array_merge(
-                    $invoice->pac_response ?? [],
-                    ['cancellation' => $cancelData['pac_response']]
-                ),
-            ]);
-
-            DB::commit();
-
-            // Dispatch event
-            event(new CFDICancelled($invoice->fresh()));
-
-            Log::info('CFDI cancelled successfully', [
-                'invoice_id' => $invoice->id,
-                'uuid' => $invoice->uuid,
-                'motive' => $motivoCancelacion,
-            ]);
-
-            return $invoice->fresh();
         } catch (PacException $e) {
-            DB::rollBack();
-
-            // Save error message
-            $invoice->update([
-                'error_message' => $e->getMessage(),
-            ]);
-
-            Log::error('CFDI cancellation failed', [
-                'invoice_id' => $invoice->id,
-                'error' => $e->getMessage(),
-            ]);
-
+            $this->recordFailure($invoice, $e, 'CFDI cancellation failed');
             throw $e;
-        } catch (\Exception $e) {
-            DB::rollBack();
+        } catch (\Throwable $e) {
+            // el PAC declara solo PacException, pero un fallo HTTP o de tipos tambien debe llegar envuelto
+            throw $this->unexpected($invoice, $e, 'Unexpected error during CFDI cancellation', 'Error inesperado al cancelar CFDI: ');
+        }
 
-            Log::error('Unexpected error during CFDI cancellation', [
+        try {
+            DB::transaction(function () use ($invoice, $cancelData, $motivoCancelacion, $uuidSustitucion) {
+                $invoice->update([
+                    'status' => 'cancelled',
+                    'fecha_cancelacion' => $cancelData['fecha_cancelacion'],
+                    'cfdi_relacionado_tipo' => $motivoCancelacion,
+                    'cfdi_relacionado_uuids' => $uuidSustitucion ? [$uuidSustitucion] : null,
+                    'pac_response' => array_merge(
+                        $invoice->pac_response ?? [],
+                        ['cancellation' => $cancelData['pac_response']]
+                    ),
+                ]);
+            });
+        } catch (\Exception $e) {
+            throw $this->unexpected($invoice, $e, 'Unexpected error during CFDI cancellation', 'Error inesperado al cancelar CFDI: ');
+        }
+
+        Log::info('CFDI cancelled successfully', [
+            'invoice_id' => $invoice->id,
+            'uuid' => $invoice->uuid,
+            'motive' => $motivoCancelacion,
+        ]);
+
+        $this->afterCommit($invoice, 'CFDICancelled listener failed', fn () => event(new CFDICancelled($invoice->fresh())));
+
+        return $invoice->fresh();
+    }
+
+    /** Guarda el error del PAC en la factura (solo error_message) y lo registra. */
+    protected function recordFailure(CFDIInvoice $invoice, PacException $e, string $logMessage): void
+    {
+        $invoice->update(['error_message' => $e->getMessage()]);
+
+        Log::error($logMessage, [
+            'invoice_id' => $invoice->id,
+            'error' => $e->getMessage(),
+        ]);
+    }
+
+    /** Registra un error no previsto y lo envuelve en PacException, como antes. */
+    protected function unexpected(CFDIInvoice $invoice, \Throwable $e, string $logMessage, string $prefix): PacException
+    {
+        Log::error($logMessage, [
+            'invoice_id' => $invoice->id,
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+        ]);
+
+        return new PacException($prefix . $e->getMessage());
+    }
+
+    /** Efecto posterior al commit: su fallo se registra y no se propaga. */
+    protected function afterCommit(CFDIInvoice $invoice, string $logMessage, \Closure $effect): void
+    {
+        try {
+            $effect();
+        } catch (\Throwable $e) {
+            Log::error($logMessage, [
                 'invoice_id' => $invoice->id,
                 'error' => $e->getMessage(),
             ]);
-
-            throw new PacException('Error inesperado al cancelar CFDI: ' . $e->getMessage());
         }
     }
 

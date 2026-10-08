@@ -32,6 +32,7 @@ class ProductRequest extends ResourceRequest
             'productType' => ['nullable', 'string', Rule::in(['finished', 'raw_material', 'both'])],
             'taxRate' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'isPublic' => ['sometimes', 'boolean'],
+            'isActive' => ['sometimes', 'boolean'],
             // Oferta. Las fechas son opcionales: sin ellas la oferta corre
             // mientras isOnSale este activo (asi lo resuelve el scope onSale
             // del modelo). Si se dan ambas, el fin debe ser posterior al inicio.

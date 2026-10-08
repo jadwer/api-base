@@ -78,43 +78,51 @@ class APInvoice extends Model
         });
     }
 
-    public function contact()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Contact, $this> */
+    public function contact(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Contact::class, 'contact_id');
     }
 
-    public function purchaseOrder()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<PurchaseOrder, $this> */
+    public function purchaseOrder(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(PurchaseOrder::class, 'purchase_order_id');
     }
 
-    public function journalEntry()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<JournalEntry, $this> */
+    public function journalEntry(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(JournalEntry::class);
     }
 
-    public function reconciledBy()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\User, $this> */
+    public function reconciledBy(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(\App\Models\User::class, 'reconciled_by');
     }
 
-    public function voidedBy()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\User, $this> */
+    public function voidedBy(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(\App\Models\User::class, 'voided_by_id');
     }
 
-    public function replacesInvoice()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<APInvoice, $this> */
+    public function replacesInvoice(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(APInvoice::class, 'replaces_invoice_id');
     }
 
-    public function replacementInvoice()
+    /** @return \Illuminate\Database\Eloquent\Relations\HasOne<APInvoice, $this> */
+    public function replacementInvoice(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(APInvoice::class, 'replaces_invoice_id');
     }
 
     // Legacy alias for backward compatibility
-    public function supplier()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Contact, $this> */
+    public function supplier(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->contact();
     }

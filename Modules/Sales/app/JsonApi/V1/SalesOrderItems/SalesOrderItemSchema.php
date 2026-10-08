@@ -54,11 +54,6 @@ class SalesOrderItemSchema extends Schema
             Number::make('originalUnitPrice', 'original_unit_price')->readOnly(),
             Number::make('exchangeRateUsed', 'exchange_rate_used')->readOnly(),
 
-            // Finance Integration Fields
-            Number::make('arInvoiceLineId', 'ar_invoice_line_id'),
-            Number::make('invoicedQuantity', 'invoiced_quantity')->sortable(),
-            Number::make('invoicedAmount', 'invoiced_amount')->sortable(),
-            
             // JSON fields
             ArrayHash::make('metadata'),
             

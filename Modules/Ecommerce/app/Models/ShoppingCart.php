@@ -118,17 +118,20 @@ class ShoppingCart extends Model
     }
 
     // Relationships
-    public function cartItems()
+    /** @return \Illuminate\Database\Eloquent\Relations\HasMany<CartItem, $this> */
+    public function cartItems(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(CartItem::class);
     }
 
-    public function user()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<User, $this> */
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function currencyRelation()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Currency, $this> */
+    public function currencyRelation(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Currency::class, 'currency_id');
     }

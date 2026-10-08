@@ -243,32 +243,38 @@ class CycleCount extends Model
     }
 
     // Relationships
-    public function warehouse()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Warehouse, $this> */
+    public function warehouse(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Warehouse::class);
     }
 
-    public function warehouseLocation()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<WarehouseLocation, $this> */
+    public function warehouseLocation(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(WarehouseLocation::class);
     }
 
-    public function product()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Product, $this> */
+    public function product(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function assignedTo()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<User, $this> */
+    public function assignedTo(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
-    public function countedBy()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<User, $this> */
+    public function countedBy(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'counted_by');
     }
 
-    public function adjustmentMovement()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<InventoryMovement, $this> */
+    public function adjustmentMovement(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(InventoryMovement::class, 'adjustment_movement_id');
     }

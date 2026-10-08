@@ -66,7 +66,7 @@ class PurchaseOrderStoreTest extends TestCase
             'data' => [
                 'type' => 'purchase-orders',
                 'attributes' => [
-                    'orderDate' => '2025-01-15T00:00:00.000000Z',
+                    'orderDate' => '2025-01-15',
                     'status' => 'pending',
                     'totalAmount' => '2500.50',
                     'notes' => 'New purchase order for office supplies',

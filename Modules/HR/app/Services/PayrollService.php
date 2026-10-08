@@ -6,12 +6,15 @@ use Illuminate\Support\Facades\DB;
 use Modules\HR\Models\PayrollPeriod;
 use Modules\HR\Models\PayrollItem;
 use Modules\Accounting\Models\JournalEntry;
-use Modules\Accounting\Models\JournalEntryLine;
 use Modules\Accounting\Models\Account;
-use Carbon\Carbon;
+use Modules\Accounting\Services\AccountingService;
 
 class PayrollService
 {
+    public function __construct(private AccountingService $accountingService)
+    {
+    }
+
     /**
      * Process a payroll period - calculate totals and update period status.
      *
@@ -114,17 +117,24 @@ class PayrollService
      */
     protected function postToGeneralLedger(PayrollPeriod $period, int $userId): JournalEntry
     {
-        // Find accounts (using Spanish names from Finance/Accounting Phase 1)
+        // Find accounts (using Spanish names from Finance/Accounting Phase 1).
+        // Solo cuentas afectables y activas: las de titulo (PASIVO, GASTOS) no aceptan asientos.
         $payrollExpenseAccount = Account::where('code', 'LIKE', '6%')
             ->where('name', 'LIKE', '%nómina%')
+            ->where('is_postable', true)
+            ->where('status', 'active')
             ->first();
 
         $bankAccount = Account::where('code', 'LIKE', '1%')
             ->where('name', 'LIKE', '%banco%')
+            ->where('is_postable', true)
+            ->where('status', 'active')
             ->first();
 
         $liabilitiesAccount = Account::where('code', 'LIKE', '2%')
             ->where('name', 'LIKE', '%pasivo%')
+            ->where('is_postable', true)
+            ->where('status', 'active')
             ->first();
 
         if (!$payrollExpenseAccount) {
@@ -135,72 +145,52 @@ class PayrollService
             throw new \Exception("No se encontró cuenta bancaria (código 1xxx).");
         }
 
-        // Create journal entry
-        $journalEntry = JournalEntry::create([
-            'fiscal_period_id' => $this->getCurrentFiscalPeriodId(),
-            'entry_date' => $period->payment_date ?? now(),
-            'reference' => 'PAYROLL-' . $period->id,
-            'description' => "Pago de nómina: {$period->name}",
-            'status' => 'draft',
-            'created_by' => $userId,
-        ]);
-
-        // Debit: Payroll Expense (total gross)
-        JournalEntryLine::create([
-            'journal_entry_id' => $journalEntry->id,
-            'account_id' => $payrollExpenseAccount->id,
-            'debit' => $period->total_gross,
-            'credit' => 0,
-            'description' => "Gasto de nómina - {$period->name}",
-        ]);
-
-        // Credit: Bank Account (net payment)
-        JournalEntryLine::create([
-            'journal_entry_id' => $journalEntry->id,
-            'account_id' => $bankAccount->id,
-            'debit' => 0,
-            'credit' => $period->total_net,
-            'description' => "Pago neto de nómina - {$period->name}",
-        ]);
-
-        // Credit: Liabilities (deductions)
-        if ($period->total_deductions > 0 && $liabilitiesAccount) {
-            JournalEntryLine::create([
-                'journal_entry_id' => $journalEntry->id,
-                'account_id' => $liabilitiesAccount->id,
-                'debit' => 0,
-                'credit' => $period->total_deductions,
-                'description' => "Deducciones de nómina - {$period->name}",
-            ]);
+        $deductions = (float) $period->total_deductions;
+        if ($deductions > 0 && !$liabilitiesAccount) {
+            throw new \Exception("No se encontró cuenta de pasivo para las deducciones de nómina (código 2xxx).");
         }
 
-        // Post journal entry automatically
-        $journalEntry->status = 'posted';
-        $journalEntry->posted_at = now();
-        $journalEntry->posted_by = $userId;
-        $journalEntry->save();
+        $lines = [
+            [
+                'account_id' => $payrollExpenseAccount->id,
+                'debit_amount' => $period->total_gross,
+                'credit_amount' => 0,
+                'description' => "Gasto de nómina - {$period->name}",
+            ],
+            [
+                'account_id' => $bankAccount->id,
+                'debit_amount' => 0,
+                'credit_amount' => $period->total_net,
+                'description' => "Pago neto de nómina - {$period->name}",
+            ],
+        ];
+
+        if ($deductions > 0) {
+            $lines[] = [
+                'account_id' => $liabilitiesAccount->id,
+                'debit_amount' => 0,
+                'credit_amount' => $deductions,
+                'description' => "Deducciones de nómina - {$period->name}",
+            ];
+        }
+
+        // Mismo camino que AR/AP/inventario: diario GL, periodo fiscal abierto
+        // segun la fecha de pago, validacion de cuadre y folio del diario.
+        $journalEntry = $this->accountingService->createJournalEntry(
+            journalCode: 'GL',
+            entryDate: ($period->payment_date ?? now())->toDateString(),
+            description: "Pago de nómina: {$period->name}",
+            reference: 'PAYROLL-' . $period->id,
+            lines: $lines,
+        );
+
+        $journalEntry->update([
+            'posted_by_id' => $userId,
+            'source_type' => PayrollPeriod::class,
+            'source_id' => $period->id,
+        ]);
 
         return $journalEntry;
-    }
-
-    /**
-     * Get current fiscal period ID.
-     * Uses the first open fiscal period found.
-     *
-     * @return int
-     * @throws \Exception
-     */
-    protected function getCurrentFiscalPeriodId(): int
-    {
-        $fiscalPeriod = \Modules\Accounting\Models\FiscalPeriod::where('status', 'open')
-            ->orderBy('start_date', 'desc')
-            ->first();
-
-        if (!$fiscalPeriod) {
-            throw new \Exception("No hay un período fiscal abierto para registrar la nómina.");
-        }
-
-        return $fiscalPeriod->id;
     }
 
     /**

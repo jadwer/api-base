@@ -22,6 +22,9 @@ class OpportunityRequest extends ResourceRequest
             'source' => ['sometimes', 'nullable', 'string', 'max:255'],
             'nextStep' => ['sometimes', 'nullable', 'string'],
             'lossReason' => ['sometimes', 'nullable', 'string', 'max:255'],
+            // El modelo los fija al pasar a won/lost si vienen vacios
+            'wonAt' => ['sometimes', 'nullable', 'date'],
+            'lostAt' => ['sometimes', 'nullable', 'date'],
             'metadata' => ['sometimes', 'nullable', 'array'],
             'user' => 'required',
             'lead' => 'nullable',

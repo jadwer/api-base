@@ -28,8 +28,9 @@ class FiscalPeriodSchema extends Schema
             Str::make('name')->sortable(),
             Number::make('year')->sortable(),
             Number::make('month')->sortable(),
-            DateTime::make('startDate', 'start_date')->sortable(),
-            DateTime::make('endDate', 'end_date')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('startDate', 'start_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
+            DateTime::make('endDate', 'end_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
             Str::make('status')->sortable(),
             DateTime::make('closedAt', 'closed_at')->sortable(),
             Number::make('closedById', 'closed_by_id'),

@@ -25,7 +25,7 @@ class CycleCountSchema extends Schema
     {
         return [
             ID::make(),
-            Str::make('countNumber'),
+            Str::make('countNumber')->readOnly(),
             Number::make('warehouseId')->acceptStrings(),
             Number::make('warehouseLocationId')->acceptStrings(),
             Number::make('productId')->acceptStrings(),

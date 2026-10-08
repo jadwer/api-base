@@ -26,8 +26,9 @@ class ARInvoiceSchema extends Schema
             ID::make(),
             
             Str::make('invoiceNumber')->sortable(),
-            DateTime::make('invoiceDate')->sortable(),
-            DateTime::make('dueDate')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('invoiceDate')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
+            DateTime::make('dueDate')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
             Number::make('contactId')->sortable(),
             Number::make('salesOrderId')->sortable(),
             Str::make('currency')->sortable(),
@@ -35,7 +36,7 @@ class ARInvoiceSchema extends Schema
             Number::make('taxAmount')->sortable(),
             Number::make('totalAmount')->sortable(),
             Number::make('paidAmount')->sortable(),
-            DateTime::make('paidDate')->sortable(),
+            DateTime::make('paidDate')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
             Str::make('status')->sortable(),
             // Periodo fiscal asignado por el posteo (auditoria 2026-07, hallazgo MEDIO).
             Number::make('fiscalPeriodId', 'fiscal_period_id')->readOnly(),
@@ -47,11 +48,11 @@ class ARInvoiceSchema extends Schema
             // FI-M002: Early payment discount fields
             Number::make('discountPercent')->sortable(),
             Number::make('discountDays'),
-            DateTime::make('discountDate')->sortable(),
+            DateTime::make('discountDate')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
             Number::make('discountAmount'),
             Boolean::make('discountApplied')->sortable(),
             Number::make('discountAppliedAmount'),
-            DateTime::make('discountAppliedDate'),
+            DateTime::make('discountAppliedDate')->serializeUsing(static fn ($value) => $value?->format('Y-m-d')),
 
             // Timestamps
             DateTime::make('createdAt')->sortable()->readOnly(),

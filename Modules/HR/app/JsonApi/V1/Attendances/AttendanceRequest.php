@@ -36,6 +36,9 @@ class AttendanceRequest extends ResourceRequest
                 'nullable',
                 'string',
             ],
+            // Captura manual; con checkIn y checkOut el modelo los recalcula al guardar
+            'hoursWorked' => ['nullable', 'numeric', 'min:0', 'max:24'],
+            'overtimeHours' => ['sometimes', 'numeric', 'min:0', 'max:24'],
             'employee' => [
                 $isCreating ? 'required' : 'sometimes',
                 JsonApiRule::toOne(),

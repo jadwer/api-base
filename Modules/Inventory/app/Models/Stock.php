@@ -26,7 +26,7 @@ use Spatie\Activitylog\LogOptions;
  * @property float $unit_cost
  * @property float $total_value
  * @property string $status
- * @property string|null $last_movement_date
+ * @property \Illuminate\Support\Carbon|null $last_movement_date
  * @property string|null $last_movement_type
  * @property array|null $batch_info
  * @property array|null $metadata
@@ -75,7 +75,8 @@ class Stock extends Model
         'reorder_point' => 'decimal:4',
         'unit_cost' => 'decimal:4',
         'total_value' => 'decimal:4',
-        'last_movement_date' => 'datetime',
+        // La columna es date en la migracion; antes se casteaba datetime
+        'last_movement_date' => 'date',
         'batch_info' => 'array',
         'metadata' => 'array',
         'created_at' => 'datetime',

@@ -59,7 +59,8 @@ class SalesOrderSchema extends Schema
             // Escribible solo en creacion (estado inicial); las transiciones van por
             // los endpoints de accion (confirm/deliver/cancel) via OrderStatusService.
             Str::make('status')->sortable()->readOnlyOnUpdate(),
-            DateTime::make('orderDate', 'order_date')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('orderDate', 'order_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
             DateTime::make('approvedAt', 'approved_at')->sortable(),
             DateTime::make('deliveredAt', 'delivered_at')->sortable(),
 
@@ -83,11 +84,11 @@ class SalesOrderSchema extends Schema
 
             // Currency fields
             Str::make('currency'),
-            Number::make('exchangeRateUsed', 'exchange_rate_used'),
+            Number::make('exchangeRateUsed', 'exchange_rate_used')->readOnly(),
 
             // Finance Integration Fields
-            Number::make('arInvoiceId', 'ar_invoice_id'),
-            Str::make('invoicingStatus', 'invoicing_status')->sortable(),
+            Number::make('arInvoiceId', 'ar_invoice_id')->readOnly(),
+            Str::make('invoicingStatus', 'invoicing_status')->sortable()->readOnly(),
             Str::make('invoicingNotes', 'invoicing_notes'),
             // Bloque FE del ciclo: el detalle de venta necesita pintar el estado
             // financiero (cancelled tras anular factura) que antes no se exponia;

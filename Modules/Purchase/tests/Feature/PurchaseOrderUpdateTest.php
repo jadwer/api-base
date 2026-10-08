@@ -63,7 +63,7 @@ class PurchaseOrderUpdateTest extends TestCase
                 'type' => 'purchase-orders',
                 'id' => (string) $purchaseOrder->id,
                 'attributes' => [
-                    'orderDate' => '2025-01-20T00:00:00.000000Z',
+                    'orderDate' => '2025-01-20',
                     'status' => 'pending',
                     'totalAmount' => '2000.75',
                     'notes' => 'Updated purchase order notes',
@@ -118,7 +118,7 @@ class PurchaseOrderUpdateTest extends TestCase
                 'type' => 'purchase-orders',
                 'id' => (string) $purchaseOrder->id,
                 'attributes' => [
-                    'orderDate' => '2025-01-15T00:00:00.000000Z', // Unchanged
+                    'orderDate' => '2025-01-15', // Unchanged
                     'status' => 'pending', // Ignored: PATCH no cambia status
                     'totalAmount' => '1500.00', // Unchanged
                     'notes' => 'Status updated to approved', // Updated

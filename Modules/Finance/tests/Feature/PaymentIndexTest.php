@@ -4,6 +4,7 @@ namespace Modules\Finance\Tests\Feature;
 
 use Tests\TestCase;
 use Modules\User\Models\User;
+use Modules\Contacts\Models\Contact;
 use Modules\Finance\Models\Payment;
 
 class PaymentIndexTest extends TestCase
@@ -139,5 +140,27 @@ class PaymentIndexTest extends TestCase
         $response->assertOk();
         $this->assertCount(10, $response->json('data'));
         $response->assertJsonStructure(['links', 'meta']);
+    }
+
+    // B3: filter[direction] separa pagos a proveedor (ap) de cobros a cliente (ar)
+    public function test_payments_can_be_filtered_by_direction(): void
+    {
+        $customer = Contact::factory()->customer()->create(['is_supplier' => false]);
+        $supplier = Contact::factory()->supplier()->create();
+        $receipt = Payment::factory()->create(['contact_id' => $customer->id]);
+        $supplierPayment = Payment::factory()->create(['contact_id' => $supplier->id]);
+
+        $ids = fn (string $direction) => collect($this->actingAs($this->getAdminUser(), 'sanctum')
+            ->jsonApi()->expects('payments')
+            ->filter(['direction' => $direction])->page(['size' => 100])
+            ->get('/api/v1/payments')->assertOk()->json('data'))->pluck('id')->all();
+
+        $ar = $ids('ar');
+        $this->assertContains((string) $receipt->id, $ar);
+        $this->assertNotContains((string) $supplierPayment->id, $ar);
+
+        $ap = $ids('ap');
+        $this->assertContains((string) $supplierPayment->id, $ap);
+        $this->assertNotContains((string) $receipt->id, $ap);
     }
 }

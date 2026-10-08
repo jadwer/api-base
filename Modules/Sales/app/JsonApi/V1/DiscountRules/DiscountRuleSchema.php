@@ -41,8 +41,9 @@ class DiscountRuleSchema extends Schema
             ArrayList::make('categoryIds'),
             ArrayList::make('customerIds'),
             ArrayList::make('customerClassifications'),
-            DateTime::make('startDate')->sortable(),
-            DateTime::make('endDate')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('startDate')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
+            DateTime::make('endDate')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
             Number::make('usageLimit'),
             Number::make('usagePerCustomer'),
             Number::make('currentUsage')->readOnly(),

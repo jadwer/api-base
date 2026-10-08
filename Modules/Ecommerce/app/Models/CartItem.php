@@ -53,12 +53,14 @@ class CartItem extends Model
         return $query->where('status', 'active');
     }
 
-    public function shoppingCart()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<ShoppingCart, $this> */
+    public function shoppingCart(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(ShoppingCart::class);
     }
 
-    public function product()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Product, $this> */
+    public function product(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Product::class);
     }

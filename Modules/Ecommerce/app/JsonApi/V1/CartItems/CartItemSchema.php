@@ -27,8 +27,8 @@ class CartItemSchema extends Schema
     {
         return [
             ID::make(),
-            Str::make('shoppingCartId'),
-            Str::make('productId'),
+            Str::make('shoppingCartId')->readOnly(),
+            Str::make('productId')->readOnly(),
             Number::make('quantity'),
             Number::make('unitPrice'),
             Number::make('originalPrice'),

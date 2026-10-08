@@ -34,7 +34,8 @@ class OpportunitySchema extends Schema
             Number::make('actualRevenue', 'actual_revenue')->sortable(),
 
             // Dates
-            Str::make('closeDate', 'close_date')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('closeDate', 'close_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
 
             // Status and pipeline
             Str::make('status')->sortable(),

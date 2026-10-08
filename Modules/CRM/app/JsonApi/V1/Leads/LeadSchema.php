@@ -35,7 +35,8 @@ class LeadSchema extends Schema
             Str::make('email')->sortable(),
             Str::make('phone'),
             Number::make('estimatedValue', 'estimated_value')->sortable(),
-            Str::make('estimatedCloseDate', 'estimated_close_date')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('estimatedCloseDate', 'estimated_close_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
             DateTime::make('convertedAt', 'converted_at')->sortable(),
             Str::make('notes'),
             ArrayHash::make('metadata'),

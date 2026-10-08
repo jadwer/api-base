@@ -28,7 +28,8 @@ class SystemEmail extends Model
         'is_enabled' => 'boolean',
     ];
 
-    public function emailTemplate()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<EmailTemplate, $this> */
+    public function emailTemplate(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(EmailTemplate::class);
     }

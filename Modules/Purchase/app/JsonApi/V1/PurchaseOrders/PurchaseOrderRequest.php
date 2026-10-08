@@ -31,6 +31,7 @@ class PurchaseOrderRequest extends ResourceRequest
             'branchId' => ['nullable', 'integer', 'exists:branches,id'],
             'approvalStatus' => ['sometimes', 'nullable', 'string'],
             'invoicingStatus' => ['sometimes', 'nullable', 'string'],
+            'invoicingNotes' => ['sometimes', 'nullable', 'string'],
             'financialStatus' => ['sometimes', 'nullable', 'string'],
             'notes' => ['nullable', 'string'],
 

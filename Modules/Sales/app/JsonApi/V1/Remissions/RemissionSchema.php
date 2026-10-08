@@ -56,8 +56,9 @@ class RemissionSchema extends Schema
             // Refactor ciclo (Patron 1): status de remision solo por print/deliver/cancel.
             // Un PATCH a 'delivered' saltaba la entrega real (que ahora descuenta stock).
             Str::make('status')->sortable()->readOnlyOnUpdate(),
-            DateTime::make('remissionDate', 'remission_date')->sortable(),
-            DateTime::make('deliveryDate', 'delivery_date'),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('remissionDate', 'remission_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
+            DateTime::make('deliveryDate', 'delivery_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d')),
 
             // Delivery information
             Str::make('deliveredBy', 'delivered_by'),

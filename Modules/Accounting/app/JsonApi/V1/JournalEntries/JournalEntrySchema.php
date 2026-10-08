@@ -28,7 +28,8 @@ class JournalEntrySchema extends Schema
             Number::make('journalId', 'journal_id'),
             Number::make('fiscalPeriodId', 'fiscal_period_id'),
             Str::make('number')->sortable(),
-            DateTime::make('date')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
             Str::make('reference')->sortable(),
             Str::make('description'),
             Number::make('totalDebit', 'total_debit')->sortable()->readOnly(),

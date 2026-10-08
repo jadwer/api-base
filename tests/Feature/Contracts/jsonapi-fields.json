@@ -1599,12 +1599,9 @@
     "v1:sales-order-items": [
         "@product",
         "@salesOrder",
-        "arInvoiceLineId",
         "createdAt",
         "discount",
         "exchangeRateUsed",
-        "invoicedAmount",
-        "invoicedQuantity",
         "metadata",
         "originalCurrencyCode",
         "originalUnitPrice",

@@ -405,11 +405,11 @@
             @if(isset($shippingAddress['name']))
                 <strong>{{ $shippingAddress['name'] }}</strong><br>
             @endif
-            @if(isset($shippingAddress['address_line1']))
-                {{ $shippingAddress['address_line1'] }}<br>
+            @if(!empty($shippingAddress['line1'] ?? $shippingAddress['address_line1'] ?? null))
+                {{ $shippingAddress['line1'] ?? $shippingAddress['address_line1'] }}<br>
             @endif
-            @if(isset($shippingAddress['address_line2']) && $shippingAddress['address_line2'])
-                {{ $shippingAddress['address_line2'] }}<br>
+            @if(!empty($shippingAddress['line2'] ?? $shippingAddress['address_line2'] ?? null))
+                {{ $shippingAddress['line2'] ?? $shippingAddress['address_line2'] }}<br>
             @endif
             @if(isset($shippingAddress['city']) || isset($shippingAddress['state']) || isset($shippingAddress['postal_code']))
                 {{ $shippingAddress['city'] ?? '' }}{{ isset($shippingAddress['state']) ? ', ' . $shippingAddress['state'] : '' }} {{ $shippingAddress['postal_code'] ?? '' }}<br>

@@ -48,10 +48,10 @@ class CompanySettingSchema extends Schema
             Str::make('pacPassword', 'pac_password')->hidden(), // Write-only (encrypted, never exposed)
             Boolean::make('pacProductionMode', 'pac_production_mode'),
 
-            // Digital Certificate
-            Str::make('certificateFile', 'certificate_file'),
-            Str::make('keyFile', 'key_file'),
-            Str::make('keyPassword', 'key_password')->hidden(), // Write-only (encrypted, never exposed)
+            // Digital Certificate: se escriben solo por upload-certificate/upload-key
+            Str::make('certificateFile', 'certificate_file')->readOnly(),
+            Str::make('keyFile', 'key_file')->readOnly(),
+            Str::make('keyPassword', 'key_password')->hidden()->readOnly(), // Nunca se expone (cifrado)
 
             // Additional Settings
             Str::make('logoPath', 'logo_path'),

@@ -198,6 +198,16 @@ class SalesOrder extends Model
     }
 
     /**
+     * Sesion de checkout del e-commerce que origino el pedido (null en pedidos del ERP).
+     *
+     * @return BelongsTo<\Modules\Ecommerce\Models\CheckoutSession, $this>
+     */
+    public function checkoutSession(): BelongsTo
+    {
+        return $this->belongsTo(\Modules\Ecommerce\Models\CheckoutSession::class, 'checkout_session_id');
+    }
+
+    /**
      * Phase 13: User/Employee assigned to this order (seller/salesperson).
      */
     public function assignedUser(): BelongsTo

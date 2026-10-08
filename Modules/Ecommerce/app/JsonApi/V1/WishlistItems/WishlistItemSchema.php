@@ -36,8 +36,8 @@ class WishlistItemSchema extends Schema
             ID::make(),
 
             // Foreign Keys
-            Number::make('wishlistId', 'wishlist_id'),
-            Number::make('productId', 'product_id'),
+            Number::make('wishlistId', 'wishlist_id')->readOnly(),
+            Number::make('productId', 'product_id')->readOnly(),
 
             // Item Details
             Number::make('quantity')->sortable(),

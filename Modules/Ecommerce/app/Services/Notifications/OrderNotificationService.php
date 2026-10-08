@@ -234,14 +234,14 @@ class OrderNotificationService
             return $order->checkoutSession->contact_email;
         }
 
-        // Try customer contact email
+        // Try customer contact email (SalesOrder no tiene relacion user: el cliente es el contacto)
         if ($order->customer && $order->customer->email) {
             return $order->customer->email;
         }
 
-        // Try user email
-        if ($order->user && $order->user->email) {
-            return $order->user->email;
+        // Ultimo recurso: el usuario que hizo el checkout
+        if ($order->checkoutSession && $order->checkoutSession->user && $order->checkoutSession->user->email) {
+            return $order->checkoutSession->user->email;
         }
 
         return null;
@@ -287,10 +287,11 @@ class OrderNotificationService
             return null;
         }
 
+        // El checkout guarda line1/line2; address_line1/2 queda por datos viejos
         return [
             'recipient' => $shippingAddress['name'] ?? ($order->customer ? $order->customer->name : 'N/A'),
-            'address_line1' => $shippingAddress['address_line1'] ?? '',
-            'address_line2' => $shippingAddress['address_line2'] ?? '',
+            'address_line1' => $shippingAddress['line1'] ?? $shippingAddress['address_line1'] ?? '',
+            'address_line2' => $shippingAddress['line2'] ?? $shippingAddress['address_line2'] ?? '',
             'city' => $shippingAddress['city'] ?? '',
             'state' => $shippingAddress['state'] ?? '',
             'country' => $shippingAddress['country'] ?? '',

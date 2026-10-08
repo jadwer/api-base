@@ -11,15 +11,18 @@ class BankAccountRequest extends ResourceRequest
     {
         $bankaccount = $this->model();
         
+        // Columnas NOT NULL: requeridas al crear para responder 422 y no 500
+        $required = $this->isCreating() ? 'required' : 'sometimes';
+
         return [
-            'accountNumber' => ['nullable', 'string', 'max:255', Rule::unique('bank_accounts', 'account_number')->ignore($bankaccount?->id)],
-            'accountName' => ['nullable', 'string', 'max:255'],
-            'bankName' => ['nullable', 'string', 'max:255'],
-            'currency' => ['nullable', 'string', 'max:255'],
-            'glAccountId' => ['nullable', 'integer'],
+            'accountNumber' => [$required, 'string', 'max:255', Rule::unique('bank_accounts', 'account_number')->ignore($bankaccount?->id)],
+            'accountName' => [$required, 'string', 'max:255'],
+            'bankName' => [$required, 'string', 'max:255'],
+            'currency' => ['sometimes', 'string', 'max:255'],
+            'glAccountId' => [$required, 'integer', 'exists:accounts,id'],
             'currentBalance' => ['nullable', 'numeric'],
             'openingBalance' => ['nullable', 'numeric'],
-            'status' => ['nullable', 'string', 'max:255'],
+            'status' => ['sometimes', 'string', 'max:255'],
             'metadata' => ['nullable', 'array'],
             'isActive' => ['nullable', 'boolean'],
         ];
@@ -28,6 +31,11 @@ class BankAccountRequest extends ResourceRequest
     public function messages(): array
     {
         return [
+            'accountNumber.required' => 'El numero de cuenta es obligatorio.',
+            'accountName.required' => 'El nombre de la cuenta es obligatorio.',
+            'bankName.required' => 'El banco es obligatorio.',
+            'glAccountId.required' => 'La cuenta contable es obligatoria.',
+            'glAccountId.exists' => 'La cuenta contable no existe.',
             'accountNumber.string' => 'El campo Account number debe ser texto.',
             'accountNumber.max' => 'El campo Account number no puede tener más de 255 caracteres.',
             'accountNumber.unique' => 'Este Account number ya está en uso.',

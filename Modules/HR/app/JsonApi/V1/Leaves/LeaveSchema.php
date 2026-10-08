@@ -32,8 +32,9 @@ class LeaveSchema extends Schema
     {
         return [
             ID::make(),
-            DateTime::make('startDate', 'start_date')->sortable(),
-            DateTime::make('endDate', 'end_date')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('startDate', 'start_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
+            DateTime::make('endDate', 'end_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
             Number::make('daysRequested', 'days_requested')->sortable(),
             Str::make('status')->sortable(),
             Str::make('reason'),

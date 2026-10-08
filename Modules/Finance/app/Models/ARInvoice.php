@@ -118,28 +118,33 @@ class ARInvoice extends Model
         });
     }
 
-    public function contact()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Contact, $this> */
+    public function contact(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Contact::class, 'contact_id');
     }
 
-    public function salesOrder()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<SalesOrder, $this> */
+    public function salesOrder(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(SalesOrder::class, 'sales_order_id');
     }
 
-    public function journalEntry()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<JournalEntry, $this> */
+    public function journalEntry(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(JournalEntry::class);
     }
 
-    public function paymentApplications()
+    /** @return \Illuminate\Database\Eloquent\Relations\HasMany<PaymentApplication, $this> */
+    public function paymentApplications(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(PaymentApplication::class);
     }
 
     // Legacy alias for backward compatibility
-    public function customer()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Contact, $this> */
+    public function customer(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->contact();
     }

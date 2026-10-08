@@ -157,4 +157,19 @@ class BankAccountStoreTest extends TestCase
 
         $response->assertStatus(422);
     }
+
+    // B3: columnas NOT NULL dan 422 con el campo, no 500
+    public function test_missing_not_null_fields_return_422(): void
+    {
+        $response = $this->actingAs($this->getAdminUser(), 'sanctum')
+            ->jsonApi()
+            ->expects('bank-accounts')
+            ->withData(['type' => 'bank-accounts', 'attributes' => ['accountNumber' => 'B3-' . uniqid()]])
+            ->post('/api/v1/bank-accounts');
+
+        $response->assertStatus(422)
+            ->assertJsonFragment(['pointer' => '/data/attributes/accountName'])
+            ->assertJsonFragment(['pointer' => '/data/attributes/bankName'])
+            ->assertJsonFragment(['pointer' => '/data/attributes/glAccountId']);
+    }
 }

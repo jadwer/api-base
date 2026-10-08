@@ -3,6 +3,7 @@
 namespace Modules\Ecommerce\JsonApi\V1\CheckoutSessions;
 
 use Illuminate\Validation\Rule;
+use Modules\Ecommerce\Models\CheckoutSession;
 use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
 
 class CheckoutSessionRequest extends ResourceRequest
@@ -32,21 +33,12 @@ class CheckoutSessionRequest extends ResourceRequest
             'status' => [
                 'sometimes',
                 'string',
-                Rule::in([
-                    'initiated',
-                    'address_set',
-                    'shipping_selected',
-                    'payment_pending',
-                    'payment_confirmed',
-                    'completed',
-                    'cancelled',
-                    'expired',
-                ]),
+                Rule::in(CheckoutSession::STATUSES),
             ],
             'step' => [
                 'sometimes',
                 'string',
-                Rule::in(['cart', 'address', 'shipping', 'payment', 'confirmation']),
+                Rule::in(CheckoutSession::STEPS),
             ],
 
             // Contact Information

@@ -21,7 +21,8 @@ class ShoppingCartFactory extends Factory
 
         return [
             'session_id' => $this->faker->optional(0.7)->regexify('sess_[a-f0-9]{32}'),
-            'user_id' => \Modules\User\Models\User::inRandomOrder()->first()?->id ?? 1,
+            // usuario propio: uno al azar podia ser el cliente del test y volver flaky la autorizacion
+            'user_id' => \Modules\User\Models\User::factory(),
             'status' => $this->faker->randomElement(['active', 'active', 'active', 'inactive', 'expired']), // Más carritos activos
             'expires_at' => $this->faker->dateTimeBetween('+1 day', '+30 days'),
             'total_amount' => round($subtotal - $discountAmount + $taxAmount + $shippingAmount, 2),

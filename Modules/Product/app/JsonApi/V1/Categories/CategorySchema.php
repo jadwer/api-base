@@ -25,7 +25,7 @@ class CategorySchema extends Schema
             ID::make(),
             Str::make('name')->sortable(),
             Str::make('description'),
-            Str::make('slug')->sortable(),
+            Str::make('slug')->sortable()->readOnly(),
             Boolean::make('isActive', 'is_active')->sortable(),
             Number::make('productsCount')
                 ->readOnly(),

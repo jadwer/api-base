@@ -55,7 +55,7 @@ class InventoryMovementSchema extends Schema
             // Cantidades y costos
             Number::make('quantity')->sortable(),
             Number::make('unitCost', 'unit_cost')->sortable(),
-            Number::make('totalValue', 'total_value')->sortable(),
+            Number::make('totalValue', 'total_value')->sortable()->readOnly(),
             
             // Estado y auditoría
             Str::make('status')->sortable(),
@@ -64,7 +64,7 @@ class InventoryMovementSchema extends Schema
 
             // Quality check fields (IV-009)
             Boolean::make('qualityChecked', 'quality_checked')->sortable(),
-            DateTime::make('qualityCheckedAt', 'quality_checked_at')->sortable(),
+            DateTime::make('qualityCheckedAt', 'quality_checked_at')->sortable()->readOnly(),
             Number::make('qualityCheckedBy', 'quality_checked_by'),
             Str::make('qualityCheckNotes', 'quality_check_notes'),
             
@@ -73,11 +73,11 @@ class InventoryMovementSchema extends Schema
             ArrayHash::make('metadata'),
             
             // GL Integration fields
-            Number::make('glJournalEntryId', 'gl_journal_entry_id')->sortable(),
-            Str::make('glPostingStatus', 'gl_posting_status')->sortable(),
-            Number::make('costPerUnit', 'cost_per_unit')->sortable(),
-            Number::make('totalCost', 'total_cost')->sortable(),
-            Str::make('glPostingNotes', 'gl_posting_notes'),
+            Number::make('glJournalEntryId', 'gl_journal_entry_id')->sortable()->readOnly(),
+            Str::make('glPostingStatus', 'gl_posting_status')->sortable()->readOnly(),
+            Number::make('costPerUnit', 'cost_per_unit')->sortable()->readOnly(),
+            Number::make('totalCost', 'total_cost')->sortable()->readOnly(),
+            Str::make('glPostingNotes', 'gl_posting_notes')->readOnly(),
             
             // Relaciones BelongsTo
             BelongsTo::make('product')

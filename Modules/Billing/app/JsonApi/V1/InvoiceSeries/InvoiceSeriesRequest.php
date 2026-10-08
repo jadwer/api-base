@@ -31,6 +31,7 @@ class InvoiceSeriesRequest extends ResourceRequest
             'isActive' => ['sometimes', 'boolean'],
             'isDefault' => ['sometimes', 'boolean'],
             'resetYearly' => ['sometimes', 'boolean'],
+            'lastResetYear' => ['nullable', 'integer', 'min:2000', 'max:2100'],
             'allowedRoles' => ['nullable', 'string'],
             'sourceType' => ['nullable', 'string', 'in:web,pos,manual'],
             'companySetting' => ['required', JsonApiRule::toOne()],

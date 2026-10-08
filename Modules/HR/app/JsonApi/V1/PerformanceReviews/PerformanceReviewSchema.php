@@ -22,9 +22,10 @@ class PerformanceReviewSchema extends Schema
     {
         return [
             ID::make(),
-            DateTime::make('reviewDate', 'review_date')->sortable(),
-            DateTime::make('reviewPeriodStart', 'review_period_start')->sortable(),
-            DateTime::make('reviewPeriodEnd', 'review_period_end')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('reviewDate', 'review_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
+            DateTime::make('reviewPeriodStart', 'review_period_start')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
+            DateTime::make('reviewPeriodEnd', 'review_period_end')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
             Number::make('overallRating', 'overall_rating')->sortable(),
             Number::make('goalsRating', 'goals_rating')->sortable(),
             Number::make('skillsRating', 'skills_rating')->sortable(),

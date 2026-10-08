@@ -77,21 +77,7 @@ class CompanySettingRequest extends ResourceRequest
                 'sometimes',
                 'boolean',
             ],
-            'certificateFile' => [
-                'sometimes',
-                'nullable',
-                'string',
-            ],
-            'keyFile' => [
-                'sometimes',
-                'nullable',
-                'string',
-            ],
-            'keyPassword' => [
-                'sometimes',
-                'nullable',
-                'string',
-            ],
+            // certificateFile, keyFile y keyPassword solo por upload-certificate/upload-key (readOnly en el Schema)
             'logoPath' => [
                 'sometimes',
                 'nullable',
@@ -222,9 +208,6 @@ class CompanySettingRequest extends ResourceRequest
             'pacUsername.string' => 'El usuario PAC debe ser un texto.',
             'pacPassword.string' => 'La contraseña PAC debe ser un texto.',
             'pacProductionMode.boolean' => 'El modo de producción PAC debe ser verdadero o falso.',
-            'certificateFile.string' => 'La ruta del certificado debe ser un texto.',
-            'keyFile.string' => 'La ruta de la llave debe ser un texto.',
-            'keyPassword.string' => 'La contraseña de la llave debe ser un texto.',
             'logoPath.string' => 'La ruta del logo debe ser un texto.',
             'additionalSettings.array' => 'La configuración adicional debe ser un objeto JSON.',
             'isActive.boolean' => 'El estado activo debe ser verdadero o falso.',

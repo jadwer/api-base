@@ -98,7 +98,7 @@ class BillingDemoDataSeeder extends Seeder
                 'receptor_rfc' => 'SIM950610001',
                 'subtotal' => 850000, // $8,500 MXN
                 'status' => 'draft',
-                'uso_cfdi' => 'P01', // Por definir
+                'uso_cfdi' => 'S01', // Sin efectos fiscales (P01 no existe en CFDI 4.0)
             ],
             [
                 'receptor_nombre' => 'Consultores Asociados SC',

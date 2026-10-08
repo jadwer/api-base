@@ -26,7 +26,8 @@ class BankTransactionSchema extends Schema
 
             // Core fields
             Number::make('bankAccountId')->sortable(),
-            DateTime::make('transactionDate')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('transactionDate')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
             Number::make('amount')->sortable(),
             Str::make('transactionType')->sortable(),
             Str::make('reference')->sortable(),

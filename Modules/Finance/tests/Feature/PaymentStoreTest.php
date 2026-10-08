@@ -50,7 +50,41 @@ class PaymentStoreTest extends TestCase
     {
         $this->actingAs($this->getAdminUser(), 'sanctum')->jsonApi()->expects('payments')->withData([
             'type' => 'payments', 'attributes' => ['amount' => 100.00]
-        ])->post('/api/v1/payments')->assertStatus(500);
+        ])->post('/api/v1/payments')->assertStatus(422)
+            ->assertJsonFragment(['pointer' => '/data/attributes/paymentDate'])
+            ->assertJsonFragment(['pointer' => '/data/attributes/contactId'])
+            ->assertJsonFragment(['pointer' => '/data/attributes/bankAccountId'])
+            ->assertJsonFragment(['pointer' => '/data/attributes/paymentMethodId']);
+    }
+
+    // B3: un pago a proveedor (AP) no se rechaza por no ser cliente; sin folio el modelo lo genera
+    public function test_admin_can_create_supplier_payment_without_payment_number(): void
+    {
+        $supplier = Contact::factory()->supplier()->create();
+        $bankAccount = BankAccount::factory()->create();
+        $paymentMethod = PaymentMethod::factory()->create();
+
+        $response = $this->actingAs($this->getAdminUser(), 'sanctum')->jsonApi()->expects('payments')->withData([
+            'type' => 'payments',
+            'attributes' => ['contactId' => $supplier->id, 'bankAccountId' => $bankAccount->id, 'paymentMethodId' => $paymentMethod->id, 'amount' => 250.50, 'paymentDate' => '2026-10-08'],
+        ])->post('/api/v1/payments');
+
+        $response->assertCreated();
+        $payment = Payment::findOrFail($response->json('data.id'));
+        $this->assertMatchesRegularExpression('/^PAY-\d{6}$/', $payment->payment_number);
+    }
+
+    public function test_contact_that_is_neither_customer_nor_supplier_is_rejected(): void
+    {
+        $contact = Contact::factory()->prospect()->create();
+        $bankAccount = BankAccount::factory()->create();
+        $paymentMethod = PaymentMethod::factory()->create();
+
+        $this->actingAs($this->getAdminUser(), 'sanctum')->jsonApi()->expects('payments')->withData([
+            'type' => 'payments',
+            'attributes' => ['contactId' => $contact->id, 'bankAccountId' => $bankAccount->id, 'paymentMethodId' => $paymentMethod->id, 'amount' => 10, 'paymentDate' => '2026-10-08'],
+        ])->post('/api/v1/payments')->assertStatus(422)
+            ->assertJsonFragment(['pointer' => '/data/attributes/contactId']);
     }
 
     public function test_cannot_create_Payment_with_invalid_data(): void

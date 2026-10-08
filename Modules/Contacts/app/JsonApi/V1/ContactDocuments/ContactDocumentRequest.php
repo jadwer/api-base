@@ -4,6 +4,7 @@ namespace Modules\Contacts\JsonApi\V1\ContactDocuments;
 
 use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
 use Illuminate\Validation\Rule;
+use Modules\Contacts\Support\ContactDocumentTypes;
 
 class ContactDocumentRequest extends ResourceRequest
 {
@@ -13,7 +14,7 @@ class ContactDocumentRequest extends ResourceRequest
 
         return [
             'contactId' => [$isCreating ? 'required' : 'sometimes', 'integer'],
-            'documentType' => ['nullable', 'string', 'max:255', Rule::in(['rfc', 'cedula_fiscal', 'ine', 'constancia_sat', 'opinion_sat', 'certificado_sello', 'comprobante_domicilio', 'cotizacion', 'orden_compra', 'factura', 'contrato', 'otros'])],
+            'documentType' => ['nullable', 'string', 'max:255', Rule::in(ContactDocumentTypes::ALL)],
             'filePath' => ['nullable', 'string', 'max:255'],
             'originalFilename' => ['nullable', 'string', 'max:255'],
             'mimeType' => ['nullable', 'string', 'max:255'],

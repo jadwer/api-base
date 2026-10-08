@@ -51,12 +51,8 @@ class ContactDocument extends Model
         }
 
         // Validate allowed document types
-        $allowedTypes = [
-            'rfc', 'cedula_fiscal', 'ine', 'constancia_sat', 'opinion_sat', 
-            'certificado_sello', 'comprobante_domicilio', 'cotizacion', 
-            'orden_compra', 'factura', 'contrato', 'otros'
-        ];
-        
+        $allowedTypes = \Modules\Contacts\Support\ContactDocumentTypes::ALL;
+
         if ($this->document_type && !in_array($this->document_type, $allowedTypes)) {
             throw ValidationException::withMessages([
                 'document_type' => 'Invalid document type.'

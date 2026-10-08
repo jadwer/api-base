@@ -331,4 +331,35 @@ class SalesOrderUpdateTest extends TestCase
         $this->assertEquals('SO-SAME-001', $response->json('data.attributes.orderNumber'));
         $this->assertEquals('Updated notes', $response->json('data.attributes.notes'));
     }
+
+    // B3: subtotalAmount, currency e invoicingNotes tienen regla (antes se descartaban en silencio);
+    // arInvoiceId e invoicingStatus son del servidor (readOnly)
+    public function test_writable_and_read_only_finance_fields(): void
+    {
+        $salesOrder = SalesOrder::factory()->create([
+            'contact_id' => Contact::factory()->customer()->create()->id,
+            'subtotal' => 100,
+            'invoicing_status' => 'not_invoiced',
+        ]);
+        $patch = fn (array $attributes) => $this->actingAs($this->getAdminUser(), 'sanctum')
+            ->jsonApi()->expects('sales-orders')
+            ->withData(['type' => 'sales-orders', 'id' => (string) $salesOrder->id, 'attributes' => $attributes])
+            ->patch("/api/v1/sales-orders/{$salesOrder->id}");
+
+        $patch([
+            'subtotalAmount' => 862.07,
+            'currency' => 'USD',
+            'invoicingNotes' => 'Facturar a fin de mes',
+            'invoicingStatus' => 'invoiced',
+        ])->assertOk();
+
+        $salesOrder->refresh();
+        $this->assertEquals(862.07, (float) $salesOrder->subtotal);
+        $this->assertSame('USD', $salesOrder->currency);
+        $this->assertSame('Facturar a fin de mes', $salesOrder->invoicing_notes);
+        $this->assertSame('not_invoiced', $salesOrder->invoicing_status);
+
+        $patch(['subtotalAmount' => -1])->assertStatus(422);
+        $patch(['currency' => 'PESOS'])->assertStatus(422);
+    }
 }

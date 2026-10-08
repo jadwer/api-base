@@ -56,7 +56,7 @@ class CFDIInvoiceSchema extends Schema
             // CFDI Identification
             Str::make('series')->sortable(),
             Number::make('folio')->sortable(),
-            Str::make('uuid')->sortable(),
+            Str::make('uuid')->sortable()->readOnly(),
             Str::make('tipoComprobante', 'tipo_comprobante')->sortable(),
 
             // Customer Information
@@ -85,10 +85,10 @@ class CFDIInvoiceSchema extends Schema
             Str::make('condicionesPago', 'condiciones_pago'),
 
             // Payment complement (REP, type P): the collection this document settles
-            DateTime::make('fechaPago', 'fecha_pago'),
-            Number::make('montoPago', 'monto_pago'),
-            Str::make('formaPagoP', 'forma_pago_p'),
-            Number::make('arPaymentId', 'ar_payment_id'),
+            DateTime::make('fechaPago', 'fecha_pago')->readOnly(),
+            Number::make('montoPago', 'monto_pago')->readOnly(),
+            Str::make('formaPagoP', 'forma_pago_p')->readOnly(),
+            Number::make('arPaymentId', 'ar_payment_id')->readOnly(),
             // Columnas propias desde el Paquete B (87efe13); la relacion
             // paymentDocs queda como respaldo para REP anteriores.
             Number::make('numParcialidad')->extractUsing(
@@ -110,16 +110,16 @@ class CFDIInvoiceSchema extends Schema
 
             // Dates
             DateTime::make('fechaEmision', 'fecha_emision')->sortable(),
-            DateTime::make('fechaTimbrado', 'fecha_timbrado')->sortable(),
-            DateTime::make('fechaCancelacion', 'fecha_cancelacion')->sortable(),
+            DateTime::make('fechaTimbrado', 'fecha_timbrado')->sortable()->readOnly(),
+            DateTime::make('fechaCancelacion', 'fecha_cancelacion')->sortable()->readOnly(),
 
             // Files
-            Str::make('xmlPath', 'xml_path'),
-            Str::make('pdfPath', 'pdf_path'),
+            Str::make('xmlPath', 'xml_path')->readOnly(),
+            Str::make('pdfPath', 'pdf_path')->readOnly(),
 
             // PAC Response (excluded from responses for security)
             // Str::make('pacResponse', 'pac_response'),
-            Str::make('errorMessage', 'error_message'),
+            Str::make('errorMessage', 'error_message')->readOnly(),
 
             // Metadata
             ArrayHash::make('metadata'),

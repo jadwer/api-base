@@ -58,7 +58,8 @@ class RemissionItemSchema extends Schema
 
             // Batch tracking
             Str::make('batchNumber', 'batch_number'),
-            DateTime::make('expiryDate', 'expiry_date'),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('expiryDate', 'expiry_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d')),
 
             // Metadata
             ArrayHash::make('metadata'),

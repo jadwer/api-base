@@ -9,6 +9,13 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string|null $email
+ * @property bool $is_customer
+ * @property bool $is_supplier
+ */
 class Contact extends Model
 {
     use HasFactory, HasPermissions, LogsActivity;
@@ -276,7 +283,8 @@ class Contact extends Model
         $this->save();
     }
 
-    public function contactDocuments()
+    /** @return \Illuminate\Database\Eloquent\Relations\HasMany<ContactDocument, $this> */
+    public function contactDocuments(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ContactDocument::class);
     }
@@ -295,7 +303,8 @@ class Contact extends Model
         return \Modules\User\Models\User::where('email', $this->email)->exists();
     }
 
-    public function contactAddresses()
+    /** @return \Illuminate\Database\Eloquent\Relations\HasMany<ContactAddress, $this> */
+    public function contactAddresses(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ContactAddress::class);
     }
@@ -323,34 +332,40 @@ class Contact extends Model
         return trim((string) $this->legal_name) !== '' ? $this->legal_name : (string) $this->name;
     }
 
-    public function contactPeople()
+    /** @return \Illuminate\Database\Eloquent\Relations\HasMany<ContactPerson, $this> */
+    public function contactPeople(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ContactPerson::class);
     }
 
     // WS5 Commissions relationships
-    public function defaultSalesperson()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Modules\User\Models\User, $this> */
+    public function defaultSalesperson(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(\Modules\User\Models\User::class, 'default_salesperson_id');
     }
 
-    public function collectionsAgent()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Modules\User\Models\User, $this> */
+    public function collectionsAgent(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(\Modules\User\Models\User::class, 'collections_agent_id');
     }
 
     // Cross-module relationships
-    public function salesOrders()
+    /** @return \Illuminate\Database\Eloquent\Relations\HasMany<\Modules\Sales\Models\SalesOrder, $this> */
+    public function salesOrders(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(\Modules\Sales\Models\SalesOrder::class);
     }
 
-    public function purchaseOrders()
+    /** @return \Illuminate\Database\Eloquent\Relations\HasMany<\Modules\Purchase\Models\PurchaseOrder, $this> */
+    public function purchaseOrders(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(\Modules\Purchase\Models\PurchaseOrder::class);
     }
 
-    public function arInvoices()
+    /** @return \Illuminate\Database\Eloquent\Relations\HasMany<\Modules\Finance\Models\ARInvoice, $this> */
+    public function arInvoices(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(\Modules\Finance\Models\ARInvoice::class, 'contact_id');
     }

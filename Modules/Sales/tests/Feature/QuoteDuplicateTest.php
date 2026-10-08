@@ -177,7 +177,7 @@ class QuoteDuplicateTest extends TestCase
 
         // New quote should have future valid_until
         $newValidUntil = $response->json('data.attributes.validUntil');
-        $this->assertGreaterThan(now()->toISOString(), $newValidUntil);
+        $this->assertGreaterThan(now()->toDateString(), substr($newValidUntil, 0, 10));
     }
 
     public function test_returns_404_for_nonexistent_quote(): void

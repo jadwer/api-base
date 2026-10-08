@@ -65,6 +65,9 @@ class PurchaseOrderIndexTest extends TestCase
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
+        // el seeder crea un pedido por proveedor (hasta 3) y los proveedores son aleatorios: conteo relativo
+        $before = PurchaseOrder::count();
+
         $contact = Contact::factory()->create(['is_supplier' => true]);
         PurchaseOrder::factory()->create(['contact_id' => $contact->id]);
         PurchaseOrder::factory()->count(2)->create();
@@ -89,8 +92,7 @@ class PurchaseOrderIndexTest extends TestCase
             ],
             'jsonapi',
         ]);
-        // El seeder crea 3 + nosotros creamos 3 = 6 total
-        $response->assertJsonCount(6, 'data');
+        $response->assertJsonCount($before + 3, 'data');
     }
 
     public function test_admin_can_filter_purchase_orders_by_status(): void
@@ -204,8 +206,8 @@ class PurchaseOrderIndexTest extends TestCase
         $dates = collect($response->json('data'))->pluck('attributes.orderDate');
 
         // Verificar que nuestros registros específicos estén ordenados correctamente
-        $po2Date = '2025-01-02T00:00:00.000000Z';
-        $po1Date = '2025-01-01T00:00:00.000000Z';
+        $po2Date = '2025-01-02';
+        $po1Date = '2025-01-01';
 
         $po2Index = $dates->search($po2Date);
         $po1Index = $dates->search($po1Date);

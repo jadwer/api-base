@@ -50,6 +50,17 @@ class InventoryReservationRequest extends ResourceRequest
                 'nullable',
                 'array',
             ],
+            'stockId' => [
+                'sometimes',
+                'nullable',
+                'integer',
+                Rule::exists('stock', 'id'),
+            ],
+            'notes' => [
+                'sometimes',
+                'nullable',
+                'string',
+            ],
         ];
     }
 }

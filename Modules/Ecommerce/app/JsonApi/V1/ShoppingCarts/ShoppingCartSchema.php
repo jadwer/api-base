@@ -28,7 +28,7 @@ class ShoppingCartSchema extends Schema
         return [
             ID::make(),
             Str::make('sessionId'),
-            Str::make('userId'),
+            Str::make('userId')->readOnly(),
             Str::make('status')->sortable(),
             DateTime::make('expiresAt')->sortable(),
             Number::make('totalAmount')->sortable(),

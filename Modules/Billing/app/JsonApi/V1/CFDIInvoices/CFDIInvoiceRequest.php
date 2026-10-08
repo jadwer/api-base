@@ -2,7 +2,9 @@
 
 namespace Modules\Billing\JsonApi\V1\CFDIInvoices;
 
+use Illuminate\Validation\Rule;
 use LaravelJsonApi\Laravel\Http\Requests\ResourceRequest;
+use Modules\Contacts\Support\SatCatalogs;
 
 class CFDIInvoiceRequest extends ResourceRequest
 {
@@ -54,17 +56,18 @@ class CFDIInvoiceRequest extends ResourceRequest
                 'string',
                 'max:255',
             ],
+            // Mismos catalogos que sirve contact-catalogs (SatCatalogs, regla 7)
             'receptorUsoCfdi' => [
                 'sometimes',
                 'nullable',
                 'string',
-                'max:10',
+                Rule::in(SatCatalogs::usoCfdiCodes()),
             ],
             'receptorRegimenFiscal' => [
                 'sometimes',
                 'nullable',
                 'string',
-                'max:10',
+                Rule::in(SatCatalogs::regimenFiscalCodes()),
             ],
             'receptorDomicilioFiscal' => [
                 'sometimes',
@@ -125,11 +128,12 @@ class CFDIInvoiceRequest extends ResourceRequest
                 'numeric',
                 'min:0',
             ],
+            // Misma tabla que sirve GET /sat/forma-pago
             'formaPago' => [
                 'sometimes',
                 'nullable',
                 'string',
-                'max:2',
+                Rule::exists('sat_forma_pago', 'clave'),
             ],
             'metodoPago' => [
                 'sometimes',
@@ -177,6 +181,9 @@ class CFDIInvoiceRequest extends ResourceRequest
     public function messages(): array
     {
         return [
+            'receptorUsoCfdi.in' => 'El uso de CFDI no esta en el catalogo SAT.',
+            'receptorRegimenFiscal.in' => 'El regimen fiscal no esta en el catalogo SAT.',
+            'formaPago.exists' => 'La forma de pago no esta en el catalogo SAT.',
             'companySettingId.required' => 'La configuración de empresa es obligatoria.',
             'companySettingId.exists' => 'La configuración de empresa no existe.',
             'contactId.required' => 'El contacto es obligatorio.',

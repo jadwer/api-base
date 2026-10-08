@@ -26,7 +26,8 @@ class PaymentSchema extends Schema
             ID::make(),
             
             Str::make('paymentNumber')->sortable(),
-            DateTime::make('paymentDate')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('paymentDate')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
             Number::make('contactId')->sortable(),
             Number::make('bankAccountId')->sortable(),
             Number::make('paymentMethodId')->sortable(),
@@ -67,6 +68,8 @@ class PaymentSchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('journal_entry_id'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('reference'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('is_active')->asBoolean(),
+            // filter[direction]=ap (pagos a proveedor) | ar (cobros a cliente)
+            \LaravelJsonApi\Eloquent\Filters\Scope::make('direction'),
         ];
     }
 

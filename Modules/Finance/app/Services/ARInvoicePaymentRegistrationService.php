@@ -50,7 +50,7 @@ class ARInvoicePaymentRegistrationService
             $formaPago = SatFormaPago::findOrFail($data['forma_pago']);
 
             $payment = Payment::create([
-                'payment_number' => $this->generatePaymentNumber(),
+                'payment_number' => Payment::nextPaymentNumber(),
                 'payment_date' => $data['payment_date'],
                 'contact_id' => $invoice->contact_id,
                 'bank_account_id' => $data['bank_account_id'] ?? $this->resolveDefaultBankAccount($invoice)->id,
@@ -139,26 +139,5 @@ class ARInvoicePaymentRegistrationService
                 'is_active' => true,
             ]
         );
-    }
-
-    /**
-     * Numero secuencial PAY-XXXXXX (mismo patron que ARInvoiceService::generateInvoiceNumber),
-     * con guarda de unicidad porque la factory legada genera PAY-##### aleatorios.
-     */
-    private function generatePaymentNumber(): string
-    {
-        $last = Payment::lockForUpdate()->orderBy('id', 'desc')->first();
-
-        $next = 1;
-        if ($last && preg_match('/(\d+)$/', (string) $last->payment_number, $matches)) {
-            $next = ((int) $matches[1]) + 1;
-        }
-
-        do {
-            $number = 'PAY-' . str_pad((string) $next, 6, '0', STR_PAD_LEFT);
-            $next++;
-        } while (Payment::where('payment_number', $number)->exists());
-
-        return $number;
     }
 }

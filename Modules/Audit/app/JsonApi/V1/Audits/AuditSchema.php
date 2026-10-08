@@ -27,16 +27,16 @@ class AuditSchema extends Schema
     {
         return [
             ID::make()->sortable(),
-            Str::make('event')->sortable(),
-            Number::make('userId', 'causer_id')->sortable(),
-            Str::make('auditableType', 'subject_type')->sortable(),
-            Number::make('auditableId', 'subject_id')->sortable(),
-            Str::make('oldValues', 'properties->old'),
-            Str::make('newValues', 'properties->attributes'),
-            Str::make('ipAddress', 'properties->ip_address'),
-            Str::make('userAgent', 'properties->user_agent'),
-            DateTime::make('createdAt', 'created_at')->sortable(),
-            DateTime::make('updatedAt', 'updated_at')->sortable(),
+            Str::make('event')->sortable()->readOnly(),
+            Number::make('userId', 'causer_id')->sortable()->readOnly(),
+            Str::make('auditableType', 'subject_type')->sortable()->readOnly(),
+            Number::make('auditableId', 'subject_id')->sortable()->readOnly(),
+            Str::make('oldValues', 'properties->old')->readOnly(),
+            Str::make('newValues', 'properties->attributes')->readOnly(),
+            Str::make('ipAddress', 'properties->ip_address')->readOnly(),
+            Str::make('userAgent', 'properties->user_agent')->readOnly(),
+            DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
+            DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
 
             // MorphTo::make('causer')->types('users', 'users')->readOnly(),
             // Recuperados del Resource manual retirado (2026-09-30): mismo nombre y valor.

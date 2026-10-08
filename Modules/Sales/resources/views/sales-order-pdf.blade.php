@@ -428,8 +428,8 @@
                     <div class="info-block">
                         <h4>Direccion de Envio</h4>
                         <p><strong>{{ $shippingAddress['name'] ?? '' }}</strong></p>
-                        <p>{{ $shippingAddress['address_line1'] ?? '' }}</p>
-                        @if(!empty($shippingAddress['address_line2']))<p>{{ $shippingAddress['address_line2'] }}</p>@endif
+                        <p>{{ $shippingAddress['line1'] ?? $shippingAddress['address_line1'] ?? '' }}</p>
+                        @if(!empty($shippingAddress['line2'] ?? $shippingAddress['address_line2'] ?? null))<p>{{ $shippingAddress['line2'] ?? $shippingAddress['address_line2'] }}</p>@endif
                         <p>{{ $shippingAddress['city'] ?? '' }}, {{ $shippingAddress['state'] ?? '' }} {{ $shippingAddress['postal_code'] ?? '' }}</p>
                         @if(!empty($shippingAddress['phone']))<p><strong>Tel:</strong> {{ $shippingAddress['phone'] }}</p>@endif
                     </div>

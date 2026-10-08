@@ -43,12 +43,14 @@ class PaymentApplication extends Model
     }
 
 
-    public function payment()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Payment, $this> */
+    public function payment(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Payment::class);
     }
 
-    public function aRInvoice()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<ARInvoice, $this> */
+    public function aRInvoice(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(ARInvoice::class, 'ar_invoice_id');
     }

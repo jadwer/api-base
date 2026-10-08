@@ -34,9 +34,10 @@ class PayrollPeriodSchema extends Schema
             ID::make(),
             Str::make('name')->sortable(),
             Str::make('periodType', 'period_type')->sortable(),
-            DateTime::make('startDate', 'start_date')->sortable(),
-            DateTime::make('endDate', 'end_date')->sortable(),
-            DateTime::make('paymentDate', 'payment_date')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('startDate', 'start_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
+            DateTime::make('endDate', 'end_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
+            DateTime::make('paymentDate', 'payment_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
             Str::make('status')->sortable(),
             Number::make('totalGross', 'total_gross')->sortable(),
             Number::make('totalDeductions', 'total_deductions')->sortable(),

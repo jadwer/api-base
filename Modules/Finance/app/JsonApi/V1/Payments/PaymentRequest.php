@@ -18,30 +18,32 @@ class PaymentRequest extends ResourceRequest
     public function rules(): array
     {
         $payment = $this->model();
+        // Columnas NOT NULL: requeridas al crear para responder 422 y no 500
+        $required = $this->isCreating() ? 'required' : 'sometimes';
 
         return [
-            'paymentNumber' => ['nullable', 'string', 'max:255', Rule::unique('payments', 'payment_number')->ignore($payment?->id)],
-            'paymentDate' => ['nullable', 'date'],
+            // Opcional al crear: el modelo genera PAY-000001 si no viene
+            'paymentNumber' => ['sometimes', 'string', 'max:255', Rule::unique('payments', 'payment_number')->ignore($payment?->id)],
+            'paymentDate' => [$required, 'date'],
             'contactId' => [
-                'nullable',
+                $required,
                 'integer',
                 'exists:contacts,id',
+                // Un pago puede ser cobro a cliente (AR) o pago a proveedor (AP)
                 function ($attribute, $value, $fail) {
-                    if ($value) {
-                        $contact = Contact::find($value);
-                        if (!$contact || !$contact->is_customer) {
-                            $fail('El contacto debe ser un cliente válido (is_customer = true).');
-                        }
+                    $contact = Contact::whereKey($value)->first();
+                    if ($contact && ! $contact->is_customer && ! $contact->is_supplier) {
+                        $fail('El contacto debe ser cliente o proveedor.');
                     }
-                }
+                },
             ],
-            'bankAccountId' => ['nullable', 'integer'],
-            'paymentMethodId' => ['nullable', 'integer'],
-            'amount' => ['nullable', 'numeric'],
-            'currency' => ['nullable', 'string', 'max:255'],
+            'bankAccountId' => [$required, 'integer', 'exists:bank_accounts,id'],
+            'paymentMethodId' => [$required, 'integer', 'exists:payment_methods,id'],
+            'amount' => [$required, 'numeric'],
+            'currency' => ['sometimes', 'string', 'max:255'],
             'appliedAmount' => ['nullable', 'numeric'],
             'unappliedAmount' => ['nullable', 'numeric'],
-            'status' => ['nullable', 'string', \Illuminate\Validation\Rule::in(['draft', 'unapplied', 'partial', 'applied', 'fully_applied', 'void', 'voided'])],
+            'status' => ['sometimes', 'string', Rule::in(['draft', 'unapplied', 'partial', 'applied', 'fully_applied', 'void', 'voided'])],
             'journalEntryId' => ['nullable', 'integer'],
             'reference' => ['nullable', 'string', 'max:255'],
             'notes' => ['nullable', 'string'],
@@ -53,6 +55,14 @@ class PaymentRequest extends ResourceRequest
     public function messages(): array
     {
         return [
+            'paymentDate.required' => 'La fecha de pago es obligatoria.',
+            'contactId.required' => 'El contacto es obligatorio.',
+            'contactId.exists' => 'El contacto no existe.',
+            'bankAccountId.required' => 'La cuenta bancaria es obligatoria.',
+            'bankAccountId.exists' => 'La cuenta bancaria no existe.',
+            'paymentMethodId.required' => 'El metodo de pago es obligatorio.',
+            'paymentMethodId.exists' => 'El metodo de pago no existe.',
+            'amount.required' => 'El monto es obligatorio.',
             'paymentNumber.string' => 'El campo Payment number debe ser texto.',
             'paymentNumber.max' => 'El campo Payment number no puede tener más de 255 caracteres.',
             'paymentNumber.unique' => 'Este Payment number ya está en uso.',
@@ -66,7 +76,7 @@ class PaymentRequest extends ResourceRequest
             'appliedAmount.numeric' => 'El campo Applied amount debe ser un número.',
             'unappliedAmount.numeric' => 'El campo Unapplied amount debe ser un número.',
             'status.string' => 'El campo Status debe ser texto.',
-            'status.max' => 'El campo Status no puede tener más de 255 caracteres.',
+            'status.in' => 'El estado del pago no es valido.',
             'journalEntryId.integer' => 'El campo Journal entry id debe ser un número entero.',
             'reference.string' => 'El campo Reference debe ser texto.',
             'reference.max' => 'El campo Reference no puede tener más de 255 caracteres.',

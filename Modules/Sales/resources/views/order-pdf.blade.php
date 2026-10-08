@@ -161,8 +161,8 @@
             <div class="section-title">Direccion de Envio</div>
             <div class="address-block">
                 <p><strong>{{ $shippingAddress['name'] ?? '' }}</strong></p>
-                <p>{{ $shippingAddress['address_line1'] ?? '' }}</p>
-                @if(!empty($shippingAddress['address_line2']))<p>{{ $shippingAddress['address_line2'] }}</p>@endif
+                <p>{{ $shippingAddress['line1'] ?? $shippingAddress['address_line1'] ?? '' }}</p>
+                @if(!empty($shippingAddress['line2'] ?? $shippingAddress['address_line2'] ?? null))<p>{{ $shippingAddress['line2'] ?? $shippingAddress['address_line2'] }}</p>@endif
                 <p>{{ $shippingAddress['city'] ?? '' }}, {{ $shippingAddress['state'] ?? '' }} {{ $shippingAddress['postal_code'] ?? '' }}</p>
                 <p>{{ $shippingAddress['country'] ?? '' }}</p>
             </div>

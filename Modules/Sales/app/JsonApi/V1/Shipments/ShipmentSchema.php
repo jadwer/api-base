@@ -41,9 +41,10 @@ class ShipmentSchema extends Schema
             Str::make('trackingUrl', 'tracking_url'),
 
             // Dates
-            DateTime::make('shipDate', 'ship_date')->sortable(),
-            DateTime::make('estimatedDelivery', 'estimated_delivery')->sortable(),
-            DateTime::make('actualDelivery', 'actual_delivery')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('shipDate', 'ship_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
+            DateTime::make('estimatedDelivery', 'estimated_delivery')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
+            DateTime::make('actualDelivery', 'actual_delivery')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
 
             // Address and notes
             Str::make('shippingAddress', 'shipping_address'),

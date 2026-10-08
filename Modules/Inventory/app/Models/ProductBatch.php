@@ -18,9 +18,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int|null $warehouse_location_id
  * @property string $batch_number
  * @property string|null $lot_number
- * @property string|null $manufacturing_date
- * @property string|null $expiration_date
- * @property string|null $best_before_date
+ * @property \Carbon\Carbon|null $manufacturing_date
+ * @property \Carbon\Carbon|null $expiration_date
+ * @property \Carbon\Carbon|null $best_before_date
  * @property float $initial_quantity
  * @property float $current_quantity
  * @property float $reserved_quantity

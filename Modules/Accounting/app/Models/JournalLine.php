@@ -23,12 +23,14 @@ class JournalLine extends Model
         'metadata' => 'array'
     ];
 
-    public function journalEntry()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<JournalEntry, $this> */
+    public function journalEntry(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(JournalEntry::class);
     }
 
-    public function account()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Account, $this> */
+    public function account(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Account::class);
     }

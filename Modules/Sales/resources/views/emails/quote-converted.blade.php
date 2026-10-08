@@ -93,11 +93,11 @@
                 @if(!empty($quoteSummary['shipping_address']['recipient']))
                     {{ $quoteSummary['shipping_address']['recipient'] }}<br>
                 @endif
-                @if(!empty($quoteSummary['shipping_address']['address_line1']))
-                    {{ $quoteSummary['shipping_address']['address_line1'] }}<br>
+                @if(!empty($quoteSummary['shipping_address']['line1'] ?? $quoteSummary['shipping_address']['address_line1'] ?? null))
+                    {{ $quoteSummary['shipping_address']['line1'] ?? $quoteSummary['shipping_address']['address_line1'] }}<br>
                 @endif
-                @if(!empty($quoteSummary['shipping_address']['address_line2']))
-                    {{ $quoteSummary['shipping_address']['address_line2'] }}<br>
+                @if(!empty($quoteSummary['shipping_address']['line2'] ?? $quoteSummary['shipping_address']['address_line2'] ?? null))
+                    {{ $quoteSummary['shipping_address']['line2'] ?? $quoteSummary['shipping_address']['address_line2'] }}<br>
                 @endif
                 @if(!empty($quoteSummary['shipping_address']['city']))
                     {{ $quoteSummary['shipping_address']['city'] }},

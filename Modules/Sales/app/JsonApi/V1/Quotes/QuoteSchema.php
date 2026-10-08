@@ -43,7 +43,7 @@ class QuoteSchema extends Schema
             // Foreign keys
             Number::make('contactId', 'contact_id'),
             Number::make('shoppingCartId', 'shopping_cart_id'),
-            Number::make('salesOrderId', 'sales_order_id'),
+            Number::make('salesOrderId', 'sales_order_id')->readOnly(),
             Number::make('purchaseOrderId', 'purchase_order_id')->readOnly(),
 
             // Relations
@@ -58,8 +58,9 @@ class QuoteSchema extends Schema
             // Basic fields
             Str::make('quoteNumber', 'quote_number')->sortable(),
             Str::make('status')->sortable(),
-            DateTime::make('quoteDate', 'quote_date')->sortable(),
-            DateTime::make('validUntil', 'valid_until')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('quoteDate', 'quote_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
+            DateTime::make('validUntil', 'valid_until')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
             Str::make('estimatedEta', 'estimated_eta'),
 
             // Amount fields

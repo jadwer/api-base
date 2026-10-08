@@ -15,6 +15,8 @@ namespace Modules\Contacts\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Modules\Contacts\Support\ContactDocumentTypes;
 use Illuminate\Support\Facades\Storage;
 use Modules\Contacts\Models\ContactDocument;
 use Illuminate\Support\Str;
@@ -33,7 +35,7 @@ class ContactDocumentUploadController extends Controller
 
         $request->validate([
             'contact_id' => 'required|exists:contacts,id',
-            'document_type' => 'required|string|in:rfc,cedula_fiscal,ine,constancia_sat,opinion_sat,certificado_sello,comprobante_domicilio,cotizacion,orden_compra,factura,contrato,otros',
+            'document_type' => ['required', 'string', Rule::in(ContactDocumentTypes::ALL)],
             'file' => 'required|file|mimes:pdf,jpg,jpeg,png,gif,doc,docx,xls,xlsx|max:10240', // 10MB max
             'notes' => 'nullable|string',
             'expires_at' => 'nullable|date|after:today'

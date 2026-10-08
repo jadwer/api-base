@@ -160,7 +160,7 @@ class KPIService
             ->sum(fn($account) => $this->getAccountBalanceForPeriod($account->id, $startDate, Carbon::now()));
 
         // Average inventory value
-        $averageInventory = Stock::avg(DB::raw('quantity_on_hand * unit_cost'));
+        $averageInventory = Stock::avg(DB::raw('quantity * unit_cost'));
 
         return $averageInventory > 0 ? round($cogs / $averageInventory, 2) : 0;
     }

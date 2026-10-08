@@ -40,6 +40,7 @@ class ARInvoiceRequest extends ResourceRequest
             'taxAmount' => ['required', 'numeric'],
             'totalAmount' => ['required', 'numeric'],
             'paidAmount' => ['nullable', 'numeric'],
+            'paidDate' => ['nullable', 'date'],
             'status' => ['nullable', 'string', \Illuminate\Validation\Rule::in(['draft', 'pending', 'posted', 'partial', 'paid', 'void', 'voided', 'cancelled'])],
             'journalEntryId' => ['nullable', 'integer'],
             'notes' => ['nullable', 'string'],

@@ -3,7 +3,7 @@
 namespace Modules\Reports\Services\Analytics;
 
 use Modules\Sales\Models\SalesOrder;
-use Modules\Sales\Models\Customer;
+use Modules\Contacts\Models\Contact;
 use Modules\Purchase\Models\PurchaseOrder;
 use Carbon\Carbon;
 
@@ -99,11 +99,10 @@ class MetricsService
             ->whereIn('status', ['confirmed', 'completed'])
             ->get();
 
-        $newCustomers = Customer::whereBetween('created_at', [
-            $startOfMonth,
-            $now
-        ])
-            ->where('is_active', true)
+        // Clientes = contactos con is_customer; activos por status (no hay is_active)
+        $newCustomers = Contact::where('is_customer', true)
+            ->active()
+            ->whereBetween('created_at', [$startOfMonth, $now])
             ->count();
 
         $purchaseOrders = PurchaseOrder::whereBetween('order_date', [
@@ -149,7 +148,7 @@ class MetricsService
             ->whereIn('status', ['approved', 'received'])
             ->get();
 
-        $totalCustomers = Customer::where('is_active', true)->count();
+        $totalCustomers = Contact::where('is_customer', true)->active()->count();
 
         return [
             'sales_count' => $salesOrders->count(),

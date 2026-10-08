@@ -28,7 +28,8 @@ class PaymentApplicationSchema extends Schema
             Number::make('paymentId')->sortable(),
             Number::make('arInvoiceId')->sortable(),
             Number::make('amount')->sortable(),
-            DateTime::make('applicationDate')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('applicationDate')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
             Str::make('notes'),
             Boolean::make('isActive')->sortable(),
             // Metadata

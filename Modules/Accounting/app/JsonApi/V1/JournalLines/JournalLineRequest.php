@@ -16,7 +16,7 @@ class JournalLineRequest extends ResourceRequest
         return [
             'journalEntryId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
             'accountId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
-            'contact_id' => ['nullable', 'integer'],
+            'contactId' => ['nullable', 'integer', 'exists:contacts,id'],
             'debit' => [
                 $isUpdate ? 'sometimes' : 'required',
                 'numeric',

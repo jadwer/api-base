@@ -28,8 +28,9 @@ class CampaignSchema extends Schema
             Str::make('name')->sortable(),
             Str::make('campaignType', 'type')->sortable(),
             Str::make('status')->sortable(),
-            Str::make('startDate', 'start_date')->sortable(),
-            Str::make('endDate', 'end_date')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('startDate', 'start_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
+            DateTime::make('endDate', 'end_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
             Number::make('budget')->sortable(),
             Number::make('actualCost', 'actual_cost')->sortable(),
             Number::make('expectedRevenue', 'expected_revenue')->sortable(),

@@ -18,9 +18,6 @@ use Spatie\Activitylog\LogOptions;
  * @property float $discount
  * @property float $total
  * @property array|null $metadata
- * @property int|null $ar_invoice_line_id
- * @property float $invoiced_quantity
- * @property float $invoiced_amount
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Modules\Sales\Models\SalesOrder $salesOrder
@@ -35,7 +32,6 @@ class SalesOrderItem extends Model
         'unit_price', 'discount', 'total',
         'original_currency_code', 'original_unit_price', 'exchange_rate_used',
         'metadata', 'fulfillment_status',
-        'ar_invoice_line_id', 'invoiced_quantity', 'invoiced_amount',
     ];
 
     protected $casts = [
@@ -50,9 +46,6 @@ class SalesOrderItem extends Model
         'original_unit_price' => 'float',
         'exchange_rate_used' => 'float',
         'metadata' => 'array',
-        'ar_invoice_line_id' => 'integer',
-        'invoiced_quantity' => 'float',
-        'invoiced_amount' => 'float',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

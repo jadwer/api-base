@@ -64,7 +64,9 @@ class StockSchema extends Schema
             // Estado y movimientos
             Str::make('status')
                 ->sortable(),
+            // Columna date: sale como Y-m-d; acepta fecha o fecha y hora al escribir
             DateTime::make('lastMovementDate', 'last_movement_date')
+                ->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))
                 ->sortable(),
             Str::make('lastMovementType', 'last_movement_type'),
             

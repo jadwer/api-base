@@ -26,8 +26,9 @@ class AccountMappingSchema extends Schema
             ID::make(),            Str::make('mappingType', 'mapping_type')->sortable(),
             Number::make('accountId', 'account_id'),
             Number::make('version')->sortable(),
-            DateTime::make('effectiveFrom', 'effective_from')->sortable(),
-            DateTime::make('effectiveTo', 'effective_to')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('effectiveFrom', 'effective_from')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
+            DateTime::make('effectiveTo', 'effective_to')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
             Boolean::make('isActive', 'is_active')->sortable(),
             Number::make('createdById', 'created_by_id'),
             Str::make('notes'),

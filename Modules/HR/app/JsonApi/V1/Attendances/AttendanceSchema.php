@@ -33,7 +33,8 @@ class AttendanceSchema extends Schema
     {
         return [
             ID::make(),
-            DateTime::make('date')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
             Str::make('checkIn', 'check_in')->sortable(),
             Str::make('checkOut', 'check_out')->sortable(),
             Number::make('hoursWorked', 'hours_worked')->sortable(),

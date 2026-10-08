@@ -24,7 +24,7 @@ class Brand extends Model
     }
 
     protected $fillable = [
-        'name', 'description', 'logo_path', 'website', 'is_active', 'default_lead_time',
+        'name', 'description', 'is_active', 'default_lead_time',
     ];
 
     /**

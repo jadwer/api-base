@@ -40,7 +40,7 @@ class CheckoutSessionSchema extends Schema
 
             // Foreign Keys
             Number::make('shoppingCartId', 'shopping_cart_id'),
-            Number::make('userId', 'user_id'),
+            Number::make('userId', 'user_id')->readOnly(),
             Number::make('shippingMethodId', 'shipping_method_id'),
 
             // Session Status
@@ -72,8 +72,8 @@ class CheckoutSessionSchema extends Schema
             ArrayHash::make('metadata'),
 
             // Timestamps
-            DateTime::make('expiresAt', 'expires_at'),
-            DateTime::make('completedAt', 'completed_at'),
+            DateTime::make('expiresAt', 'expires_at')->readOnly(),
+            DateTime::make('completedAt', 'completed_at')->readOnly(),
             DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
             DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
 

@@ -119,7 +119,7 @@ class CFDIInvoiceUpdateTest extends TestCase
             'attributes' => [
                 'receptorRfc' => 'NEWR010101ABC',
                 'receptorNombre' => 'New Receptor Name',
-                'receptorUsoCfdi' => 'P01',
+                'receptorUsoCfdi' => 'S01',
             ]
         ];
 
@@ -272,5 +272,22 @@ class CFDIInvoiceUpdateTest extends TestCase
             ->patch('/api/v1/cfdi-invoices/' . $invoice->id);
 
         $response->assertSuccessful();
+    }
+
+    // B3: uso CFDI, regimen y forma de pago contra los mismos catalogos que sirve el backend al frontend
+    public function test_sat_fields_are_validated_against_the_catalogs()
+    {
+        $user = $this->getAdminUser();
+        $invoice = CFDIInvoice::factory()->draft()->create();
+        $patch = fn (array $attributes) => $this->jsonApi()->expects('cfdi-invoices')
+            ->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
+            ->withData(['type' => 'cfdi-invoices', 'id' => (string) $invoice->id, 'attributes' => $attributes])
+            ->patch('/api/v1/cfdi-invoices/' . $invoice->id);
+
+        $patch(['receptorUsoCfdi' => 'G03', 'receptorRegimenFiscal' => '601', 'formaPago' => '03'])->assertSuccessful();
+
+        $patch(['receptorUsoCfdi' => 'P01'])->assertStatus(422)->assertJsonFragment(['pointer' => '/data/attributes/receptorUsoCfdi']);
+        $patch(['receptorRegimenFiscal' => '999'])->assertStatus(422)->assertJsonFragment(['pointer' => '/data/attributes/receptorRegimenFiscal']);
+        $patch(['formaPago' => 'ZZ'])->assertStatus(422)->assertJsonFragment(['pointer' => '/data/attributes/formaPago']);
     }
 }

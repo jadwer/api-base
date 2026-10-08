@@ -32,10 +32,12 @@ class ShoppingCartSeeder extends Seeder
         });
 
         // Create some active records
-        ShoppingCart::factory()->active()->count(5)->create();
+        // usuarios existentes: la fabrica crea uno nuevo por carrito si no se le pasa
+        $randomUser = fn () => ['user_id' => $users->random()->id];
+        ShoppingCart::factory()->active()->count(5)->state($randomUser)->create();
 
         // Create some inactive records
-        ShoppingCart::factory()->inactive()->count(2)->create();
+        ShoppingCart::factory()->inactive()->count(2)->state($randomUser)->create();
 
         
         $this->command->info('✅ ShoppingCart seeded successfully!');

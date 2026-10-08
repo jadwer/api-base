@@ -37,8 +37,8 @@ class ProductReviewSchema extends Schema
             ID::make(),
 
             // Foreign Keys
-            Number::make('productId', 'product_id'),
-            Number::make('userId', 'user_id'),
+            Number::make('productId', 'product_id')->readOnly(),
+            Number::make('userId', 'user_id')->readOnly(),
 
             // Review Details
             Number::make('rating')->sortable(), // 1-5 stars
@@ -46,7 +46,7 @@ class ProductReviewSchema extends Schema
             Str::make('comment'),
 
             // Verification & Status
-            Boolean::make('isVerifiedPurchase', 'is_verified_purchase')->sortable(),
+            Boolean::make('isVerifiedPurchase', 'is_verified_purchase')->sortable()->readOnly(),
             Number::make('helpfulCount', 'helpful_count')->sortable(),
             Str::make('status')->sortable(),
 

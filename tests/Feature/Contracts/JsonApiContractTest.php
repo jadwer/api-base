@@ -178,6 +178,9 @@ class JsonApiContractTest extends TestCase
                 return $modelClass::factory()->create()->fresh() ?? $modelClass::factory()->create();
             } catch (\Throwable) {
                 // sin fabrica util: cae al modelo vacio
+            } finally {
+                // Faker::seed llama mt_srand global; sin esto los tests posteriores del proceso quedan con azar fijo
+                mt_srand();
             }
         }
 

@@ -33,7 +33,7 @@ class CFDIInvoiceFactory extends Factory
             'tipo_comprobante' => 'I', // Ingreso
             'receptor_rfc' => strtoupper($this->faker->regexify('[A-Z]{4}[0-9]{6}[A-Z0-9]{3}')),
             'receptor_nombre' => $this->faker->company(),
-            'receptor_uso_cfdi' => $this->faker->randomElement(['G01', 'G02', 'G03', 'I01', 'P01']),
+            'receptor_uso_cfdi' => $this->faker->randomElement(['G01', 'G02', 'G03', 'I01', 'S01']),
             'receptor_regimen_fiscal' => $this->faker->randomElement(['601', '603', '605', '606', '612', '621']),
             'receptor_domicilio_fiscal' => $this->faker->numerify('#####'),
             'subtotal' => $subtotal,

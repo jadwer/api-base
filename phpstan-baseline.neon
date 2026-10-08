@@ -1255,18 +1255,6 @@ parameters:
 			path: Modules/Billing/app/Services/CFDIAutomationService.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Finance\\Models\\ARInvoice\:\:\$contact\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDIAutomationService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Finance\\Models\\ARInvoice\:\:\$salesOrder\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDIAutomationService.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Finance\\Models\\ARInvoice\:\:\$status\.$#'
 			identifier: property.notFound
 			count: 1
@@ -1436,12 +1424,6 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property Modules\\CRM\\Models\\Opportunity\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/CRM/app/Http/Controllers/Api/V1/LeadController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$name\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/CRM/app/Http/Controllers/Api/V1/LeadController.php
@@ -1711,12 +1693,6 @@ parameters:
 			path: Modules/Contacts/app/Models/Contact.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$contactAddresses\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Contacts/app/Models/Contact.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$contact_type\.$#'
 			identifier: property.notFound
 			count: 1
@@ -1735,33 +1711,9 @@ parameters:
 			path: Modules/Contacts/app/Models/Contact.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$email\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Contacts/app/Models/Contact.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$is_customer\.$#'
-			identifier: property.notFound
-			count: 5
-			path: Modules/Contacts/app/Models/Contact.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$is_supplier\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Contacts/app/Models/Contact.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$legal_name\.$#'
 			identifier: property.notFound
 			count: 3
-			path: Modules/Contacts/app/Models/Contact.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 2
 			path: Modules/Contacts/app/Models/Contact.php
 
 		-
@@ -1790,6 +1742,18 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$tax_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Contacts/app/Models/Contact.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Contacts\\Models\\ContactAddress\:\:\$address_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Contacts/app/Models/Contact.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Contacts\\Models\\ContactAddress\:\:\$is_default\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Contacts/app/Models/Contact.php
@@ -1969,21 +1933,9 @@ parameters:
 			path: Modules/Contacts/app/Models/ContactPerson.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$email\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Contacts/app/Services/DuplicateDetectionService.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$legal_name\.$#'
 			identifier: property.notFound
 			count: 1
-			path: Modules/Contacts/app/Services/DuplicateDetectionService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 3
 			path: Modules/Contacts/app/Services/DuplicateDetectionService.php
 
 		-
@@ -2179,6 +2131,48 @@ parameters:
 			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ProductViewController.php
 
 		-
+			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$exchange_rate_used\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ShoppingCartController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$original_currency_code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ShoppingCartController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$original_unit_price\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ShoppingCartController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$product_id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ShoppingCartController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$quantity\.$#'
+			identifier: property.notFound
+			count: 5
+			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ShoppingCartController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$total\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ShoppingCartController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$unit_price\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ShoppingCartController.php
+
+		-
 			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\Coupon\:\:\$currency\.$#'
 			identifier: property.notFound
 			count: 1
@@ -2236,12 +2230,6 @@ parameters:
 			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\Currency\:\:\$exchange_rate\.$#'
 			identifier: property.notFound
 			count: 1
-			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ShoppingCartController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\ShoppingCart\:\:\$cartItems\.$#'
-			identifier: property.notFound
-			count: 2
 			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ShoppingCartController.php
 
 		-
@@ -2317,9 +2305,9 @@ parameters:
 			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ShoppingCartController.php
 
 		-
-			message: '#^Relation ''cartItems'' is not found in Modules\\Ecommerce\\Models\\ShoppingCart model\.$#'
-			identifier: larastan.relationExistence
-			count: 2
+			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
 			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ShoppingCartController.php
 
 		-
@@ -2367,12 +2355,6 @@ parameters:
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
 			identifier: property.notFound
-			count: 1
-			path: Modules/Ecommerce/app/Mail/OrderConfirmationMail.php
-
-		-
-			message: '#^Relation ''checkoutSession'' is not found in Modules\\Sales\\Models\\SalesOrder model\.$#'
-			identifier: larastan.relationExistence
 			count: 1
 			path: Modules/Ecommerce/app/Mail/OrderConfirmationMail.php
 
@@ -2641,6 +2623,12 @@ parameters:
 			path: Modules/Ecommerce/app/Models/ShoppingCart.php
 
 		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 2
+			path: Modules/Ecommerce/app/Models/ShoppingCart.php
+
+		-
 			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$exchange_rate_used\.$#'
 			identifier: property.notFound
 			count: 1
@@ -2833,12 +2821,6 @@ parameters:
 			path: Modules/Ecommerce/app/Services/InventoryReservationService.php
 
 		-
-			message: '#^Cannot call method format\(\) on string\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: Modules/Ecommerce/app/Services/InventoryReservationService.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$email\.$#'
 			identifier: property.notFound
 			count: 1
@@ -2869,6 +2851,12 @@ parameters:
 			path: Modules/Ecommerce/app/Services/Notifications/OrderNotificationService.php
 
 		-
+			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CheckoutSession\:\:\$contact_email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Ecommerce/app/Services/Notifications/OrderNotificationService.php
+
+		-
 			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\PaymentTransaction\:\:\$amount\.$#'
 			identifier: property.notFound
 			count: 1
@@ -2887,12 +2875,6 @@ parameters:
 			path: Modules/Ecommerce/app/Services/Notifications/OrderNotificationService.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Sales\\Models\\SalesOrder\:\:\$checkoutSession\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Ecommerce/app/Services/Notifications/OrderNotificationService.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Sales\\Models\\SalesOrder\:\:\$shipping_address\.$#'
 			identifier: property.notFound
 			count: 1
@@ -2900,12 +2882,6 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property Modules\\Sales\\Models\\SalesOrder\:\:\$tracking_number\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Ecommerce/app/Services/Notifications/OrderNotificationService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Sales\\Models\\SalesOrder\:\:\$user\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Ecommerce/app/Services/Notifications/OrderNotificationService.php
@@ -3019,12 +2995,6 @@ parameters:
 			path: Modules/Finance/app/Console/Commands/CheckOverdueInvoices.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Finance/app/Console/Commands/CheckOverdueInvoices.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Finance\\Models\\APInvoice\:\:\$due_date\.$#'
 			identifier: property.notFound
 			count: 1
@@ -3045,7 +3015,7 @@ parameters:
 		-
 			message: '#^Access to an undefined property Modules\\Finance\\Models\\ARInvoice\:\:\$due_date\.$#'
 			identifier: property.notFound
-			count: 1
+			count: 2
 			path: Modules/Finance/app/Console/Commands/CheckOverdueInvoices.php
 
 		-
@@ -3061,12 +3031,6 @@ parameters:
 			path: Modules/Finance/app/Console/Commands/CheckOverdueInvoices.php
 
 		-
-			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Modules\\Contacts\\Models\\Contact\>\:\:map\(\) contains unresolvable type\.$#'
-			identifier: argument.unresolvableType
-			count: 1
-			path: Modules/Finance/app/Console/Commands/CheckOverdueInvoices.php
-
-		-
 			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Modules\\Finance\\Models\\APInvoice\>\:\:map\(\) contains unresolvable type\.$#'
 			identifier: argument.unresolvableType
 			count: 1
@@ -3075,12 +3039,6 @@ parameters:
 		-
 			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Modules\\Finance\\Models\\ARInvoice\>\:\:map\(\) contains unresolvable type\.$#'
 			identifier: argument.unresolvableType
-			count: 1
-			path: Modules/Finance/app/Console/Commands/CheckOverdueInvoices.php
-
-		-
-			message: '#^Relation ''arInvoices'' is not found in Modules\\Contacts\\Models\\Contact model\.$#'
-			identifier: larastan.relationExistence
 			count: 1
 			path: Modules/Finance/app/Console/Commands/CheckOverdueInvoices.php
 
@@ -3103,12 +3061,6 @@ parameters:
 			path: Modules/Finance/app/Http/Controllers/Api/V1/ARInvoiceController.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Finance\\Models\\Payment\:\:\$payment_number\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Finance/app/Http/Controllers/Api/V1/ARInvoiceController.php
-
-		-
 			message: '#^Dead catch \- Exception is never thrown in the try block\.$#'
 			identifier: catch.neverThrown
 			count: 1
@@ -3119,24 +3071,6 @@ parameters:
 			identifier: argument.type
 			count: 4
 			path: Modules/Finance/app/Http/Controllers/FinanceController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Modules\\Contacts\\Models\\Contact\>\|Modules\\Contacts\\Models\\Contact\:\:\$is_supplier\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Finance/app/JsonApi/V1/APInvoices/APInvoiceRequest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Modules\\Contacts\\Models\\Contact\>\|Modules\\Contacts\\Models\\Contact\:\:\$is_customer\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Finance/app/JsonApi/V1/ARInvoices/ARInvoiceRequest.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Modules\\Contacts\\Models\\Contact\>\|Modules\\Contacts\\Models\\Contact\:\:\$is_customer\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Finance/app/JsonApi/V1/Payments/PaymentRequest.php
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Modules\\Purchase\\Models\\PurchaseOrder\>\|Modules\\Purchase\\Models\\PurchaseOrder\:\:\$order_number\.$#'
@@ -3229,7 +3163,7 @@ parameters:
 			path: Modules/Finance/app/Listeners/CreateARInvoiceOnPaymentCaptured.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Finance\\Models\\APInvoice\:\:\$journalEntry\.$#'
+			message: '#^Access to an undefined property Modules\\Accounting\\Models\\JournalEntry\:\:\$status\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Finance/app/Listeners/PurchaseOrderCancelledListener.php
@@ -3301,7 +3235,7 @@ parameters:
 			path: Modules/Finance/app/Listeners/PurchaseOrderReceivedListener.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Finance\\Models\\ARInvoice\:\:\$journalEntry\.$#'
+			message: '#^Access to an undefined property Modules\\Accounting\\Models\\JournalEntry\:\:\$status\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Finance/app/Listeners/SalesOrderCancelledListener.php
@@ -3373,12 +3307,6 @@ parameters:
 			path: Modules/Finance/app/Services/APInvoiceReconciliationService.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Finance\\Models\\APInvoice\:\:\$purchaseOrder\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Finance/app/Services/APInvoiceReconciliationService.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Finance\\Models\\APInvoice\:\:\$purchase_order_id\.$#'
 			identifier: property.notFound
 			count: 3
@@ -3403,9 +3331,15 @@ parameters:
 			path: Modules/Finance/app/Services/APInvoiceReconciliationService.php
 
 		-
+			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$approval_status\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Finance/app/Services/APInvoiceReconciliationService.php
+
+		-
 			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$order_number\.$#'
 			identifier: property.notFound
-			count: 1
+			count: 3
 			path: Modules/Finance/app/Services/APInvoiceReconciliationService.php
 
 		-
@@ -3476,12 +3410,6 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property Modules\\Finance\\Models\\ARInvoice\:\:\$total_amount\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Finance/app/Services/ARInvoicePaymentRegistrationService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Finance\\Models\\Payment\:\:\$payment_number\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Finance/app/Services/ARInvoicePaymentRegistrationService.php
@@ -3649,18 +3577,6 @@ parameters:
 			path: Modules/Finance/app/Services/AgingAnalysisService.php
 
 		-
-			message: '#^Relation ''contact'' is not found in Modules\\Finance\\Models\\APInvoice model\.$#'
-			identifier: larastan.relationExistence
-			count: 1
-			path: Modules/Finance/app/Services/AgingAnalysisService.php
-
-		-
-			message: '#^Relation ''contact'' is not found in Modules\\Finance\\Models\\ARInvoice model\.$#'
-			identifier: larastan.relationExistence
-			count: 1
-			path: Modules/Finance/app/Services/AgingAnalysisService.php
-
-		-
 			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
 			identifier: nullsafe.neverNull
 			count: 2
@@ -3683,12 +3599,6 @@ parameters:
 			identifier: property.notFound
 			count: 1
 			path: Modules/Finance/app/Services/ApplyCapturedPaymentToARInvoice.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$is_customer\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Finance/app/Services/ApprovalWorkflowService.php
 
 		-
 			message: '#^Access to an undefined property Modules\\Finance\\Models\\APInvoice\:\:\$contact_id\.$#'
@@ -3733,6 +3643,12 @@ parameters:
 			path: Modules/Finance/app/Services/ApprovalWorkflowService.php
 
 		-
+			message: '#^Access to an undefined property Modules\\Accounting\\Models\\JournalEntry\:\:\$accounting_date\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Finance/app/Services/BankReconciliationService.php
+
+		-
 			message: '#^Access to an undefined property Modules\\Accounting\\Models\\JournalLine\:\:\$credit\.$#'
 			identifier: property.notFound
 			count: 1
@@ -3742,12 +3658,6 @@ parameters:
 			message: '#^Access to an undefined property Modules\\Accounting\\Models\\JournalLine\:\:\$debit\.$#'
 			identifier: property.notFound
 			count: 1
-			path: Modules/Finance/app/Services/BankReconciliationService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Accounting\\Models\\JournalLine\:\:\$journalEntry\.$#'
-			identifier: property.notFound
-			count: 2
 			path: Modules/Finance/app/Services/BankReconciliationService.php
 
 		-
@@ -3766,12 +3676,6 @@ parameters:
 			message: '#^Access to an undefined property Modules\\Finance\\Models\\BankTransaction\:\:\$transaction_date\.$#'
 			identifier: property.notFound
 			count: 4
-			path: Modules/Finance/app/Services/BankReconciliationService.php
-
-		-
-			message: '#^Relation ''journalEntry'' is not found in Modules\\Accounting\\Models\\JournalLine model\.$#'
-			identifier: larastan.relationExistence
-			count: 2
 			path: Modules/Finance/app/Services/BankReconciliationService.php
 
 		-
@@ -3806,18 +3710,6 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$credit_status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Finance/app/Services/CreditManagementService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$is_customer\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Finance/app/Services/CreditManagementService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$name\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Finance/app/Services/CreditManagementService.php
@@ -3919,24 +3811,6 @@ parameters:
 			path: Modules/Finance/app/Services/EventReplayService.php
 
 		-
-			message: '#^Relation ''journalEntry'' is not found in Modules\\Finance\\Models\\APInvoice model\.$#'
-			identifier: larastan.relationExistence
-			count: 2
-			path: Modules/Finance/app/Services/EventReplayService.php
-
-		-
-			message: '#^Relation ''journalEntry'' is not found in Modules\\Finance\\Models\\ARInvoice model\.$#'
-			identifier: larastan.relationExistence
-			count: 2
-			path: Modules/Finance/app/Services/EventReplayService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Finance/app/Services/LatePenaltyService.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Finance\\Models\\ARInvoice\:\:\$contact_id\.$#'
 			identifier: property.notFound
 			count: 1
@@ -3979,12 +3853,6 @@ parameters:
 			path: Modules/Finance/app/Services/LatePenaltyService.php
 
 		-
-			message: '#^Relation ''contact'' is not found in Modules\\Finance\\Models\\ARInvoice model\.$#'
-			identifier: larastan.relationExistence
-			count: 2
-			path: Modules/Finance/app/Services/LatePenaltyService.php
-
-		-
 			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
 			identifier: nullsafe.neverNull
 			count: 2
@@ -4009,86 +3877,20 @@ parameters:
 			path: Modules/Finance/app/Services/PaymentApplicationService.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Finance\\Models\\Payment\:\:\$amount\.$#'
+			message: '#^Access to an undefined property Modules\\Finance\\Models\\ARInvoice\:\:\$paid_amount\.$#'
 			identifier: property.notFound
-			count: 5
+			count: 1
 			path: Modules/Finance/app/Services/PaymentApplicationService.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Finance\\Models\\Payment\:\:\$applied_amount\.$#'
+			message: '#^Access to an undefined property Modules\\Finance\\Models\\ARInvoice\:\:\$status\.$#'
 			identifier: property.notFound
 			count: 2
 			path: Modules/Finance/app/Services/PaymentApplicationService.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Finance\\Models\\Payment\:\:\$contact_id\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Finance/app/Services/PaymentApplicationService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Finance\\Models\\Payment\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Finance/app/Services/PaymentApplicationService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Finance\\Models\\Payment\:\:\$journal_entry_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Finance/app/Services/PaymentApplicationService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Finance\\Models\\Payment\:\:\$payment_date\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Finance/app/Services/PaymentApplicationService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Finance\\Models\\Payment\:\:\$payment_number\.$#'
-			identifier: property.notFound
-			count: 7
-			path: Modules/Finance/app/Services/PaymentApplicationService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Finance\\Models\\PaymentApplication\:\:\$aRInvoice\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Finance/app/Services/PaymentApplicationService.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Finance\\Models\\PaymentApplication\:\:\$amount\.$#'
 			identifier: property.notFound
-			count: 1
-			path: Modules/Finance/app/Services/PaymentApplicationService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Finance\\Models\\PaymentApplication\:\:\$payment\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Finance/app/Services/PaymentApplicationService.php
-
-		-
-			message: '#^Relation ''aRInvoice'' is not found in Modules\\Finance\\Models\\PaymentApplication model\.$#'
-			identifier: larastan.relationExistence
-			count: 1
-			path: Modules/Finance/app/Services/PaymentApplicationService.php
-
-		-
-			message: '#^Relation ''payment'' is not found in Modules\\Finance\\Models\\PaymentApplication model\.$#'
-			identifier: larastan.relationExistence
-			count: 1
-			path: Modules/Finance/app/Services/PaymentApplicationService.php
-
-		-
-			message: '#^Result of && is always false\.$#'
-			identifier: booleanAnd.alwaysFalse
-			count: 1
-			path: Modules/Finance/app/Services/PaymentApplicationService.php
-
-		-
-			message: '#^Strict comparison using \!\=\= between ''paid'' and ''paid'' will always evaluate to false\.$#'
-			identifier: notIdentical.alwaysFalse
 			count: 1
 			path: Modules/Finance/app/Services/PaymentApplicationService.php
 
@@ -4147,24 +3949,6 @@ parameters:
 			path: Modules/HR/app/Observers/EmployeeObserver.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Accounting\\Models\\JournalEntry\:\:\$posted_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/HR/app/Services/PayrollService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Accounting\\Models\\JournalEntry\:\:\$posted_by\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/HR/app/Services/PayrollService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Accounting\\Models\\JournalEntry\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/HR/app/Services/PayrollService.php
-
-		-
 			message: '#^Access to an undefined property Modules\\HR\\Models\\PayrollItem\:\:\$basic_salary\.$#'
 			identifier: property.notFound
 			count: 1
@@ -4216,12 +4000,6 @@ parameters:
 			message: '#^Access to an undefined property Modules\\HR\\Models\\PayrollPeriod\:\:\$total_net\.$#'
 			identifier: property.notFound
 			count: 2
-			path: Modules/HR/app/Services/PayrollService.php
-
-		-
-			message: '#^Call to static method create\(\) on an unknown class Modules\\Accounting\\Models\\JournalEntryLine\.$#'
-			identifier: class.notFound
-			count: 3
 			path: Modules/HR/app/Services/PayrollService.php
 
 		-
@@ -4435,18 +4213,6 @@ parameters:
 			path: Modules/Inventory/app/Models/InventoryMovement.php
 
 		-
-			message: '#^Cannot call method lt\(\) on string\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: Modules/Inventory/app/Models/ProductBatch.php
-
-		-
-			message: '#^Cannot call method lte\(\) on string\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: Modules/Inventory/app/Models/ProductBatch.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Inventory\\Models\\Warehouse\:\:\$branch_id\.$#'
 			identifier: property.notFound
 			count: 1
@@ -4466,12 +4232,6 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property Modules\\Inventory\\Models\\CycleCount\:\:\$counted_quantity\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Inventory/app/Services/CycleCountService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Inventory\\Models\\CycleCount\:\:\$product\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Inventory/app/Services/CycleCountService.php
@@ -4513,24 +4273,6 @@ parameters:
 			path: Modules/Inventory/app/Services/CycleCountService.php
 
 		-
-			message: '#^Relation ''assignedTo'' is not found in Modules\\Inventory\\Models\\CycleCount model\.$#'
-			identifier: larastan.relationExistence
-			count: 2
-			path: Modules/Inventory/app/Services/CycleCountService.php
-
-		-
-			message: '#^Relation ''product'' is not found in Modules\\Inventory\\Models\\CycleCount model\.$#'
-			identifier: larastan.relationExistence
-			count: 2
-			path: Modules/Inventory/app/Services/CycleCountService.php
-
-		-
-			message: '#^Relation ''warehouse'' is not found in Modules\\Inventory\\Models\\CycleCount model\.$#'
-			identifier: larastan.relationExistence
-			count: 2
-			path: Modules/Inventory/app/Services/CycleCountService.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 2
@@ -4558,18 +4300,6 @@ parameters:
 			message: '#^Access to an undefined property Modules\\Inventory\\Models\\ProductBatch\:\:\$created_at\.$#'
 			identifier: property.notFound
 			count: 1
-			path: Modules/Inventory/app/Services/LotTraceabilityService.php
-
-		-
-			message: '#^Cannot call method format\(\) on string\.$#'
-			identifier: method.nonObject
-			count: 6
-			path: Modules/Inventory/app/Services/LotTraceabilityService.php
-
-		-
-			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Modules\\Inventory\\Models\\ProductBatch\>\:\:map\(\) contains unresolvable type\.$#'
-			identifier: argument.unresolvableType
-			count: 2
 			path: Modules/Inventory/app/Services/LotTraceabilityService.php
 
 		-
@@ -4603,19 +4333,13 @@ parameters:
 			path: Modules/MailerManager/app/Http/Controllers/Api/V1/SystemEmailController.php
 
 		-
-			message: '#^Access to an undefined property Modules\\MailerManager\\Models\\SystemEmail\:\:\$emailTemplate\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/MailerManager/app/Http/Controllers/Api/V1/SystemEmailController.php
-
-		-
 			message: '#^Access to an undefined property Modules\\MailerManager\\Models\\SystemEmail\:\:\$name\.$#'
 			identifier: property.notFound
 			count: 4
 			path: Modules/MailerManager/app/Http/Controllers/Api/V1/SystemEmailController.php
 
 		-
-			message: '#^Access to an undefined property Modules\\MailerManager\\Models\\SystemEmail\:\:\$emailTemplate\.$#'
+			message: '#^Access to an undefined property Modules\\MailerManager\\Models\\EmailTemplate\:\:\$status\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/MailerManager/app/Models/SystemEmail.php
@@ -4623,12 +4347,6 @@ parameters:
 		-
 			message: '#^Access to an undefined property Modules\\MailerManager\\Models\\SystemEmail\:\:\$is_enabled\.$#'
 			identifier: property.notFound
-			count: 1
-			path: Modules/MailerManager/app/Models/SystemEmail.php
-
-		-
-			message: '#^Relation ''emailTemplate'' is not found in Modules\\MailerManager\\Models\\SystemEmail model\.$#'
-			identifier: larastan.relationExistence
 			count: 1
 			path: Modules/MailerManager/app/Models/SystemEmail.php
 
@@ -5071,25 +4789,7 @@ parameters:
 			path: Modules/Purchase/app/Http/Controllers/Api/V1/PurchaseOrderController.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$email\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Purchase/app/Http/Controllers/Api/V1/PurchaseOrderController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Purchase/app/Http/Controllers/Api/V1/PurchaseOrderController.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$phone\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Purchase/app/Http/Controllers/Api/V1/PurchaseOrderController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$purchaseOrders\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Purchase/app/Http/Controllers/Api/V1/PurchaseOrderController.php
@@ -5113,9 +4813,27 @@ parameters:
 			path: Modules/Purchase/app/Http/Controllers/Api/V1/PurchaseOrderController.php
 
 		-
+			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Purchase/app/Http/Controllers/Api/V1/PurchaseOrderController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$order_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Purchase/app/Http/Controllers/Api/V1/PurchaseOrderController.php
+
+		-
 			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$status\.$#'
 			identifier: property.notFound
-			count: 5
+			count: 6
+			path: Modules/Purchase/app/Http/Controllers/Api/V1/PurchaseOrderController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$total_amount\.$#'
+			identifier: property.notFound
+			count: 1
 			path: Modules/Purchase/app/Http/Controllers/Api/V1/PurchaseOrderController.php
 
 		-
@@ -5126,6 +4844,12 @@ parameters:
 
 		-
 			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Modules\\Contacts\\Models\\Contact\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: Modules/Purchase/app/Http/Controllers/Api/V1/PurchaseOrderController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Modules\\Purchase\\Models\\PurchaseOrder\>\:\:map\(\) contains unresolvable type\.$#'
 			identifier: argument.unresolvableType
 			count: 1
 			path: Modules/Purchase/app/Http/Controllers/Api/V1/PurchaseOrderController.php
@@ -5145,12 +4869,6 @@ parameters:
 		-
 			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,array\<string, mixed\>\>\:\:filter\(\) contains unresolvable type\.$#'
 			identifier: argument.unresolvableType
-			count: 1
-			path: Modules/Purchase/app/Http/Controllers/Api/V1/PurchaseOrderController.php
-
-		-
-			message: '#^Relation ''purchaseOrders'' is not found in Modules\\Contacts\\Models\\Contact model\.$#'
-			identifier: larastan.relationExistence
 			count: 1
 			path: Modules/Purchase/app/Http/Controllers/Api/V1/PurchaseOrderController.php
 
@@ -5533,12 +5251,6 @@ parameters:
 			path: Modules/Reports/app/Services/AgingReports/APAgingReportService.php
 
 		-
-			message: '#^Relation ''supplier'' is not found in Modules\\Finance\\Models\\APInvoice model\.$#'
-			identifier: larastan.relationExistence
-			count: 1
-			path: Modules/Reports/app/Services/AgingReports/APAgingReportService.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Finance\\Models\\ARInvoice\:\:\$due_date\.$#'
 			identifier: property.notFound
 			count: 1
@@ -5569,40 +5281,10 @@ parameters:
 			path: Modules/Reports/app/Services/AgingReports/ARAgingReportService.php
 
 		-
-			message: '#^Relation ''customer'' is not found in Modules\\Finance\\Models\\ARInvoice model\.$#'
-			identifier: larastan.relationExistence
-			count: 1
-			path: Modules/Reports/app/Services/AgingReports/ARAgingReportService.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Accounting\\Models\\Account\:\:\$account_type\.$#'
 			identifier: property.notFound
 			count: 2
 			path: Modules/Reports/app/Services/Analytics/KPIService.php
-
-		-
-			message: '#^Relation ''journalEntry'' is not found in Modules\\Accounting\\Models\\JournalLine model\.$#'
-			identifier: larastan.relationExistence
-			count: 2
-			path: Modules/Reports/app/Services/Analytics/KPIService.php
-
-		-
-			message: '#^Call to static method where\(\) on an unknown class Modules\\Sales\\Models\\Customer\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Reports/app/Services/Analytics/MetricsService.php
-
-		-
-			message: '#^Call to static method whereBetween\(\) on an unknown class Modules\\Sales\\Models\\Customer\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Reports/app/Services/Analytics/MetricsService.php
-
-		-
-			message: '#^Relation ''journalEntry'' is not found in Modules\\Accounting\\Models\\JournalLine model\.$#'
-			identifier: larastan.relationExistence
-			count: 2
-			path: Modules/Reports/app/Services/Analytics/TrendAnalysisService.php
 
 		-
 			message: '#^Instantiated class Modules\\Reports\\Exports\\BalanceSheetExport not found\.$#'
@@ -5659,18 +5341,6 @@ parameters:
 			path: Modules/Reports/app/Services/FinancialStatements/BalanceSheetService.php
 
 		-
-			message: '#^Relation ''journalEntry'' is not found in Modules\\Accounting\\Models\\JournalLine model\.$#'
-			identifier: larastan.relationExistence
-			count: 2
-			path: Modules/Reports/app/Services/FinancialStatements/BalanceSheetService.php
-
-		-
-			message: '#^Relation ''journalEntry'' is not found in Modules\\Accounting\\Models\\JournalLine model\.$#'
-			identifier: larastan.relationExistence
-			count: 4
-			path: Modules/Reports/app/Services/FinancialStatements/CashFlowService.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Accounting\\Models\\Account\:\:\$account_type\.$#'
 			identifier: property.notFound
 			count: 2
@@ -5701,12 +5371,6 @@ parameters:
 			path: Modules/Reports/app/Services/FinancialStatements/IncomeStatementService.php
 
 		-
-			message: '#^Relation ''journalEntry'' is not found in Modules\\Accounting\\Models\\JournalLine model\.$#'
-			identifier: larastan.relationExistence
-			count: 2
-			path: Modules/Reports/app/Services/FinancialStatements/IncomeStatementService.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Accounting\\Models\\Account\:\:\$account_type\.$#'
 			identifier: property.notFound
 			count: 1
@@ -5734,12 +5398,6 @@ parameters:
 			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,array\<string, mixed\>\>\:\:filter\(\) contains unresolvable type\.$#'
 			identifier: argument.unresolvableType
 			count: 1
-			path: Modules/Reports/app/Services/FinancialStatements/TrialBalanceService.php
-
-		-
-			message: '#^Relation ''journalEntry'' is not found in Modules\\Accounting\\Models\\JournalLine model\.$#'
-			identifier: larastan.relationExistence
-			count: 2
 			path: Modules/Reports/app/Services/FinancialStatements/TrialBalanceService.php
 
 		-
@@ -5800,18 +5458,6 @@ parameters:
 			message: '#^Parameter \#1 \$daysOverdue of method Modules\\Reports\\Services\\ManagementReports\\AgingReportService\:\:getAgingBucket\(\) expects int, float given\.$#'
 			identifier: argument.type
 			count: 2
-			path: Modules/Reports/app/Services/ManagementReports/AgingReportService.php
-
-		-
-			message: '#^Relation ''customer'' is not found in Modules\\Finance\\Models\\ARInvoice model\.$#'
-			identifier: larastan.relationExistence
-			count: 1
-			path: Modules/Reports/app/Services/ManagementReports/AgingReportService.php
-
-		-
-			message: '#^Relation ''supplier'' is not found in Modules\\Finance\\Models\\APInvoice model\.$#'
-			identifier: larastan.relationExistence
-			count: 1
 			path: Modules/Reports/app/Services/ManagementReports/AgingReportService.php
 
 		-
@@ -5995,12 +5641,6 @@ parameters:
 			path: Modules/Reports/app/Services/SalesReports/SalesAdvancedReportService.php
 
 		-
-			message: '#^Cannot call method toDateString\(\) on string\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: Modules/Reports/app/Services/SalesReports/SalesAdvancedReportService.php
-
-		-
 			message: '#^Comparison operation "\>" between int\<1, max\> and 0 is always true\.$#'
 			identifier: greater.alwaysTrue
 			count: 1
@@ -6109,12 +5749,6 @@ parameters:
 			path: Modules/Sales/app/Http/Controllers/Api/V1/OrderTrackingController.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Modules\\Ecommerce\\Models\\ShoppingCart\>\|Modules\\Ecommerce\\Models\\ShoppingCart\:\:\$cartItems\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$additional_emails\.$#'
 			identifier: property.notFound
 			count: 1
@@ -6129,7 +5763,7 @@ parameters:
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$default_lead_time\.$#'
 			identifier: property.notFound
-			count: 1
+			count: 2
 			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
 
 		-
@@ -6199,7 +5833,19 @@ parameters:
 			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$email\.$#'
+			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$product_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$quantity\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$unit_price\.$#'
 			identifier: property.notFound
 			count: 2
 			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
@@ -6207,13 +5853,13 @@ parameters:
 		-
 			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$name\.$#'
 			identifier: property.notFound
-			count: 1
+			count: 2
 			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
 
 		-
 			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$sku\.$#'
 			identifier: property.notFound
-			count: 1
+			count: 2
 			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
 
 		-
@@ -6255,12 +5901,6 @@ parameters:
 		-
 			message: '#^Parameter \#1 \$array \(array\{0\?\: non\-falsy\-string\}\) of array_values is already a list, call has no effect\.$#'
 			identifier: arrayValues.list
-			count: 1
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
-			message: '#^Relation ''cartItems'' is not found in Modules\\Ecommerce\\Models\\ShoppingCart model\.$#'
-			identifier: larastan.relationExistence
 			count: 1
 			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
 
@@ -6457,33 +6097,9 @@ parameters:
 			path: Modules/Sales/app/Http/Controllers/Api/V1/SalesOrderController.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$email\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Http/Controllers/Api/V1/SalesOrderController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Http/Controllers/Api/V1/SalesOrderController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$salesOrders\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Http/Controllers/Api/V1/SalesOrderController.php
-
-		-
 			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,Modules\\Contacts\\Models\\Contact\>\:\:map\(\) contains unresolvable type\.$#'
 			identifier: argument.unresolvableType
 			count: 1
-			path: Modules/Sales/app/Http/Controllers/Api/V1/SalesOrderController.php
-
-		-
-			message: '#^Relation ''salesOrders'' is not found in Modules\\Contacts\\Models\\Contact model\.$#'
-			identifier: larastan.relationExistence
-			count: 2
 			path: Modules/Sales/app/Http/Controllers/Api/V1/SalesOrderController.php
 
 		-
@@ -7601,18 +7217,6 @@ parameters:
 			identifier: argument.unresolvableType
 			count: 1
 			path: Modules/User/routes/api.php
-
-		-
-			message: '#^Relation ''contact'' is not found in Modules\\Finance\\Models\\ARInvoice model\.$#'
-			identifier: larastan.relationExistence
-			count: 2
-			path: app/Console/Commands/AnalyzeHeavyQueries.php
-
-		-
-			message: '#^Relation ''salesOrder'' is not found in Modules\\Finance\\Models\\ARInvoice model\.$#'
-			identifier: larastan.relationExistence
-			count: 1
-			path: app/Console/Commands/AnalyzeHeavyQueries.php
 
 		-
 			message: '#^Negated boolean expression is always false\.$#'

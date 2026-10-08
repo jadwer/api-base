@@ -45,6 +45,11 @@ class APInvoiceRequest extends ResourceRequest
             'notes' => ['nullable', 'string'],
             'metadata' => ['nullable', 'array'],
             'isActive' => ['nullable', 'boolean'],
+            // Conciliacion contra la OC (enum de la tabla ap_invoices)
+            'reconciliationStatus' => ['sometimes', 'string', Rule::in(['pending', 'matched', 'discrepancy', 'approved'])],
+            'reconciledAt' => ['nullable', 'date'],
+            'reconciliationNotes' => ['nullable', 'string'],
+            'discrepancies' => ['nullable', 'array'],
         ];
     }
 

@@ -26,8 +26,9 @@ class APInvoiceSchema extends Schema
             ID::make(),
             
             Str::make('invoiceNumber')->sortable(),
-            DateTime::make('invoiceDate')->sortable(),
-            DateTime::make('dueDate')->sortable(),
+            // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
+            DateTime::make('invoiceDate')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
+            DateTime::make('dueDate')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))->sortable(),
             Number::make('contactId')->sortable(),
             Number::make('purchaseOrderId')->sortable(),
             Str::make('currency')->sortable(),
