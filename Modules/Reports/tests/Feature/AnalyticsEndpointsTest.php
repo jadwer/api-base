@@ -22,7 +22,7 @@ class AnalyticsEndpointsTest extends TestCase
 
         Contact::factory()->customer()->create(['status' => 'active']);
         Contact::factory()->customer()->create(['status' => 'inactive']);
-        Contact::factory()->create(['is_customer' => false, 'status' => 'active']);
+        Contact::factory()->prospect()->create(['status' => 'active']);
 
         $after = $this->actingAs($admin, 'sanctum')->getJson('/api/v1/analytics/metrics');
         $after->assertOk();

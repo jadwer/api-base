@@ -86,7 +86,7 @@ class KPIService
 
         // Calculate COGS
         $cogs = Account::where('account_type', 'expense')
-            ->where('is_active', true)
+            ->active()
             ->where(function ($query) {
                 $query->where('code', 'like', '5%')
                     ->orWhere('name', 'like', '%cost of%')
@@ -131,7 +131,7 @@ class KPIService
 
         $startDate = Carbon::now()->startOfYear();
         $expenses = Account::where('account_type', 'expense')
-            ->where('is_active', true)
+            ->active()
             ->get()
             ->sum(fn($account) => $this->getAccountBalanceForPeriod($account->id, $startDate, Carbon::now()));
 
@@ -151,7 +151,7 @@ class KPIService
 
         // COGS
         $cogs = Account::where('account_type', 'expense')
-            ->where('is_active', true)
+            ->active()
             ->where(function ($query) {
                 $query->where('code', 'like', '5%')
                     ->orWhere('name', 'like', '%cost of%');
@@ -176,7 +176,7 @@ class KPIService
 
         // Current assets
         $currentAssets = Account::where('account_type', 'asset')
-            ->where('is_active', true)
+            ->active()
             ->where(function ($query) {
                 $query->where('code', 'like', '10%')
                     ->orWhere('code', 'like', '11%');
@@ -186,7 +186,7 @@ class KPIService
 
         // Current liabilities
         $currentLiabilities = Account::where('account_type', 'liability')
-            ->where('is_active', true)
+            ->active()
             ->where(function ($query) {
                 $query->where('code', 'like', '20%')
                     ->orWhere('code', 'like', '21%');
@@ -208,7 +208,7 @@ class KPIService
 
         // Current assets excluding inventory
         $quickAssets = Account::where('account_type', 'asset')
-            ->where('is_active', true)
+            ->active()
             ->where(function ($query) {
                 $query->where('code', 'like', '10%')
                     ->orWhere('code', 'like', '11%');
@@ -220,7 +220,7 @@ class KPIService
 
         // Current liabilities
         $currentLiabilities = Account::where('account_type', 'liability')
-            ->where('is_active', true)
+            ->active()
             ->where(function ($query) {
                 $query->where('code', 'like', '20%')
                     ->orWhere('code', 'like', '21%');
@@ -242,7 +242,7 @@ class KPIService
     private function getAccountTypeBalance(string $accountType, Carbon $startDate, Carbon $endDate): float
     {
         $accounts = Account::where('account_type', $accountType)
-            ->where('is_active', true)
+            ->active()
             ->get();
 
         return $accounts->sum(fn($account) => $this->getAccountBalanceForPeriod($account->id, $startDate, $endDate));
@@ -269,7 +269,7 @@ class KPIService
                     ->whereDate('accounting_date', '>=', $startDate->toDateString())
                     ->whereDate('accounting_date', '<=', $endDate->toDateString());
             })
-            ->selectRaw('SUM(debit_amount) as total_debits, SUM(credit_amount) as total_credits')
+            ->selectRaw('SUM(debit) as total_debits, SUM(credit) as total_credits')
             ->first();
 
         $totalDebits = $balance->total_debits ?? 0;
@@ -301,7 +301,7 @@ class KPIService
                 $query->where('status', 'posted')
                     ->whereDate('accounting_date', '<=', $asOfDate->toDateString());
             })
-            ->selectRaw('SUM(debit_amount) as total_debits, SUM(credit_amount) as total_credits')
+            ->selectRaw('SUM(debit) as total_debits, SUM(credit) as total_credits')
             ->first();
 
         $totalDebits = $balance->total_debits ?? 0;

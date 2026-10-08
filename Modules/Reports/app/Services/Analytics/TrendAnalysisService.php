@@ -197,7 +197,7 @@ class TrendAnalysisService
     private function getRevenueForPeriod(Carbon $startDate, Carbon $endDate): float
     {
         $revenueAccounts = Account::where('account_type', 'revenue')
-            ->where('is_active', true)
+            ->active()
             ->pluck('id');
 
         $totalRevenue = 0;
@@ -209,7 +209,7 @@ class TrendAnalysisService
                         ->whereDate('accounting_date', '>=', $startDate->toDateString())
                         ->whereDate('accounting_date', '<=', $endDate->toDateString());
                 })
-                ->selectRaw('SUM(credit_amount) - SUM(debit_amount) as net_balance')
+                ->selectRaw('SUM(credit) - SUM(debit) as net_balance')
                 ->value('net_balance');
 
             $totalRevenue += $balance ?? 0;
@@ -228,7 +228,7 @@ class TrendAnalysisService
     private function getExpensesForPeriod(Carbon $startDate, Carbon $endDate): float
     {
         $expenseAccounts = Account::where('account_type', 'expense')
-            ->where('is_active', true)
+            ->active()
             ->pluck('id');
 
         $totalExpenses = 0;
@@ -240,7 +240,7 @@ class TrendAnalysisService
                         ->whereDate('accounting_date', '>=', $startDate->toDateString())
                         ->whereDate('accounting_date', '<=', $endDate->toDateString());
                 })
-                ->selectRaw('SUM(debit_amount) - SUM(credit_amount) as net_balance')
+                ->selectRaw('SUM(debit) - SUM(credit) as net_balance')
                 ->value('net_balance');
 
             $totalExpenses += $balance ?? 0;
