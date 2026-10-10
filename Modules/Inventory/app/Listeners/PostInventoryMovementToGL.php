@@ -18,6 +18,7 @@ use Modules\Accounting\Models\Account;
  * - Exit: DR COGS / CR Inventory Asset
  * - Adjustment: DR/CR Inventory Asset, DR/CR Inventory Variance
  * - Transfer: No GL posting if within same account
+ * - Fractionation (reference_type): sin asiento, inventario a inventario
  */
 class PostInventoryMovementToGL
 {
@@ -40,6 +41,15 @@ class PostInventoryMovementToGL
             Log::info('Inventory movement already posted to GL', [
                 'movement_id' => $movement->id,
             ]);
+            return;
+        }
+
+        // P3 granel: el fraccionamiento transforma inventario en inventario del
+        // mismo almacen por el mismo valor (el costo destino absorbe la merma),
+        // asi que no hay COGS ni Accrual. Igual que una transferencia interna:
+        // sin asiento y marcado como resuelto.
+        if ($movement->reference_type === \Modules\Inventory\Services\FractionationService::REFERENCE_TYPE) {
+            $this->skipFractionationMovement($movement);
             return;
         }
 
@@ -300,6 +310,23 @@ class PostInventoryMovementToGL
         ]);
 
         return null;
+    }
+
+    /**
+     * Fraccionamiento: salida y entrada se compensan en la cuenta de inventario
+     * del mismo almacen; no se postea nada.
+     */
+    private function skipFractionationMovement($movement): void
+    {
+        Log::info('Fractionation movement - GL posting skipped (inventory to inventory)', [
+            'movement_id' => $movement->id,
+            'movement_type' => $movement->movement_type,
+        ]);
+
+        $movement->update([
+            'gl_posting_status' => 'posted',
+            'gl_posting_notes' => 'Fraccionamiento: transformacion de inventario a inventario, sin asiento',
+        ]);
     }
 
     /**

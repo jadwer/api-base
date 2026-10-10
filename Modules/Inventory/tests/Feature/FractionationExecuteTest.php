@@ -74,6 +74,8 @@ class FractionationExecuteTest extends TestCase
         ]);
 
         Stock::factory()->create([
+            'reserved_quantity' => 0,
+            'warehouse_location_id' => null,
             'product_id' => $source->id,
             'warehouse_id' => $warehouse->id,
             'quantity' => 100,
@@ -159,6 +161,8 @@ class FractionationExecuteTest extends TestCase
         ]);
 
         Stock::factory()->create([
+            'reserved_quantity' => 0,
+            'warehouse_location_id' => null,
             'product_id' => $source->id,
             'warehouse_id' => $warehouse->id,
             'quantity' => 1000,
@@ -209,6 +213,8 @@ class FractionationExecuteTest extends TestCase
         ]);
 
         Stock::factory()->create([
+            'reserved_quantity' => 0,
+            'warehouse_location_id' => null,
             'product_id' => $source->id,
             'warehouse_id' => $warehouse->id,
             'quantity' => 3,
@@ -224,7 +230,7 @@ class FractionationExecuteTest extends TestCase
             ]);
 
         $response->assertStatus(422);
-        $response->assertJsonStructure(['error']);
+        $response->assertJsonStructure(['message', 'errors' => [['status', 'code', 'title', 'detail']]]);
 
         // Verify no fractionation was created (transaction rolled back)
         $this->assertDatabaseCount('fractionations', 0);

@@ -57,10 +57,24 @@ class InventoryMovementService
             // Capture previous stock for audit trail
             $previousStock = $stock->quantity;
 
+            // Costo del stock: por defecto el ultimo costo recibido (politica
+            // general, sin cambio). 'stock_cost_policy' => 'weighted_average' lo
+            // pide solo quien transforma inventario (fraccionamiento, P3 granel):
+            // promedio ponderado con lo que ya habia y una entrada sin costo no
+            // pisa el costo existente con 0.
+            $stockUnitCost = ($data['stock_cost_policy'] ?? null) === 'weighted_average'
+                ? self::weightedAverageCost(
+                    (float) $previousStock,
+                    (float) $stock->unit_cost,
+                    (float) $data['quantity'],
+                    (float) ($data['unit_cost'] ?? 0)
+                )
+                : ($data['unit_cost'] ?? $stock->unit_cost);
+
             // Update stock
             $stock->increment('quantity', $data['quantity']);
             $stock->update([
-                'unit_cost' => $data['unit_cost'] ?? $stock->unit_cost,
+                'unit_cost' => $stockUnitCost,
                 'last_movement_date' => $data['movement_date'] ?? now(),
                 'last_movement_type' => 'entry',
             ]);
@@ -79,6 +93,8 @@ class InventoryMovementService
                 'product_id' => $data['product_id'],
                 'warehouse_id' => $data['warehouse_id'],
                 'warehouse_location_id' => $data['warehouse_location_id'] ?? null,
+                'product_batch_id' => $data['product_batch_id'] ?? null,
+                'destination_batch_id' => $data['destination_batch_id'] ?? null,
                 'quantity' => $data['quantity'],
                 'unit_cost' => $data['unit_cost'] ?? 0,
                 'status' => InventoryMovement::STATUS_COMPLETED,
@@ -162,6 +178,8 @@ class InventoryMovementService
                 'product_id' => $data['product_id'],
                 'warehouse_id' => $data['warehouse_id'],
                 'warehouse_location_id' => $data['warehouse_location_id'] ?? null,
+                'product_batch_id' => $data['product_batch_id'] ?? null,
+                'destination_batch_id' => $data['destination_batch_id'] ?? null,
                 'quantity' => $data['quantity'],
                 // QA post-commit (A2): antes se forzaba $stock->unit_cost ignorando el
                 // payload; con stock entrado sin costo (unit_cost=0) el COGS se posteaba
@@ -401,6 +419,29 @@ class InventoryMovementService
 
             return $movement;
         });
+    }
+
+    /**
+     * Promedio ponderado del costo del stock tras una entrada.
+     *
+     * - Entrada sin costo (<= 0): conserva el costo existente.
+     * - Sin existencia previa o sin costo previo: toma el costo de la entrada.
+     * - Si no: (qty_prev * costo_prev + qty_in * costo_in) / (qty_prev + qty_in).
+     */
+    public static function weightedAverageCost(float $previousQty, float $previousCost, float $incomingQty, float $incomingCost): float
+    {
+        if ($incomingCost <= 0) {
+            return $previousCost;
+        }
+        if ($previousQty <= 0 || $previousCost <= 0) {
+            return $incomingCost;
+        }
+        $totalQty = $previousQty + $incomingQty;
+        if ($totalQty <= 0) {
+            return $incomingCost;
+        }
+
+        return round(($previousQty * $previousCost + $incomingQty * $incomingCost) / $totalQty, 4);
     }
 
     /**

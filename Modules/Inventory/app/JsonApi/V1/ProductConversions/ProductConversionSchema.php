@@ -32,6 +32,7 @@ class ProductConversionSchema extends Schema
             // Conversion data
             Number::make('conversionFactor', 'conversion_factor')->sortable(),
             Number::make('wastePercentage', 'waste_percentage')->sortable(),
+            Boolean::make('wholeUnits', 'whole_units'),
             Boolean::make('isActive', 'is_active')->sortable(),
             Str::make('notes'),
 

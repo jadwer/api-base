@@ -16,16 +16,24 @@ use Spatie\Activitylog\LogOptions;
  *
  * @property int $id
  * @property string $folio_number
+ * @property string|null $idempotency_key Clave del formulario (doble POST = mismo registro)
  * @property int $source_product_id
  * @property int $destination_product_id
  * @property int|null $product_conversion_id
  * @property int $warehouse_id
+ * @property int|null $warehouse_location_id
+ * @property int|null $source_batch_id
+ * @property int|null $destination_batch_id
  * @property int $user_id
- * @property float $source_quantity
+ * @property float $source_quantity Lo que salio del origen
+ * @property float|null $requested_quantity Lo que se pidio (con piezas enteras puede ser mayor)
  * @property float $produced_quantity
  * @property float $waste_percentage
  * @property float $waste_quantity
  * @property float $conversion_factor_used
+ * @property float $source_unit_cost
+ * @property float $destination_unit_cost Costo origen con la merma absorbida
+ * @property float $total_cost
  * @property int|null $exit_movement_id
  * @property int|null $entry_movement_id
  * @property string $status
@@ -33,6 +41,11 @@ use Spatie\Activitylog\LogOptions;
  * @property \Carbon\Carbon|null $executed_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
+ * @property-read \Modules\Product\Models\Product|null $sourceProduct
+ * @property-read \Modules\Product\Models\Product|null $destinationProduct
+ * @property-read Warehouse|null $warehouse
+ * @property-read ProductBatch|null $sourceBatch
+ * @property-read ProductBatch|null $destinationBatch
  */
 class Fractionation extends Model
 {
@@ -42,16 +55,24 @@ class Fractionation extends Model
 
     protected $fillable = [
         'folio_number',
+        'idempotency_key',
         'source_product_id',
         'destination_product_id',
         'product_conversion_id',
         'warehouse_id',
+        'warehouse_location_id',
+        'source_batch_id',
+        'destination_batch_id',
         'user_id',
         'source_quantity',
+        'requested_quantity',
         'produced_quantity',
         'waste_percentage',
         'waste_quantity',
         'conversion_factor_used',
+        'source_unit_cost',
+        'destination_unit_cost',
+        'total_cost',
         'exit_movement_id',
         'entry_movement_id',
         'status',
@@ -65,12 +86,19 @@ class Fractionation extends Model
         'destination_product_id' => 'integer',
         'product_conversion_id' => 'integer',
         'warehouse_id' => 'integer',
+        'warehouse_location_id' => 'integer',
+        'source_batch_id' => 'integer',
+        'destination_batch_id' => 'integer',
         'user_id' => 'integer',
         'source_quantity' => 'float',
+        'requested_quantity' => 'float',
         'produced_quantity' => 'float',
         'waste_percentage' => 'float',
         'waste_quantity' => 'float',
         'conversion_factor_used' => 'float',
+        'source_unit_cost' => 'float',
+        'destination_unit_cost' => 'float',
+        'total_cost' => 'float',
         'exit_movement_id' => 'integer',
         'entry_movement_id' => 'integer',
         'executed_at' => 'datetime',
@@ -118,6 +146,21 @@ class Fractionation extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(\Modules\User\Models\User::class);
+    }
+
+    public function warehouseLocation(): BelongsTo
+    {
+        return $this->belongsTo(WarehouseLocation::class, 'warehouse_location_id');
+    }
+
+    public function sourceBatch(): BelongsTo
+    {
+        return $this->belongsTo(ProductBatch::class, 'source_batch_id');
+    }
+
+    public function destinationBatch(): BelongsTo
+    {
+        return $this->belongsTo(ProductBatch::class, 'destination_batch_id');
     }
 
     public function exitMovement(): BelongsTo

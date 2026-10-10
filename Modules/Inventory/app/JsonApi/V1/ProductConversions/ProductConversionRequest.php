@@ -28,8 +28,11 @@ class ProductConversionRequest extends ResourceRequest
                 $isUpdate ? 'sometimes' : 'required',
                 'numeric',
                 'gt:0',
+                // decimal(15,6): mas decimales se redondearian en silencio
+                'decimal:0,6',
             ],
             'wastePercentage' => ['sometimes', 'numeric', 'min:0', 'max:100'],
+            'wholeUnits' => ['sometimes', 'boolean'],
             'isActive' => ['sometimes', 'boolean'],
             'notes' => ['nullable', 'string', 'max:2000'],
         ];
@@ -45,6 +48,8 @@ class ProductConversionRequest extends ResourceRequest
             'destinationProductId.different' => 'El producto destino debe ser diferente al producto origen.',
             'conversionFactor.required' => 'El factor de conversión es obligatorio.',
             'conversionFactor.gt' => 'El factor de conversión debe ser mayor a 0.',
+            'conversionFactor.decimal' => 'El factor de conversión admite hasta 6 decimales.',
+            'wholeUnits.boolean' => 'Solo piezas completas debe ser verdadero o falso.',
             'wastePercentage.min' => 'El porcentaje de merma no puede ser negativo.',
             'wastePercentage.max' => 'El porcentaje de merma no puede ser mayor a 100.',
             'notes.max' => 'Las notas no pueden tener más de 2000 caracteres.',

@@ -56,6 +56,8 @@ class FractionationCalculateTest extends TestCase
         ]);
 
         Stock::factory()->create([
+            'reserved_quantity' => 0,
+            'warehouse_location_id' => null,
             'product_id' => $source->id,
             'warehouse_id' => $warehouse->id,
             'quantity' => 100,
@@ -112,6 +114,8 @@ class FractionationCalculateTest extends TestCase
         ]);
 
         Stock::factory()->create([
+            'reserved_quantity' => 0,
+            'warehouse_location_id' => null,
             'product_id' => $source->id,
             'warehouse_id' => $warehouse->id,
             'quantity' => 3,
@@ -149,7 +153,7 @@ class FractionationCalculateTest extends TestCase
             ]);
 
         $response->assertStatus(422);
-        $response->assertJsonStructure(['error']);
+        $response->assertJsonStructure(['message', 'errors' => [['status', 'code', 'title', 'detail']]]);
     }
 
     public function test_calculate_validates_required_fields()

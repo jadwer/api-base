@@ -228,8 +228,14 @@ class LotTraceabilityController extends Controller
         );
 
         if (!$success) {
+            // P3 granel (G7): mismo formato de error que los 422 (errors[] + message)
             return response()->json([
-                'error' => 'Failed to initiate recall',
+                'message' => 'No se pudo iniciar el retiro del lote.',
+                'errors' => [[
+                    'status' => '500',
+                    'title' => 'Retiro no iniciado',
+                    'detail' => 'No se pudo iniciar el retiro del lote.',
+                ]],
             ], 500);
         }
 

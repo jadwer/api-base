@@ -11,6 +11,23 @@ use Modules\Product\Models\Product;
 
 class ShoppingCartApplyCouponTest extends TestCase
 {
+    /**
+     * Moneda del carrito para los productos de prueba. ProductFactory asigna
+     * Currency::first(); si no es MXN el CartItemObserver convierte el precio y
+     * el subtotal deja de ser el que la prueba asume (asi fallaba al azar
+     * test_minimum_amount_not_met_returns_error: el subtotal convertido pasaba
+     * el minimo y el cupon se aplicaba con 200).
+     */
+    private function mxnCurrencyId(): int
+    {
+        return \Modules\Ecommerce\Models\Currency::firstOrCreate(['code' => 'MXN'], [
+            'name' => 'Peso Mexicano',
+            'symbol' => '$',
+            'exchange_rate' => 1.0,
+            'is_active' => true,
+        ])->id;
+    }
+
     public function test_user_can_apply_valid_coupon_to_own_cart(): void
     {
         $user = $this->getCustomerUser();
@@ -21,7 +38,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'total_amount' => 500,
         ]);
 
-        $product = Product::factory()->create(['price' => 500]);
+        $product = Product::factory()->create(['price' => 500, 'currency_id' => $this->mxnCurrencyId()]);
         CartItem::factory()->create([
             'shopping_cart_id' => $cart->id,
             'product_id' => $product->id,
@@ -70,7 +87,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'status' => 'active',
         ]);
 
-        $product = Product::factory()->create(['price' => 100]);
+        $product = Product::factory()->create(['price' => 100, 'currency_id' => $this->mxnCurrencyId()]);
         CartItem::withoutEvents(function () use ($cart, $product) {
             CartItem::factory()->create([
                 'shopping_cart_id' => $cart->id,
@@ -280,7 +297,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'status' => 'active',
         ]);
 
-        $product = Product::factory()->create(['price' => 50]);
+        $product = Product::factory()->create(['price' => 50, 'currency_id' => $this->mxnCurrencyId()]);
         CartItem::factory()->create([
             'shopping_cart_id' => $cart->id,
             'product_id' => $product->id,
@@ -353,7 +370,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'status' => 'active',
         ]);
 
-        $product = Product::factory()->create(['price' => 100]);
+        $product = Product::factory()->create(['price' => 100, 'currency_id' => $this->mxnCurrencyId()]);
         CartItem::factory()->create([
             'shopping_cart_id' => $cart->id,
             'product_id' => $product->id,
@@ -388,7 +405,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'status' => 'active',
         ]);
 
-        $product = Product::factory()->create(['price' => 1000]);
+        $product = Product::factory()->create(['price' => 1000, 'currency_id' => $this->mxnCurrencyId()]);
         CartItem::withoutEvents(function () use ($cart, $product) {
             CartItem::factory()->create([
                 'shopping_cart_id' => $cart->id,
@@ -428,7 +445,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'currency' => 'MXN',
         ]);
 
-        $product = Product::factory()->create(['price' => 500]);
+        $product = Product::factory()->create(['price' => 500, 'currency_id' => $this->mxnCurrencyId()]);
         CartItem::factory()->create([
             'shopping_cart_id' => $cart->id,
             'product_id' => $product->id,
@@ -466,7 +483,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'currency' => 'MXN',
         ]);
 
-        $product = Product::factory()->create(['price' => 500]);
+        $product = Product::factory()->create(['price' => 500, 'currency_id' => $this->mxnCurrencyId()]);
         CartItem::factory()->create([
             'shopping_cart_id' => $cart->id,
             'product_id' => $product->id,
@@ -507,7 +524,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'currency' => 'USD',
         ]);
 
-        $product = Product::factory()->create(['price' => 100]);
+        $product = Product::factory()->create(['price' => 100, 'currency_id' => $this->mxnCurrencyId()]);
         CartItem::factory()->create([
             'shopping_cart_id' => $cart->id,
             'product_id' => $product->id,
