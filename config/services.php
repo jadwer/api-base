@@ -41,4 +41,13 @@ return [
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
     ],
 
+    // Revalidacion bajo demanda de la ficha publica (Next ISR). URL completa
+    // del route handler (https://<sitio>/api/revalidate) y el mismo token que
+    // REVALIDATE_TOKEN del frontend. Sin alguno de los dos, no se llama.
+    'storefront' => [
+        'revalidate_url' => env('STOREFRONT_REVALIDATE_URL'),
+        'revalidate_token' => env('STOREFRONT_REVALIDATE_TOKEN'),
+        'revalidate_timeout' => (int) env('STOREFRONT_REVALIDATE_TIMEOUT', 5),
+    ],
+
 ];

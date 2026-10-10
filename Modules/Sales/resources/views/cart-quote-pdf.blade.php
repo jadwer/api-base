@@ -22,6 +22,8 @@
         }
         table.items td { padding: 4px 6px; border-bottom: 1px solid #ddd; }
         table.items td.num, table.items th.num { text-align: right; }
+        .pending { font-style: italic; color: #8a5a00; }
+        .pending-note { margin-top: 10px; padding: 6px 8px; border: 1px solid #e0c080; background: #fff8e6; font-size: 8.5px; }
         .totals { width: 240px; margin-left: auto; border-collapse: collapse; }
         .totals td { padding: 3px 6px; }
         .totals td.num { text-align: right; }
@@ -66,8 +68,12 @@
                     <td>{{ $line['brand'] ?? '-' }}</td>
                     <td>{{ $line['unit'] ?? '-' }}</td>
                     <td class="num">{{ rtrim(rtrim(number_format($line['quantity'], 2), '0'), '.') }}</td>
-                    <td class="num">${{ number_format($line['unit_price'], 2) }}</td>
-                    <td class="num">${{ number_format($line['net'], 2) }}</td>
+                    @if (! empty($line['price_pending']))
+                        <td class="num pending" colspan="2">Precio por confirmar *</td>
+                    @else
+                        <td class="num">${{ number_format($line['unit_price'], 2) }}</td>
+                        <td class="num">${{ number_format($line['net'], 2) }}</td>
+                    @endif
                 </tr>
             @endforeach
         </tbody>
@@ -78,6 +84,14 @@
         <tr><td>IVA</td><td class="num">${{ number_format($totals['tax'], 2) }}</td></tr>
         <tr class="grand"><td>Total</td><td class="num">${{ number_format($totals['total'], 2) }} MXN</td></tr>
     </table>
+
+    @if (($pendingCount ?? 0) > 0)
+        <div class="pending-note">
+            * Precio sujeto a cotizacion: los productos marcados se cotizan por separado
+            y no estan incluidos en el total. Solicite su cotizacion formal para conocer
+            el precio.
+        </div>
+    @endif
 
     <div class="disclaimer">
         Precios vigentes a la fecha de emision, sujetos a cambio sin previo aviso y a

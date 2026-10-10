@@ -25,6 +25,7 @@ use Spatie\Activitylog\LogOptions;
  * @property string|null $product_sku
  * @property string|null $notes
  * @property array|null $metadata
+ * @property-read bool $price_pending
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
@@ -145,6 +146,9 @@ class QuoteItem extends Model
         return $this->belongsTo(Quote::class);
     }
 
+    /**
+     * @return BelongsTo<Product, $this>
+     */
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
@@ -159,6 +163,20 @@ class QuoteItem extends Model
     public function getSubtotalAfterDiscountAttribute(): float
     {
         return $this->subtotalBeforeDiscount - $this->discount_amount;
+    }
+
+    /**
+     * P2 granel: linea de un producto sujeto a cotizacion cuyo precio aun no
+     * captura el vendedor (0 es el marcador). Bloquea convertir a pedido o
+     * venta; la cotizacion si se puede enviar con la leyenda (decision D1).
+     */
+    public function getPricePendingAttribute(): bool
+    {
+        if ((float) ($this->quoted_price ?? 0) > 0) {
+            return false;
+        }
+
+        return (bool) $this->product?->isQuoteOnly();
     }
 
     public function getPriceVarianceAttribute(): float

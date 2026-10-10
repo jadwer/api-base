@@ -101,9 +101,14 @@ class QuotePDFGenerator
             'dias_credito' => $quote->credit_days ?? $contact?->payment_terms,
         ]);
 
+        $items = $quote->items()->with(['product.brand', 'product.unit'])->get();
+
         return [
             'quote' => $quote,
-            'items' => $quote->items()->with(['product.brand', 'product.unit'])->get(),
+            'items' => $items,
+            // P2 granel: lineas sujetas a cotizacion sin precio capturado; el
+            // PDF las imprime "Por confirmar" con leyenda (decision D1).
+            'pendingCount' => $items->filter(fn ($item) => $item->price_pending)->count(),
             'totals' => $this->calculateTotals($quote),
             'contact' => $contact,
             'contactAddress' => $contactAddress,

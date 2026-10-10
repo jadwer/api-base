@@ -6,10 +6,12 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Modules\Product\Console\Commands\BackfillProductSlugs;
 use Modules\Product\Console\Commands\PruneMissingDatasheets;
+use Modules\Product\Console\Commands\SyncProductImages;
 use Modules\Product\Models\Product;
 use Modules\Product\Models\ProductImage;
 use Modules\Product\Observers\ProductImageObserver;
 use Modules\Product\Observers\ProductObserver;
+use Modules\Product\Services\StorefrontRevalidator;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -45,6 +47,8 @@ class ProductServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+        // Junta los avisos de revalidacion de una peticion (o job) y los manda una vez.
+        $this->app->scoped(StorefrontRevalidator::class);
     }
 
     /**
@@ -55,6 +59,7 @@ class ProductServiceProvider extends ServiceProvider
         $this->commands([
             BackfillProductSlugs::class,
             PruneMissingDatasheets::class,
+            SyncProductImages::class,
         ]);
     }
 

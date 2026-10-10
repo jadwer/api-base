@@ -258,8 +258,18 @@ class ProductBulkController extends Controller
 
         $count = 0;
 
+        // P2 granel: los productos sujetos a cotizacion (o sin precio) no
+        // tienen precio de lista que ajustar; antes round(null * m) los dejaba
+        // en 0.00. Se omiten y se reportan.
+        $skipped = Product::where('brand_id', $brandId)
+            ->where(fn ($q) => $q->whereNull('price')->orWhere('pricing_type', '!=', Product::PRICING_FIXED))
+            ->count();
+
         DB::transaction(function () use ($brandId, $multiplier, &$count) {
-            $products = Product::where('brand_id', $brandId)->get();
+            $products = Product::where('brand_id', $brandId)
+                ->fixedPrice()
+                ->whereNotNull('price')
+                ->get();
 
             foreach ($products as $product) {
                 $product->price = round($product->price * $multiplier, 2);
@@ -270,9 +280,15 @@ class ProductBulkController extends Controller
 
         $operationLabel = $operation === 'increase' ? 'aumentados' : 'disminuidos';
 
+        $message = "Precios {$operationLabel} un {$percentage}% para {$count} productos";
+        if ($skipped > 0) {
+            $message .= "; {$skipped} omitidos por tener precio sujeto a cotizacion o sin precio";
+        }
+
         return response()->json([
-            'message' => "Precios {$operationLabel} un {$percentage}% para {$count} productos",
+            'message' => $message,
             'affected_count' => $count,
+            'skipped_count' => $skipped,
             'operation' => $operation,
             'percentage' => $percentage,
         ]);

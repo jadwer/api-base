@@ -23,9 +23,12 @@ class ProductFactory extends Factory
             'description' => $this->faker->sentence(8),
             'full_description' => $this->faker->paragraph(4),
             'price' => $this->faker->randomFloat(2, 10, 999),
+            'pricing_type' => Product::PRICING_FIXED,
             'cost' => $this->faker->randomFloat(2, 5, 500),
             'iva' => $this->faker->boolean(70), // 70% probability of having IVA
-            'img_path' => '/images/products/' . $this->faker->uuid . '.jpg',
+            // Sin imagen por defecto: con imagen, ProductObserver crea la fila
+            // primaria de la galeria (usar ->withImage()).
+            'img_path' => null,
             'datasheet_path' => '/docs/products/' . $this->faker->uuid . '.pdf',
             'unit_id' => Unit::factory(),
             'category_id' => Category::factory(),
@@ -37,6 +40,29 @@ class ProductFactory extends Factory
             'total_reviews' => $this->faker->boolean(70) ? $this->faker->numberBetween(1, 50) : 0, // 70% have reviews
             'total_sales' => $this->faker->numberBetween(0, 200),
         ];
+    }
+
+    /**
+     * Product with a main image (crea tambien la fila primaria de galeria).
+     */
+    public function withImage(?string $path = null): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'img_path' => $path ?? 'products/' . $this->faker->uuid . '.jpg',
+        ]);
+    }
+
+    /**
+     * Precio sujeto a cotizacion (P2 granel): sin precio de lista; se cotiza y
+     * se vende solo via cotizacion convertida a pedido.
+     */
+    public function quoteOnly(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'pricing_type' => Product::PRICING_QUOTE_ONLY,
+            'price' => null,
+            'is_on_sale' => false,
+        ]);
     }
 
     /**

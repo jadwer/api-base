@@ -107,6 +107,33 @@ class CheckoutSessionRequest extends ResourceRequest
     }
 
     /**
+     * P2 granel: no se abre sesion de pago para un carrito con productos de
+     * precio sujeto a cotizacion (QuoteOnlyCartGuard).
+     */
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            if (! $this->isCreating()) {
+                return;
+            }
+
+            $cartId = $this->validationData()['shoppingCartId'] ?? null;
+            $cart = $cartId ? \Modules\Ecommerce\Models\ShoppingCart::find($cartId) : null;
+            if (! $cart) {
+                return;
+            }
+
+            $items = \Modules\Ecommerce\Support\QuoteOnlyCartGuard::quoteOnlyItems($cart);
+            if ($items !== []) {
+                $validator->errors()->add(
+                    'shoppingCartId',
+                    \Modules\Ecommerce\Support\QuoteOnlyCartGuard::MESSAGE . ' Productos: ' . \Modules\Ecommerce\Support\QuoteOnlyCartGuard::names($items) . '.'
+                );
+            }
+        });
+    }
+
+    /**
      * Get custom messages for validator errors.
      *
      * @return array

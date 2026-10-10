@@ -197,6 +197,9 @@ class Quote extends Model
         return $this->belongsTo(PurchaseOrder::class);
     }
 
+    /**
+     * @return HasMany<QuoteItem, $this>
+     */
     public function items(): HasMany
     {
         return $this->hasMany(QuoteItem::class);

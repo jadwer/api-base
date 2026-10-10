@@ -6,11 +6,12 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Modules\MailerManager\Traits\UsesEmailTemplate;
+use Modules\Sales\Mail\Concerns\SummarizesQuoteItems;
 use Modules\Sales\Models\Quote;
 
 class QuoteRequestedMail extends Mailable
 {
-    use Queueable, SerializesModels, UsesEmailTemplate;
+    use Queueable, SerializesModels, UsesEmailTemplate, SummarizesQuoteItems;
 
     public Quote $quote;
     public array $quoteSummary;
@@ -28,6 +29,7 @@ class QuoteRequestedMail extends Mailable
         $this->quote = $quote->load(['items.product', 'contact']);
         $this->isAdmin = $isAdmin;
         $this->quoteSummary = $this->getQuoteSummary();
+        $this->quoteSummary['price_pending_notice'] = $this->pendingPriceNotice($this->quoteSummary['items']);
     }
 
     public function build()
@@ -52,9 +54,8 @@ class QuoteRequestedMail extends Mailable
 
     protected function getTemplateVariables(): array
     {
-        $items = collect($this->quoteSummary['items'])->map(function ($item) {
-            return $item['name'] . ' (x' . $item['quantity'] . ') - $' . number_format($item['subtotal'], 2);
-        })->implode("\n");
+        $items = $this->templateItems($this->quoteSummary['items']);
+        $notice = $this->pendingPriceNotice($this->quoteSummary['items']);
 
         return [
             'quote_number' => $this->quoteSummary['quote_number'],
@@ -62,6 +63,7 @@ class QuoteRequestedMail extends Mailable
             'customer_email' => $this->quoteSummary['customer_email'] ?? '',
             'quote_date' => $this->quoteSummary['quote_date'] ?? '',
             'items' => $items,
+            'price_pending_notice' => $notice,
             'total' => number_format($this->quoteSummary['total'] ?? 0, 2),
             'currency' => $this->quoteSummary['currency'] ?? 'MXN',
             'company_name' => app(\Modules\AppConfig\Services\AppSettingResolver::class)->get('company.name', config('app.name', 'Demo Company')),
@@ -75,15 +77,7 @@ class QuoteRequestedMail extends Mailable
             'quote_date' => $this->quote->quote_date?->format('d/m/Y'),
             'customer_name' => $this->quote->contact?->name ?? 'Cliente',
             'customer_email' => $this->quote->contact?->email,
-            'items' => $this->quote->items->map(function ($item) {
-                return [
-                    'name' => $item->product_name ?? $item->product?->name ?? 'Producto',
-                    'sku' => $item->product_sku ?? $item->product?->sku ?? '-',
-                    'quantity' => $item->quantity,
-                    'unit_price' => $item->quoted_price,
-                    'subtotal' => $item->total,
-                ];
-            })->toArray(),
+            'items' => $this->quoteItemsSummary($this->quote),
             'total' => $this->quote->total_amount,
             'currency' => $this->quote->currency ?? 'MXN',
         ];

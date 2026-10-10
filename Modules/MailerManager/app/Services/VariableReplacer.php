@@ -128,6 +128,21 @@ class VariableReplacer
 
     protected function formatValue(mixed $value, string $format): string
     {
+        if (in_array($format, ['currency', 'number', 'integer'], true) && is_string($value)) {
+            // Los Mailables pasaban montos ya formateados ("3,015.98") y el
+            // cast (float) cortaba en la coma: el correo decia $3.00. Se
+            // aceptan miles con coma; un texto no numerico ("Por confirmar")
+            // se imprime tal cual en vez de volverse $0.00.
+            $normalized = str_replace(',', '', trim($value));
+            if ($normalized === '') {
+                $value = 0;
+            } elseif (! is_numeric($normalized)) {
+                return $value;
+            } else {
+                $value = (float) $normalized;
+            }
+        }
+
         return match ($format) {
             'currency' => '$' . number_format((float) $value, 2),
             'number' => number_format((float) $value, 2),

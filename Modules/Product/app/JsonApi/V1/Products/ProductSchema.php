@@ -33,6 +33,9 @@ class ProductSchema extends Schema
             Str::make('description'),
             Str::make('fullDescription', 'full_description'),
             Number::make('price')->sortable(),
+            // fixed | quote_only (Product::PRICING_TYPES). quote_only = "Precio
+            // sujeto a cotizacion": price null, sin oferta ni compra directa.
+            Str::make('pricingType', 'pricing_type')->sortable(),
             Number::make('cost')->sortable(),
             Boolean::make('iva'),
             Str::make('satClaveProdServ', 'sat_clave_prod_serv'),
@@ -67,7 +70,8 @@ class ProductSchema extends Schema
             BelongsTo::make('brand')->type('brands'),
             BelongsTo::make('currency')->type('currencies'),
             HasMany::make('stock')->type('stocks'),
-            HasMany::make('images')->type('product-images'),
+            // Solo lectura: la galeria se administra en /product-images (P1 granel).
+            HasMany::make('images')->type('product-images')->readOnly(),
 
             DateTime::make('createdAt', 'created_at')->readOnly()->sortable(),
             DateTime::make('updatedAt', 'updated_at')->readOnly(),
@@ -97,6 +101,7 @@ class ProductSchema extends Schema
             Where::make('is_active')->asBoolean(),
             Where::make('is_public')->asBoolean(),
             Where::make('is_on_sale')->asBoolean(),
+            Where::make('pricing_type'),
             WhereIn::make('brands', 'brand_id')->delimiter(','),
             WhereIn::make('categories', 'category_id')->delimiter(','),
             WhereIn::make('units', 'unit_id')->delimiter(','),

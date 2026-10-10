@@ -63,9 +63,17 @@ class OrderConfirmationMail extends Mailable
 
     protected function getTemplateVariables(): array
     {
-        $items = collect($this->orderSummary['items'])->map(function ($item) {
-            return $item['name'] . ' (x' . $item['quantity'] . ') - $' . number_format($item['subtotal'], 2);
-        })->implode("\n");
+        // La plantilla recorre {{#each items}} con {name, sku, quantity,
+        // price/unit_price, subtotal}; antes recibia un texto plano y la tabla
+        // del correo salia vacia.
+        $items = array_map(fn (array $item) => [
+            'name' => $item['name'],
+            'sku' => $item['sku'],
+            'quantity' => $item['quantity'],
+            'price' => (float) $item['unit_price'],
+            'unit_price' => (float) $item['unit_price'],
+            'subtotal' => (float) $item['subtotal'],
+        ], $this->orderSummary['items']);
 
         $shippingAddress = '';
         if ($this->shippingInfo) {

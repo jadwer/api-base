@@ -42,6 +42,12 @@ class CheckoutService
             throw new \Exception('Cart is not active or has expired');
         }
 
+        // P2 granel: precio sujeto a cotizacion no entra al flujo de pago.
+        $quoteOnly = \Modules\Ecommerce\Support\QuoteOnlyCartGuard::quoteOnlyItems($cart);
+        if ($quoteOnly !== []) {
+            throw new \Modules\Ecommerce\Support\QuoteOnlyCartException($quoteOnly);
+        }
+
         // Atomically check-or-create checkout session to prevent race conditions
         return DB::transaction(function () use ($cart, $data) {
             $existingSession = CheckoutSession::where('shopping_cart_id', $cart->id)

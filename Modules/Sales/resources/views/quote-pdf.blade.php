@@ -258,6 +258,8 @@
         }
 
         /* Footer is rendered via DomPDF inline PHP (page_text) */
+        .price-pending { font-style: italic; color: #8a5a00; }
+        .price-pending-note { margin: 6px 0; padding: 5px 8px; border: 1px solid #e0c080; background: #fff8e6; font-size: 8px; }
     </style>
 </head>
 <body>
@@ -381,12 +383,25 @@
                         <div class="product-eta">{{ $item->notes }}</div>
                     @endif
                 </td>
+                @if($item->price_pending)
+                <td class="text-right price-pending">Por confirmar *</td>
+                <td class="text-right price-pending">Por confirmar *</td>
+                @else
                 <td class="text-right">{{ number_format($item->quoted_price, 2) }}</td>
                 <td class="text-right">{{ number_format($item->subtotal_before_discount, 2) }}</td>
+                @endif
             </tr>
             @endforeach
         </tbody>
     </table>
+
+    {{-- P2 granel: leyenda de precios por confirmar --}}
+    @if(($pendingCount ?? 0) > 0)
+    <div class="price-pending-note">
+        * Precio sujeto a cotizacion: {{ $pendingCount === 1 ? 'el producto marcado no esta incluido' : 'los productos marcados no estan incluidos' }}
+        en el total. Le confirmaremos el precio antes de procesar su pedido.
+    </div>
+    @endif
 
     {{-- Amount in Words --}}
     <table class="amount-words-row">

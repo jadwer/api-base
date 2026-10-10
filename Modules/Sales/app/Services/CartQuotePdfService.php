@@ -24,7 +24,7 @@ class CartQuotePdfService
      * Prices the requested items against the public catalog scope.
      *
      * @param array<int, array{product_id: int|string, quantity: int|float|string}> $items
-     * @return array{lines: array<int, array<string, mixed>>, totals: array{net: float, tax: float, total: float}}
+     * @return array{lines: array<int, array<string, mixed>>, totals: array{net: float, tax: float, total: float}, pending_count: int}
      */
     public function buildLines(array $items): array
     {
@@ -55,23 +55,41 @@ class CartQuotePdfService
 
         foreach ($products as $product) {
             $quantity = $quantities[$product->id];
-            if ($quantity <= 0 || $product->price === null) {
+            if ($quantity <= 0) {
+                continue;
+            }
+
+            $base = [
+                'sku' => $product->sku,
+                'name' => $product->name,
+                'brand' => $product->brand?->name,
+                'unit' => $product->unit?->name,
+                'quantity' => $quantity,
+            ];
+
+            // P2 granel: sujeto a cotizacion (o sin precio) ya no se omite en
+            // silencio; va en el PDF como "Precio por confirmar" y no suma.
+            if ($product->isQuoteOnly() || $product->price === null) {
+                $lines[] = $base + [
+                    'unit_price' => null,
+                    'net' => 0.0,
+                    'tax' => 0.0,
+                    'total' => 0.0,
+                    'price_pending' => true,
+                ];
+
                 continue;
             }
 
             $lineAmount = round((float) $product->price * $quantity, 2);
             $split = $this->taxCalculator->netAndTax($lineAmount, (float) $product->effective_tax_rate);
 
-            $lines[] = [
-                'sku' => $product->sku,
-                'name' => $product->name,
-                'brand' => $product->brand?->name,
-                'unit' => $product->unit?->name,
-                'quantity' => $quantity,
+            $lines[] = $base + [
                 'unit_price' => (float) $product->price,
                 'net' => $split['net'],
                 'tax' => $split['tax'],
                 'total' => $split['total'],
+                'price_pending' => false,
             ];
 
             $netTotal += $split['net'];
@@ -81,6 +99,7 @@ class CartQuotePdfService
 
         return [
             'lines' => $lines,
+            'pending_count' => count(array_filter($lines, fn ($line) => $line['price_pending'])),
             'totals' => [
                 'net' => round($netTotal, 2),
                 'tax' => round($taxTotal, 2),
@@ -92,7 +111,7 @@ class CartQuotePdfService
     /**
      * Renders the informative PDF for the given priced lines.
      */
-    public function render(array $lines, array $totals): string
+    public function render(array $lines, array $totals, int $pendingCount = 0): string
     {
         // Emisor separado de la configuracion fiscal (2026-09-23).
         $company = QuoteIssuer::resolve();
@@ -100,6 +119,7 @@ class CartQuotePdfService
         $pdf = Pdf::loadView('sales::cart-quote-pdf', [
             'lines' => $lines,
             'totals' => $totals,
+            'pendingCount' => $pendingCount,
             'company' => $company,
             'issuedAt' => now(),
         ])

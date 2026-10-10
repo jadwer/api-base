@@ -184,4 +184,25 @@ class VariableReplacerTest extends TestCase
         $this->assertStringContainsString('Producto A', $result);
         $this->assertStringContainsString('$3,000.00', $result);
     }
+
+    public function test_currency_accepts_amounts_already_formatted_with_thousands(): void
+    {
+        // Los Mailables pasaban number_format(): (float) "3,015.98" daba 3.
+        $result = $this->replacer->replace('Total: {{total|currency}}', ['total' => '3,015.98']);
+
+        $this->assertEquals('Total: $3,015.98', $result);
+    }
+
+    public function test_currency_prints_non_numeric_text_as_is(): void
+    {
+        $result = $this->replacer->replace(
+            '{{#each items}}{{name}}: {{price|currency}};{{/each}}',
+            ['items' => [
+                ['name' => 'Frasco', 'price' => 100],
+                ['name' => 'Granel', 'price' => 'Por confirmar'],
+            ]]
+        );
+
+        $this->assertEquals('Frasco: $100.00;Granel: Por confirmar;', $result);
+    }
 }

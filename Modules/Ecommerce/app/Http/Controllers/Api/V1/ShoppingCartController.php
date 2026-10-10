@@ -379,6 +379,12 @@ class ShoppingCartController extends Controller
             ], 400);
         }
 
+        // P2 granel: productos con precio sujeto a cotizacion no se compran
+        // directo (422 con la lista; el carrito sigue sirviendo para cotizar).
+        if ($rejection = \Modules\Ecommerce\Support\QuoteOnlyCartGuard::rejection($shoppingCart)) {
+            return $rejection;
+        }
+
         // DESIGN_ECOMMERCE_PAGO_STOCK (H-A): disponible = fisico - reservado -
         // COMPROMETIDO en ordenes pagadas no entregadas (CommittedStockService).
         // Cierra el oversell secuencial: una compra pagada resta disponibilidad

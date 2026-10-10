@@ -6,11 +6,12 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Modules\MailerManager\Traits\UsesEmailTemplate;
+use Modules\Sales\Mail\Concerns\SummarizesQuoteItems;
 use Modules\Sales\Models\Quote;
 
 class QuoteSentMail extends Mailable
 {
-    use Queueable, SerializesModels, UsesEmailTemplate;
+    use Queueable, SerializesModels, UsesEmailTemplate, SummarizesQuoteItems;
 
     public Quote $quote;
     public array $quoteSummary;
@@ -26,6 +27,7 @@ class QuoteSentMail extends Mailable
         $this->quote = $quote->load(['items.product', 'contact']);
         $this->pdfPath = $pdfPath;
         $this->quoteSummary = $this->getQuoteSummary();
+        $this->quoteSummary['price_pending_notice'] = $this->pendingPriceNotice($this->quoteSummary['items']);
     }
 
     public function build()
@@ -61,9 +63,8 @@ class QuoteSentMail extends Mailable
 
     protected function getTemplateVariables(): array
     {
-        $items = collect($this->quoteSummary['items'])->map(function ($item) {
-            return $item['name'] . ' (x' . $item['quantity'] . ') - $' . number_format($item['subtotal'], 2);
-        })->implode("\n");
+        $items = $this->templateItems($this->quoteSummary['items']);
+        $notice = $this->pendingPriceNotice($this->quoteSummary['items']);
 
         return [
             'quote_number' => $this->quoteSummary['quote_number'],
@@ -75,8 +76,11 @@ class QuoteSentMail extends Mailable
             'tax' => number_format($this->quoteSummary['tax'] ?? 0, 2),
             'total' => number_format($this->quoteSummary['total'] ?? 0, 2),
             'currency' => $this->quoteSummary['currency'] ?? 'MXN',
-            'notes' => $this->quoteSummary['notes'] ?? '',
+            // La plantilla vigente ya imprime {{#if notes}}: la leyenda de
+            // precio pendiente viaja ahi para que aparezca sin re-sembrar.
+            'notes' => trim($notice . "\n" . ($this->quoteSummary['notes'] ?? '')),
             'items' => $items,
+            'price_pending_notice' => $notice,
             'company_name' => app(\Modules\AppConfig\Services\AppSettingResolver::class)->get('company.name', config('app.name', 'Demo Company')),
         ];
     }
@@ -89,16 +93,7 @@ class QuoteSentMail extends Mailable
             'valid_until' => $this->quote->valid_until?->format('d/m/Y'),
             'customer_name' => $this->quote->contact?->name ?? 'Cliente',
             'customer_email' => $this->quote->contact?->email,
-            'items' => $this->quote->items->map(function ($item) {
-                return [
-                    'name' => $item->product_name ?? $item->product?->name ?? 'Producto',
-                    'sku' => $item->product_sku ?? $item->product?->sku ?? '-',
-                    'quantity' => $item->quantity,
-                    'unit_price' => $item->quoted_price,
-                    'subtotal' => $item->total,
-                    'notes' => $item->notes,
-                ];
-            })->toArray(),
+            'items' => $this->quoteItemsSummary($this->quote),
             'subtotal' => $this->quote->subtotal_amount,
             'discount' => $this->quote->discount_amount,
             'tax' => $this->quote->tax_amount,

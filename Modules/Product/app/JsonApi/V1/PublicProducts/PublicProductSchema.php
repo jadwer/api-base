@@ -18,6 +18,7 @@ use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Contracts\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Modules\Product\JsonApi\Sorting\PriceNullsLast;
 use Modules\Product\Models\Product;
 
 class PublicProductSchema extends Schema
@@ -45,7 +46,11 @@ class PublicProductSchema extends Schema
             Str::make('slug')->readOnly()->sortable(),
             Str::make('description'),
             Str::make('fullDescription', 'full_description'),
-            Number::make('price')->sortable(),
+            // Orden por precio en sortables(): los sujetos a cotizacion van al final.
+            Number::make('price'),
+            // fixed | quote_only (Product::PRICING_TYPES). quote_only = "Precio
+            // sujeto a cotizacion": sin precio ni compra directa, solo cotizar.
+            Str::make('pricingType', 'pricing_type')->readOnly(),
             Number::make('compareAtPrice', 'compare_at_price'),
             Boolean::make('isOnSale', 'is_on_sale'),
             DateTime::make('saleStartsAt', 'sale_starts_at'),
@@ -99,12 +104,20 @@ class PublicProductSchema extends Schema
             Where::make('category_id'),
             Where::make('brand_id'),
             Where::make('is_on_sale')->asBoolean(),
+            Where::make('pricing_type'),
             Where::make('price_min', 'price')->gte(),
             Where::make('price_max', 'price')->lte(),
             Scope::make('onSale', 'on_sale'),
             WhereIn::make('brands', 'brand_id')->delimiter(','),
             WhereIn::make('categories', 'category_id')->delimiter(','),
             WhereIn::make('units', 'unit_id')->delimiter(','),
+        ];
+    }
+
+    public function sortables(): iterable
+    {
+        return [
+            PriceNullsLast::make(),
         ];
     }
 

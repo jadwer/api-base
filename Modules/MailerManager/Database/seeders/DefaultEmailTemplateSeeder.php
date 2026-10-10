@@ -111,6 +111,7 @@ class DefaultEmailTemplateSeeder extends Seeder
             . '<table class="items-table"><thead><tr><th>Producto</th><th>SKU</th><th>Cantidad</th><th class="text-right">Precio</th><th class="text-right">Subtotal</th></tr></thead>'
             . '<tbody>{{#each items}}<tr><td>{{name}}</td><td>{{sku}}</td><td>{{quantity}}</td><td class="text-right">{{price|currency}}</td><td class="text-right">{{subtotal|currency}}</td></tr>{{/each}}</tbody></table>'
             . '<table class="totals-table"><tr class="total-row"><td class="text-right">Total:</td><td class="text-right">{{total|currency}} {{currency}}</td></tr></table>'
+            . '{{#if price_pending_notice}}<div class="info-box"><p>{{price_pending_notice}}</p></div>{{/if}}'
             . '</div>'
             . '<div class="footer"><p><strong>{{company_name}}</strong></p></div>'
             . '</div>';
@@ -137,6 +138,7 @@ class DefaultEmailTemplateSeeder extends Seeder
             . '<div class="info-box"><p>Nuestro equipo revisara su solicitud y le enviara la cotizacion formal con precios y tiempos de entrega a la brevedad.</p></div>'
             . '<table class="items-table"><thead><tr><th>Producto</th><th>SKU</th><th>Cantidad</th></tr></thead>'
             . '<tbody>{{#each items}}<tr><td>{{name}}</td><td>{{sku}}</td><td>{{quantity}}</td></tr>{{/each}}</tbody></table>'
+            . '{{#if price_pending_notice}}<div class="info-box"><p>{{price_pending_notice}}</p></div>{{/if}}'
             . '<p>Si tiene alguna pregunta sobre su solicitud, no dude en contactarnos.</p>'
             . '</div>'
             . '<div class="footer"><p><strong>{{company_name}}</strong></p></div>'

@@ -169,4 +169,29 @@ class ProductBulkPriceUpdateTest extends TestCase
         $response->assertOk()
             ->assertJsonFragment(['affected_count' => 2]);
     }
+
+    public function test_quote_only_and_null_price_products_are_skipped_and_reported(): void
+    {
+        $fixed = $this->createProduct(['price' => 100.00]);
+        $quoteOnly = Product::factory()->quoteOnly()->create([
+            'unit_id' => $this->unit->id,
+            'brand_id' => $this->brand->id,
+            'category_id' => $this->category->id,
+        ]);
+
+        $response = $this->actingAs($this->admin, 'sanctum')
+            ->postJson('/api/v1/products/bulk-price-update', [
+                'brand_id' => $this->brand->id,
+                'percentage' => 10,
+                'operation' => 'increase',
+            ]);
+
+        $response->assertOk();
+        $response->assertJson(['affected_count' => 1, 'skipped_count' => 1]);
+        $this->assertStringContainsString('1 omitidos', $response->json('message'));
+        $this->assertEquals(110.00, $fixed->fresh()->price);
+        // Antes round(null * 1.1) lo dejaba en 0.00.
+        $this->assertNull($quoteOnly->fresh()->price);
+        $this->assertTrue($quoteOnly->fresh()->isQuoteOnly());
+    }
 }

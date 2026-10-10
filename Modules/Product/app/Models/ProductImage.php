@@ -6,6 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $product_id
+ * @property string $file_path
+ * @property string|null $alt_text
+ * @property int $sort_order
+ * @property bool $is_primary
+ * @property-read string|null $image_url
+ * @property-read Product|null $product
+ */
 class ProductImage extends Model
 {
     use HasFactory;

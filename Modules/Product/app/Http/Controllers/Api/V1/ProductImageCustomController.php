@@ -42,6 +42,7 @@ class ProductImageCustomController extends Controller
         foreach ($imageIds as $index => $imageId) {
             ProductImage::where('id', $imageId)->update(['sort_order' => $index]);
         }
+        app(\Modules\Product\Services\StorefrontRevalidator::class)->productId((int) $productIds->first());
 
         return response()->json([
             'message' => 'Images reordered successfully',
@@ -64,6 +65,8 @@ class ProductImageCustomController extends Controller
         }
 
         $productImage->update(['is_primary' => true]);
+        // El observer la mueve al frente (sort_order 0) por query builder.
+        $productImage->refresh();
 
         return response()->json([
             'message' => 'Image set as primary successfully',

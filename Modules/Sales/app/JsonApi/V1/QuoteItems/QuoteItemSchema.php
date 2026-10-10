@@ -5,6 +5,7 @@ namespace Modules\Sales\JsonApi\V1\QuoteItems;
 use LaravelJsonApi\Eloquent\Schema;
 use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Str;
+use LaravelJsonApi\Eloquent\Fields\Boolean;
 use LaravelJsonApi\Eloquent\Fields\Number;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\ArrayHash;
@@ -92,6 +93,8 @@ class QuoteItemSchema extends Schema
             Number::make('subtotalAfterDiscount')->readOnly(),
             Number::make('priceVariance')->readOnly(),
             Number::make('effectiveDiscountPercentage')->readOnly(),
+            // P2 granel: producto sujeto a cotizacion sin precio capturado.
+            Boolean::make('pricePending')->readOnly(),
 
             // Timestamps
             DateTime::make('createdAt', 'created_at')->readOnly()->sortable(),

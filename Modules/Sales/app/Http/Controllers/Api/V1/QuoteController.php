@@ -121,12 +121,17 @@ class QuoteController extends Controller
                     $notes = 'ETA: ' . $product->brand->default_lead_time;
                 }
 
+                // P2 granel: sujeto a cotizacion = precio pendiente (0 + flag
+                // price_pending del item); el vendedor lo captura. Se ignora
+                // el unit_price que traiga el carrito (lo manda el cliente).
+                $unitPrice = $product?->isQuoteOnly() ? 0 : $cartItem->unit_price;
+
                 QuoteItem::create([
                     'quote_id' => $quote->id,
                     'product_id' => $cartItem->product_id,
                     'quantity' => $cartItem->quantity,
-                    'unit_price' => $cartItem->unit_price,
-                    'quoted_price' => $cartItem->unit_price, // Initially same as unit price
+                    'unit_price' => $unitPrice,
+                    'quoted_price' => $unitPrice, // Initially same as unit price
                     'discount_percentage' => 0,
                     'tax_rate' => $product?->effective_tax_rate ?? 0,
                     'product_name' => $product?->name,
@@ -374,8 +379,32 @@ class QuoteController extends Controller
             $paymentMethod = $creditDays > 0 ? 'PPD' : 'PUE';
         }
 
-        // Validacion de stock diferenciada por tipo de orden
         $quote->loadMissing('items.product');
+
+        // P2 granel: una linea sujeta a cotizacion sin precio capturado no
+        // puede pasar a pedido ni venta (la orden y el CFDI saldrian en 0).
+        $pendingItems = $quote->items->filter(fn (QuoteItem $item) => $item->price_pending)->values();
+        if ($pendingItems->isNotEmpty()) {
+            $names = $pendingItems->map(fn (QuoteItem $item) => $item->product_name ?? $item->product->name ?? ('#' . $item->product_id));
+
+            return response()->json([
+                'message' => 'Captura el precio de los productos sujetos a cotizacion antes de convertir: ' . $names->implode(', ') . '.',
+                'errors' => $pendingItems->map(fn (QuoteItem $item) => [
+                    'status' => '422',
+                    'code' => 'price_pending',
+                    'title' => 'Precio por confirmar',
+                    'detail' => 'Captura el precio de ' . ($item->product_name ?? $item->product->name ?? ('#' . $item->product_id)) . ' antes de convertir.',
+                    'meta' => [
+                        'quote_item_id' => $item->id,
+                        'product_id' => $item->product_id,
+                        'product_name' => $item->product_name ?? $item->product?->name,
+                        'product_sku' => $item->product_sku ?? $item->product?->sku,
+                    ],
+                ])->all(),
+            ], 422);
+        }
+
+        // Validacion de stock diferenciada por tipo de orden
         $stockService = app(StockAvailabilityService::class);
         $insufficientItems = $stockService->insufficientItems($quote->items);
 
@@ -861,7 +890,9 @@ class QuoteController extends Controller
             // Create quote items
             foreach ($request->input('items') as $item) {
                 $product = $products->get($item['product_id']);
-                $productPrice = $product->price ?? 0;
+                // P2 granel: sujeto a cotizacion = precio pendiente (0 + flag
+                // price_pending del item); no hay precio que convertir.
+                $productPrice = $product->isQuoteOnly() ? 0 : ($product->price ?? 0);
 
                 // Convert price if product is in a different currency
                 $productCurrencyCode = $product->currency?->code ?? $baseCurrency;

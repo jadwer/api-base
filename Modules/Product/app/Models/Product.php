@@ -9,9 +9,36 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
+/**
+ * @property int $id
+ * @property string|null $name
+ * @property string|null $sku
+ * @property string|null $slug
+ * @property string|null $img_path
+ * @property string|null $datasheet_path
+ * @property float|null $price
+ * @property float|null $cost
+ * @property string $pricing_type
+ * @property float|null $compare_at_price
+ * @property bool $is_on_sale
+ */
 class Product extends Model
 {
     use HasFactory, LogsActivity;
+
+    /**
+     * Tipo de precio (P2 granel). La lista es la fuente unica: la valida
+     * ProductRequest y el frontend la fija con un test de contrato.
+     */
+    public const PRICING_FIXED = 'fixed';
+
+    public const PRICING_QUOTE_ONLY = 'quote_only';
+
+    /** @var list<string> */
+    public const PRICING_TYPES = [self::PRICING_FIXED, self::PRICING_QUOTE_ONLY];
+
+    /** Etiqueta visible del precio variable (decision D3). */
+    public const QUOTE_ONLY_LABEL = 'Precio sujeto a cotizacion';
 
     /**
      * Activity Log Configuration
@@ -20,12 +47,22 @@ class Product extends Model
     {
         return LogOptions::defaults()
             ->logOnly([
-                'name', 'sku', 'price', 'cost', 'is_active',
+                'name', 'sku', 'price', 'pricing_type', 'cost', 'is_active',
                 'category_id', 'brand_id', 'unit_id'
             ])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
+
+    /**
+     * Mismo default que la columna, para que un modelo recien creado en memoria
+     * responda isQuoteOnly() sin recargarse.
+     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'pricing_type' => self::PRICING_FIXED,
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -40,6 +77,7 @@ class Product extends Model
         'description',
         'full_description',
         'price',
+        'pricing_type',
         'cost',
         'compare_at_price',
         'iva',
@@ -409,11 +447,49 @@ class Product extends Model
     }
 
     /**
+     * Producto sin precio de lista: se cotiza y se vende solo via cotizacion.
+     */
+    public function isQuoteOnly(): bool
+    {
+        return $this->pricing_type === self::PRICING_QUOTE_ONLY;
+    }
+
+    /**
+     * Invariante de quote_only: sin precio de lista, sin precio comparativo y
+     * sin oferta. Lo llama ProductObserver::saving para cubrir todos los
+     * caminos de escritura (API, import, bulk Eloquent, consola).
+     */
+    public function normalizePricing(): void
+    {
+        if (! $this->pricing_type) {
+            $this->pricing_type = self::PRICING_FIXED;
+        }
+
+        if (! $this->isQuoteOnly()) {
+            return;
+        }
+
+        $this->price = null;
+        $this->compare_at_price = null;
+        $this->is_on_sale = false;
+    }
+
+    /**
+     * Productos con precio de lista (los unicos que admiten compra directa,
+     * ajuste masivo de precio o rango de precio).
+     */
+    public function scopeFixedPrice($query)
+    {
+        return $query->where('pricing_type', self::PRICING_FIXED);
+    }
+
+    /**
      * Scope for products on sale (active offers)
      */
     public function scopeOnSale($query)
     {
         return $query->where('is_on_sale', true)
+            ->where('pricing_type', self::PRICING_FIXED)
             ->where(function ($q) {
                 $q->whereNull('sale_starts_at')
                     ->orWhere('sale_starts_at', '<=', now());
@@ -429,7 +505,7 @@ class Product extends Model
      */
     public function isCurrentlyOnSale(): bool
     {
-        if (!$this->is_on_sale) {
+        if (!$this->is_on_sale || $this->isQuoteOnly()) {
             return false;
         }
 
@@ -470,6 +546,10 @@ class Product extends Model
      */
     public function getDiscountPercentageAttribute(): ?int
     {
+        if ($this->isQuoteOnly() || $this->price === null) {
+            return null;
+        }
+
         if (!$this->compare_at_price || $this->compare_at_price <= $this->price) {
             return null;
         }
@@ -482,6 +562,10 @@ class Product extends Model
      */
     public function getSavingsAttribute(): ?float
     {
+        if ($this->isQuoteOnly() || $this->price === null) {
+            return null;
+        }
+
         if (!$this->compare_at_price || $this->compare_at_price <= $this->price) {
             return null;
         }

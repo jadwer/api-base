@@ -37,8 +37,13 @@
                             @endif
                         </td>
                         <td style="text-align: center;">{{ number_format($item['quantity'], 2) }}</td>
-                        <td style="text-align: right;">${{ number_format($item['unit_price'], 2) }}</td>
-                        <td style="text-align: right;">${{ number_format($item['subtotal'], 2) }}</td>
+                        @if(!empty($item['price_pending']))
+                            <td style="text-align: right; font-style: italic;">Por confirmar</td>
+                            <td style="text-align: right; font-style: italic;">Por confirmar</td>
+                        @else
+                            <td style="text-align: right;">${{ number_format($item['unit_price'], 2) }}</td>
+                            <td style="text-align: right;">${{ number_format($item['subtotal'], 2) }}</td>
+                        @endif
                     </tr>
                 @endforeach
             </tbody>
@@ -67,6 +72,12 @@
                     </td>
                 </tr>
             </table>
+        </div>
+    @endif
+
+    @if(!empty($quoteSummary['price_pending_notice']))
+        <div class="info-box">
+            <p style="margin: 0;">{{ $quoteSummary['price_pending_notice'] }}</p>
         </div>
     @endif
 

@@ -19,15 +19,20 @@ class RecommendationEngine
      */
     public function getRelatedProducts(Product $product, int $limit = 6): Collection
     {
-        $priceMin = $product->price * 0.7; // -30%
-        $priceMax = $product->price * 1.3; // +30%
+        // P2 granel: un producto sujeto a cotizacion (o sin precio) no tiene
+        // precio de referencia; antes el rango quedaba en 0..0 y no salia nada.
+        // Para esos se omite el filtro por precio.
+        $hasListPrice = ! $product->isQuoteOnly() && $product->price !== null;
 
         return Product::where('id', '!=', $product->id)
             ->where(function ($query) use ($product) {
                 $query->where('category_id', $product->category_id)
                     ->orWhere('brand_id', $product->brand_id);
             })
-            ->whereBetween('price', [$priceMin, $priceMax])
+            ->when($hasListPrice, fn ($query) => $query->whereBetween('price', [
+                $product->price * 0.7, // -30%
+                $product->price * 1.3, // +30%
+            ]))
             ->where('is_active', true)
             ->orderByDesc('average_rating')
             ->orderByDesc('total_sales')

@@ -31,7 +31,7 @@ class PublicCartQuotePdfController extends Controller
             ], 422);
         }
 
-        $pdf = $service->render($priced['lines'], $priced['totals']);
+        $pdf = $service->render($priced['lines'], $priced['totals'], $priced['pending_count']);
 
         return response($pdf, 200, [
             'Content-Type' => 'application/pdf',
