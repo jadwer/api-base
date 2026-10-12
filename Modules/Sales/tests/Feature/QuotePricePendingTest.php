@@ -171,7 +171,7 @@ class QuotePricePendingTest extends TestCase
 
         $html = (new QuoteSentMail($quote->fresh()))->render();
         $this->assertStringContainsString('Por confirmar', $html);
-        $this->assertStringContainsString('Precio sujeto a cotizacion', $html);
+        $this->assertStringContainsString('Precio sujeto a cotización', $html);
     }
 
     public function test_mailer_template_variables_carry_items_and_notice(): void
@@ -188,8 +188,8 @@ class QuotePricePendingTest extends TestCase
         $pending = collect($vars['items'])->firstWhere('name', 'Alcohol isopropilico granel');
         $this->assertSame('Por confirmar', $pending['price']);
         $this->assertSame('Por confirmar', $pending['subtotal']);
-        $this->assertStringContainsString('Precio sujeto a cotizacion', $vars['notes']);
-        $this->assertStringContainsString('Precio sujeto a cotizacion', $vars['price_pending_notice']);
+        $this->assertStringContainsString('Precio sujeto a cotización', $vars['notes']);
+        $this->assertStringContainsString('Precio sujeto a cotización', $vars['price_pending_notice']);
 
         $html = app(\Modules\MailerManager\Services\VariableReplacer::class)->replace(
             '{{#each items}}<td>{{price|currency}}</td>{{/each}}',
@@ -221,7 +221,7 @@ class QuotePricePendingTest extends TestCase
         $this->assertSame(1, $data['pendingCount']);
         $html = view('sales::quote-pdf', $data)->render();
         $this->assertStringContainsString('Por confirmar *', $html);
-        $this->assertStringContainsString('el producto marcado no esta incluido', $html);
+        $this->assertStringContainsString('el producto marcado no está incluido', $html);
     }
 
     public function test_public_cart_pdf_includes_quote_only_line_without_adding_it(): void

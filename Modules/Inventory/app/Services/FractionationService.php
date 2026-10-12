@@ -79,6 +79,12 @@ class FractionationService
         $batchRequired = $this->hasActiveBatches($sourceId, $warehouseId, $scopeLocation);
         $suggested = $this->suggestBatch($batches, $plan['consumed']);
         $evaluated = $batch ?? $suggested;
+        // Lotes con existencia que no se pueden usar (cuarentena, retirados,
+        // caducados por estado): solo se listan para que el formulario
+        // explique por que no aparecen como opcion; no cuentan para la
+        // obligatoriedad ni para la sugerencia FEFO.
+        $blockedBatches = $this->blockedBatches($sourceId, $warehouseId, $scopeLocation);
+        $evaluatedReason = $evaluated ? $this->unavailableReason($evaluated) : null;
 
         $onHand = $row ? (float) $row->quantity : (float) $rows->sum(fn (Stock $s) => (float) $s->quantity);
         $reserved = $row ? (float) $row->reserved_quantity : (float) $rows->sum(fn (Stock $s) => (float) $s->reserved_quantity);
@@ -87,7 +93,7 @@ class FractionationService
 
         $hasEnoughStock = $available + self::EPSILON >= $plan['consumed'];
         $hasEnoughBatch = $evaluated
-            ? ($batchAvailable + self::EPSILON >= $plan['consumed'] && !$this->isExpired($evaluated))
+            ? ($batchAvailable + self::EPSILON >= $plan['consumed'] && $evaluatedReason === null)
             : !$batchRequired;
 
         $sourceUnitCost = $this->resolveSourceUnitCost($row ?? $rows->first(), $evaluated, $conversion->sourceProduct);
@@ -100,6 +106,9 @@ class FractionationService
         }
         if ($batchRequired && !$evaluated) {
             $warnings[] = 'El producto origen maneja lotes y ninguno tiene disponible suficiente.';
+        }
+        if ($evaluated && $evaluatedReason !== null) {
+            $warnings[] = "No se puede fraccionar el lote {$evaluated->batch_number}: {$evaluatedReason}.";
         }
 
         return [
@@ -126,7 +135,8 @@ class FractionationService
             'warehouse_location_id' => $row->warehouse_location_id ?? $locationId,
             'locations' => $this->locationsPayload($rows),
             'batch_required' => $batchRequired,
-            'batches' => $batches->map(fn (ProductBatch $b) => $this->batchPayload($b))->values()->all(),
+            'batches' => $batches->concat($blockedBatches)
+                ->map(fn (ProductBatch $b) => $this->batchPayload($b))->values()->all(),
             'suggested_batch_id' => $suggested?->id,
             'product_batch_id' => $evaluated?->id,
             'batch_available' => $batchAvailable,
@@ -505,6 +515,22 @@ class FractionationService
             ->get();
     }
 
+    /**
+     * Lotes del origen con existencia pero con estado no utilizable
+     * (cuarentena, retirado, caducado). Excluye los consumidos.
+     *
+     * @return Collection<int, ProductBatch>
+     */
+    private function blockedBatches(int $productId, int $warehouseId, ?int $locationId): Collection
+    {
+        return $this->batchScope($productId, $warehouseId, $locationId, false)
+            ->where('current_quantity', '>', 0)
+            ->orderByRaw(DBHelper::coalesceDate('expiration_date', '9999-12-31') . ' ASC')
+            ->orderBy('created_at')
+            ->orderBy('id')
+            ->get();
+    }
+
     private function hasActiveBatches(int $productId, int $warehouseId, ?int $locationId): bool
     {
         return $this->batchScope($productId, $warehouseId, $locationId)
@@ -515,12 +541,16 @@ class FractionationService
     /**
      * @return \Illuminate\Database\Eloquent\Builder<ProductBatch>
      */
-    private function batchScope(int $productId, int $warehouseId, ?int $locationId)
+    private function batchScope(int $productId, int $warehouseId, ?int $locationId, bool $active = true)
     {
         return ProductBatch::query()
             ->where('product_id', $productId)
             ->where('warehouse_id', $warehouseId)
-            ->where('status', 'active')
+            ->when(
+                $active,
+                fn ($q) => $q->where('status', 'active'),
+                fn ($q) => $q->whereNotIn('status', ['active', 'consumed'])
+            )
             ->when($locationId !== null, fn ($q) => $q->where(function ($w) use ($locationId) {
                 $w->where('warehouse_location_id', $locationId)->orWhereNull('warehouse_location_id');
             }));
@@ -572,7 +602,7 @@ class FractionationService
             throw new FractionationException(
                 'batch_not_active',
                 'Lote no disponible',
-                "El lote {$batch->batch_number} no está activo (estado: {$batch->status})."
+                "No se puede fraccionar el lote {$batch->batch_number}: {$this->unavailableReason($batch)}."
             );
         }
         // D10 (Gabino 2026-10-10): lotes caducados o en cuarentena no se
@@ -679,7 +709,15 @@ class FractionationService
     private function unavailableReason(ProductBatch $batch): ?string
     {
         if ($batch->status !== 'active') {
-            return "el lote no está activo (estado: {$batch->status})";
+            return match ($batch->status) {
+                'quarantine' => 'el lote está en cuarentena',
+                'recalled' => 'el lote fue retirado',
+                'expired' => $batch->expiration_date
+                    ? 'el lote caducó el ' . $batch->expiration_date->format('d/m/Y')
+                    : 'el lote está caducado',
+                'consumed' => 'el lote ya se consumió',
+                default => 'el lote no está activo',
+            };
         }
         if ($batch->quality_status === 'quarantine') {
             return 'el lote está en cuarentena';

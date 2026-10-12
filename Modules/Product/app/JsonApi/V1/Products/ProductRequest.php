@@ -83,7 +83,7 @@ class ProductRequest extends ResourceRequest
             if (($attributes['isOnSale'] ?? null) === true) {
                 $validator->errors()->add(
                     'isOnSale',
-                    'Un producto con precio sujeto a cotizacion no puede estar en oferta.'
+                    'Un producto con precio sujeto a cotización no puede estar en oferta.'
                 );
             }
         });
@@ -93,7 +93,7 @@ class ProductRequest extends ResourceRequest
     {
         return [
             'price.required' => 'El precio de venta es obligatorio cuando el tipo de precio es fijo.',
-            'price.min' => 'El precio de venta debe ser mayor a 0 cuando el tipo de precio es fijo. Si el producto no tiene precio, usa "Precio sujeto a cotizacion".',
+            'price.min' => 'El precio de venta debe ser mayor a 0 cuando el tipo de precio es fijo. Si el producto no tiene precio, usa "Precio sujeto a cotización".',
             'pricingType.in' => 'El tipo de precio debe ser: ' . implode(', ', Product::PRICING_TYPES) . '.',
         ];
     }

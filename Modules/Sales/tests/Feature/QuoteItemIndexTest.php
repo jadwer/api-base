@@ -7,6 +7,7 @@ use Modules\Contacts\Models\Contact;
 use Modules\Sales\Models\Quote;
 use Modules\Sales\Models\QuoteItem;
 use Modules\Product\Models\Product;
+use Modules\Product\Models\Unit;
 
 class QuoteItemIndexTest extends TestCase
 {
@@ -46,6 +47,31 @@ class QuoteItemIndexTest extends TestCase
                 ]
             ]
         ]);
+    }
+
+    /**
+     * El portal del cliente muestra la unidad real del producto (antes "pz"
+     * fijo): la partida acepta include=product.unit.
+     */
+    public function test_can_include_product_unit(): void
+    {
+        $admin = $this->getAdminUser();
+
+        $unit = Unit::factory()->create(['name' => 'Litro', 'code' => 'LTR']);
+        $quote = Quote::factory()->create(['contact_id' => Contact::factory()->customer()->create()->id]);
+        $product = Product::factory()->create(['unit_id' => $unit->id]);
+        QuoteItem::factory()->create(['quote_id' => $quote->id, 'product_id' => $product->id]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('quote-items')
+            ->get("/api/v1/quote-items?filter[quote]={$quote->id}&include=product,product.unit");
+
+        $response->assertOk();
+        $units = collect($response->json('included'))->where('type', 'units')->values();
+        $this->assertCount(1, $units);
+        $this->assertSame('Litro', $units[0]['attributes']['name']);
+        $this->assertSame((string) $unit->id, (string) $units[0]['id']);
     }
 
     public function test_tech_can_list_quote_items(): void

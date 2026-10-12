@@ -17,7 +17,7 @@ trait SummarizesQuoteItems
 {
     public const PRICE_PENDING_TEXT = 'Por confirmar';
 
-    public const PRICE_PENDING_NOTICE = 'Precio sujeto a cotizacion: los productos marcados "Por confirmar" no estan incluidos en el total. Le confirmaremos el precio antes de procesar su pedido.';
+    public const PRICE_PENDING_NOTICE = 'Precio sujeto a cotización: los productos marcados "Por confirmar" no están incluidos en el total. Le confirmaremos el precio antes de procesar su pedido.';
 
     /**
      * @return array<int, array<string, mixed>>

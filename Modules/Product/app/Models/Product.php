@@ -38,7 +38,7 @@ class Product extends Model
     public const PRICING_TYPES = [self::PRICING_FIXED, self::PRICING_QUOTE_ONLY];
 
     /** Etiqueta visible del precio variable (decision D3). */
-    public const QUOTE_ONLY_LABEL = 'Precio sujeto a cotizacion';
+    public const QUOTE_ONLY_LABEL = 'Precio sujeto a cotización';
 
     /**
      * Activity Log Configuration

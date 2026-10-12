@@ -135,6 +135,7 @@ class QuoteSchema extends Schema
             'items',
             'items.product',
             'items.product.stock',
+            'items.product.unit',
         ];
     }
 

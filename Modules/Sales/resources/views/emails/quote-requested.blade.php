@@ -1,15 +1,15 @@
 @extends('sales::emails.layout')
 
-@section('title', $isAdmin ? 'Nueva solicitud de cotizacion' : 'Solicitud de cotizacion recibida')
+@section('title', $isAdmin ? 'Nueva solicitud de cotización' : 'Solicitud de cotización recibida')
 
 @section('content')
     @if($isAdmin)
-        <h2>Nueva solicitud de cotizacion</h2>
-        <p>Se ha recibido una nueva solicitud de cotizacion que requiere revision.</p>
+        <h2>Nueva solicitud de cotización</h2>
+        <p>Se ha recibido una nueva solicitud de cotización que requiere revisión.</p>
 
         <div class="order-box">
             <h3>Datos de la solicitud</h3>
-            <p><strong>Numero:</strong> {{ $quoteSummary['quote_number'] }}</p>
+            <p><strong>Número:</strong> {{ $quoteSummary['quote_number'] }}</p>
             <p><strong>Fecha:</strong> {{ $quoteSummary['quote_date'] }}</p>
             <p><strong>Cliente:</strong> {{ $quoteSummary['customer_name'] }}</p>
             @if($quoteSummary['customer_email'])
@@ -19,10 +19,10 @@
     @else
         <h2>Su solicitud ha sido recibida</h2>
         <p>Estimado/a {{ $quoteSummary['customer_name'] }},</p>
-        <p>Hemos recibido su solicitud de cotizacion <strong>{{ $quoteSummary['quote_number'] }}</strong>.</p>
+        <p>Hemos recibido su solicitud de cotización <strong>{{ $quoteSummary['quote_number'] }}</strong>.</p>
 
         <div class="info-box">
-            <p style="margin: 0;">Nuestro equipo revisara su solicitud y le enviara la cotizacion formal con precios y tiempos de entrega a la brevedad.</p>
+            <p style="margin: 0;">Nuestro equipo revisará su solicitud y le enviará la cotización formal con precios y tiempos de entrega a la brevedad.</p>
         </div>
     @endif
 

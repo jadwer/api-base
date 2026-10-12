@@ -560,6 +560,76 @@ class FractionationSafetyTest extends TestCase
         $this->assertStringContainsString('cuarentena', $response->json('errors.0.detail'));
     }
 
+    /**
+     * E2E granel: un lote con estado no activo (cuarentena, retirado,
+     * caducado) y existencia ya no desaparece del selector: la vista previa lo
+     * lista no utilizable con el motivo, no lo sugiere, no lo vuelve
+     * obligatorio y execute lo rechaza con el motivo en espanol.
+     */
+    public function test_non_active_batches_are_listed_with_reason_not_suggested_and_rejected(): void
+    {
+        [$source, $dest] = $this->bulkPair();
+        $this->stock($source, 500, 30);
+        $quarantine = $this->batch($source, 40, ['status' => 'quarantine', 'expiration_date' => now()->addDays(5)->format('Y-m-d')]);
+        $recalled = $this->batch($source, 30, ['status' => 'recalled']);
+        $expiredOn = now()->subDays(2);
+        $expired = $this->batch($source, 20, ['status' => 'expired', 'expiration_date' => $expiredOn->format('Y-m-d')]);
+        $consumed = $this->batch($source, 0, ['status' => 'consumed']);
+        $empty = $this->batch($source, 0, ['status' => 'quarantine']);
+        $good = $this->batch($source, 100, ['expiration_date' => now()->addMonths(3)->format('Y-m-d')]);
+
+        $calc = $this->calculate($this->payload($source, $dest, 10))->assertOk();
+        $rows = collect($calc->json('data.batches'))->keyBy('id');
+
+        $this->assertSame($good->id, $calc->json('data.suggested_batch_id'));
+        $this->assertTrue($calc->json('data.batch_required'));
+        $this->assertTrue($calc->json('data.can_execute'));
+        $this->assertTrue($rows[$good->id]['is_usable']);
+        $this->assertFalse($rows[$quarantine->id]['is_usable']);
+        $this->assertSame('el lote está en cuarentena', $rows[$quarantine->id]['unavailable_reason']);
+        $this->assertFalse($rows[$recalled->id]['is_usable']);
+        $this->assertSame('el lote fue retirado', $rows[$recalled->id]['unavailable_reason']);
+        $this->assertFalse($rows[$expired->id]['is_usable']);
+        $this->assertSame('el lote caducó el ' . $expiredOn->format('d/m/Y'), $rows[$expired->id]['unavailable_reason']);
+        $this->assertArrayNotHasKey($consumed->id, $rows->all());
+        $this->assertArrayNotHasKey($empty->id, $rows->all());
+        // Los utilizables van primero (FEFO); los bloqueados despues.
+        $this->assertSame($good->id, $calc->json('data.batches.0.id'));
+
+        // Elegido a mano en la vista previa: no ejecutable y explicado.
+        $picked = $this->calculate($this->payload($source, $dest, 10, ['product_batch_id' => $recalled->id]))->assertOk();
+        $this->assertFalse($picked->json('data.can_execute'));
+        $this->assertContains('No se puede fraccionar el lote ' . $recalled->batch_number . ': el lote fue retirado.', $picked->json('data.warnings'));
+
+        $response = $this->execute($this->payload($source, $dest, 10, ['product_batch_id' => $quarantine->id]))
+            ->assertStatus(422)
+            ->assertJsonPath('errors.0.code', 'batch_not_active');
+        $this->assertSame(
+            'No se puede fraccionar el lote ' . $quarantine->batch_number . ': el lote está en cuarentena.',
+            $response->json('errors.0.detail')
+        );
+        $this->assertSame(0, Fractionation::count());
+    }
+
+    /**
+     * Si el origen solo tiene lotes bloqueados, el lote no se vuelve
+     * obligatorio (la regla sigue siendo "hay lotes activos") y nada se sugiere.
+     */
+    public function test_only_blocked_batches_are_listed_but_not_required(): void
+    {
+        [$source, $dest] = $this->bulkPair();
+        $this->stock($source, 500, 30);
+        $quarantine = $this->batch($source, 40, ['status' => 'quarantine']);
+
+        $calc = $this->calculate($this->payload($source, $dest, 10))->assertOk();
+
+        $this->assertFalse($calc->json('data.batch_required'));
+        $this->assertNull($calc->json('data.suggested_batch_id'));
+        $this->assertCount(1, $calc->json('data.batches'));
+        $this->assertSame($quarantine->id, $calc->json('data.batches.0.id'));
+        $this->assertFalse($calc->json('data.batches.0.is_usable'));
+    }
+
     public function test_calculate_suggests_fefo_batch_skipping_expired_and_short_ones(): void
     {
         [$source, $dest] = $this->bulkPair();

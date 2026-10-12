@@ -40,8 +40,8 @@ class QuoteRequestedMail extends Mailable
         }
 
         $subject = $this->isAdmin
-            ? 'Nueva solicitud de cotizacion - ' . $this->quote->quote_number
-            : 'Su solicitud de cotizacion ha sido recibida - ' . $this->quote->quote_number;
+            ? 'Nueva solicitud de cotización - ' . $this->quote->quote_number
+            : 'Su solicitud de cotización ha sido recibida - ' . $this->quote->quote_number;
 
         return $this->subject($subject)
             ->view('sales::emails.quote-requested')

@@ -1,32 +1,32 @@
 @extends('sales::emails.layout')
 
-@section('title', 'Cotizacion Convertida a Pedido')
+@section('title', 'Cotización convertida a pedido')
 
 @section('content')
-    <h2>{{ $isAdmin ? 'Cotizacion Convertida a Pedido' : 'Su cotizacion ha sido confirmada' }}</h2>
+    <h2>{{ $isAdmin ? 'Cotización convertida a pedido' : 'Su cotización ha sido confirmada' }}</h2>
 
     @if($isAdmin)
-        <p>La cotizacion <strong>{{ $quoteSummary['quote_number'] }}</strong> ha sido convertida a pedido.</p>
+        <p>La cotización <strong>{{ $quoteSummary['quote_number'] }}</strong> ha sido convertida a pedido.</p>
     @else
         <p>Estimado/a {{ $quoteSummary['customer_name'] }},</p>
-        <p>Nos complace informarle que su cotizacion ha sido confirmada y se ha generado un pedido de venta.</p>
+        <p>Nos complace informarle que su cotización ha sido confirmada y se ha generado un pedido de venta.</p>
     @endif
 
     <div class="success-box">
-        <strong>Cotizacion:</strong> {{ $quoteSummary['quote_number'] }}<br>
-        <strong>Fecha de cotizacion:</strong> {{ $quoteSummary['quote_date'] }}<br>
-        <strong>Numero de Pedido:</strong> {{ $quoteSummary['order_number'] }}<br>
-        <strong>Fecha de Pedido:</strong> {{ $quoteSummary['order_date'] }}
+        <strong>Cotización:</strong> {{ $quoteSummary['quote_number'] }}<br>
+        <strong>Fecha de cotización:</strong> {{ $quoteSummary['quote_date'] }}<br>
+        <strong>Número de pedido:</strong> {{ $quoteSummary['order_number'] }}<br>
+        <strong>Fecha de pedido:</strong> {{ $quoteSummary['order_date'] }}
     </div>
 
     <div class="order-box">
-        <h3>Detalle de la Cotizacion</h3>
+        <h3>Detalle de la cotización</h3>
 
         <table class="order-items">
             <thead>
                 <tr>
                     <th>Producto</th>
-                    <th>Codigo</th>
+                    <th>Código</th>
                     <th style="text-align: center;">Cant.</th>
                     <th style="text-align: right;">Precio Unit.</th>
                     <th style="text-align: right;">Subtotal</th>
@@ -88,7 +88,7 @@
 
     @if($quoteSummary['shipping_address'])
         <div class="shipping-address">
-            <strong>Direccion de envio:</strong>
+            <strong>Dirección de envío:</strong>
             @if(is_array($quoteSummary['shipping_address']))
                 @if(!empty($quoteSummary['shipping_address']['recipient']))
                     {{ $quoteSummary['shipping_address']['recipient'] }}<br>
@@ -128,7 +128,7 @@
         <div class="info-box">
             <p style="margin: 0;">
                 <strong>Siguientes pasos:</strong><br>
-                Nuestro equipo procesara su pedido y le notificaremos cuando este listo para envio.
+                Nuestro equipo procesará su pedido y le notificaremos cuando esté listo para envío.
                 Si tiene alguna pregunta, no dude en contactarnos.
             </p>
         </div>

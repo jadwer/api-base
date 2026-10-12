@@ -58,7 +58,7 @@ class ProductPricingTypeTest extends TestCase
     public function test_pricing_types_are_the_model_list(): void
     {
         $this->assertSame(['fixed', 'quote_only'], Product::PRICING_TYPES);
-        $this->assertSame('Precio sujeto a cotizacion', Product::QUOTE_ONLY_LABEL);
+        $this->assertSame('Precio sujeto a cotización', Product::QUOTE_ONLY_LABEL);
     }
 
     public function test_store_without_pricing_type_defaults_to_fixed_and_requires_price(): void

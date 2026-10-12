@@ -24,7 +24,7 @@ class ProductBulkController extends Controller
             return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('products.update')) {
-            return response()->json(['error' => 'No tiene permisos para esta accion.'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $request->validate([
@@ -56,7 +56,7 @@ class ProductBulkController extends Controller
             return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('products.update')) {
-            return response()->json(['error' => 'No tiene permisos para esta accion.'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $request->validate([
@@ -87,7 +87,7 @@ class ProductBulkController extends Controller
             return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('products.update')) {
-            return response()->json(['error' => 'No tiene permisos para esta accion.'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $request->validate([
@@ -118,7 +118,7 @@ class ProductBulkController extends Controller
             return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('brands.update')) {
-            return response()->json(['error' => 'No tiene permisos para esta accion.'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $request->validate([
@@ -161,7 +161,7 @@ class ProductBulkController extends Controller
             return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('categories.update')) {
-            return response()->json(['error' => 'No tiene permisos para esta accion.'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $request->validate([
@@ -204,7 +204,7 @@ class ProductBulkController extends Controller
             return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('products.update')) {
-            return response()->json(['error' => 'No tiene permisos para esta accion.'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $request->validate([
@@ -239,7 +239,7 @@ class ProductBulkController extends Controller
             return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('products.update')) {
-            return response()->json(['error' => 'No tiene permisos para esta accion.'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $request->validate([
@@ -282,7 +282,7 @@ class ProductBulkController extends Controller
 
         $message = "Precios {$operationLabel} un {$percentage}% para {$count} productos";
         if ($skipped > 0) {
-            $message .= "; {$skipped} omitidos por tener precio sujeto a cotizacion o sin precio";
+            $message .= "; {$skipped} omitidos por tener precio sujeto a cotización o sin precio";
         }
 
         return response()->json([

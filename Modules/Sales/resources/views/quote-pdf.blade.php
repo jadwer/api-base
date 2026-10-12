@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Cotizacion {{ $quote->quote_number }}</title>
+    <title>Cotización {{ $quote->quote_number }}</title>
     <style>
         @page {
             margin: 20px 25px 40px 25px;
@@ -310,7 +310,7 @@
     <table class="receptor-section">
         <tr>
             <th style="width: 50%;">Receptor</th>
-            <th style="width: 25%;">Fecha de Creacion</th>
+            <th style="width: 25%;">Fecha de Creación</th>
             <th style="width: 25%;">Sucursal</th>
         </tr>
         <tr>
@@ -347,11 +347,11 @@
     <table class="items-table">
         <thead>
             <tr>
-                <th style="width: 10%;">Cod</th>
+                <th style="width: 10%;">Cód.</th>
                 <th class="text-center" style="width: 10%;">Producto</th>
                 <th class="text-center" style="width: 8%;">Cantidad</th>
                 <th class="text-center" style="width: 8%;">Unidad</th>
-                <th class="text-center" style="width: 38%;">Descripcion</th>
+                <th class="text-center" style="width: 38%;">Descripción</th>
                 <th class="text-right" style="width: 13%;">Precio Unitario</th>
                 <th class="text-right" style="width: 13%;">Importe</th>
             </tr>
@@ -398,7 +398,7 @@
     {{-- P2 granel: leyenda de precios por confirmar --}}
     @if(($pendingCount ?? 0) > 0)
     <div class="price-pending-note">
-        * Precio sujeto a cotizacion: {{ $pendingCount === 1 ? 'el producto marcado no esta incluido' : 'los productos marcados no estan incluidos' }}
+        * Precio sujeto a cotización: {{ $pendingCount === 1 ? 'el producto marcado no está incluido' : 'los productos marcados no están incluidos' }}
         en el total. Le confirmaremos el precio antes de procesar su pedido.
     </div>
     @endif

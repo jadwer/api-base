@@ -227,7 +227,7 @@ class QuoteController extends Controller
             if ($recipients === []) {
                 $emailError = 'El cliente no tiene correo y no se eligio ningun destinatario.';
             } elseif (!SystemEmail::isEnabled('sales.quote_sent')) {
-                $emailError = 'El correo de cotizacion enviada esta desactivado en Mailer Manager.';
+                $emailError = 'El correo de cotización enviada está desactivado en Mailer Manager.';
             } else {
                 $pdfGenerator = app(QuotePDFGenerator::class);
                 $relativePath = $pdfGenerator->generate($quote);
@@ -719,7 +719,7 @@ class QuoteController extends Controller
                 'order_date' => now(),
                 'status' => 'pending',
                 'total_amount' => $total,
-                'notes' => $request->input('notes') ?? "Generado desde cotizacion {$quote->quote_number}",
+                'notes' => $request->input('notes') ?? "Generado desde cotización {$quote->quote_number}",
                 'metadata' => [
                     'source' => 'quote',
                     'quote_id' => $quote->id,

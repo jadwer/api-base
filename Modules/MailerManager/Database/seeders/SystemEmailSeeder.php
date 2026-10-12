@@ -294,7 +294,7 @@ class SystemEmailSeeder extends Seeder
                     'items' => 'Productos [{name, sku, quantity, price, subtotal}]',
                     'total' => 'Total',
                     'currency' => 'Moneda',
-                    'price_pending_notice' => 'Leyenda de precios por confirmar (vacia si no hay)',
+                    'price_pending_notice' => 'Leyenda de precios por confirmar (vacía si no hay)',
                     'company_name' => 'Nombre de la empresa',
                 ],
                 'sample_data' => [
@@ -323,7 +323,7 @@ class SystemEmailSeeder extends Seeder
                     'customer_name' => 'Nombre del cliente',
                     'quote_date' => 'Fecha de cotizacion',
                     'items' => 'Productos [{name, sku, quantity}]',
-                    'price_pending_notice' => 'Leyenda de precios por confirmar (vacia si no hay)',
+                    'price_pending_notice' => 'Leyenda de precios por confirmar (vacía si no hay)',
                     'company_name' => 'Nombre de la empresa',
                 ],
                 'sample_data' => [
@@ -356,7 +356,7 @@ class SystemEmailSeeder extends Seeder
                     'currency' => 'Moneda',
                     'items' => 'Productos [{name, sku, quantity, price, subtotal}]',
                     'notes' => 'Notas de la cotizacion',
-                    'price_pending_notice' => 'Leyenda de precios por confirmar (vacia si no hay)',
+                    'price_pending_notice' => 'Leyenda de precios por confirmar (vacía si no hay)',
                     'company_name' => 'Nombre de la empresa',
                 ],
                 'sample_data' => [

@@ -1,19 +1,19 @@
 @extends('sales::emails.layout')
 
-@section('title', 'Cotizacion ' . $quoteSummary['quote_number'])
+@section('title', 'Cotización ' . $quoteSummary['quote_number'])
 
 @section('content')
-    <h2>Cotizacion {{ $quoteSummary['quote_number'] }}</h2>
+    <h2>Cotización {{ $quoteSummary['quote_number'] }}</h2>
 
     <p>Estimado/a {{ $quoteSummary['customer_name'] }},</p>
-    <p>Adjunto encontrara la cotizacion solicitada. A continuacion le presentamos un resumen:</p>
+    <p>Adjunto encontrará la cotización solicitada. A continuación le presentamos un resumen:</p>
 
     <div class="order-box">
-        <h3>Datos de la cotizacion</h3>
-        <p><strong>Numero:</strong> {{ $quoteSummary['quote_number'] }}</p>
+        <h3>Datos de la cotización</h3>
+        <p><strong>Número:</strong> {{ $quoteSummary['quote_number'] }}</p>
         <p><strong>Fecha:</strong> {{ $quoteSummary['quote_date'] }}</p>
         @if($quoteSummary['valid_until'])
-            <p><strong>Valida hasta:</strong> {{ $quoteSummary['valid_until'] }}</p>
+            <p><strong>Válida hasta:</strong> {{ $quoteSummary['valid_until'] }}</p>
         @endif
     </div>
 
@@ -88,9 +88,9 @@
         </div>
     @endif
 
-    <p>Por favor revise la cotizacion adjunta para mas detalles. Si tiene alguna pregunta o desea aceptar esta cotizacion, no dude en contactarnos.</p>
+    <p>Por favor revise la cotización adjunta para más detalles. Si tiene alguna pregunta o desea aceptar esta cotización, no dude en contactarnos.</p>
 
     <div class="success-box">
-        <p style="margin: 0;">Para aceptar esta cotizacion, responda a este correo o comuniquese con nuestro equipo de ventas.</p>
+        <p style="margin: 0;">Para aceptar esta cotización, responda a este correo o comuníquese con nuestro equipo de ventas.</p>
     </div>
 @endsection

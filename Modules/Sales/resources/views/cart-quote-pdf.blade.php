@@ -35,8 +35,8 @@
     </style>
 </head>
 <body>
-    <div class="title-banner">COTIZACION INFORMATIVA</div>
-    <div class="subtitle">Documento generado desde el carrito del sitio; no constituye una cotizacion formal ni un comprobante fiscal.</div>
+    <div class="title-banner">COTIZACIÓN INFORMATIVA</div>
+    <div class="subtitle">Documento generado desde el carrito del sitio; no constituye una cotización formal ni un comprobante fiscal.</div>
 
     <div class="company-block">
         @if ($company)
@@ -46,7 +46,7 @@
         @endif
     </div>
 
-    <div class="meta">Fecha de emision: {{ $issuedAt->format('d/m/Y H:i') }}</div>
+    <div class="meta">Fecha de emisión: {{ $issuedAt->format('d/m/Y H:i') }}</div>
 
     <table class="items">
         <thead>
@@ -87,17 +87,17 @@
 
     @if (($pendingCount ?? 0) > 0)
         <div class="pending-note">
-            * Precio sujeto a cotizacion: los productos marcados se cotizan por separado
-            y no estan incluidos en el total. Solicite su cotizacion formal para conocer
+            * Precio sujeto a cotización: los productos marcados se cotizan por separado
+            y no están incluidos en el total. Solicite su cotización formal para conocer
             el precio.
         </div>
     @endif
 
     <div class="disclaimer">
-        Precios vigentes a la fecha de emision, sujetos a cambio sin previo aviso y a
-        disponibilidad de inventario. Para una cotizacion formal con folio, vigencia y
-        condiciones comerciales, registrese en el sitio y genere su cotizacion desde el
-        carrito, o contactenos.
+        Precios vigentes a la fecha de emisión, sujetos a cambio sin previo aviso y a
+        disponibilidad de inventario. Para una cotización formal con folio, vigencia y
+        condiciones comerciales, regístrese en el sitio y genere su cotización desde el
+        carrito, o contáctenos.
     </div>
 </body>
 </html>

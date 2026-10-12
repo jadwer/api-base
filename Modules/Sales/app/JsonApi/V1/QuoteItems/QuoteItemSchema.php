@@ -124,6 +124,8 @@ class QuoteItemSchema extends Schema
             'product',
             'product.stock',
             'product.stock.warehouse',
+            // Unidad real del producto en el portal del cliente (no "pz" fijo).
+            'product.unit',
         ];
     }
 
