@@ -67,7 +67,7 @@ class BackorderServiceTest extends TestCase
         [$order, $orderItem, $product] = $this->createOrderWithItem(10);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Backorder quantity must be greater than 0');
+        $this->expectExceptionMessage('La cantidad pendiente debe ser mayor a 0.');
 
         $this->service->createBackorder($orderItem, 0);
     }
@@ -77,7 +77,7 @@ class BackorderServiceTest extends TestCase
         [$order, $orderItem, $product] = $this->createOrderWithItem(10);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Backorder quantity must be greater than 0');
+        $this->expectExceptionMessage('La cantidad pendiente debe ser mayor a 0.');
 
         $this->service->createBackorder($orderItem, -5);
     }

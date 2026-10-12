@@ -26,10 +26,10 @@ class CommissionController extends JsonApiController
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('commissions.index')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $validated = $request->validate([
@@ -72,10 +72,10 @@ class CommissionController extends JsonApiController
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('commissions.index')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $validated = $request->validate([
@@ -128,10 +128,10 @@ class CommissionController extends JsonApiController
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('commissions.pay')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $validated = $request->validate([
@@ -170,10 +170,10 @@ class CommissionController extends JsonApiController
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('commissions.pay')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $validated = $request->validate([

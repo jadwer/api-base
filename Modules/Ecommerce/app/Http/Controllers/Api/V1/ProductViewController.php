@@ -21,7 +21,7 @@ class ProductViewController extends Controller
         $product = Product::find($id);
 
         if (!$product) {
-            return response()->json(['message' => 'Product not found'], 404);
+            return response()->json(['message' => 'Producto no encontrado.'], 404);
         }
 
         $user = $request->user('sanctum');
@@ -52,7 +52,7 @@ class ProductViewController extends Controller
                     'viewed_at' => now(),
                 ]);
             }
-            return response()->json(['message' => 'View tracked']);
+            return response()->json(['message' => 'Visita registrada.']);
         }
 
         if (!$query->exists()) {
@@ -64,7 +64,7 @@ class ProductViewController extends Controller
             ]);
         }
 
-        return response()->json(['message' => 'View tracked']);
+        return response()->json(['message' => 'Visita registrada.']);
     }
 
     /**
@@ -77,7 +77,7 @@ class ProductViewController extends Controller
         $user = $request->user('sanctum');
 
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
 
         $limit = min((int) $request->input('limit', 8), 50);

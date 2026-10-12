@@ -18,7 +18,7 @@ use Modules\Product\Models\Product;
  */
 final class QuoteOnlyCartGuard
 {
-    public const MESSAGE = 'Tu carrito tiene productos con precio sujeto a cotizacion; no se pueden comprar en linea. Solicita una cotizacion para ellos o quitalos del carrito para continuar con el pago.';
+    public const MESSAGE = 'Tu carrito tiene productos con precio sujeto a cotización; no se pueden comprar en línea. Solicita una cotización para ellos o quítalos del carrito para continuar con el pago.';
 
     /**
      * @return list<array{product_id: int, product_name: string|null, product_sku: string|null}>
@@ -31,7 +31,10 @@ final class QuoteOnlyCartGuard
         foreach ($cart->cartItems as $cartItem) {
             /** @var Product|null $product */
             $product = $cartItem->product;
-            if ($product && $product->isQuoteOnly()) {
+            // P2b (D8): sujeto a cotizacion, sin precio, precio <= 0 o una
+            // linea del carrito en $0 (precio guardado antes de que el
+            // producto cambiara) nunca se cobra.
+            if ($product && ($product->requiresQuote() || (float) $cartItem->unit_price <= 0)) {
                 $items[] = [
                     'product_id' => (int) $product->id,
                     'product_name' => $product->name,

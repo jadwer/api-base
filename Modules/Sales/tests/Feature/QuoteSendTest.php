@@ -32,7 +32,7 @@ class QuoteSendTest extends TestCase
 
         $response->assertOk();
         $response->assertJson([
-            'message' => 'Quote sent successfully',
+            'message' => 'Cotización enviada.',
         ]);
         $this->assertEquals('sent', $response->json('data.attributes.status'));
         $this->assertNotNull($response->json('data.attributes.sentAt'));
@@ -90,7 +90,7 @@ class QuoteSendTest extends TestCase
 
         $response->assertStatus(400);
         $response->assertJson([
-            'error' => 'Quote cannot be sent. It must be in draft status with at least one item.',
+            'error' => 'La cotización no se puede enviar: debe estar en borrador y tener al menos una partida.',
         ]);
     }
 

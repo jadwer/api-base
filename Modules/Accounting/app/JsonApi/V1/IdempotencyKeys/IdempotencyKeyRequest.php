@@ -26,21 +26,21 @@ class IdempotencyKeyRequest extends ResourceRequest
 
     public function messages(): array
     {
-        return [            'userId.required' => 'El campo User id es obligatorio.',
-            'endpoint.required' => 'El campo Endpoint es obligatorio.',
-            'endpoint.string' => 'El campo Endpoint debe ser texto.',
-            'endpoint.max' => 'El campo Endpoint no puede tener más de 255 caracteres.',
-            'idempotencyKey.required' => 'El campo Idempotency key es obligatorio.',
-            'idempotencyKey.string' => 'El campo Idempotency key debe ser texto.',
-            'idempotencyKey.max' => 'El campo Idempotency key no puede tener más de 255 caracteres.',
-            'requestHash.required' => 'El campo Request hash es obligatorio.',
-            'requestHash.string' => 'El campo Request hash debe ser texto.',
-            'requestHash.max' => 'El campo Request hash no puede tener más de 255 caracteres.',
-            'responseData.array' => 'El campo Response data debe ser un arreglo.',
-            'status.required' => 'El campo Status es obligatorio.',
-            'status.string' => 'El campo Status debe ser texto.',
-            'status.max' => 'El campo Status no puede tener más de 255 caracteres.',
-            'expiresAt.required' => 'El campo Expires at es obligatorio.',
+        return [            'userId.required' => 'El campo usuario es obligatorio.',
+            'endpoint.required' => 'El campo endpoint es obligatorio.',
+            'endpoint.string' => 'El campo endpoint debe ser texto.',
+            'endpoint.max' => 'El campo endpoint no puede tener más de 255 caracteres.',
+            'idempotencyKey.required' => 'El campo clave de idempotencia es obligatorio.',
+            'idempotencyKey.string' => 'El campo clave de idempotencia debe ser texto.',
+            'idempotencyKey.max' => 'El campo clave de idempotencia no puede tener más de 255 caracteres.',
+            'requestHash.required' => 'El campo hash de la solicitud es obligatorio.',
+            'requestHash.string' => 'El campo hash de la solicitud debe ser texto.',
+            'requestHash.max' => 'El campo hash de la solicitud no puede tener más de 255 caracteres.',
+            'responseData.array' => 'El campo respuesta debe ser un arreglo.',
+            'status.required' => 'El campo estado es obligatorio.',
+            'status.string' => 'El campo estado debe ser texto.',
+            'status.max' => 'El campo estado no puede tener más de 255 caracteres.',
+            'expiresAt.required' => 'El campo fecha de vencimiento es obligatorio.',
         ];
     }
 }

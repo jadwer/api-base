@@ -278,7 +278,7 @@ class PurchaseOrder extends Model
                 $item = $this->purchaseOrderItems()->find($itemData['id']);
 
                 if (!$item) {
-                    throw new \Exception("Purchase order item {$itemData['id']} not found");
+                    throw new \Exception("La partida {$itemData['id']} no pertenece a la orden de compra.");
                 }
 
                 $receivedNow = (float) $itemData['quantity'];

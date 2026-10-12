@@ -104,7 +104,7 @@ class ShoppingCartController extends Controller
         $userId = Auth::id();
         if (!$userId) {
             return response()->json([
-                'error' => 'Authentication required'
+                'error' => 'Debes iniciar sesión.'
             ], 401);
         }
 
@@ -164,7 +164,7 @@ class ShoppingCartController extends Controller
 
             return response()->json([
                 'data' => $this->transformCart($userCart),
-                'message' => 'Carts merged successfully'
+                'message' => 'Carritos combinados.'
             ]);
         });
     }
@@ -189,7 +189,7 @@ class ShoppingCartController extends Controller
 
         return response()->json([
             'data' => $this->transformCart($shoppingCart->refresh()),
-            'message' => 'Cart cleared successfully'
+            'message' => 'Carrito vaciado.'
         ]);
     }
 
@@ -217,7 +217,7 @@ class ShoppingCartController extends Controller
             if (!$coupon) {
                 return response()->json([
                     'valid' => false,
-                    'error' => 'Invalid coupon code'
+                    'error' => 'El código de cupón no es válido.'
                 ], 400);
             }
 
@@ -225,14 +225,14 @@ class ShoppingCartController extends Controller
             if ($coupon->starts_at && $coupon->starts_at->isFuture()) {
                 return response()->json([
                     'valid' => false,
-                    'error' => 'Coupon is not yet active'
+                    'error' => 'El cupón todavía no está vigente.'
                 ], 400);
             }
 
             if ($coupon->expires_at && $coupon->expires_at->isPast()) {
                 return response()->json([
                     'valid' => false,
-                    'error' => 'Coupon has expired'
+                    'error' => 'El cupón expiró.'
                 ], 400);
             }
 
@@ -240,7 +240,7 @@ class ShoppingCartController extends Controller
             if ($coupon->max_uses && $coupon->used_count >= $coupon->max_uses) {
                 return response()->json([
                     'valid' => false,
-                    'error' => 'Coupon usage limit reached'
+                    'error' => 'El cupón alcanzó su límite de usos.'
                 ], 400);
             }
 
@@ -248,7 +248,7 @@ class ShoppingCartController extends Controller
             if ($coupon->currency && $coupon->currency !== ($shoppingCart->currency ?? 'MXN')) {
                 return response()->json([
                     'valid' => false,
-                    'error' => "Coupon is only valid for {$coupon->currency} carts"
+                    'error' => "El cupón solo es válido para carritos en {$coupon->currency}."
                 ], 400);
             }
 
@@ -257,7 +257,7 @@ class ShoppingCartController extends Controller
             if ($coupon->min_amount && $subtotal < $coupon->min_amount) {
                 return response()->json([
                     'valid' => false,
-                    'error' => "Minimum order amount is {$coupon->min_amount}"
+                    'error' => "La compra mínima para este cupón es de {$coupon->min_amount}."
                 ], 400);
             }
 
@@ -277,7 +277,7 @@ class ShoppingCartController extends Controller
                 'valid' => true,
                 'discount_amount' => $discountAmount,
                 'new_total' => $shoppingCart->refresh()->finalTotal,
-                'message' => 'Coupon applied successfully'
+                'message' => 'Cupón aplicado.'
             ]);
         });
     }
@@ -307,7 +307,7 @@ class ShoppingCartController extends Controller
 
         return response()->json([
             'data' => $this->transformCart($shoppingCart->refresh()),
-            'message' => 'Coupon removed successfully'
+            'message' => 'Cupón quitado.'
         ]);
     }
 
@@ -369,13 +369,13 @@ class ShoppingCartController extends Controller
 
         if ($shoppingCart->isEmpty()) {
             return response()->json([
-                'error' => 'Cannot checkout empty cart'
+                'error' => 'No se puede pagar un carrito vacío.'
             ], 400);
         }
 
         if (!$shoppingCart->isActive()) {
             return response()->json([
-                'error' => 'Cart is not active or has expired'
+                'error' => 'El carrito no está activo o expiró.'
             ], 400);
         }
 
@@ -501,7 +501,7 @@ class ShoppingCartController extends Controller
                         'totalAmount' => $order->total_amount,
                     ]
                 ],
-                'message' => 'Order created successfully'
+                'message' => 'Pedido creado.'
             ], 201);
         });
     }
@@ -546,23 +546,23 @@ class ShoppingCartController extends Controller
         if ($shoppingCart->user_id) {
             // User cart - must belong to current user
             if (!$user || $shoppingCart->user_id !== $user->id) {
-                abort(403, 'You do not have access to this cart');
+                abort(403, 'No tienes acceso a este carrito.');
             }
         } else {
             // Session cart - must match current session
             $sessionId = request()->input('session_id') ?? (request()->hasSession() ? request()->session()->getId() : null);
             if ($shoppingCart->session_id !== $sessionId) {
-                abort(403, 'You do not have access to this cart');
+                abort(403, 'No tienes acceso a este carrito.');
             }
         }
 
         // Validate cart is still active and not expired
         if (!$shoppingCart->isActive()) {
-            abort(400, 'Cart is not active');
+            abort(400, 'El carrito no está activo.');
         }
 
         if ($shoppingCart->isExpired) {
-            abort(400, 'Cart has expired');
+            abort(400, 'El carrito expiró.');
         }
     }
 

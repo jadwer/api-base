@@ -243,7 +243,7 @@ class LotTraceabilityController extends Controller
         $batch->refresh();
 
         return response()->json([
-            'message' => 'Recall initiated successfully',
+            'message' => 'Retiro iniciado.',
             'data' => [
                 'batch_id' => $batch->id,
                 'batch_number' => $batch->batch_number,

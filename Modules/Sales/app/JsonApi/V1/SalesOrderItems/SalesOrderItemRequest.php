@@ -16,7 +16,8 @@ class SalesOrderItemRequest extends ResourceRequest
             'salesOrderId' => ['required', 'integer', 'exists:sales_orders,id'],
             'productId' => ['required', 'integer', 'exists:products,id'],
             'quantity' => ['required', 'numeric', 'min:0.01'],
-            'unitPrice' => ['required', 'numeric', 'min:0'],
+            // P2b (D8): nunca una linea de venta en $0.
+            'unitPrice' => ['required', 'numeric', 'gt:0'],
             'discount' => ['sometimes', 'numeric', 'min:0'],
             'total' => ['required', 'numeric', 'min:0'],
             'metadata' => ['nullable', 'array'],
@@ -36,7 +37,7 @@ class SalesOrderItemRequest extends ResourceRequest
             'quantity.required' => 'La cantidad es obligatoria.',
             'quantity.min' => 'La cantidad debe ser mayor a 0.',
             'unitPrice.required' => 'El precio unitario es obligatorio.',
-            'unitPrice.min' => 'El precio unitario debe ser mayor o igual a 0.',
+            'unitPrice.gt' => 'El precio unitario debe ser mayor a $0. Un producto sin precio de venta solo se puede cotizar.',
             'total.required' => 'El total es obligatorio.',
             'total.min' => 'El total debe ser mayor o igual a 0.',
             'discount.min' => 'El descuento debe ser mayor o igual a 0.',

@@ -146,12 +146,12 @@ class InventoryMovementService
                 ->first();
 
             if (!$stock) {
-                throw new \Exception("Stock record not found for product {$data['product_id']} in warehouse {$data['warehouse_id']}");
+                throw new \Exception("No hay existencia registrada del producto {$data['product_id']} en el almacén {$data['warehouse_id']}.");
             }
 
             // Validate sufficient quantity
             if ($stock->quantity < $data['quantity']) {
-                throw new \Exception("Insufficient stock. Available: {$stock->quantity}, Requested: {$data['quantity']}");
+                throw new \Exception("Existencia insuficiente. Disponible: {$stock->quantity}, solicitado: {$data['quantity']}.");
             }
 
             // Capture previous stock for audit trail
@@ -226,11 +226,11 @@ class InventoryMovementService
     {
         // Validate required fields for transfer
         if (!isset($data['destination_warehouse_id'])) {
-            throw new \Exception('Destination warehouse is required for transfers');
+            throw new \Exception('El almacén destino es obligatorio en las transferencias.');
         }
 
         if ($data['warehouse_id'] === $data['destination_warehouse_id']) {
-            throw new \Exception('Source and destination warehouses must be different');
+            throw new \Exception('El almacén origen y el destino deben ser diferentes.');
         }
 
         return DB::transaction(function () use ($data) {
@@ -244,12 +244,12 @@ class InventoryMovementService
                 ->first();
 
             if (!$sourceStock) {
-                throw new \Exception("Stock record not found for product {$data['product_id']} in source warehouse {$data['warehouse_id']}");
+                throw new \Exception("No hay existencia registrada del producto {$data['product_id']} en el almacén origen {$data['warehouse_id']}.");
             }
 
             // Validate sufficient quantity in source
             if ($sourceStock->quantity < $data['quantity']) {
-                throw new \Exception("Insufficient stock in source warehouse. Available: {$sourceStock->quantity}, Requested: {$data['quantity']}");
+                throw new \Exception("Existencia insuficiente en el almacén origen. Disponible: {$sourceStock->quantity}, solicitado: {$data['quantity']}.");
             }
 
             // Lock destination stock (or create if doesn't exist)
@@ -364,7 +364,7 @@ class InventoryMovementService
                 ->first();
 
             if (!$stock) {
-                throw new \Exception("Stock record not found for product {$data['product_id']} in warehouse {$data['warehouse_id']}");
+                throw new \Exception("No hay existencia registrada del producto {$data['product_id']} en el almacén {$data['warehouse_id']}.");
             }
 
             // Capture previous stock for audit trail
@@ -377,7 +377,7 @@ class InventoryMovementService
             $stock->quantity += $adjustmentQuantity;
 
             if ($stock->quantity < 0) {
-                throw new \Exception("Adjustment would result in negative stock. Current: {$previousStock}, Adjustment: {$adjustmentQuantity}");
+                throw new \Exception("El ajuste dejaría la existencia en negativo. Actual: {$previousStock}, ajuste: {$adjustmentQuantity}.");
             }
 
             $stock->update([
@@ -460,7 +460,7 @@ class InventoryMovementService
             InventoryMovement::MOVEMENT_TYPE_EXIT => $this->createExit($data),
             InventoryMovement::MOVEMENT_TYPE_TRANSFER => $this->createTransfer($data),
             InventoryMovement::MOVEMENT_TYPE_ADJUSTMENT => $this->createAdjustment($data),
-            default => throw new \Exception("Invalid movement type: {$movementType}"),
+            default => throw new \Exception("Tipo de movimiento no válido: {$movementType}."),
         };
     }
 }

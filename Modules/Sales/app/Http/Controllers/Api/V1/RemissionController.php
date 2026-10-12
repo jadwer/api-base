@@ -103,7 +103,7 @@ class RemissionController extends Controller
 
                 if (!$orderItem) {
                     throw new \InvalidArgumentException(
-                        "Item {$itemData['sales_order_item_id']} does not belong to order {$order->id}"
+                        "La partida {$itemData['sales_order_item_id']} no pertenece al pedido {$order->id}."
                     );
                 }
 
@@ -115,7 +115,7 @@ class RemissionController extends Controller
 
                 if ($itemData['quantity'] > $remaining) {
                     throw new \InvalidArgumentException(
-                        "Quantity {$itemData['quantity']} exceeds remaining {$remaining} for item {$orderItem->id}"
+                        "La cantidad {$itemData['quantity']} excede lo pendiente por remisionar ({$remaining}) de la partida {$orderItem->id}."
                     );
                 }
 
@@ -135,7 +135,7 @@ class RemissionController extends Controller
 
             return response()->json([
                 'data' => $this->transformRemission($remission->fresh(['items', 'salesOrder.contact'])),
-                'message' => 'Remission created successfully'
+                'message' => 'Remisión creada.'
             ], 201);
         });
     }
@@ -163,7 +163,7 @@ class RemissionController extends Controller
 
         if ($order->items->isEmpty()) {
             return response()->json([
-                'error' => 'Cannot create remission from order with no items'
+                'error' => 'No se puede crear una remisión de un pedido sin partidas.'
             ], 400);
         }
 
@@ -219,7 +219,7 @@ class RemissionController extends Controller
 
             return response()->json([
                 'data' => $this->transformRemission($remission->fresh(['items', 'salesOrder.contact'])),
-                'message' => 'Full remission created successfully from order'
+                'message' => 'Remisión completa creada desde el pedido.'
             ], 201);
         });
     }
@@ -236,7 +236,7 @@ class RemissionController extends Controller
 
         if (!$remission->canBePrinted()) {
             return response()->json([
-                'error' => 'Remission cannot be printed. It must have items and be in draft or printed status.'
+                'error' => 'La remisión no se puede imprimir: debe tener partidas y estar en borrador o impresa.'
             ], 400);
         }
 
@@ -248,7 +248,7 @@ class RemissionController extends Controller
                 'path' => $path,
                 'url' => asset('storage/' . $path),
             ],
-            'message' => 'Remission marked as printed'
+            'message' => 'Remisión marcada como impresa.'
         ]);
     }
 
@@ -269,7 +269,7 @@ class RemissionController extends Controller
 
         if (!$remission->canBeDelivered()) {
             return response()->json([
-                'error' => 'Remission cannot be marked as delivered. It must be in printed status.'
+                'error' => 'La remisión no se puede marcar como entregada: primero debe imprimirse.'
             ], 400);
         }
 
@@ -342,7 +342,7 @@ class RemissionController extends Controller
 
         return response()->json([
             'data' => $this->transformRemission($remission->fresh()),
-            'message' => 'Remission marked as delivered'
+            'message' => 'Remisión marcada como entregada.'
         ]);
     }
 
@@ -426,13 +426,13 @@ class RemissionController extends Controller
 
         if (!$remission->cancel()) {
             return response()->json([
-                'error' => 'This remission cannot be cancelled. Delivered remissions cannot be cancelled.'
+                'error' => 'Esta remisión no se puede cancelar: ya fue entregada.'
             ], 400);
         }
 
         return response()->json([
             'data' => $this->transformRemission($remission->fresh()),
-            'message' => 'Remission cancelled successfully'
+            'message' => 'Remisión cancelada.'
         ]);
     }
 

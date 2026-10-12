@@ -25,21 +25,21 @@ class ExchangeRatePolicyRequest extends ResourceRequest
 
     public function messages(): array
     {
-        return [            'currency.required' => 'El campo Currency es obligatorio.',
-            'currency.string' => 'El campo Currency debe ser texto.',
-            'currency.max' => 'El campo Currency no puede tener más de 255 caracteres.',
-            'source.required' => 'El campo Source es obligatorio.',
-            'source.string' => 'El campo Source debe ser texto.',
-            'source.max' => 'El campo Source no puede tener más de 255 caracteres.',
-            'scope.required' => 'El campo Scope es obligatorio.',
-            'scope.string' => 'El campo Scope debe ser texto.',
-            'scope.max' => 'El campo Scope no puede tener más de 255 caracteres.',
-            'maxAgeDays.required' => 'El campo Max age days es obligatorio.',
-            'maxAgeDays.integer' => 'El campo Max age days debe ser un número entero.',
-            'tolerancePercentage.required' => 'El campo Tolerance percentage es obligatorio.',
-            'tolerancePercentage.numeric' => 'El campo Tolerance percentage debe ser numérico.',
-            'isActive.required' => 'El campo Is active es obligatorio.',
-            'isActive.boolean' => 'El campo Is active debe ser verdadero o falso.',
+        return [            'currency.required' => 'El campo moneda es obligatorio.',
+            'currency.string' => 'El campo moneda debe ser texto.',
+            'currency.max' => 'El campo moneda no puede tener más de 255 caracteres.',
+            'source.required' => 'El campo origen es obligatorio.',
+            'source.string' => 'El campo origen debe ser texto.',
+            'source.max' => 'El campo origen no puede tener más de 255 caracteres.',
+            'scope.required' => 'El campo alcance es obligatorio.',
+            'scope.string' => 'El campo alcance debe ser texto.',
+            'scope.max' => 'El campo alcance no puede tener más de 255 caracteres.',
+            'maxAgeDays.required' => 'El campo antigüedad máxima en días es obligatorio.',
+            'maxAgeDays.integer' => 'El campo antigüedad máxima en días debe ser un número entero.',
+            'tolerancePercentage.required' => 'El campo porcentaje de tolerancia es obligatorio.',
+            'tolerancePercentage.numeric' => 'El campo porcentaje de tolerancia debe ser numérico.',
+            'isActive.required' => 'El campo activo es obligatorio.',
+            'isActive.boolean' => 'El campo activo debe ser verdadero o falso.',
         ];
     }
 }

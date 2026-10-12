@@ -534,7 +534,8 @@ class FractionationService
      */
     private function suggestBatch(Collection $batches, float $required): ?ProductBatch
     {
-        $usable = $batches->reject(fn (ProductBatch $b) => $this->isExpired($b));
+        // D10: caducados, en cuarentena o rechazados por calidad nunca se sugieren.
+        $usable = $batches->filter(fn (ProductBatch $b) => $this->unavailableReason($b) === null);
 
         return $usable->first(fn (ProductBatch $b) => $this->batchAvailable($b) + self::EPSILON >= $required)
             ?? $usable->first();
@@ -574,18 +575,20 @@ class FractionationService
                 "El lote {$batch->batch_number} no está activo (estado: {$batch->status})."
             );
         }
+        // D10 (Gabino 2026-10-10): lotes caducados o en cuarentena no se
+        // fraccionan (criterio de medicamento y materia prima).
         if (in_array($batch->quality_status, ['failed', 'quarantine'], true)) {
             throw new FractionationException(
                 'batch_quality_blocked',
                 'Lote bloqueado por calidad',
-                "El lote {$batch->batch_number} no pasó calidad o está en cuarentena."
+                "No se puede fraccionar el lote {$batch->batch_number}: {$this->unavailableReason($batch)}."
             );
         }
         if ($this->isExpired($batch)) {
             throw new FractionationException(
                 'batch_expired',
                 'Lote caducado',
-                "El lote {$batch->batch_number} caducó el {$batch->expiration_date?->format('Y-m-d')}."
+                "No se puede fraccionar el lote {$batch->batch_number}: {$this->unavailableReason($batch)}."
             );
         }
         $available = $this->batchAvailable($batch);
@@ -668,6 +671,30 @@ class FractionationService
     }
 
     /**
+     * Motivo legible (en espanol) por el que un lote no se puede fraccionar,
+     * o null si se puede. Lo usan la sugerencia FEFO, la vista previa (para
+     * que el formulario explique por que un lote esta deshabilitado) y los
+     * errores de execute.
+     */
+    private function unavailableReason(ProductBatch $batch): ?string
+    {
+        if ($batch->status !== 'active') {
+            return "el lote no está activo (estado: {$batch->status})";
+        }
+        if ($batch->quality_status === 'quarantine') {
+            return 'el lote está en cuarentena';
+        }
+        if ($batch->quality_status === 'failed') {
+            return 'el lote no pasó el control de calidad';
+        }
+        if ($this->isExpired($batch)) {
+            return 'el lote caducó el ' . $batch->expiration_date->format('d/m/Y');
+        }
+
+        return null;
+    }
+
+    /**
      * @param array{requested: float, consumed: float, produced: float, waste: float, leftover: float} $plan
      * @return string[]
      */
@@ -737,6 +764,10 @@ class FractionationService
             'unit_cost' => (float) $batch->unit_cost,
             'is_expired' => $this->isExpired($batch),
             'is_expiring_soon' => $batch->isExpiringSoon(),
+            'quality_status' => $batch->quality_status,
+            // D10: el formulario deshabilita el lote y muestra este motivo.
+            'is_usable' => $this->unavailableReason($batch) === null,
+            'unavailable_reason' => $this->unavailableReason($batch),
         ];
     }
 

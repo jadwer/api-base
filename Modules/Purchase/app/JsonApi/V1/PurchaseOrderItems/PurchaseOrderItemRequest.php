@@ -42,10 +42,10 @@ class PurchaseOrderItemRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'purchaseOrderId.required' => 'Purchase Order ID is required.',
-            'purchaseOrderId.exists' => 'The selected purchase order does not exist.',
-            'productId.required' => 'Product ID is required.',
-            'productId.exists' => 'The selected product does not exist.',
+            'purchaseOrderId.required' => 'La orden de compra es obligatoria.',
+            'purchaseOrderId.exists' => 'La orden de compra seleccionada no existe.',
+            'productId.required' => 'El producto es obligatorio.',
+            'productId.exists' => 'El producto seleccionado no existe.',
             'quantity.required' => 'La cantidad es obligatoria.',
             'quantity.numeric' => 'La cantidad debe ser un número válido.',
             'quantity.min' => 'La cantidad debe ser mayor a 0.',

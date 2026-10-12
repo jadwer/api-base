@@ -69,7 +69,7 @@ class CartQuotePdfService
 
             // P2 granel: sujeto a cotizacion (o sin precio) ya no se omite en
             // silencio; va en el PDF como "Precio por confirmar" y no suma.
-            if ($product->isQuoteOnly() || $product->price === null) {
+            if ($product->requiresQuote()) {
                 $lines[] = $base + [
                     'unit_price' => null,
                     'net' => 0.0,

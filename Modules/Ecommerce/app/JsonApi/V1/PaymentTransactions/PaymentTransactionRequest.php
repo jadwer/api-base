@@ -56,9 +56,9 @@ class PaymentTransactionRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'checkoutSessionId.required' => 'Checkout session is required.',
-            'amount.min' => 'Payment amount must be greater than zero.',
-            'currency.size' => 'Currency code must be 3 characters.',
+            'checkoutSessionId.required' => 'La sesión de pago es obligatoria.',
+            'amount.min' => 'El importe del pago debe ser mayor a cero.',
+            'currency.size' => 'El código de moneda debe tener 3 letras.',
         ];
     }
 }

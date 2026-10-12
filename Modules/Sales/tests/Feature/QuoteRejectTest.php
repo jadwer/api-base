@@ -24,7 +24,7 @@ class QuoteRejectTest extends TestCase
 
         $response->assertOk();
         $response->assertJson([
-            'message' => 'Quote rejected',
+            'message' => 'Cotización rechazada.',
         ]);
         $this->assertEquals('rejected', $response->json('data.attributes.status'));
         $this->assertNotNull($response->json('data.attributes.rejectedAt'));
@@ -113,7 +113,7 @@ class QuoteRejectTest extends TestCase
 
         $response->assertStatus(400);
         $response->assertJson([
-            'error' => 'This quote cannot be rejected',
+            'error' => 'Esta cotización no se puede rechazar en su estado actual.',
         ]);
     }
 

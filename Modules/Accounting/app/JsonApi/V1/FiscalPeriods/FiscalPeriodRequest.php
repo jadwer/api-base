@@ -30,22 +30,22 @@ class FiscalPeriodRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'El campo Name es obligatorio.',
-            'name.string' => 'El campo Name debe ser texto.',
-            'name.max' => 'El campo Name no puede tener más de 255 caracteres.',
+            'name.required' => 'El campo nombre es obligatorio.',
+            'name.string' => 'El campo nombre debe ser texto.',
+            'name.max' => 'El campo nombre no puede tener más de 255 caracteres.',
             'name.unique' => 'Este Name ya está en uso.',
-            'year.required' => 'El campo Year es obligatorio.',
-            'year.integer' => 'El campo Year debe ser un número entero.',
-            'month.required' => 'El campo Month es obligatorio.',
-            'month.integer' => 'El campo Month debe ser un número entero.',
-            'startDate.required' => 'El campo Start date es obligatorio.',
-            'startDate.date' => 'El campo Start date debe ser una fecha válida.',
-            'endDate.required' => 'El campo End date es obligatorio.',
-            'endDate.date' => 'El campo End date debe ser una fecha válida.',
-            'status.required' => 'El campo Status es obligatorio.',
-            'status.string' => 'El campo Status debe ser texto.',
-            'status.in' => 'El campo Status debe ser: open, closed o locked.',
-            'metadata.array' => 'El campo Metadata debe ser un arreglo.',
+            'year.required' => 'El campo año es obligatorio.',
+            'year.integer' => 'El campo año debe ser un número entero.',
+            'month.required' => 'El campo mes es obligatorio.',
+            'month.integer' => 'El campo mes debe ser un número entero.',
+            'startDate.required' => 'El campo fecha de inicio es obligatorio.',
+            'startDate.date' => 'El campo fecha de inicio debe ser una fecha válida.',
+            'endDate.required' => 'El campo fecha de fin es obligatorio.',
+            'endDate.date' => 'El campo fecha de fin debe ser una fecha válida.',
+            'status.required' => 'El campo estado es obligatorio.',
+            'status.string' => 'El campo estado debe ser texto.',
+            'status.in' => 'El campo estado debe ser: open, closed o locked.',
+            'metadata.array' => 'El campo metadatos debe ser un arreglo.',
         ];
     }
 }

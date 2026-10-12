@@ -65,6 +65,16 @@ class SalesOrderItem extends Model
 
         // Auto-calculate total before saving
         static::saving(function ($item) {
+            // P2b (D8): ninguna linea de venta en $0, venga de donde venga.
+            // Solo se revisa al crear o al cambiar el precio, para no bloquear
+            // ediciones de lineas historicas (envios, cantidades surtidas).
+            if ((! $item->exists || $item->isDirty('unit_price')) && (float) $item->unit_price <= 0) {
+                throw new \Modules\Sales\Exceptions\SaleLineWithoutPriceException(
+                    $item->product_id ? (int) $item->product_id : null,
+                    $item->product_id ? \Modules\Product\Models\Product::query()->whereKey($item->product_id)->value('name') : null,
+                );
+            }
+
             if ($item->quantity && $item->unit_price) {
                 $item->total = ($item->quantity * $item->unit_price) - ($item->discount ?? 0);
             }

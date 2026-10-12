@@ -83,7 +83,7 @@ class ShoppingCartCheckoutTest extends TestCase
         ]);
 
         $this->assertEquals('sales-orders', $response->json('data.type'));
-        $this->assertEquals('Order created successfully', $response->json('message'));
+        $this->assertEquals('Pedido creado.', $response->json('message'));
 
         // Cart should be marked as converted
         $this->assertEquals('converted', $cart->refresh()->status);
@@ -201,7 +201,7 @@ class ShoppingCartCheckoutTest extends TestCase
 
         $response->assertStatus(400);
         $response->assertJson([
-            'error' => 'Cannot checkout empty cart',
+            'error' => 'No se puede pagar un carrito vacío.',
         ]);
     }
 
@@ -231,7 +231,7 @@ class ShoppingCartCheckoutTest extends TestCase
 
         $response->assertStatus(400);
         $response->assertJson([
-            'message' => 'Cart is not active',
+            'message' => 'El carrito no está activo.',
         ]);
     }
 

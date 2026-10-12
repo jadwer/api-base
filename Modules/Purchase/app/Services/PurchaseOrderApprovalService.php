@@ -109,7 +109,7 @@ class PurchaseOrderApprovalService
     {
         // Validate current status
         if (!in_array($order->status, ['pending'])) {
-            throw new \Exception("Only pending orders can be approved. Current status: {$order->status}");
+            throw new \Exception("Solo se pueden aprobar órdenes pendientes. Estado actual: {$order->status}.");
         }
 
         return DB::transaction(function () use ($order, $userId, $notes) {
@@ -173,7 +173,7 @@ class PurchaseOrderApprovalService
     {
         // Validate current status
         if (!in_array($order->status, ['pending'])) {
-            throw new \Exception("Only pending orders can be rejected. Current status: {$order->status}");
+            throw new \Exception("Solo se pueden rechazar órdenes pendientes. Estado actual: {$order->status}.");
         }
 
         $metadata = $order->metadata ?? [];

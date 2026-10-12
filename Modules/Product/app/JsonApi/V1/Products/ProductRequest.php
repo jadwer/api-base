@@ -30,11 +30,14 @@ class ProductRequest extends ResourceRequest
             // 422. En quote_only el precio que llegue se descarta
             // (Product::normalizePricing).
             'pricingType' => ['sometimes', 'string', Rule::in(Product::PRICING_TYPES)],
+            // P2b (D8): con precio fijo el precio debe ser mayor a 0 (un
+            // producto vendible en $0 obliga a respetarlo ante PROFECO). Sin
+            // precio o en 0 el producto se da de alta como sujeto a cotizacion.
             'price' => [
                 Rule::requiredIf(fn () => ! $this->isQuoteOnlyPayload()),
                 'nullable',
                 'numeric',
-                'min:0',
+                Rule::when(fn () => $this->isQuoteOnlyPayload(), ['min:0'], ['min:0.01']),
             ],
             'cost' => ['nullable', 'numeric', 'min:0'],
             'iva' => ['required', 'boolean'],
@@ -90,6 +93,7 @@ class ProductRequest extends ResourceRequest
     {
         return [
             'price.required' => 'El precio de venta es obligatorio cuando el tipo de precio es fijo.',
+            'price.min' => 'El precio de venta debe ser mayor a 0 cuando el tipo de precio es fijo. Si el producto no tiene precio, usa "Precio sujeto a cotizacion".',
             'pricingType.in' => 'El tipo de precio debe ser: ' . implode(', ', Product::PRICING_TYPES) . '.',
         ];
     }

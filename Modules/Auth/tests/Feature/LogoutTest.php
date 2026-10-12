@@ -34,8 +34,8 @@ class LogoutTest extends TestCase
         $response->assertStatus(401)
             ->assertJsonFragment([
                 'status' => '401',
-                'title'  => 'Unauthenticated',
-                'detail' => 'Unauthenticated.',
+                'title'  => 'No autenticado',
+                'detail' => 'Tu sesión no es válida o expiró. Inicia sesión de nuevo.',
             ]);
     }
 
@@ -76,8 +76,8 @@ public function test_logout_with_invalid_token(): void
         $response->assertStatus(401)
             ->assertJsonFragment([
                 'status' => '401',
-                'title'  => 'Unauthenticated',
-                'detail' => 'Unauthenticated.',
+                'title'  => 'No autenticado',
+                'detail' => 'Tu sesión no es válida o expiró. Inicia sesión de nuevo.',
             ]);
     }
 }

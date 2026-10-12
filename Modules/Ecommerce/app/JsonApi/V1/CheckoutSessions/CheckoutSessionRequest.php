@@ -141,15 +141,15 @@ class CheckoutSessionRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'shoppingCartId.required' => 'A shopping cart is required to initiate checkout.',
-            'shoppingCartId.exists' => 'The selected shopping cart does not exist.',
-            'shippingMethodId.exists' => 'The selected shipping method does not exist.',
-            'contactEmail.email' => 'Please provide a valid email address.',
-            'status.in' => 'Invalid checkout session status.',
-            'step.in' => 'Invalid checkout step.',
-            'paymentMethod.in' => 'Invalid payment method selected.',
-            'shippingAddress.country.max' => 'Country code must be 2 characters (ISO 3166-1 alpha-2).',
-            'currency.size' => 'Currency code must be 3 characters (ISO 4217).',
+            'shoppingCartId.required' => 'Se necesita un carrito para iniciar el pago.',
+            'shoppingCartId.exists' => 'El carrito seleccionado no existe.',
+            'shippingMethodId.exists' => 'El método de envío seleccionado no existe.',
+            'contactEmail.email' => 'Escribe un correo electrónico válido.',
+            'status.in' => 'El estado de la sesión de pago no es válido.',
+            'step.in' => 'El paso del pago no es válido.',
+            'paymentMethod.in' => 'El método de pago seleccionado no es válido.',
+            'shippingAddress.country.max' => 'El código de país debe tener 2 letras (ISO 3166-1, por ejemplo MX).',
+            'currency.size' => 'El código de moneda debe tener 3 letras (ISO 4217).',
         ];
     }
 }

@@ -30,7 +30,7 @@ class ContactDocumentUploadController extends Controller
     {
         // Manual authentication check for API requests
         if (!auth('sanctum')->check()) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
 
         $request->validate([
@@ -89,7 +89,7 @@ class ContactDocumentUploadController extends Controller
                     'uploadedAt' => $document->created_at->format('Y-m-d H:i:s')
                 ]
             ],
-            'message' => 'Document uploaded successfully'
+            'message' => 'Documento subido.'
         ], 201);
     }
 
@@ -100,11 +100,11 @@ class ContactDocumentUploadController extends Controller
     {
         // Manual authentication check for API requests
         if (!auth('sanctum')->check()) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
 
         if (!$document->file_path || !Storage::disk('private')->exists($document->file_path)) {
-            abort(404, 'Document not found');
+            abort(404, 'Documento no encontrado.');
         }
 
         return Storage::disk('private')->download(
@@ -120,11 +120,11 @@ class ContactDocumentUploadController extends Controller
     {
         // Manual authentication check for API requests
         if (!auth('sanctum')->check()) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
 
         if (!$document->file_path || !Storage::disk('private')->exists($document->file_path)) {
-            abort(404, 'Document not found');
+            abort(404, 'Documento no encontrado.');
         }
 
         $file = Storage::disk('private')->get($document->file_path);
@@ -143,14 +143,14 @@ class ContactDocumentUploadController extends Controller
     {
         // Manual authentication check for API requests
         if (!auth('sanctum')->check()) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
 
         $user = auth('sanctum')->user();
         
         // Check permission (you can customize this based on your permission system)
         if (!$user->can('contact-documents.update')) {
-            return response()->json(['error' => 'Forbidden - insufficient permissions'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         // Verify the document
@@ -167,7 +167,7 @@ class ContactDocumentUploadController extends Controller
                     'isVerified' => $document->isVerified(),
                 ]
             ],
-            'message' => 'Document verified successfully'
+            'message' => 'Documento verificado.'
         ]);
     }
 
@@ -178,14 +178,14 @@ class ContactDocumentUploadController extends Controller
     {
         // Manual authentication check for API requests
         if (!auth('sanctum')->check()) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
 
         $user = auth('sanctum')->user();
         
         // Check permission (you can customize this based on your permission system)
         if (!$user->can('contact-documents.update')) {
-            return response()->json(['error' => 'Forbidden - insufficient permissions'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         // Unverify the document
@@ -202,7 +202,7 @@ class ContactDocumentUploadController extends Controller
                     'isVerified' => $document->isVerified(),
                 ]
             ],
-            'message' => 'Document verification removed successfully'
+            'message' => 'Se quitó la verificación del documento.'
         ]);
     }
 

@@ -195,7 +195,7 @@ class QuoteRequestTest extends TestCase
 
         $response->assertStatus(400);
         $response->assertJson([
-            'error' => 'One or more products are not available',
+            'error' => 'Uno o más productos no están disponibles.',
         ]);
     }
 

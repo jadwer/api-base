@@ -81,7 +81,7 @@ class MockPaymentGateway implements PaymentGatewayInterface
         if (!isset($this->paymentIntents[$paymentIntentId])) {
             return [
                 'status' => 'failed',
-                'error' => 'Payment intent not found',
+                'error' => 'No se encontró la intención de pago.',
             ];
         }
 
@@ -154,7 +154,7 @@ class MockPaymentGateway implements PaymentGatewayInterface
         if (!isset($this->paymentIntents[$paymentIntentId])) {
             return [
                 'status' => 'failed',
-                'error' => 'Payment intent not found',
+                'error' => 'No se encontró la intención de pago.',
             ];
         }
 

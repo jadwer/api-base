@@ -105,7 +105,7 @@ class QuoteFromCartTest extends TestCase
 
         $response->assertStatus(400);
         $response->assertJson([
-            'error' => 'Cannot create quote from empty cart',
+            'error' => 'No se puede crear una cotización con el carrito vacío.',
         ]);
     }
 

@@ -136,7 +136,7 @@ class StripeControllerTest extends TestCase
 
         $response->assertStatus(404)
             ->assertJson([
-                'error' => 'Payment intent not found',
+                'error' => 'No se encontró la intención de pago.',
             ]);
     }
 

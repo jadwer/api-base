@@ -38,7 +38,7 @@ class ShoppingCartMergeTest extends TestCase
 
         $response->assertOk();
         $response->assertJson([
-            'message' => 'Carts merged successfully',
+            'message' => 'Carritos combinados.',
         ]);
 
         // Guest cart should be marked as converted
@@ -206,7 +206,7 @@ class ShoppingCartMergeTest extends TestCase
 
         $response->assertOk();
         $response->assertJson([
-            'message' => 'Carts merged successfully',
+            'message' => 'Carritos combinados.',
         ]);
     }
 

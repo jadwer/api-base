@@ -91,7 +91,7 @@ class ShipmentController extends Controller
                 'errors' => [
                     [
                         'status' => '422',
-                        'title' => 'Validation Error',
+                        'title' => 'Datos no válidos',
                         'detail' => $e->getMessage(),
                     ],
                 ],
@@ -142,7 +142,7 @@ class ShipmentController extends Controller
                 'errors' => [
                     [
                         'status' => '422',
-                        'title' => 'Validation Error',
+                        'title' => 'Datos no válidos',
                         'detail' => $e->getMessage(),
                     ],
                 ],
@@ -189,7 +189,7 @@ class ShipmentController extends Controller
                 'errors' => [
                     [
                         'status' => '422',
-                        'title' => 'Validation Error',
+                        'title' => 'Datos no válidos',
                         'detail' => $e->getMessage(),
                     ],
                 ],
@@ -232,7 +232,7 @@ class ShipmentController extends Controller
                 'errors' => [
                     [
                         'status' => '422',
-                        'title' => 'Validation Error',
+                        'title' => 'Datos no válidos',
                         'detail' => $e->getMessage(),
                     ],
                 ],

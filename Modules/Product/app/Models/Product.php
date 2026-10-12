@@ -455,14 +455,35 @@ class Product extends Model
     }
 
     /**
+     * P2b (D8, riesgo PROFECO): "producto sin precio de venta". Un producto
+     * sujeto a cotizacion, sin precio o con precio <= 0 sigue visible, pero
+     * solo se cotiza: nunca se cobra ni se muestra en $0. Es la regla UNICA
+     * que usan checkout, sesiones de pago, carrito, PDF publico, cotizacion
+     * desde carrito o solicitud y recomendaciones.
+     */
+    public function requiresQuote(): bool
+    {
+        return $this->isQuoteOnly() || $this->price === null || (float) $this->price <= 0;
+    }
+
+    /**
      * Invariante de quote_only: sin precio de lista, sin precio comparativo y
      * sin oferta. Lo llama ProductObserver::saving para cubrir todos los
      * caminos de escritura (API, import, bulk Eloquent, consola).
+     *
+     * P2b (D8): un producto de precio fijo sin precio o con precio <= 0 pasa
+     * a quote_only. ProductRequest ya exige price > 0 con fixed; esto cubre
+     * las rutas que no pasan por el Request (imports, cargas directas,
+     * consola) para que nada quede vendible en $0.
      */
     public function normalizePricing(): void
     {
         if (! $this->pricing_type) {
             $this->pricing_type = self::PRICING_FIXED;
+        }
+
+        if (! $this->isQuoteOnly() && ($this->price === null || (float) $this->price <= 0)) {
+            $this->pricing_type = self::PRICING_QUOTE_ONLY;
         }
 
         if (! $this->isQuoteOnly()) {
@@ -481,6 +502,17 @@ class Product extends Model
     public function scopeFixedPrice($query)
     {
         return $query->where('pricing_type', self::PRICING_FIXED);
+    }
+
+    /**
+     * Productos que se pueden vender a precio de lista (contrario de
+     * requiresQuote()): precio fijo y price > 0.
+     */
+    public function scopeSellableAtListPrice($query)
+    {
+        return $query->where('pricing_type', self::PRICING_FIXED)
+            ->whereNotNull('price')
+            ->where('price', '>', 0);
     }
 
     /**
@@ -546,7 +578,7 @@ class Product extends Model
      */
     public function getDiscountPercentageAttribute(): ?int
     {
-        if ($this->isQuoteOnly() || $this->price === null) {
+        if ($this->requiresQuote()) {
             return null;
         }
 
@@ -562,7 +594,7 @@ class Product extends Model
      */
     public function getSavingsAttribute(): ?float
     {
-        if ($this->isQuoteOnly() || $this->price === null) {
+        if ($this->requiresQuote()) {
             return null;
         }
 

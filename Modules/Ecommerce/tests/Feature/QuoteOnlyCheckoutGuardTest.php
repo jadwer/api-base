@@ -36,8 +36,9 @@ class QuoteOnlyCheckoutGuardTest extends TestCase
                 'shopping_cart_id' => $cart->id,
                 'product_id' => $product->id,
                 'quantity' => 1,
-                'unit_price' => 0,
-                'total' => 0,
+                // Precio de lista del producto (0 para los sujetos a cotizacion).
+                'unit_price' => (float) ($product->price ?? 0),
+                'total' => (float) ($product->price ?? 0),
             ]);
         }
 
@@ -107,5 +108,42 @@ class QuoteOnlyCheckoutGuardTest extends TestCase
         $this->assertJsonApiValidationErrors(['/data/attributes/shoppingCartId'], $response);
         $this->assertStringContainsString('Granel X', $response->json('errors.0.detail'));
         $this->assertSame(0, CheckoutSession::where('shopping_cart_id', $cart->id)->count());
+    }
+
+    /**
+     * P2b (D8): un producto "fixed" con precio 0 (carga directa a la BD, sin
+     * observer) tampoco se cobra.
+     */
+    public function test_fixed_product_with_zero_price_in_database_is_rejected(): void
+    {
+        $product = Product::factory()->create(['price' => 30, 'name' => 'Guantes nitrilo']);
+        \Illuminate\Support\Facades\DB::table('products')->where('id', $product->id)->update(['price' => 0]);
+        $cart = $this->cartWith($product->fresh());
+        $ordersBefore = SalesOrder::count();
+
+        $response = $this->actingAs($cart->user, 'sanctum')
+            ->postJson("/api/v1/shopping-carts/{$cart->id}/checkout", ['contact_id' => Contact::factory()->create()->id]);
+
+        $response->assertStatus(422);
+        $this->assertSame($product->id, $response->json('quote_only_items.0.product_id'));
+        $this->assertStringContainsString('Guantes nitrilo', $response->json('message'));
+        $this->assertSame($ordersBefore, SalesOrder::count());
+    }
+
+    /**
+     * P2b (D8): una linea del carrito guardada en $0 (precio viejo) no se
+     * cobra aunque el producto ya tenga precio.
+     */
+    public function test_cart_line_saved_at_zero_is_rejected(): void
+    {
+        $product = Product::factory()->create(['price' => 30, 'name' => 'Pipeta']);
+        $cart = $this->cartWith($product);
+        $cart->cartItems()->update(['unit_price' => 0, 'total' => 0]);
+
+        $response = $this->actingAs($cart->user, 'sanctum')
+            ->postJson("/api/v1/shopping-carts/{$cart->id}/checkout", ['contact_id' => Contact::factory()->create()->id]);
+
+        $response->assertStatus(422);
+        $this->assertStringContainsString('Pipeta', $response->json('message'));
     }
 }

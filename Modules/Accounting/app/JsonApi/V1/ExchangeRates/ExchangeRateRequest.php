@@ -28,21 +28,21 @@ class ExchangeRateRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'fromCurrency.required' => 'El campo From currency es obligatorio.',
-            'fromCurrency.string' => 'El campo From currency debe ser texto.',
-            'fromCurrency.max' => 'El campo From currency no puede tener más de 255 caracteres.',
-            'toCurrency.required' => 'El campo To currency es obligatorio.',
-            'toCurrency.string' => 'El campo To currency debe ser texto.',
-            'toCurrency.max' => 'El campo To currency no puede tener más de 255 caracteres.',
-            'rate.required' => 'El campo Rate es obligatorio.',
-            'effectiveDate.required' => 'El campo Effective date es obligatorio.',
-            'effectiveDate.date' => 'El campo Effective date debe ser una fecha válida.',
-            'source.string' => 'El campo Source debe ser texto.',
-            'source.max' => 'El campo Source no puede tener más de 255 caracteres.',
-            'status.required' => 'El campo Status es obligatorio.',
-            'status.string' => 'El campo Status debe ser texto.',
-            'status.max' => 'El campo Status no puede tener más de 255 caracteres.',
-            'metadata.array' => 'El campo Metadata debe ser un arreglo.',
+            'fromCurrency.required' => 'El campo moneda origen es obligatorio.',
+            'fromCurrency.string' => 'El campo moneda origen debe ser texto.',
+            'fromCurrency.max' => 'El campo moneda origen no puede tener más de 255 caracteres.',
+            'toCurrency.required' => 'El campo moneda destino es obligatorio.',
+            'toCurrency.string' => 'El campo moneda destino debe ser texto.',
+            'toCurrency.max' => 'El campo moneda destino no puede tener más de 255 caracteres.',
+            'rate.required' => 'El campo tasa es obligatorio.',
+            'effectiveDate.required' => 'El campo fecha efectiva es obligatorio.',
+            'effectiveDate.date' => 'El campo fecha efectiva debe ser una fecha válida.',
+            'source.string' => 'El campo origen debe ser texto.',
+            'source.max' => 'El campo origen no puede tener más de 255 caracteres.',
+            'status.required' => 'El campo estado es obligatorio.',
+            'status.string' => 'El campo estado debe ser texto.',
+            'status.max' => 'El campo estado no puede tener más de 255 caracteres.',
+            'metadata.array' => 'El campo metadatos debe ser un arreglo.',
         ];
     }
 }

@@ -47,7 +47,7 @@ class InventoryReservationService
                         ->first();
 
                     if (!$stock) {
-                        throw new \Exception("Insufficient stock for product: {$item->product->name}");
+                        throw new \Exception("Existencia insuficiente del producto: {$item->product->name}.");
                     }
 
                     // Create reservation
@@ -139,7 +139,7 @@ class InventoryReservationService
     public function fulfillReservation(InventoryReservation $reservation): void
     {
         if (!$reservation->canBeFulfilled()) {
-            throw new \Exception('Reservation cannot be fulfilled in current state');
+            throw new \Exception('La reserva no se puede surtir en su estado actual.');
         }
 
         DB::transaction(function () use ($reservation) {
@@ -259,7 +259,7 @@ class InventoryReservationService
     public function extendReservation(InventoryReservation $reservation, int $additionalMinutes = 15): void
     {
         if (!$reservation->getIsActiveAttribute()) {
-            throw new \Exception('Cannot extend inactive or expired reservation');
+            throw new \Exception('No se puede extender una reserva inactiva o vencida.');
         }
 
         $newExpirationTime = $reservation->expires_at->addMinutes($additionalMinutes);

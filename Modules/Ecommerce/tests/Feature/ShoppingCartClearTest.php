@@ -33,7 +33,7 @@ class ShoppingCartClearTest extends TestCase
 
         $response->assertOk();
         $response->assertJson([
-            'message' => 'Cart cleared successfully',
+            'message' => 'Carrito vaciado.',
         ]);
 
         // Cart items should be deleted

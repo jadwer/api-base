@@ -25,12 +25,12 @@ class PaymentApplicationRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'paymentId.integer' => 'El campo Payment id debe ser un número entero.',
-            'arInvoiceId.integer' => 'El campo Ar invoice id debe ser un número entero.',
-            'amount.numeric' => 'El campo Amount debe ser un número.',
-            'applicationDate.date' => 'El campo Application date debe ser una fecha válida.',
-            'notes.string' => 'El campo Notes debe ser texto.',
-            'isActive.boolean' => 'El campo Is active debe ser verdadero o falso.',
+            'paymentId.integer' => 'El campo pago debe ser un número entero.',
+            'arInvoiceId.integer' => 'El campo factura por cobrar debe ser un número entero.',
+            'amount.numeric' => 'El campo importe debe ser un número.',
+            'applicationDate.date' => 'El campo fecha de aplicación debe ser una fecha válida.',
+            'notes.string' => 'El campo notas debe ser texto.',
+            'isActive.boolean' => 'El campo activo debe ser verdadero o falso.',
         ];
     }
 }

@@ -32,7 +32,7 @@ class OrderTrackingController extends Controller
         // Verify order belongs to user (unless admin)
         if (!$this->canAccessOrder($order)) {
             return response()->json([
-                'error' => 'Unauthorized access to order',
+                'error' => 'No tienes acceso a este pedido.',
             ], 403);
         }
 
@@ -64,7 +64,7 @@ class OrderTrackingController extends Controller
     {
         if (!$this->canAccessOrder($order)) {
             return response()->json([
-                'error' => 'Unauthorized access to order',
+                'error' => 'No tienes acceso a este pedido.',
             ], 403);
         }
 
@@ -93,7 +93,7 @@ class OrderTrackingController extends Controller
         // Check if user has permission (admin/god)
         if (!auth()->user()->hasRole(['god', 'admin'])) {
             return response()->json([
-                'error' => 'Insufficient permissions',
+                'error' => 'No tiene permisos para esta acción.',
             ], 403);
         }
 
@@ -114,12 +114,12 @@ class OrderTrackingController extends Controller
 
             return response()->json([
                 'data' => $updatedOrder,
-                'message' => 'Order status updated successfully',
+                'message' => 'Estado del pedido actualizado.',
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Failed to update order status',
+                'error' => 'No se pudo actualizar el estado del pedido.',
                 'message' => $e->getMessage(),
             ], 400);
         }
@@ -138,7 +138,7 @@ class OrderTrackingController extends Controller
     {
         if (!auth()->user()->hasRole(['god', 'admin'])) {
             return response()->json([
-                'error' => 'Insufficient permissions',
+                'error' => 'No tiene permisos para esta acción.',
             ], 403);
         }
 
@@ -158,12 +158,12 @@ class OrderTrackingController extends Controller
 
             return response()->json([
                 'data' => $updatedOrder,
-                'message' => 'Order marked as shipped successfully',
+                'message' => 'Pedido marcado como enviado.',
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Failed to mark order as shipped',
+                'error' => 'No se pudo marcar el pedido como enviado.',
                 'message' => $e->getMessage(),
             ], 400);
         }

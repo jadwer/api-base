@@ -17,7 +17,7 @@ class AppSettingController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user || (!$user->can('app-settings.index') && !$user->hasRole(['god', 'admin', 'administrator']))) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         return response()->json([
@@ -32,7 +32,7 @@ class AppSettingController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user || (!$user->can('app-settings.index') && !$user->hasRole(['god', 'admin', 'administrator']))) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         return response()->json([
@@ -47,7 +47,7 @@ class AppSettingController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user || (!$user->can('app-settings.update') && !$user->hasRole(['god', 'admin', 'administrator']))) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $setting = AppSetting::where('key', $key)->first();
@@ -83,7 +83,7 @@ class AppSettingController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user || (!$user->can('app-settings.update') && !$user->hasRole(['god', 'admin', 'administrator']))) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $request->validate([

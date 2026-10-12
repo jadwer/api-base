@@ -31,35 +31,35 @@ class CouponController extends Controller
         if (!$coupon) {
             return response()->json([
                 'valid' => false,
-                'error' => 'Coupon not found'
+                'error' => 'Cupón no encontrado.'
             ], 404);
         }
 
         if (!$coupon->is_active) {
             return response()->json([
                 'valid' => false,
-                'error' => 'Coupon is inactive'
+                'error' => 'El cupón no está activo.'
             ], 400);
         }
 
         if ($coupon->starts_at && $coupon->starts_at->isFuture()) {
             return response()->json([
                 'valid' => false,
-                'error' => 'Coupon is not yet active'
+                'error' => 'El cupón todavía no está vigente.'
             ], 400);
         }
 
         if ($coupon->expires_at && $coupon->expires_at->isPast()) {
             return response()->json([
                 'valid' => false,
-                'error' => 'Coupon has expired'
+                'error' => 'El cupón expiró.'
             ], 400);
         }
 
         if ($coupon->max_uses && $coupon->used_count >= $coupon->max_uses) {
             return response()->json([
                 'valid' => false,
-                'error' => 'Coupon usage limit reached'
+                'error' => 'El cupón alcanzó su límite de usos.'
             ], 400);
         }
 

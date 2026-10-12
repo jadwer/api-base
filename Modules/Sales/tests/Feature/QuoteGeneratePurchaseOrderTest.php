@@ -47,7 +47,7 @@ class QuoteGeneratePurchaseOrderTest extends TestCase
 
         $response->assertStatus(201);
         $response->assertJson([
-            'message' => 'Purchase order generated successfully from quote',
+            'message' => 'Orden de compra generada desde la cotización.',
         ]);
         $response->assertJsonStructure([
             'data' => [
@@ -127,7 +127,7 @@ class QuoteGeneratePurchaseOrderTest extends TestCase
 
         $response->assertStatus(400);
         $response->assertJson([
-            'error' => 'Cannot generate purchase order. Quote must be accepted or converted and not already have a PO.',
+            'error' => 'No se puede generar la orden de compra: la cotización debe estar aceptada o convertida y no tener ya una orden de compra.',
         ]);
     }
 
@@ -176,7 +176,7 @@ class QuoteGeneratePurchaseOrderTest extends TestCase
 
         $response->assertStatus(400);
         $response->assertJson([
-            'error' => 'Cannot generate purchase order. Quote must be accepted or converted and not already have a PO.',
+            'error' => 'No se puede generar la orden de compra: la cotización debe estar aceptada o convertida y no tener ya una orden de compra.',
         ]);
     }
 

@@ -75,7 +75,7 @@ class ShipmentService
     public function markAsShipped(Shipment $shipment, ?string $trackingNumber = null, ?string $carrier = null): Shipment
     {
         if (!$shipment->isEditable()) {
-            throw new InvalidArgumentException("Shipment {$shipment->shipment_number} cannot be modified.");
+            throw new InvalidArgumentException("El envío {$shipment->shipment_number} ya no se puede modificar.");
         }
 
         return DB::transaction(function () use ($shipment, $trackingNumber, $carrier) {
@@ -109,7 +109,7 @@ class ShipmentService
     public function markAsDelivered(Shipment $shipment, ?string $actualDelivery = null): Shipment
     {
         if (!in_array($shipment->status, ['shipped', 'processing'])) {
-            throw new InvalidArgumentException("Shipment must be shipped before marking as delivered.");
+            throw new InvalidArgumentException("El envío debe estar enviado antes de marcarlo como entregado.");
         }
 
         return DB::transaction(function () use ($shipment, $actualDelivery) {
@@ -139,7 +139,7 @@ class ShipmentService
     public function cancelShipment(Shipment $shipment, ?string $reason = null): Shipment
     {
         if ($shipment->status === 'delivered') {
-            throw new InvalidArgumentException("Cannot cancel a delivered shipment.");
+            throw new InvalidArgumentException("No se puede cancelar un envío entregado.");
         }
 
         return DB::transaction(function () use ($shipment, $reason) {
@@ -218,7 +218,7 @@ class ShipmentService
 
         if (!in_array($order->status, $validStatuses)) {
             throw new InvalidArgumentException(
-                "Order must be in confirmed, processing, or shipped status to create shipments. Current status: {$order->status}"
+                "El pedido debe estar confirmado, en proceso o enviado para crear envíos. Estado actual: {$order->status}."
             );
         }
     }
@@ -243,11 +243,11 @@ class ShipmentService
             $orderItem = $order->items->find($orderItemId);
 
             if (!$orderItem) {
-                throw new InvalidArgumentException("Order item {$orderItemId} not found in order {$order->order_number}");
+                throw new InvalidArgumentException("La partida {$orderItemId} no pertenece al pedido {$order->order_number}.");
             }
 
             if ($quantity <= 0) {
-                throw new InvalidArgumentException("Quantity must be greater than 0");
+                throw new InvalidArgumentException("La cantidad debe ser mayor a 0.");
             }
 
             // remaining_quantity already subtracts shipped_quantity; also subtract pending shipment allocations
@@ -256,7 +256,7 @@ class ShipmentService
 
             if ($quantity > $effectiveRemaining) {
                 throw new InvalidArgumentException(
-                    "Cannot ship {$quantity} of item {$orderItemId}. Only {$effectiveRemaining} available (accounting for pending shipments)."
+                    "No se pueden enviar {$quantity} de la partida {$orderItemId}. Solo quedan {$effectiveRemaining} por enviar (contando envíos pendientes)."
                 );
             }
         }

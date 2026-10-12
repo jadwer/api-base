@@ -283,7 +283,7 @@ class PurchaseOrderApprovalWorkflowTest extends TestCase
 
         // Expect exception
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Only pending orders can be approved');
+        $this->expectExceptionMessage('Solo se pueden aprobar órdenes pendientes');
 
         // Act
         $this->service->approve($order, $user->id);
@@ -306,7 +306,7 @@ class PurchaseOrderApprovalWorkflowTest extends TestCase
 
         // Expect exception
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Only pending orders can be rejected');
+        $this->expectExceptionMessage('Solo se pueden rechazar órdenes pendientes');
 
         // Act
         $this->service->reject($order, $user->id, 'Too late');

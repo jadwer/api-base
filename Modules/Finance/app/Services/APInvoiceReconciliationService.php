@@ -48,16 +48,16 @@ class APInvoiceReconciliationService
         $purchaseOrder = $apInvoice->purchaseOrder;
 
         if (!$purchaseOrder) {
-            throw new \Exception("Purchase Order #{$apInvoice->purchase_order_id} not found.");
+            throw new \Exception("No se encontró la orden de compra #{$apInvoice->purchase_order_id}.");
         }
 
         // Validate PO is approved (if approval is required)
         if ($purchaseOrder->approval_status === 'pending') {
-            throw new \Exception("Purchase Order #{$purchaseOrder->order_number} is pending approval. Cannot reconcile.");
+            throw new \Exception("La orden de compra #{$purchaseOrder->order_number} está pendiente de aprobación; no se puede conciliar.");
         }
 
         if ($purchaseOrder->approval_status === 'rejected') {
-            throw new \Exception("Purchase Order #{$purchaseOrder->order_number} has been rejected. Cannot reconcile.");
+            throw new \Exception("La orden de compra #{$purchaseOrder->order_number} fue rechazada; no se puede conciliar.");
         }
 
         // Perform reconciliation checks
@@ -219,7 +219,7 @@ class APInvoiceReconciliationService
             $discrepancies[] = [
                 'type' => 'missing_po_items',
                 'severity' => 'critical',
-                'message' => 'Purchase Order has no line items to reconcile against.',
+                'message' => 'La orden de compra no tiene partidas para conciliar.',
             ];
         }
     }
@@ -395,7 +395,7 @@ class APInvoiceReconciliationService
     public function approveReconciliation(APInvoice $apInvoice, int $userId, ?string $notes = null): bool
     {
         if ($apInvoice->reconciliation_status === 'pending') {
-            throw new \Exception('Invoice must be reconciled before approval.');
+            throw new \Exception('La factura debe conciliarse antes de aprobarse.');
         }
 
         $apInvoice->update([

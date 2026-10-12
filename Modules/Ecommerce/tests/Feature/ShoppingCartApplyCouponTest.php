@@ -66,7 +66,7 @@ class ShoppingCartApplyCouponTest extends TestCase
         $response->assertOk();
         $response->assertJson([
             'valid' => true,
-            'message' => 'Coupon applied successfully',
+            'message' => 'Cupón aplicado.',
         ]);
 
         $this->assertDatabaseHas('shopping_carts', [
@@ -179,7 +179,7 @@ class ShoppingCartApplyCouponTest extends TestCase
         $response->assertStatus(400);
         $response->assertJson([
             'valid' => false,
-            'error' => 'Invalid coupon code',
+            'error' => 'El código de cupón no es válido.',
         ]);
     }
 
@@ -229,7 +229,7 @@ class ShoppingCartApplyCouponTest extends TestCase
         $response->assertStatus(400);
         $response->assertJson([
             'valid' => false,
-            'error' => 'Coupon has expired',
+            'error' => 'El cupón expiró.',
         ]);
     }
 
@@ -256,7 +256,7 @@ class ShoppingCartApplyCouponTest extends TestCase
         $response->assertStatus(400);
         $response->assertJson([
             'valid' => false,
-            'error' => 'Coupon is not yet active',
+            'error' => 'El cupón todavía no está vigente.',
         ]);
     }
 
@@ -284,7 +284,7 @@ class ShoppingCartApplyCouponTest extends TestCase
         $response->assertStatus(400);
         $response->assertJson([
             'valid' => false,
-            'error' => 'Coupon usage limit reached',
+            'error' => 'El cupón alcanzó su límite de usos.',
         ]);
     }
 
@@ -510,7 +510,7 @@ class ShoppingCartApplyCouponTest extends TestCase
         $response->assertStatus(400);
         $response->assertJson([
             'valid' => false,
-            'error' => 'Coupon is only valid for USD carts',
+            'error' => 'El cupón solo es válido para carritos en USD.',
         ]);
     }
 

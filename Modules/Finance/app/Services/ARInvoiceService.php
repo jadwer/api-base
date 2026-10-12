@@ -129,7 +129,7 @@ class ARInvoiceService
                     'invoice_number' => $invoiceNumber,
                     'error' => $e->getMessage(),
                 ]);
-                throw new \Exception("Failed to create GL entry: " . $e->getMessage());
+                throw new \Exception("No se pudo crear la póliza contable: " . $e->getMessage());
             }
 
             // 7. Retornar invoice con relaciones cargadas
@@ -153,7 +153,7 @@ class ARInvoiceService
         // solo 'delivered' dejaba muerto el EventReplayService (busca completed sin
         // factura, el gate las rechazaba y reportaba exito sin crear nada).
         if (!in_array($salesOrder->status, ['delivered', 'completed'], true)) {
-            throw new \Exception("Sales Order #{$salesOrder->order_number} must be delivered before invoicing.");
+            throw new \Exception("El pedido #{$salesOrder->order_number} debe estar entregado antes de facturarse.");
         }
 
         return $this->buildFromSalesOrder($salesOrder, 'Auto-generated from Sales Order #' . $salesOrder->order_number);
@@ -167,7 +167,7 @@ class ARInvoiceService
     public function createFromPaidSalesOrder($salesOrder): ARInvoice
     {
         if ($salesOrder->status === 'cancelled') {
-            throw new \Exception("Sales Order #{$salesOrder->order_number} is cancelled; cannot invoice.");
+            throw new \Exception("El pedido #{$salesOrder->order_number} está cancelado; no se puede facturar.");
         }
 
         return $this->buildFromSalesOrder($salesOrder, 'Auto-generated on payment from Sales Order #' . $salesOrder->order_number);
@@ -182,7 +182,7 @@ class ARInvoiceService
 
         // Validate customer is active
         if (!$salesOrder->contact || !$salesOrder->contact->isActive()) {
-            throw new \Exception("Customer must be active to create invoice.");
+            throw new \Exception("El cliente debe estar activo para facturarle.");
         }
 
         // Vencimiento (2026-09-30): manda lo pactado en la OV (credit_days);
@@ -290,7 +290,7 @@ class ARInvoiceService
             $updateData = array_intersect_key($data, array_flip($allowedFields));
 
             if (count($updateData) === 0) {
-                throw new \Exception('Cannot update financial fields after GL posting. Create a reversal entry instead.');
+                throw new \Exception('No se pueden modificar los importes después de contabilizar. Registra una reversa.');
             }
         } else {
             $updateData = $data;

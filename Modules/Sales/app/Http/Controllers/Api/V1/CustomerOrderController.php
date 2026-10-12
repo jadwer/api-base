@@ -109,7 +109,7 @@ class CustomerOrderController extends Controller
         $contactId = $this->getCustomerContactId();
         if (!$contactId || $order->contact_id !== $contactId) {
             return response()->json([
-                'error' => 'Unauthorized access to order',
+                'error' => 'No tienes acceso a este pedido.',
             ], 403);
         }
 
@@ -142,15 +142,15 @@ class CustomerOrderController extends Controller
         $contactId = $this->getCustomerContactId();
         if (!$contactId || $order->contact_id !== $contactId) {
             return response()->json([
-                'error' => 'Unauthorized access to order',
+                'error' => 'No tienes acceso a este pedido.',
             ], 403);
         }
 
         // Check if order can be cancelled
         if (!$this->canCancelOrder($order)) {
             return response()->json([
-                'error' => 'Order cannot be cancelled',
-                'message' => 'Order is already ' . $order->status,
+                'error' => 'El pedido no se puede cancelar.',
+                'message' => 'El pedido ya está en estado ' . $order->status,
             ], 400);
         }
 
@@ -173,12 +173,12 @@ class CustomerOrderController extends Controller
 
             return response()->json([
                 'data' => $cancelledOrder,
-                'message' => 'Order cancelled successfully',
+                'message' => 'Pedido cancelado.',
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Failed to cancel order',
+                'error' => 'No se pudo cancelar el pedido.',
                 'message' => $e->getMessage(),
             ], 400);
         }
@@ -199,15 +199,15 @@ class CustomerOrderController extends Controller
         $contactId = $this->getCustomerContactId();
         if (!$contactId || $order->contact_id !== $contactId) {
             return response()->json([
-                'error' => 'Unauthorized access to order',
+                'error' => 'No tienes acceso a este pedido.',
             ], 403);
         }
 
         // Check if order can be returned (must be delivered)
         if ($order->status !== 'delivered') {
             return response()->json([
-                'error' => 'Order cannot be returned',
-                'message' => 'Only delivered orders can be returned',
+                'error' => 'El pedido no se puede devolver.',
+                'message' => 'Solo se pueden devolver pedidos entregados.',
             ], 400);
         }
 
@@ -243,12 +243,12 @@ class CustomerOrderController extends Controller
 
             return response()->json([
                 'data' => $order,
-                'message' => 'Return request submitted successfully. Our team will contact you soon.',
+                'message' => 'Solicitud de devolución enviada. Nuestro equipo se pondrá en contacto contigo.',
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Failed to submit return request',
+                'error' => 'No se pudo enviar la solicitud de devolución.',
                 'message' => $e->getMessage(),
             ], 400);
         }
@@ -268,7 +268,7 @@ class CustomerOrderController extends Controller
         $contactId = $this->getCustomerContactId();
         if (!$contactId || $order->contact_id !== $contactId) {
             return response()->json([
-                'error' => 'Unauthorized access to order',
+                'error' => 'No tienes acceso a este pedido.',
             ], 403);
         }
 

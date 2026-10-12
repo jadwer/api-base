@@ -43,7 +43,7 @@ class DemoController extends Controller
         // does not reject guests by itself).
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
 
         if (config('app.demo_mode') !== true) {

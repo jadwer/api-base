@@ -66,11 +66,11 @@ class PaymentService
     {
         // Validate session can proceed to payment
         if (!$session->can_proceed_to_payment) {
-            throw new \Exception('Checkout session is not ready for payment');
+            throw new \Exception('La sesión de pago todavía no está lista para pagar.');
         }
 
         if ($session->getIsExpiredAttribute()) {
-            throw new \Exception('Checkout session has expired');
+            throw new \Exception('La sesión de pago expiró.');
         }
 
         return DB::transaction(function () use ($session, $gateway, $paymentData) {
@@ -122,7 +122,7 @@ class PaymentService
     public function confirmPayment(PaymentTransaction $transaction): PaymentTransaction
     {
         if ($transaction->status !== 'pending') {
-            throw new \Exception('Payment transaction is not in pending status');
+            throw new \Exception('La transacción de pago no está pendiente.');
         }
 
         return DB::transaction(function () use ($transaction) {
@@ -132,8 +132,8 @@ class PaymentService
             $result = $gateway->capturePayment($transaction->transaction_id);
 
             if ($result['status'] === 'failed') {
-                $transaction->markAsFailed($result['error'] ?? 'Payment capture failed');
-                throw new \Exception($result['error'] ?? 'Payment capture failed');
+                $transaction->markAsFailed($result['error'] ?? 'No se pudo capturar el pago.');
+                throw new \Exception($result['error'] ?? 'No se pudo capturar el pago.');
             }
 
             // Update transaction
@@ -195,7 +195,7 @@ class PaymentService
     public function refundPayment(PaymentTransaction $transaction, float $amount, ?string $reason = null): PaymentTransaction
     {
         if (!$transaction->canBeRefunded()) {
-            throw new \Exception('Payment cannot be refunded');
+            throw new \Exception('El pago no se puede reembolsar.');
         }
 
         // Check against total already refunded (sum of prior refunds)
@@ -203,7 +203,7 @@ class PaymentService
         $maxRefundable = $transaction->amount - $previouslyRefunded;
 
         if ($amount > $maxRefundable) {
-            throw new \Exception("Refund amount ({$amount}) exceeds remaining refundable amount ({$maxRefundable})");
+            throw new \Exception("El reembolso ({$amount}) supera el monto reembolsable restante ({$maxRefundable}).");
         }
 
         return DB::transaction(function () use ($transaction, $amount, $reason) {
@@ -246,7 +246,7 @@ class PaymentService
     public function cancelPayment(PaymentTransaction $transaction): void
     {
         if ($transaction->status !== 'pending') {
-            throw new \Exception('Can only cancel pending payments');
+            throw new \Exception('Solo se pueden cancelar pagos pendientes.');
         }
 
         $gateway = $this->getGateway($transaction->gateway);

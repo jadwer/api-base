@@ -73,7 +73,7 @@ class F2RoleStoreWithPermissionsTest extends TestCase
 
         $response->assertStatus(400);
         $response->assertJsonFragment([
-            'detail' => 'The member id must be a string.',
+            'detail' => 'El miembro id debe ser una cadena de caracteres.',
         ]);
     }
 

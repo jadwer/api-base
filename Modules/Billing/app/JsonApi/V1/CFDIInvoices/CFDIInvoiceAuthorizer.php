@@ -16,7 +16,7 @@ class CFDIInvoiceAuthorizer implements Authorizer
         $user = $request->user();
 
         if (!$user) {
-            return Response::deny('Unauthenticated', 401);
+            return Response::deny('No autenticado.', 401);
         }
 
         // Admin, Tech, and Customers can list invoices
@@ -33,7 +33,7 @@ class CFDIInvoiceAuthorizer implements Authorizer
         $user = $request->user();
 
         if (!$user) {
-            return Response::deny('Unauthenticated', 401);
+            return Response::deny('No autenticado.', 401);
         }
 
         // Only Admin can create invoices
@@ -48,7 +48,7 @@ class CFDIInvoiceAuthorizer implements Authorizer
         $user = $request->user();
 
         if (!$user) {
-            return Response::deny('Unauthenticated', 401);
+            return Response::deny('No autenticado.', 401);
         }
 
         // Admin, Tech, and Customers can view invoices
@@ -65,7 +65,7 @@ class CFDIInvoiceAuthorizer implements Authorizer
         $user = $request->user();
 
         if (!$user) {
-            return Response::deny('Unauthenticated', 401);
+            return Response::deny('No autenticado.', 401);
         }
 
         // Only Admin can update invoices
@@ -80,7 +80,7 @@ class CFDIInvoiceAuthorizer implements Authorizer
         $user = $request->user();
 
         if (!$user) {
-            return Response::deny('Unauthenticated', 401);
+            return Response::deny('No autenticado.', 401);
         }
 
         // Only Admin can delete invoices
@@ -95,7 +95,7 @@ class CFDIInvoiceAuthorizer implements Authorizer
         $user = $request->user();
 
         if (!$user) {
-            return Response::deny('Unauthenticated', 401);
+            return Response::deny('No autenticado.', 401);
         }
 
         return $user->hasAnyPermission([
@@ -111,7 +111,7 @@ class CFDIInvoiceAuthorizer implements Authorizer
         $user = $request->user();
 
         if (!$user) {
-            return Response::deny('Unauthenticated', 401);
+            return Response::deny('No autenticado.', 401);
         }
 
         return $user->hasAnyPermission([

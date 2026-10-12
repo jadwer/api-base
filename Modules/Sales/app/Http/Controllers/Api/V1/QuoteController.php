@@ -90,7 +90,7 @@ class QuoteController extends Controller
 
         if ($cart->cartItems->isEmpty()) {
             return response()->json([
-                'error' => 'Cannot create quote from empty cart'
+                'error' => 'No se puede crear una cotización con el carrito vacío.'
             ], 400);
         }
 
@@ -124,7 +124,7 @@ class QuoteController extends Controller
                 // P2 granel: sujeto a cotizacion = precio pendiente (0 + flag
                 // price_pending del item); el vendedor lo captura. Se ignora
                 // el unit_price que traiga el carrito (lo manda el cliente).
-                $unitPrice = $product?->isQuoteOnly() ? 0 : $cartItem->unit_price;
+                $unitPrice = (! $product || $product->requiresQuote()) ? 0 : $cartItem->unit_price;
 
                 QuoteItem::create([
                     'quote_id' => $quote->id,
@@ -158,7 +158,7 @@ class QuoteController extends Controller
 
             return response()->json([
                 'data' => $this->transformQuote($quote->fresh(['items', 'contact'])),
-                'message' => 'Quote created successfully from cart'
+                'message' => 'Cotización creada desde el carrito.'
             ], 201);
         });
     }
@@ -194,7 +194,7 @@ class QuoteController extends Controller
 
         if (!$quote->canBeSent) {
             return response()->json([
-                'error' => 'Quote cannot be sent. It must be in draft status with at least one item.'
+                'error' => 'La cotización no se puede enviar: debe estar en borrador y tener al menos una partida.'
             ], 400);
         }
 
@@ -252,7 +252,7 @@ class QuoteController extends Controller
                 'emailSent' => $emailSent,
                 'emailError' => $emailError,
             ],
-            'message' => $emailSent ? 'Quote sent successfully' : 'Quote marked as sent; email not sent',
+            'message' => $emailSent ? 'Cotización enviada.' : 'Cotización marcada como enviada; el correo no se envió.',
         ]);
     }
 
@@ -274,15 +274,25 @@ class QuoteController extends Controller
 
         if (!in_array($quote->status, $acceptable, true)) {
             return response()->json([
-                'error' => 'This quote cannot be accepted in its current status'
+                'error' => 'Esta cotización no se puede aceptar en su estado actual.'
             ], 400);
+        }
+
+        // D9: el cliente del portal no acepta una cotizacion con precios por
+        // confirmar (aceptaria un total que no es el final). El vendedor si
+        // puede registrar la aceptacion (llega por telefono) y capturar los
+        // precios antes de convertir, que tiene su propio candado.
+        if (Gate::denies('quotes.update')) {
+            if ($rejection = $this->pricePendingRejection($quote, 'aceptar')) {
+                return $rejection;
+            }
         }
 
         $quote->markAsAccepted();
 
         return response()->json([
             'data' => $this->transformQuote($quote->fresh()),
-            'message' => 'Quote accepted successfully'
+            'message' => 'Cotización aceptada.'
         ]);
     }
 
@@ -298,7 +308,7 @@ class QuoteController extends Controller
 
         if (!in_array($quote->status, ['sent', 'draft'])) {
             return response()->json([
-                'error' => 'This quote cannot be rejected'
+                'error' => 'Esta cotización no se puede rechazar en su estado actual.'
             ], 400);
         }
 
@@ -312,7 +322,7 @@ class QuoteController extends Controller
 
         return response()->json([
             'data' => $this->transformQuote($quote->fresh()),
-            'message' => 'Quote rejected'
+            'message' => 'Cotización rechazada.'
         ]);
     }
 
@@ -341,7 +351,7 @@ class QuoteController extends Controller
 
         if (!$quote->canBeConverted) {
             return response()->json([
-                'error' => 'Quote cannot be converted. It must be in accepted status and not already converted.'
+                'error' => 'La cotización no se puede convertir: debe estar aceptada y no haberse convertido antes.'
             ], 400);
         }
 
@@ -381,27 +391,11 @@ class QuoteController extends Controller
 
         $quote->loadMissing('items.product');
 
-        // P2 granel: una linea sujeta a cotizacion sin precio capturado no
-        // puede pasar a pedido ni venta (la orden y el CFDI saldrian en 0).
-        $pendingItems = $quote->items->filter(fn (QuoteItem $item) => $item->price_pending)->values();
-        if ($pendingItems->isNotEmpty()) {
-            $names = $pendingItems->map(fn (QuoteItem $item) => $item->product_name ?? $item->product->name ?? ('#' . $item->product_id));
-
-            return response()->json([
-                'message' => 'Captura el precio de los productos sujetos a cotizacion antes de convertir: ' . $names->implode(', ') . '.',
-                'errors' => $pendingItems->map(fn (QuoteItem $item) => [
-                    'status' => '422',
-                    'code' => 'price_pending',
-                    'title' => 'Precio por confirmar',
-                    'detail' => 'Captura el precio de ' . ($item->product_name ?? $item->product->name ?? ('#' . $item->product_id)) . ' antes de convertir.',
-                    'meta' => [
-                        'quote_item_id' => $item->id,
-                        'product_id' => $item->product_id,
-                        'product_name' => $item->product_name ?? $item->product?->name,
-                        'product_sku' => $item->product_sku ?? $item->product?->sku,
-                    ],
-                ])->all(),
-            ], 422);
+        // P2 granel / P2b (D8): ninguna linea pasa a pedido o venta con precio
+        // efectivo <= 0, sea cual sea el tipo actual del producto (la orden y
+        // el CFDI saldrian en $0).
+        if ($rejection = $this->pricePendingRejection($quote, 'convertir')) {
+            return $rejection;
         }
 
         // Validacion de stock diferenciada por tipo de orden
@@ -487,7 +481,7 @@ class QuoteController extends Controller
                         ]
                     ]
                 ],
-                'message' => 'Quote converted to sales order successfully'
+                'message' => 'Cotización convertida en pedido.'
             ];
 
             // Pedido: los faltantes no bloquean, pero se reportan para compras
@@ -511,13 +505,13 @@ class QuoteController extends Controller
 
         if (!$quote->cancel()) {
             return response()->json([
-                'error' => 'This quote cannot be cancelled'
+                'error' => 'Esta cotización no se puede cancelar en su estado actual.'
             ], 400);
         }
 
         return response()->json([
             'data' => $this->transformQuote($quote->fresh()),
-            'message' => 'Quote cancelled successfully'
+            'message' => 'Cotización cancelada.'
         ]);
     }
 
@@ -548,7 +542,7 @@ class QuoteController extends Controller
 
             return response()->json([
                 'data' => $this->transformQuote($newQuote->fresh(['items', 'contact'])),
-                'message' => 'Quote duplicated successfully'
+                'message' => 'Cotización duplicada.'
             ], 201);
         });
     }
@@ -689,7 +683,7 @@ class QuoteController extends Controller
         // Validate quote can generate PO
         if (!$quote->canGeneratePurchaseOrder) {
             return response()->json([
-                'error' => 'Cannot generate purchase order. Quote must be accepted or converted and not already have a PO.'
+                'error' => 'No se puede generar la orden de compra: la cotización debe estar aceptada o convertida y no tener ya una orden de compra.'
             ], 400);
         }
 
@@ -772,7 +766,7 @@ class QuoteController extends Controller
                         ]
                     ]
                 ],
-                'message' => 'Purchase order generated successfully from quote'
+                'message' => 'Orden de compra generada desde la cotización.'
             ], 201);
         });
     }
@@ -829,7 +823,7 @@ class QuoteController extends Controller
 
         if (!$user) {
             return response()->json([
-                'error' => 'Authentication required'
+                'error' => 'Debes iniciar sesión.'
             ], 401);
         }
 
@@ -867,7 +861,7 @@ class QuoteController extends Controller
 
         if ($products->count() !== $productIds->count()) {
             return response()->json([
-                'error' => 'One or more products are not available'
+                'error' => 'Uno o más productos no están disponibles.'
             ], 400);
         }
 
@@ -892,7 +886,7 @@ class QuoteController extends Controller
                 $product = $products->get($item['product_id']);
                 // P2 granel: sujeto a cotizacion = precio pendiente (0 + flag
                 // price_pending del item); no hay precio que convertir.
-                $productPrice = $product->isQuoteOnly() ? 0 : ($product->price ?? 0);
+                $productPrice = $product->requiresQuote() ? 0 : (float) $product->price;
 
                 // Convert price if product is in a different currency
                 $productCurrencyCode = $product->currency?->code ?? $baseCurrency;
@@ -965,6 +959,46 @@ class QuoteController extends Controller
                 ]
             ], 201);
         });
+    }
+
+    /**
+     * 422 con detalle por linea si la cotizacion tiene lineas sin precio de
+     * venta (precio efectivo <= 0), o null si todas tienen precio.
+     *
+     * @param  string  $action  verbo en infinitivo para el mensaje ("convertir", "aceptar")
+     */
+    private function pricePendingRejection(Quote $quote, string $action): ?JsonResponse
+    {
+        $quote->loadMissing('items.product');
+        $pendingItems = $quote->items->filter(fn (QuoteItem $item) => $item->price_pending)->values();
+        if ($pendingItems->isEmpty()) {
+            return null;
+        }
+
+        $name = fn (QuoteItem $item) => $item->product_name ?? $item->product->name ?? ('#' . $item->product_id);
+        $names = $pendingItems->map($name);
+
+        $message = $action === 'aceptar'
+            ? 'Esta cotización tiene productos con precio por confirmar: ' . $names->implode(', ') . '. Podrás aceptarla cuando el vendedor capture el precio.'
+            : 'Captura el precio de venta (mayor a $0) de estos productos antes de convertir: ' . $names->implode(', ') . '.';
+
+        return response()->json([
+            'message' => $message,
+            'errors' => $pendingItems->map(fn (QuoteItem $item) => [
+                'status' => '422',
+                'code' => 'price_pending',
+                'title' => 'Precio por confirmar',
+                'detail' => $action === 'aceptar'
+                    ? 'El precio de ' . $name($item) . ' está por confirmar.'
+                    : 'Captura el precio de ' . $name($item) . ' antes de convertir.',
+                'meta' => [
+                    'quote_item_id' => $item->id,
+                    'product_id' => $item->product_id,
+                    'product_name' => $item->product_name ?? $item->product?->name,
+                    'product_sku' => $item->product_sku ?? $item->product?->sku,
+                ],
+            ])->all(),
+        ], 422);
     }
 
     /**

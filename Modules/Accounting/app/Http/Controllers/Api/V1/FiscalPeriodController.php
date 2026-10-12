@@ -36,10 +36,10 @@ class FiscalPeriodController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('fiscal-periods.show')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $checklist = $this->periodCloseService->getCloseChecklist($fiscalPeriod);
@@ -56,10 +56,10 @@ class FiscalPeriodController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('fiscal-periods.update')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $force = $request->boolean('force', false);
@@ -78,10 +78,10 @@ class FiscalPeriodController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('fiscal-periods.update')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $reason = $request->input('reason');
@@ -100,10 +100,10 @@ class FiscalPeriodController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('fiscal-periods.show')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $summary = $this->periodCloseService->getPeriodSummary($fiscalPeriod);

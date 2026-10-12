@@ -441,7 +441,7 @@ class InventoryMovement extends Model
     public function approve(int $userId, ?string $notes = null): bool
     {
         if (!$this->isAdjustment()) {
-            throw new \Exception('Only adjustment movements require approval');
+            throw new \Exception('Solo los ajustes requieren aprobación.');
         }
 
         if ($this->approval_status === 'approved') {
@@ -449,7 +449,7 @@ class InventoryMovement extends Model
         }
 
         if ($this->approval_status === 'rejected') {
-            throw new \Exception('Cannot approve a rejected movement');
+            throw new \Exception('No se puede aprobar un movimiento rechazado.');
         }
 
         $this->update([
@@ -473,11 +473,11 @@ class InventoryMovement extends Model
     public function reject(int $userId, string $reason): bool
     {
         if (!$this->isAdjustment()) {
-            throw new \Exception('Only adjustment movements can be rejected');
+            throw new \Exception('Solo se pueden rechazar ajustes.');
         }
 
         if ($this->approval_status === 'approved') {
-            throw new \Exception('Cannot reject an approved movement');
+            throw new \Exception('No se puede rechazar un movimiento aprobado.');
         }
 
         $this->update([

@@ -166,17 +166,24 @@ class QuoteItem extends Model
     }
 
     /**
-     * P2 granel: linea de un producto sujeto a cotizacion cuyo precio aun no
-     * captura el vendedor (0 es el marcador). Bloquea convertir a pedido o
-     * venta; la cotizacion si se puede enviar con la leyenda (decision D1).
+     * Linea sin precio de venta (P2 granel, endurecido en P2b por D8): el
+     * precio efectivo (quoted_price, o unit_price si no hay cotizado) es <= 0,
+     * sin importar el tipo ACTUAL del producto. Asi un producto que paso de
+     * quote_only a fixed despues de cotizar no deja colar la linea en $0.
+     * Bloquea convertir a pedido o venta y la aceptacion desde el portal del
+     * cliente (D9); la cotizacion si se puede enviar con la leyenda (D1).
      */
     public function getPricePendingAttribute(): bool
     {
-        if ((float) ($this->quoted_price ?? 0) > 0) {
-            return false;
-        }
+        return $this->effectivePrice() <= 0;
+    }
 
-        return (bool) $this->product?->isQuoteOnly();
+    /**
+     * Precio con el que la linea pasaria a pedido.
+     */
+    public function effectivePrice(): float
+    {
+        return (float) ($this->quoted_price ?? $this->unit_price ?? 0);
     }
 
     public function getPriceVarianceAttribute(): float

@@ -70,7 +70,7 @@ class CouponValidateTest extends TestCase
         $response->assertStatus(404);
         $response->assertJson([
             'valid' => false,
-            'error' => 'Coupon not found',
+            'error' => 'Cupón no encontrado.',
         ]);
     }
 
@@ -89,7 +89,7 @@ class CouponValidateTest extends TestCase
         $response->assertStatus(400);
         $response->assertJson([
             'valid' => false,
-            'error' => 'Coupon is inactive',
+            'error' => 'El cupón no está activo.',
         ]);
     }
 
@@ -109,7 +109,7 @@ class CouponValidateTest extends TestCase
         $response->assertStatus(400);
         $response->assertJson([
             'valid' => false,
-            'error' => 'Coupon has expired',
+            'error' => 'El cupón expiró.',
         ]);
     }
 
@@ -129,7 +129,7 @@ class CouponValidateTest extends TestCase
         $response->assertStatus(400);
         $response->assertJson([
             'valid' => false,
-            'error' => 'Coupon is not yet active',
+            'error' => 'El cupón todavía no está vigente.',
         ]);
     }
 
@@ -150,7 +150,7 @@ class CouponValidateTest extends TestCase
         $response->assertStatus(400);
         $response->assertJson([
             'valid' => false,
-            'error' => 'Coupon usage limit reached',
+            'error' => 'El cupón alcanzó su límite de usos.',
         ]);
     }
 

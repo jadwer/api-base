@@ -22,7 +22,7 @@ class RecommendationEngine
         // P2 granel: un producto sujeto a cotizacion (o sin precio) no tiene
         // precio de referencia; antes el rango quedaba en 0..0 y no salia nada.
         // Para esos se omite el filtro por precio.
-        $hasListPrice = ! $product->isQuoteOnly() && $product->price !== null;
+        $hasListPrice = ! $product->requiresQuote();
 
         return Product::where('id', '!=', $product->id)
             ->where(function ($query) use ($product) {

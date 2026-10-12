@@ -25,16 +25,16 @@ class AccountBalanceRequest extends ResourceRequest
 
     public function messages(): array
     {
-        return [            'accountId.required' => 'El campo Account id es obligatorio.',
-            'accountId.integer' => 'El campo Account id debe ser un número entero.',
-            'fiscalYear.required' => 'El campo Fiscal year es obligatorio.',
-            'fiscalYear.integer' => 'El campo Fiscal year debe ser un número entero.',
-            'fiscalMonth.required' => 'El campo Fiscal month es obligatorio.',
-            'fiscalMonth.integer' => 'El campo Fiscal month debe ser un número entero.',
-            'openingBalance.numeric' => 'El campo Opening balance debe ser un número.',
-            'periodDebits.numeric' => 'El campo Period debits debe ser un número.',
-            'periodCredits.numeric' => 'El campo Period credits debe ser un número.',
-            'closingBalance.numeric' => 'El campo Closing balance debe ser un número.',
+        return [            'accountId.required' => 'El campo cuenta es obligatorio.',
+            'accountId.integer' => 'El campo cuenta debe ser un número entero.',
+            'fiscalYear.required' => 'El campo ejercicio fiscal es obligatorio.',
+            'fiscalYear.integer' => 'El campo ejercicio fiscal debe ser un número entero.',
+            'fiscalMonth.required' => 'El campo mes fiscal es obligatorio.',
+            'fiscalMonth.integer' => 'El campo mes fiscal debe ser un número entero.',
+            'openingBalance.numeric' => 'El campo saldo inicial debe ser un número.',
+            'periodDebits.numeric' => 'El campo cargos del periodo debe ser un número.',
+            'periodCredits.numeric' => 'El campo abonos del periodo debe ser un número.',
+            'closingBalance.numeric' => 'El campo saldo final debe ser un número.',
         ];
     }
 }

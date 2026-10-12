@@ -34,12 +34,12 @@ class CheckoutService
     {
         // Validate cart is not empty
         if ($cart->isEmpty()) {
-            throw new \Exception('Cannot checkout with empty cart');
+            throw new \Exception('No se puede pagar un carrito vacío.');
         }
 
         // Validate cart is active
         if (!$cart->isActive()) {
-            throw new \Exception('Cart is not active or has expired');
+            throw new \Exception('El carrito no está activo o expiró.');
         }
 
         // P2 granel: precio sujeto a cotizacion no entra al flujo de pago.
@@ -108,11 +108,11 @@ class CheckoutService
     ): CheckoutSession {
         // Validate session can be updated
         if ($session->getIsExpiredAttribute()) {
-            throw new \Exception('Checkout session has expired');
+            throw new \Exception('La sesión de pago expiró.');
         }
 
         if ($session->status !== 'initiated') {
-            throw new \Exception('Cannot update address for session in current status');
+            throw new \Exception('No se puede cambiar la dirección de la sesión de pago en su estado actual.');
         }
 
         // Use shipping address as billing if not provided
@@ -138,11 +138,11 @@ class CheckoutService
     {
         // Validate session
         if ($session->getIsExpiredAttribute()) {
-            throw new \Exception('Checkout session has expired');
+            throw new \Exception('La sesión de pago expiró.');
         }
 
         if ($session->step !== 'shipping') {
-            throw new \Exception('Must complete address step first');
+            throw new \Exception('Primero completa el paso de dirección.');
         }
 
         // Get shipping method
@@ -219,7 +219,7 @@ class CheckoutService
     {
         // Validate inventory before reserving
         if (!$this->validateInventoryAvailability($session)) {
-            throw new \Exception('Insufficient inventory for one or more items');
+            throw new \Exception('Existencia insuficiente para uno o más productos.');
         }
 
         // Reserve items
@@ -248,7 +248,7 @@ class CheckoutService
     public function completeCheckout(CheckoutSession $session): SalesOrder
     {
         if (!$session->canBeCompleted()) {
-            throw new \Exception('Checkout session cannot be completed in current state');
+            throw new \Exception('La sesión de pago no se puede completar en su estado actual.');
         }
 
         return DB::transaction(function () use ($session) {

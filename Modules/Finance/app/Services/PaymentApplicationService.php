@@ -169,14 +169,14 @@ class PaymentApplicationService
     {
         // 1. Validar que el monto sea positivo
         if ($amount <= 0) {
-            throw new \Exception("Payment amount must be greater than zero");
+            throw new \Exception("El importe del pago debe ser mayor a cero.");
         }
 
         // 2. Validar que el payment no exceda el balance pendiente de la invoice
         $remainingBalance = $this->arInvoiceService->calculateRemainingBalance($invoice);
         if ($amount > $remainingBalance + 0.01) { // Tolerancia de 1 centavo
             throw new \Exception(
-                "Payment amount ($amount) exceeds invoice remaining balance ($remainingBalance)"
+                "El importe del pago ($amount) excede el saldo pendiente de la factura ($remainingBalance)."
             );
         }
 
@@ -184,25 +184,25 @@ class PaymentApplicationService
         $unappliedAmount = $payment->amount - $payment->applied_amount;
         if ($amount > $unappliedAmount + 0.01) {
             throw new \Exception(
-                "Payment amount ($amount) exceeds unapplied payment balance ($unappliedAmount)"
+                "El importe ($amount) excede el saldo sin aplicar del pago ($unappliedAmount)."
             );
         }
 
         // 4. Validar que el contact del payment coincida con el de la invoice
         if ($payment->contact_id !== $invoice->contact_id) {
             throw new \Exception(
-                "Payment contact ({$payment->contact_id}) does not match invoice contact ({$invoice->contact_id})"
+                "El contacto del pago ({$payment->contact_id}) no coincide con el de la factura ({$invoice->contact_id})."
             );
         }
 
         // 5. Validar que la invoice no esté ya completamente pagada
         if ($this->arInvoiceService->isFullyPaid($invoice)) {
-            throw new \Exception("Invoice is already fully paid");
+            throw new \Exception("La factura ya está pagada por completo.");
         }
 
         // 6. Validar que ambos estén activos
         if (!$payment->is_active || !$invoice->is_active) {
-            throw new \Exception("Payment or Invoice is not active");
+            throw new \Exception("El pago o la factura no están activos.");
         }
     }
 
@@ -267,7 +267,7 @@ class PaymentApplicationService
                 'payment_number' => $payment->payment_number,
                 'error' => $e->getMessage(),
             ]);
-            throw new \Exception("Failed to create GL entry: " . $e->getMessage());
+            throw new \Exception("No se pudo crear la póliza contable: " . $e->getMessage());
         }
     }
 

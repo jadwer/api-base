@@ -533,6 +533,31 @@ class FractionationSafetyTest extends TestCase
         $this->execute($this->payload($source, $dest, 10, ['product_batch_id' => $batch->id]))
             ->assertStatus(422)
             ->assertJsonPath('errors.0.code', 'batch_expired');
+        $this->assertStringContainsString('caducó el ' . now()->subDay()->format('d/m/Y'), $this->execute($this->payload($source, $dest, 10, ['product_batch_id' => $batch->id]))->json('errors.0.detail'));
+    }
+
+    /**
+     * D10: un lote en cuarentena no se fracciona ni se sugiere, y la vista
+     * previa explica por que (el formulario lo muestra junto al lote).
+     */
+    public function test_quarantined_batch_is_explained_not_suggested_and_rejected(): void
+    {
+        [$source, $dest] = $this->bulkPair();
+        $this->stock($source, 500, 30);
+        $quarantined = $this->batch($source, 100, ['expiration_date' => now()->addDays(10)->format('Y-m-d'), 'quality_status' => 'quarantine']);
+        $good = $this->batch($source, 100, ['expiration_date' => now()->addMonths(3)->format('Y-m-d')]);
+
+        $calc = $this->calculate($this->payload($source, $dest, 10))->assertOk();
+        $this->assertSame($good->id, $calc->json('data.suggested_batch_id'));
+        $row = collect($calc->json('data.batches'))->firstWhere('id', $quarantined->id);
+        $this->assertFalse($row['is_usable']);
+        $this->assertSame('el lote está en cuarentena', $row['unavailable_reason']);
+        $this->assertTrue(collect($calc->json('data.batches'))->firstWhere('id', $good->id)['is_usable']);
+
+        $response = $this->execute($this->payload($source, $dest, 10, ['product_batch_id' => $quarantined->id]))
+            ->assertStatus(422)
+            ->assertJsonPath('errors.0.code', 'batch_quality_blocked');
+        $this->assertStringContainsString('cuarentena', $response->json('errors.0.detail'));
     }
 
     public function test_calculate_suggests_fefo_batch_skipping_expired_and_short_ones(): void

@@ -194,7 +194,7 @@ class SalesOrderInventoryReservationTest extends TestCase
 
         // Expect exception
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Insufficient stock for product ID');
+        $this->expectExceptionMessage('Existencia insuficiente del producto');
 
         // Act
         $this->service->updateStatus($order, 'confirmed');

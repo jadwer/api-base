@@ -38,13 +38,13 @@ class PurchaseOrderController extends Controller
         if (!$user) {
             return response()->json([
                 'jsonapi' => ['version' => '1.0'],
-                'errors' => [['status' => '401', 'title' => 'Unauthenticated']],
+                'errors' => [['status' => '401', 'title' => 'No autenticado.']],
             ], 401);
         }
         if (!$user->hasAnyRole(['god', 'admin']) && !$user->hasPermissionTo('purchase-orders.index')) {
             return response()->json([
                 'jsonapi' => ['version' => '1.0'],
-                'errors' => [['status' => '403', 'title' => 'Forbidden']],
+                'errors' => [['status' => '403', 'title' => 'No tiene permisos para esta acción.']],
             ], 403);
         }
 
@@ -98,13 +98,13 @@ class PurchaseOrderController extends Controller
         if (!$user) {
             return response()->json([
                 'jsonapi' => ['version' => '1.0'],
-                'errors' => [['status' => '401', 'title' => 'Unauthenticated']],
+                'errors' => [['status' => '401', 'title' => 'No autenticado.']],
             ], 401);
         }
         if (!$user->hasAnyRole(['god', 'admin']) && !$user->hasPermissionTo('purchase-orders.index')) {
             return response()->json([
                 'jsonapi' => ['version' => '1.0'],
-                'errors' => [['status' => '403', 'title' => 'Forbidden']],
+                'errors' => [['status' => '403', 'title' => 'No tiene permisos para esta acción.']],
             ], 403);
         }
 
@@ -194,8 +194,8 @@ class PurchaseOrderController extends Controller
                     'errors' => [
                         [
                             'status' => '403',
-                            'title' => 'Forbidden',
-                            'detail' => 'You do not have permission to approve this purchase order.',
+                            'title' => 'No tiene permisos para esta acción.',
+                            'detail' => 'No tiene permisos para aprobar esta orden de compra.',
                         ]
                     ]
                 ], 403);
@@ -231,7 +231,7 @@ class PurchaseOrderController extends Controller
                 'errors' => [
                     [
                         'status' => '400',
-                        'title' => 'Approval Failed',
+                        'title' => 'No se pudo aprobar',
                         'detail' => $e->getMessage(),
                     ]
                 ]
@@ -269,7 +269,7 @@ class PurchaseOrderController extends Controller
                     ]
                 ],
                 'meta' => [
-                    'message' => 'Purchase order has been rejected.',
+                    'message' => 'La orden de compra fue rechazada.',
                 ]
             ], 200);
 
@@ -278,7 +278,7 @@ class PurchaseOrderController extends Controller
                 'errors' => [
                     [
                         'status' => '400',
-                        'title' => 'Rejection Failed',
+                        'title' => 'No se pudo rechazar',
                         'detail' => $e->getMessage(),
                     ]
                 ]
@@ -303,17 +303,17 @@ class PurchaseOrderController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('purchase-orders.update')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         if (!in_array($purchaseOrder->status, ['pending', 'approved'])) {
             return response()->json([
                 'errors' => [[
                     'status' => '422',
-                    'title' => 'Invalid State',
+                    'title' => 'Estado no válido',
                     'detail' => "Solo se pueden recibir ordenes en estado 'pending' o 'approved'. Estado actual: {$purchaseOrder->status}",
                 ]]
             ], 422);
@@ -358,7 +358,7 @@ class PurchaseOrderController extends Controller
                     ],
                 ],
                 'meta' => [
-                    'message' => 'Purchase order received.',
+                    'message' => 'Orden de compra recibida.',
                 ],
             ], 200);
 
@@ -366,7 +366,7 @@ class PurchaseOrderController extends Controller
             return response()->json([
                 'errors' => [[
                     'status' => '400',
-                    'title' => 'Receive Failed',
+                    'title' => 'No se pudo recibir',
                     'detail' => $e->getMessage(),
                 ]]
             ], 400);
@@ -387,17 +387,17 @@ class PurchaseOrderController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('purchase-orders.update')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         if ($purchaseOrder->status === 'cancelled') {
             return response()->json([
                 'errors' => [[
                     'status' => '422',
-                    'title' => 'Invalid State',
+                    'title' => 'Estado no válido',
                     'detail' => 'La orden ya esta cancelada.',
                 ]]
             ], 422);
@@ -429,7 +429,7 @@ class PurchaseOrderController extends Controller
                     ],
                 ],
                 'meta' => [
-                    'message' => 'Purchase order cancelled.',
+                    'message' => 'Orden de compra cancelada.',
                 ],
             ], 200);
 
@@ -437,7 +437,7 @@ class PurchaseOrderController extends Controller
             return response()->json([
                 'errors' => [[
                     'status' => '400',
-                    'title' => 'Cancellation Failed',
+                    'title' => 'No se pudo cancelar',
                     'detail' => $e->getMessage(),
                 ]]
             ], 400);

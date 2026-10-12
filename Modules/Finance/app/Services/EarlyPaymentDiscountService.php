@@ -50,7 +50,7 @@ class EarlyPaymentDiscountService
             '1/15 Net 45' => self::TERM_1_15_NET_45,
             '3/5 Net 30' => self::TERM_3_5_NET_30,
             '2/15 Net 60' => self::TERM_2_15_NET_60,
-            default => throw new \InvalidArgumentException("Unknown payment term preset: {$preset}"),
+            default => throw new \InvalidArgumentException("Plazo de pago desconocido: {$preset}."),
         };
 
         return $this->applyDiscountTerms($invoice, $terms['percent'], $terms['days']);

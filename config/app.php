@@ -95,7 +95,13 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    // Regla 9 (2026-10-10): todo mensaje que ve el usuario va en espanol. Se
+    // fija aqui y NO se lee de APP_LOCALE porque los .env existentes (dev,
+    // prod, tenants) traen APP_LOCALE=en de la plantilla. Las traducciones
+    // viven en lang/es (validacion, auth, contrasenas) y lang/es.json
+    // (titulos HTTP y textos del framework). El respaldo en ingles solo
+    // aplica a una clave que no exista en espanol.
+    'locale' => 'es',
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 

@@ -19,7 +19,7 @@ class ContactCatalogController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
 
         // Solo lectura y sin datos sensibles: basta estar autenticado.

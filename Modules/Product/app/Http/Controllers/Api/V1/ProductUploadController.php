@@ -25,12 +25,12 @@ class ProductUploadController extends Controller
         $user = $request->user('sanctum');
 
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
 
         // User must have permission to create or update products to upload images
         if (!$user->can('products.store') && !$user->can('products.update')) {
-            return response()->json(['error' => 'Forbidden - requires products.store or products.update permission'], 403);
+            return response()->json(['error' => 'No tiene permisos para modificar productos.'], 403);
         }
 
         $request->validate([
@@ -65,12 +65,12 @@ class ProductUploadController extends Controller
         $user = $request->user('sanctum');
 
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
 
         // User must have permission to create or update products to upload datasheets
         if (!$user->can('products.store') && !$user->can('products.update')) {
-            return response()->json(['error' => 'Forbidden - requires products.store or products.update permission'], 403);
+            return response()->json(['error' => 'No tiene permisos para modificar productos.'], 403);
         }
 
         $request->validate([

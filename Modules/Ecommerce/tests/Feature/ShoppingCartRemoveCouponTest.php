@@ -31,7 +31,7 @@ class ShoppingCartRemoveCouponTest extends TestCase
 
         $response->assertOk();
         $response->assertJson([
-            'message' => 'Coupon removed successfully',
+            'message' => 'Cupón quitado.',
         ]);
 
         // Cart should have coupon removed

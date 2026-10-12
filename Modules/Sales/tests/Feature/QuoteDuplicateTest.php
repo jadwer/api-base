@@ -34,7 +34,7 @@ class QuoteDuplicateTest extends TestCase
 
         $response->assertStatus(201);
         $response->assertJson([
-            'message' => 'Quote duplicated successfully',
+            'message' => 'Cotización duplicada.',
         ]);
 
         // Duplicated quote should be draft

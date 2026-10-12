@@ -19,10 +19,10 @@ class ProductImageCustomController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('product-images.update')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $request->validate([
@@ -35,7 +35,7 @@ class ProductImageCustomController extends Controller
         // Verify all images belong to same product
         $productIds = ProductImage::whereIn('id', $imageIds)->pluck('product_id')->unique();
         if ($productIds->count() !== 1) {
-            return response()->json(['error' => 'All images must belong to the same product'], 422);
+            return response()->json(['error' => 'Todas las imágenes deben pertenecer al mismo producto.'], 422);
         }
 
         // Update sort_order based on array position
@@ -45,7 +45,7 @@ class ProductImageCustomController extends Controller
         app(\Modules\Product\Services\StorefrontRevalidator::class)->productId((int) $productIds->first());
 
         return response()->json([
-            'message' => 'Images reordered successfully',
+            'message' => 'Imágenes reordenadas.',
         ]);
     }
 
@@ -58,10 +58,10 @@ class ProductImageCustomController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('product-images.update')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $productImage->update(['is_primary' => true]);
@@ -69,7 +69,7 @@ class ProductImageCustomController extends Controller
         $productImage->refresh();
 
         return response()->json([
-            'message' => 'Image set as primary successfully',
+            'message' => 'Imagen marcada como principal.',
             'data' => [
                 'type' => 'product-images',
                 'id' => (string) $productImage->id,

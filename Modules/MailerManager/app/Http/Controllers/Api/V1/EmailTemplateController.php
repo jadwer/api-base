@@ -16,10 +16,10 @@ class EmailTemplateController extends JsonApiController
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('email-templates.show') && !$user->hasAnyRole(['god', 'admin'])) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $sampleData = $request->input('sample_data', null);
@@ -38,10 +38,10 @@ class EmailTemplateController extends JsonApiController
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('email-templates.update') && !$user->hasAnyRole(['god', 'admin'])) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $request->validate(['email' => 'required|email']);
@@ -83,10 +83,10 @@ class EmailTemplateController extends JsonApiController
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('email-templates.update') && !$user->hasAnyRole(['god', 'admin'])) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $request->validate([
@@ -118,10 +118,10 @@ class EmailTemplateController extends JsonApiController
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('email-templates.update') && !$user->hasAnyRole(['god', 'admin'])) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         if ($image->email_template_id !== $emailTemplate->id) {

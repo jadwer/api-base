@@ -9,6 +9,14 @@ use Modules\Product\Models\Product;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
+/**
+ * @property int $id
+ * @property int $shopping_cart_id
+ * @property int $product_id
+ * @property float $quantity
+ * @property float $unit_price
+ * @property float $total
+ */
 class CartItem extends Model
 {
     use HasFactory, HasPermissions, LogsActivity;

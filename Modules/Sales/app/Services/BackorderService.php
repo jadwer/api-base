@@ -38,7 +38,7 @@ class BackorderService
         array $data = []
     ): Backorder {
         if ($backorderQuantity <= 0) {
-            throw new InvalidArgumentException('Backorder quantity must be greater than 0');
+            throw new InvalidArgumentException('La cantidad pendiente debe ser mayor a 0.');
         }
 
         // Check if backorder already exists for this item (with lock to prevent race condition)
@@ -248,7 +248,7 @@ class BackorderService
         }
 
         if ($quantity <= 0) {
-            throw new InvalidArgumentException('Fulfill quantity must be greater than 0.');
+            throw new InvalidArgumentException('La cantidad a surtir debe ser mayor a 0.');
         }
 
         if ($quantity > $backorder->remaining_quantity) {

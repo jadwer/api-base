@@ -104,21 +104,21 @@ class JournalEntryRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'journalId.required' => 'El campo Journal id es obligatorio.',
-            'fiscalPeriodId.required' => 'El campo Fiscal period id es obligatorio.',
-            'number.string' => 'El campo Number debe ser texto.',
-            'number.max' => 'El campo Number no puede tener más de 255 caracteres.',
+            'journalId.required' => 'El campo diario es obligatorio.',
+            'fiscalPeriodId.required' => 'El campo periodo fiscal es obligatorio.',
+            'number.string' => 'El campo número debe ser texto.',
+            'number.max' => 'El campo número no puede tener más de 255 caracteres.',
             'number.unique' => 'Este Number ya está en uso.',
-            'date.required' => 'El campo Date es obligatorio.',
-            'date.date' => 'El campo Date debe ser una fecha válida.',
-            'reference.string' => 'El campo Reference debe ser texto.',
-            'reference.max' => 'El campo Reference no puede tener más de 255 caracteres.',
-            'description.string' => 'El campo Description debe ser texto.',
-            'status.required' => 'El campo Status es obligatorio.',
-            'status.string' => 'El campo Status debe ser texto.',
-            'status.in' => 'El campo Status debe ser: draft, approved, posted o reversed.',
-            'reversal_reason.string' => 'El campo Reversal reason debe ser texto.',
-            'metadata.array' => 'El campo Metadata debe ser un arreglo.',
+            'date.required' => 'El campo fecha es obligatorio.',
+            'date.date' => 'El campo fecha debe ser una fecha válida.',
+            'reference.string' => 'El campo referencia debe ser texto.',
+            'reference.max' => 'El campo referencia no puede tener más de 255 caracteres.',
+            'description.string' => 'El campo descripción debe ser texto.',
+            'status.required' => 'El campo estado es obligatorio.',
+            'status.string' => 'El campo estado debe ser texto.',
+            'status.in' => 'El campo estado debe ser: draft, approved, posted o reversed.',
+            'reversal_reason.string' => 'El campo motivo de la reversa debe ser texto.',
+            'metadata.array' => 'El campo metadatos debe ser un arreglo.',
         ];
     }
 }

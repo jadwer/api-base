@@ -68,7 +68,7 @@ class PacWebhookController extends Controller
                     'folio' => $data['folio'] ?? null,
                     'uuid' => $data['uuid'] ?? null,
                 ]);
-                return response()->json(['message' => 'Invoice not found'], 404);
+                return response()->json(['message' => 'Factura no encontrada.'], 404);
             }
 
             // Update invoice based on status
@@ -150,7 +150,7 @@ class PacWebhookController extends Controller
                 Log::warning('Invoice not found for cancel webhook', [
                     'uuid' => $data['uuid'],
                 ]);
-                return response()->json(['message' => 'Invoice not found'], 404);
+                return response()->json(['message' => 'Factura no encontrada.'], 404);
             }
 
             // Update invoice based on status

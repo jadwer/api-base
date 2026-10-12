@@ -24,7 +24,7 @@ class QuoteAcceptTest extends TestCase
 
         $response->assertOk();
         $response->assertJson([
-            'message' => 'Quote accepted successfully',
+            'message' => 'Cotización aceptada.',
         ]);
         $this->assertEquals('accepted', $response->json('data.attributes.status'));
         $this->assertNotNull($response->json('data.attributes.acceptedAt'));
@@ -98,7 +98,7 @@ class QuoteAcceptTest extends TestCase
 
         $response->assertStatus(400);
         $response->assertJson([
-            'error' => 'This quote cannot be accepted in its current status',
+            'error' => 'Esta cotización no se puede aceptar en su estado actual.',
         ]);
     }
 

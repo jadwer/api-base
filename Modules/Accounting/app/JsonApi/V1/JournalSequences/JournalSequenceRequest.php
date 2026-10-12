@@ -25,12 +25,12 @@ class JournalSequenceRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'journalId.required' => 'El campo Journal id es obligatorio.',
-            'fiscalYear.required' => 'El campo Fiscal year es obligatorio.',
-            'fiscalYear.integer' => 'El campo Fiscal year debe ser un número entero.',
-            'currentNumber.required' => 'El campo Current number es obligatorio.',
-            'currentNumber.integer' => 'El campo Current number debe ser un número entero.',
-            'metadata.array' => 'El campo Metadata debe ser un arreglo.',
+            'journalId.required' => 'El campo diario es obligatorio.',
+            'fiscalYear.required' => 'El campo ejercicio fiscal es obligatorio.',
+            'fiscalYear.integer' => 'El campo ejercicio fiscal debe ser un número entero.',
+            'currentNumber.required' => 'El campo número actual es obligatorio.',
+            'currentNumber.integer' => 'El campo número actual debe ser un número entero.',
+            'metadata.array' => 'El campo metadatos debe ser un arreglo.',
         ];
     }
 }

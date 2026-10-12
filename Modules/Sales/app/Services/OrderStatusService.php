@@ -69,7 +69,7 @@ class OrderStatusService
                     ->exists();
                 if (!$hasDeliveredShipment) {
                     throw new \Exception(
-                        "Order has shipments but none are marked as delivered yet. Mark at least one shipment as delivered first."
+                        "El pedido tiene envíos pero ninguno está entregado. Marca al menos un envío como entregado primero."
                     );
                 }
             }
@@ -409,7 +409,7 @@ class OrderStatusService
     public function cancelOrder(SalesOrder $order, ?string $reason = null): SalesOrder
     {
         if (!$this->canTransitionTo($order, 'cancelled')) {
-            throw new \Exception('Order cannot be cancelled in current status');
+            throw new \Exception('El pedido no se puede cancelar en su estado actual.');
         }
 
         return $this->updateStatus($order, 'cancelled', $reason ?? 'Order cancelled by customer');
@@ -477,7 +477,7 @@ class OrderStatusService
                         'required' => $item->quantity,
                         'available' => $availableQty,
                     ]);
-                    throw new \Exception("Insufficient stock for product ID: {$item->product_id}");
+                    throw new \Exception("Existencia insuficiente del producto #{$item->product_id}.");
                 }
 
                 // Reserve inventory: only increment reserved_quantity

@@ -27,19 +27,19 @@ class AccountMappingRequest extends ResourceRequest
 
     public function messages(): array
     {
-        return [            'mappingType.required' => 'El campo Mapping type es obligatorio.',
-            'mappingType.string' => 'El campo Mapping type debe ser texto.',
-            'mappingType.max' => 'El campo Mapping type no puede tener más de 255 caracteres.',
-            'accountId.required' => 'El campo Account id es obligatorio.',
-            'version.required' => 'El campo Version es obligatorio.',
-            'version.integer' => 'El campo Version debe ser un número entero.',
-            'effectiveFrom.required' => 'El campo Effective from es obligatorio.',
-            'effectiveFrom.date' => 'El campo Effective from debe ser una fecha válida.',
-            'effectiveTo.date' => 'El campo Effective to debe ser una fecha válida.',
-            'isActive.required' => 'El campo Is active es obligatorio.',
-            'isActive.boolean' => 'El campo Is active debe ser verdadero o falso.',
-            'createdById.required' => 'El campo Created by id es obligatorio.',
-            'notes.string' => 'El campo Notes debe ser texto.',
+        return [            'mappingType.required' => 'El campo tipo de mapeo es obligatorio.',
+            'mappingType.string' => 'El campo tipo de mapeo debe ser texto.',
+            'mappingType.max' => 'El campo tipo de mapeo no puede tener más de 255 caracteres.',
+            'accountId.required' => 'El campo cuenta es obligatorio.',
+            'version.required' => 'El campo versión es obligatorio.',
+            'version.integer' => 'El campo versión debe ser un número entero.',
+            'effectiveFrom.required' => 'El campo vigente desde es obligatorio.',
+            'effectiveFrom.date' => 'El campo vigente desde debe ser una fecha válida.',
+            'effectiveTo.date' => 'El campo vigente hasta debe ser una fecha válida.',
+            'isActive.required' => 'El campo activo es obligatorio.',
+            'isActive.boolean' => 'El campo activo debe ser verdadero o falso.',
+            'createdById.required' => 'El campo creado por es obligatorio.',
+            'notes.string' => 'El campo notas debe ser texto.',
         ];
     }
 }

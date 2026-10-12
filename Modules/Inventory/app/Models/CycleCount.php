@@ -112,7 +112,7 @@ class CycleCount extends Model
     public function startCount(): void
     {
         if (!$this->isScheduled()) {
-            throw new \Exception('Can only start a scheduled count');
+            throw new \Exception('Solo se puede iniciar un conteo programado.');
         }
 
         $this->update([
@@ -123,7 +123,7 @@ class CycleCount extends Model
     public function recordCount(float $countedQuantity, ?int $countedById = null): void
     {
         if (!$this->isInProgress()) {
-            throw new \Exception('Can only record count for in-progress counts');
+            throw new \Exception('Solo se puede registrar el conteo de un conteo en proceso.');
         }
 
         // Get current system quantity
@@ -147,7 +147,7 @@ class CycleCount extends Model
     public function cancel(?string $reason = null): void
     {
         if ($this->isCompleted()) {
-            throw new \Exception('Cannot cancel a completed count');
+            throw new \Exception('No se puede cancelar un conteo completado.');
         }
 
         $this->update([

@@ -23,7 +23,7 @@ class QuoteCancelTest extends TestCase
 
         $response->assertOk();
         $response->assertJson([
-            'message' => 'Quote cancelled successfully',
+            'message' => 'Cotización cancelada.',
         ]);
         $this->assertEquals('cancelled', $response->json('data.attributes.status'));
     }
@@ -91,7 +91,7 @@ class QuoteCancelTest extends TestCase
 
         $response->assertStatus(400);
         $response->assertJson([
-            'error' => 'This quote cannot be cancelled',
+            'error' => 'Esta cotización no se puede cancelar en su estado actual.',
         ]);
     }
 

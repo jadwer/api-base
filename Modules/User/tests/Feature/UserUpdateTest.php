@@ -184,8 +184,8 @@ class UserUpdateTest extends TestCase
 
         $response->assertStatus(400);
         $response->assertJsonFragment([
-            'title' => 'Non-Compliant JSON:API Document',
-            'detail' => 'The field foo is not a supported attribute.',
+            'title' => 'Documento JSON:API no satisface los requerimientos',
+            'detail' => 'El campo foo no está permitido en este recurso.',
         ]);
     }
 

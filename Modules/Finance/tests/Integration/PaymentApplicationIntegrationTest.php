@@ -272,7 +272,7 @@ class PaymentApplicationIntegrationTest extends TestCase
 
         // Act & Assert
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('exceeds invoice remaining balance');
+        $this->expectExceptionMessage('excede el saldo pendiente de la factura');
 
         $this->paymentApplicationService->applyPayment($payment, $invoice, 1500.00);
     }
@@ -312,7 +312,7 @@ class PaymentApplicationIntegrationTest extends TestCase
 
         // Act & Assert
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('exceeds unapplied payment balance');
+        $this->expectExceptionMessage('excede el saldo sin aplicar del pago');
 
         $this->paymentApplicationService->applyPayment($payment, $invoice, 600.00);
     }
@@ -353,7 +353,7 @@ class PaymentApplicationIntegrationTest extends TestCase
 
         // Act & Assert
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('does not match invoice contact');
+        $this->expectExceptionMessage('no coincide con el de la factura');
 
         $this->paymentApplicationService->applyPayment($payment, $invoice, 1160.00);
     }
@@ -469,7 +469,7 @@ class PaymentApplicationIntegrationTest extends TestCase
 
         // Act & Assert
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('exceeds invoice remaining balance');
+        $this->expectExceptionMessage('excede el saldo pendiente de la factura');
 
         $this->paymentApplicationService->applyPayment($payment, $invoice, 500.00);
     }
@@ -509,7 +509,7 @@ class PaymentApplicationIntegrationTest extends TestCase
 
         // Act & Assert
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('must be greater than zero');
+        $this->expectExceptionMessage('debe ser mayor a cero');
 
         $this->paymentApplicationService->applyPayment($payment, $invoice, 0);
     }
@@ -549,7 +549,7 @@ class PaymentApplicationIntegrationTest extends TestCase
 
         // Act & Assert
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('not active');
+        $this->expectExceptionMessage('no están activos');
 
         $this->paymentApplicationService->applyPayment($payment, $invoice, 1160.00);
     }

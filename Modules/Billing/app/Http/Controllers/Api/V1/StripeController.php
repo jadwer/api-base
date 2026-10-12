@@ -30,7 +30,7 @@ class StripeController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            abort(401, 'Unauthorized');
+            abort(401, 'No autenticado.');
         }
         $allowedRoles = ['god', 'admin', 'tech'];
         if ($customerAllowed) {
@@ -128,7 +128,7 @@ class StripeController extends Controller
             ]);
 
             return response()->json([
-                'error' => 'Failed to create payment intent',
+                'error' => 'No se pudo iniciar el pago.',
                 'message' => $this->safeErrorMessage($e),
             ], 500);
         }
@@ -179,7 +179,7 @@ class StripeController extends Controller
             ]);
 
             return response()->json([
-                'error' => 'Payment intent not found',
+                'error' => 'No se encontró la intención de pago.',
                 'message' => $this->safeErrorMessage($e),
             ], 404);
         }
@@ -248,7 +248,7 @@ class StripeController extends Controller
             ]);
 
             return response()->json([
-                'error' => 'Failed to confirm payment intent',
+                'error' => 'No se pudo confirmar el pago.',
                 'message' => $this->safeErrorMessage($e),
             ], 400);
         }
@@ -310,7 +310,7 @@ class StripeController extends Controller
             ]);
 
             return response()->json([
-                'error' => 'Failed to capture payment intent',
+                'error' => 'No se pudo capturar el pago.',
                 'message' => $this->safeErrorMessage($e),
             ], 400);
         }
@@ -354,7 +354,7 @@ class StripeController extends Controller
             ]);
 
             return response()->json([
-                'error' => 'Failed to cancel payment intent',
+                'error' => 'No se pudo cancelar el pago.',
                 'message' => $this->safeErrorMessage($e),
             ], 400);
         }
@@ -437,7 +437,7 @@ class StripeController extends Controller
             ]);
 
             return response()->json([
-                'error' => 'Failed to create refund',
+                'error' => 'No se pudo crear el reembolso.',
                 'message' => $this->safeErrorMessage($e),
             ], 400);
         }

@@ -45,14 +45,14 @@ class JournalLineRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'journalEntryId.required' => 'El campo Journal entry id es obligatorio.',
-            'accountId.required' => 'El campo Account id es obligatorio.',
-            'debit.required' => 'El campo Debit es obligatorio.',
-            'credit.required' => 'El campo Credit es obligatorio.',
-            'description.string' => 'El campo Description debe ser texto.',
-            'reference.string' => 'El campo Reference debe ser texto.',
-            'reference.max' => 'El campo Reference no puede tener más de 255 caracteres.',
-            'metadata.array' => 'El campo Metadata debe ser un arreglo.',
+            'journalEntryId.required' => 'El campo póliza es obligatorio.',
+            'accountId.required' => 'El campo cuenta es obligatorio.',
+            'debit.required' => 'El campo cargo es obligatorio.',
+            'credit.required' => 'El campo crédito es obligatorio.',
+            'description.string' => 'El campo descripción debe ser texto.',
+            'reference.string' => 'El campo referencia debe ser texto.',
+            'reference.max' => 'El campo referencia no puede tener más de 255 caracteres.',
+            'metadata.array' => 'El campo metadatos debe ser un arreglo.',
         ];
     }
 }

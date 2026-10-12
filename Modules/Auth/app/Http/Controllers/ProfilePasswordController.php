@@ -22,7 +22,7 @@ class ProfilePasswordController extends Controller
                 'errors' => [
                     [
                         'status' => '422',
-                        'title' => 'Invalid current password',
+                        'title' => 'La contraseña actual es incorrecta.',
                         'detail' => 'La contraseña actual no es correcta.',
                         'source' => ['pointer' => '/data/attributes/current_password']
                     ]

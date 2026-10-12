@@ -31,21 +31,21 @@ class ContactDocumentRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'contactId.integer' => 'El campo Contact id debe ser un número entero.',
-            'documentType.string' => 'El campo Document type debe ser texto.',
-            'documentType.max' => 'El campo Document type no puede tener más de 255 caracteres.',
-            'filePath.string' => 'El campo File path debe ser texto.',
-            'filePath.max' => 'El campo File path no puede tener más de 255 caracteres.',
-            'originalFilename.string' => 'El campo Original filename debe ser texto.',
-            'originalFilename.max' => 'El campo Original filename no puede tener más de 255 caracteres.',
-            'mimeType.string' => 'El campo Mime type debe ser texto.',
-            'mimeType.max' => 'El campo Mime type no puede tener más de 255 caracteres.',
-            'fileSize.integer' => 'El campo File size debe ser un número entero.',
-            'uploadedBy.integer' => 'El campo Uploaded by debe ser un número entero.',
-            'verifiedAt.date' => 'El campo Verified at debe ser una fecha válida.',
-            'verifiedBy.integer' => 'El campo Verified by debe ser un número entero.',
-            'expiresAt.date' => 'El campo Expires at debe ser una fecha válida.',
-            'notes.string' => 'El campo Notes debe ser texto.',
+            'contactId.integer' => 'El campo contacto debe ser un número entero.',
+            'documentType.string' => 'El campo tipo de documento debe ser texto.',
+            'documentType.max' => 'El campo tipo de documento no puede tener más de 255 caracteres.',
+            'filePath.string' => 'El campo ruta del archivo debe ser texto.',
+            'filePath.max' => 'El campo ruta del archivo no puede tener más de 255 caracteres.',
+            'originalFilename.string' => 'El campo nombre del archivo debe ser texto.',
+            'originalFilename.max' => 'El campo nombre del archivo no puede tener más de 255 caracteres.',
+            'mimeType.string' => 'El campo tipo de archivo debe ser texto.',
+            'mimeType.max' => 'El campo tipo de archivo no puede tener más de 255 caracteres.',
+            'fileSize.integer' => 'El campo tamaño del archivo debe ser un número entero.',
+            'uploadedBy.integer' => 'El campo subido por debe ser un número entero.',
+            'verifiedAt.date' => 'El campo fecha de verificación debe ser una fecha válida.',
+            'verifiedBy.integer' => 'El campo verificado por debe ser un número entero.',
+            'expiresAt.date' => 'El campo fecha de vencimiento debe ser una fecha válida.',
+            'notes.string' => 'El campo notas debe ser texto.',
         ];
     }
 }

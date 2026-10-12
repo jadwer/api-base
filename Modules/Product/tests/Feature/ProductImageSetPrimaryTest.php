@@ -38,7 +38,7 @@ class ProductImageSetPrimaryTest extends TestCase
 
         $response->assertOk()
             ->assertJson([
-                'message' => 'Image set as primary successfully',
+                'message' => 'Imagen marcada como principal.',
                 'data' => [
                     'attributes' => [
                         'isPrimary' => true,

@@ -37,7 +37,7 @@ class ExportController extends Controller
         if (!$user) {
             return response()->json([
                 'jsonapi' => ['version' => '1.0'],
-                'errors' => [['status' => '401', 'title' => 'Unauthenticated']],
+                'errors' => [['status' => '401', 'title' => 'No autenticado.']],
             ], 401);
         }
 
@@ -49,7 +49,7 @@ class ExportController extends Controller
         if (!$user->hasPermissionTo($permission)) {
             return response()->json([
                 'jsonapi' => ['version' => '1.0'],
-                'errors' => [['status' => '403', 'title' => 'Forbidden']],
+                'errors' => [['status' => '403', 'title' => 'No tiene permisos para esta acción.']],
             ], 403);
         }
 

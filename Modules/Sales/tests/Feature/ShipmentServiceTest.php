@@ -62,7 +62,7 @@ class ShipmentServiceTest extends TestCase
         ]);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Order must be in confirmed, processing, or shipped status');
+        $this->expectExceptionMessage('El pedido debe estar confirmado, en proceso o enviado');
 
         $this->service->createShipment($order, [], []);
     }
@@ -85,7 +85,7 @@ class ShipmentServiceTest extends TestCase
         ]);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Cannot ship 15 of item');
+        $this->expectExceptionMessage('No se pueden enviar 15 de la partida');
 
         $this->service->createShipment($order, [
             $orderItem->id => 15,
@@ -176,7 +176,7 @@ class ShipmentServiceTest extends TestCase
         ]);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Shipment must be shipped before marking as delivered');
+        $this->expectExceptionMessage('El envío debe estar enviado antes de marcarlo como entregado');
 
         $this->service->markAsDelivered($shipment);
     }
@@ -245,7 +245,7 @@ class ShipmentServiceTest extends TestCase
         ]);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Cannot cancel a delivered shipment');
+        $this->expectExceptionMessage('No se puede cancelar un envío entregado');
 
         $this->service->cancelShipment($shipment);
     }

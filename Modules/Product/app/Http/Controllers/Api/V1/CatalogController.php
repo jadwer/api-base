@@ -122,7 +122,7 @@ class CatalogController extends Controller
 
         if (!$product) {
             return response()->json([
-                'message' => 'Product not found'
+                'message' => 'Producto no encontrado.'
             ], 404);
         }
 

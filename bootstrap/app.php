@@ -43,8 +43,9 @@ return Application::configure(basePath: dirname(__DIR__))
             return response()->json([
                 'errors' => [[
                     'status' => '401',
-                    'title'  => 'Unauthenticated',
-                    'detail' => $e->getMessage() ?: 'Authentication required.',
+                    // Regla 9: en espanol (lang/es.json traduce el texto del framework).
+                    'title'  => __('Unauthenticated'),
+                    'detail' => __($e->getMessage() ?: 'Authentication required.'),
                 ]],
             ], 401, ['Content-Type' => 'application/vnd.api+json']);
         });

@@ -22,7 +22,7 @@ class CreditManagementService
     {
         // Only validate if contact is a customer
         if (!$contact->is_customer) {
-            throw new \Exception("Contact #{$contact->id} is not a customer");
+            throw new \Exception("El contacto #{$contact->id} no es cliente.");
         }
 
         // FI-M003: Validate credit status (hold/blocked)
@@ -54,7 +54,7 @@ class CreditManagementService
         if ($overdueAmount > 0) {
             throw new \Exception(
                 "Customer has overdue invoices totaling: {$overdueAmount}. " .
-                "Payment required before new credit."
+                "Se requiere un pago antes de otorgar más crédito."
             );
         }
 

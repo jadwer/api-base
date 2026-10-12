@@ -178,7 +178,7 @@ class OnlineSalesE2ETest extends TestCase
         ]);
 
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Checkout session cannot be completed in current state');
+        $this->expectExceptionMessage('La sesión de pago no se puede completar en su estado actual.');
 
         $checkoutService = app(CheckoutService::class);
         $checkoutService->completeCheckout($checkoutSession);

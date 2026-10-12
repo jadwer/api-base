@@ -34,7 +34,7 @@ class ProductImageReorderTest extends TestCase
         ]);
 
         $response->assertOk()
-            ->assertJson(['message' => 'Images reordered successfully']);
+            ->assertJson(['message' => 'Imágenes reordenadas.']);
 
         $img1->refresh();
         $img2->refresh();

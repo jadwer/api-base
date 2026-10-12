@@ -31,10 +31,10 @@ class SalesOrderCustomerPoController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('sales-orders.update') && !$user->hasAnyRole(['god', 'admin'])) {
-            return response()->json(['error' => 'Forbidden - requires sales-orders.update permission'], 403);
+            return response()->json(['error' => 'No tiene permisos para modificar pedidos.'], 403);
         }
 
         // Constancia de autorizacion (2026-10-06): PDF de la OC o captura de
@@ -79,10 +79,10 @@ class SalesOrderCustomerPoController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('sales-orders.show') && !$user->hasAnyRole(['god', 'admin'])) {
-            return response()->json(['error' => 'Forbidden - requires sales-orders.show permission'], 403);
+            return response()->json(['error' => 'No tiene permisos para ver pedidos.'], 403);
         }
 
         if (!$salesOrder->customer_po_path) {

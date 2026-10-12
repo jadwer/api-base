@@ -21,10 +21,10 @@ class ProductBulkController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('products.update')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta accion.'], 403);
         }
 
         $request->validate([
@@ -53,10 +53,10 @@ class ProductBulkController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('products.update')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta accion.'], 403);
         }
 
         $request->validate([
@@ -84,10 +84,10 @@ class ProductBulkController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('products.update')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta accion.'], 403);
         }
 
         $request->validate([
@@ -115,10 +115,10 @@ class ProductBulkController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('brands.update')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta accion.'], 403);
         }
 
         $request->validate([
@@ -158,10 +158,10 @@ class ProductBulkController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('categories.update')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta accion.'], 403);
         }
 
         $request->validate([
@@ -201,10 +201,10 @@ class ProductBulkController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('products.update')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta accion.'], 403);
         }
 
         $request->validate([
@@ -236,10 +236,10 @@ class ProductBulkController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('products.update')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta accion.'], 403);
         }
 
         $request->validate([
@@ -261,14 +261,14 @@ class ProductBulkController extends Controller
         // P2 granel: los productos sujetos a cotizacion (o sin precio) no
         // tienen precio de lista que ajustar; antes round(null * m) los dejaba
         // en 0.00. Se omiten y se reportan.
-        $skipped = Product::where('brand_id', $brandId)
-            ->where(fn ($q) => $q->whereNull('price')->orWhere('pricing_type', '!=', Product::PRICING_FIXED))
-            ->count();
+        $skipped = Product::where('brand_id', $brandId)->count()
+            - Product::where('brand_id', $brandId)->sellableAtListPrice()->count();
 
         DB::transaction(function () use ($brandId, $multiplier, &$count) {
+            // P2b: un descuento de 100 % deja el precio en 0 y el observer lo
+            // pasa a sujeto a cotizacion (nunca queda vendible en $0).
             $products = Product::where('brand_id', $brandId)
-                ->fixedPrice()
-                ->whereNotNull('price')
+                ->sellableAtListPrice()
                 ->get();
 
             foreach ($products as $product) {

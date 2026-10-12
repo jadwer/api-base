@@ -132,7 +132,7 @@ class APInvoiceService
                     'invoice_number' => $invoiceNumber,
                     'error' => $e->getMessage(),
                 ]);
-                throw new \Exception("Failed to create GL entry: " . $e->getMessage());
+                throw new \Exception("No se pudo crear la póliza contable: " . $e->getMessage());
             }
 
             // 8. Retornar invoice con relaciones cargadas
@@ -158,7 +158,7 @@ class APInvoiceService
             $updateData = array_intersect_key($data, array_flip($allowedFields));
 
             if (count($updateData) === 0) {
-                throw new \Exception('Cannot update financial fields after GL posting. Create a reversal entry instead.');
+                throw new \Exception('No se pueden modificar los importes después de contabilizar. Registra una reversa.');
             }
         } else {
             $updateData = $data;

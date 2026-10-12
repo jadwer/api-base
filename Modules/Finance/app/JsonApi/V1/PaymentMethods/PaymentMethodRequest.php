@@ -25,15 +25,15 @@ class PaymentMethodRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'code.string' => 'El campo Code debe ser texto.',
-            'code.max' => 'El campo Code no puede tener más de 255 caracteres.',
+            'code.string' => 'El campo clave debe ser texto.',
+            'code.max' => 'El campo clave no puede tener más de 255 caracteres.',
             'code.unique' => 'Este Code ya está en uso.',
-            'name.string' => 'El campo Name debe ser texto.',
-            'name.max' => 'El campo Name no puede tener más de 255 caracteres.',
-            'type.string' => 'El campo Type debe ser texto.',
-            'type.max' => 'El campo Type no puede tener más de 255 caracteres.',
-            'requiresReference.boolean' => 'El campo Requires reference debe ser verdadero o falso.',
-            'isActive.boolean' => 'El campo Is active debe ser verdadero o falso.',
+            'name.string' => 'El campo nombre debe ser texto.',
+            'name.max' => 'El campo nombre no puede tener más de 255 caracteres.',
+            'type.string' => 'El campo tipo debe ser texto.',
+            'type.max' => 'El campo tipo no puede tener más de 255 caracteres.',
+            'requiresReference.boolean' => 'El campo requiere referencia debe ser verdadero o falso.',
+            'isActive.boolean' => 'El campo activo debe ser verdadero o falso.',
         ];
     }
 }

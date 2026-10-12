@@ -38,7 +38,7 @@ class QuoteConvertTest extends TestCase
 
         $response->assertStatus(201);
         $response->assertJson([
-            'message' => 'Quote converted to sales order successfully',
+            'message' => 'Cotización convertida en pedido.',
         ]);
         $response->assertJsonStructure([
             'data' => [
@@ -109,7 +109,7 @@ class QuoteConvertTest extends TestCase
 
         $response->assertStatus(400);
         $response->assertJson([
-            'error' => 'Quote cannot be converted. It must be in accepted status and not already converted.',
+            'error' => 'La cotización no se puede convertir: debe estar aceptada y no haberse convertido antes.',
         ]);
     }
 

@@ -18,10 +18,10 @@ class UserAccessController extends Controller
     {
         $actor = $request->user('sanctum');
         if (! $actor) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (! $actor->can('users.show') && ! $actor->can('users.update')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $user = User::findOrFail($id);
@@ -33,10 +33,10 @@ class UserAccessController extends Controller
     {
         $actor = $request->user('sanctum');
         if (! $actor) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (! $actor->can('users.update')) {
-            return response()->json(['error' => 'Forbidden'], 403);
+            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
         $data = $request->validate([
