@@ -3,6 +3,7 @@
 namespace Modules\Finance\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Accounting\Models\Account;
 use Modules\Finance\Models\BankAccount;
 
 class BankAccountFactory extends Factory
@@ -16,7 +17,8 @@ class BankAccountFactory extends Factory
             'account_name' => $this->faker->words(3, true),
             'bank_name' => $this->faker->words(2, true),
             'currency' => $this->faker->randomElement(['USD', 'EUR', 'MXN']),
-            'gl_account_id' => $this->faker->numberBetween(1, 100),
+            // Cuenta contable real: un id al azar fallaba la regla exists al editar.
+            'gl_account_id' => Account::factory(),
             'current_balance' => $this->faker->randomFloat(2, 1, 100),
             'opening_balance' => $this->faker->randomFloat(2, 1, 100),
             'status' => $this->faker->randomElement(['active', 'inactive', 'pending']),
