@@ -54,6 +54,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::get('cfdi-invoices/free/options', [\Modules\Billing\Http\Controllers\Api\V1\FreeInvoiceController::class, 'options']);
     Route::get('cfdi-invoices/free/receptor/{contact}', [\Modules\Billing\Http\Controllers\Api\V1\FreeInvoiceController::class, 'receptor']);
     Route::post('cfdi-invoices/free', [\Modules\Billing\Http\Controllers\Api\V1\FreeInvoiceController::class, 'store']);
+    Route::patch('cfdi-invoices/free/{cfdiInvoice}', [\Modules\Billing\Http\Controllers\Api\V1\FreeInvoiceController::class, 'update']);
     Route::post('cfdi-invoices/{cfdiInvoice}/generate-xml', [\Modules\Billing\Http\Controllers\Api\V1\CFDIInvoiceController::class, 'generateXml']);
     Route::post('cfdi-invoices/{cfdiInvoice}/generate-pdf', [\Modules\Billing\Http\Controllers\Api\V1\CFDIInvoiceController::class, 'generatePdf']);
     Route::get('cfdi-invoices/{cfdiInvoice}/download-pdf', [\Modules\Billing\Http\Controllers\Api\V1\CFDIInvoiceController::class, 'downloadPdf']);

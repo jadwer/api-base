@@ -23,7 +23,13 @@ use Modules\Contacts\Models\Contact;
  * @property string $status
  * @property string|null $receptor_rfc
  * @property string|null $receptor_nombre
+ * @property int $subtotal
+ * @property int|null $descuento
+ * @property int|null $iva
  * @property int $total
+ * @property string|null $metodo_pago
+ * @property string|null $forma_pago
+ * @property array<string, mixed>|null $metadata
  * @property string|null $moneda
  * @property \Illuminate\Support\Carbon|null $fecha_timbrado
  * @property \Illuminate\Support\Carbon|null $fecha_cancelacion

@@ -98,10 +98,9 @@ class FreeInvoiceTest extends TestCase
         $this->assertSame(190000, $cfdi->items[0]->impuestos['traslados'][0]['base']);
         $this->assertSame('01', $cfdi->items[1]->objeto_imp);
 
-        $ar = ARInvoice::findOrFail($cfdi->ar_invoice_id);
-        $this->assertEqualsWithDelta(2704.00, (float) $ar->total_amount, 0.001);
-        $this->assertNotNull($ar->journal_entry_id);
-        $this->assertSame(now()->addDays(15)->toDateString(), $ar->due_date->toDateString());
+        // El borrador no existe contablemente: la cuenta por cobrar nace al timbrar (23-10)
+        $this->assertNull($cfdi->ar_invoice_id);
+        $this->assertSame('free', $cfdi->metadata['source']);
     }
 
     public function test_chosen_series_uses_its_own_counter(): void
@@ -155,7 +154,7 @@ class FreeInvoiceTest extends TestCase
             ->assertStatus(422)
             ->assertJsonPath('message', 'El cliente no tiene código postal fiscal: captura su dirección fiscal antes de facturar.');
 
-        $this->assertSame(0, ARInvoice::where('contact_id', $this->customer->id)->count());
+        $this->assertSame(0, CFDIInvoice::where('contact_id', $this->customer->id)->count());
     }
 
     public function test_options_and_receptor_endpoints(): void
@@ -185,5 +184,95 @@ class FreeInvoiceTest extends TestCase
     public function test_guest_cannot_create(): void
     {
         $this->postJson('/api/v1/cfdi-invoices/free', $this->payload())->assertUnauthorized();
+    }
+
+    public function test_draft_can_be_edited_keeping_series_and_folio(): void
+    {
+        $admin = $this->getAdminUser();
+        $id = $this->actingAs($admin, 'sanctum')->postJson('/api/v1/cfdi-invoices/free', $this->payload())->json('data.id');
+
+        $this->actingAs($admin, 'sanctum')
+            ->patchJson("/api/v1/cfdi-invoices/free/{$id}", [
+                'contact_id' => $this->customer->id,
+                'metodo_pago' => 'PUE',
+                'forma_pago' => '03',
+                'series' => 'SRV',
+                'items' => [['descripcion' => 'Solo un servicio', 'cantidad' => 1, 'valor_unitario' => 1000,
+                    'clave_prod_serv' => '81111500', 'clave_unidad' => 'E48', 'tasa_iva' => '0.160000']],
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.series', 'FAC')
+            ->assertJsonPath('data.folio', 1)
+            ->assertJsonPath('data.total', 116000);
+
+        $cfdi = CFDIInvoice::with('items')->findOrFail($id);
+        $this->assertCount(1, $cfdi->items);
+        $this->assertSame('PUE', $cfdi->metodo_pago);
+        $this->assertSame('03', $cfdi->forma_pago);
+    }
+
+    public function test_stamped_invoice_cannot_be_edited(): void
+    {
+        $admin = $this->getAdminUser();
+        $id = $this->actingAs($admin, 'sanctum')->postJson('/api/v1/cfdi-invoices/free', $this->payload())->json('data.id');
+        CFDIInvoice::whereKey($id)->update(['status' => 'valid', 'uuid' => '11111111-2222-3333-4444-555555555555', 'fecha_timbrado' => now()]);
+
+        $this->actingAs($admin, 'sanctum')
+            ->patchJson("/api/v1/cfdi-invoices/free/{$id}", $this->payload())
+            ->assertStatus(422)
+            ->assertJsonPath('message', 'Solo se pueden editar borradores de factura libre sin timbrar.');
+    }
+
+    public function test_stamping_creates_the_receivable_with_its_journal_entry(): void
+    {
+        $id = $this->actingAs($this->getAdminUser(), 'sanctum')->postJson('/api/v1/cfdi-invoices/free', $this->payload())->json('data.id');
+        $cfdi = CFDIInvoice::findOrFail($id);
+
+        $this->stampingService()->stamp($cfdi);
+
+        $cfdi->refresh();
+        $this->assertSame('valid', $cfdi->status);
+        $ar = ARInvoice::findOrFail($cfdi->ar_invoice_id);
+        $this->assertEqualsWithDelta(2704.00, (float) $ar->total_amount, 0.001);
+        $this->assertNotNull($ar->journal_entry_id);
+        $this->assertSame(now()->addDays(15)->toDateString(), $ar->due_date->toDateString());
+    }
+
+    public function test_stamping_is_blocked_before_the_pac_when_the_receivable_cannot_be_posted(): void
+    {
+        $id = $this->actingAs($this->getAdminUser(), 'sanctum')->postJson('/api/v1/cfdi-invoices/free', $this->payload())->json('data.id');
+        \Modules\Accounting\Models\Account::where('code', '1104')->update(['is_postable' => false]);
+
+        try {
+            $this->stampingService(expectPac: false)->stamp(CFDIInvoice::findOrFail($id));
+            $this->fail('Debio rechazar el timbrado');
+        } catch (\Modules\Billing\Exceptions\PacException $e) {
+            $this->assertStringContainsString('cuenta contable de clientes (1104)', $e->getMessage());
+        }
+
+        $this->assertSame('draft', CFDIInvoice::findOrFail($id)->status);
+    }
+
+    private function stampingService(bool $expectPac = true): \Modules\Billing\Services\CFDI\CFDIStampingService
+    {
+        $pac = \Mockery::mock(\Modules\Billing\Services\PAC\SWPacService::class);
+        $pac->shouldReceive('isEnabled')->andReturn(true);
+        $stamp = $pac->shouldReceive('stamp');
+        $expectPac ? $stamp->once() : $stamp->never();
+        $stamp->andReturn([
+            'uuid' => '11111111-2222-3333-4444-555555555555',
+            'fecha_timbrado' => now(),
+            'xml_timbrado' => '<cfdi:Comprobante/>',
+            'qr_code' => null,
+            'pac_response' => ['ok' => true],
+        ]);
+
+        $xml = \Mockery::mock(\Modules\Billing\Services\CFDI\CFDIXMLGenerator::class);
+        $xml->shouldReceive('generate')->andReturn('<cfdi:Comprobante/>');
+        $pdf = \Mockery::mock(\Modules\Billing\Services\CFDI\CFDIPDFGenerator::class);
+        $pdf->shouldReceive('generate')->andReturn('cfdi/pdf/test.pdf');
+        \Illuminate\Support\Facades\Storage::fake('local');
+
+        return new \Modules\Billing\Services\CFDI\CFDIStampingService($pac, $xml, $pdf);
     }
 }

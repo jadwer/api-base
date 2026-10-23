@@ -74,7 +74,7 @@ class InventoryReservation extends Model
         return $this->status === 'active' && !$this->getIsExpiredAttribute();
     }
 
-    public function release(string $reason = null): void
+    public function release(?string $reason = null): void
     {
         $this->update([
             'status' => 'released',

@@ -94,7 +94,7 @@ class EmployeeFactory extends Factory
     /**
      * Employee with linked user account.
      */
-    public function withUser(int $userId = null): static
+    public function withUser(?int $userId = null): static
     {
         return $this->state(fn (array $attributes) => [
             'user_id' => $userId ?? User::factory(),

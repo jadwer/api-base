@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Modules\Billing\Models\CFDIInvoice;
 use Modules\Billing\Models\CompanySetting;
 use Modules\Billing\Models\InvoiceSeries;
 use Modules\Billing\Services\CFDI\CfdiFolioAllocator;
@@ -86,13 +87,42 @@ class FreeInvoiceController extends Controller
         ]]);
     }
 
+    /** Edita un borrador de factura libre (sin timbrar); serie y folio no cambian. */
+    public function update(Request $request, CFDIInvoice $cfdiInvoice, FreeInvoiceService $service): JsonResponse
+    {
+        if ($denied = $this->deny($request)) {
+            return $denied;
+        }
+
+        $data = $this->validatePayload($request);
+
+        try {
+            $cfdi = $service->update($cfdiInvoice, $data);
+        } catch (\DomainException|\InvalidArgumentException $e) {
+            return response()->json(['message' => $e->getMessage(), 'error' => $e->getMessage()], 422);
+        }
+
+        return response()->json([
+            'message' => 'Borrador actualizado',
+            'data' => ['id' => $cfdi->id, 'series' => $cfdi->series, 'folio' => $cfdi->folio, 'status' => $cfdi->status, 'total' => $cfdi->total],
+        ]);
+    }
+
     public function store(Request $request, FreeInvoiceService $service): JsonResponse
     {
         if ($denied = $this->deny($request)) {
             return $denied;
         }
 
-        $data = $request->validate([
+        $data = $this->validatePayload($request);
+
+        return $this->doStore($service, $data);
+    }
+
+    /** @return array<string, mixed> */
+    private function validatePayload(Request $request): array
+    {
+        return $request->validate([
             'contact_id' => ['required', 'integer', 'exists:contacts,id'],
             'series' => ['nullable', 'string', 'max:10'],
             'metodo_pago' => ['required', Rule::in(array_keys(FreeInvoiceService::METODOS_PAGO))],
@@ -137,6 +167,11 @@ class FreeInvoiceController extends Controller
             'items.*.tasa_iva' => 'impuesto del concepto :position',
         ]);
 
+    }
+
+    /** @param array<string, mixed> $data */
+    private function doStore(FreeInvoiceService $service, array $data): JsonResponse
+    {
         try {
             $cfdi = $service->create($data);
         } catch (\DomainException|\InvalidArgumentException $e) {

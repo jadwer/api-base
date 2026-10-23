@@ -55,7 +55,7 @@ class BankTransaction extends Model
     /**
      * Mark transaction as reconciled
      */
-    public function markAsReconciled(User $user, string $notes = null): void
+    public function markAsReconciled(User $user, ?string $notes = null): void
     {
         $this->update([
             'reconciliation_status' => 'reconciled',

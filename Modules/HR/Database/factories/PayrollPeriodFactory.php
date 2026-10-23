@@ -175,7 +175,7 @@ class PayrollPeriodFactory extends Factory
     /**
      * Period for a specific month.
      */
-    public function forMonth(int $month, int $year = null): static
+    public function forMonth(int $month, ?int $year = null): static
     {
         $year = $year ?? Carbon::now()->year;
         $startDate = Carbon::create($year, $month, 1);

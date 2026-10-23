@@ -55,7 +55,7 @@ class WishlistItemFactory extends Factory
     /**
      * Indicate that the item has notes.
      */
-    public function withNotes(string $notes = null): static
+    public function withNotes(?string $notes = null): static
     {
         return $this->state(fn (array $attributes) => [
             'notes' => $notes ?? $this->faker->paragraph(),

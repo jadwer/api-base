@@ -45,6 +45,17 @@ class CFDIStampingService
         // Validate invoice can be stamped
         $this->validateForStamping($invoice);
 
+        // Factura libre: su cuenta por cobrar se crea al timbrar; se valida
+        // antes del PAC para no dejar un CFDI timbrado sin cobranza (23-10).
+        $freeInvoices = app(FreeInvoiceService::class);
+        if ($freeInvoices->needsReceivable($invoice)) {
+            try {
+                $freeInvoices->assertCanPostReceivable($invoice);
+            } catch (\DomainException $e) {
+                throw new PacException($e->getMessage(), 422);
+            }
+        }
+
         $mustSaveXml = $regenerateXml || empty($invoice->xml_original);
 
         // PAC fuera de la transaccion: es una llamada externa que no se puede revertir
@@ -87,6 +98,15 @@ class CFDIStampingService
         // SAT, un fallo aqui se registra pero no deshace ni oculta el timbrado.
         $this->afterCommit($invoice, 'Failed to save stamped XML', fn () => $this->saveStampedXml($invoice, $stampData['xml_timbrado']));
         $this->afterCommit($invoice, 'PDF generation failed after stamping', fn () => $this->pdfGenerator->generate($invoice->fresh()));
+        $this->afterCommit($invoice, 'Free invoice receivable failed', function () use ($invoice, $freeInvoices) {
+            try {
+                $freeInvoices->createReceivable($invoice->fresh());
+            } catch (\Throwable $e) {
+                // Queda a la vista en el CFDI para registrarla a mano; el timbrado no se toca
+                $invoice->update(['metadata' => array_merge($invoice->fresh()->metadata ?? [], ['ar_error' => $e->getMessage()])]);
+                throw $e;
+            }
+        });
         $this->afterCommit($invoice, 'CFDIStamped listener failed', fn () => event(new CFDIStamped($invoice->fresh())));
 
         return $invoice->fresh();

@@ -101,7 +101,7 @@ class LeaveFactory extends Factory
     /**
      * Leave with an approver.
      */
-    public function withApprover(int $approverId = null): static
+    public function withApprover(?int $approverId = null): static
     {
         return $this->state(fn (array $attributes) => [
             'approver_id' => $approverId ?? Employee::factory(),
