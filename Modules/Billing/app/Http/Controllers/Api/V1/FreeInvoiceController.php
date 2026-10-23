@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Modules\Billing\Models\CompanySetting;
 use Modules\Billing\Models\InvoiceSeries;
+use Modules\Billing\Services\CFDI\CfdiFolioAllocator;
 use Modules\Billing\Services\CFDI\FreeInvoiceService;
 use Modules\Billing\Support\CfdiReceptor;
 use Modules\Contacts\Models\Contact;
@@ -37,7 +38,8 @@ class FreeInvoiceController extends Controller
                 'code' => $s->code,
                 'name' => $s->name,
                 'is_default' => (bool) $s->is_default,
-                'next_folio' => $s->previewNextFolio(),
+                // Misma regla que la asignacion real (CfdiFolioAllocator)
+                'next_folio' => implode('-', app(CfdiFolioAllocator::class)->peek($settings, 'I', $s->code)),
             ])->values(),
             'metodos_pago' => $toOptions(FreeInvoiceService::METODOS_PAGO),
             'tasas_iva' => $toOptions(FreeInvoiceService::TASAS_IVA),
@@ -73,7 +75,10 @@ class FreeInvoiceController extends Controller
             'rfc' => $receptor['receptor_rfc'],
             'nombre' => $receptor['receptor_nombre'],
             'codigo_postal' => $receptor['receptor_domicilio_fiscal'],
-            'regimen_fiscal' => $receptor['receptor_regimen_fiscal'],
+            // Solo el capturado: el 616 por omision de CfdiReceptor se mostraba como dato real (E2E 23-10)
+            'regimen_fiscal' => $receptor['receptor_rfc'] === CfdiReceptor::GENERIC_RFC
+                ? $receptor['receptor_regimen_fiscal']
+                : ($contact->regimen_fiscal ?: null),
             'uso_cfdi' => $receptor['receptor_uso_cfdi'],
             'email' => $contact->email,
             'payment_terms' => $contact->payment_terms,

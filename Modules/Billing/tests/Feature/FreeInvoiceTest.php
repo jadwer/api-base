@@ -118,6 +118,10 @@ class FreeInvoiceTest extends TestCase
         // Un CFDI ya emitido en FAC-1 con el contador historico (camino viejo)
         CFDIInvoice::factory()->create(['company_setting_id' => $this->settings->id, 'series' => 'FAC', 'folio' => 1]);
 
+        // La vista previa anuncia el mismo folio que se asignara
+        $this->actingAs($this->getAdminUser(), 'sanctum')->getJson('/api/v1/cfdi-invoices/free/options')
+            ->assertJsonPath('data.series.0.next_folio', 'FAC-2');
+
         $this->actingAs($this->getAdminUser(), 'sanctum')
             ->postJson('/api/v1/cfdi-invoices/free', $this->payload())
             ->assertCreated()
@@ -161,7 +165,7 @@ class FreeInvoiceTest extends TestCase
         $this->actingAs($admin, 'sanctum')->getJson('/api/v1/cfdi-invoices/free/options')
             ->assertOk()
             ->assertJsonPath('data.series.0.code', 'FAC')
-            ->assertJsonPath('data.series.0.next_folio', 'FAC-000001')
+            ->assertJsonPath('data.series.0.next_folio', 'FAC-1')
             ->assertJsonFragment(['code' => 'PPD'])
             ->assertJsonFragment(['code' => 'no_objeto']);
 
@@ -170,6 +174,12 @@ class FreeInvoiceTest extends TestCase
             ->assertJsonPath('data.rfc', 'ABC010101AB1')
             ->assertJsonPath('data.codigo_postal', '06600')
             ->assertJsonPath('data.faltantes', []);
+
+        // Sin regimen capturado no se inventa el 616
+        $this->customer->update(['regimen_fiscal' => null]);
+        $this->actingAs($admin, 'sanctum')->getJson("/api/v1/cfdi-invoices/free/receptor/{$this->customer->id}")
+            ->assertJsonPath('data.regimen_fiscal', null)
+            ->assertJsonPath('data.faltantes', ['Régimen fiscal']);
     }
 
     public function test_guest_cannot_create(): void

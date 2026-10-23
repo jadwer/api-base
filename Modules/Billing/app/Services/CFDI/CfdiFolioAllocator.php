@@ -60,6 +60,32 @@ class CfdiFolioAllocator
         });
     }
 
+    /**
+     * Serie y folio que tomaria allocate() ahora, sin consumirlo (vista previa
+     * del formulario; antes mostraba el contador de la serie sin considerar
+     * folios ya emitidos y con otro formato, E2E 23-10).
+     *
+     * @return array{0: string, 1: int}
+     */
+    public function peek(CompanySetting $settings, string $cfdiType, ?string $seriesCode = null): array
+    {
+        $series = $this->resolveSeries($settings, $cfdiType, $seriesCode);
+
+        if ($series) {
+            return [$series->code, max($series->current_folio + 1, $this->nextIssued($settings, $series->code))];
+        }
+
+        if ($cfdiType === 'P') {
+            $serie = ($settings->additional_settings ?? [])['payment_series'] ?? 'P';
+
+            return [$serie, max((int) (($settings->additional_settings ?? [])['next_payment_folio'] ?? 1), $this->nextIssued($settings, $serie))];
+        }
+
+        $serie = $settings->invoice_series ?: 'F';
+
+        return [$serie, max((int) ($settings->next_invoice_folio ?? 1), $this->nextIssued($settings, $serie))];
+    }
+
     protected function resolveSeries(CompanySetting $settings, string $cfdiType, ?string $seriesCode): ?InvoiceSeries
     {
         if ($seriesCode !== null && $seriesCode !== '') {
