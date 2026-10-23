@@ -12,6 +12,30 @@ use Modules\Billing\Database\Factories\CFDIInvoiceFactory;
 use Modules\Finance\Models\ARInvoice;
 use Modules\Contacts\Models\Contact;
 
+/**
+ * @property int $id
+ * @property int $company_setting_id
+ * @property int|null $contact_id
+ * @property int|null $ar_invoice_id
+ * @property string $series
+ * @property int $folio
+ * @property string|null $uuid
+ * @property string $status
+ * @property string|null $receptor_rfc
+ * @property string|null $receptor_nombre
+ * @property int $total
+ * @property string|null $moneda
+ * @property \Illuminate\Support\Carbon|null $fecha_timbrado
+ * @property \Illuminate\Support\Carbon|null $fecha_cancelacion
+ * @property string|null $motivo_cancelacion
+ * @property string|null $uuid_sustitucion
+ * @property string|null $cancellation_status
+ * @property \Illuminate\Support\Carbon|null $cancellation_requested_at
+ * @property \Illuminate\Support\Carbon|null $cancellation_checked_at
+ * @property array<string, mixed>|null $pac_response
+ * @property-read CompanySetting|null $companySetting
+ * @property-read Contact|null $contact
+ */
 class CFDIInvoice extends Model
 {
     use HasFactory, LogsActivity, \Modules\Branch\Concerns\BranchScoped;
@@ -24,13 +48,15 @@ class CFDIInvoice extends Model
         return LogOptions::defaults()
             ->logOnly([
                 'status', 'uuid', 'tipo_comprobante', 'receptor_rfc',
-                'total', 'fecha_timbrado', 'fecha_cancelacion'
+                'total', 'fecha_timbrado', 'fecha_cancelacion', 'cancellation_status'
             ])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
 
     protected $table = 'cfdi_invoices';
+
+    public const STATUS_CANCEL_PENDING = 'cancel_pending';
 
     protected static function booted(): void
     {
@@ -84,6 +110,11 @@ class CFDIInvoice extends Model
         'fecha_emision',
         'fecha_timbrado',
         'fecha_cancelacion',
+        'motivo_cancelacion',
+        'uuid_sustitucion',
+        'cancellation_status',
+        'cancellation_requested_at',
+        'cancellation_checked_at',
         'xml_path',
         'xml_original',
         'xml_timbrado',
@@ -113,6 +144,8 @@ class CFDIInvoice extends Model
         'fecha_emision' => 'datetime',
         'fecha_timbrado' => 'datetime',
         'fecha_cancelacion' => 'datetime',
+        'cancellation_requested_at' => 'datetime',
+        'cancellation_checked_at' => 'datetime',
     ];
 
     /**
@@ -182,6 +215,11 @@ class CFDIInvoice extends Model
     public function scopeCancelled($query)
     {
         return $query->where('status', 'cancelled');
+    }
+
+    public function scopeCancelPending($query)
+    {
+        return $query->where('status', self::STATUS_CANCEL_PENDING);
     }
 
     public function scopeBySeries($query, string $series)
@@ -259,6 +297,12 @@ class CFDIInvoice extends Model
     public function isCancelled(): bool
     {
         return $this->status === 'cancelled';
+    }
+
+    /** Cancelacion solicitada al SAT, en espera de aceptacion o del plazo. */
+    public function isCancelPending(): bool
+    {
+        return $this->status === self::STATUS_CANCEL_PENDING;
     }
 
     public function isTimbrado(): bool

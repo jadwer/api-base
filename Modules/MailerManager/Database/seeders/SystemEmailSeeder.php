@@ -433,6 +433,37 @@ class SystemEmailSeeder extends Seeder
 
             // === BILLING MODULE ===
             [
+                'key' => 'billing.cfdi_cancellation',
+                'module' => 'Billing',
+                'name' => 'Cancelacion de CFDI',
+                'description' => 'Se envia a la empresa y al receptor cuando se solicita la cancelacion de un CFDI y cuando el SAT la resuelve (cancelada o rechazada).',
+                'mailable_class' => 'Modules\\Billing\\Mail\\CFDICancellationMail',
+                'available_variables' => [
+                    'headline' => 'Titulo del aviso',
+                    'invoice_folio' => 'Folio de la factura',
+                    'invoice_uuid' => 'UUID fiscal',
+                    'customer_name' => 'Nombre del receptor',
+                    'customer_rfc' => 'RFC del receptor',
+                    'total' => 'Total con moneda',
+                    'cancellation_reason' => 'Motivo de cancelacion',
+                    'cancellation_status' => 'Estatus de la cancelacion en el SAT',
+                    'company_name' => 'Nombre de la empresa',
+                ],
+                'sample_data' => [
+                    'headline' => 'Se esta cancelando esta factura',
+                    'invoice_folio' => 'FAC-001',
+                    'invoice_uuid' => 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+                    'customer_name' => 'Cliente Demo SA de CV',
+                    'customer_rfc' => 'CDE200101ABC',
+                    'total' => '$3,015.98 MXN',
+                    'cancellation_reason' => '02 - Comprobante emitido con errores sin relacion',
+                    'cancellation_status' => 'En proceso',
+                    'company_name' => 'Demo Company',
+                ],
+                'is_enabled' => true,
+                'default_subject' => '{{headline}} {{invoice_folio}}',
+            ],
+            [
                 'key' => 'billing.cfdi_invoice_sent',
                 'module' => 'Billing',
                 'name' => 'Factura CFDI Enviada',

@@ -112,7 +112,7 @@ class ProductRequest extends ResourceRequest
     public function withDefaults(): array
     {
         return [
-            'iva' => false,
+            'iva' => true,
             'pricingType' => Product::PRICING_FIXED,
         ];
     }

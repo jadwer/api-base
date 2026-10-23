@@ -19,6 +19,12 @@ use Modules\Purchase\Services\PurchaseOrderApprovalService;
 use Modules\Sales\Models\Quote;
 use Modules\Sales\Models\FolioSequence;
 
+/**
+ * @property int $id
+ * @property string $order_number
+ * @property string $status
+ * @property float|null $total_amount
+ */
 class PurchaseOrder extends Model
 {
     use HasFactory, LogsActivity, \Modules\Branch\Concerns\BranchScoped;
@@ -92,6 +98,8 @@ class PurchaseOrder extends Model
 
         // PU-001: Automatically set approval status on creation
         static::creating(function ($order) {
+            // El total lo calcula el servidor (recalculateTotals); nace en 0
+            $order->total_amount ??= 0;
             // Multi-sucursal (2026-09): sucursal del usuario autenticado o la Matriz.
             if (empty($order->branch_id)) {
                 $order->branch_id = \Modules\Branch\Models\Branch::defaultId();
@@ -175,6 +183,26 @@ class PurchaseOrder extends Model
     /**
      * Get the purchase order items for the purchase order.
      */
+    /** Estados en los que la orden ya no admite cambios en sus partidas. */
+    public const LOCKED_ITEM_STATUSES = ['received', 'cancelled'];
+
+    public function itemsLocked(): bool
+    {
+        return in_array($this->status, self::LOCKED_ITEM_STATUSES, true);
+    }
+
+    /**
+     * Total calculado en el servidor como suma de partidas (hallazgo Atomo
+     * 22-10: lo mandaba el navegador). La orden de compra no guarda IVA por
+     * separado (sin columnas); el IVA acreditable queda para la contadora.
+     */
+    public function recalculateTotals(): void
+    {
+        $this->forceFill([
+            'total_amount' => round((float) $this->purchaseOrderItems()->sum('total'), 2),
+        ])->save();
+    }
+
     public function purchaseOrderItems(): HasMany
     {
         return $this->hasMany(PurchaseOrderItem::class);

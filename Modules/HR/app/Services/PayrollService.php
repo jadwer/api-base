@@ -106,10 +106,14 @@ class PayrollService
     /**
      * Post payroll to General Ledger.
      *
-     * Creates a journal entry with:
-     * - Debit: Payroll Expense (Gasto de Nómina)
-     * - Credit: Bank Account (for net payment)
-     * - Credit: Various liability accounts (for deductions)
+     * La nomina se paga directo contra Bancos (decision de Jasim 2026-10-22,
+     * sin cuenta intermedia de nomina por pagar):
+     * - Cargo: gasto de sueldos (bruto)
+     * - Abono: Bancos (neto pagado)
+     * - Abono: retenciones por pagar (deducciones), solo si hay
+     *
+     * Las cuentas salen por codigo de config('hr.gl_accounts'), igual que
+     * AR/AP/inventario; la contadora puede cambiarlas sin tocar codigo.
      *
      * @param PayrollPeriod $period
      * @param int $userId
@@ -117,37 +121,23 @@ class PayrollService
      */
     protected function postToGeneralLedger(PayrollPeriod $period, int $userId): JournalEntry
     {
-        // Find accounts (using Spanish names from Finance/Accounting Phase 1).
-        // Solo cuentas afectables y activas: las de titulo (PASIVO, GASTOS) no aceptan asientos.
-        $payrollExpenseAccount = Account::where('code', 'LIKE', '6%')
-            ->where('name', 'LIKE', '%nómina%')
-            ->where('is_postable', true)
-            ->where('status', 'active')
-            ->first();
+        $codes = config('hr.gl_accounts');
 
-        $bankAccount = Account::where('code', 'LIKE', '1%')
-            ->where('name', 'LIKE', '%banco%')
-            ->where('is_postable', true)
-            ->where('status', 'active')
-            ->first();
-
-        $liabilitiesAccount = Account::where('code', 'LIKE', '2%')
-            ->where('name', 'LIKE', '%pasivo%')
-            ->where('is_postable', true)
-            ->where('status', 'active')
-            ->first();
+        $payrollExpenseAccount = $this->postableAccount($codes['payroll_expense']);
+        $bankAccount = $this->postableAccount($codes['bank']);
 
         if (!$payrollExpenseAccount) {
-            throw new \Exception("No se encontró cuenta de gasto de nómina (código 6xxx).");
+            throw new \Exception("No se encontró la cuenta de gasto de sueldos ({$codes['payroll_expense']}) o no es afectable.");
         }
 
         if (!$bankAccount) {
-            throw new \Exception("No se encontró cuenta bancaria (código 1xxx).");
+            throw new \Exception("No se encontró la cuenta de Bancos ({$codes['bank']}) o no es afectable.");
         }
 
         $deductions = (float) $period->total_deductions;
+        $liabilitiesAccount = $deductions > 0 ? $this->postableAccount($codes['withholdings']) : null;
         if ($deductions > 0 && !$liabilitiesAccount) {
-            throw new \Exception("No se encontró cuenta de pasivo para las deducciones de nómina (código 2xxx).");
+            throw new \Exception("No se encontró la cuenta de retenciones de nómina ({$codes['withholdings']}) o no es afectable.");
         }
 
         $lines = [
@@ -191,6 +181,14 @@ class PayrollService
         ]);
 
         return $journalEntry;
+    }
+
+    private function postableAccount(string $code): ?Account
+    {
+        return Account::where('code', $code)
+            ->where('is_postable', true)
+            ->where('status', 'active')
+            ->first();
     }
 
     /**

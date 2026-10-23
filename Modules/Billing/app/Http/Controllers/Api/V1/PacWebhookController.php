@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 use Modules\Billing\Models\CFDIInvoice;
+use Modules\Billing\Services\CFDI\CFDIStampingService;
 use Modules\Billing\Events\CFDIStamped;
 use Modules\Billing\Events\CFDICancelled;
 
@@ -137,7 +138,8 @@ class PacWebhookController extends Controller
 
             $data = $request->validate([
                 'uuid' => 'required|string',
-                'status' => 'required|string|in:cancelled,error',
+                'status' => 'required|string|in:cancelled,rejected,pending,error',
+                'estatus_cancelacion' => 'nullable|string|max:60',
                 'fecha_cancelacion' => 'nullable|date',
                 'acuse' => 'nullable|string',
                 'error_message' => 'nullable|string',
@@ -153,20 +155,34 @@ class PacWebhookController extends Controller
                 return response()->json(['message' => 'Factura no encontrada.'], 404);
             }
 
-            // Update invoice based on status
-            if ($data['status'] === 'cancelled') {
-                $invoice->update([
-                    'status' => 'cancelled',
-                    'fecha_cancelacion' => $data['fecha_cancelacion'] ?? now(),
-                ]);
+            $stampingService = app(CFDIStampingService::class);
 
-                // Dispatch event
-                event(new CFDICancelled($invoice));
+            if ($data['status'] === 'cancelled') {
+                if ($invoice->isCancelPending()) {
+                    $stampingService->resolveCancellation($invoice, 'cancelled', $data['estatus_cancelacion'] ?? 'Cancelado');
+                } elseif (!$invoice->isCancelled()) {
+                    // Cancelacion hecha fuera del sistema (portal del SAT o del PAC)
+                    $invoice->update([
+                        'status' => 'cancelled',
+                        'fecha_cancelacion' => $data['fecha_cancelacion'] ?? now(),
+                        'cancellation_status' => $data['estatus_cancelacion'] ?? 'Cancelado',
+                    ]);
+                    event(new CFDICancelled($invoice->fresh()));
+                }
 
                 Log::info('Invoice cancelled via webhook', [
                     'invoice_id' => $invoice->id,
                     'uuid' => $data['uuid'],
                 ]);
+            } elseif ($data['status'] === 'rejected') {
+                $stampingService->resolveCancellation($invoice, 'valid', $data['estatus_cancelacion'] ?? 'Solicitud rechazada');
+            } elseif ($data['status'] === 'pending') {
+                if ($invoice->isCancelPending()) {
+                    $invoice->update([
+                        'cancellation_status' => $data['estatus_cancelacion'] ?? 'En proceso',
+                        'cancellation_checked_at' => now(),
+                    ]);
+                }
             } else {
                 $invoice->update([
                     'error_message' => $data['error_message'] ?? 'Error al cancelar',

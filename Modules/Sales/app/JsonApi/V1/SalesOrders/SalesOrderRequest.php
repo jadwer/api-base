@@ -41,11 +41,6 @@ class SalesOrderRequest extends ResourceRequest
             'branch' => ['nullable', \LaravelJsonApi\Validation\Rule::toOne()],
             'approvedAt' => ['nullable', 'date'],
             'deliveredAt' => ['nullable', 'date'],
-            'discountTotal' => ['nullable', 'numeric', 'min:0'],
-            // La llave es la del Schema (subtotalAmount -> columna subtotal); con 'subtotal' la regla nunca aplicaba
-            'subtotalAmount' => ['sometimes', 'numeric', 'min:0'],
-            'taxAmount' => ['nullable', 'numeric', 'min:0'],
-            'totalAmount' => [$isCreating ? 'required' : 'sometimes', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string', 'max:1000'],
             'currency' => ['sometimes', 'string', 'size:3'],
             'invoicingNotes' => ['nullable', 'string'],

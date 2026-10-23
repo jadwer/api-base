@@ -278,7 +278,8 @@ class SalesOrderItemUpdateTest extends TestCase
     public function test_tech_user_can_update_sales_order_item(): void
     {
         $tech = $this->getTechUser();
-        $item = SalesOrderItem::factory()->create();
+        // Sin descuento: al bajar la cantidad un descuento aleatorio podria superar el importe
+        $item = SalesOrderItem::factory()->create(['discount' => 0]);
 
         $data = [
             'type' => 'sales-order-items',

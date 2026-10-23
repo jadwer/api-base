@@ -356,10 +356,13 @@ class SWPacService
 
             $data = $response->json('data');
 
+            // Campos de la consulta de estatus del SAT; SW los devuelve con el
+            // nombre del SAT o en camelCase segun el servicio.
             return [
-                'status' => $data['CodigoEstatus'] ?? null,
-                'es_cancelable' => $data['EsCancelable'] ?? null,
-                'estado' => $data['Estado'] ?? null,
+                'status' => $data['CodigoEstatus'] ?? $data['statusCodeSat'] ?? null,
+                'es_cancelable' => $data['EsCancelable'] ?? $data['isCancelable'] ?? null,
+                'estado' => $data['Estado'] ?? $data['statusSat'] ?? null,
+                'estatus_cancelacion' => $data['EstatusCancelacion'] ?? $data['statusCancelation'] ?? null,
                 'validacion_efos' => $data['ValidacionEFOS'] ?? null,
             ];
         } catch (PacException $e) {

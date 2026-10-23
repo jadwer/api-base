@@ -11,6 +11,16 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 use Modules\Purchase\Database\Factories\PurchaseOrderItemFactory;
 
+/**
+ * @property int $id
+ * @property int $purchase_order_id
+ * @property float $quantity
+ * @property float $unit_price
+ * @property float|null $discount
+ * @property float|null $subtotal
+ * @property float|null $total
+ * @property-read PurchaseOrder $purchaseOrder
+ */
 class PurchaseOrderItem extends Model
 {
     use HasFactory; // LogsActivity temporalmente desactivado para testing
@@ -54,8 +64,13 @@ class PurchaseOrderItem extends Model
         // Calcular subtotal y total automáticamente antes de guardar
         static::saving(function ($item) {
             if ($item->quantity && $item->unit_price) {
-                $item->subtotal = $item->quantity * $item->unit_price;
-                $item->total = $item->subtotal - ($item->discount ?? 0);
+                $item->subtotal = round($item->quantity * $item->unit_price, 2);
+                if ((float) ($item->discount ?? 0) > $item->subtotal) {
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        'discount' => 'El descuento de la partida no puede ser mayor que su importe.',
+                    ]);
+                }
+                $item->total = round($item->subtotal - ($item->discount ?? 0), 2);
             }
 
             // PU-005: Validate received quantity with tolerance

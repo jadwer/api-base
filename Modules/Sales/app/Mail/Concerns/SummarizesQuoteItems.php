@@ -28,7 +28,7 @@ trait SummarizesQuoteItems
             $pending = (bool) $item->price_pending;
 
             return [
-                'name' => $item->product_name ?? $item->product?->name ?? 'Producto',
+                'name' => $item->product_name ?: ($item->product?->name ?: 'Producto'),
                 'sku' => $item->product_sku ?? $item->product?->sku ?? '-',
                 'quantity' => $item->quantity,
                 'unit_price' => $item->quoted_price,

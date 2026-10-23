@@ -142,13 +142,20 @@ class CFDIStampingService
             throw $this->unexpected($invoice, $e, 'Unexpected error during CFDI cancellation', 'Error inesperado al cancelar CFDI: ');
         }
 
+        // El PAC solo recibe la solicitud: si el SAT pide aceptacion del
+        // receptor, la cancelacion queda "En proceso" hasta 72 horas. La
+        // factura sigue vigente hasta que la consulta al SAT diga Cancelado
+        // (checkCancellation, comando cfdi:check-cancellations).
         try {
             DB::transaction(function () use ($invoice, $cancelData, $motivoCancelacion, $uuidSustitucion) {
                 $invoice->update([
-                    'status' => 'cancelled',
-                    'fecha_cancelacion' => $cancelData['fecha_cancelacion'],
-                    'cfdi_relacionado_tipo' => $motivoCancelacion,
-                    'cfdi_relacionado_uuids' => $uuidSustitucion ? [$uuidSustitucion] : null,
+                    'status' => CFDIInvoice::STATUS_CANCEL_PENDING,
+                    'motivo_cancelacion' => $motivoCancelacion,
+                    'uuid_sustitucion' => $uuidSustitucion,
+                    'cancellation_status' => 'Solicitud enviada',
+                    'cancellation_requested_at' => now(),
+                    'cancellation_checked_at' => null,
+                    'error_message' => null,
                     'pac_response' => array_merge(
                         $invoice->pac_response ?? [],
                         ['cancellation' => $cancelData['pac_response']]
@@ -159,15 +166,96 @@ class CFDIStampingService
             throw $this->unexpected($invoice, $e, 'Unexpected error during CFDI cancellation', 'Error inesperado al cancelar CFDI: ');
         }
 
-        Log::info('CFDI cancelled successfully', [
+        Log::info('CFDI cancellation requested', [
             'invoice_id' => $invoice->id,
             'uuid' => $invoice->uuid,
             'motive' => $motivoCancelacion,
         ]);
 
-        $this->afterCommit($invoice, 'CFDICancelled listener failed', fn () => event(new CFDICancelled($invoice->fresh())));
+        $this->afterCommit($invoice, 'CFDI cancellation notice failed', fn () => app(CFDICancellationNotifier::class)->requested($invoice->fresh()));
+
+        // Las cancelaciones sin aceptacion pueden quedar listas en minutos:
+        // se intenta una consulta inmediata; si falla, la resuelve el comando.
+        try {
+            return $this->checkCancellation($invoice->fresh());
+        } catch (\Throwable $e) {
+            Log::warning('Immediate CFDI cancellation check failed', [
+                'invoice_id' => $invoice->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return $invoice->fresh();
+        }
+    }
+
+    /**
+     * Consulta al SAT el estatus de una cancelacion en proceso y la resuelve:
+     * Estado "Cancelado" (con o sin aceptacion, o plazo vencido) cancela la
+     * factura; "Solicitud rechazada" la regresa a vigente; cualquier otro
+     * estatus solo se registra.
+     *
+     * @throws PacException
+     */
+    public function checkCancellation(CFDIInvoice $invoice): CFDIInvoice
+    {
+        if (!$invoice->isCancelPending()) {
+            throw new PacException('El CFDI no tiene una cancelación en proceso');
+        }
+
+        $sat = $this->validateWithSAT($invoice);
+        $estado = (string) ($sat['estado'] ?? '');
+        $estatus = (string) ($sat['estatus_cancelacion'] ?? '');
+
+        if (strcasecmp($estado, 'Cancelado') === 0) {
+            return $this->resolveCancellation($invoice, 'cancelled', $estatus !== '' ? $estatus : 'Cancelado');
+        }
+
+        if (stripos($estatus, 'rechazad') !== false) {
+            return $this->resolveCancellation($invoice, 'valid', $estatus);
+        }
+
+        $invoice->update([
+            'cancellation_status' => $estatus !== '' ? $estatus : ($estado !== '' ? $estado : $invoice->cancellation_status),
+            'cancellation_checked_at' => now(),
+        ]);
 
         return $invoice->fresh();
+    }
+
+    /**
+     * Cierra una cancelacion en proceso con su resultado final ('cancelled' o
+     * 'valid' si el receptor la rechazo). Tambien lo usa el webhook del PAC.
+     */
+    public function resolveCancellation(CFDIInvoice $invoice, string $result, string $satStatus): CFDIInvoice
+    {
+        if (!$invoice->isCancelPending()) {
+            return $invoice;
+        }
+
+        $cancelled = $result === 'cancelled';
+
+        $invoice->update([
+            'status' => $cancelled ? 'cancelled' : 'valid',
+            'fecha_cancelacion' => $cancelled ? now() : null,
+            'cancellation_status' => $satStatus,
+            'cancellation_checked_at' => now(),
+        ]);
+
+        Log::info('CFDI cancellation resolved', [
+            'invoice_id' => $invoice->id,
+            'uuid' => $invoice->uuid,
+            'result' => $result,
+            'sat_status' => $satStatus,
+        ]);
+
+        $fresh = $invoice->fresh();
+
+        if ($cancelled) {
+            $this->afterCommit($fresh, 'CFDICancelled listener failed', fn () => event(new CFDICancelled($fresh)));
+        }
+        $this->afterCommit($fresh, 'CFDI cancellation notice failed', fn () => app(CFDICancellationNotifier::class)->resolved($fresh));
+
+        return $fresh;
     }
 
     /** Guarda el error del PAC en la factura (solo error_message) y lo registra. */

@@ -60,7 +60,8 @@ class SalesOrderStoreTest extends TestCase
         // Verificar datos específicos
         $this->assertEquals('SO-NEW-001', $response->json('data.attributes.orderNumber'));
         $this->assertEquals('draft', $response->json('data.attributes.status'));
-        $this->assertEquals(1050.00, $response->json('data.attributes.totalAmount'));
+        // Totales del servidor (22-10): el totalAmount del cliente se ignora; sin partidas es 0
+        $this->assertEquals(0, $response->json('data.attributes.totalAmount'));
         $this->assertEquals('Test sales order creation', $response->json('data.attributes.notes'));
 
         // Verificar que se guardó en base de datos
@@ -68,7 +69,7 @@ class SalesOrderStoreTest extends TestCase
             'order_number' => 'SO-NEW-001',
             'contact_id' => $customer->id,
             'status' => 'draft',
-            'total_amount' => 1050.00
+            'total_amount' => 0
         ]);
     }
 
@@ -97,7 +98,7 @@ class SalesOrderStoreTest extends TestCase
 
         $response->assertCreated();
         $this->assertEquals('confirmed', $response->json('data.attributes.status'));
-        $this->assertEquals(2200.00, $response->json('data.attributes.totalAmount'));
+        $this->assertEquals(0, $response->json('data.attributes.totalAmount'));
     }
 
     public function test_tech_user_can_create_sales_order(): void
@@ -267,35 +268,31 @@ class SalesOrderStoreTest extends TestCase
         $this->assertNotNull($statusError, 'Expected status validation error');
     }
 
-    public function test_total_amount_must_be_numeric(): void
+    public function test_client_totals_are_ignored(): void
     {
+        // Hallazgo Atomo 22-10: el navegador mandaba los totales y nadie los
+        // verificaba; ahora son de solo lectura y los calcula el servidor.
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create();
-
-        $data = [
-            'type' => 'sales-orders',
-            'attributes' => [
-                'contactId' => $customer->id,
-                'orderNumber' => 'SO-INVALID-AMOUNT',
-                'status' => 'draft',
-                'orderDate' => '2024-01-15',
-                'totalAmount' => 'not_a_number'
-            ]
-        ];
 
         $response = $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('sales-orders')
-            ->withData($data)
+            ->withData([
+                'type' => 'sales-orders',
+                'attributes' => [
+                    'contactId' => $customer->id,
+                    'orderNumber' => 'SO-CLIENT-TOTALS',
+                    'status' => 'draft',
+                    'orderDate' => '2024-01-15',
+                    'totalAmount' => 99999,
+                    'taxAmount' => 0,
+                ],
+            ])
             ->post('/api/v1/sales-orders');
 
-        $response->assertStatus(422);
-        $errors = $response->json('errors');
-        $this->assertNotEmpty($errors);
-        $totalAmountError = collect($errors)->first(function ($error) {
-            return str_contains($error['source']['pointer'] ?? '', 'totalAmount');
-        });
-        $this->assertNotNull($totalAmountError, 'Expected total_amount validation error');
+        $response->assertCreated();
+        $this->assertDatabaseHas('sales_orders', ['order_number' => 'SO-CLIENT-TOTALS', 'total_amount' => 0]);
     }
 
     public function test_metadata_is_stored_correctly(): void

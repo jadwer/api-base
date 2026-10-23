@@ -17,6 +17,9 @@ Schedule::command('inventory:check-reorder-alerts')->daily();
 // P47: Update exchange rates from Banxico daily at 13:00 CST
 Schedule::command('currency:update-rates')->dailyAt('13:00')->timezone('America/Mexico_City');
 
+// Cancelaciones de CFDI en proceso: consulta al SAT cada dos horas (Gabino 2026-10-22)
+Schedule::command('cfdi:check-cancellations')->everyTwoHours()->withoutOverlapping();
+
 // WS9: Refresh SAT catalogs monthly from phpcfdi/resources-sat-catalogs
 Schedule::command('sat:sync-catalogs')->monthlyOn(1, '02:30')->timezone('America/Mexico_City');
 

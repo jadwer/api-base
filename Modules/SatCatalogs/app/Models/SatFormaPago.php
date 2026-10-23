@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
  * SAT c_FormaPago catalog (CFDI 4.0). Global data, shared by all tenants.
  *
  * Source: phpcfdi/resources-sat-catalogs table cfdi_40_formas_pago.
+ *
+ * @property string $clave
+ * @property string $descripcion
  */
 class SatFormaPago extends Model
 {

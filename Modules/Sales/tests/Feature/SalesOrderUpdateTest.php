@@ -49,14 +49,15 @@ class SalesOrderUpdateTest extends TestCase
             'id' => $salesOrder->id,
             'order_number' => 'SO-UPDATED-001',
             'status' => 'draft',
-            'total_amount' => 1500.00,
             'notes' => 'Updated order notes'
         ]);
+        // Totales de solo lectura (22-10): el totalAmount del PATCH se ignora
+        $this->assertNotEquals(1500.00, (float) $salesOrder->fresh()->total_amount);
 
         // Verificar respuesta
         $this->assertEquals('SO-UPDATED-001', $response->json('data.attributes.orderNumber'));
         $this->assertEquals('draft', $response->json('data.attributes.status'));
-        $this->assertEquals(1500.00, $response->json('data.attributes.totalAmount'));
+        $this->assertNotEquals(1500.00, $response->json('data.attributes.totalAmount'));
     }
 
     public function test_patch_ignores_status_changes(): void
@@ -332,8 +333,8 @@ class SalesOrderUpdateTest extends TestCase
         $this->assertEquals('Updated notes', $response->json('data.attributes.notes'));
     }
 
-    // B3: subtotalAmount, currency e invoicingNotes tienen regla (antes se descartaban en silencio);
-    // arInvoiceId e invoicingStatus son del servidor (readOnly)
+    // B3: currency e invoicingNotes tienen regla (antes se descartaban en silencio);
+    // arInvoiceId, invoicingStatus y (desde 22-10) los totales son del servidor (readOnly)
     public function test_writable_and_read_only_finance_fields(): void
     {
         $salesOrder = SalesOrder::factory()->create([
@@ -354,12 +355,14 @@ class SalesOrderUpdateTest extends TestCase
         ])->assertOk();
 
         $salesOrder->refresh();
-        $this->assertEquals(862.07, (float) $salesOrder->subtotal);
+        $this->assertEquals(100, (float) $salesOrder->subtotal);
         $this->assertSame('USD', $salesOrder->currency);
         $this->assertSame('Facturar a fin de mes', $salesOrder->invoicing_notes);
         $this->assertSame('not_invoiced', $salesOrder->invoicing_status);
 
-        $patch(['subtotalAmount' => -1])->assertStatus(422);
+        // Totales de solo lectura: un valor invalido ya no llega a validarse, se ignora
+        $patch(['subtotalAmount' => -1])->assertOk();
+        $this->assertEquals(100, (float) $salesOrder->fresh()->subtotal);
         $patch(['currency' => 'PESOS'])->assertStatus(422);
     }
 }

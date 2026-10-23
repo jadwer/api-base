@@ -38,6 +38,13 @@ class CartItemObserver
             $cartItem->original_unit_price = $cartItem->unit_price;
             $cartItem->exchange_rate_used = $result->effectiveRate;
 
+            // El descuento en monto viene en la moneda del producto: se convierte
+            // con la misma tasa (antes quedaba sin convertir y podia superar el
+            // importe ya convertido; lo destapo el tope de descuento, 22-10).
+            if ((float) $cartItem->discount_amount > 0 && (float) $cartItem->unit_price > 0) {
+                $cartItem->discount_amount = round((float) $cartItem->discount_amount * $result->convertedAmount / (float) $cartItem->unit_price, 2);
+            }
+
             // Update price to converted amount
             $cartItem->unit_price = $result->convertedAmount;
             $cartItem->original_price = $result->convertedAmount;

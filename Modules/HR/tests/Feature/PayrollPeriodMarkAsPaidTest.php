@@ -39,11 +39,11 @@ class PayrollPeriodMarkAsPaidTest extends TestCase
         }
 
         $accounts = [
-            ['6190', 'Gasto de nómina', 'expense', 'debit'],
-            ['1190', 'Banco nómina', 'asset', 'debit'],
+            ['6121', 'Sueldos y Salarios - Administración', 'expense', 'debit'],
+            ['1102', 'Bancos', 'asset', 'debit'],
         ];
         if ($withLiabilities) {
-            $accounts[] = ['2190', 'Pasivo retenciones de nómina', 'liability', 'credit'];
+            $accounts[] = ['2105', 'ISR por Pagar', 'liability', 'credit'];
         }
 
         foreach ($accounts as [$code, $name, $type, $nature]) {
@@ -101,10 +101,11 @@ class PayrollPeriodMarkAsPaidTest extends TestCase
         $this->assertEqualsWithDelta(10000.00, $lines->sum('credit'), 0.001);
         $this->assertEqualsWithDelta(10000.00, $entry->total_debit, 0.001);
 
-        $byPrefix = fn (string $p) => $lines->first(fn ($l) => str_starts_with($l->account->code, $p));
-        $this->assertEqualsWithDelta(10000.00, $byPrefix('6')->debit, 0.001);
-        $this->assertEqualsWithDelta(8500.00, $byPrefix('1')->credit, 0.001);
-        $this->assertEqualsWithDelta(1500.00, $byPrefix('2')->credit, 0.001);
+        // Directo contra Bancos (1102), sin cuenta intermedia de nomina por pagar
+        $byCode = fn (string $c) => $lines->first(fn ($l) => $l->account->code === $c);
+        $this->assertEqualsWithDelta(10000.00, $byCode('6121')->debit, 0.001);
+        $this->assertEqualsWithDelta(8500.00, $byCode('1102')->credit, 0.001);
+        $this->assertEqualsWithDelta(1500.00, $byCode('2105')->credit, 0.001);
     }
 
     public function test_period_without_deductions_posts_two_lines(): void
@@ -119,6 +120,38 @@ class PayrollPeriodMarkAsPaidTest extends TestCase
         $entry = JournalEntry::findOrFail($response->json('data.journal_entry_id'));
         $this->assertCount(2, $entry->journalLines);
         $this->assertEqualsWithDelta(5000.00, $entry->total_credit, 0.001);
+    }
+
+    public function test_accounts_come_from_config(): void
+    {
+        $this->setUpLedger(false);
+        Account::firstOrCreate(['code' => '6111'], [
+            'name' => 'Sueldos y Salarios - Ventas', 'account_type' => 'expense', 'nature' => 'debit',
+            'level' => 2, 'currency' => 'MXN', 'is_postable' => true, 'status' => 'active',
+        ]);
+        config(['hr.gl_accounts.payroll_expense' => '6111']);
+        $period = $this->makePeriod(5000.00, 0);
+
+        $response = $this->actingAs($this->getAdminUser(), 'sanctum')
+            ->postJson("/api/v1/payroll-periods/{$period->id}/mark-as-paid");
+
+        $response->assertOk();
+        $entry = JournalEntry::with('journalLines.account')->findOrFail($response->json('data.journal_entry_id'));
+        $this->assertEqualsWithDelta(5000.00, $entry->journalLines->first(fn ($l) => $l->account->code === '6111')->debit, 0.001);
+    }
+
+    public function test_missing_bank_account_fails_with_spanish_message(): void
+    {
+        $this->setUpLedger(false);
+        config(['hr.gl_accounts.bank' => '9999']);
+        $period = $this->makePeriod(5000.00, 0);
+
+        $response = $this->actingAs($this->getAdminUser(), 'sanctum')
+            ->postJson("/api/v1/payroll-periods/{$period->id}/mark-as-paid");
+
+        $response->assertStatus(422);
+        $this->assertStringContainsString('cuenta de Bancos (9999)', $response->getContent());
+        $this->assertSame('processing', $period->fresh()->status);
     }
 
     public function test_draft_period_cannot_be_marked_as_paid(): void

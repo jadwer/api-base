@@ -462,6 +462,9 @@
         "arInvoiceId",
         "arPaymentId",
         "branchId",
+        "cancellationCheckedAt",
+        "cancellationRequestedAt",
+        "cancellationStatus",
         "cfdiRelacionadoTipo",
         "cfdiRelacionadoUuids",
         "companySettingId",
@@ -486,6 +489,7 @@
         "metodoPago",
         "moneda",
         "montoPago",
+        "motivoCancelacion",
         "numParcialidad",
         "pacResponse",
         "pdfPath",
@@ -502,6 +506,7 @@
         "total",
         "updatedAt",
         "uuid",
+        "uuidSustitucion",
         "xmlPath"
     ],
     "v1:cfdi-items": [

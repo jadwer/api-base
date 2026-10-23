@@ -36,6 +36,7 @@ JsonApiRoute::server('v1')
 
 // Custom endpoints for sales reporting
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
+    Route::post('sales-orders/with-items', [\Modules\Sales\Http\Controllers\Api\V1\SalesOrderWithItemsController::class, 'store'])->name('sales-orders.with-items');
     Route::get('sales-orders/reports', [SalesOrderController::class, 'reports'])->name('sales-orders.reports');
     Route::get('sales-orders/customers', [SalesOrderController::class, 'customers'])->name('sales-orders.customers');
     Route::post('sales-orders/{salesOrder}/cancel', [SalesOrderController::class, 'cancel'])->name('sales-orders.cancel');

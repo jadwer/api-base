@@ -23,7 +23,9 @@ class SalesOrderItemAuthorizer implements Authorizer
     public function store(Request $request, string $modelClass): bool|Response
     {
         $user = $request->user();
-        return $user?->can('sales-order-items.store') ?? false;
+        $order = \App\Support\DocumentItemLock::parentFromRequest($request, \Modules\Sales\Models\SalesOrder::class, 'salesOrderId', 'salesOrder');
+
+        return \App\Support\DocumentItemLock::authorize($user?->can('sales-order-items.store') ?? false, $order, \Modules\Sales\Models\SalesOrder::LOCKED_ITEM_STATUSES, 'el pedido');
     }
 
     /**
@@ -41,7 +43,8 @@ class SalesOrderItemAuthorizer implements Authorizer
     public function update(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('sales-order-items.update') ?? false;
+
+        return \App\Support\DocumentItemLock::authorize($user?->can('sales-order-items.update') ?? false, $model->salesOrder, \Modules\Sales\Models\SalesOrder::LOCKED_ITEM_STATUSES, 'el pedido');
     }
 
     /**
@@ -50,7 +53,8 @@ class SalesOrderItemAuthorizer implements Authorizer
     public function destroy(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('sales-order-items.destroy') ?? false;
+
+        return \App\Support\DocumentItemLock::authorize($user?->can('sales-order-items.destroy') ?? false, $model->salesOrder, \Modules\Sales\Models\SalesOrder::LOCKED_ITEM_STATUSES, 'el pedido');
     }
 
     // Relationship methods

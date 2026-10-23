@@ -23,7 +23,8 @@ class PurchaseOrderFactory extends Factory
             'contact_id' => Contact::factory()->state(['is_supplier' => true]),
             'warehouse_id' => Warehouse::factory(),
             'order_date' => $this->faker->date(),
-            'status' => $this->faker->randomElement(['pending', 'approved', 'received', 'cancelled']),
+            // Solo estados abiertos por omision (partidas bloqueadas al recibir o cancelar, 22-10)
+            'status' => $this->faker->randomElement(['pending', 'approved']),
             'total_amount' => $this->faker->randomFloat(2, 100, 50000),
             'notes' => $this->faker->optional()->paragraph(),
         ];

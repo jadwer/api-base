@@ -65,10 +65,12 @@ class SalesOrderSchema extends Schema
             DateTime::make('deliveredAt', 'delivered_at')->sortable(),
 
             // Campos de montos
-            Number::make('discountTotal', 'discount_total'),
-            Number::make('subtotalAmount', 'subtotal')->sortable(),
-            Number::make('taxAmount', 'tax_amount'),
-            Number::make('totalAmount', 'total_amount')->sortable(),
+            // Totales calculados en el servidor (SalesOrder::recalculateTotals,
+            // hallazgo Atomo 22-10): el navegador ya no los manda.
+            Number::make('discountTotal', 'discount_total')->readOnly(),
+            Number::make('subtotalAmount', 'subtotal')->sortable()->readOnly(),
+            Number::make('taxAmount', 'tax_amount')->readOnly(),
+            Number::make('totalAmount', 'total_amount')->sortable()->readOnly(),
             
             Str::make('notes'),
 

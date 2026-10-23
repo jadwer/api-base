@@ -91,7 +91,7 @@ class QuoteSentMail extends Mailable
             'quote_number' => $this->quote->quote_number,
             'quote_date' => $this->quote->quote_date?->format('d/m/Y'),
             'valid_until' => $this->quote->valid_until?->format('d/m/Y'),
-            'customer_name' => $this->quote->contact?->name ?? 'Cliente',
+            'customer_name' => $this->quote->contact?->name ?: 'Cliente',
             'customer_email' => $this->quote->contact?->email,
             'items' => $this->quoteItemsSummary($this->quote),
             'subtotal' => $this->quote->subtotal_amount,

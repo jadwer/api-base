@@ -263,26 +263,10 @@ class REPService
             && AppSetting::getBoolean('billing.rep_auto_enabled', true);
     }
 
-    /**
-     * Allocate serie + folio for the REP.
-     *
-     * Uses a dedicated 'P' serie (additional_settings.payment_series or 'P') with a
-     * per-company running folio kept in additional_settings.next_payment_folio, so
-     * REP folios never collide with income-invoice folios.
-     */
+    /** Serie y folio del REP desde la fuente unica (serie tipo P o contador historico). */
     private function allocateSerieFolio(CompanySetting $settings): array
     {
-        $settings = CompanySetting::where('id', $settings->id)->lockForUpdate()->first();
-
-        $additional = $settings->additional_settings ?? [];
-        $serie = $additional['payment_series'] ?? 'P';
-        $folio = (int) ($additional['next_payment_folio'] ?? 1);
-
-        $additional['payment_series'] = $serie;
-        $additional['next_payment_folio'] = $folio + 1;
-        $settings->update(['additional_settings' => $additional]);
-
-        return [$serie, $folio];
+        return app(CfdiFolioAllocator::class)->allocate($settings, 'P');
     }
 
     private function toCents($amount): int

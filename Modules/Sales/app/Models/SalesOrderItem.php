@@ -76,7 +76,14 @@ class SalesOrderItem extends Model
             }
 
             if ($item->quantity && $item->unit_price) {
-                $item->total = ($item->quantity * $item->unit_price) - ($item->discount ?? 0);
+                $gross = round($item->quantity * $item->unit_price, 2);
+                // Hallazgo Atomo 22-10: el descuento podia pasar del importe (total negativo)
+                if ((float) ($item->discount ?? 0) > $gross) {
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        'discount' => 'El descuento de la partida no puede ser mayor que su importe.',
+                    ]);
+                }
+                $item->total = round($gross - ($item->discount ?? 0), 2);
             }
         });
     }

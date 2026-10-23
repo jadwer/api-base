@@ -16,6 +16,21 @@ class PurchaseOrderItemFactory extends Factory
     /**
      * Define the model's default state.
      */
+    /**
+     * El descuento por omision se calcula con la cantidad y el precio por
+     * omision; si una prueba los sobrescribe puede quedar mayor que el
+     * importe, que el modelo ya rechaza (22-10). Se topa al 20% del importe.
+     */
+    public function configure(): static
+    {
+        return $this->afterMaking(function ($item) {
+            $gross = round((float) $item->quantity * (float) $item->unit_price, 2);
+            if ((float) $item->discount > $gross) {
+                $item->discount = round($gross * 0.2, 2);
+            }
+        });
+    }
+
     public function definition(): array
     {
         $quantity = $this->faker->numberBetween(1, 50);

@@ -13,7 +13,10 @@ class SalesOrderFactory extends Factory
     public function definition(): array
     {
         $orderDate = $this->faker->dateTimeBetween('-6 months', 'now');
-        $status = $this->faker->randomElement(['draft', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled']);
+        // Solo estados abiertos por omision: los cerrados bloquean sus partidas
+        // (DocumentItemLock, 22-10) y volvian aleatorios los tests de partidas.
+        // Para un pedido cerrado usar los estados delivered()/cancelled().
+        $status = $this->faker->randomElement(['draft', 'confirmed', 'processing', 'shipped']);
         
         // Calcular fechas según el estado
         $approvedAt = null;

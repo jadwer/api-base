@@ -148,6 +148,8 @@ class CFDIStampingTransactionTest extends TestCase
             'fecha_cancelacion' => now(),
             'pac_response' => ['ok' => true],
         ]);
+        // Cancelable sin aceptacion: la consulta inmediata al SAT ya la da por cancelada
+        $pac->shouldReceive('validateWithSAT')->andReturn(['estado' => 'Cancelado', 'estatus_cancelacion' => 'Cancelado sin aceptación']);
 
         $level = DB::transactionLevel();
         $result = $this->service($pac)->cancel($invoice);

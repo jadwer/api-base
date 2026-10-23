@@ -6,6 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Billing\Database\Factories\CompanySettingFactory;
 
+/**
+ * @property int $id
+ * @property string|null $rfc
+ * @property string|null $postal_code
+ * @property string|null $email
+ * @property string|null $invoice_series
+ * @property int|null $next_invoice_folio
+ * @property array<string, mixed>|null $additional_settings
+ * @property bool $is_active
+ */
 class CompanySetting extends Model
 {
     use HasFactory;

@@ -23,7 +23,9 @@ class QuoteItemAuthorizer implements Authorizer
     public function store(Request $request, string $modelClass): bool|Response
     {
         $user = $request->user();
-        return $user?->can('quote-items.store') ?? false;
+        $quote = \App\Support\DocumentItemLock::parentFromRequest($request, \Modules\Sales\Models\Quote::class, 'quoteId', 'quote');
+
+        return \App\Support\DocumentItemLock::authorize($user?->can('quote-items.store') ?? false, $quote, \Modules\Sales\Models\Quote::LOCKED_ITEM_STATUSES, 'la cotización');
     }
 
     /**
@@ -41,7 +43,8 @@ class QuoteItemAuthorizer implements Authorizer
     public function update(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('quote-items.update') ?? false;
+
+        return \App\Support\DocumentItemLock::authorize($user?->can('quote-items.update') ?? false, $model->quote, \Modules\Sales\Models\Quote::LOCKED_ITEM_STATUSES, 'la cotización');
     }
 
     /**
@@ -50,7 +53,8 @@ class QuoteItemAuthorizer implements Authorizer
     public function destroy(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('quote-items.destroy') ?? false;
+
+        return \App\Support\DocumentItemLock::authorize($user?->can('quote-items.destroy') ?? false, $model->quote, \Modules\Sales\Models\Quote::LOCKED_ITEM_STATUSES, 'la cotización');
     }
 
     /**

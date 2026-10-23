@@ -15,6 +15,7 @@ use Spatie\Activitylog\LogOptions;
 /**
  * @property int $id
  * @property int $contact_id
+ * @property-read Contact|null $contact
  * @property int|null $shopping_cart_id
  * @property int|null $sales_order_id
  * @property int|null $purchase_order_id
@@ -241,6 +242,9 @@ class Quote extends Model
     {
         return $this->items()->sum('quantity');
     }
+
+    /** Estados en los que la cotizacion ya no admite cambios en sus partidas. */
+    public const LOCKED_ITEM_STATUSES = ['converted', 'cancelled'];
 
     // Business Logic Methods
     public function recalculateTotals(): void

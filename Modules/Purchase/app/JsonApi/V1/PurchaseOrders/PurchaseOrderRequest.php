@@ -26,7 +26,6 @@ class PurchaseOrderRequest extends ResourceRequest
             'status' => $creating
                 ? ['required', 'string', Rule::in(['pending', 'approved', 'received', 'cancelled'])]
                 : ['sometimes', 'string'],
-            'totalAmount' => [$creating ? 'required' : 'sometimes', 'numeric', 'min:0'],
             'warehouseId' => ['nullable', 'integer', 'exists:warehouses,id'],
             'branchId' => ['nullable', 'integer', 'exists:branches,id'],
             'approvalStatus' => ['sometimes', 'nullable', 'string'],

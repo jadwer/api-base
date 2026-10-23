@@ -290,12 +290,15 @@ class CFDIInvoiceController
             );
 
             return response()->json([
-                'message' => 'CFDI cancelado correctamente',
+                'message' => $invoice->isCancelled()
+                    ? 'CFDI cancelado correctamente'
+                    : 'Cancelación solicitada al SAT; queda en proceso hasta su confirmación',
                 'data' => [
                     'id' => $invoice->id,
                     'uuid' => $invoice->uuid,
                     'fecha_cancelacion' => $invoice->fecha_cancelacion,
                     'status' => $invoice->status,
+                    'cancellation_status' => $invoice->cancellation_status,
                     'motivo' => $motivoCancelacion,
                 ],
             ]);
@@ -365,11 +368,28 @@ class CFDIInvoiceController
         }
 
         try {
-            $statusData = $stampingService->getCancellationStatus($cfdiInvoice);
+            // Con cancelacion en proceso, la consulta tambien la resuelve
+            // (boton "Consultar estatus ahora"); si no, solo informa al SAT.
+            if ($cfdiInvoice->isCancelPending()) {
+                $invoice = $stampingService->checkCancellation($cfdiInvoice);
+
+                return response()->json([
+                    'message' => 'Estatus de cancelación obtenido',
+                    'data' => [
+                        'id' => $invoice->id,
+                        'status' => $invoice->status,
+                        'cancellation_status' => $invoice->cancellation_status,
+                        'cancellation_checked_at' => $invoice->cancellation_checked_at,
+                        'fecha_cancelacion' => $invoice->fecha_cancelacion,
+                    ],
+                ]);
+            }
+
+            $statusData = $stampingService->validateWithSAT($cfdiInvoice);
 
             return response()->json([
                 'message' => 'Estatus de cancelación obtenido',
-                'data' => $statusData,
+                'data' => array_merge(['id' => $cfdiInvoice->id, 'status' => $cfdiInvoice->status], $statusData),
             ]);
         } catch (PacException $e) {
             return response()->json([

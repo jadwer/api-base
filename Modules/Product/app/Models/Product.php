@@ -17,6 +17,8 @@ use Spatie\Activitylog\LogOptions;
  * @property string|null $img_path
  * @property string|null $datasheet_path
  * @property float|null $price
+ * @property bool $iva
+ * @property float|null $tax_rate
  * @property float|null $cost
  * @property string $pricing_type
  * @property float|null $compare_at_price
@@ -564,6 +566,17 @@ class Product extends Model
      * null tax_rate is NOT treated as Exento to avoid silently dropping IVA
      * on legacy flows (quotes use effective_tax_rate ?? 0).
      */
+    protected static function booted(): void
+    {
+        // La bandera iva del formulario manda sobre la tasa: sin esto, con
+        // tax_rate=16 desmarcar el IVA no tenia efecto (2026-10-22).
+        static::saving(function (Product $product) {
+            if ($product->isDirty('iva') && !$product->isDirty('tax_rate')) {
+                $product->tax_rate = $product->iva ? 16 : 0;
+            }
+        });
+    }
+
     public function getEffectiveTaxRateAttribute(): float
     {
         if ($this->tax_rate !== null) {

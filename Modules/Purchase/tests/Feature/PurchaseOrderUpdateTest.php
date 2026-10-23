@@ -65,7 +65,6 @@ class PurchaseOrderUpdateTest extends TestCase
                 'attributes' => [
                     'orderDate' => '2025-01-20',
                     'status' => 'pending',
-                    'totalAmount' => '2000.75',
                     'notes' => 'Updated purchase order notes',
                 ],
             ],
@@ -81,7 +80,8 @@ class PurchaseOrderUpdateTest extends TestCase
         // Verificar campos con formato específico por separado
         $updatedOrder = \Modules\Purchase\Models\PurchaseOrder::find($purchaseOrder->id);
         $this->assertNotNull($updatedOrder);
-        $this->assertEquals(2000.75, (float) $updatedOrder->total_amount);
+        // Total de solo lectura (22-10): el PATCH no lo cambia
+        $this->assertEquals(1500.00, (float) $updatedOrder->total_amount);
         $this->assertEquals('2025-01-20', $updatedOrder->order_date->format('Y-m-d'));
     }
 
@@ -169,30 +169,6 @@ class PurchaseOrderUpdateTest extends TestCase
             'id' => $purchaseOrder->id,
             'status' => 'pending',
         ]);
-    }
-
-    public function test_update_validates_total_amount_positive(): void
-    {
-        $admin = User::where('email', 'admin@example.com')->firstOrFail();
-        $this->actingAs($admin, 'sanctum');
-
-        $contact = Contact::factory()->create(['is_supplier' => true]);
-        $purchaseOrder = PurchaseOrder::factory()->create(['contact_id' => $contact->id]);
-
-        $data = [
-            'type' => 'purchase-orders',
-            'id' => (string) $purchaseOrder->id,
-            'attributes' => [
-                'totalAmount' => -500.00, // Negative amount
-            ],
-        ];
-
-        $response = $this->jsonApi()->withData($data)->patch("/api/v1/purchase-orders/{$purchaseOrder->id}");
-
-        $response->assertStatus(422);
-        $this->assertJsonApiValidationErrors([
-            '/data/attributes/totalAmount',
-        ], $response);
     }
 
     public function test_update_validates_contact_exists(): void

@@ -95,6 +95,7 @@ class ContactSchema extends Schema
             \LaravelJsonApi\Eloquent\Filters\Where::make('classification'),
             \LaravelJsonApi\Eloquent\Filters\Where::make('paymentTerms', 'payment_terms'),
             Scope::make('isProspect', 'prospects')->asBoolean(),
+            Scope::make('search'),
         ];
     }
 

@@ -15,6 +15,7 @@ use Spatie\Activitylog\LogOptions;
  * @property int $product_id
  * @property float $quantity
  * @property float $unit_price
+ * @property float|null $discount_amount
  * @property float $total
  */
 class CartItem extends Model

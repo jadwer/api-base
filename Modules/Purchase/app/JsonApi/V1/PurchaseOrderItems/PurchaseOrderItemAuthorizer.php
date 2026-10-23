@@ -21,7 +21,9 @@ class PurchaseOrderItemAuthorizer implements Authorizer
      */
     public function store(Request $request, string $modelClass): bool|Response
     {
-        return $request->user()?->hasPermissionTo('purchase-order-items.store', 'api') ?? false;
+        $order = \App\Support\DocumentItemLock::parentFromRequest($request, \Modules\Purchase\Models\PurchaseOrder::class, 'purchaseOrderId', 'purchaseOrder');
+
+        return \App\Support\DocumentItemLock::authorize($request->user()?->hasPermissionTo('purchase-order-items.store', 'api') ?? false, $order, \Modules\Purchase\Models\PurchaseOrder::LOCKED_ITEM_STATUSES, 'la orden de compra');
     }
 
     /**
@@ -37,7 +39,7 @@ class PurchaseOrderItemAuthorizer implements Authorizer
      */
     public function update(Request $request, object $model): bool|Response
     {
-        return $request->user()?->hasPermissionTo('purchase-order-items.update', 'api') ?? false;
+        return \App\Support\DocumentItemLock::authorize($request->user()?->hasPermissionTo('purchase-order-items.update', 'api') ?? false, $model->purchaseOrder, \Modules\Purchase\Models\PurchaseOrder::LOCKED_ITEM_STATUSES, 'la orden de compra');
     }
 
     /**
@@ -45,7 +47,7 @@ class PurchaseOrderItemAuthorizer implements Authorizer
      */
     public function destroy(Request $request, object $model): bool|Response
     {
-        return $request->user()?->hasPermissionTo('purchase-order-items.destroy', 'api') ?? false;
+        return \App\Support\DocumentItemLock::authorize($request->user()?->hasPermissionTo('purchase-order-items.destroy', 'api') ?? false, $model->purchaseOrder, \Modules\Purchase\Models\PurchaseOrder::LOCKED_ITEM_STATUSES, 'la orden de compra');
     }
 
     /**

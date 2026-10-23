@@ -33,10 +33,8 @@ class CFDIAutomationService
                 throw new \Exception('AR Invoice must have a valid contact');
             }
 
-            // Determine serie and folio atomically
-            $serie = $settings->invoice_series ?? 'F';
-            $settings = CompanySetting::where('id', $settings->id)->lockForUpdate()->first();
-            $folio = $settings->next_invoice_folio ?? 1;
+            // Serie y folio de la fuente unica (serie default de ingreso)
+            [$serie, $folio] = app(\Modules\Billing\Services\CFDI\CfdiFolioAllocator::class)->allocate($settings, 'I');
 
             $receptor = \Modules\Billing\Support\CfdiReceptor::fromContact($contact, $settings->postal_code);
             $receptor['receptor_domicilio_fiscal'] = $receptor['receptor_domicilio_fiscal'] ?: '00000';
@@ -99,9 +97,7 @@ class CFDIAutomationService
                 // Total no cuadra -> SAT CFDI40119. La tasa se toma como fraccion
                 // (tax_rate viene como 16 o 0). El importe se calcula en centavos
                 // sobre el importe neto de la linea.
-                $ivaRate = $product && $product->iva
-                    ? (float) ($product->tax_rate ?? 0) / 100
-                    : 0.0;
+                $ivaRate = $product ? $product->effective_tax_rate / 100 : 0.0;
                 $iva = (int) round($importe * $ivaRate);
 
                 CFDIItem::create([
@@ -145,9 +141,6 @@ class CFDIAutomationService
                     ],
                 ]);
             }
-
-            // Increment folio for next invoice
-            $settings->increment('next_invoice_folio');
 
             Log::info('CFDI auto-generated from AR Invoice', [
                 'cfdi_id' => $cfdi->id,

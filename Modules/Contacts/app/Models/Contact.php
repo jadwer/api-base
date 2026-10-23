@@ -15,6 +15,11 @@ use Illuminate\Validation\ValidationException;
  * @property string|null $email
  * @property bool $is_customer
  * @property bool $is_supplier
+ * @property string|null $legal_name
+ * @property string|null $tax_id
+ * @property string|null $regimen_fiscal
+ * @property string|null $uso_cfdi
+ * @property int|null $payment_terms
  */
 class Contact extends Model
 {
@@ -146,6 +151,19 @@ class Contact extends Model
     }
 
     // Scopes
+    /** Busqueda parcial por nombre, razon social, RFC o correo (selector de cliente). */
+    public function scopeSearch($query, string $term)
+    {
+        $like = '%' . trim($term) . '%';
+
+        return $query->where(function ($q) use ($like) {
+            $q->where('name', 'like', $like)
+                ->orWhere('legal_name', 'like', $like)
+                ->orWhere('tax_id', 'like', $like)
+                ->orWhere('email', 'like', $like);
+        });
+    }
+
     public function scopeActive($query)
     {
         return $query->where('status', 'active');

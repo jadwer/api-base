@@ -343,42 +343,6 @@ parameters:
 			path: Modules/Audit/app/Http/Controllers/AuditController.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$rfc\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Billing/app/Console/UploadCsdToPacCommand.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$company_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Http/Controllers/Api/V1/CFDIInvoiceController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$fecha_cancelacion\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Http/Controllers/Api/V1/CFDIInvoiceController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$fecha_timbrado\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Http/Controllers/Api/V1/CFDIInvoiceController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$folio\.$#'
-			identifier: property.notFound
-			count: 5
-			path: Modules/Billing/app/Http/Controllers/Api/V1/CFDIInvoiceController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$moneda\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Http/Controllers/Api/V1/CFDIInvoiceController.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$monto_pago\.$#'
 			identifier: property.notFound
 			count: 1
@@ -391,45 +355,9 @@ parameters:
 			path: Modules/Billing/app/Http/Controllers/Api/V1/CFDIInvoiceController.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$receptor_nombre\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Http/Controllers/Api/V1/CFDIInvoiceController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$receptor_rfc\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Http/Controllers/Api/V1/CFDIInvoiceController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$series\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Billing/app/Http/Controllers/Api/V1/CFDIInvoiceController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 5
-			path: Modules/Billing/app/Http/Controllers/Api/V1/CFDIInvoiceController.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$tipo_comprobante\.$#'
 			identifier: property.notFound
 			count: 1
-			path: Modules/Billing/app/Http/Controllers/Api/V1/CFDIInvoiceController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$total\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Billing/app/Http/Controllers/Api/V1/CFDIInvoiceController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$uuid\.$#'
-			identifier: property.notFound
-			count: 6
 			path: Modules/Billing/app/Http/Controllers/Api/V1/CFDIInvoiceController.php
 
 		-
@@ -442,6 +370,12 @@ parameters:
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$xml_timbrado\.$#'
 			identifier: property.notFound
 			count: 2
+			path: Modules/Billing/app/Http/Controllers/Api/V1/CFDIInvoiceController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$company_name\.$#'
+			identifier: property.notFound
+			count: 1
 			path: Modules/Billing/app/Http/Controllers/Api/V1/CFDIInvoiceController.php
 
 		-
@@ -466,6 +400,12 @@ parameters:
 			message: '#^Method Modules\\Billing\\Http\\Controllers\\Api\\V1\\CFDIInvoiceController\:\:previewPdf\(\) should return Symfony\\Component\\HttpFoundation\\BinaryFileResponse but returns Symfony\\Component\\HttpFoundation\\Response\.$#'
 			identifier: return.type
 			count: 1
+			path: Modules/Billing/app/Http/Controllers/Api/V1/CFDIInvoiceController.php
+
+		-
+			message: '#^Parameter \#1 \$string of function str_pad expects string, int given\.$#'
+			identifier: argument.type
+			count: 2
 			path: Modules/Billing/app/Http/Controllers/Api/V1/CFDIInvoiceController.php
 
 		-
@@ -553,18 +493,6 @@ parameters:
 			path: Modules/Billing/app/Http/Controllers/BillingController.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$folio\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Listeners/GenerateCFDIAfterPayment.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$series\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Listeners/GenerateCFDIAfterPayment.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\PaymentTransaction\:\:\$amount\.$#'
 			identifier: property.notFound
 			count: 1
@@ -575,12 +503,6 @@ parameters:
 			identifier: property.notFound
 			count: 1
 			path: Modules/Billing/app/Listeners/GenerateCFDIAfterPayment.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Listeners/GenerateREPAfterPayment.php
 
 		-
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$branch_id\.$#'
@@ -595,27 +517,9 @@ parameters:
 			path: Modules/Billing/app/Models/CFDIInvoice.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$folio\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Models/CFDIInvoice.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$iva\.$#'
 			identifier: property.notFound
 			count: 1
-			path: Modules/Billing/app/Models/CFDIInvoice.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$series\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Models/CFDIInvoice.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 3
 			path: Modules/Billing/app/Models/CFDIInvoice.php
 
 		-
@@ -628,12 +532,6 @@ parameters:
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$tipo_comprobante\.$#'
 			identifier: property.notFound
 			count: 3
-			path: Modules/Billing/app/Models/CFDIInvoice.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$total\.$#'
-			identifier: property.notFound
-			count: 1
 			path: Modules/Billing/app/Models/CFDIInvoice.php
 
 		-
@@ -679,25 +577,7 @@ parameters:
 			path: Modules/Billing/app/Models/CompanySetting.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$invoice_series\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Models/CompanySetting.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$next_credit_note_folio\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Models/CompanySetting.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$next_invoice_folio\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Models/CompanySetting.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$postal_code\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Billing/app/Models/CompanySetting.php
@@ -705,6 +585,12 @@ parameters:
 		-
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$state\.$#'
 			identifier: property.notFound
+			count: 1
+			path: Modules/Billing/app/Models/CompanySetting.php
+
+		-
+			message: '#^Parameter \#1 \$string of function str_pad expects string, int\|null given\.$#'
+			identifier: argument.type
 			count: 1
 			path: Modules/Billing/app/Models/CompanySetting.php
 
@@ -721,6 +607,18 @@ parameters:
 			path: Modules/Billing/app/Models/PaymentTransaction.php
 
 		-
+			message: '#^Strict comparison using \!\=\= between \(float\|int\) and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 2
+			path: Modules/Billing/app/Services/CFDI/BuildsCfdiLegendContext.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between int and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: Modules/Billing/app/Services/CFDI/BuildsCfdiLegendContext.php
+
+		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$importe\.$#'
 			identifier: property.notFound
 			count: 1
@@ -733,61 +631,13 @@ parameters:
 			path: Modules/Billing/app/Services/CFDI/CFDIPDFGenerator.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$payment_terms\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/CFDIPDFGenerator.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$fecha_emision\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Billing/app/Services/CFDI/CFDIPDFGenerator.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$folio\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/CFDIPDFGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$moneda\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/CFDIPDFGenerator.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$pdf_path\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Billing/app/Services/CFDI/CFDIPDFGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$receptor_nombre\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/CFDIPDFGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$receptor_rfc\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Billing/app/Services/CFDI/CFDIPDFGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$series\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/CFDIPDFGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$total\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Billing/app/Services/CFDI/CFDIPDFGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$uuid\.$#'
 			identifier: property.notFound
 			count: 2
 			path: Modules/Billing/app/Services/CFDI/CFDIPDFGenerator.php
@@ -805,39 +655,15 @@ parameters:
 			path: Modules/Billing/app/Services/CFDI/CFDIPDFGenerator.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$rfc\.$#'
-			identifier: property.notFound
+			message: '#^Parameter \#1 \$string of function str_pad expects string, int given\.$#'
+			identifier: argument.type
 			count: 1
 			path: Modules/Billing/app/Services/CFDI/CFDIPDFGenerator.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$rfc\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Billing/app/Services/CFDI/CFDIStampingService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$folio\.$#'
-			identifier: property.notFound
+			message: '#^Parameter \#1 \$string of function str_pad expects string, int given\.$#'
+			identifier: argument.type
 			count: 1
-			path: Modules/Billing/app/Services/CFDI/CFDIStampingService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$receptor_rfc\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Billing/app/Services/CFDI/CFDIStampingService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$total\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Billing/app/Services/CFDI/CFDIStampingService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$uuid\.$#'
-			identifier: property.notFound
-			count: 5
 			path: Modules/Billing/app/Services/CFDI/CFDIStampingService.php
 
 		-
@@ -919,30 +745,6 @@ parameters:
 			path: Modules/Billing/app/Services/CFDI/CFDIXMLGenerator.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$folio\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/CFDIXMLGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$moneda\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/CFDIXMLGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$receptor_nombre\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/CFDIXMLGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$receptor_rfc\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/CFDIXMLGenerator.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$subtotal\.$#'
 			identifier: property.notFound
 			count: 1
@@ -955,12 +757,6 @@ parameters:
 			path: Modules/Billing/app/Services/CFDI/CFDIXMLGenerator.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$total\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/CFDIXMLGenerator.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$certificate_number\.$#'
 			identifier: property.notFound
 			count: 1
@@ -973,40 +769,10 @@ parameters:
 			path: Modules/Billing/app/Services/CFDI/CFDIXMLGenerator.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$postal_code\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/CFDIXMLGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$rfc\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/CFDIXMLGenerator.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$tax_regime\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Billing/app/Services/CFDI/CFDIXMLGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$folio\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/ComplementoPagosGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$receptor_nombre\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/ComplementoPagosGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$receptor_rfc\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/ComplementoPagosGenerator.php
 
 		-
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$certificate_number\.$#'
@@ -1021,32 +787,8 @@ parameters:
 			path: Modules/Billing/app/Services/CFDI/ComplementoPagosGenerator.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$postal_code\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/ComplementoPagosGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$rfc\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/ComplementoPagosGenerator.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$tax_regime\.$#'
 			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/ComplementoPagosGenerator.php
-
-		-
-			message: '#^Parameter \#3 \$settings of method Modules\\Billing\\Services\\CFDI\\ComplementoPagosGenerator\:\:addMainAttributes\(\) expects Modules\\Billing\\Models\\CompanySetting, Illuminate\\Database\\Eloquent\\Model given\.$#'
-			identifier: argument.type
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/ComplementoPagosGenerator.php
-
-		-
-			message: '#^Parameter \#4 \$settings of method Modules\\Billing\\Services\\CFDI\\ComplementoPagosGenerator\:\:addEmisor\(\) expects Modules\\Billing\\Models\\CompanySetting, Illuminate\\Database\\Eloquent\\Model given\.$#'
-			identifier: argument.type
 			count: 1
 			path: Modules/Billing/app/Services/CFDI/ComplementoPagosGenerator.php
 
@@ -1058,12 +800,6 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$impuestos\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/PrefacturaPDFGenerator.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$payment_terms\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Billing/app/Services/CFDI/PrefacturaPDFGenerator.php
@@ -1099,51 +835,9 @@ parameters:
 			path: Modules/Billing/app/Services/CFDI/PrefacturaPDFGenerator.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$folio\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/PrefacturaPDFGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$moneda\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/PrefacturaPDFGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$receptor_nombre\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/PrefacturaPDFGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$receptor_rfc\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/PrefacturaPDFGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$series\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/PrefacturaPDFGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$total\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Billing/app/Services/CFDI/PrefacturaPDFGenerator.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$company_name\.$#'
 			identifier: property.notFound
 			count: 1
-			path: Modules/Billing/app/Services/CFDI/PrefacturaPDFGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$postal_code\.$#'
-			identifier: property.notFound
-			count: 2
 			path: Modules/Billing/app/Services/CFDI/PrefacturaPDFGenerator.php
 
 		-
@@ -1153,22 +847,10 @@ parameters:
 			path: Modules/Billing/app/Services/CFDI/PrefacturaPDFGenerator.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
+			message: '#^Parameter \#1 \$string of function str_pad expects string, int given\.$#'
+			identifier: argument.type
 			count: 1
-			path: Modules/Billing/app/Services/CFDI/REPService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$contact_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/REPService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$folio\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/REPService.php
+			path: Modules/Billing/app/Services/CFDI/PrefacturaPDFGenerator.php
 
 		-
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$metodo_pago\.$#'
@@ -1183,37 +865,7 @@ parameters:
 			path: Modules/Billing/app/Services/CFDI/REPService.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$receptor_nombre\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/REPService.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$receptor_regimen_fiscal\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/REPService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$receptor_rfc\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/REPService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$series\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/REPService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/REPService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CFDIInvoice\:\:\$uuid\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Billing/app/Services/CFDI/REPService.php
@@ -1225,21 +877,9 @@ parameters:
 			path: Modules/Billing/app/Services/CFDI/REPService.php
 
 		-
-			message: '#^Parameter \#1 \$settings of method Modules\\Billing\\Services\\CFDI\\REPService\:\:allocateSerieFolio\(\) expects Modules\\Billing\\Models\\CompanySetting, Illuminate\\Database\\Eloquent\\Model given\.$#'
-			identifier: argument.type
-			count: 1
-			path: Modules/Billing/app/Services/CFDI/REPService.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 2
-			path: Modules/Billing/app/Services/CFDIAutomationService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$postal_code\.$#'
-			identifier: property.notFound
-			count: 1
 			path: Modules/Billing/app/Services/CFDIAutomationService.php
 
 		-
@@ -1325,24 +965,6 @@ parameters:
 			identifier: property.notFound
 			count: 1
 			path: Modules/Billing/app/Services/StripeService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$regimen_fiscal\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Support/CfdiReceptor.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$tax_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Support/CfdiReceptor.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$uso_cfdi\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Billing/app/Support/CfdiReceptor.php
 
 		-
 			message: '#^Access to an undefined property Modules\\Contacts\\Models\\ContactAddress\:\:\$postal_code\.$#'
@@ -1711,12 +1333,6 @@ parameters:
 			path: Modules/Contacts/app/Models/Contact.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$legal_name\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Contacts/app/Models/Contact.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$phone\.$#'
 			identifier: property.notFound
 			count: 2
@@ -1738,12 +1354,6 @@ parameters:
 			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$status\.$#'
 			identifier: property.notFound
 			count: 4
-			path: Modules/Contacts/app/Models/Contact.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$tax_id\.$#'
-			identifier: property.notFound
-			count: 1
 			path: Modules/Contacts/app/Models/Contact.php
 
 		-
@@ -1933,21 +1543,9 @@ parameters:
 			path: Modules/Contacts/app/Models/ContactPerson.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$legal_name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Contacts/app/Services/DuplicateDetectionService.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$similarity_score\.$#'
 			identifier: property.notFound
 			count: 2
-			path: Modules/Contacts/app/Services/DuplicateDetectionService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$tax_id\.$#'
-			identifier: property.notFound
-			count: 1
 			path: Modules/Contacts/app/Services/DuplicateDetectionService.php
 
 		-
@@ -2035,31 +1633,7 @@ parameters:
 			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ProductRecommendationController.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$img_path\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ProductRecommendationController.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ProductRecommendationController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ProductRecommendationController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$price\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ProductRecommendationController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$sku\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ProductRecommendationController.php
@@ -2089,31 +1663,7 @@ parameters:
 			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ProductViewController.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$img_path\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ProductViewController.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ProductViewController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ProductViewController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$price\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ProductViewController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$sku\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ProductViewController.php
@@ -2146,30 +1696,6 @@ parameters:
 			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$original_unit_price\.$#'
 			identifier: property.notFound
 			count: 1
-			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ShoppingCartController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$product_id\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ShoppingCartController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$quantity\.$#'
-			identifier: property.notFound
-			count: 5
-			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ShoppingCartController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$total\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ShoppingCartController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$unit_price\.$#'
-			identifier: property.notFound
-			count: 2
 			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ShoppingCartController.php
 
 		-
@@ -2302,12 +1828,6 @@ parameters:
 			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\ShoppingCart\:\:\$user_id\.$#'
 			identifier: property.notFound
 			count: 2
-			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ShoppingCartController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
 			path: Modules/Ecommerce/app/Http/Controllers/Api/V1/ShoppingCartController.php
 
 		-
@@ -2653,18 +2173,6 @@ parameters:
 			path: Modules/Ecommerce/app/Observers/CartItemObserver.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$product_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Ecommerce/app/Observers/CartItemObserver.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$shopping_cart_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Ecommerce/app/Observers/CartItemObserver.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$subtotal\.$#'
 			identifier: property.notFound
 			count: 1
@@ -2674,18 +2182,6 @@ parameters:
 			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$tax_amount\.$#'
 			identifier: property.notFound
 			count: 1
-			path: Modules/Ecommerce/app/Observers/CartItemObserver.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$total\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Ecommerce/app/Observers/CartItemObserver.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$unit_price\.$#'
-			identifier: property.notFound
-			count: 3
 			path: Modules/Ecommerce/app/Observers/CartItemObserver.php
 
 		-
@@ -2983,12 +2479,6 @@ parameters:
 			path: Modules/Ecommerce/app/Services/RecommendationEngine.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$price\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Ecommerce/app/Services/RecommendationEngine.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$credit_hold_reason\.$#'
 			identifier: property.notFound
 			count: 1
@@ -3071,12 +2561,6 @@ parameters:
 			identifier: argument.type
 			count: 4
 			path: Modules/Finance/app/Http/Controllers/FinanceController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Modules\\Purchase\\Models\\PurchaseOrder\>\|Modules\\Purchase\\Models\\PurchaseOrder\:\:\$order_number\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Finance/app/Listeners/APInvoicePostedListener.php
 
 		-
 			message: '#^Access to an undefined property Modules\\Finance\\Models\\APInvoice\:\:\$contact_id\.$#'
@@ -3181,12 +2665,6 @@ parameters:
 			path: Modules/Finance/app/Listeners/PurchaseOrderCancelledListener.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$order_number\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Finance/app/Listeners/PurchaseOrderCancelledListener.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$quantity\.$#'
 			identifier: property.notFound
 			count: 1
@@ -3226,12 +2704,6 @@ parameters:
 			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$contact_id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: Modules/Finance/app/Listeners/PurchaseOrderReceivedListener.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$order_number\.$#'
-			identifier: property.notFound
-			count: 3
 			path: Modules/Finance/app/Listeners/PurchaseOrderReceivedListener.php
 
 		-
@@ -3337,18 +2809,6 @@ parameters:
 			path: Modules/Finance/app/Services/APInvoiceReconciliationService.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$order_number\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Finance/app/Services/APInvoiceReconciliationService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$total_amount\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Finance/app/Services/APInvoiceReconciliationService.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Finance\\Models\\APInvoice\:\:\$due_date\.$#'
 			identifier: property.notFound
 			count: 1
@@ -3410,12 +2870,6 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property Modules\\Finance\\Models\\ARInvoice\:\:\$total_amount\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Finance/app/Services/ARInvoicePaymentRegistrationService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\SatCatalogs\\Models\\SatFormaPago\:\:\$descripcion\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Finance/app/Services/ARInvoicePaymentRegistrationService.php
@@ -3805,12 +3259,6 @@ parameters:
 			path: Modules/Finance/app/Services/EventReplayService.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$order_number\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Finance/app/Services/EventReplayService.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Finance\\Models\\ARInvoice\:\:\$contact_id\.$#'
 			identifier: property.notFound
 			count: 1
@@ -4039,24 +3487,6 @@ parameters:
 			path: Modules/Inventory/app/Console/RepostInventoryGLCommand.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Inventory/app/Http/Controllers/Api/V1/FractionationApiController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Inventory/app/Http/Controllers/Api/V1/FractionationApiController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$sku\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Inventory/app/Http/Controllers/Api/V1/FractionationApiController.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Inventory\\Models\\InventoryMovement\:\:\$gl_posting_status\.$#'
 			identifier: property.notFound
 			count: 1
@@ -4273,30 +3703,6 @@ parameters:
 			path: Modules/Inventory/app/Services/CycleCountService.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Inventory/app/Services/FractionationService.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Inventory/app/Services/FractionationService.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$sku\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Inventory/app/Services/FractionationService.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$unit\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Inventory/app/Services/FractionationService.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Inventory\\Models\\ProductBatch\:\:\$created_at\.$#'
 			identifier: property.notFound
 			count: 1
@@ -4375,18 +3781,6 @@ parameters:
 			path: Modules/PermissionManager/app/Models/Permission.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$datasheet_path\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Product/app/Console/Commands/PruneMissingDatasheets.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$sku\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Product/app/Console/Commands/PruneMissingDatasheets.php
-
-		-
 			message: '#^Dead catch \- Illuminate\\Database\\QueryException is never thrown in the try block\.$#'
 			identifier: catch.neverThrown
 			count: 1
@@ -4441,12 +3835,6 @@ parameters:
 			path: Modules/Product/app/Http/Controllers/Api/V1/CatalogController.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$datasheet_path\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Product/app/Http/Controllers/Api/V1/CatalogController.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$description\.$#'
 			identifier: property.notFound
 			count: 2
@@ -4454,36 +3842,6 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$full_description\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Product/app/Http/Controllers/Api/V1/CatalogController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$img_path\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Product/app/Http/Controllers/Api/V1/CatalogController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$iva\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Product/app/Http/Controllers/Api/V1/CatalogController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Product/app/Http/Controllers/Api/V1/CatalogController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$price\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Product/app/Http/Controllers/Api/V1/CatalogController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$sku\.$#'
 			identifier: property.notFound
 			count: 2
 			path: Modules/Product/app/Http/Controllers/Api/V1/CatalogController.php
@@ -4531,48 +3889,6 @@ parameters:
 			path: Modules/Product/app/Http/Controllers/Api/V1/ProductBulkController.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$price\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Product/app/Http/Controllers/Api/V1/ProductBulkController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\ProductImage\:\:\$alt_text\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Product/app/Http/Controllers/Api/V1/ProductImageCustomController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\ProductImage\:\:\$file_path\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Product/app/Http/Controllers/Api/V1/ProductImageCustomController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\ProductImage\:\:\$sort_order\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Product/app/Http/Controllers/Api/V1/ProductImageCustomController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$datasheet_path\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Product/app/Http/Controllers/Api/V1/ProductUploadController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Product/app/Http/Controllers/Api/V1/ProductUploadController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$sku\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Product/app/Http/Controllers/Api/V1/ProductUploadController.php
-
-		-
 			message: '#^Dead catch \- Illuminate\\Database\\QueryException is never thrown in the try block\.$#'
 			identifier: catch.neverThrown
 			count: 1
@@ -4615,30 +3931,6 @@ parameters:
 			path: Modules/Product/app/Models/Product.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$compare_at_price\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Product/app/Models/Product.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$is_on_sale\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Product/app/Models/Product.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$iva\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Product/app/Models/Product.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$price\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Product/app/Models/Product.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$sale_ends_at\.$#'
 			identifier: property.notFound
 			count: 1
@@ -4646,12 +3938,6 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$sale_starts_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Product/app/Models/Product.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$tax_rate\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Product/app/Models/Product.php
@@ -4675,24 +3961,6 @@ parameters:
 			path: Modules/Product/app/Models/Product.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$cost\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Product/app/Models/ProductVariant.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Product/app/Models/ProductVariant.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$price\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Product/app/Models/ProductVariant.php
-
-		-
 			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
 			identifier: nullsafe.neverNull
 			count: 1
@@ -4711,36 +3979,6 @@ parameters:
 			path: Modules/Product/app/Models/Unit.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\ProductImage\:\:\$file_path\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Product/app/Observers/ProductImageObserver.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\ProductImage\:\:\$is_primary\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Product/app/Observers/ProductImageObserver.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\ProductImage\:\:\$product_id\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Product/app/Observers/ProductImageObserver.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$datasheet_path\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Product/app/Observers/ProductObserver.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$slug\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Product/app/Observers/ProductObserver.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
 			identifier: property.notFound
 			count: 1
@@ -4748,18 +3986,6 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$brand_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Product/app/Support/ProductSlug.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Product/app/Support/ProductSlug.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$sku\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Product/app/Support/ProductSlug.php
@@ -4820,18 +4046,6 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$order_date\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Purchase/app/Http/Controllers/Api/V1/PurchaseOrderController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 6
-			path: Modules/Purchase/app/Http/Controllers/Api/V1/PurchaseOrderController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$total_amount\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Purchase/app/Http/Controllers/Api/V1/PurchaseOrderController.php
@@ -4999,12 +4213,6 @@ parameters:
 			path: Modules/Purchase/app/Models/PurchaseOrderItem.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Purchase/app/Observers/PurchaseOrderObserver.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Purchase\\Models\\Budget\:\:\$allow_overcommit\.$#'
 			identifier: property.notFound
 			count: 1
@@ -5107,12 +4315,6 @@ parameters:
 			path: Modules/Purchase/app/Services/BudgetControlService.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$total_amount\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Purchase/app/Services/BudgetControlService.php
-
-		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:release\(\)\.$#'
 			identifier: method.notFound
 			count: 1
@@ -5132,18 +4334,6 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$contact_id\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Purchase/app/Services/PurchaseOrderApprovalService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 4
-			path: Modules/Purchase/app/Services/PurchaseOrderApprovalService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$total_amount\.$#'
 			identifier: property.notFound
 			count: 2
 			path: Modules/Purchase/app/Services/PurchaseOrderApprovalService.php
@@ -5467,27 +4657,9 @@ parameters:
 			path: Modules/Reports/app/Services/ManagementReports/PurchaseReportService.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$total_amount\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Reports/app/Services/ManagementReports/PurchaseReportService.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrderItem\:\:\$product_id\.$#'
 			identifier: property.notFound
 			count: 1
-			path: Modules/Reports/app/Services/ManagementReports/PurchaseReportService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrderItem\:\:\$quantity\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Reports/app/Services/ManagementReports/PurchaseReportService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrderItem\:\:\$subtotal\.$#'
-			identifier: property.notFound
-			count: 2
 			path: Modules/Reports/app/Services/ManagementReports/PurchaseReportService.php
 
 		-
@@ -5527,37 +4699,7 @@ parameters:
 			path: Modules/Reports/app/Services/ManagementReports/SalesReportService.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrderItem\:\:\$quantity\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Reports/app/Services/PurchaseReports/PurchaseByProductReportService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrderItem\:\:\$unit_price\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Reports/app/Services/PurchaseReports/PurchaseByProductReportService.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$order_date\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Reports/app/Services/PurchaseReports/PurchaseBySupplierReportService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$order_number\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Reports/app/Services/PurchaseReports/PurchaseBySupplierReportService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Reports/app/Services/PurchaseReports/PurchaseBySupplierReportService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$total_amount\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Reports/app/Services/PurchaseReports/PurchaseBySupplierReportService.php
@@ -5582,24 +4724,6 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$unit_price\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Reports/app/Services/SalesReports/SalesAdvancedReportService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Reports/app/Services/SalesReports/SalesAdvancedReportService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$price\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Reports/app/Services/SalesReports/SalesAdvancedReportService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$sku\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Reports/app/Services/SalesReports/SalesAdvancedReportService.php
@@ -5749,12 +4873,6 @@ parameters:
 			path: Modules/Sales/app/Http/Controllers/Api/V1/OrderTrackingController.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$additional_emails\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$code\.$#'
 			identifier: property.notFound
 			count: 1
@@ -5767,99 +4885,9 @@ parameters:
 			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$discount_amount\.$#'
+			message: '#^Access to an undefined property Modules\\Contacts\\Models\\Contact\:\:\$additional_emails\.$#'
 			identifier: property.notFound
 			count: 1
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$email\.$#'
-			identifier: property.notFound
-			count: 4
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 4
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$payment_terms\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$product\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$product_id\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$quantity\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$quote_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$quoted_price\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$total\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$unit_price\.$#'
-			identifier: property.notFound
-			count: 3
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$product_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$quantity\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\CartItem\:\:\$unit_price\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$sku\.$#'
-			identifier: property.notFound
-			count: 2
 			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
 
 		-
@@ -5869,32 +4897,8 @@ parameters:
 			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$order_number\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$total_amount\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Purchase\\Models\\PurchaseOrder\:\:\$warehouse_id\.$#'
 			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:contactPeople\(\)\.$#'
-			identifier: method.notFound
 			count: 1
 			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
 
@@ -5933,12 +4937,6 @@ parameters:
 			identifier: nullsafe.neverNull
 			count: 1
 			path: Modules/Sales/app/Http/Controllers/Api/V1/QuoteController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Modules\\Product\\Models\\Product\>\|Modules\\Product\\Models\\Product\:\:\$cost\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Http/Controllers/Api/V1/RemissionController.php
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Modules\\Sales\\Models\\SalesOrder\>\|Modules\\Sales\\Models\\SalesOrder\:\:\$shipping_address\.$#'
@@ -6187,46 +5185,10 @@ parameters:
 			path: Modules/Sales/app/Listeners/MarkOrderUnpaidOnInvoicePaymentReversed.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$email\.$#'
-			identifier: property.notFound
+			message: '#^Using nullsafe property access "\?\-\>sku" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
 			count: 1
-			path: Modules/Sales/app/Mail/QuoteConvertedMail.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteConvertedMail.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$notes\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteConvertedMail.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$quantity\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteConvertedMail.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$quoted_price\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteConvertedMail.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$total\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteConvertedMail.php
-
-		-
-			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
-			identifier: argument.unresolvableType
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteConvertedMail.php
+			path: Modules/Sales/app/Mail/Concerns/SummarizesQuoteItems.php
 
 		-
 			message: '#^Using nullsafe method call on non\-nullable type Carbon\\Carbon\. Use \-\> instead\.$#'
@@ -6247,115 +5209,13 @@ parameters:
 			path: Modules/Sales/app/Mail/QuoteConvertedMail.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$email\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteRequestedMail.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteRequestedMail.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$quantity\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteRequestedMail.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$quoted_price\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteRequestedMail.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$total\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteRequestedMail.php
-
-		-
-			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
-			identifier: argument.unresolvableType
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteRequestedMail.php
-
-		-
 			message: '#^Using nullsafe method call on non\-nullable type Carbon\\Carbon\. Use \-\> instead\.$#'
 			identifier: nullsafe.neverNull
 			count: 1
 			path: Modules/Sales/app/Mail/QuoteRequestedMail.php
 
 		-
-			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 2
-			path: Modules/Sales/app/Mail/QuoteRequestedMail.php
-
-		-
-			message: '#^Using nullsafe property access "\?\-\>sku" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteRequestedMail.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$email\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteSentMail.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteSentMail.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$notes\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteSentMail.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$quantity\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteSentMail.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$quoted_price\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteSentMail.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$total\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteSentMail.php
-
-		-
-			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
-			identifier: argument.unresolvableType
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteSentMail.php
-
-		-
 			message: '#^Using nullsafe method call on non\-nullable type Carbon\\Carbon\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: Modules/Sales/app/Mail/QuoteSentMail.php
-
-		-
-			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 2
-			path: Modules/Sales/app/Mail/QuoteSentMail.php
-
-		-
-			message: '#^Using nullsafe property access "\?\-\>sku" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
 			identifier: nullsafe.neverNull
 			count: 1
 			path: Modules/Sales/app/Mail/QuoteSentMail.php
@@ -6499,18 +5359,6 @@ parameters:
 			path: Modules/Sales/app/Models/Remission.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Sales/app/Models/RemissionItem.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$sku\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Sales/app/Models/RemissionItem.php
-
-		-
 			message: '#^Using nullsafe property access on non\-nullable type Modules\\Product\\Models\\Product\. Use \-\> instead\.$#'
 			identifier: nullsafe.neverNull
 			count: 2
@@ -6604,24 +5452,6 @@ parameters:
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
 			identifier: property.notFound
 			count: 2
-			path: Modules/Sales/app/Services/CartQuotePdfService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Services/CartQuotePdfService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$price\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Services/CartQuotePdfService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$sku\.$#'
-			identifier: property.notFound
-			count: 1
 			path: Modules/Sales/app/Services/CartQuotePdfService.php
 
 		-
@@ -6727,33 +5557,9 @@ parameters:
 			path: Modules/Sales/app/Services/OrderStatusService.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$contactAddresses\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Services/QuotePDFGenerator.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
 			identifier: property.notFound
-			count: 2
-			path: Modules/Sales/app/Services/QuotePDFGenerator.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$payment_terms\.$#'
-			identifier: property.notFound
 			count: 1
-			path: Modules/Sales/app/Services/QuotePDFGenerator.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$tax_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Services/QuotePDFGenerator.php
-
-		-
-			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:contactAddresses\(\)\.$#'
-			identifier: method.notFound
-			count: 2
 			path: Modules/Sales/app/Services/QuotePDFGenerator.php
 
 		-
@@ -6805,12 +5611,6 @@ parameters:
 			path: Modules/Sales/app/Services/RemissionPDFGenerator.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$additional_settings\.$#'
-			identifier: property.notFound
-			count: 2
-			path: Modules/Sales/app/Services/RemissionPDFGenerator.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$address\.$#'
 			identifier: property.notFound
 			count: 2
@@ -6829,19 +5629,7 @@ parameters:
 			path: Modules/Sales/app/Services/RemissionPDFGenerator.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$email\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Services/RemissionPDFGenerator.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$phone\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Services/RemissionPDFGenerator.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$postal_code\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Sales/app/Services/RemissionPDFGenerator.php
@@ -7064,18 +5852,6 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$logo_path\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Support/QuoteIssuer.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$postal_code\.$#'
-			identifier: property.notFound
-			count: 1
-			path: Modules/Sales/app/Support/QuoteIssuer.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Billing\\Models\\CompanySetting\:\:\$rfc\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Sales/app/Support/QuoteIssuer.php

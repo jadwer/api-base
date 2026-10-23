@@ -138,9 +138,41 @@ class SalesOrder extends Model
      * parametro (filter[pending_fulfillment]=1). Cualquier valor "falsy"
      * (0, false, "false", "") no aplica el filtro.
      */
+    /** Estados en los que el pedido ya no admite cambios en sus partidas. */
+    public const LOCKED_ITEM_STATUSES = ['delivered', 'completed', 'cancelled', 'returned', 'refunded'];
+
+    public function itemsLocked(): bool
+    {
+        return in_array($this->status, self::LOCKED_ITEM_STATUSES, true);
+    }
+
+    /**
+     * Totales del pedido calculados en el servidor (hallazgo Atomo 22-10: los
+     * mandaba el navegador con IVA fijo en 0). Subtotal = suma de partidas; IVA
+     * por partida con la tasa efectiva del producto (16% a todos desde 22-10);
+     * el descuento del encabezado se resta antes del IVA total.
+     */
+    public function recalculateTotals(): void
+    {
+        $items = SalesOrderItem::query()->where('sales_order_id', $this->id)->with('product')->get();
+
+        $subtotal = round((float) $items->sum('total'), 2);
+        $tax = round((float) $items->sum(
+            fn (SalesOrderItem $item) => round((float) $item->total * $item->product->effective_tax_rate / 100, 2)
+        ), 2);
+        $discount = min(round((float) ($this->discount_total ?? 0), 2), $subtotal);
+
+        $this->forceFill([
+            'subtotal' => $subtotal,
+            'tax_amount' => $tax,
+            'discount_total' => $discount,
+            'total_amount' => round($subtotal - $discount + $tax, 2),
+        ])->save();
+    }
+
     public function scopePendingFulfillment($query, $value = true)
     {
-        $closedStatuses = ['delivered', 'completed', 'cancelled', 'returned', 'refunded'];
+        $closedStatuses = self::LOCKED_ITEM_STATUSES;
 
         $enabled = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
         $enabled = $enabled ?? true;

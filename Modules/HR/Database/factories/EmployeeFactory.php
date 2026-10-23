@@ -23,7 +23,8 @@ class EmployeeFactory extends Factory
             'department_id' => Department::factory(),
             'position_id' => Position::factory(),
             'user_id' => null, // Optional link to user account
-            'employee_code' => 'EMP' . $this->faker->unique()->numerify('######'),
+            // ULID: el numero aleatorio de 6 digitos choco en la suite (flake 22-10)
+            'employee_code' => 'EMP' . (string) \Illuminate\Support\Str::ulid(),
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'email' => $this->faker->unique()->safeEmail(),

@@ -43,8 +43,10 @@ class PurchaseOrderSchema extends Schema
             Str::make('status')
                 ->sortable()
                 ->readOnlyOnUpdate(),
+            // Total calculado en el servidor (PurchaseOrder::recalculateTotals, 22-10)
             Number::make('totalAmount', 'total_amount')
-                ->sortable(),
+                ->sortable()
+                ->readOnly(),
             Str::make('notes'),
 
             // Approval workflow fields

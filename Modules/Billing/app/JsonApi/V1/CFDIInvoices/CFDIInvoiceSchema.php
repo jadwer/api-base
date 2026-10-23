@@ -112,6 +112,13 @@ class CFDIInvoiceSchema extends Schema
             DateTime::make('fechaEmision', 'fecha_emision')->sortable(),
             DateTime::make('fechaTimbrado', 'fecha_timbrado')->sortable()->readOnly(),
             DateTime::make('fechaCancelacion', 'fecha_cancelacion')->sortable()->readOnly(),
+            // Cancelacion con aceptacion del receptor (2026-10-22): solo los
+            // escribe CFDIStampingService (endpoint cancel y consulta al SAT).
+            Str::make('motivoCancelacion', 'motivo_cancelacion')->readOnly(),
+            Str::make('uuidSustitucion', 'uuid_sustitucion')->readOnly(),
+            Str::make('cancellationStatus', 'cancellation_status')->readOnly(),
+            DateTime::make('cancellationRequestedAt', 'cancellation_requested_at')->readOnly(),
+            DateTime::make('cancellationCheckedAt', 'cancellation_checked_at')->readOnly(),
 
             // Files
             Str::make('xmlPath', 'xml_path')->readOnly(),

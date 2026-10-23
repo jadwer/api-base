@@ -129,6 +129,7 @@ class BillingServiceProvider extends ServiceProvider
     {
         $this->commands([
             \Modules\Billing\Console\UploadCsdToPacCommand::class,
+            \Modules\Billing\Console\CheckCFDICancellationsCommand::class,
         ]);
     }
 

@@ -68,7 +68,6 @@ class PurchaseOrderStoreTest extends TestCase
                 'attributes' => [
                     'orderDate' => '2025-01-15',
                     'status' => 'pending',
-                    'totalAmount' => '2500.50',
                     'notes' => 'New purchase order for office supplies',
                 ],
             ],
@@ -85,7 +84,8 @@ class PurchaseOrderStoreTest extends TestCase
             ->where('notes', 'New purchase order for office supplies')
             ->first();
         $this->assertNotNull($order);
-        $this->assertEquals(2500.50, (float) $order->total_amount);
+        // Total del servidor (22-10): el totalAmount del cliente se ignora; sin partidas es 0
+        $this->assertEquals(0, (float) $order->total_amount);
         $this->assertEquals('2025-01-15', $order->order_date->format('Y-m-d'));
     }
 
@@ -126,7 +126,7 @@ class PurchaseOrderStoreTest extends TestCase
         // Verificar campos con formato específico por separado
         $order = \Modules\Purchase\Models\PurchaseOrder::where('contact_id', $contact->id)->first();
         $this->assertNotNull($order);
-        $this->assertEquals(1000.00, (float) $order->total_amount);
+        $this->assertEquals(0, (float) $order->total_amount);
         $this->assertEquals('2025-01-20', $order->order_date->format('Y-m-d'));
     }
 
@@ -149,7 +149,6 @@ class PurchaseOrderStoreTest extends TestCase
         $this->assertJsonApiValidationErrors([
             '/data/attributes/orderDate',
             '/data/attributes/status',
-            '/data/attributes/totalAmount',
             '/data/relationships/contact',
         ], $response);
     }
@@ -220,39 +219,6 @@ class PurchaseOrderStoreTest extends TestCase
         $response->assertStatus(422);
         $this->assertJsonApiValidationErrors([
             '/data/attributes/status',
-        ], $response);
-    }
-
-    public function test_store_validates_total_amount_positive(): void
-    {
-        $admin = User::where('email', 'admin@example.com')->firstOrFail();
-        $this->actingAs($admin, 'sanctum');
-
-        $contact = Contact::factory()->create(['is_supplier' => true]);
-
-        $data = [
-            'type' => 'purchase-orders',
-            'attributes' => [
-
-                'orderDate' => '2025-01-15',
-                'status' => 'pending',
-                'totalAmount' => -100.00, // Negative amount
-            ],
-            'relationships' => [
-                'contact' => [
-                    'data' => [
-                        'type' => 'contacts',
-                        'id' => (string) $contact->id,
-                    ],
-                ],
-            ],
-        ];
-
-        $response = $this->jsonApi()->withData($data)->post('/api/v1/purchase-orders');
-
-        $response->assertStatus(422);
-        $this->assertJsonApiValidationErrors([
-            '/data/attributes/totalAmount',
         ], $response);
     }
 

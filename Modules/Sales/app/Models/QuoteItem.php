@@ -22,6 +22,7 @@ use Spatie\Activitylog\LogOptions;
  * @property float $tax_amount
  * @property float $total
  * @property string|null $product_name
+ * @property-read Product|null $product el producto pudo borrarse; por eso se guarda product_name
  * @property string|null $product_sku
  * @property string|null $notes
  * @property array|null $metadata
