@@ -57,7 +57,7 @@ class AccountingService
                 ->first();
 
             if (!$fiscalPeriod) {
-                throw new Exception("No open fiscal period found for date {$entryDate}");
+                throw new Exception("No hay un periodo fiscal abierto para la fecha {$entryDate}.");
             }
 
             // Create journal entry
@@ -145,7 +145,7 @@ class AccountingService
 
         if (abs($totalDebit - $totalCredit) > 0.01) {
             throw new Exception(
-                "Journal entry is not balanced. Debit: {$totalDebit}, Credit: {$totalCredit}"
+                "La póliza no cuadra. Cargos: {$totalDebit}, abonos: {$totalCredit}."
             );
         }
 
@@ -171,7 +171,7 @@ class AccountingService
 
         if ($period->status !== 'open') {
             throw new Exception(
-                "Cannot post to closed fiscal period: {$period->name}"
+                "No se puede contabilizar en el periodo cerrado {$period->name}."
             );
         }
     }

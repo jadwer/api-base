@@ -22,8 +22,8 @@ class PeriodControlService
 
         if (!$period) {
             throw new \Exception(
-                "No fiscal period found for date {$date->toDateString()}. " .
-                "Please create fiscal periods before posting."
+                "No existe periodo fiscal para la fecha {$date->toDateString()}. " .
+                "Crea los periodos fiscales antes de contabilizar."
             );
         }
 
@@ -54,8 +54,8 @@ class PeriodControlService
         // Future period restrictions
         if ($date->gt(now()) && !$this->allowFuturePosting($operation)) {
             throw new \Exception(
-                "Future date posting not allowed for operation: {$operation}. " .
-                "Date: {$date->toDateString()}, Today: " . now()->toDateString()
+                "No se permite contabilizar con fecha futura en la operación {$operation}. " .
+                "Fecha: {$date->toDateString()}, hoy: " . now()->toDateString()
             );
         }
 
@@ -66,8 +66,8 @@ class PeriodControlService
 
             if ($periodDiff > 2) {
                 throw new \Exception(
-                    "Cannot post to period {$period->name}. " .
-                    "More than 2 periods in the past. Current period: {$currentPeriod->name}"
+                    "No se puede contabilizar en el periodo {$period->name}: " .
+                    "tiene más de 2 periodos de antigüedad. Periodo actual: {$currentPeriod->name}."
                 );
             }
         }
@@ -251,8 +251,8 @@ class PeriodControlService
 
         if ($unpostedCount > 0) {
             throw new \Exception(
-                "Cannot close period. Found {$unpostedCount} unposted journal entries. " .
-                "Post or delete draft entries before closing."
+                "No se puede cerrar el periodo: hay {$unpostedCount} póliza(s) sin contabilizar. " .
+                "Contabilízalas o elimínalas antes de cerrar."
             );
         }
 
@@ -265,8 +265,8 @@ class PeriodControlService
 
         if ($unbalancedCount > 0) {
             throw new \Exception(
-                "Cannot close period. Found {$unbalancedCount} unbalanced journal entries. " .
-                "Fix unbalanced entries before closing."
+                "No se puede cerrar el periodo: hay {$unbalancedCount} póliza(s) que no cuadran. " .
+                "Corrígelas antes de cerrar."
             );
         }
 

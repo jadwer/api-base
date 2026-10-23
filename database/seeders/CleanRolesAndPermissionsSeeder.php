@@ -94,6 +94,11 @@ class CleanRolesAndPermissionsSeeder extends Seeder
             \Modules\SystemHealth\Database\Seeders\SystemHealthPermissionsSeeder::class,
             \Modules\Commissions\Database\Seeders\CommissionsPermissionSeeder::class,
             \Modules\Branch\Database\Seeders\BranchPermissionSeeder::class,
+            // Faltaban (23-10): sin ellos una instalacion limpia o la demo no
+            // tenia permisos de reportes ni del administrador de correos y el
+            // menu escondia esas secciones a todo rol que no fuera god.
+            \Modules\Reports\Database\Seeders\PermissionsSeeder::class,
+            \Modules\MailerManager\Database\Seeders\MailerManagerPermissionsSeeder::class,
         ]);
     }
 

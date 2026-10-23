@@ -191,7 +191,7 @@ class AccountHierarchyService
         if ($this->hasChildren($accountId)) {
             $childCount = Account::where('parent_id', $accountId)->count();
             throw new \Exception(
-                "Cannot delete account with {$childCount} child account(s). Delete or reassign children first."
+                "No se puede eliminar la cuenta: tiene {$childCount} subcuenta(s). Elimínalas o reasígnalas primero."
             );
         }
 
@@ -199,7 +199,7 @@ class AccountHierarchyService
         if ($account->journalLines()->exists()) {
             $transactionCount = $account->journalLines()->count();
             throw new \Exception(
-                "Cannot delete account with {$transactionCount} transaction(s). Account has been used in journal entries."
+                "No se puede eliminar la cuenta: tiene {$transactionCount} movimiento(s) en pólizas."
             );
         }
     }

@@ -146,7 +146,7 @@ class CommissionController extends JsonApiController
 
         if (!$commission->isEarned()) {
             return response()->json([
-                'error' => "Only earned commissions can be marked as paid (current status: {$commission->status})",
+                'error' => "Solo se pueden marcar como pagadas las comisiones devengadas (estado actual: {$commission->status}).",
             ], 422);
         }
 
@@ -199,7 +199,7 @@ class CommissionController extends JsonApiController
 
                 if ($notEarned->isNotEmpty()) {
                     throw new \DomainException(
-                        'Batch aborted, commissions not in earned status: '
+                        'Se canceló el lote: hay comisiones que no están devengadas: '
                         . $notEarned->map(fn ($c) => "#{$c->id} ({$c->status})")->implode(', ')
                     );
                 }

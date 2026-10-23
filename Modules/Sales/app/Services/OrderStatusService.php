@@ -54,7 +54,7 @@ class OrderStatusService
         // Validate transition
         if (!$this->canTransitionTo($order, $newStatus)) {
             throw new \Exception(
-                "Cannot transition from '{$order->status}' to '{$newStatus}'"
+                "No se puede cambiar el pedido de '{$order->status}' a '{$newStatus}'."
             );
         }
 

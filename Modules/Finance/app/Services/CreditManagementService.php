@@ -28,13 +28,13 @@ class CreditManagementService
         // FI-M003: Validate credit status (hold/blocked)
         if ($contact->credit_status === 'hold') {
             throw new \Exception(
-                "Customer is on credit hold. Reason: {$contact->credit_hold_reason}"
+                "El cliente tiene el crédito suspendido. Motivo: {$contact->credit_hold_reason}"
             );
         }
 
         if ($contact->credit_status === 'blocked') {
             throw new \Exception(
-                "Customer account is blocked. Contact finance for resolution."
+                "La cuenta del cliente está bloqueada. Contacta a finanzas para resolverlo."
             );
         }
 
@@ -44,8 +44,8 @@ class CreditManagementService
         // Rule 1: Credit limit validation
         if ($contact->credit_limit && $totalExposure > $contact->credit_limit) {
             throw new \Exception(
-                "Credit limit exceeded. Current balance: {$currentBalance}, " .
-                "New amount: {$newAmount}, Credit limit: {$contact->credit_limit}"
+                "Se excede el límite de crédito. Saldo actual: {$currentBalance}, " .
+                "monto nuevo: {$newAmount}, límite: {$contact->credit_limit}."
             );
         }
 
@@ -53,7 +53,7 @@ class CreditManagementService
         $overdueAmount = $this->getOverdueAmount($contact);
         if ($overdueAmount > 0) {
             throw new \Exception(
-                "Customer has overdue invoices totaling: {$overdueAmount}. " .
+                "El cliente tiene facturas vencidas por {$overdueAmount}. " .
                 "Se requiere un pago antes de otorgar más crédito."
             );
         }
@@ -64,8 +64,8 @@ class CreditManagementService
 
         if ($paymentScore < $minimumScore) {
             throw new \Exception(
-                "Poor payment history. Payment score: {$paymentScore}%, " .
-                "Required: {$minimumScore}%"
+                "Historial de pagos insuficiente: {$paymentScore}% de pagos a tiempo, " .
+                "se requiere {$minimumScore}%."
             );
         }
 

@@ -130,7 +130,7 @@ class ClosedPeriodInvariantTest extends TestCase
         }
 
         $this->assertNotNull($thrown, 'Postear con fecha dentro de un periodo cerrado debe rechazarse');
-        $this->assertStringContainsString('No open fiscal period', $thrown->getMessage());
+        $this->assertStringContainsString('No hay un periodo fiscal abierto', $thrown->getMessage());
 
         // Nada persistido
         $this->assertDatabaseMissing('journal_entries', ['reference' => 'INV-PER-CLOSED-1']);
@@ -182,7 +182,7 @@ class ClosedPeriodInvariantTest extends TestCase
         }
 
         $this->assertNotNull($thrown, 'postJournalEntry debe rechazar un periodo cerrado');
-        $this->assertStringContainsString('closed fiscal period', $thrown->getMessage());
+        $this->assertStringContainsString('periodo cerrado', $thrown->getMessage());
 
         // El asiento sigue draft, sin folio ni posted_at
         $row = DB::table('journal_entries')->where('id', $entry->id)->first();

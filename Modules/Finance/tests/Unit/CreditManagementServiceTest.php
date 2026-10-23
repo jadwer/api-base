@@ -61,7 +61,7 @@ class CreditManagementServiceTest extends TestCase
 
         // Should block 5000 more (total 13000 > 10000 limit)
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Credit limit exceeded');
+        $this->expectExceptionMessage('Se excede el límite de crédito');
 
         $this->service->validateCustomerCredit($customer, 5000);
     }
@@ -83,7 +83,7 @@ class CreditManagementServiceTest extends TestCase
         ]);
 
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('overdue invoices');
+        $this->expectExceptionMessage('facturas vencidas');
 
         $this->service->validateCustomerCredit($customer, 3000);
     }
@@ -121,7 +121,7 @@ class CreditManagementServiceTest extends TestCase
 
         // Payment score = 2/5 = 40% (below 70% threshold)
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Poor payment history');
+        $this->expectExceptionMessage('Historial de pagos insuficiente');
 
         $this->service->validateCustomerCredit($customer, 1000);
     }

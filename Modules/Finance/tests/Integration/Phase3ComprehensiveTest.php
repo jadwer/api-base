@@ -63,7 +63,7 @@ class Phase3ComprehensiveTest extends TestCase
 
         // Should block 5000 more (total 11000 > 10000 limit)
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Credit limit exceeded');
+        $this->expectExceptionMessage('Se excede el límite de crédito');
         $this->creditService->validateCustomerCredit($customer, 5000);
     }
 
@@ -84,7 +84,7 @@ class Phase3ComprehensiveTest extends TestCase
         ]);
 
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('overdue invoices');
+        $this->expectExceptionMessage('facturas vencidas');
         $this->creditService->validateCustomerCredit($customer, 3000);
     }
 

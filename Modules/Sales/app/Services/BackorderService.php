@@ -253,7 +253,7 @@ class BackorderService
 
         if ($quantity > $backorder->remaining_quantity) {
             throw new InvalidArgumentException(
-                "Cannot fulfill {$quantity}. Only {$backorder->remaining_quantity} remaining."
+                "No se pueden surtir {$quantity}: solo quedan {$backorder->remaining_quantity} pendientes."
             );
         }
 

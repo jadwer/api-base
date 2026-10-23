@@ -224,7 +224,7 @@ class SalesOrderCancelInvariantTest extends TestCase
             $this->returnOrder($order);
             $this->fail('La maquina de estados debe impedir revertir dos veces');
         } catch (\Exception $e) {
-            $this->assertStringContainsString('Cannot transition', $e->getMessage());
+            $this->assertStringContainsString('No se puede cambiar el pedido', $e->getMessage());
         }
 
         $this->assertEquals(1, $reversalCount(), 'No debe duplicarse el asiento de reversa');

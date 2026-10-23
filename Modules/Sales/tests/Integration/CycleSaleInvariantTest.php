@@ -252,7 +252,7 @@ class CycleSaleInvariantTest extends TestCase
             app(OrderStatusService::class)->updateStatus($order->fresh(), 'delivered');
             $this->fail('La maquina de estados debe impedir re-entrar a delivered');
         } catch (\Exception $e) {
-            $this->assertStringContainsString('Cannot transition', $e->getMessage());
+            $this->assertStringContainsString('No se puede cambiar el pedido', $e->getMessage());
         }
         $this->assertEquals(1, $exitCount(), 'El reintento de entrega no debe duplicar salidas');
         $this->assertEquals(1, $invoiceCount(), 'El reintento de entrega no debe duplicar facturas');

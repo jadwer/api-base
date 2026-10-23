@@ -171,7 +171,7 @@ class JournalEntryBalanceInvariantTest extends TestCase
         }
 
         $this->assertNotNull($thrown, 'El servicio debe rechazar un asiento descuadrado');
-        $this->assertStringContainsString('not balanced', $thrown->getMessage());
+        $this->assertStringContainsString('no cuadra', $thrown->getMessage());
 
         // NO quedo posted ni draft: la transaccion revirtio todo
         $this->assertDatabaseMissing('journal_entries', ['reference' => 'INV-BAL-BAD-1']);

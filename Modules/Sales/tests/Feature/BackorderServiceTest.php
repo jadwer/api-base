@@ -115,7 +115,7 @@ class BackorderServiceTest extends TestCase
         $backorder = $this->service->createBackorder($orderItem, 5);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Cannot fulfill');
+        $this->expectExceptionMessage('No se pueden surtir');
 
         $this->service->fulfillBackorder($backorder, 10);
     }
