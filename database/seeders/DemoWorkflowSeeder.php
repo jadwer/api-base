@@ -57,6 +57,83 @@ class DemoWorkflowSeeder extends Seeder
         $this->command->info('  Personas: admin@demo.mx / vendedor@demo.mx / cliente@demo.mx (password: ' . self::DEMO_PASSWORD . ')');
     }
 
+    /** Descripciones comerciales de los productos demo (en espanol, con acentos). */
+    private const DESCRIPTIONS = [
+        'DEMO-001' => 'Mezcladora de acero inoxidable con motor de 1 HP y control de velocidad para lotes de hasta 20 litros.',
+        'DEMO-002' => 'Bomba dosificadora con pantalla digital y caudal ajustable, ideal para químicos de limpieza y tratamiento de agua.',
+        'DEMO-003' => 'Compresor libre de aceite de bajo ruido (60 dB) con tanque de 50 litros para laboratorio y taller.',
+        'DEMO-004' => 'Báscula de precisión de 30 kg con resolución de 1 g, plato de acero inoxidable y función de tara.',
+        'DEMO-005' => 'Horno de secado con control digital de temperatura hasta 250 °C y circulación forzada de aire.',
+        'DEMO-006' => 'Solvente de uso general para limpieza de equipo y superficies; no deja residuos.',
+        'DEMO-007' => 'Desengrasante biodegradable de alto rendimiento para pisos industriales y maquinaria.',
+        'DEMO-008' => 'Lubricante grado alimenticio NSF H1 para maquinaria de procesamiento de alimentos.',
+        'DEMO-009' => 'Resina epóxica bicomponente para recubrimientos de alta resistencia química y mecánica.',
+        'DEMO-010' => 'Guantes de nitrilo libres de polvo, resistentes a químicos; caja con 100 piezas.',
+        'DEMO-011' => 'Manguera reforzada con malla textil, resistente a presión y abrasión; tramo de 10 metros.',
+        'DEMO-012' => 'Kit de conexiones rápidas de latón para líneas de aire y agua; incluye 12 piezas.',
+        'DEMO-013' => 'Filtro HEPA H13 que retiene el 99.97 % de partículas de 0.3 micras.',
+        'DEMO-014' => 'Válvula de seguridad de 1/2" para alivio de presión en compresores y tanques.',
+        'DEMO-015' => 'Alcohol isopropílico al 99.9 % a granel, por litro. Precio sujeto a cotización según volumen.',
+        'DEMO-016' => 'Alcohol isopropílico al 99.9 % en botella de 1 litro, fraccionado del granel.',
+        'DEMO-017' => 'Ácido cítrico anhidro grado alimenticio a granel, por kilogramo. Precio sujeto a cotización.',
+    ];
+
+    /**
+     * Conversion de granel a botella para mostrar el fraccionamiento
+     * (1 L de granel = 1 botella de 1 L, 1 % de merma).
+     *
+     * @param array<string, Product> $products
+     */
+    private function seedFractionationExample(array $products): void
+    {
+        \Modules\Inventory\Models\ProductConversion::updateOrCreate(
+            ['source_product_id' => $products['DEMO-015']->id, 'destination_product_id' => $products['DEMO-016']->id],
+            ['conversion_factor' => 1, 'waste_percentage' => 1, 'whole_units' => true, 'is_active' => true,
+                'notes' => 'Envasado de granel a botella de 1 L'],
+        );
+    }
+
+    /**
+     * Existencias iniciales en el almacen principal por el servicio de
+     * movimientos (entrada con costo y poliza, como en operacion real).
+     *
+     * @param array<string, Product> $products
+     */
+    private function seedInitialStock(array $products): void
+    {
+        $warehouse = \Modules\Inventory\Models\Warehouse::where('code', 'WH-001')->first();
+        $admin = User::where('email', 'admin@demo.mx')->first();
+        if (!$warehouse || !$admin) {
+            return;
+        }
+
+        $service = app(\Modules\Inventory\Services\InventoryMovementService::class);
+        foreach ($products as $sku => $product) {
+            $quantity = match (true) {
+                $sku === 'DEMO-015' => 400,
+                $sku === 'DEMO-017' => 250,
+                $sku === 'DEMO-016' => 0,
+                $product->category?->name === 'Equipos' => 12,
+                $product->category?->name === 'Consumibles' => 80,
+                default => 40,
+            };
+            if ($quantity === 0) {
+                continue;
+            }
+
+            $service->createEntry([
+                'product_id' => $product->id,
+                'warehouse_id' => $warehouse->id,
+                'quantity' => $quantity,
+                'unit_cost' => (float) ($product->cost ?? ($sku === 'DEMO-015' ? 38 : 22)),
+                'user_id' => $admin->id,
+                'reference_type' => 'adjustment',
+                'idempotency_key' => "demo-initial-stock:{$sku}",
+                'description' => 'Existencia inicial de la demo',
+            ]);
+        }
+    }
+
     /**
      * Persona users a prospect can log in with (roles from CleanRolesAndPermissionsSeeder).
      *
@@ -66,7 +143,7 @@ class DemoWorkflowSeeder extends Seeder
     {
         $personas = [
             'admin' => ['email' => 'admin@demo.mx', 'name' => 'Ana Administradora', 'role' => 'admin'],
-            'vendedor' => ['email' => 'vendedor@demo.mx', 'name' => 'Victor Vendedor', 'role' => 'tech'],
+            'vendedor' => ['email' => 'vendedor@demo.mx', 'name' => 'Víctor Vendedor', 'role' => 'tech'],
             'cliente' => ['email' => 'cliente@demo.mx', 'name' => 'Carla Cliente', 'role' => 'customer'],
         ];
 
@@ -105,7 +182,7 @@ class DemoWorkflowSeeder extends Seeder
     {
         $categories = [];
         foreach ([
-            'equipos' => ['name' => 'Equipos', 'description' => 'Equipos y maquinaria para operacion diaria'],
+            'equipos' => ['name' => 'Equipos', 'description' => 'Equipos y maquinaria para la operación diaria'],
             'consumibles' => ['name' => 'Consumibles', 'description' => 'Material de consumo recurrente'],
             'accesorios' => ['name' => 'Accesorios', 'description' => 'Accesorios y refacciones compatibles'],
         ] as $slug => $data) {
@@ -130,20 +207,24 @@ class DemoWorkflowSeeder extends Seeder
 
         // [sku, name, category, brand, unit, price, iva, on_sale]
         $catalog = [
-            ['DEMO-001', 'Mezcladora industrial 20L', 'equipos', 'ProLine', $piece, 12500.00, true, false],
+            ['DEMO-001', 'Mezcladora industrial 20 L', 'equipos', 'ProLine', $piece, 12500.00, true, false],
             ['DEMO-002', 'Bomba dosificadora digital', 'equipos', 'ProLine', $piece, 8790.00, true, false],
-            ['DEMO-003', 'Compresor silencioso 50L', 'equipos', 'EcoMax', $piece, 15900.00, true, true],
-            ['DEMO-004', 'Bascula de precision 30kg', 'equipos', 'Nivex', $piece, 4350.00, true, false],
+            ['DEMO-003', 'Compresor silencioso 50 L', 'equipos', 'EcoMax', $piece, 15900.00, true, true],
+            ['DEMO-004', 'Báscula de precisión 30 kg', 'equipos', 'Nivex', $piece, 4350.00, true, false],
             ['DEMO-005', 'Horno de secado compacto', 'equipos', 'EcoMax', $piece, 22400.00, false, false],
-            ['DEMO-006', 'Solvente multiusos 5L', 'consumibles', 'EcoMax', $liter, 385.00, true, false],
-            ['DEMO-007', 'Desengrasante biodegradable 10L', 'consumibles', 'EcoMax', $liter, 720.00, true, true],
-            ['DEMO-008', 'Lubricante grado alimenticio 1L', 'consumibles', 'ProLine', $liter, 265.00, true, false],
-            ['DEMO-009', 'Resina epoxica bicomponente 4kg', 'consumibles', 'Nivex', $kilo, 1180.00, true, false],
-            ['DEMO-010', 'Guantes de nitrilo caja 100', 'consumibles', 'Nivex', $piece, 189.00, false, false],
-            ['DEMO-011', 'Manguera reforzada 10m', 'accesorios', 'ProLine', $piece, 540.00, true, false],
-            ['DEMO-012', 'Kit de conexiones rapidas', 'accesorios', 'Nivex', $piece, 830.00, true, false],
-            ['DEMO-013', 'Filtro de particulas HEPA', 'accesorios', 'EcoMax', $piece, 1450.00, false, false],
-            ['DEMO-014', 'Valvula de seguridad 1/2"', 'accesorios', 'ProLine', $piece, 320.00, true, false],
+            ['DEMO-006', 'Solvente multiusos 5 L', 'consumibles', 'EcoMax', $liter, 385.00, true, false],
+            ['DEMO-007', 'Desengrasante biodegradable 10 L', 'consumibles', 'EcoMax', $liter, 720.00, true, true],
+            ['DEMO-008', 'Lubricante grado alimenticio 1 L', 'consumibles', 'ProLine', $liter, 265.00, true, false],
+            ['DEMO-009', 'Resina epóxica bicomponente 4 kg', 'consumibles', 'Nivex', $kilo, 1180.00, true, false],
+            ['DEMO-010', 'Guantes de nitrilo, caja con 100', 'consumibles', 'Nivex', $piece, 189.00, false, false],
+            ['DEMO-011', 'Manguera reforzada 10 m', 'accesorios', 'ProLine', $piece, 540.00, true, false],
+            ['DEMO-012', 'Kit de conexiones rápidas', 'accesorios', 'Nivex', $piece, 830.00, true, false],
+            ['DEMO-013', 'Filtro de partículas HEPA', 'accesorios', 'EcoMax', $piece, 1450.00, false, false],
+            ['DEMO-014', 'Válvula de seguridad 1/2"', 'accesorios', 'ProLine', $piece, 320.00, true, false],
+            // Granel (23-10): precio sujeto a cotización y fraccionamiento a botella
+            ['DEMO-015', 'Alcohol isopropílico a granel', 'consumibles', 'EcoMax', $liter, null, true, false],
+            ['DEMO-016', 'Alcohol isopropílico 1 L', 'consumibles', 'EcoMax', $piece, 145.00, true, false],
+            ['DEMO-017', 'Ácido cítrico a granel', 'consumibles', 'Nivex', $kilo, null, true, false],
         ];
 
         $products = [];
@@ -157,10 +238,11 @@ class DemoWorkflowSeeder extends Seeder
             $products[$sku] = Product::factory()->create([
                 'sku' => $sku,
                 'name' => $name,
-                'description' => "Producto de demostracion: {$name}.",
-                'full_description' => "Descripcion extendida de {$name}. Datos genericos para el demo del producto.",
+                'description' => self::DESCRIPTIONS[$sku] ?? $name,
+                'full_description' => (self::DESCRIPTIONS[$sku] ?? $name) . ' Ficha técnica y certificado de calidad disponibles bajo solicitud.',
                 'price' => $price,
-                'cost' => round($price * 0.62, 2),
+                'pricing_type' => $price === null ? Product::PRICING_QUOTE_ONLY : Product::PRICING_FIXED,
+                'cost' => $price === null ? null : round($price * 0.62, 2),
                 'iva' => $iva,
                 'is_on_sale' => $onSale,
                 'compare_at_price' => $onSale ? round($price * 1.2, 2) : null,
@@ -178,7 +260,14 @@ class DemoWorkflowSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('  - 3 categories, 3 brands, ' . count($products) . ' products (DEMO-001..014)');
+        // Productos de prueba de la instalacion limpia (TEST-001..005): fuera
+        // del catalogo publico de la demo, que debe verse como tienda real.
+        Product::where('sku', 'like', 'TEST-%')->update(['is_public' => false]);
+
+        $this->seedFractionationExample($products);
+        $this->seedInitialStock($products);
+
+        $this->command->info('  - 3 categories, 3 brands, ' . count($products) . ' products (DEMO-001..017, con existencias)');
 
         return $products;
     }
@@ -202,7 +291,7 @@ class DemoWorkflowSeeder extends Seeder
                 'classification' => 'premium',
                 'credit_status' => 'active',
                 'state' => 'Ciudad de México',
-                'person' => ['name' => 'Laura Mendez', 'position' => 'Compradora', 'department' => 'Compras'],
+                'person' => ['name' => 'Laura Méndez', 'position' => 'Compradora', 'department' => 'Compras'],
             ],
             [
                 'name' => 'Distribuidora del Norte',
@@ -218,7 +307,7 @@ class DemoWorkflowSeeder extends Seeder
                 'person' => ['name' => 'Jorge Salinas', 'position' => 'Gerente General', 'department' => 'Administración'],
             ],
             [
-                'name' => 'Servicios Industriales del Bajio',
+                'name' => 'Servicios Industriales del Bajío',
                 'legal_name' => 'Servicios Industriales del Bajio SA de CV',
                 'tax_id' => 'SIB080730EF3',
                 'email' => 'contacto@sibajio.demo',
@@ -228,10 +317,10 @@ class DemoWorkflowSeeder extends Seeder
                 'classification' => 'standard',
                 'credit_status' => 'hold', // demo: credit hold scenario
                 'state' => 'Guanajuato',
-                'person' => ['name' => 'Patricia Rios', 'position' => 'Contador', 'department' => 'Contabilidad'],
+                'person' => ['name' => 'Patricia Ríos', 'position' => 'Contador', 'department' => 'Contabilidad'],
             ],
             [
-                'name' => 'Grupo Maquila del Pacifico',
+                'name' => 'Grupo Maquila del Pacífico',
                 'legal_name' => 'Grupo Maquila del Pacifico SA de CV',
                 'tax_id' => 'GMP121105GH4',
                 'email' => 'ventas@gmpacifico.demo',
@@ -241,7 +330,7 @@ class DemoWorkflowSeeder extends Seeder
                 'classification' => 'basic',
                 'credit_status' => 'active',
                 'state' => 'Jalisco',
-                'person' => ['name' => 'Raul Camacho', 'position' => 'Comprador', 'department' => 'Compras'],
+                'person' => ['name' => 'Raúl Camacho', 'position' => 'Comprador', 'department' => 'Compras'],
             ],
         ];
 
