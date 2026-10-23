@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Remision {{ $remission->remission_number }}</title>
+    <title>Remisión {{ $remission->remission_number }}</title>
     <style>
         * {
             font-family: DejaVu Sans, sans-serif;
@@ -351,7 +351,7 @@
                     <div class="remission-date">
                         Fecha: {{ $remission->remission_date->format('d/m/Y') }}
                         @if($warehouse)
-                            <br>Almacen: {{ $warehouse->name }}
+                            <br>Almacén: {{ $warehouse->name }}
                         @endif
                     </div>
                 </td>
@@ -366,7 +366,7 @@
             | <strong>Fecha OV:</strong> {{ $order->order_date->format('d/m/Y') }}
         @endif
         @if($remission->shipment)
-            | <strong>Envio:</strong> {{ $remission->shipment->shipment_number }}
+            | <strong>Envío:</strong> {{ $remission->shipment->shipment_number }}
         @endif
     </div>
 
@@ -429,11 +429,11 @@
         <thead>
             <tr>
                 <th style="width: 5%;">#</th>
-                <th style="width: 12%;">Codigo</th>
+                <th style="width: 12%;">Código</th>
                 <th style="width: 8%;">Imagen</th>
                 <th class="text-center" style="width: 10%;">Cantidad</th>
                 <th class="text-center" style="width: 8%;">Unidad</th>
-                <th style="width: 47%;">Descripcion</th>
+                <th style="width: 47%;">Descripción</th>
                 <th class="text-center" style="width: 10%;">Verificado</th>
             </tr>
         </thead>
@@ -455,7 +455,7 @@
                     @endif
                 </td>
                 <td class="text-center"><strong>{{ number_format($item->quantity, 0) }}</strong></td>
-                <td class="text-center">{{ $item->product && $item->product->unit ? $item->product->unit->name : 'PZA' }}</td>
+                <td class="text-center">{{ $item->unit ?: ($item->product?->unit?->name ?: '-') }}</td>
                 <td>
                     <span class="product-name">{{ $item->product_name ?? ($item->product ? $item->product->name : 'Producto') }}</span>
                     @if($item->batch_number)

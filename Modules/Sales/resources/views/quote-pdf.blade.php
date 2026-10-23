@@ -373,7 +373,7 @@
                     @endif
                 </td>
                 <td class="text-center">{{ number_format($item->quantity, 2) }}</td>
-                <td class="text-center">{{ $item->product && $item->product->unit ? $item->product->unit->name : 'PZA' }}</td>
+                <td class="text-center">{{ $item->product?->unit?->name ?: '-' }}</td>
                 <td class="product-description">
                     <div class="product-name">{{ $item->product_name ?? ($item->product ? $item->product->name : 'Producto') }}</div>
                     @if($item->product && $item->product->description)

@@ -1,31 +1,31 @@
 @extends('ecommerce::emails.layout')
 
-@section('title', 'Payment Confirmation')
+@section('title', 'Confirmación de pago')
 
 @section('content')
-    <h2>Payment Received - Thank You!</h2>
+    <h2>¡Recibimos tu pago, gracias!</h2>
 
-    <p>Hi {{ $order->customer->name ?? 'Valued Customer' }},</p>
+    <p>Hola, {{ $order->customer->name ?? 'cliente' }}:</p>
 
-    <p>We've received your payment for order <strong>{{ $order->order_number }}</strong>. Your order is now being processed and will be shipped soon.</p>
+    <p>Recibimos el pago de tu pedido <strong>{{ $order->order_number }}</strong>. Ya lo estamos preparando y pronto saldrá a tu domicilio.</p>
 
     <div class="success-box">
-        <strong>Payment Status:</strong> {{ ucfirst($transaction->status) }}<br>
-        <strong>Transaction ID:</strong> {{ $transaction->transaction_id }}<br>
-        <strong>Payment Method:</strong> {{ ucfirst($transaction->payment_method) }}<br>
-        <strong>Amount Paid:</strong> ${{ number_format($transaction->amount, 2) }} {{ $transaction->currency }}
+        <strong>Estado del pago:</strong> {{ $paymentStatusLabel }}<br>
+        <strong>Id de transacción:</strong> {{ $transaction->transaction_id }}<br>
+        <strong>Forma de pago:</strong> {{ $paymentMethodLabel }}<br>
+        <strong>Monto pagado:</strong> ${{ number_format($transaction->amount, 2) }} {{ $transaction->currency }}
     </div>
 
     <div class="order-box">
-        <h3>Order Summary</h3>
+        <h3>Resumen del pedido</h3>
 
         <table class="order-items">
             <thead>
                 <tr>
-                    <th>Product</th>
+                    <th>Producto</th>
                     <th>SKU</th>
-                    <th style="text-align: center;">Qty</th>
-                    <th style="text-align: right;">Price</th>
+                    <th style="text-align: center;">Cant.</th>
+                    <th style="text-align: right;">Precio</th>
                     <th style="text-align: right;">Subtotal</th>
                 </tr>
             </thead>
@@ -44,7 +44,7 @@
 
         <div class="order-totals">
             <div class="total-row grand-total">
-                <span>Total Paid:</span>
+                <span>Total pagado:</span>
                 <span>${{ number_format($orderSummary['total'], 2) }} {{ $orderSummary['currency'] }}</span>
             </div>
         </div>
@@ -52,15 +52,15 @@
 
     <p style="text-align: center;">
         <a href="{{ config('app.url') }}/my-orders/{{ $order->id }}" class="button">
-            Track Your Order
+            Ver mi pedido
         </a>
     </p>
 
     <div class="info-box">
         <p style="margin: 0;">
-            <strong>Receipt Information:</strong><br>
-            A copy of this payment confirmation has been saved to your account for your records.
-            You can download your invoice from your order page.
+            <strong>Comprobante:</strong><br>
+            Guardamos una copia de esta confirmación en tu cuenta.
+            Puedes descargar tu factura desde la página de tu pedido.
         </p>
     </div>
 @endsection

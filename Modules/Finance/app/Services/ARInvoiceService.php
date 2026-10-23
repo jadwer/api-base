@@ -54,11 +54,11 @@ class ARInvoiceService
             $revenueAccount = Account::where('code', '4101')->where('is_postable', true)->first();
 
             if (!$customerAccount) {
-                throw new \Exception('GL Account for Customers (1104) not found or not postable. Please configure the chart of accounts.');
+                throw new \Exception('No existe la cuenta contable de clientes (1104) o no es afectable. Configura el catálogo de cuentas.');
             }
 
             if (!$revenueAccount) {
-                throw new \Exception('GL Account for Revenue (4101) not found or not postable. Please configure the chart of accounts.');
+                throw new \Exception('No existe la cuenta contable de ventas (4101) o no es afectable. Configura el catálogo de cuentas.');
             }
 
             // 2. Generar invoice number secuencial

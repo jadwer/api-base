@@ -56,7 +56,7 @@ class DemoEndpointsTest extends TestCase
         $this->actingAs($this->getAdminUser(), 'sanctum')
             ->postJson('/api/v1/demo/reset')
             ->assertStatus(403)
-            ->assertJson(['error' => 'Demo mode is not enabled on this instance.']);
+            ->assertJson(['error' => 'El modo demo no está habilitado en esta instancia.']);
     }
 
     public function test_reset_runs_command_when_demo_mode_is_on(): void
@@ -73,7 +73,7 @@ class DemoEndpointsTest extends TestCase
 
         $response->assertOk()
             ->assertJsonStructure(['message', 'reset_at'])
-            ->assertJson(['message' => 'Demo database was reset successfully.']);
+            ->assertJson(['message' => 'La base de datos de la demo se reinició correctamente.']);
     }
 
     public function test_reset_returns_500_when_command_fails(): void

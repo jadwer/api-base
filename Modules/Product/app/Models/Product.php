@@ -23,6 +23,7 @@ use Spatie\Activitylog\LogOptions;
  * @property string $pricing_type
  * @property float|null $compare_at_price
  * @property bool $is_on_sale
+ * @property-read \Modules\Product\Models\Unit|null $unit
  */
 class Product extends Model
 {

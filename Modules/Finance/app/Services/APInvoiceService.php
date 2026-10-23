@@ -44,11 +44,11 @@ class APInvoiceService
             $supplierAccount = Account::where('code', '2101')->where('is_postable', true)->first();
 
             if (!$expenseAccount) {
-                throw new \Exception('GL Account for Expenses (5101) not found or not postable. Please configure the chart of accounts.');
+                throw new \Exception('No existe la cuenta contable de gastos (5101) o no es afectable. Configura el catálogo de cuentas.');
             }
 
             if (!$supplierAccount) {
-                throw new \Exception('GL Account for Suppliers/Accounts Payable (2101) not found or not postable. Please configure the chart of accounts.');
+                throw new \Exception('No existe la cuenta contable de proveedores (2101) o no es afectable. Configura el catálogo de cuentas.');
             }
 
             // 2. Generar invoice number secuencial

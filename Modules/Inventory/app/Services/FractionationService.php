@@ -47,6 +47,118 @@ class FractionationService
     }
 
     /**
+     * Cancela un fraccionamiento completado (G10 de granel, 23-10): saca del
+     * destino lo producido y regresa el origen a su lote con los mismos costos,
+     * con claves de idempotencia fractionation_cancel:{id}:exit y :entry.
+     * Si parte de lo producido ya se vendio o se movio, se rechaza: la reversa
+     * dejaria existencias negativas o un lote incompleto.
+     *
+     * @throws FractionationException
+     */
+    public function cancel(Fractionation $fractionation, int $userId, ?string $reason = null): Fractionation
+    {
+        return DB::transaction(function () use ($fractionation, $userId, $reason): Fractionation {
+            $fractionation = Fractionation::whereKey($fractionation->id)->lockForUpdate()->firstOrFail();
+
+            if ($fractionation->isCancelled()) {
+                throw new FractionationException('already_cancelled', 'Ya cancelado', "El fraccionamiento {$fractionation->folio_number} ya estaba cancelado.");
+            }
+            if (!$fractionation->isCompleted()) {
+                throw new FractionationException('not_completed', 'No se puede cancelar', "Solo se cancelan fraccionamientos completados ({$fractionation->folio_number} está en estado {$fractionation->status}).");
+            }
+
+            $produced = (float) $fractionation->produced_quantity;
+            $destinationBatch = $fractionation->destination_batch_id
+                ? ProductBatch::whereKey($fractionation->destination_batch_id)->lockForUpdate()->first()
+                : null;
+            $available = $destinationBatch
+                ? (float) $destinationBatch->current_quantity
+                : (float) (Stock::where('product_id', $fractionation->destination_product_id)
+                    ->where('warehouse_id', $fractionation->warehouse_id)
+                    ->when($fractionation->warehouse_location_id, fn ($q) => $q->where('warehouse_location_id', $fractionation->warehouse_location_id))
+                    ->value('quantity') ?? 0);
+
+            if ($available + self::EPSILON < $produced) {
+                throw new FractionationException(
+                    'destination_consumed',
+                    'No se puede cancelar',
+                    sprintf(
+                        'Ya se vendió o movió parte de lo fraccionado en %s: hay %s disponibles de %s producidos. Cancela o regresa esos movimientos primero.',
+                        $fractionation->folio_number,
+                        rtrim(rtrim(number_format($available, 4, '.', ''), '0'), '.'),
+                        rtrim(rtrim(number_format($produced, 4, '.', ''), '0'), '.'),
+                    ),
+                );
+            }
+
+            $key = "fractionation_cancel:{$fractionation->id}";
+            $common = [
+                'warehouse_id' => $fractionation->warehouse_id,
+                'warehouse_location_id' => $fractionation->warehouse_location_id,
+                'user_id' => $userId,
+                'reference_type' => self::REFERENCE_TYPE,
+                'reference_id' => $fractionation->id,
+            ];
+
+            // Sale del destino lo que se produjo
+            $this->movementService->createExit($common + [
+                'product_id' => $fractionation->destination_product_id,
+                'product_batch_id' => $fractionation->destination_batch_id,
+                'quantity' => $produced,
+                'unit_cost' => (float) $fractionation->destination_unit_cost,
+                'idempotency_key' => "{$key}:exit",
+                'description' => "Cancelacion del fraccionamiento {$fractionation->folio_number}: salida del producto destino",
+                'quality_checked' => true,
+                'quality_checked_by' => $userId,
+                'metadata' => ['fractionation_folio' => $fractionation->folio_number, 'fractionation_type' => 'cancel_exit'],
+            ]);
+
+            // Regresa el origen con su costo original
+            $this->movementService->createEntry($common + [
+                'product_id' => $fractionation->source_product_id,
+                'product_batch_id' => $fractionation->source_batch_id,
+                'quantity' => (float) $fractionation->source_quantity,
+                'unit_cost' => (float) $fractionation->source_unit_cost,
+                'stock_cost_policy' => 'weighted_average',
+                'idempotency_key' => "{$key}:entry",
+                'description' => "Cancelacion del fraccionamiento {$fractionation->folio_number}: regreso del producto origen",
+                'metadata' => ['fractionation_folio' => $fractionation->folio_number, 'fractionation_type' => 'cancel_entry'],
+            ]);
+
+            // Lotes: el destino se vacia y el origen recupera lo consumido
+            if ($destinationBatch) {
+                $destinationBatch->current_quantity = max(0, round((float) $destinationBatch->current_quantity - $produced, 4));
+                if ($destinationBatch->current_quantity <= self::EPSILON) {
+                    $destinationBatch->current_quantity = 0;
+                    $destinationBatch->status = 'consumed';
+                }
+                $destinationBatch->save();
+            }
+            if ($fractionation->source_batch_id) {
+                $sourceBatch = ProductBatch::whereKey($fractionation->source_batch_id)->lockForUpdate()->first();
+                if ($sourceBatch) {
+                    $sourceBatch->current_quantity = round((float) $sourceBatch->current_quantity + (float) $fractionation->source_quantity, 4);
+                    if ($sourceBatch->status === 'consumed') {
+                        $sourceBatch->status = 'active';
+                    }
+                    $sourceBatch->save();
+                }
+            }
+
+            $fractionation->update([
+                'status' => Fractionation::STATUS_CANCELLED,
+                'cancelled_at' => now(),
+                'cancelled_by' => $userId,
+                'cancellation_reason' => $reason,
+            ]);
+
+            Log::info('Fractionation cancelled', ['fractionation_id' => $fractionation->id, 'user_id' => $userId]);
+
+            return $fractionation->fresh();
+        });
+    }
+
+    /**
      * Vista previa sin tocar la base de datos.
      *
      * @param array<string, mixed> $data source_product_id, destination_product_id, source_quantity,

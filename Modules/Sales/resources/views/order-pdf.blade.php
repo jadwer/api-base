@@ -158,7 +158,7 @@
 
         @if($shippingAddress)
         <div class="section">
-            <div class="section-title">Direccion de Envio</div>
+            <div class="section-title">Dirección de envío</div>
             <div class="address-block">
                 <p><strong>{{ $shippingAddress['name'] ?? '' }}</strong></p>
                 <p>{{ $shippingAddress['line1'] ?? $shippingAddress['address_line1'] ?? '' }}</p>
@@ -218,7 +218,7 @@
         @endif
         @if($totals['shipping'] > 0)
         <tr>
-            <td>Envio:</td>
+            <td>Envío:</td>
             <td class="text-right">${{ number_format($totals['shipping'], 2) }}</td>
         </tr>
         @endif

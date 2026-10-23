@@ -49,9 +49,6 @@ class RemissionItem extends Model
         'updated_at' => 'datetime',
     ];
 
-    protected $attributes = [
-        'unit' => 'PZA',
-    ];
 
     // Relationships
 
@@ -88,7 +85,7 @@ class RemissionItem extends Model
                 if ($product) {
                     $item->product_name = $item->product_name ?? $product->name;
                     $item->product_sku = $item->product_sku ?? $product->sku;
-                    $item->unit = $item->unit ?? $product->unit ?? 'PZA';
+                    $item->unit = $item->unit ?? $product->unit?->name;
                 }
             }
 

@@ -224,11 +224,11 @@ class PaymentApplicationService
         $customerAccount = Account::where('code', '1104')->where('is_postable', true)->first();
 
         if (!$bankAccount) {
-            throw new \Exception('GL Account for Bank (1102) not found or not postable.');
+            throw new \Exception('No existe la cuenta contable de bancos (1102) o no es afectable.');
         }
 
         if (!$customerAccount) {
-            throw new \Exception('GL Account for Customers (1104) not found or not postable.');
+            throw new \Exception('No existe la cuenta contable de clientes (1104) o no es afectable.');
         }
 
         try {

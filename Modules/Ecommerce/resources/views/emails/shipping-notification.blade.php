@@ -1,41 +1,41 @@
 @extends('ecommerce::emails.layout')
 
-@section('title', 'Your Order Has Been Shipped')
+@section('title', 'Tu pedido va en camino')
 
 @section('content')
-    <h2>Your Order is On Its Way! 📦</h2>
+    <h2>¡Tu pedido va en camino!</h2>
 
-    <p>Hi {{ $order->customer->name ?? 'Valued Customer' }},</p>
+    <p>Hola, {{ $order->customer->name ?? 'cliente' }}:</p>
 
-    <p>Great news! Your order <strong>{{ $order->order_number }}</strong> has been shipped and is on its way to you.</p>
+    <p>¡Buenas noticias! Tu pedido <strong>{{ $order->order_number }}</strong> ya salió y va en camino.</p>
 
     @if($trackingInfo)
         <div class="success-box">
-            <strong>Tracking Number:</strong> {{ $trackingInfo['tracking_number'] }}<br>
+            <strong>Número de guía:</strong> {{ $trackingInfo['tracking_number'] }}<br>
             @if(isset($trackingInfo['carrier']))
-                <strong>Carrier:</strong> {{ $trackingInfo['carrier'] }}<br>
+                <strong>Paquetería:</strong> {{ $trackingInfo['carrier'] }}<br>
             @endif
             @if($trackingInfo['estimated_delivery'])
-                <strong>Estimated Delivery:</strong> {{ \Carbon\Carbon::parse($trackingInfo['estimated_delivery'])->format('F d, Y') }}<br>
+                <strong>Entrega estimada:</strong> {{ \Carbon\Carbon::parse($trackingInfo['estimated_delivery'])->format('d/m/Y') }}<br>
             @endif
         </div>
 
         <p style="text-align: center;">
             <a href="{{ $trackingInfo['tracking_url'] }}" class="button">
-                Track Your Package
+                Rastrear mi paquete
             </a>
         </p>
     @endif
 
     <div class="order-box">
-        <h3>Order Summary</h3>
+        <h3>Resumen del pedido</h3>
 
         <table class="order-items">
             <thead>
                 <tr>
-                    <th>Product</th>
-                    <th style="text-align: center;">Qty</th>
-                    <th style="text-align: right;">Price</th>
+                    <th>Producto</th>
+                    <th style="text-align: center;">Cant.</th>
+                    <th style="text-align: right;">Precio</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,7 +52,7 @@
 
     @if($shippingInfo)
         <div class="shipping-address">
-            <strong>Shipping To:</strong>
+            <strong>Se envía a:</strong>
             {{ $shippingInfo['recipient'] }}<br>
             {{ $shippingInfo['address_line1'] }}<br>
             @if($shippingInfo['address_line2'])
@@ -65,15 +65,15 @@
 
     <div class="info-box">
         <p style="margin: 0;">
-            <strong>Delivery Instructions:</strong><br>
-            Please ensure someone is available to receive the package at the delivery address.
-            If you have any special delivery instructions, please contact us as soon as possible.
+            <strong>Para la entrega:</strong><br>
+            Procura que haya alguien en el domicilio para recibir el paquete.
+            Si tienes indicaciones especiales para la entrega, escríbenos lo antes posible.
         </p>
     </div>
 
     <p style="text-align: center; margin-top: 30px;">
         <a href="{{ config('app.url') }}/my-orders/{{ $order->id }}" class="button">
-            View Order Details
+            Ver detalle del pedido
         </a>
     </p>
 @endsection

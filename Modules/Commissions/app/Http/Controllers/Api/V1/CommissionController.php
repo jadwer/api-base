@@ -141,7 +141,7 @@ class CommissionController extends JsonApiController
         $commission = Commission::find($id);
 
         if (!$commission) {
-            return response()->json(['error' => 'Commission not found'], 404);
+            return response()->json(['error' => 'Comisión no encontrada.'], 404);
         }
 
         if (!$commission->isEarned()) {
@@ -192,7 +192,7 @@ class CommissionController extends JsonApiController
                 $missing = array_values(array_diff($validated['ids'], $foundIds));
 
                 if (!empty($missing)) {
-                    throw new \DomainException('Commissions not found: ' . implode(', ', $missing));
+                    throw new \DomainException('Comisiones no encontradas: ' . implode(', ', $missing));
                 }
 
                 $notEarned = $commissions->filter(fn (Commission $c) => !$c->isEarned());

@@ -138,6 +138,21 @@ class RemissionTest extends TestCase
     }
 
     /** @test */
+    public function remission_item_stores_the_unit_name_not_the_unit_object(): void
+    {
+        // Antes guardaba el objeto Unit serializado (JSON) en remission_items.unit (23-10)
+        $this->product->unit->update(['name' => 'Litro']);
+
+        $this->actingAs($this->getAdminUser(), 'sanctum')
+            ->postJson('/api/v1/remissions/from-order-full', [
+                'sales_order_id' => $this->order->id,
+                'warehouse_id' => $this->warehouse->id,
+            ])->assertStatus(201);
+
+        $this->assertSame('Litro', Remission::first()->items->first()->unit);
+    }
+
+    /** @test */
     public function it_generates_folio_with_configurable_format(): void
     {
         $admin = $this->getAdminUser();

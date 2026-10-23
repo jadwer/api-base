@@ -50,6 +50,17 @@ return Application::configure(basePath: dirname(__DIR__))
             ], 401, ['Content-Type' => 'application/vnd.api+json']);
         });
 
+        // Regla 9: ruta inexistente en el API ("The route ... could not be
+        // found." de Symfony). Los 404 de recursos los sigue dando JSON:API.
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, \Illuminate\Http\Request $request) {
+            if ($request->is('api/*') && !($e->getPrevious() instanceof \Illuminate\Database\Eloquent\ModelNotFoundException)
+                && str_starts_with($e->getMessage(), 'The route ')) {
+                return response()->json(['message' => 'La ruta solicitada no existe.'], 404);
+            }
+
+            return null;
+        });
+
         $exceptions->render(
             \LaravelJsonApi\Exceptions\ExceptionParser::renderer(),
         );

@@ -251,7 +251,7 @@ class CheckOverdueInvoices extends Command
                 'credit_status' => 'hold',
                 'credit_hold_at' => now(),
                 'credit_hold_reason' => sprintf(
-                    "Overdue invoices exceeding %d days. Overdue amount: $%s",
+                    "Facturas vencidas por más de %d días. Monto vencido: $%s",
                     $threshold,
                     number_format($overdueAmount, 2)
                 ),

@@ -56,7 +56,7 @@ class ShoppingCartCurrentTest extends TestCase
         $response->assertOk();
         $response->assertJson([
             'data' => null,
-            'message' => 'No active cart found',
+            'message' => 'No hay un carrito activo.',
         ]);
     }
 

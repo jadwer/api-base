@@ -416,7 +416,7 @@ class ExportController extends Controller
                 'csv' => $this->exportService->exportToCSV($reportType, $data),
                 'pdf' => $this->exportService->exportToPDF($reportType, $data),
                 'excel' => $this->exportService->exportToExcel($reportType, $data),
-                default => throw new \InvalidArgumentException('Invalid export format'),
+                default => throw new \InvalidArgumentException('Formato de exportación no válido.'),
             };
 
             $contentType = match ($format) {
@@ -433,7 +433,7 @@ class ExportController extends Controller
 
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Export failed',
+                'error' => 'No se pudo exportar el reporte',
                 'message' => $e->getMessage(),
             ], 500);
         }

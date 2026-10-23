@@ -49,12 +49,13 @@ class OrderStatusUpdateMail extends Mailable
 
         $statusLabel = $this->getStatusLabel($this->newStatus);
 
-        return $this->subject('Order Status Update: ' . $statusLabel . ' - ' . $this->order->order_number)
+        return $this->subject('Actualización de tu pedido: ' . $statusLabel . ' - ' . $this->order->order_number)
             ->view('ecommerce::emails.order-status-update')
             ->with([
                 'order' => $this->order,
                 'previousStatus' => $this->previousStatus,
                 'newStatus' => $this->newStatus,
+                'previousStatusLabel' => $this->getStatusLabel($this->previousStatus),
                 'newStatusLabel' => $statusLabel,
                 'notes' => $this->notes,
                 'orderSummary' => $this->orderSummary,
@@ -74,21 +75,29 @@ class OrderStatusUpdateMail extends Mailable
     }
 
     /**
-     * Get human-readable status label
+     * Etiqueta en español del estado del pedido.
      */
     protected function getStatusLabel(string $status): string
     {
+        return self::statusLabel($status);
+    }
+
+    /**
+     * Etiqueta en español del estado del pedido (reutilizada por otros correos).
+     */
+    public static function statusLabel(string $status): string
+    {
         $labels = [
-            'draft' => 'Draft',
-            'pending' => 'Pending',
-            'confirmed' => 'Confirmed',
-            'processing' => 'Processing',
-            'shipped' => 'Shipped',
-            'delivered' => 'Delivered',
-            'completed' => 'Completed',
-            'cancelled' => 'Cancelled',
-            'refunded' => 'Refunded',
-            'returned' => 'Returned',
+            'draft' => 'Borrador',
+            'pending' => 'Pendiente',
+            'confirmed' => 'Confirmado',
+            'processing' => 'En proceso',
+            'shipped' => 'Enviado',
+            'delivered' => 'Entregado',
+            'completed' => 'Completado',
+            'cancelled' => 'Cancelado',
+            'refunded' => 'Reembolsado',
+            'returned' => 'Devuelto',
         ];
 
         return $labels[$status] ?? ucfirst($status);

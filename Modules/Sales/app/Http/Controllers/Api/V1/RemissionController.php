@@ -126,7 +126,7 @@ class RemissionController extends Controller
                     'quantity' => $itemData['quantity'],
                     'product_name' => $orderItem->product?->name,
                     'product_sku' => $orderItem->product?->sku,
-                    'unit' => $orderItem->product?->unit ?? 'PZA',
+                    'unit' => $orderItem->product?->unit?->name,
                     'batch_number' => $itemData['batch_number'] ?? null,
                     'expiry_date' => $itemData['expiry_date'] ?? null,
                     'notes' => $itemData['notes'] ?? null,
@@ -213,7 +213,7 @@ class RemissionController extends Controller
                     'quantity' => $orderItem->quantity,
                     'product_name' => $orderItem->product?->name,
                     'product_sku' => $orderItem->product?->sku,
-                    'unit' => $orderItem->product?->unit ?? 'PZA',
+                    'unit' => $orderItem->product?->unit?->name,
                 ]);
             }
 
@@ -477,7 +477,7 @@ class RemissionController extends Controller
                 'path' => $path,
                 'url' => asset('storage/' . $path),
             ],
-            'message' => 'PDF generated successfully'
+            'message' => 'PDF generado correctamente'
         ]);
     }
 

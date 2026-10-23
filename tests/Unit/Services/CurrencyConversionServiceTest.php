@@ -463,7 +463,7 @@ class CurrencyConversionServiceTest extends TestCase
     public function test_convert_throws_exception_for_invalid_from_currency(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Currency not found or inactive: XYZ');
+        $this->expectExceptionMessage('La moneda XYZ no existe o está inactiva.');
 
         $this->service->convert(100.0, 'XYZ', 'MXN');
     }
@@ -471,7 +471,7 @@ class CurrencyConversionServiceTest extends TestCase
     public function test_convert_throws_exception_for_invalid_to_currency(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Currency not found or inactive: XYZ');
+        $this->expectExceptionMessage('La moneda XYZ no existe o está inactiva.');
 
         $this->service->convert(100.0, 'USD', 'XYZ');
     }
@@ -481,7 +481,7 @@ class CurrencyConversionServiceTest extends TestCase
         Currency::where('code', 'USD')->update(['is_active' => false]);
 
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Currency not found or inactive: USD');
+        $this->expectExceptionMessage('La moneda USD no existe o está inactiva.');
 
         $this->service->convert(100.0, 'USD', 'MXN');
     }
@@ -491,7 +491,7 @@ class CurrencyConversionServiceTest extends TestCase
         Currency::where('code', 'EUR')->update(['is_active' => false]);
 
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Currency not found or inactive: EUR');
+        $this->expectExceptionMessage('La moneda EUR no existe o está inactiva.');
 
         $this->service->convert(100.0, 'USD', 'EUR');
     }

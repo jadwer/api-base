@@ -2095,12 +2095,6 @@ parameters:
 			path: Modules/Ecommerce/app/Models/PaymentTransaction.php
 
 		-
-			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\PaymentTransaction\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 5
-			path: Modules/Ecommerce/app/Models/PaymentTransaction.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\ShippingMethod\:\:\$base_cost\.$#'
 			identifier: property.notFound
 			count: 1
@@ -2434,12 +2428,6 @@ parameters:
 			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\PaymentTransaction\:\:\$salesOrder\.$#'
 			identifier: property.notFound
 			count: 1
-			path: Modules/Ecommerce/app/Services/Payment/PaymentService.php
-
-		-
-			message: '#^Access to an undefined property Modules\\Ecommerce\\Models\\PaymentTransaction\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 6
 			path: Modules/Ecommerce/app/Services/Payment/PaymentService.php
 
 		-
@@ -3789,19 +3777,13 @@ parameters:
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
 			identifier: property.notFound
-			count: 6
+			count: 4
 			path: Modules/Product/app/Http/Controllers/Api/V1/CatalogController.php
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
 			identifier: property.notFound
-			count: 6
-			path: Modules/Product/app/Http/Controllers/Api/V1/CatalogController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$symbol\.$#'
-			identifier: property.notFound
-			count: 2
+			count: 4
 			path: Modules/Product/app/Http/Controllers/Api/V1/CatalogController.php
 
 		-
@@ -3848,6 +3830,18 @@ parameters:
 
 		-
 			message: '#^Access to an undefined property Modules\\Product\\Models\\Product\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Product/app/Http/Controllers/Api/V1/CatalogController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Product\\Models\\Unit\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Product/app/Http/Controllers/Api/V1/CatalogController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Product\\Models\\Unit\:\:\$symbol\.$#'
 			identifier: property.notFound
 			count: 2
 			path: Modules/Product/app/Http/Controllers/Api/V1/CatalogController.php
@@ -4477,30 +4471,6 @@ parameters:
 			path: Modules/Reports/app/Services/Analytics/KPIService.php
 
 		-
-			message: '#^Instantiated class Modules\\Reports\\Exports\\BalanceSheetExport not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Reports/app/Services/Export/ExportService.php
-
-		-
-			message: '#^Instantiated class Modules\\Reports\\Exports\\GenericReportExport not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Reports/app/Services/Export/ExportService.php
-
-		-
-			message: '#^Instantiated class Modules\\Reports\\Exports\\IncomeStatementExport not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Reports/app/Services/Export/ExportService.php
-
-		-
-			message: '#^Instantiated class Modules\\Reports\\Exports\\TrialBalanceExport not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: Modules/Reports/app/Services/Export/ExportService.php
-
-		-
 			message: '#^Access to an undefined property Modules\\Accounting\\Models\\Account\:\:\$account_type\.$#'
 			identifier: property.notFound
 			count: 2
@@ -4971,7 +4941,7 @@ parameters:
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$product\.$#'
 			identifier: property.notFound
-			count: 4
+			count: 6
 			path: Modules/Sales/app/Http/Controllers/Api/V1/RemissionController.php
 
 		-
@@ -5072,12 +5042,6 @@ parameters:
 
 		-
 			message: '#^Using nullsafe property access "\?\-\>sku" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 2
-			path: Modules/Sales/app/Http/Controllers/Api/V1/RemissionController.php
-
-		-
-			message: '#^Using nullsafe property access "\?\-\>unit" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
 			identifier: nullsafe.neverNull
 			count: 2
 			path: Modules/Sales/app/Http/Controllers/Api/V1/RemissionController.php
@@ -5359,6 +5323,12 @@ parameters:
 			path: Modules/Sales/app/Models/Remission.php
 
 		-
+			message: '#^Access to an undefined property Modules\\Product\\Models\\Unit\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Sales/app/Models/RemissionItem.php
+
+		-
 			message: '#^Using nullsafe property access on non\-nullable type Modules\\Product\\Models\\Product\. Use \-\> instead\.$#'
 			identifier: nullsafe.neverNull
 			count: 2
@@ -5451,7 +5421,13 @@ parameters:
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
 			identifier: property.notFound
-			count: 2
+			count: 1
+			path: Modules/Sales/app/Services/CartQuotePdfService.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Product\\Models\\Unit\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
 			path: Modules/Sales/app/Services/CartQuotePdfService.php
 
 		-

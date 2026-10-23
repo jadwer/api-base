@@ -82,7 +82,7 @@ class ShoppingCartController extends Controller
         if (!$cart) {
             return response()->json([
                 'data' => null,
-                'message' => 'No active cart found'
+                'message' => 'No hay un carrito activo.'
             ], 200);
         }
 
@@ -346,7 +346,7 @@ class ShoppingCartController extends Controller
         // inside the checkout transaction (below). Guests still need contact_id.
         if (!$contactId && !$user) {
             return response()->json([
-                'error' => 'No contact found for this user. Please provide contact_id.'
+                'error' => 'Tu usuario no tiene un contacto asociado; indica el contacto del pedido.'
             ], 422);
         }
 

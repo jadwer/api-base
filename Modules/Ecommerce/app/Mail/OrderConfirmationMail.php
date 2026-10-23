@@ -48,8 +48,8 @@ class OrderConfirmationMail extends Mailable
         }
 
         $subject = $this->isAdmin
-            ? 'New Order Received - ' . $this->order->order_number
-            : 'Order Confirmation - ' . $this->order->order_number;
+            ? 'Nuevo pedido recibido - ' . $this->order->order_number
+            : 'Confirmación de pedido - ' . $this->order->order_number;
 
         return $this->subject($subject)
             ->view('ecommerce::emails.order-confirmation')
@@ -58,6 +58,7 @@ class OrderConfirmationMail extends Mailable
                 'orderSummary' => $this->orderSummary,
                 'shippingInfo' => $this->shippingInfo,
                 'isAdmin' => $this->isAdmin,
+                'statusLabel' => OrderStatusUpdateMail::statusLabel((string) ($this->orderSummary['status'] ?? '')),
             ]);
     }
 
@@ -93,7 +94,7 @@ class OrderConfirmationMail extends Mailable
             'customer_name' => $this->order->customer?->name ?? 'Cliente',
             'customer_email' => $this->order->customer?->email ?? '',
             'order_date' => $this->orderSummary['order_date'],
-            'status' => $this->orderSummary['status'],
+            'status' => OrderStatusUpdateMail::statusLabel((string) ($this->orderSummary['status'] ?? '')),
             'items' => $items,
             'subtotal' => number_format($this->orderSummary['subtotal'] ?? 0, 2),
             'tax' => number_format($this->orderSummary['tax'] ?? 0, 2),

@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Cotizacion informativa</title>
+    <title>Cotización informativa</title>
     <style>
         @page { margin: 25px 30px 45px 30px; }
         * { font-family: DejaVu Sans, sans-serif; box-sizing: border-box; margin: 0; padding: 0; }

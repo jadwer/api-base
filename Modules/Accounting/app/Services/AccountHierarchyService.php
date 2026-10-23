@@ -26,7 +26,7 @@ class AccountHierarchyService
         }
 
         if ($accountId === $newParentId) {
-            throw new \Exception('Account cannot be its own parent');
+            throw new \Exception('Una cuenta no puede ser su propia cuenta padre.');
         }
 
         // Traverse up the parent chain
@@ -37,14 +37,14 @@ class AccountHierarchyService
 
         while ($currentParentId && $iterations < $maxIterations) {
             if (in_array($currentParentId, $visited)) {
-                throw new \Exception('Circular reference detected in account hierarchy');
+                throw new \Exception('Se detectó una referencia circular en la jerarquía de cuentas.');
             }
 
             $visited[] = $currentParentId;
             $parent = Account::find($currentParentId);
 
             if (!$parent) {
-                throw new \Exception("Parent account #{$currentParentId} not found");
+                throw new \Exception("No se encontró la cuenta padre #{$currentParentId}.");
             }
 
             $currentParentId = $parent->parent_id;
@@ -52,7 +52,7 @@ class AccountHierarchyService
         }
 
         if ($iterations >= $maxIterations) {
-            throw new \Exception('Account hierarchy is too deep or has circular reference');
+            throw new \Exception('La jerarquía de cuentas es demasiado profunda o tiene una referencia circular.');
         }
     }
 
@@ -68,7 +68,7 @@ class AccountHierarchyService
         $depth = $this->calculateDepth($accountId);
 
         if ($depth > $maxDepth) {
-            throw new \Exception("Account hierarchy exceeds maximum depth of {$maxDepth} levels (current: {$depth})");
+            throw new \Exception("La jerarquía de cuentas excede el máximo de {$maxDepth} niveles (actual: {$depth}).");
         }
     }
 

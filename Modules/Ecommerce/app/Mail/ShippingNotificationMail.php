@@ -45,7 +45,7 @@ class ShippingNotificationMail extends Mailable
             return $templateMail;
         }
 
-        return $this->subject('Your Order Has Been Shipped - ' . $this->order->order_number)
+        return $this->subject('Tu pedido va en camino - ' . $this->order->order_number)
             ->view('ecommerce::emails.shipping-notification')
             ->with([
                 'order' => $this->order,

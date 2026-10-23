@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>@yield('title', 'Order Notification')</title>
+    <title>@yield('title', 'Notificación de pedido')</title>
     <style>
         /* Reset styles */
         body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
@@ -250,13 +250,13 @@
                         <td class="email-footer">
                             <p><strong>{{ config('app.name', 'ERP System') }}</strong></p>
                             <p>
-                                If you have any questions, please contact us at
+                                Si tienes alguna duda, escríbenos a
                                 <a href="mailto:{{ config('mail.from.address') }}">{{ config('mail.from.address') }}</a>
                             </p>
                             <p style="margin-top: 20px; color: #9ca3af; font-size: 12px;">
-                                This email was sent to you because you placed an order on our platform.
+                                Recibes este correo porque hiciste un pedido en nuestra tienda.
                                 <br>
-                                &copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
+                                &copy; {{ date('Y') }} {{ config('app.name') }}. Todos los derechos reservados.
                             </p>
                         </td>
                     </tr>

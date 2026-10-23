@@ -42,7 +42,7 @@ class AccountingService
             $journal = Journal::where('code', $journalCode)->where('status', 'active')->first();
 
             if (!$journal) {
-                throw new Exception("Journal with code '{$journalCode}' not found or not active");
+                throw new Exception("El diario '{$journalCode}' no existe o está inactivo.");
             }
 
             // Find fiscal period for this date. Se compara SOLO la fecha
@@ -166,7 +166,7 @@ class AccountingService
         $period = $entry->fiscalPeriod;
 
         if (!$period) {
-            throw new Exception('Journal entry must have a fiscal period assigned');
+            throw new Exception('La póliza debe tener un periodo fiscal asignado.');
         }
 
         if ($period->status !== 'open') {
@@ -218,7 +218,7 @@ class AccountingService
         return DB::transaction(function () use ($entry, $reason) {
             // Validate original entry is posted
             if ($entry->status !== JournalEntry::STATUS_POSTED) {
-                throw new Exception('Only posted entries can be reversed');
+                throw new Exception('Solo se pueden revertir pólizas contabilizadas.');
             }
 
             // Validate period is open
@@ -260,7 +260,7 @@ class AccountingService
     {
         return DB::transaction(function () use ($entry) {
             if ($entry->status !== JournalEntry::STATUS_DRAFT) {
-                throw new Exception('Only draft entries can be approved');
+                throw new Exception('Solo se pueden aprobar pólizas en borrador.');
             }
 
             // Validate balance before approval

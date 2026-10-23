@@ -40,7 +40,7 @@ class PeriodControlService
             $user = auth()->user();
 
             if (!$user) {
-                throw new \Exception("Authentication required for locked period operations.");
+                throw new \Exception("Se requiere iniciar sesión para operar en un periodo bloqueado.");
             }
 
             if (!$user->hasPermissionTo('accounting.period-override')) {
@@ -109,7 +109,7 @@ class PeriodControlService
     public function lockPeriod(FiscalPeriod $period, int $userId): bool
     {
         if ($period->status === 'closed') {
-            throw new \Exception("Cannot lock a closed period. Period is already closed.");
+            throw new \Exception("No se puede bloquear un periodo cerrado.");
         }
 
         return DB::transaction(function () use ($period, $userId) {
@@ -141,11 +141,11 @@ class PeriodControlService
     public function unlockPeriod(FiscalPeriod $period, int $userId): bool
     {
         if ($period->status === 'closed') {
-            throw new \Exception("Cannot unlock a closed period. Use reopen instead.");
+            throw new \Exception("No se puede desbloquear un periodo cerrado; usa reabrir.");
         }
 
         if ($period->status !== 'locked') {
-            throw new \Exception("Period is not locked.");
+            throw new \Exception("El periodo no está bloqueado.");
         }
 
         return DB::transaction(function () use ($period, $userId) {
@@ -209,7 +209,7 @@ class PeriodControlService
     public function reopenPeriod(FiscalPeriod $period, int $userId, string $reason): bool
     {
         if ($period->status !== 'closed') {
-            throw new \Exception("Only closed periods can be reopened.");
+            throw new \Exception("Solo se pueden reabrir periodos cerrados.");
         }
 
         return DB::transaction(function () use ($period, $userId, $reason) {

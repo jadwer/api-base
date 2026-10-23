@@ -1,31 +1,31 @@
 @extends('ecommerce::emails.layout')
 
-@section('title', 'Return Request Confirmation')
+@section('title', 'Confirmación de solicitud de devolución')
 
 @section('content')
-    <h2>{{ $isAdmin ? 'New Return Request Received' : 'Return Request Received' }}</h2>
+    <h2>{{ $isAdmin ? 'Nueva solicitud de devolución' : 'Recibimos tu solicitud de devolución' }}</h2>
 
     @if($isAdmin)
-        <p>A customer has submitted a return request for order <strong>{{ $order->order_number }}</strong>.</p>
+        <p>Un cliente envió una solicitud de devolución del pedido <strong>{{ $order->order_number }}</strong>.</p>
     @else
-        <p>Hi {{ $order->customer->name ?? 'Valued Customer' }},</p>
-        <p>We've received your return request for order <strong>{{ $order->order_number }}</strong>.</p>
+        <p>Hola, {{ $order->customer->name ?? 'cliente' }}:</p>
+        <p>Recibimos tu solicitud de devolución del pedido <strong>{{ $order->order_number }}</strong>.</p>
     @endif
 
     <div class="warning-box">
-        <strong>Return Reason:</strong><br>
-        {{ $returnData['reason'] ?? 'No reason provided' }}
+        <strong>Motivo de la devolución:</strong><br>
+        {{ $returnData['reason'] ?? 'Sin motivo indicado' }}
     </div>
 
     <div class="order-box">
-        <h3>Return Items</h3>
+        <h3>Productos a devolver</h3>
 
         <table class="order-items">
             <thead>
                 <tr>
-                    <th>Product</th>
-                    <th style="text-align: center;">Qty to Return</th>
-                    <th>Item Reason</th>
+                    <th>Producto</th>
+                    <th style="text-align: center;">Cant. a devolver</th>
+                    <th>Motivo</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,15 +36,15 @@
                                 @php
                                     $product = $order->items->firstWhere('product_id', $item['product_id']);
                                 @endphp
-                                {{ $product && $product->product ? $product->product->name : 'Unknown Product' }}
+                                {{ $product && $product->product ? $product->product->name : 'Producto desconocido' }}
                             </td>
                             <td style="text-align: center;">{{ $item['quantity'] }}</td>
-                            <td style="color: #6b7280;">{{ $item['reason'] ?? 'N/A' }}</td>
+                            <td style="color: #6b7280;">{{ $item['reason'] ?? 'Sin especificar' }}</td>
                         </tr>
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="3" style="text-align: center; color: #6b7280;">All items in this order</td>
+                        <td colspan="3" style="text-align: center; color: #6b7280;">Todos los productos del pedido</td>
                     </tr>
                 @endif
             </tbody>
@@ -52,51 +52,51 @@
     </div>
 
     <div class="order-box">
-        <h3>Original Order Details</h3>
+        <h3>Detalle del pedido original</h3>
 
         <div style="margin-bottom: 15px;">
-            <strong>Order Number:</strong> {{ $order->order_number }}<br>
-            <strong>Order Date:</strong> {{ $orderSummary['order_date'] }}<br>
-            <strong>Total Amount:</strong> ${{ number_format($orderSummary['total'], 2) }} {{ $orderSummary['currency'] }}
+            <strong>Número de pedido:</strong> {{ $order->order_number }}<br>
+            <strong>Fecha:</strong> {{ \Carbon\Carbon::parse($orderSummary['order_date'])->format('d/m/Y') }}<br>
+            <strong>Total:</strong> ${{ number_format($orderSummary['total'], 2) }} {{ $orderSummary['currency'] }}
         </div>
     </div>
 
     @if($isAdmin)
         <div class="info-box">
             <p style="margin: 0;">
-                <strong>Action Required:</strong><br>
-                Please review this return request and contact the customer at
-                {{ $order->customer->email ?? $order->checkoutSession->contact_email ?? 'N/A' }}
-                to arrange the return shipment.
+                <strong>Acción requerida:</strong><br>
+                Revisa esta solicitud y contacta al cliente en
+                {{ $order->customer->email ?? $order->checkoutSession->contact_email ?? 'sin correo' }}
+                para coordinar el envío de la devolución.
             </p>
         </div>
 
         <p style="text-align: center;">
             <a href="{{ config('app.url') }}/admin/orders/{{ $order->id }}" class="button">
-                Review Return Request
+                Revisar solicitud de devolución
             </a>
         </p>
     @else
         <div class="info-box">
             <p style="margin: 0;">
-                <strong>What happens next?</strong><br>
-                Our customer service team will review your return request and contact you within 24-48 hours
-                with instructions on how to return your items. Please keep your items in their original condition
-                and packaging until you receive further instructions.
+                <strong>¿Qué sigue?</strong><br>
+                Nuestro equipo de atención revisará tu solicitud y te contactará en un plazo de 24 a 48 horas
+                con las instrucciones para devolver los productos. Mientras tanto, consérvalos en su estado
+                y empaque originales.
             </p>
         </div>
 
         <div class="success-box">
             <p style="margin: 0;">
-                <strong>Return Policy Reminder:</strong><br>
-                Items must be returned within 30 days of delivery in their original condition.
-                Once we receive and inspect your return, we'll process your refund within 5-7 business days.
+                <strong>Recuerda nuestra política de devoluciones:</strong><br>
+                Los productos deben devolverse dentro de los 30 días posteriores a la entrega y en su estado original.
+                Cuando recibamos y revisemos la devolución, procesaremos tu reembolso en un plazo de 5 a 7 días hábiles.
             </p>
         </div>
 
         <p style="text-align: center;">
             <a href="{{ config('app.url') }}/my-orders/{{ $order->id }}" class="button">
-                View Order Details
+                Ver detalle del pedido
             </a>
         </p>
     @endif

@@ -144,6 +144,34 @@ class FractionationApiController extends Controller
     /**
      * @return array<string, mixed>
      */
+    /**
+     * POST /api/v1/fraccionamiento/{fractionation}/cancel (G10 de granel, 23-10).
+     */
+    public function cancel(Request $request, Fractionation $fractionation): JsonResponse
+    {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            return FractionationException::errorResponse(401, 'No autenticado', 'Inicia sesión para continuar.');
+        }
+        if (!$user->can('fractionations.update')) {
+            return FractionationException::errorResponse(403, 'Sin permiso', 'No tienes permiso para cancelar fraccionamientos.');
+        }
+
+        $validated = $request->validate(['reason' => ['nullable', 'string', 'max:500']], [], ['reason' => 'motivo']);
+
+        try {
+            $cancelled = $this->fractionationService->cancel($fractionation, $user->id, $validated['reason'] ?? null);
+        } catch (FractionationException $e) {
+            return $e->toResponse();
+        } catch (\Throwable $e) {
+            Log::error('Fractionation cancel failed', ['fractionation_id' => $fractionation->id, 'error' => $e->getMessage()]);
+
+            return FractionationException::errorResponse(422, 'No se pudo cancelar', $e->getMessage());
+        }
+
+        return response()->json(['data' => $this->transform($cancelled)]);
+    }
+
     private function transform(Fractionation $fractionation): array
     {
         $batch = static fn ($b) => $b ? [
@@ -175,6 +203,8 @@ class FractionationApiController extends Controller
             'entryMovementId' => $fractionation->entry_movement_id,
             'status' => $fractionation->status,
             'executedAt' => $fractionation->executed_at,
+            'cancelledAt' => $fractionation->cancelled_at,
+            'cancellationReason' => $fractionation->cancellation_reason,
             'sourceProduct' => $fractionation->sourceProduct ? [
                 'id' => $fractionation->sourceProduct->id,
                 'name' => $fractionation->sourceProduct->name,

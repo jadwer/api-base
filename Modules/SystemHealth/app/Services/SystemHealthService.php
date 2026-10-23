@@ -75,7 +75,7 @@ class SystemHealthService
             Log::error('Database health check failed', ['error' => $e->getMessage()]);
             return [
                 'status' => 'critical',
-                'message' => 'Database connection failed',
+                'message' => 'Falló la conexión a la base de datos',
                 'error' => $e->getMessage(),
             ];
         }
@@ -112,7 +112,7 @@ class SystemHealthService
         } catch (\Exception $e) {
             return [
                 'status' => 'warning',
-                'message' => 'Cache check failed',
+                'message' => 'Falló la verificación de la caché',
                 'driver' => config('cache.default'),
                 'error' => $e->getMessage(),
             ];
@@ -156,7 +156,7 @@ class SystemHealthService
         } catch (\Exception $e) {
             return [
                 'status' => 'warning',
-                'message' => 'Queue check failed',
+                'message' => 'Falló la verificación de la cola',
                 'error' => $e->getMessage(),
             ];
         }
@@ -192,7 +192,7 @@ class SystemHealthService
         } catch (\Exception $e) {
             return [
                 'status' => 'warning',
-                'message' => 'Storage check failed',
+                'message' => 'Falló la verificación del almacenamiento',
                 'error' => $e->getMessage(),
             ];
         }

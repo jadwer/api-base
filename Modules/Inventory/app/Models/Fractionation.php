@@ -39,6 +39,9 @@ use Spatie\Activitylog\LogOptions;
  * @property string $status
  * @property string|null $notes
  * @property \Carbon\Carbon|null $executed_at
+ * @property \Carbon\Carbon|null $cancelled_at
+ * @property int|null $cancelled_by
+ * @property string|null $cancellation_reason
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property-read \Modules\Product\Models\Product|null $sourceProduct
@@ -78,6 +81,9 @@ class Fractionation extends Model
         'status',
         'notes',
         'executed_at',
+        'cancelled_at',
+        'cancelled_by',
+        'cancellation_reason',
     ];
 
     protected $casts = [
@@ -102,6 +108,8 @@ class Fractionation extends Model
         'exit_movement_id' => 'integer',
         'entry_movement_id' => 'integer',
         'executed_at' => 'datetime',
+        'cancelled_at' => 'datetime',
+        'cancelled_by' => 'integer',
     ];
 
     // Status constants

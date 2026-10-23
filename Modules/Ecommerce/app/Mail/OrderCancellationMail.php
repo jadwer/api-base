@@ -43,7 +43,7 @@ class OrderCancellationMail extends Mailable
             return $templateMail;
         }
 
-        return $this->subject('Order Cancelled - ' . $this->order->order_number)
+        return $this->subject('Pedido cancelado - ' . $this->order->order_number)
             ->view('ecommerce::emails.order-cancellation')
             ->with([
                 'order' => $this->order,

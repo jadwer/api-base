@@ -1,36 +1,36 @@
 @extends('ecommerce::emails.layout')
 
-@section('title', 'Order Cancelled')
+@section('title', 'Pedido cancelado')
 
 @section('content')
-    <h2>Order Cancelled</h2>
+    <h2>Pedido cancelado</h2>
 
-    <p>Hi {{ $order->customer->name ?? 'Valued Customer' }},</p>
+    <p>Hola, {{ $order->customer->name ?? 'cliente' }}:</p>
 
-    <p>Your order <strong>{{ $order->order_number }}</strong> has been cancelled.</p>
+    <p>Tu pedido <strong>{{ $order->order_number }}</strong> fue cancelado.</p>
 
     @if($reason)
         <div class="warning-box">
-            <strong>Cancellation Reason:</strong><br>
+            <strong>Motivo de la cancelación:</strong><br>
             {{ $reason }}
         </div>
     @endif
 
     <div class="order-box">
-        <h3>Cancelled Order Details</h3>
+        <h3>Detalle del pedido cancelado</h3>
 
         <div style="margin-bottom: 15px;">
-            <strong>Order Number:</strong> {{ $order->order_number }}<br>
-            <strong>Order Date:</strong> {{ $orderSummary['order_date'] }}<br>
-            <strong>Cancellation Date:</strong> {{ now()->format('F d, Y') }}
+            <strong>Número de pedido:</strong> {{ $order->order_number }}<br>
+            <strong>Fecha:</strong> {{ \Carbon\Carbon::parse($orderSummary['order_date'])->format('d/m/Y') }}<br>
+            <strong>Fecha de cancelación:</strong> {{ now()->format('d/m/Y') }}
         </div>
 
         <table class="order-items">
             <thead>
                 <tr>
-                    <th>Product</th>
-                    <th style="text-align: center;">Qty</th>
-                    <th style="text-align: right;">Price</th>
+                    <th>Producto</th>
+                    <th style="text-align: center;">Cant.</th>
+                    <th style="text-align: right;">Precio</th>
                     <th style="text-align: right;">Subtotal</th>
                 </tr>
             </thead>
@@ -48,7 +48,7 @@
 
         <div class="order-totals">
             <div class="total-row grand-total">
-                <span>Cancelled Amount:</span>
+                <span>Monto cancelado:</span>
                 <span>${{ number_format($orderSummary['total'], 2) }} {{ $orderSummary['currency'] }}</span>
             </div>
         </div>
@@ -56,21 +56,21 @@
 
     <div class="info-box">
         <p style="margin: 0;">
-            <strong>Refund Information:</strong><br>
+            <strong>Sobre tu reembolso:</strong><br>
             @if($order->status === 'cancelled' && in_array($order->payment_status ?? '', ['paid', 'partially_paid']))
-                If you've already made a payment, your refund will be processed within 5-7 business days.
-                The refund will be credited to your original payment method.
+                Como ya habías pagado, procesaremos tu reembolso en un plazo de 5 a 7 días hábiles.
+                Lo verás reflejado en la misma forma de pago que usaste.
             @else
-                No payment was processed for this order, so no refund is necessary.
+                No se registró ningún pago para este pedido, así que no hace falta un reembolso.
             @endif
         </p>
     </div>
 
-    <p>If you have any questions about this cancellation, please don't hesitate to contact our customer support team.</p>
+    <p>Si tienes dudas sobre esta cancelación, escríbenos y con gusto te ayudamos.</p>
 
     <p style="text-align: center;">
         <a href="{{ config('app.url') }}/products" class="button">
-            Continue Shopping
+            Seguir comprando
         </a>
     </p>
 @endsection

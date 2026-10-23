@@ -125,7 +125,7 @@ class EmailTemplateController extends JsonApiController
         }
 
         if ($image->email_template_id !== $emailTemplate->id) {
-            return response()->json(['error' => 'Image does not belong to this template'], 404);
+            return response()->json(['error' => 'La imagen no pertenece a esta plantilla.'], 404);
         }
 
         \Illuminate\Support\Facades\Storage::disk('public')->delete($image->path);

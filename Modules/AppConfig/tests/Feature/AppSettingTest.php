@@ -59,7 +59,7 @@ class AppSettingTest extends TestCase
                     'key' => 'company.name',
                     'value' => 'New Company Name',
                 ],
-                'message' => 'Setting updated successfully',
+                'message' => 'Configuración actualizada correctamente.',
             ]);
 
         $this->assertEquals('New Company Name', AppSetting::get('company.name'));

@@ -426,7 +426,7 @@
                 <td>
                     @if($shippingAddress)
                     <div class="info-block">
-                        <h4>Direccion de Envio</h4>
+                        <h4>Dirección de envío</h4>
                         <p><strong>{{ $shippingAddress['name'] ?? '' }}</strong></p>
                         <p>{{ $shippingAddress['line1'] ?? $shippingAddress['address_line1'] ?? '' }}</p>
                         @if(!empty($shippingAddress['line2'] ?? $shippingAddress['address_line2'] ?? null))<p>{{ $shippingAddress['line2'] ?? $shippingAddress['address_line2'] }}</p>@endif
@@ -444,8 +444,8 @@
             <table class="items-table">
                 <thead>
                     <tr>
-                        <th style="width: 12%;">Codigo</th>
-                        <th style="width: 38%;">Descripcion</th>
+                        <th style="width: 12%;">Código</th>
+                        <th style="width: 38%;">Descripción</th>
                         <th class="text-center" style="width: 10%;">Cant.</th>
                         <th class="text-center" style="width: 10%;">Unidad</th>
                         <th class="text-right" style="width: 15%;">P. Unitario</th>
@@ -465,7 +465,7 @@
                             @endif
                         </td>
                         <td class="text-center">{{ number_format($item->quantity, 0) }}</td>
-                        <td class="text-center">{{ $item->product && $item->product->unit ? $item->product->unit->name : 'PZA' }}</td>
+                        <td class="text-center">{{ $item->product?->unit?->name ?: '-' }}</td>
                         <td class="text-right">${{ number_format($item->unit_price, 2) }}</td>
                         <td class="text-right">${{ number_format($item->subtotal ?? ($item->quantity * $item->unit_price), 2) }}</td>
                     </tr>
@@ -505,7 +505,7 @@
                         @endif
                         @if($totals['shipping'] > 0)
                         <tr>
-                            <td>Envio:</td>
+                            <td>Envío:</td>
                             <td class="text-right">${{ number_format($totals['shipping'], 2) }}</td>
                         </tr>
                         @endif

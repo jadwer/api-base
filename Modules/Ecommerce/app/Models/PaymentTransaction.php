@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Finance\Models\ARInvoice;
 
+/**
+ * @property string|null $status
+ * @property string|null $payment_method
+ */
 class PaymentTransaction extends Model
 {
     use HasFactory;

@@ -44,12 +44,14 @@ class PaymentConfirmationMail extends Mailable
             return $templateMail;
         }
 
-        return $this->subject('Payment Confirmation - ' . $this->order->order_number)
+        return $this->subject('Confirmación de pago - ' . $this->order->order_number)
             ->view('ecommerce::emails.payment-confirmation')
             ->with([
                 'transaction' => $this->transaction,
                 'order' => $this->order,
                 'orderSummary' => $this->orderSummary,
+                'paymentStatusLabel' => $this->paymentStatusLabel((string) $this->transaction->status),
+                'paymentMethodLabel' => $this->paymentMethodLabel((string) $this->transaction->payment_method),
             ]);
     }
 
@@ -59,11 +61,52 @@ class PaymentConfirmationMail extends Mailable
             'order_number' => $this->orderSummary['order_number'],
             'customer_name' => $this->order->customer?->name ?? 'Cliente',
             'payment_amount' => number_format($this->transaction->amount ?? 0, 2),
-            'payment_method' => $this->transaction->payment_method ?? '',
+            'payment_method' => $this->paymentMethodLabel((string) ($this->transaction->payment_method ?? '')),
             'payment_date' => $this->transaction->created_at?->format('Y-m-d H:i') ?? '',
             'transaction_id' => $this->transaction->transaction_id ?? $this->transaction->id ?? '',
             'currency' => $this->orderSummary['currency'] ?? 'MXN',
             'company_name' => app(\Modules\AppConfig\Services\AppSettingResolver::class)->get('company.name', config('app.name', 'Demo Company')),
         ];
+    }
+
+    /**
+     * Etiqueta en español del estado de la transacción.
+     */
+    protected function paymentStatusLabel(string $status): string
+    {
+        $labels = [
+            'pending' => 'Pendiente',
+            'authorized' => 'Autorizado',
+            'captured' => 'Pagado',
+            'completed' => 'Pagado',
+            'succeeded' => 'Pagado',
+            'paid' => 'Pagado',
+            'failed' => 'Rechazado',
+            'cancelled' => 'Cancelado',
+            'refunded' => 'Reembolsado',
+        ];
+
+        return $labels[$status] ?? ucfirst($status);
+    }
+
+    /**
+     * Etiqueta en español de la forma de pago.
+     */
+    protected function paymentMethodLabel(string $method): string
+    {
+        $labels = [
+            'card' => 'Tarjeta',
+            'credit_card' => 'Tarjeta de crédito',
+            'debit_card' => 'Tarjeta de débito',
+            'stripe' => 'Tarjeta',
+            'transfer' => 'Transferencia',
+            'bank_transfer' => 'Transferencia',
+            'cash' => 'Efectivo',
+            'paypal' => 'PayPal',
+            'oxxo' => 'OXXO',
+            'mock' => 'Prueba',
+        ];
+
+        return $labels[$method] ?? ucfirst($method);
     }
 }

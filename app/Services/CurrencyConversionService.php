@@ -36,11 +36,11 @@ class CurrencyConversionService
         $toCurrency = Currency::where('code', $toCode)->where('is_active', true)->first();
 
         if (!$fromCurrency) {
-            throw new \InvalidArgumentException("Currency not found or inactive: {$fromCode}");
+            throw new \InvalidArgumentException("La moneda {$fromCode} no existe o está inactiva.");
         }
 
         if (!$toCurrency) {
-            throw new \InvalidArgumentException("Currency not found or inactive: {$toCode}");
+            throw new \InvalidArgumentException("La moneda {$toCode} no existe o está inactiva.");
         }
 
         if ($fromCurrency->exchange_rate == 0) {

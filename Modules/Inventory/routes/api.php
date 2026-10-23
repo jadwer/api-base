@@ -45,5 +45,7 @@ Route::prefix('v1')->middleware(['auth:sanctum'])->group(function () {
             ->name('fraccionamiento.calculate');
         Route::post('execute', [FractionationApiController::class, 'execute'])
             ->name('fraccionamiento.execute');
+        Route::post('{fractionation}/cancel', [FractionationApiController::class, 'cancel'])
+            ->name('fraccionamiento.cancel');
     });
 });

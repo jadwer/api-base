@@ -48,7 +48,7 @@ class DemoController extends Controller
 
         if (config('app.demo_mode') !== true) {
             return response()->json([
-                'error' => 'Demo mode is not enabled on this instance.',
+                'error' => 'El modo demo no está habilitado en esta instancia.',
             ], 403);
         }
 
@@ -56,12 +56,12 @@ class DemoController extends Controller
 
         if ($exitCode !== 0) {
             return response()->json([
-                'error' => 'Demo reset failed. Check the application logs.',
+                'error' => 'No se pudo reiniciar la demo. Revisa los registros de la aplicación.',
             ], 500);
         }
 
         return response()->json([
-            'message' => 'Demo database was reset successfully.',
+            'message' => 'La base de datos de la demo se reinició correctamente.',
             'reset_at' => now()->toIso8601String(),
         ]);
     }

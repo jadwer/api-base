@@ -622,7 +622,7 @@ class QuoteController extends Controller
                 'path' => $path,
                 'url' => asset('storage/' . $path),
             ],
-            'message' => 'PDF generated successfully'
+            'message' => 'PDF generado correctamente'
         ]);
     }
 

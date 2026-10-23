@@ -169,7 +169,7 @@ class ARInvoiceGLPostingTest extends TestCase
 
         // Act & Assert: Debe fallar con mensaje claro
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('GL Account for Customers (1104) not found');
+        $this->expectExceptionMessage('No existe la cuenta contable de clientes (1104)');
 
         $this->arInvoiceService->createInvoice([
             'invoiceDate' => now()->format('Y-m-d'),

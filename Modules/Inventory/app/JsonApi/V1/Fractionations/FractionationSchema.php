@@ -59,6 +59,10 @@ class FractionationSchema extends Schema
             Str::make('status')->sortable(),
             Str::make('notes'),
             DateTime::make('executedAt', 'executed_at')->sortable(),
+            // Cancelacion (G10, 23-10): solo la escribe el endpoint cancel
+            DateTime::make('cancelledAt', 'cancelled_at')->readOnly(),
+            Number::make('cancelledBy', 'cancelled_by')->readOnly(),
+            Str::make('cancellationReason', 'cancellation_reason')->readOnly(),
 
             // Relationships
             BelongsTo::make('sourceProduct')->type('products'),

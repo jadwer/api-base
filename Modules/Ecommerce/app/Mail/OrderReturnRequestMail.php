@@ -48,8 +48,8 @@ class OrderReturnRequestMail extends Mailable
         }
 
         $subject = $this->isAdmin
-            ? 'Return Request Received - ' . $this->order->order_number
-            : 'Return Request Confirmation - ' . $this->order->order_number;
+            ? 'Nueva solicitud de devolución - ' . $this->order->order_number
+            : 'Recibimos tu solicitud de devolución - ' . $this->order->order_number;
 
         return $this->subject($subject)
             ->view('ecommerce::emails.order-return-request')

@@ -53,7 +53,7 @@ class AppSettingController extends Controller
         $setting = AppSetting::where('key', $key)->first();
 
         if (!$setting) {
-            return response()->json(['error' => 'Setting not found'], 404);
+            return response()->json(['error' => 'Configuración no encontrada.'], 404);
         }
 
         $request->validate([
@@ -71,7 +71,7 @@ class AppSettingController extends Controller
                 'type' => $setting->type,
                 'label' => $setting->label,
             ],
-            'message' => 'Setting updated successfully',
+            'message' => 'Configuración actualizada correctamente.',
         ]);
     }
 
