@@ -70,6 +70,12 @@ class CleanDatabaseSeeder extends Seeder
         $this->command->info('Phase 6: Permission catalog labels...');
         $this->call(\Modules\PermissionManager\Database\Seeders\PermissionCatalogSeeder::class);
 
+        // Phase 7: registro de correos del sistema (administrador de correos).
+        // Faltaba: una instalacion limpia o el reset de la demo dejaban la
+        // pantalla de correos vacia (23-10).
+        $this->command->info('Phase 7: System emails registry...');
+        $this->call(\Modules\MailerManager\Database\Seeders\SystemEmailSeeder::class);
+
         $this->command->info('');
         $this->command->info('========================================');
         $this->command->info('  Clean Project Ready!');
