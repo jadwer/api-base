@@ -5,6 +5,7 @@ namespace Modules\Reports\Services\Export;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use League\Csv\Writer;
+use Modules\Reports\Exports\ReportRowsExport;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
@@ -22,12 +23,8 @@ class ExportService
     {
         $filename = $filename ?? $this->generateFilename($reportType, 'xlsx');
 
-        $export = match ($reportType) {
-            'balance-sheet' => new \Modules\Reports\Exports\BalanceSheetExport($data),
-            'income-statement' => new \Modules\Reports\Exports\IncomeStatementExport($data),
-            'trial-balance' => new \Modules\Reports\Exports\TrialBalanceExport($data),
-            default => new \Modules\Reports\Exports\GenericReportExport($data),
-        };
+        // Mismas filas que el CSV (antes apuntaba a clases que nunca existieron: 500)
+        $export = new ReportRowsExport($this->convertDataToRows($reportType, $data), $this->titleFor($reportType));
 
         $path = 'exports/' . $filename;
         Excel::store($export, $path, 'local');
@@ -47,15 +44,10 @@ class ExportService
     {
         $filename = $filename ?? $this->generateFilename($reportType, 'pdf');
 
-        $view = match ($reportType) {
-            'balance-sheet' => 'reports::exports.balance-sheet-pdf',
-            'income-statement' => 'reports::exports.income-statement-pdf',
-            'cash-flow' => 'reports::exports.cash-flow-pdf',
-            'trial-balance' => 'reports::exports.trial-balance-pdf',
-            default => 'reports::exports.generic-report-pdf',
-        };
-
-        $pdf = Pdf::loadView($view, ['data' => $data]);
+        // Una vista generica con las mismas filas que el CSV (las vistas por
+        // reporte nunca existieron y el PDF daba 500)
+        $pdf = Pdf::loadView('reports::exports.report-pdf', $this->pdfViewData($reportType, $data))
+            ->setPaper('letter', 'landscape');
         $path = storage_path('app/exports/' . $filename);
 
         // Ensure directory exists
@@ -96,6 +88,65 @@ class ExportService
         }
 
         return $path;
+    }
+
+    /** Titulo en espanol del reporte (hoja de Excel y encabezado del PDF). */
+    private function titleFor(string $reportType): string
+    {
+        return match ($reportType) {
+            'balance-sheet' => 'Balance general',
+            'income-statement' => 'Estado de resultados',
+            'cash-flow' => 'Flujo de efectivo',
+            'trial-balance' => 'Balanza de comprobacion',
+            'aging-ar' => 'Antiguedad de saldos por cobrar',
+            'aging-ap' => 'Antiguedad de saldos por pagar',
+            'sales-by-customer' => 'Ventas por cliente',
+            'sales-by-employee' => 'Ventas por vendedor',
+            'sales-by-batch' => 'Ventas por lote',
+            'sales-profitability' => 'Rentabilidad de ventas',
+            'sales-history' => 'Historico de ventas',
+            default => 'Reporte',
+        };
+    }
+
+    /**
+     * Separa las filas del CSV en titulo, lineas de periodo y tabla para la
+     * vista PDF.
+     *
+     * @return array{title: string, meta: list<string>, rows: list<list<mixed>>, headerIndex: int|null, columns: int}
+     */
+    private function pdfViewData(string $reportType, array $data): array
+    {
+        $rows = $this->convertDataToRows($reportType, $data);
+
+        // Encabezado: filas de una sola celda hasta la primera fila vacia
+        $meta = [];
+        while ($rows !== [] && count($rows[0]) <= 1) {
+            $line = (string) ($rows[0][0] ?? '');
+            array_shift($rows);
+            if ($line === '') {
+                break;
+            }
+            $meta[] = $line;
+        }
+        array_shift($meta); // la primera es el titulo
+
+        $headerIndex = null;
+        foreach ($rows as $i => $row) {
+            $cells = array_filter($row, fn ($c) => $c !== '' && $c !== null);
+            if (count($cells) >= 2 && count(array_filter($cells, 'is_string')) === count($cells)) {
+                $headerIndex = $i;
+                break;
+            }
+        }
+
+        return [
+            'title' => $this->titleFor($reportType),
+            'meta' => $meta,
+            'rows' => array_values($rows),
+            'headerIndex' => $headerIndex,
+            'columns' => max(1, ...array_map('count', $rows ?: [[]])),
+        ];
     }
 
     /**
@@ -210,118 +261,96 @@ class ExportService
     }
 
     /**
-     * Convert balance sheet data to CSV rows
-     *
-     * @param array $data
-     * @return array
+     * Balance general (estructura de BalanceSheetService::generate: secciones
+     * con categorias, cuentas y subtotales). La version anterior leia llaves
+     * que ya no existen (current_assets) y fallaba en los tres formatos.
      */
     private function balanceSheetToRows(array $data): array
     {
-        $rows = [];
+        $rows = [
+            ['Balance general'],
+            ['Al: ' . ($data['asOfDate'] ?? '')],
+            ['Moneda: ' . ($data['currency'] ?? 'MXN')],
+            [],
+            ['Cuenta', 'Nombre', 'Saldo'],
+        ];
 
-        // Header
-        $rows[] = ['Balance Sheet'];
-        $rows[] = ['As of: ' . ($data['as_of_date'] ?? '')];
-        $rows[] = ['Currency: ' . ($data['currency'] ?? 'MXN')];
-        $rows[] = [];
-
-        // Assets
-        $rows[] = ['ASSETS'];
-        $rows[] = ['Current Assets'];
-
-        foreach ($data['assets']['current_assets']['accounts'] ?? [] as $account) {
-            $rows[] = [$account['code'], $account['name'], $account['balance']];
+        foreach (['assets' => ['ACTIVO', 'totalAssets'], 'liabilities' => ['PASIVO', 'totalLiabilities'], 'equity' => ['CAPITAL', 'totalEquity']] as $key => [$label, $totalKey]) {
+            $rows[] = [$label];
+            $rows = array_merge($rows, $this->hierarchyRows($data[$key] ?? [], 'balance'));
+            $rows[] = ['', 'Total ' . mb_strtolower($label), $data[$totalKey] ?? 0];
+            $rows[] = [];
         }
 
-        $rows[] = ['', 'Total Current Assets', $data['assets']['current_assets']['total']];
-        $rows[] = [];
-
-        // Liabilities
-        $rows[] = ['LIABILITIES'];
-        foreach ($data['liabilities']['current_liabilities']['accounts'] ?? [] as $account) {
-            $rows[] = [$account['code'], $account['name'], $account['balance']];
-        }
-
-        $rows[] = ['', 'Total Liabilities', $data['liabilities']['total_liabilities']];
-        $rows[] = [];
-
-        // Equity
-        $rows[] = ['EQUITY'];
-        foreach ($data['equity']['accounts'] ?? [] as $account) {
-            $rows[] = [$account['code'], $account['name'], $account['balance']];
-        }
-
-        $rows[] = ['', 'Total Equity', $data['equity']['total_equity']];
+        $rows[] = ['', 'Cuadra (activo = pasivo + capital)', ($data['balanced'] ?? false) ? 'Si' : 'No'];
 
         return $rows;
     }
 
     /**
-     * Convert income statement data to CSV rows
-     *
-     * @param array $data
-     * @return array
+     * Estado de resultados (estructura de IncomeStatementService::generate).
      */
     private function incomeStatementToRows(array $data): array
     {
-        $rows = [];
-
-        $rows[] = ['Income Statement'];
-        $rows[] = ['Period: ' . ($data['period']['start_date'] ?? '') . ' to ' . ($data['period']['end_date'] ?? '')];
+        $rows = [
+            ['Estado de resultados'],
+            ['Periodo: ' . ($data['startDate'] ?? '') . ' a ' . ($data['endDate'] ?? '')],
+            ['Moneda: ' . ($data['currency'] ?? 'MXN')],
+            [],
+            ['Cuenta', 'Nombre', 'Importe'],
+            ['INGRESOS'],
+        ];
+        $rows = array_merge($rows, $this->hierarchyRows($data['revenues'] ?? [], 'amount'));
+        $rows[] = ['', 'Total ingresos', $data['totalRevenues'] ?? 0];
         $rows[] = [];
-
-        $rows[] = ['REVENUE'];
-        foreach ($data['revenue']['accounts'] ?? [] as $account) {
-            $rows[] = [$account['code'], $account['name'], $account['amount']];
-        }
-        $rows[] = ['', 'Total Revenue', $data['revenue']['total_revenue']];
+        $rows[] = ['EGRESOS'];
+        $rows = array_merge($rows, $this->hierarchyRows($data['expenses'] ?? [], 'amount'));
+        $rows[] = ['', 'Total egresos', $data['totalExpenses'] ?? 0];
         $rows[] = [];
-
-        $rows[] = ['', 'Cost of Goods Sold', $data['cost_of_goods_sold']];
-        $rows[] = ['', 'Gross Profit', $data['gross_profit']];
-        $rows[] = [];
-
-        $rows[] = ['OPERATING EXPENSES'];
-        foreach ($data['operating_expenses']['accounts'] ?? [] as $account) {
-            $rows[] = [$account['code'], $account['name'], $account['amount']];
-        }
-        $rows[] = ['', 'Total Operating Expenses', $data['operating_expenses']['total_operating_expenses']];
-        $rows[] = [];
-
-        $rows[] = ['', 'Operating Income', $data['operating_income']];
-        $rows[] = ['', 'NET INCOME', $data['net_income']];
+        $rows[] = ['', 'UTILIDAD NETA', $data['netIncome'] ?? 0];
 
         return $rows;
     }
 
     /**
-     * Convert trial balance data to CSV rows
+     * Filas de una seccion jerarquica (categoria -> cuentas -> subtotal).
      *
-     * @param array $data
-     * @return array
+     * @param  array<int, array<string, mixed>>  $categories
+     * @return list<list<mixed>>
+     */
+    private function hierarchyRows(array $categories, string $amountKey): array
+    {
+        $rows = [];
+        foreach ($categories as $category) {
+            $rows[] = [$category['category'] ?? ''];
+            foreach ($category['accounts'] ?? [] as $account) {
+                $rows[] = [$account['code'] ?? '', $account['name'] ?? '', $account[$amountKey] ?? 0];
+            }
+            $rows[] = ['', 'Subtotal ' . ($category['category'] ?? ''), $category['subtotal'] ?? 0];
+        }
+
+        return $rows;
+    }
+
+    /**
+     * Balanza de comprobacion (estructura de TrialBalanceService::generate).
      */
     private function trialBalanceToRows(array $data): array
     {
-        $rows = [];
-
-        $rows[] = ['Trial Balance'];
-        $rows[] = ['As of: ' . ($data['as_of_date'] ?? '')];
-        $rows[] = [];
-
-        $rows[] = ['Code', 'Account Name', 'Type', 'Debit Balance', 'Credit Balance'];
+        $rows = [
+            ['Balanza de comprobacion'],
+            ['Al: ' . ($data['asOfDate'] ?? '')],
+            ['Moneda: ' . ($data['currency'] ?? 'MXN')],
+            [],
+            ['Cuenta', 'Nombre', 'Tipo', 'Cargos', 'Abonos'],
+        ];
 
         foreach ($data['accounts'] ?? [] as $account) {
-            $rows[] = [
-                $account['code'],
-                $account['name'],
-                $account['account_type'],
-                $account['debit_balance'],
-                $account['credit_balance'],
-            ];
+            $rows[] = [$account['code'] ?? '', $account['name'] ?? '', $account['type'] ?? '', $account['debit'] ?? 0, $account['credit'] ?? 0];
         }
 
         $rows[] = [];
-        $rows[] = ['', '', 'TOTALS', $data['totals']['total_debits'], $data['totals']['total_credits']];
+        $rows[] = ['', '', 'TOTALES', $data['totals']['debit'] ?? 0, $data['totals']['credit'] ?? 0];
 
         return $rows;
     }
@@ -336,14 +365,14 @@ class ExportService
     {
         $rows = [];
 
-        $rows[] = ['Aging Report - ' . ($data['report_type'] ?? '')];
-        $rows[] = ['As of: ' . ($data['as_of_date'] ?? '')];
+        $rows[] = ['Antiguedad de saldos ' . ($data['report_type'] ?? '')];
+        $rows[] = ['Al: ' . ($data['as_of_date'] ?? '')];
         $rows[] = [];
 
         $entityKey = isset($data['customers']) ? 'customers' : 'suppliers';
         $nameKey = isset($data['customers']) ? 'customer_name' : 'supplier_name';
 
-        $rows[] = ['Name', 'Current', '1-30 Days', '31-60 Days', '61-90 Days', 'Over 90 Days', 'Total'];
+        $rows[] = ['Nombre', 'Vigente', '1-30 dias', '31-60 dias', '61-90 dias', 'Mas de 90 dias', 'Total'];
 
         foreach ($data[$entityKey] ?? [] as $entity) {
             $rows[] = [
@@ -381,11 +410,11 @@ class ExportService
     {
         $rows = [];
 
-        $rows[] = ['Sales by Customer'];
-        $rows[] = ['Period: ' . ($data['period']['start_date'] ?? '') . ' to ' . ($data['period']['end_date'] ?? '')];
+        $rows[] = ['Ventas por cliente'];
+        $rows[] = ['Periodo: ' . ($data['period']['start_date'] ?? '') . ' a ' . ($data['period']['end_date'] ?? '')];
         $rows[] = [];
 
-        $rows[] = ['Customer Name', 'Order Count', 'Total Sales'];
+        $rows[] = ['Cliente', 'Pedidos', 'Ventas'];
 
         foreach ($data['customers'] ?? [] as $customer) {
             $rows[] = [
@@ -411,20 +440,72 @@ class ExportService
     {
         $rows = [];
 
-        // Just convert the data array to rows
+        // Escalares del reporte (periodo, moneda, totales planos) arriba
         foreach ($data as $key => $value) {
-            if (is_array($value)) {
-                $rows[] = [$key];
-                foreach ($value as $subKey => $subValue) {
-                    if (is_scalar($subValue)) {
-                        $rows[] = ['', $subKey, $subValue];
+            if (is_scalar($value)) {
+                $rows[] = [$this->label((string) $key), $value];
+            }
+        }
+
+        // Cada lista de registros se vuelve una tabla con encabezados
+        foreach ($data as $key => $value) {
+            if (!is_array($value) || $value === []) {
+                continue;
+            }
+
+            if (array_is_list($value) && is_array($value[0])) {
+                $columns = array_keys(array_filter($value[0], fn ($v) => is_scalar($v) || $v === null));
+                $rows[] = [];
+                $rows[] = [$this->label((string) $key)];
+                $rows[] = array_map(fn ($c) => $this->label((string) $c), $columns);
+                foreach ($value as $record) {
+                    $rows[] = array_map(fn ($c) => is_scalar($record[$c] ?? null) ? $record[$c] : '', $columns);
+                }
+            } elseif (!array_is_list($value)) {
+                $scalars = array_filter($value, fn ($v) => is_scalar($v));
+                if ($scalars !== []) {
+                    $rows[] = [];
+                    $rows[] = [$this->label((string) $key)];
+                    foreach ($scalars as $subKey => $subValue) {
+                        $rows[] = [$this->label((string) $subKey), $subValue];
                     }
                 }
-            } else {
-                $rows[] = [$key, $value];
             }
         }
 
         return $rows;
+    }
+
+    /** Etiquetas en espanol de las llaves de los reportes (regla 9). */
+    private const LABELS = [
+        'average_cost' => 'Costo promedio', 'average_margin' => 'Margen promedio',
+        'average_order_value' => 'Ticket promedio', 'average_per_period' => 'Promedio por periodo',
+        'average_price' => 'Precio promedio', 'batch_id' => 'Id de lote', 'batch_number' => 'Lote',
+        'batches' => 'Lotes', 'category_name' => 'Categoria', 'cost' => 'Costo', 'currency' => 'Moneda',
+        'employee_id' => 'Id de vendedor', 'employee_name' => 'Vendedor', 'employees' => 'Vendedores',
+        'end_date' => 'Hasta', 'estimated_revenue' => 'Ingreso estimado', 'expiration_date' => 'Caducidad',
+        'gross_profit' => 'Utilidad bruta', 'group_by' => 'Agrupado por', 'is_expiring_soon' => 'Por caducar',
+        'lot_number' => 'Numero de lote', 'margin_percentage' => 'Margen %', 'month' => 'Mes',
+        'movement_count' => 'Movimientos', 'order_count' => 'Pedidos', 'period' => 'Periodo',
+        'product_code' => 'Codigo', 'product_id' => 'Id de producto', 'product_name' => 'Producto',
+        'product_sku' => 'SKU', 'products' => 'Productos', 'quantity_sold' => 'Cantidad vendida',
+        'report_type' => 'Tipo de reporte', 'revenue' => 'Ingresos', 'start_date' => 'Desde',
+        'subtotal' => 'Subtotal', 'summary' => 'Resumen', 'tax_total' => 'IVA', 'total_batches' => 'Total de lotes',
+        'total_cost' => 'Costo total', 'total_employees' => 'Total de vendedores', 'total_orders' => 'Total de pedidos',
+        'total_periods' => 'Periodos', 'total_products' => 'Total de productos', 'total_profit' => 'Utilidad total',
+        'total_quantity' => 'Cantidad total', 'total_quantity_sold' => 'Cantidad vendida total',
+        'total_revenue' => 'Ingresos totales', 'total_sales' => 'Ventas totales', 'trends' => 'Tendencia',
+        'unit_cost' => 'Costo unitario', 'week' => 'Semana', 'data' => 'Detalle', 'total' => 'Total',
+        'beginningCash' => 'Efectivo inicial', 'endingCash' => 'Efectivo final', 'netCashFlow' => 'Flujo neto',
+        'operatingActivities' => 'Actividades de operacion', 'investingActivities' => 'Actividades de inversion',
+        'financingActivities' => 'Actividades de financiamiento', 'startDate' => 'Desde', 'endDate' => 'Hasta',
+        'generatedAt' => 'Generado', 'name' => 'Nombre', 'code' => 'Codigo', 'amount' => 'Importe',
+        'description' => 'Descripcion', 'type' => 'Tipo', 'balance' => 'Saldo',
+    ];
+
+    /** Etiqueta en espanol de una llave; sin traduccion conocida, la llave legible. */
+    private function label(string $key): string
+    {
+        return self::LABELS[$key] ?? ucfirst(str_replace('_', ' ', $key));
     }
 }
