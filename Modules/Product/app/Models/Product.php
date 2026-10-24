@@ -2,6 +2,7 @@
 
 namespace Modules\Product\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -496,6 +497,19 @@ class Product extends Model
         $this->price = null;
         $this->compare_at_price = null;
         $this->is_on_sale = false;
+    }
+
+    /**
+     * Productos visibles en el catalogo publico: activos, publicados y con
+     * marca y categoria activas. Fuente unica para el listado publico y para
+     * los conteos por categoria.
+     */
+    public static function wherePubliclyVisible(Builder $query): Builder
+    {
+        return $query->where('is_active', true)
+            ->where('is_public', true)
+            ->whereHas('brand', fn($q) => $q->where('is_active', true))
+            ->whereHas('category', fn($q) => $q->where('is_active', true));
     }
 
     /**

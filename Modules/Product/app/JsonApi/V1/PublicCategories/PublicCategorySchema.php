@@ -13,7 +13,8 @@ use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Contracts\Paginator;
-use Modules\Product\Models\Category;
+use Modules\Product\Models\Product;
+use Modules\Product\Models\PublicCategory;
 
 /**
  * Read-only categories for the public catalog navigation (footer / menu).
@@ -23,14 +24,17 @@ use Modules\Product\Models\Category;
  */
 class PublicCategorySchema extends Schema
 {
-    public static string $model = Category::class;
+    public static string $model = PublicCategory::class;
 
     /**
-     * Only active categories are shown in the public navigation.
+     * Only active categories are shown in the public navigation. The count
+     * only includes products the public catalog actually shows: the model
+     * accessor counts every product, private ones included.
      */
     public function indexQuery(?Request $request, Builder $query): Builder
     {
-        return $query->where('is_active', true);
+        return $query->where('is_active', true)
+            ->withCount(['products as public_products_count' => fn($q) => Product::wherePubliclyVisible($q)]);
     }
 
     public function fields(): array
@@ -41,7 +45,10 @@ class PublicCategorySchema extends Schema
             Str::make('description'),
             Str::make('slug')->sortable(),
             Boolean::make('isActive', 'is_active')->sortable(),
-            Number::make('productsCount')->readOnly(),
+            Number::make('productsCount', 'public_products_count')->readOnly()->extractUsing(
+                fn(PublicCategory $category) => $category->public_products_count
+                    ?? Product::wherePubliclyVisible($category->products()->getQuery())->count()
+            ),
         ];
     }
 

@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
+/**
+ * @property int|null $public_products_count withCount de PublicCategorySchema
+ */
 class Category extends Model
 {
     use HasFactory, LogsActivity;

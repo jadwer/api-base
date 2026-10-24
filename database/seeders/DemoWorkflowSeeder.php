@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 use Modules\Contacts\Models\Contact;
 use Modules\Contacts\Models\ContactAddress;
 use Modules\Contacts\Models\ContactPerson;
@@ -231,6 +232,9 @@ class DemoWorkflowSeeder extends Seeder
         foreach ($catalog as [$sku, $name, $category, $brand, $unit, $price, $iva, $onSale]) {
             $existing = Product::where('sku', $sku)->first();
             if ($existing) {
+                if ($existing->img_path === null && ($image = $this->demoProductImage($sku))) {
+                    $existing->update(['img_path' => $image]);
+                }
                 $products[$sku] = $existing;
                 continue;
             }
@@ -251,7 +255,7 @@ class DemoWorkflowSeeder extends Seeder
                 'category_id' => $categories[$category]->id,
                 'brand_id' => $brands[$brand]->id,
                 'unit_id' => $unit->id,
-                'img_path' => null,
+                'img_path' => $this->demoProductImage($sku),
                 'datasheet_path' => null,
                 'is_active' => true,
                 'average_rating' => null,
@@ -277,6 +281,26 @@ class DemoWorkflowSeeder extends Seeder
      *
      * @return array<int, Contact>
      */
+    /**
+     * Foto de estudio del producto demo (database/seeders/assets/demo-products,
+     * generadas para la demo): se copia al disco publico y devuelve la ruta
+     * para img_path, o null si no hay foto para ese SKU.
+     */
+    private function demoProductImage(string $sku): ?string
+    {
+        $source = database_path("seeders/assets/demo-products/{$sku}.webp");
+        if (!is_file($source)) {
+            return null;
+        }
+
+        $path = "products/demo/{$sku}.webp";
+        if (!Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->put($path, file_get_contents($source));
+        }
+
+        return $path;
+    }
+
     private function seedContacts(User $vendedor): array
     {
         $companies = [
