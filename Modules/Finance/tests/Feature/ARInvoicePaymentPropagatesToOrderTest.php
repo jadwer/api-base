@@ -98,7 +98,11 @@ class ARInvoicePaymentPropagatesToOrderTest extends TestCase
         $this->registerPayment($invoice, 1160.00)->assertOk();
         $this->assertSame('paid', $order->fresh()->payment_status);
 
-        $application = PaymentApplication::where('ar_invoice_id', $invoice->id)->firstOrFail();
+        // Solo la del cobro recien registrado: la base de pruebas trae
+        // aplicaciones sembradas que pueden compartir ar_invoice_id.
+        $application = PaymentApplication::where('ar_invoice_id', $invoice->id)
+            ->whereHas('payment', fn ($q) => $q->where('contact_id', $invoice->contact_id))
+            ->latest('id')->firstOrFail();
         app(PaymentApplicationService::class)->unapplyPayment($application);
 
         $order->refresh();

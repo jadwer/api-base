@@ -61,6 +61,17 @@ class ARInvoiceRegisterPaymentTest extends TestCase
         ], $overrides));
     }
 
+    /**
+     * Aplicaciones de los cobros del cliente de la factura. La base de pruebas
+     * trae aplicaciones sembradas que pueden compartir ar_invoice_id con la
+     * factura recien creada (ids reciclados); contarlas todas era inestable.
+     */
+    private function applicationsOf(ARInvoice $invoice)
+    {
+        return PaymentApplication::where('ar_invoice_id', $invoice->id)
+            ->whereHas('payment', fn ($q) => $q->where('contact_id', $invoice->contact_id));
+    }
+
     private function registerPayment(ARInvoice $invoice, array $payload = [])
     {
         return $this->actingAs($this->getAdminUser(), 'sanctum')
@@ -172,7 +183,7 @@ class ARInvoiceRegisterPaymentTest extends TestCase
             ->assertJsonPath('invoice.status', 'paid');
 
         $this->assertEquals(0.00, $response->json('invoice.balance'));
-        $this->assertEquals(2, PaymentApplication::where('ar_invoice_id', $invoice->id)->count());
+        $this->assertEquals(2, $this->applicationsOf($invoice)->count());
     }
 
     public function test_overpayment_returns_422(): void
@@ -185,7 +196,7 @@ class ARInvoiceRegisterPaymentTest extends TestCase
         $response->assertJsonValidationErrors(['amount']);
 
         $this->assertEquals(300.00, $invoice->fresh()->paid_amount, 'El saldo no debe cambiar');
-        $this->assertDatabaseMissing('payment_applications', ['ar_invoice_id' => $invoice->id]);
+        $this->assertSame(0, $this->applicationsOf($invoice)->count());
     }
 
     public function test_invalid_forma_pago_returns_422(): void

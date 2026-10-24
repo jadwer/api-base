@@ -41,6 +41,20 @@ class JournalEntry extends Model
             ->dontSubmitEmptyLogs();
     }
 
+    /**
+     * La fecha contable que leen los estados financieros, KPIs y la
+     * conciliacion bancaria. Ningun flujo la llenaba y todo reporte salia en
+     * cero (24-10); si falta, es la fecha de la poliza.
+     */
+    protected static function booted(): void
+    {
+        static::saving(function (JournalEntry $entry) {
+            if ($entry->accounting_date === null && $entry->date !== null) {
+                $entry->accounting_date = $entry->date;
+            }
+        });
+    }
+
     protected $table = 'journal_entries';
     
     protected $fillable = [

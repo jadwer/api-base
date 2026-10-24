@@ -196,7 +196,8 @@ class DemoWorkflowSeeder extends Seeder
         ];
         $read = [
             'products', 'categories', 'brands', 'units', 'product-images', 'product-variants',
-            'stocks', 'warehouses', 'product-batches', 'branches', 'payment-methods',
+            'stocks', 'warehouses', 'warehouse-locations', 'inventory-movements', 'product-batches',
+            'branches', 'payment-methods',
             'ecommerce.currencies', 'ecommerce.coupons', 'discount-rules', 'commissions', 'crm.pipeline-stages',
             'crm.campaigns', 'sales.folio-sequences',
         ];
@@ -355,7 +356,9 @@ class DemoWorkflowSeeder extends Seeder
                 'name' => 'Comercial del Centro',
                 'legal_name' => 'Comercial del Centro SA de CV',
                 'tax_id' => 'CCE850101AB1',
-                'email' => 'compras@comercialcentro.demo',
+                // Carla Cliente (cliente@demo.mx) compra para esta empresa: su portal
+                // (Mis pedidos, Mis cotizaciones) resuelve el contacto por correo.
+                'email' => 'cliente@demo.mx',
                 'credit_limit' => 100000.00,
                 'current_credit' => 24500.00,
                 'payment_terms' => 30,
