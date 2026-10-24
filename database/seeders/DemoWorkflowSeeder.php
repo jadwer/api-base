@@ -199,7 +199,7 @@ class DemoWorkflowSeeder extends Seeder
             'stocks', 'warehouses', 'warehouse-locations', 'inventory-movements', 'product-batches',
             'branches', 'payment-methods',
             'ecommerce.currencies', 'ecommerce.coupons', 'discount-rules', 'commissions', 'crm.pipeline-stages',
-            'crm.campaigns', 'sales.folio-sequences',
+            'crm.campaigns',
         ];
 
         $permissions = Permission::where('guard_name', 'api')
