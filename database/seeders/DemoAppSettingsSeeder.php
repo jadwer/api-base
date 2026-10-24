@@ -37,7 +37,9 @@ class DemoAppSettingsSeeder extends Seeder
         AppSetting::set('company.name', 'Tu Marca');
         AppSetting::set('mail.system_name', 'Tu Marca');
         // Logo de LWM (Gabino 23-10): la demo la vende LWM, no Atomo.
-        AppSetting::set('company.logo_path', '/images/brand/lwm-logo.webp');
+        foreach (['company.logo_path', 'company.logo_path_alt', 'company.logo_path_footer'] as $key) {
+            AppSetting::set($key, '/images/brand/lwm-logo.webp');
+        }
         AppSetting::set('company.email', 'direccion@laborwasserdemexico.com');
         $this->command->info('  - Demo AppSettings created');
     }

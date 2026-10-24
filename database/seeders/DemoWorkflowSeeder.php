@@ -197,7 +197,7 @@ class DemoWorkflowSeeder extends Seeder
         $read = [
             'products', 'categories', 'brands', 'units', 'product-images', 'product-variants',
             'stocks', 'warehouses', 'product-batches', 'branches', 'payment-methods',
-            'ecommerce.currencies', 'discount-rules', 'commissions', 'crm.pipeline-stages',
+            'ecommerce.currencies', 'ecommerce.coupons', 'discount-rules', 'commissions', 'crm.pipeline-stages',
             'crm.campaigns', 'sales.folio-sequences',
         ];
 
