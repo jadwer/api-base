@@ -9,6 +9,7 @@ use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Fields\Boolean;
 use LaravelJsonApi\Eloquent\Fields\Number;
+use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Filters\Where;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
@@ -49,6 +50,9 @@ class PublicCategorySchema extends Schema
                 fn(PublicCategory $category) => $category->public_products_count
                     ?? Product::wherePubliclyVisible($category->products()->getQuery())->count()
             ),
+            // updatedAt alimenta el lastmod del sitemap de las tiendas.
+            DateTime::make('createdAt', 'created_at')->readOnly(),
+            DateTime::make('updatedAt', 'updated_at')->readOnly(),
         ];
     }
 

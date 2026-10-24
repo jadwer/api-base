@@ -58,6 +58,14 @@ return Application::configure(basePath: dirname(__DIR__))
                 return response()->json(['message' => 'La ruta solicitada no existe.'], 404);
             }
 
+            // Route binding de controladores propios (no JSON:API): Laravel
+            // responde "No query results for model [...]" en ingles (regla 9).
+            // Las rutas JSON:API (con resource_type) conservan su propio 404.
+            if ($request->is('api/*') && $e->getPrevious() instanceof \Illuminate\Database\Eloquent\ModelNotFoundException
+                && ($request->route()?->defaults[\LaravelJsonApi\Laravel\Routing\Route::RESOURCE_TYPE] ?? null) === null) {
+                return response()->json(['message' => 'El registro solicitado no existe.'], 404);
+            }
+
             return null;
         });
 

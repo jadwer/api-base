@@ -24,8 +24,8 @@ use Modules\AppConfig\Models\AppSetting;
  *   php artisan db:seed --class=Database\\Seeders\\DemoAppSettingsSeeder
  *
  * Delegates to AppSettingSeeder and then applies the white-label demo
- * identity: "Tu Marca" with a generic logo and LWM contact email (LWM sells
- * the portal), and no invented phone.
+ * identity: "Tu Marca" with a generic logo, the seller's contact email from
+ * DEMO_CONTACT_EMAIL (.env of the demo) and no invented phone.
  */
 class DemoAppSettingsSeeder extends Seeder
 {
@@ -36,11 +36,11 @@ class DemoAppSettingsSeeder extends Seeder
 
         AppSetting::set('company.name', 'Tu Marca');
         AppSetting::set('mail.system_name', 'Tu Marca');
-        // Logo generico de "Tu Marca" (gpt, 23-10); el favicon es el de LWM.
+        // Logo generico de "Tu Marca" (gpt, 23-10).
         foreach (['company.logo_path', 'company.logo_path_alt', 'company.logo_path_footer'] as $key) {
             AppSetting::set($key, '/images/brand/logo.png');
         }
-        AppSetting::set('company.email', 'direccion@laborwasserdemexico.com');
+        AppSetting::set('company.email', (string) env('DEMO_CONTACT_EMAIL', ''));
         $this->command->info('  - Demo AppSettings created');
     }
 }

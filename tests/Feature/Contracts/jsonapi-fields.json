@@ -39,7 +39,6 @@
         "sortOrder"
     ],
     "public:public-categories": [
-        "@products",
         "createdAt",
         "description",
         "isActive",

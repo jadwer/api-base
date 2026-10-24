@@ -21,4 +21,12 @@ class SpanishRouteNotFoundTest extends TestCase
             ->assertNotFound()
             ->assertJsonMissing(['message' => 'La ruta solicitada no existe.']);
     }
+
+    public function test_missing_model_in_custom_controller_answers_in_spanish(): void
+    {
+        $this->actingAs($this->getAdminUser(), 'sanctum')
+            ->patchJson('/api/v1/cfdi-invoices/free/999999', [])
+            ->assertNotFound()
+            ->assertJson(['message' => 'El registro solicitado no existe.']);
+    }
 }
