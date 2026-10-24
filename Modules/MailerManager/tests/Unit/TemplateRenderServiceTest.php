@@ -76,7 +76,7 @@ class TemplateRenderServiceTest extends TestCase
         // regardless of .env APP_NAME or seeder run order.
         \Modules\AppConfig\Models\AppSetting::create([
             'key' => 'company.name',
-            'value' => 'Demo Company',
+            'value' => 'Tu Empresa',
             'type' => 'string',
             'group' => 'company',
             'label' => 'Company Name',
@@ -91,7 +91,7 @@ class TemplateRenderServiceTest extends TestCase
         $result = $this->service->renderPreview($template);
 
         $this->assertStringContainsString('Juan Perez', $result);
-        $this->assertStringContainsString('Demo Company', $result);
+        $this->assertStringContainsString('Tu Empresa', $result);
     }
 
     public function test_render_preview_with_custom_sample_data(): void

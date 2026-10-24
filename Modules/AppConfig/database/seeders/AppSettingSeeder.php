@@ -23,19 +23,19 @@ class AppSettingSeeder extends Seeder
     {
         $settings = [
             // Company
-            ['key' => 'company.name', 'value' => 'Demo Company', 'type' => 'string', 'group' => 'company', 'label' => 'Nombre de la empresa'],
-            ['key' => 'company.phone', 'value' => '+52 555 555 5555', 'type' => 'string', 'group' => 'company', 'label' => 'Telefono principal'],
+            ['key' => 'company.name', 'value' => 'Tu Empresa', 'type' => 'string', 'group' => 'company', 'label' => 'Nombre de la empresa'],
+            ['key' => 'company.phone', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Telefono principal'],
             ['key' => 'company.phone_secondary', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Telefono secundario'],
             ['key' => 'company.phone_tertiary', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Telefono terciario'],
             ['key' => 'company.whatsapp_number', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'WhatsApp (numero internacional)'],
             ['key' => 'company.whatsapp_display', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'WhatsApp (texto visible)'],
             ['key' => 'company.whatsapp_message', 'value' => 'Hola, me interesa recibir más información sobre sus productos', 'type' => 'string', 'group' => 'company', 'label' => 'WhatsApp (mensaje prellenado del widget)'],
-            ['key' => 'company.email', 'value' => 'info@example.com', 'type' => 'string', 'group' => 'company', 'label' => 'Email de contacto'],
+            ['key' => 'company.email', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Email de contacto'],
             ['key' => 'company.address', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Direccion'],
             ['key' => 'company.city', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Ciudad'],
             ['key' => 'company.state', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Estado'],
             ['key' => 'company.postal_code', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Codigo postal'],
-            ['key' => 'company.website', 'value' => 'https://example.com', 'type' => 'string', 'group' => 'company', 'label' => 'Sitio web'],
+            ['key' => 'company.website', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Sitio web'],
             ['key' => 'company.logo_path', 'value' => '/images/brand/logo.png', 'type' => 'string', 'group' => 'company', 'label' => 'Logo principal'],
             ['key' => 'company.logo_path_alt', 'value' => '/images/brand/logo-alt.png', 'type' => 'string', 'group' => 'company', 'label' => 'Logo alternativo (header)'],
             ['key' => 'company.logo_path_footer', 'value' => '/images/brand/logo-footer.png', 'type' => 'string', 'group' => 'company', 'label' => 'Logo footer'],
@@ -55,7 +55,7 @@ class AppSettingSeeder extends Seeder
 
             // Mail / Email del sistema
             ['key' => 'mail.system_email', 'value' => 'info@example.com', 'type' => 'string', 'group' => 'mail', 'label' => 'Email del sistema (remitente)', 'description' => 'Direccion de correo que aparece como remitente en todos los emails del sistema'],
-            ['key' => 'mail.system_name', 'value' => 'Demo Company', 'type' => 'string', 'group' => 'mail', 'label' => 'Nombre del remitente'],
+            ['key' => 'mail.system_name', 'value' => 'Tu Empresa', 'type' => 'string', 'group' => 'mail', 'label' => 'Nombre del remitente'],
             ['key' => 'mail.admin_notification_email', 'value' => 'admin@example.com', 'type' => 'string', 'group' => 'mail', 'label' => 'Email para notificaciones administrativas', 'description' => 'Email donde llegan avisos de nuevas cotizaciones, ordenes, etc.'],
             ['key' => 'mail.smtp_host', 'value' => '', 'type' => 'string', 'group' => 'mail', 'label' => 'SMTP Host'],
             ['key' => 'mail.smtp_port', 'value' => '465', 'type' => 'string', 'group' => 'mail', 'label' => 'SMTP Puerto'],

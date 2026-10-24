@@ -65,7 +65,7 @@ class PaymentConfirmationMail extends Mailable
             'payment_date' => $this->transaction->created_at?->format('Y-m-d H:i') ?? '',
             'transaction_id' => $this->transaction->transaction_id ?? $this->transaction->id ?? '',
             'currency' => $this->orderSummary['currency'] ?? 'MXN',
-            'company_name' => app(\Modules\AppConfig\Services\AppSettingResolver::class)->get('company.name', config('app.name', 'Demo Company')),
+            'company_name' => app(\Modules\AppConfig\Services\AppSettingResolver::class)->get('company.name', config('app.name', 'Tu Empresa')),
         ];
     }
 

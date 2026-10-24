@@ -19,12 +19,14 @@ use Modules\Sales\Models\QuoteItem;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Models\SalesOrderItem;
 use Modules\User\Models\User;
+use Modules\PermissionManager\Models\Permission;
+use Modules\PermissionManager\Models\Role;
 
 /**
  * DemoWorkflowSeeder - Neutral demo data for the public product demo.
  *
  * Runs AFTER CleanDatabaseSeeder (roles, catalogs, folios) and
- * DemoAppSettingsSeeder (Demo Company branding). Creates persona users,
+ * DemoAppSettingsSeeder (marca "Tu Marca"). Creates persona users,
  * a small generic catalog, company contacts with different credit setups,
  * and in-flight sales flows so a prospect can walk quote -> order ->
  * invoice in about five minutes.
@@ -35,6 +37,8 @@ use Modules\User\Models\User;
 class DemoWorkflowSeeder extends Seeder
 {
     private const DEMO_PASSWORD = 'Demo2026!';
+
+    private const SALES_ROLE = 'ventas';
 
     public function run(): void
     {
@@ -142,9 +146,11 @@ class DemoWorkflowSeeder extends Seeder
      */
     private function seedPersonaUsers(): array
     {
+        $this->seedSalesRole();
+
         $personas = [
             'admin' => ['email' => 'admin@demo.mx', 'name' => 'Ana Administradora', 'role' => 'admin'],
-            'vendedor' => ['email' => 'vendedor@demo.mx', 'name' => 'Víctor Vendedor', 'role' => 'tech'],
+            'vendedor' => ['email' => 'vendedor@demo.mx', 'name' => 'Víctor Vendedor', 'role' => self::SALES_ROLE],
             'cliente' => ['email' => 'cliente@demo.mx', 'name' => 'Carla Cliente', 'role' => 'customer'],
         ];
 
@@ -172,6 +178,47 @@ class DemoWorkflowSeeder extends Seeder
         $this->command->info('  - 3 persona users (admin/vendedor/cliente @demo.mx)');
 
         return $users;
+    }
+
+    /**
+     * Rol "ventas" de la demo (Gabino 23-10): el vendedor opera el ciclo
+     * comercial completo (cotizar, pedir, remisionar, clientes y CRM) y
+     * consulta catalogo, existencias, comisiones y reportes de venta. Antes
+     * usaba 'tech', que solo lee, y no podia crear una cotizacion.
+     */
+    private function seedSalesRole(): void
+    {
+        $operate = [
+            'quotes', 'quote-items', 'sales-orders', 'sales-order-items',
+            'remissions', 'remission-items', 'shipments', 'shipment-items', 'backorders',
+            'contacts', 'contact-people', 'contact-addresses', 'contact-documents', 'customers',
+            'crm.leads', 'crm.opportunities', 'crm.activities', 'crm.quotes', 'crm.quote-items',
+        ];
+        $read = [
+            'products', 'categories', 'brands', 'units', 'product-images', 'product-variants',
+            'stocks', 'warehouses', 'product-batches', 'branches', 'payment-methods',
+            'ecommerce.currencies', 'discount-rules', 'commissions', 'crm.pipeline-stages',
+            'crm.campaigns', 'sales.folio-sequences',
+        ];
+
+        $permissions = Permission::where('guard_name', 'api')
+            ->where(function ($q) use ($operate, $read) {
+                foreach ($operate as $resource) {
+                    $q->orWhere('name', 'like', "{$resource}.%");
+                }
+                foreach ($read as $resource) {
+                    $q->orWhereIn('name', ["{$resource}.index", "{$resource}.show"]);
+                }
+                $q->orWhere('name', 'like', 'profile.%')
+                    ->orWhere('name', 'like', 'reports.sales-%');
+            })
+            ->get()
+            // 'quotes.%' tambien atrapa 'quotes-x'; solo el recurso exacto
+            ->filter(fn (Permission $p) => in_array(substr($p->name, 0, (int) strrpos($p->name, '.')), array_merge($operate, $read), true)
+                || str_starts_with($p->name, 'profile.') || str_starts_with($p->name, 'reports.sales-'));
+
+        Role::firstOrCreate(['name' => self::SALES_ROLE, 'guard_name' => 'api'], ['description' => 'Ventas (demo)'])
+            ->syncPermissions($permissions);
     }
 
     /**

@@ -36,4 +36,25 @@ class DemoWorkflowSeederTest extends TestCase
         $this->assertEquals(12, (float) Stock::where('product_id', $equipo->id)->sum('quantity'));
         $this->assertEquals(400, (float) Stock::where('product_id', Product::where('sku', 'DEMO-015')->value('id'))->sum('quantity'));
     }
+
+    public function test_vendedor_opera_ventas_pero_no_administra(): void
+    {
+        \Modules\Inventory\Models\Warehouse::firstOrCreate(['code' => 'WH-001'], ['name' => 'Almacén Principal', 'slug' => 'almacen-principal', 'is_active' => true]);
+        foreach (['quotes.store', 'quotes.update', 'quotes-x.store', 'products.index', 'products.store', 'users.store', 'profile.show'] as $name) {
+            \Modules\PermissionManager\Models\Permission::firstOrCreate(['name' => $name, 'guard_name' => 'api']);
+        }
+        Storage::fake('public');
+
+        $this->seed(DemoWorkflowSeeder::class);
+
+        $vendedor = \Modules\User\Models\User::where('email', 'vendedor@demo.mx')->firstOrFail();
+        $this->assertTrue($vendedor->hasRole('ventas'));
+        $this->assertTrue($vendedor->can('quotes.store'));
+        $this->assertTrue($vendedor->can('quotes.update'));
+        $this->assertTrue($vendedor->can('products.index'));
+        $this->assertTrue($vendedor->can('profile.show'));
+        $this->assertFalse($vendedor->can('products.store'));
+        $this->assertFalse($vendedor->can('users.store'));
+        $this->assertFalse($vendedor->can('quotes-x.store'));
+    }
 }

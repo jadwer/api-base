@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Log;
  * Pipeline:
  *   1. migrate:fresh --force
  *   2. CleanDatabaseSeeder      (roles, users, essential catalogs)
- *   3. DemoAppSettingsSeeder    (Demo Company branding placeholders)
+ *   3. DemoAppSettingsSeeder    (marca generica "Tu Marca")
  *   4. DemoWorkflowSeeder       (persona users, products, contacts, quote/order flows)
  */
 class DemoResetCommand extends Command

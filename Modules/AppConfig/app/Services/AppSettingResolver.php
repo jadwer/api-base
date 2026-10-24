@@ -22,7 +22,7 @@ use Modules\AppConfig\Models\AppSetting;
  * Usage in a Mailable / Notification:
  *
  *     $companyName = app(AppSettingResolver::class)
- *         ->get('company.name', config('app.name', 'Demo Company'));
+ *         ->get('company.name', config('app.name', 'Tu Empresa'));
  *
  * Two-tier fallback intentional: (1) DB AppSetting, (2) Laravel config,
  * (3) generic placeholder. No tenant-specific string ever appears in code.

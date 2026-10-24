@@ -96,7 +96,7 @@ class AppSettingController extends Controller
             $fromName = config('mail.from.name');
 
             $companyName = app(\Modules\AppConfig\Services\AppSettingResolver::class)
-                ->get('company.name', config('app.name', 'Demo Company'));
+                ->get('company.name', config('app.name', 'Tu Empresa'));
 
             Mail::raw(
                 "Este es un correo de prueba del sistema {$companyName}.\n\n"

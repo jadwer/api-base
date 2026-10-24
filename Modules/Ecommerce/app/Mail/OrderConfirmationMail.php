@@ -101,7 +101,7 @@ class OrderConfirmationMail extends Mailable
             'total' => number_format($this->orderSummary['total'] ?? 0, 2),
             'currency' => $this->orderSummary['currency'] ?? 'MXN',
             'shipping_address' => $shippingAddress,
-            'company_name' => app(\Modules\AppConfig\Services\AppSettingResolver::class)->get('company.name', config('app.name', 'Demo Company')),
+            'company_name' => app(\Modules\AppConfig\Services\AppSettingResolver::class)->get('company.name', config('app.name', 'Tu Empresa')),
         ];
     }
 }

@@ -23,7 +23,7 @@ class SystemEmailFactory extends Factory
             ],
             'sample_data' => [
                 'customer_name' => 'Juan Perez',
-                'company_name' => 'Demo Company',
+                'company_name' => 'Tu Empresa',
             ],
             'email_template_id' => null,
             'is_enabled' => true,

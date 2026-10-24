@@ -79,7 +79,7 @@ class MailConfigService
             // Fallback
         }
 
-        return config('mail.from.name', config('app.name', 'Demo Company'));
+        return config('mail.from.name', config('app.name', 'Tu Empresa'));
     }
 
     /**

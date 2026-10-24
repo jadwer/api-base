@@ -135,7 +135,7 @@ class TemplateRenderService
         return [
             'customer_name' => 'Juan Perez',
             'customer_email' => 'juan@example.com',
-            'company_name' => $resolver->get('company.name', config('app.name', 'Demo Company')),
+            'company_name' => $resolver->get('company.name', config('app.name', 'Tu Empresa')),
             'company_email' => $resolver->get('company.email', 'info@example.com'),
             'quote_number' => 'COT-26000001',
             'order_number' => 'OV-26000001',

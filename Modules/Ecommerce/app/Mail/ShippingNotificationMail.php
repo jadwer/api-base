@@ -77,7 +77,7 @@ class ShippingNotificationMail extends Mailable
             'carrier' => $this->trackingInfo['carrier'] ?? '',
             'estimated_delivery' => $this->trackingInfo['estimated_delivery'] ?? '',
             'shipping_address' => $shippingAddress,
-            'company_name' => app(\Modules\AppConfig\Services\AppSettingResolver::class)->get('company.name', config('app.name', 'Demo Company')),
+            'company_name' => app(\Modules\AppConfig\Services\AppSettingResolver::class)->get('company.name', config('app.name', 'Tu Empresa')),
         ];
     }
 }
