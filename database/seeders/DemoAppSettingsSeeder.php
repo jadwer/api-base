@@ -25,7 +25,8 @@ use Modules\AppConfig\Models\AppSetting;
  *
  * Delegates to AppSettingSeeder and then applies the white-label demo
  * identity: "Tu Marca" with a generic logo, the seller's contact email from
- * DEMO_CONTACT_EMAIL (.env of the demo) and no invented phone.
+ * DEMO_CONTACT_EMAIL (.env of the demo, via config('app.demo_contact_email'))
+ * and no invented phone.
  */
 class DemoAppSettingsSeeder extends Seeder
 {
@@ -40,7 +41,7 @@ class DemoAppSettingsSeeder extends Seeder
         foreach (['company.logo_path', 'company.logo_path_alt', 'company.logo_path_footer'] as $key) {
             AppSetting::set($key, '/images/brand/logo.png');
         }
-        AppSetting::set('company.email', (string) env('DEMO_CONTACT_EMAIL', ''));
+        AppSetting::set('company.email', (string) config('app.demo_contact_email'));
         $this->command->info('  - Demo AppSettings created');
     }
 }

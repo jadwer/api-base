@@ -43,6 +43,9 @@ return [
 
     'demo_mode' => env('APP_DEMO_MODE', false),
 
+    // Correo de quien vende el portal en la demo marca blanca (DemoAppSettingsSeeder).
+    'demo_contact_email' => env('DEMO_CONTACT_EMAIL', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode
