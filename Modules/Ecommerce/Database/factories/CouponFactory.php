@@ -13,7 +13,10 @@ class CouponFactory extends Factory
     {
         $type = $this->faker->randomElement(['percentage', 'fixed_amount', 'free_shipping']);
         $maxUses = $this->faker->optional(0.7)->numberBetween(10, 1000); // Algunos ilimitados
-        $usedCount = $maxUses ? $this->faker->numberBetween(0, min($maxUses, 50)) : $this->faker->numberBetween(0, 100);
+        // Nunca agotado por omision: un cupon con usos agotados es un caso que
+        // cada prueba fija a proposito (antes salia al azar y volvia inestables
+        // las pruebas de aplicar cupon).
+        $usedCount = $maxUses ? $this->faker->numberBetween(0, min($maxUses - 1, 50)) : $this->faker->numberBetween(0, 100);
 
         return [
             'code' => strtoupper($this->faker->unique()->lexify('????##')),
@@ -50,9 +53,10 @@ class CouponFactory extends Factory
             'starts_at' => $this->faker->optional(0.8)->dateTimeBetween('-7 days', 'now'),
             'expires_at' => $this->faker->dateTimeBetween('+3 days', '+60 days'),
             'is_active' => $this->faker->boolean(85), // Más cupones activos
-            'customer_ids' => $this->faker->optional(0.3)->randomElements([1, 2, 3, 4, 5, 6, 7, 8], rand(1, 3)),
-            'product_ids' => $this->faker->optional(0.4)->randomElements([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], rand(1, 5)),
-            'category_ids' => $this->faker->optional(0.5)->randomElements([1, 2, 3, 4, 5], rand(1, 2))
+            // Sin restriccion por cliente, producto o categoria por omision.
+            'customer_ids' => null,
+            'product_ids' => null,
+            'category_ids' => null,
         ];
     }
 

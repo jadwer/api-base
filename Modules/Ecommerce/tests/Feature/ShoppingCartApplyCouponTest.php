@@ -28,6 +28,24 @@ class ShoppingCartApplyCouponTest extends TestCase
         ])->id;
     }
 
+    /**
+     * Cupon sin restricciones aleatorias de la factory (usos agotados,
+     * clientes, productos o categorias permitidos), que volvian inestables
+     * las pruebas. Cada prueba fija lo que necesita.
+     */
+    private function makeCoupon(array $attributes): Coupon
+    {
+        return Coupon::factory()->create(array_merge([
+            'max_uses' => null,
+            'used_count' => 0,
+            'starts_at' => null,
+            'max_amount' => null,
+            'customer_ids' => null,
+            'product_ids' => null,
+            'category_ids' => null,
+        ], $attributes));
+    }
+
     public function test_user_can_apply_valid_coupon_to_own_cart(): void
     {
         $user = $this->getCustomerUser();
@@ -48,7 +66,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'total' => 500,
         ]);
 
-        $coupon = Coupon::factory()->create([
+        $coupon = $this->makeCoupon([
             'code' => 'DISCOUNT20',
             'type' => 'percentage',
             'value' => 20,
@@ -99,7 +117,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             ]);
         });
 
-        Coupon::factory()->create([
+        $this->makeCoupon([
             'code' => 'PERCENT10',
             'type' => 'percentage',
             'value' => 10,
@@ -145,7 +163,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'total' => 100,
         ]);
 
-        Coupon::factory()->create([
+        $this->makeCoupon([
             'code' => 'FIXED25',
             'type' => 'fixed_amount',
             'value' => 25,
@@ -192,7 +210,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'status' => 'active',
         ]);
 
-        Coupon::factory()->create([
+        $this->makeCoupon([
             'code' => 'INACTIVE',
             'is_active' => false,
         ]);
@@ -215,7 +233,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'status' => 'active',
         ]);
 
-        Coupon::factory()->create([
+        $this->makeCoupon([
             'code' => 'EXPIRED',
             'is_active' => true,
             'expires_at' => now()->subDay(),
@@ -242,7 +260,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'status' => 'active',
         ]);
 
-        Coupon::factory()->create([
+        $this->makeCoupon([
             'code' => 'FUTURE',
             'is_active' => true,
             'starts_at' => now()->addDay(),
@@ -269,7 +287,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'status' => 'active',
         ]);
 
-        Coupon::factory()->create([
+        $this->makeCoupon([
             'code' => 'LIMITED',
             'is_active' => true,
             'max_uses' => 10,
@@ -307,7 +325,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'total' => 50,
         ]);
 
-        Coupon::factory()->create([
+        $this->makeCoupon([
             'code' => 'MINAMOUNT',
             'is_active' => true,
             'min_amount' => 100,
@@ -347,7 +365,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'status' => 'active',
         ]);
 
-        Coupon::factory()->create([
+        $this->makeCoupon([
             'code' => 'VALID',
             'is_active' => true,
         ]);
@@ -380,7 +398,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'total' => 100,
         ]);
 
-        Coupon::factory()->create([
+        $this->makeCoupon([
             'code' => 'ADMIN_APPLY',
             'is_active' => true,
             'type' => 'percentage',
@@ -417,7 +435,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             ]);
         });
 
-        Coupon::factory()->create([
+        $this->makeCoupon([
             'code' => 'CAPPED',
             'type' => 'percentage',
             'value' => 50, // 50% = 500
@@ -455,7 +473,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'total' => 500,
         ]);
 
-        Coupon::factory()->create([
+        $this->makeCoupon([
             'code' => 'MXN_ONLY',
             'type' => 'percentage',
             'value' => 10,
@@ -493,7 +511,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'total' => 500,
         ]);
 
-        Coupon::factory()->create([
+        $this->makeCoupon([
             'code' => 'USD_ONLY',
             'type' => 'fixed_amount',
             'value' => 10,
@@ -534,7 +552,7 @@ class ShoppingCartApplyCouponTest extends TestCase
             'total' => 100,
         ]);
 
-        Coupon::factory()->create([
+        $this->makeCoupon([
             'code' => 'UNIVERSAL',
             'type' => 'percentage',
             'value' => 5,

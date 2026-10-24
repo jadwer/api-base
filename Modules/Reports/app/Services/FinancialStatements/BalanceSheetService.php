@@ -23,6 +23,26 @@ class BalanceSheetService
         $liabilities = $this->getAccountsByType('liability', $asOfDate, $currency);
         $equity = $this->getAccountsByType('equity', $asOfDate, $currency);
 
+        // Cuentas complementarias (depreciacion acumulada, estimaciones): de
+        // naturaleza acreedora, restan al activo.
+        $contra = $this->getAccountsByType('contra', $asOfDate, $currency)
+            ->map(fn ($a) => array_merge($a, ['account_type' => 'asset', 'balance' => -$a['balance']]));
+        $assets = $assets->concat($contra)->values();
+
+        // Sin polizas de cierre, el resultado del ejercicio (ingresos menos
+        // gastos a la fecha) forma parte del capital; sin el, el balance no
+        // cuadra (24-10).
+        $netIncome = $this->calculateTotal($this->getAccountsByType('revenue', $asOfDate, $currency))
+            - $this->calculateTotal($this->getAccountsByType('expense', $asOfDate, $currency));
+        if (abs($netIncome) > 0.01) {
+            $equity = $equity->push([
+                'code' => '3',
+                'name' => 'Resultado del ejercicio',
+                'account_type' => 'equity',
+                'balance' => $netIncome,
+            ])->values();
+        }
+
         // Calculate totals
         $totalAssets = $this->calculateTotal($assets);
         $totalLiabilities = $this->calculateTotal($liabilities);
@@ -155,21 +175,14 @@ class BalanceSheetService
      */
     protected function getCategoryName(string $prefix, string $type): string
     {
+        // Catalogo de cuentas: 1 activo, 2 pasivo, 3 capital.
         $categories = [
-            'asset' => [
-                '1' => 'Activo Circulante',
-                '2' => 'Activo Fijo',
-                '3' => 'Activo Diferido',
-            ],
-            'liability' => [
-                '4' => 'Pasivo Circulante',
-                '5' => 'Pasivo a Largo Plazo',
-            ],
-            'equity' => [
-                '6' => 'Capital Contable',
-            ],
+            'asset' => ['1' => 'Activo'],
+            'liability' => ['2' => 'Pasivo'],
+            'equity' => ['3' => 'Capital contable'],
         ];
+        $fallback = ['asset' => 'Activo', 'liability' => 'Pasivo', 'equity' => 'Capital contable'];
 
-        return $categories[$type][$prefix] ?? ucfirst($type);
+        return $categories[$type][$prefix] ?? $fallback[$type] ?? $type;
     }
 }

@@ -49,4 +49,22 @@ class JournalEntryAccountingDateTest extends TestCase
         $this->assertEquals(500, $balances['1191'] ?? null);
         $this->assertEquals(500, $balances['3191'] ?? null);
     }
+
+    public function test_balance_sheet_includes_net_income_and_balances(): void
+    {
+        $bank = Account::factory()->create(['code' => '1192', 'account_type' => 'asset', 'nature' => 'debit', 'status' => 'active']);
+        $sales = Account::factory()->create(['code' => '4192', 'account_type' => 'revenue', 'nature' => 'credit', 'status' => 'active']);
+        $entry = JournalEntry::factory()->create(['date' => '2026-10-20', 'status' => 'posted', 'total_debit' => 1160, 'total_credit' => 1160]);
+        JournalLine::factory()->create(['journal_entry_id' => $entry->id, 'account_id' => $bank->id, 'debit' => 1160, 'credit' => 0]);
+        JournalLine::factory()->create(['journal_entry_id' => $entry->id, 'account_id' => $sales->id, 'debit' => 0, 'credit' => 1160]);
+
+        $report = app(BalanceSheetService::class)->generate(Carbon::parse('2026-10-24'));
+
+        // Toda poliza cuadra, asi que el balance debe cuadrar con el resultado
+        // del ejercicio dentro del capital.
+        $this->assertTrue($report['balanced']);
+        $names = collect($report['equity'])->flatMap(fn ($g) => $g['accounts'])->pluck('name');
+        $this->assertContains('Resultado del ejercicio', $names);
+        $this->assertNotContains('Liability', collect($report['liabilities'])->pluck('category'));
+    }
 }
