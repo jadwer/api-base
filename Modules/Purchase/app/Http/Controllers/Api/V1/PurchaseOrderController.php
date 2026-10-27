@@ -206,6 +206,15 @@ class PurchaseOrderController extends Controller
 
             $purchaseOrder->refresh();
 
+            // Hallazgo 11 (26-10, decision de Gabino): el presupuesto solo avisa.
+            $budget = app(\Modules\Purchase\Services\BudgetControlService::class)->validateBudget($purchaseOrder);
+            $budgetWarnings = array_values(array_filter(array_merge(
+                $budget['warnings'] ?? [],
+                collect($budget['budgets'] ?? [])->where('allowed', false)
+                    ->map(fn ($b) => "Presupuesto '{$b['budget_name']}': " . ($b['reason'] ?? 'se excede el monto disponible.'))
+                    ->all()
+            )));
+
             return response()->json([
                 'data' => [
                     'id' => (string) $purchaseOrder->id,
@@ -221,8 +230,9 @@ class PurchaseOrderController extends Controller
                 ],
                 'meta' => [
                     'message' => $allApproved
-                        ? 'Purchase order has been fully approved.'
-                        : 'Your approval has been recorded. Additional approvals are required.',
+                        ? 'Orden de compra aprobada.'
+                        : 'Tu aprobacion quedo registrada; faltan aprobaciones de otro nivel.',
+                    'budget_warnings' => $budgetWarnings,
                 ]
             ], 200);
 
@@ -314,7 +324,20 @@ class PurchaseOrderController extends Controller
                 'errors' => [[
                     'status' => '422',
                     'title' => 'Estado no válido',
-                    'detail' => "Solo se pueden recibir ordenes en estado 'pending' o 'approved'. Estado actual: {$purchaseOrder->status}",
+                    'detail' => 'Solo se pueden recibir ordenes pendientes o aprobadas.',
+                ]]
+            ], 422);
+        }
+
+        // Hallazgo 9 (26-10): una OC que requiere aprobacion no se recibe sin ella.
+        if (in_array($purchaseOrder->approval_status, ['pending', 'rejected'], true)) {
+            return response()->json([
+                'errors' => [[
+                    'status' => '422',
+                    'title' => 'Aprobacion pendiente',
+                    'detail' => $purchaseOrder->approval_status === 'rejected'
+                        ? 'La orden de compra fue rechazada; no se puede recibir.'
+                        : 'La orden de compra requiere aprobacion antes de recibirse.',
                 ]]
             ], 422);
         }

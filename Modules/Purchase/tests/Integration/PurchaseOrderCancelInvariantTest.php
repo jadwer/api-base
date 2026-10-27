@@ -289,6 +289,35 @@ class PurchaseOrderCancelInvariantTest extends TestCase
      * Cancelar una OC pending (nunca recibida) NO toca stock, no crea reversas
      * y no deja rastro en Finance (no hubo entrada que revertir).
      */
+    /**
+     * Hallazgo 1 (26-10): una OC recibida en PARTE queda approved; cancelarla
+     * debe regresar al almacen solo lo que entro, sin APInvoice (no se creo).
+     */
+    public function test_cancelling_partially_received_order_reverts_received_quantity(): void
+    {
+        Sanctum::actingAs($this->getAdminUser());
+
+        [$po, $warehouse, $lines] = $this->makeApprovedOrder([['quantity' => 10, 'unit_price' => 50.00]]);
+        $product = $lines[0]['product'];
+        $baseline = $this->stockQty($product->id, $warehouse->id);
+
+        $this->postJson("/api/v1/purchase-orders/{$po->id}/receive", [
+            'items' => [['id' => $lines[0]['item']->id, 'quantity' => 4]],
+        ])->assertStatus(200);
+        $this->assertNotEquals('received', $po->fresh()->status);
+        $this->assertEquals($baseline + 4, $this->stockQty($product->id, $warehouse->id));
+
+        $this->postJson("/api/v1/purchase-orders/{$po->id}/cancel")->assertStatus(200);
+
+        $this->assertEquals($baseline, $this->stockQty($product->id, $warehouse->id));
+        $this->assertDatabaseHas('inventory_movements', [
+            'reference_type' => 'purchase_cancel',
+            'reference_id' => $po->id,
+            'product_id' => $product->id,
+        ]);
+        $this->assertDatabaseMissing('ap_invoices', ['purchase_order_id' => $po->id]);
+    }
+
     public function test_cancelling_pending_order_touches_nothing(): void
     {
         Sanctum::actingAs($this->getAdminUser());

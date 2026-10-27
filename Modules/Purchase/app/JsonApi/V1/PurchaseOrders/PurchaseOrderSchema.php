@@ -50,7 +50,8 @@ class PurchaseOrderSchema extends Schema
             Str::make('notes'),
 
             // Approval workflow fields
-            Str::make('approvalStatus', 'approval_status')->sortable(),
+            // Solo lectura: lo cambian los endpoints de aprobacion (hallazgo 2).
+            Str::make('approvalStatus', 'approval_status')->sortable()->readOnly(),
             DateTime::make('approvedAt', 'approved_at')->sortable()->readOnly(),
             Number::make('approvedById', 'approved_by_id')->readOnly(),
             Str::make('financialStatus', 'financial_status')->sortable(),

@@ -273,6 +273,6 @@ class EventDrivenIntegrationTest extends TestCase
 
         $apInvoice = APInvoice::find($purchaseOrder->ap_invoice_id);
         $this->assertNotNull($apInvoice);
-        $this->assertStringContainsString('Auto-generated from Purchase Order', $apInvoice->notes ?? '');
+        $this->assertStringContainsString('Generada automaticamente desde la orden de compra', $apInvoice->notes ?? '');
     }
 }

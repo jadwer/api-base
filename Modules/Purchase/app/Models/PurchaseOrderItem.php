@@ -14,11 +14,13 @@ use Modules\Purchase\Database\Factories\PurchaseOrderItemFactory;
 /**
  * @property int $id
  * @property int $purchase_order_id
+ * @property int $product_id
  * @property float $quantity
  * @property float $unit_price
  * @property float|null $discount
  * @property float|null $subtotal
  * @property float|null $total
+ * @property float|null $received_quantity
  * @property-read PurchaseOrder $purchaseOrder
  */
 class PurchaseOrderItem extends Model

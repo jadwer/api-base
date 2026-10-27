@@ -59,7 +59,7 @@ class PurchaseOrderApprovalService
                 'role' => 'procurement_manager',
                 'permission' => 'purchase.approve-tier1',
                 'tier' => 1,
-                'reason' => "Amount exceeds " . number_format($tier1Threshold),
+                'reason' => 'El monto excede ' . number_format($tier1Threshold),
             ]);
         }
 
@@ -69,7 +69,7 @@ class PurchaseOrderApprovalService
                 'role' => 'finance_director',
                 'permission' => 'purchase.approve-tier2',
                 'tier' => 2,
-                'reason' => "Amount exceeds " . number_format($tier2Threshold),
+                'reason' => 'El monto excede ' . number_format($tier2Threshold),
             ]);
         }
 
@@ -79,7 +79,7 @@ class PurchaseOrderApprovalService
                 'role' => 'cfo',
                 'permission' => 'purchase.approve-tier3',
                 'tier' => 3,
-                'reason' => "Amount exceeds " . number_format($tier3Threshold),
+                'reason' => 'El monto excede ' . number_format($tier3Threshold),
             ]);
         }
 
@@ -89,7 +89,7 @@ class PurchaseOrderApprovalService
                 'role' => 'procurement',
                 'permission' => 'purchase.approve-new-supplier',
                 'tier' => 1,
-                'reason' => 'First-time supplier',
+                'reason' => 'Proveedor nuevo',
             ]);
         }
 
@@ -124,23 +124,36 @@ class PurchaseOrderApprovalService
                 return true;
             }
 
-            // Get current approvals
+            // Hallazgo 10 (26-10): antes se contaban aprobaciones, asi que el mismo
+            // usuario podia aprobar N veces y cualquier usuario cubria cualquier
+            // nivel. Ahora cada aprobacion cubre los niveles pendientes que el
+            // usuario tiene permiso de aprobar (una sola vez por usuario).
             $metadata = $order->metadata ?? [];
             $approvals = $metadata['approvals'] ?? [];
 
-            // Add new approval
+            if (collect($approvals)->contains(fn ($a) => (int) ($a['user_id'] ?? 0) === $userId)) {
+                throw new \Exception('Ya aprobaste esta orden de compra.');
+            }
+
+            $required = $this->getRequiredApprovers($order)->pluck('permission')->unique()->values();
+            $covered = collect($approvals)->flatMap(fn ($a) => $a['covers'] ?? [])->unique();
+            $pending = $required->diff($covered)->values();
+
+            $user = \Modules\User\Models\User::find($userId);
+            $mine = $pending->filter(fn ($permission) => $user && $user->can($permission))->values();
+            if ($mine->isEmpty()) {
+                throw new \Exception('No tienes el nivel de aprobacion que falta en esta orden de compra.');
+            }
+
             $approvals[] = [
                 'user_id' => $userId,
                 'approved_at' => now()->toDateTimeString(),
                 'notes' => $notes,
+                'covers' => $mine->all(),
             ];
-
-            // Update metadata
             $metadata['approvals'] = $approvals;
 
-            // Check if all required approvers have approved
-            $requiredApprovers = $this->getRequiredApprovers($order);
-            $allApproved = count($approvals) >= $requiredApprovers->count();
+            $allApproved = $pending->diff($mine)->isEmpty();
 
             if ($allApproved) {
                 $order->update([
@@ -183,11 +196,16 @@ class PurchaseOrderApprovalService
             'reason' => $reason,
         ];
 
+        $previousStatus = $order->status;
         $order->update([
             'approval_status' => 'rejected',
             'status' => 'cancelled',
             'metadata' => $metadata,
         ]);
+
+        // Hallazgo 10: el rechazo es una cancelacion; los listeners revierten lo
+        // que hubiera entrado (recepcion parcial) igual que el endpoint cancel.
+        event(new \Modules\Purchase\Events\PurchaseOrderCancelled($order->fresh(), $previousStatus));
 
         return true;
     }

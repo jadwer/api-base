@@ -24,6 +24,7 @@ use Modules\Sales\Models\FolioSequence;
  * @property string $order_number
  * @property string $status
  * @property float|null $total_amount
+ * @property string|null $approval_status
  */
 class PurchaseOrder extends Model
 {
@@ -118,7 +119,7 @@ class PurchaseOrder extends Model
                 // Simple check during creation based on amount threshold only
                 // Full approval check (including first-time supplier, high-value items)
                 // should be done explicitly via requiresApproval() method
-                $threshold = config('purchase.approval_threshold', 50000);
+                $threshold = config('purchase.approval.thresholds.tier_1', 50000);
 
                 if ($order->total_amount > $threshold) {
                     $order->approval_status = 'pending';
@@ -201,6 +202,28 @@ class PurchaseOrder extends Model
         $this->forceFill([
             'total_amount' => round((float) $this->purchaseOrderItems()->sum('total'), 2),
         ])->save();
+
+        $this->refreshApprovalRequirement();
+    }
+
+    /**
+     * Hallazgo 10 (26-10): la OC nacia con total 0 y quedaba not_required para
+     * siempre. Mientras siga pendiente y sin decision, la necesidad de aprobacion
+     * se reevalua con el total real y todas las reglas (monto, proveedor nuevo,
+     * partida de alto valor). Nunca revoca una aprobacion ya dada.
+     */
+    public function refreshApprovalRequirement(): void
+    {
+        if ($this->status !== 'pending' || in_array($this->approval_status, ['approved', 'rejected'], true)) {
+            return;
+        }
+
+        $this->unsetRelation('purchaseOrderItems');
+        $required = app(\Modules\Purchase\Services\PurchaseOrderApprovalService::class)->requiresApproval($this);
+        $status = $required ? 'pending' : 'not_required';
+        if ($this->approval_status !== $status) {
+            $this->forceFill(['approval_status' => $status])->save();
+        }
     }
 
     public function purchaseOrderItems(): HasMany
@@ -296,6 +319,15 @@ class PurchaseOrder extends Model
     public function receive(array $items): void
     {
         \DB::transaction(function () use ($items) {
+            // Hallazgo 9 (26-10): dos recepciones simultaneas leian el mismo
+            // received_quantity. Se bloquea la OC y cada partida mientras se recibe.
+            $locked = static::whereKey($this->id)->lockForUpdate()->first();
+            if (!$locked || !in_array($locked->status, ['pending', 'approved'], true)) {
+                throw new \Exception('La orden de compra ya no se puede recibir (su estado cambio).');
+            }
+
+            $tolerancePercent = (float) config('purchase.receiving_tolerance_percent', 5);
+
             $warehouseId = $this->warehouse_id
                 ?? \Modules\Inventory\Models\Warehouse::where('is_active', true)->value('id')
                 ?? \Modules\Inventory\Models\Warehouse::query()->value('id');
@@ -303,7 +335,7 @@ class PurchaseOrder extends Model
             $inventoryService = app(\Modules\Inventory\Services\InventoryMovementService::class);
 
             foreach ($items as $itemData) {
-                $item = $this->purchaseOrderItems()->find($itemData['id']);
+                $item = $this->purchaseOrderItems()->lockForUpdate()->find($itemData['id']);
 
                 if (!$item) {
                     throw new \Exception("La partida {$itemData['id']} no pertenece a la orden de compra.");
@@ -314,14 +346,15 @@ class PurchaseOrder extends Model
                     continue;
                 }
 
-                $newReceived = $item->received_quantity + $receivedNow;
-                $tolerance = $item->quantity * 1.05; // +5% tolerance
+                $newReceived = (float) $item->received_quantity + $receivedNow;
+                // Tolerancia de sobre-recepcion desde la config (antes fija en 5%).
+                $tolerance = (float) $item->quantity * (1 + $tolerancePercent / 100);
 
-                if ($newReceived > $tolerance) {
+                if ($newReceived > $tolerance + 1e-9) {
                     throw new \Exception(
-                        "Over-receiving beyond 5% tolerance for item {$item->id}. " .
-                        "Ordered: {$item->quantity}, Already received: {$item->received_quantity}, " .
-                        "Attempting to receive: {$itemData['quantity']}, Total: {$newReceived}, Max allowed: {$tolerance}"
+                        "La partida {$item->id} excede la tolerancia de recepcion ({$tolerancePercent}%): "
+                        . "ordenado {$item->quantity}, ya recibido {$item->received_quantity}, "
+                        . "se intenta recibir {$receivedNow}; maximo permitido {$tolerance}."
                     );
                 }
 

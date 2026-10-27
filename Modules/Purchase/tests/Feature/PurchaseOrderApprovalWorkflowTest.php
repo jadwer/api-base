@@ -28,6 +28,18 @@ class PurchaseOrderApprovalWorkflowTest extends TestCase
     /**
      * Test small orders do not require approval (< 50,000)
      */
+    /** Usuario con los niveles de aprobacion indicados (hallazgo 10, 26-10). */
+    private function approver(string ...$permissions): User
+    {
+        $user = User::factory()->create();
+        foreach ($permissions as $name) {
+            \Modules\PermissionManager\Models\Permission::firstOrCreate(['name' => $name, 'guard_name' => 'api']);
+            $user->givePermissionTo($name);
+        }
+
+        return $user;
+    }
+
     public function test_small_orders_do_not_require_approval(): void
     {
         // Arrange
@@ -124,7 +136,7 @@ class PurchaseOrderApprovalWorkflowTest extends TestCase
             'total_amount' => 100000.00, // Tier 1 only
         ]);
 
-        $user = User::factory()->create();
+        $user = $this->approver('purchase.approve-tier1');
 
         // Act
         $requiredApprovers = $this->service->getRequiredApprovers($order);
@@ -163,8 +175,8 @@ class PurchaseOrderApprovalWorkflowTest extends TestCase
             'total_amount' => 500000.00, // Requires Tier 1 + Tier 2
         ]);
 
-        $procurementManager = User::factory()->create();
-        $financeDirector = User::factory()->create();
+        $procurementManager = $this->approver('purchase.approve-tier1');
+        $financeDirector = $this->approver('purchase.approve-tier2');
 
         // Act
         $requiredApprovers = $this->service->getRequiredApprovers($order);
@@ -210,9 +222,9 @@ class PurchaseOrderApprovalWorkflowTest extends TestCase
             'total_amount' => 1500000.00, // Requires all 3 tiers
         ]);
 
-        $user1 = User::factory()->create();
-        $user2 = User::factory()->create();
-        $user3 = User::factory()->create();
+        $user1 = $this->approver('purchase.approve-tier1');
+        $user2 = $this->approver('purchase.approve-tier2');
+        $user3 = $this->approver('purchase.approve-tier3');
 
         // Act
         $requiredApprovers = $this->service->getRequiredApprovers($order);
@@ -333,8 +345,8 @@ class PurchaseOrderApprovalWorkflowTest extends TestCase
             'total_amount' => 300000.00, // Requires 2 approvals
         ]);
 
-        $user1 = User::factory()->create();
-        $user2 = User::factory()->create();
+        $user1 = $this->approver('purchase.approve-tier1');
+        $user2 = $this->approver('purchase.approve-tier2');
 
         // Act
         $this->service->approve($order, $user1->id, 'First approval');
@@ -410,7 +422,7 @@ class PurchaseOrderApprovalWorkflowTest extends TestCase
             'total_amount' => 80000.00,
         ]);
 
-        $user = User::factory()->create();
+        $user = $this->approver('purchase.approve-tier1');
 
         // Act & Assert
         $this->assertTrue($order->requiresApproval());
@@ -428,6 +440,41 @@ class PurchaseOrderApprovalWorkflowTest extends TestCase
     /**
      * Test pending approvals count
      */
+    /** Hallazgo 10: el mismo usuario no aprueba dos veces. */
+    public function test_same_user_cannot_approve_twice(): void
+    {
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+        PurchaseOrder::factory()->create(['contact_id' => $contact->id, 'status' => 'received', 'total_amount' => 5000.00]);
+        $order = PurchaseOrder::factory()->create(['contact_id' => $contact->id, 'status' => 'pending', 'total_amount' => 300000.00]);
+        $user = $this->approver('purchase.approve-tier1');
+
+        $this->assertFalse($this->service->approve($order, $user->id));
+        $this->expectExceptionMessage('Ya aprobaste esta orden de compra.');
+        $this->service->approve($order->fresh(), $user->id);
+    }
+
+    /** Hallazgo 10: sin el nivel requerido no se aprueba. */
+    public function test_user_without_required_tier_cannot_approve(): void
+    {
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+        PurchaseOrder::factory()->create(['contact_id' => $contact->id, 'status' => 'received', 'total_amount' => 5000.00]);
+        $order = PurchaseOrder::factory()->create(['contact_id' => $contact->id, 'status' => 'pending', 'total_amount' => 80000.00]);
+
+        $this->expectExceptionMessage('No tienes el nivel de aprobacion');
+        $this->service->approve($order, User::factory()->create()->id);
+    }
+
+    /** Un usuario con todos los niveles aprueba de una vez. */
+    public function test_user_with_all_tiers_approves_in_one_step(): void
+    {
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+        $order = PurchaseOrder::factory()->create(['contact_id' => $contact->id, 'status' => 'pending', 'total_amount' => 300000.00]);
+        $boss = $this->approver('purchase.approve-tier1', 'purchase.approve-tier2', 'purchase.approve-new-supplier');
+
+        $this->assertTrue($this->service->approve($order, $boss->id));
+        $this->assertEquals('approved', $order->fresh()->status);
+    }
+
     public function test_pending_approvals_count(): void
     {
         // Arrange

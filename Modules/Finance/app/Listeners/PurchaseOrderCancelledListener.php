@@ -56,7 +56,7 @@ class PurchaseOrderCancelledListener
             $apInvoice->update([
                 'status' => 'voided',
                 'voided_at' => now(),
-                'void_reason' => "Purchase Order #{$purchaseOrder->order_number} cancelled",
+                'void_reason' => "Orden de compra #{$purchaseOrder->order_number} cancelada",
             ]);
 
             // Revertir el asiento GL si estaba posteado.
@@ -65,7 +65,7 @@ class PurchaseOrderCancelledListener
                 if ($journalEntry && $journalEntry->status === 'posted') {
                     $this->accountingService->reverseJournalEntry(
                         $journalEntry,
-                        "Purchase Order #{$purchaseOrder->order_number} cancelled"
+                        "Orden de compra #{$purchaseOrder->order_number} cancelada"
                     );
                 }
             }

@@ -15,7 +15,9 @@ use Illuminate\Support\Facades\Log;
  * entrada de stock generando un movimiento 'exit' compensatorio por cada item. Antes
  * no existia -> cancelar una OC recibida dejaba stock fantasma para siempre.
  *
- * Solo actua si previousStatus == 'received' (solo entonces hubo entrada que revertir).
+ * Revierte lo recibido de cada partida (received_quantity), tambien con recepcion
+ * PARCIAL en pending/approved (antes solo actuaba si previousStatus == 'received' y
+ * la entrada parcial quedaba como stock fantasma; hallazgo 1, 26-10).
  * Idempotente por item via idempotency_key "purchase_cancel:{poId}:item:{itemId}" (R1).
  */
 class PurchaseOrderCancelledListener
@@ -28,10 +30,7 @@ class PurchaseOrderCancelledListener
     {
         $purchaseOrder = $event->purchaseOrder;
 
-        // Solo hubo entrada de stock si la OC estuvo recibida.
-        if ($event->previousStatus !== 'received') {
-            return;
-        }
+        $wasReceived = $event->previousStatus === 'received';
 
         // R1: idempotencia por item via idempotency_key (UNIQUE en BD) en createExit;
         // el guard por orden anterior (SELECT exists) tenia ventana de carrera y
@@ -52,9 +51,19 @@ class PurchaseOrderCancelledListener
             return;
         }
 
-        foreach ($purchaseOrder->purchaseOrderItems as $item) {
-            // Revertir solo lo recibido (received_quantity), no lo ordenado.
-            $qty = (float) ($item->received_quantity ?? $item->quantity);
+        $items = $purchaseOrder->purchaseOrderItems->filter(
+            fn ($item) => $item instanceof \Modules\Purchase\Models\PurchaseOrderItem
+                && ((float) $item->received_quantity > 0 || ($wasReceived && $item->received_quantity === null))
+        );
+        if ($items->isEmpty()) {
+            return; // nada entro al almacen
+        }
+
+        foreach ($items as $item) {
+            /** @var \Modules\Purchase\Models\PurchaseOrderItem $item */
+            // Revertir solo lo recibido; una OC 'received' anterior al registro de
+            // received_quantity (null) se recibio completa.
+            $qty = $item->received_quantity !== null ? (float) $item->received_quantity : (float) $item->quantity;
             if ($qty <= 0) {
                 continue;
             }

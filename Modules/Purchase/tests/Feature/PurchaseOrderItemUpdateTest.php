@@ -120,6 +120,22 @@ class PurchaseOrderItemUpdateTest extends TestCase
         ]);
     }
 
+    /** Hallazgo 2 (26-10): lo recibido solo lo mueve el endpoint de recepcion. */
+    public function test_received_quantity_cannot_be_patched()
+    {
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $item = $this->createPurchaseOrderItem();
+        $item->purchaseOrder->update(['status' => 'approved']);
+
+        $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('purchase-order-items')
+            ->withData(['type' => 'purchase-order-items', 'id' => (string) $item->id, 'attributes' => ['quantity' => 6, 'receivedQuantity' => 5]])
+            ->patch("/api/v1/purchase-order-items/{$item->id}");
+
+        $this->assertEquals(0, (float) $item->fresh()->received_quantity);
+    }
+
     public function test_unauthorized_user_cannot_update_purchase_order_item()
     {
         $item = $this->createPurchaseOrderItem();

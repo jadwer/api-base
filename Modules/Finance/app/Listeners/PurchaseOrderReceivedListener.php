@@ -87,6 +87,8 @@ class PurchaseOrderReceivedListener
             $qty = (float) ($item->received_quantity ?: $item->quantity);
             return $qty * $item->unit_price;
         });
+        // Compras sin columnas de IVA por partida (decision de la contadora): el
+        // impuesto de la factura del proveedor se captura en CxP.
         $taxAmount = $purchaseOrder->purchaseOrderItems->sum('tax_amount');
         $totalAmount = $subtotal + $taxAmount;
 
@@ -100,7 +102,7 @@ class PurchaseOrderReceivedListener
             'subtotal' => $subtotal,
             'taxAmount' => $taxAmount,
             'totalAmount' => $totalAmount,
-            'notes' => "Auto-generated from Purchase Order #{$purchaseOrder->order_number}",
+            'notes' => "Generada automaticamente desde la orden de compra #{$purchaseOrder->order_number}",
             'metadata' => [
                 'source' => 'purchase_order',
                 'purchase_order_id' => $purchaseOrder->id,

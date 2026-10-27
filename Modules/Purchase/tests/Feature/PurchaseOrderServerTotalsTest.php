@@ -34,6 +34,27 @@ class PurchaseOrderServerTotalsTest extends TestCase
         $this->assertNotEmpty($order->order_number);
     }
 
+    /** Hallazgo 10: la necesidad de aprobacion se evalua con el total real. */
+    public function test_approval_is_evaluated_with_the_real_total(): void
+    {
+        $supplier = \Modules\Contacts\Models\Contact::factory()->create(['is_supplier' => true]);
+        // Proveedor con historial: solo cuenta el monto.
+        PurchaseOrder::factory()->create(['contact_id' => $supplier->id, 'status' => 'received', 'total_amount' => 10]);
+        $product = \Modules\Product\Models\Product::factory()->create();
+
+        $response = $this->actingAs($this->getAdminUser(), 'sanctum')->postJson('/api/v1/purchase-orders/with-items', [
+            'contact_id' => $supplier->id,
+            'order_date' => now()->toDateString(),
+            'status' => 'pending',
+            'items' => [['product_id' => $product->id, 'quantity' => 10, 'unit_price' => 6000, 'discount' => 0]],
+        ]);
+
+        $response->assertCreated();
+        $order = PurchaseOrder::findOrFail($response->json('data.id'));
+        $this->assertEqualsWithDelta(60000, (float) $order->total_amount, 0.01);
+        $this->assertSame('pending', $order->approval_status);
+    }
+
     public function test_items_of_received_orders_are_locked(): void
     {
         $order = PurchaseOrder::factory()->create(['status' => 'received']);

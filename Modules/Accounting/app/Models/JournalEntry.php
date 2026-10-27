@@ -8,6 +8,10 @@ use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
+/**
+ * @property \Carbon\Carbon|string|null $date
+ * @property \Carbon\Carbon|string|null $accounting_date
+ */
 class JournalEntry extends Model
 {
     use HasFactory, HasPermissions, LogsActivity;

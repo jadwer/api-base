@@ -44,7 +44,9 @@ class PurchaseOrderItemSchema extends Schema
             
             // Numeric fields
             Number::make('quantity')->sortable(),
-            Number::make('receivedQuantity', 'received_quantity')->sortable(),
+            // Solo lectura: lo mueve el endpoint de recepcion junto con el stock
+            // (hallazgo 2: editarlo por PATCH no movia inventario).
+            Number::make('receivedQuantity', 'received_quantity')->sortable()->readOnly(),
             Number::make('unitPrice', 'unit_price')->sortable(),
             Number::make('discount')->sortable(),
             Number::make('subtotal')->sortable(),
