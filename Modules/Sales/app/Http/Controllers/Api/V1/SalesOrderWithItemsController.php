@@ -58,7 +58,9 @@ class SalesOrderWithItemsController extends Controller
                 'contact_id' => $data['contact_id'],
                 'order_number' => $data['order_number'] ?? FolioSequence::getNextFolio('sales_order'),
                 'order_date' => $data['order_date'],
-                'status' => $data['status'],
+                // Surtido F4: confirmado se alcanza por la maquina de estados (aparta
+                // existencia y genera backorder del faltante), nunca al crear.
+                'status' => $data['status'] === 'confirmed' ? 'draft' : $data['status'],
                 'notes' => $data['notes'] ?? null,
                 'branch_id' => $data['branch_id'] ?? null,
                 'customer_po_number' => $data['customer_po_number'] ?? null,
@@ -78,6 +80,11 @@ class SalesOrderWithItemsController extends Controller
             }
 
             $order->recalculateTotals();
+
+            if ($data['status'] === 'confirmed') {
+                $order = app(\Modules\Sales\Services\OrderStatusService::class)
+                    ->updateStatus($order->fresh(), 'confirmed', 'Confirmado al crear el pedido');
+            }
 
             return $order->fresh();
         });

@@ -151,4 +151,22 @@ class BackorderFulfillmentRulesTest extends TestCase
         $this->assertSame(1, Remission::count());
         $this->assertEquals(4, (float) Remission::first()->items->first()->quantity);
     }
+
+    public function test_order_created_as_confirmed_goes_through_the_state_machine(): void
+    {
+        $contact = Contact::factory()->customer()->create(['status' => 'active']);
+
+        $response = $this->actingAs($this->getAdminUser(), 'sanctum')
+            ->postJson('/api/v1/sales-orders/with-items', [
+                'contact_id' => $contact->id,
+                'order_date' => now()->toDateString(),
+                'status' => 'confirmed',
+                'items' => [['product_id' => $this->product->id, 'quantity' => 10, 'unit_price' => 100]],
+            ])->assertStatus(201);
+
+        $order = SalesOrder::find($response->json('data.id'));
+        $this->assertSame('confirmed', $order->status);
+        $this->assertEquals(6, (float) $this->stock->fresh()->reserved_quantity);
+        $this->assertEquals(4, (float) Backorder::where('sales_order_id', $order->id)->value('backorder_quantity'));
+    }
 }

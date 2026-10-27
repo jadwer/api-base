@@ -415,7 +415,9 @@ class QuoteController extends Controller
                 'contact_id' => $quote->contact_id,
                 'quote_id' => $quote->id,
                 'order_number' => FolioSequence::getNextFolio('sales_order'),
-                'status' => $orderType === 'direct_sale' ? 'confirmed' : 'pending',
+                // Surtido F4: la venta directa nace en borrador y se confirma por la
+                // maquina de estados (aparta existencia); antes nacia confirmada sin apartar.
+                'status' => $orderType === 'direct_sale' ? 'draft' : 'pending',
                 'order_type' => $orderType,
                 'customer_po_number' => $validated['customer_po_number'] ?? null,
                 'acceptance_channel' => $orderType === 'order'
@@ -452,6 +454,11 @@ class QuoteController extends Controller
                         'original_unit_price' => $quoteItem->unit_price,
                     ],
                 ]);
+            }
+
+            if ($orderType === 'direct_sale') {
+                $order = app(\Modules\Sales\Services\OrderStatusService::class)
+                    ->updateStatus($order, 'confirmed', "Venta directa desde la cotizacion {$quote->quote_number}");
             }
 
             // Update quote status
