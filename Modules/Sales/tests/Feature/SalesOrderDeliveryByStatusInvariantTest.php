@@ -101,19 +101,26 @@ class SalesOrderDeliveryByStatusInvariantTest extends TestCase
             'contact_id' => $customer->id,
             'status' => 'shipped',
         ]);
-        SalesOrderItem::factory()->create([
+        $item = SalesOrderItem::factory()->create([
             'sales_order_id' => $order->id,
             'product_id' => $product->id,
             'quantity' => 4,
         ]);
-        Remission::factory()->create([
+        $remission = Remission::factory()->create([
             'sales_order_id' => $order->id,
             'status' => 'delivered',
+        ]);
+        \Modules\Sales\Models\RemissionItem::factory()->create([
+            'remission_id' => $remission->id,
+            'sales_order_item_id' => $item->id,
+            'product_id' => $product->id,
+            'quantity' => 4,
         ]);
 
         app(OrderStatusService::class)->updateStatus($order, 'delivered');
 
-        // El stock NO se toca por el camino de status: la remision es la duena.
+        // El stock NO se toca por el camino de status: la remision ya saco las 4
+        // (surtido F3: sale solo lo que no salio por remision ni envio).
         $this->assertEquals(10.0, (float) Stock::where('product_id', $product->id)->sum('quantity'));
         $this->assertEquals(
             0,
@@ -122,5 +129,54 @@ class SalesOrderDeliveryByStatusInvariantTest extends TestCase
 
         // El evento de facturacion SI se dispara igual (la factura no depende del stock).
         Event::assertDispatched(SalesOrderDelivered::class);
+    }
+
+    public function test_delivering_via_status_only_discounts_what_remissions_did_not_cover(): void
+    {
+        Event::fake([SalesOrderDelivered::class]);
+
+        $warehouse = Warehouse::factory()->create();
+        $product = \Modules\Product\Models\Product::factory()->create();
+        Stock::factory()->create([
+            'product_id' => $product->id,
+            'warehouse_id' => $warehouse->id,
+            'warehouse_location_id' => null,
+            'quantity' => 10,
+            'reserved_quantity' => 0,
+        ]);
+        $order = SalesOrder::factory()->create([
+            'contact_id' => Contact::factory()->customer()->create()->id,
+            'status' => 'shipped',
+        ]);
+        $item = SalesOrderItem::factory()->create([
+            'sales_order_id' => $order->id,
+            'product_id' => $product->id,
+            'quantity' => 4,
+        ]);
+        $remission = Remission::factory()->create(['sales_order_id' => $order->id, 'status' => 'delivered']);
+        \Modules\Sales\Models\RemissionItem::factory()->create([
+            'remission_id' => $remission->id,
+            'sales_order_item_id' => $item->id,
+            'product_id' => $product->id,
+            'quantity' => 1,
+        ]);
+
+        app(OrderStatusService::class)->updateStatus($order, 'delivered');
+
+        $exit = InventoryMovement::where('reference_type', 'sales_order')->where('reference_id', $order->id)->first();
+        $this->assertNotNull($exit);
+        $this->assertEquals(3.0, (float) $exit->quantity);
+    }
+
+    public function test_manual_delivery_is_rejected_while_a_remission_is_open(): void
+    {
+        $order = SalesOrder::factory()->create([
+            'contact_id' => Contact::factory()->customer()->create()->id,
+            'status' => 'shipped',
+        ]);
+        Remission::factory()->create(['sales_order_id' => $order->id, 'status' => 'printed']);
+
+        $this->expectExceptionMessage('El pedido tiene remisiones o envíos abiertos');
+        app(OrderStatusService::class)->updateStatus($order, 'delivered');
     }
 }

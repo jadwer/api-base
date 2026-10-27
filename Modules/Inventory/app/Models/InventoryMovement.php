@@ -129,6 +129,7 @@ class InventoryMovement extends Model
      */
     public const QUALITY_EXEMPT_REFERENCE_TYPES = [
         'remission',
+        'shipment',
         'sales_order',
         'sales_cancel',
         'purchase_cancel',

@@ -35,7 +35,9 @@ class ShipmentSchema extends Schema
 
             // Basic fields
             Str::make('shipmentNumber', 'shipment_number')->sortable(),
-            Str::make('status')->sortable(),
+            // Surtido F3 (punto 8): el status cambia solo por ship/deliver/cancel,
+            // que son los que mueven inventario.
+            Str::make('status')->sortable()->readOnly(),
             Str::make('carrier')->sortable(),
             Str::make('trackingNumber', 'tracking_number'),
             Str::make('trackingUrl', 'tracking_url'),

@@ -230,7 +230,7 @@ class BackorderUpdateTest extends TestCase
         $response->assertStatus(404);
     }
 
-    public function test_cannot_update_status_to_invalid_value(): void
+    public function test_status_cannot_be_patched(): void
     {
         $user = $this->getAdminUser();
         $backorder = $this->createBackorder();
@@ -249,7 +249,9 @@ class BackorderUpdateTest extends TestCase
             ->withData($data)
             ->patch('/api/v1/backorders/' . $backorder->id);
 
-        $response->assertStatus(422);
+        // Surtido F3 (punto 8): status solo por fulfill/cancel; el PATCH lo ignora.
+        $response->assertOk();
+        $this->assertSame($backorder->status, $backorder->fresh()->status);
     }
 
     public function test_cannot_update_priority_to_invalid_value(): void

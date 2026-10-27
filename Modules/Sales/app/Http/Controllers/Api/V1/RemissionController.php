@@ -11,8 +11,11 @@ use LaravelJsonApi\Laravel\Http\Controllers\Actions;
 use Modules\Sales\Models\Remission;
 use Modules\Sales\Models\RemissionItem;
 use Modules\Sales\Models\SalesOrder;
+use Modules\Sales\Models\SalesOrderItem;
+use Modules\Sales\Services\OrderStatusService;
 use Modules\Sales\Services\RemissionPDFGenerator;
-use Modules\Inventory\Models\Stock;
+use Modules\Sales\Services\RemissionService;
+use Modules\Sales\Exceptions\RemissionRuleException;
 use Modules\Inventory\Services\InventoryMovementService;
 
 /**
@@ -55,82 +58,34 @@ class RemissionController extends Controller
             'internal_notes' => 'nullable|string|max:2000',
         ]);
 
-        $order = SalesOrder::with('items.product')->findOrFail($request->input('sales_order_id'));
+        return DB::transaction(function () use ($request) {
+            // Lock del pedido: dos remisiones simultaneas no pueden surtir el mismo pendiente.
+            $order = SalesOrder::with('items.product')->lockForUpdate()->findOrFail($request->input('sales_order_id'));
 
-        // Validate stock availability
-        $insufficientItems = [];
-        foreach ($request->input('items') as $itemData) {
-            $orderItem = $order->items->firstWhere('id', $itemData['sales_order_item_id']);
-            if ($orderItem) {
-                $available = Stock::where('product_id', $orderItem->product_id)
-                    ->sum('available_quantity');
-                if ($available < $itemData['quantity']) {
-                    $insufficientItems[] = [
-                        'product_id' => $orderItem->product_id,
-                        'product_name' => $orderItem->product?->name ?? 'Producto',
-                        'sku' => $orderItem->product?->sku ?? '',
-                        'required' => (float) $itemData['quantity'],
-                        'available' => (float) $available,
-                        'deficit' => (float) ($itemData['quantity'] - $available),
-                    ];
-                }
-            }
-        }
-
-        if (!empty($insufficientItems)) {
-            return response()->json([
-                'error' => 'Stock insuficiente para generar la remision',
-                'insufficient_items' => $insufficientItems,
-                'suggestion' => 'Genere una Orden de Compra para reponer el inventario antes de crear la remision.',
-            ], 422);
-        }
-
-        return DB::transaction(function () use ($request, $order) {
-            // Create remission
-            $remission = Remission::create([
-                'sales_order_id' => $order->id,
-                'shipment_id' => $request->input('shipment_id'),
-                'warehouse_id' => $request->input('warehouse_id'),
-                'remission_date' => now(),
-                'shipping_address' => $request->input('shipping_address'),
-                'delivery_notes' => $request->input('delivery_notes'),
-                'internal_notes' => $request->input('internal_notes'),
-            ]);
-
-            // Create remission items
+            $lines = [];
             foreach ($request->input('items') as $itemData) {
+                /** @var SalesOrderItem|null $orderItem */
                 $orderItem = $order->items->firstWhere('id', $itemData['sales_order_item_id']);
 
                 if (!$orderItem) {
-                    throw new \InvalidArgumentException(
-                        "La partida {$itemData['sales_order_item_id']} no pertenece al pedido {$order->id}."
-                    );
+                    return response()->json([
+                        'error' => "La partida {$itemData['sales_order_item_id']} no pertenece al pedido {$order->order_number}.",
+                    ], 422);
                 }
 
-                // Validate quantity does not exceed remaining
-                $alreadyRemitted = RemissionItem::where('sales_order_item_id', $orderItem->id)
-                    ->whereHas('remission', fn($q) => $q->where('status', '!=', 'cancelled'))
-                    ->sum('quantity');
-                $remaining = $orderItem->quantity - $alreadyRemitted;
+                $lines[] = [$orderItem, (float) $itemData['quantity'], $itemData];
+            }
 
-                if ($itemData['quantity'] > $remaining) {
-                    throw new \InvalidArgumentException(
-                        "La cantidad {$itemData['quantity']} excede lo pendiente por remisionar ({$remaining}) de la partida {$orderItem->id}."
-                    );
-                }
-
-                RemissionItem::create([
-                    'remission_id' => $remission->id,
-                    'sales_order_item_id' => $orderItem->id,
-                    'product_id' => $orderItem->product_id,
-                    'quantity' => $itemData['quantity'],
-                    'product_name' => $orderItem->product?->name,
-                    'product_sku' => $orderItem->product?->sku,
-                    'unit' => $orderItem->product?->unit?->name,
-                    'batch_number' => $itemData['batch_number'] ?? null,
-                    'expiry_date' => $itemData['expiry_date'] ?? null,
-                    'notes' => $itemData['notes'] ?? null,
+            try {
+                $remission = $this->remissions()->create($order, $lines, [
+                    'shipment_id' => $request->input('shipment_id'),
+                    'warehouse_id' => $request->input('warehouse_id'),
+                    'shipping_address' => $request->input('shipping_address'),
+                    'delivery_notes' => $request->input('delivery_notes'),
+                    'internal_notes' => $request->input('internal_notes'),
                 ]);
+            } catch (RemissionRuleException $e) {
+                return $e->toResponse();
             }
 
             return response()->json([
@@ -159,62 +114,34 @@ class RemissionController extends Controller
             'internal_notes' => 'nullable|string|max:2000',
         ]);
 
-        $order = SalesOrder::with('items.product')->findOrFail($request->input('sales_order_id'));
+        return DB::transaction(function () use ($request) {
+            $order = SalesOrder::with('items.product')->lockForUpdate()->findOrFail($request->input('sales_order_id'));
 
-        if ($order->items->isEmpty()) {
-            return response()->json([
-                'error' => 'No se puede crear una remisión de un pedido sin partidas.'
-            ], 400);
-        }
-
-        // Validate stock availability before creating remission
-        $insufficientItems = [];
-        foreach ($order->items as $orderItem) {
-            $available = Stock::where('product_id', $orderItem->product_id)
-                ->sum('available_quantity');
-            if ($available < $orderItem->quantity) {
-                $insufficientItems[] = [
-                    'product_id' => $orderItem->product_id,
-                    'product_name' => $orderItem->product?->name ?? 'Producto',
-                    'sku' => $orderItem->product?->sku ?? '',
-                    'required' => (float) $orderItem->quantity,
-                    'available' => (float) $available,
-                    'deficit' => (float) ($orderItem->quantity - $available),
-                ];
+            if ($order->items->isEmpty()) {
+                return response()->json([
+                    'error' => 'No se puede crear una remisión de un pedido sin partidas.'
+                ], 400);
             }
-        }
 
-        if (!empty($insufficientItems)) {
-            return response()->json([
-                'error' => 'Stock insuficiente para generar la remision',
-                'insufficient_items' => $insufficientItems,
-                'suggestion' => 'Genere una Orden de Compra para reponer el inventario antes de crear la remision.',
-            ], 422);
-        }
+            try {
+                $this->remissions()->assertOrderCanBeRemitted($order);
 
-        return DB::transaction(function () use ($request, $order) {
-            // Create remission
-            $remission = Remission::create([
-                'sales_order_id' => $order->id,
-                'shipment_id' => $request->input('shipment_id'),
-                'warehouse_id' => $request->input('warehouse_id'),
-                'remission_date' => now(),
-                'shipping_address' => $request->input('shipping_address') ?? $order->shipping_address,
-                'delivery_notes' => $request->input('delivery_notes'),
-                'internal_notes' => $request->input('internal_notes'),
-            ]);
+                // Solo lo pendiente de cada partida (sin lo que espera en backorder);
+                // repetir la remision completa ya no duplica.
+                $lines = $this->remissions()->fullLines($order);
+                if (empty($lines)) {
+                    throw new RemissionRuleException('El pedido ya no tiene partidas pendientes por surtir.');
+                }
 
-            // Create remission items from all order items
-            foreach ($order->items as $orderItem) {
-                RemissionItem::create([
-                    'remission_id' => $remission->id,
-                    'sales_order_item_id' => $orderItem->id,
-                    'product_id' => $orderItem->product_id,
-                    'quantity' => $orderItem->quantity,
-                    'product_name' => $orderItem->product?->name,
-                    'product_sku' => $orderItem->product?->sku,
-                    'unit' => $orderItem->product?->unit?->name,
+                $remission = $this->remissions()->create($order, $lines, [
+                    'shipment_id' => $request->input('shipment_id'),
+                    'warehouse_id' => $request->input('warehouse_id'),
+                    'shipping_address' => $request->input('shipping_address') ?? $order->shipping_address,
+                    'delivery_notes' => $request->input('delivery_notes'),
+                    'internal_notes' => $request->input('internal_notes'),
                 ]);
+            } catch (RemissionRuleException $e) {
+                return $e->toResponse();
             }
 
             return response()->json([
@@ -222,6 +149,11 @@ class RemissionController extends Controller
                 'message' => 'Remisión completa creada desde el pedido.'
             ], 201);
         });
+    }
+
+    private function remissions(): RemissionService
+    {
+        return app(RemissionService::class);
     }
 
     /**
@@ -273,19 +205,6 @@ class RemissionController extends Controller
             ], 400);
         }
 
-        // QA post-commit (C2): los shipments descuentan Stock.quantity DIRECTO (sin
-        // movimiento ni COGS) y la remision descuenta via createExit. Si la orden ya
-        // desconto por shipments, entregar la remision descontaria DOS veces. Regla de
-        // negocio puente: no mezclar flujos (la unificacion del camino de salida es R9
-        // del diseno de arquitectura).
-        $orderForGuard = $remission->salesOrder;
-        if ($orderForGuard && $orderForGuard->shipments()->whereIn('status', ['shipped', 'delivered'])->exists()) {
-            return response()->json([
-                'error' => 'Esta orden ya descuenta inventario por envios (shipments). '
-                    . 'No se puede entregar tambien por remision: use un solo flujo de salida.',
-            ], 422);
-        }
-
         // Refactor ciclo (Patron 3, C1 + 5b/F3): la entrega DESCUENTA stock real y todo
         // el paso (descuento + markAsDelivered + update de la orden) va en UNA transaccion
         // externa atomica. Antes corrian sueltos: un fallo entre el commit del exit y el
@@ -304,25 +223,36 @@ class RemissionController extends Controller
                     $request->input('delivery_notes')
                 );
 
-                $salesOrder = $remission->salesOrder;
-                if ($salesOrder && $salesOrder->status !== 'delivered' && $salesOrder->status !== 'cancelled') {
-                    $hasNonDeliveredRemissions = $salesOrder->remissions()
-                        ->where('status', '!=', 'cancelled')
-                        ->where('status', '!=', 'delivered')
-                        ->exists();
+                $salesOrder = $remission->sales_order_id
+                    ? SalesOrder::with('items')->lockForUpdate()->find($remission->sales_order_id)
+                    : null;
 
-                    $hasDeliveredRemissions = $salesOrder->remissions()
-                        ->where('status', 'delivered')
-                        ->exists();
+                if ($salesOrder && !in_array($salesOrder->status, ['delivered', 'completed', 'cancelled', 'returned', 'refunded'], true)) {
+                    $statusService = app(OrderStatusService::class);
 
-                    if (!$hasNonDeliveredRemissions && $hasDeliveredRemissions) {
-                        $salesOrder->update(['status' => 'delivered']);
-                        // Fase 2.7: liberar la reserva del confirm tambien en este
-                        // camino (el exit ya desconto quantity; con la reserva viva,
-                        // available descuenta doble para siempre).
-                        app(\Modules\Sales\Services\OrderStatusService::class)
-                            ->releaseInventory($salesOrder);
+                    // Surtido F2 (punto 3): lo que salio deja de estar apartado, por partida.
+                    foreach ($remission->items as $item) {
+                        /** @var RemissionItem $item */
+                        if ($item->sales_order_item_id) {
+                            $statusService->releaseItemReservation($salesOrder, $item->sales_order_item_id, (float) $item->quantity);
+                        }
+                    }
+
+                    // Surtido F2 (punto 7): el pedido avanza por la maquina de estados y
+                    // solo llega a entregado cuando todas sus partidas salieron completas
+                    // y no quedan remisiones vivas sin entregar.
+                    $hasOpenRemissions = $salesOrder->remissions()
+                        ->whereNotIn('status', ['cancelled', 'delivered'])
+                        ->exists();
+                    $fullyOut = $salesOrder->items->every(fn ($i) => $i instanceof SalesOrderItem && $i->notYetOutQuantity() <= 0);
+
+                    $options = ['dispatch_delivered' => false, 'skip_shipment_guard' => true];
+                    $note = "Entrega de la remision {$remission->remission_number}";
+                    if ($fullyOut && !$hasOpenRemissions) {
+                        $salesOrder = $statusService->advanceTo($salesOrder, 'delivered', $note, $options);
                         $shouldFireDelivered = true;
+                    } elseif ($salesOrder->status === 'confirmed') {
+                        $salesOrder = $statusService->advanceTo($salesOrder, 'processing', $note, $options);
                     }
                 }
 
@@ -380,15 +310,17 @@ class RemissionController extends Controller
             // que se pasa a createExit; el whereJsonContains anterior era fragil por
             // driver y tenia ventana de carrera.
 
-            // Resolver el warehouse: remision -> stock del producto -> primer almacen.
-            $warehouseId = $remission->warehouse_id;
-            if (!$warehouseId) {
-                $stock = Stock::where('product_id', $item->product_id)
-                    ->orderByDesc('quantity')
-                    ->first();
-                $warehouseId = $stock?->warehouse_id
-                    ?? \Modules\Inventory\Models\Warehouse::query()->value('id');
-            }
+            // Surtido F2: misma resolucion que al crear (remision -> almacen apartado
+            // -> mas existencia libre); ultimo recurso, el primer almacen.
+            /** @var RemissionItem $item */
+            /** @var SalesOrder $remissionOrder */
+            $remissionOrder = $remission->salesOrder;
+            $warehouseId = $this->remissions()->resolveWarehouseId(
+                $remission->warehouse_id,
+                $remissionOrder,
+                (int) $item->sales_order_item_id,
+                (int) $item->product_id
+            ) ?? \Modules\Inventory\Models\Warehouse::query()->value('id');
 
             if (!$warehouseId) {
                 throw new \RuntimeException("No hay almacen para descontar el producto {$item->product_id}");

@@ -230,16 +230,8 @@ class ShipmentService
     {
         $order->load('items');
 
-        // Get quantities already allocated in pending/processing shipments
-        $pendingQuantities = ShipmentItem::whereHas('shipment', function ($q) use ($order) {
-                $q->where('sales_order_id', $order->id)
-                  ->whereIn('status', ['pending', 'processing']);
-            })
-            ->select('sales_order_item_id', DB::raw('SUM(quantity) as total_pending'))
-            ->groupBy('sales_order_item_id')
-            ->pluck('total_pending', 'sales_order_item_id');
-
         foreach ($items as $orderItemId => $quantity) {
+            /** @var SalesOrderItem|null $orderItem */
             $orderItem = $order->items->find($orderItemId);
 
             if (!$orderItem) {
@@ -250,89 +242,150 @@ class ShipmentService
                 throw new InvalidArgumentException("La cantidad debe ser mayor a 0.");
             }
 
-            // remaining_quantity already subtracts shipped_quantity; also subtract pending shipment allocations
-            $pendingQty = $pendingQuantities[$orderItemId] ?? 0;
-            $effectiveRemaining = $orderItem->remaining_quantity - $pendingQty;
-
-            if ($quantity > $effectiveRemaining) {
+            // Surtido F3: lo pendiente descuenta remisiones vivas, lo embarcado y
+            // los envios abiertos (regla de coordinacion envio/remision).
+            $pending = $orderItem->pendingOutboundQuantity();
+            if ($quantity > $pending) {
                 throw new InvalidArgumentException(
-                    "No se pueden enviar {$quantity} de la partida {$orderItemId}. Solo quedan {$effectiveRemaining} por enviar (contando envíos pendientes)."
+                    "No se pueden enviar {$quantity} de la partida {$orderItemId}. Solo quedan {$pending} por surtir (contando remisiones y envíos abiertos)."
                 );
             }
         }
     }
 
     /**
-     * GAP-1: Deduct physical inventory when shipment is marked as shipped.
-     * Decrements Stock.quantity and Stock.reserved_quantity.
+     * Surtido F3 (puntos 4/5): embarcar da salida de inventario con movimiento y
+     * costo de venta (createExit postea el COGS via InventoryMovementCreated),
+     * igual que la remision. Idempotente por partida con la llave
+     * "shipment:{id}:item:{itemId}". Lo que sale deja de estar apartado.
+     * Antes descontaba Stock.quantity directo (sin movimiento ni COGS) y se
+     * saltaba todo si el pedido tenia remisiones; ahora la coordinacion vive en
+     * lo pendiente por partida (validateShipmentItems).
+     *
+     * @throws \Throwable si no hay existencia: la transaccion de markAsShipped revierte.
      */
     protected function deductInventoryOnShip(Shipment $shipment): void
     {
-        // QA post-commit (C2, guardia simetrica): si la orden ya desconto inventario
-        // por REMISION (movimientos exit reference_type='remission'), este shipment no
-        // debe descontar de nuevo. Un solo flujo de salida por orden; la unificacion
-        // completa (shipments creando movimientos con COGS) es R9 del diseno.
-        $remissionIds = \Modules\Sales\Models\Remission::where('sales_order_id', $shipment->sales_order_id)
-            ->pluck('id');
-        if ($remissionIds->isNotEmpty()) {
-            $alreadyByRemission = \Modules\Inventory\Models\InventoryMovement::where('reference_type', 'remission')
-                ->whereIn('reference_id', $remissionIds)
-                ->exists();
-            if ($alreadyByRemission) {
-                Log::warning('Shipment no descuenta inventario: la orden ya desconto por remision', [
-                    'shipment_id' => $shipment->id,
-                    'sales_order_id' => $shipment->sales_order_id,
-                ]);
-                return;
-            }
-        }
-
-        $warehouseId = $shipment->warehouse_id;
+        $service = app(\Modules\Inventory\Services\InventoryMovementService::class);
+        /** @var SalesOrder $order */
+        $order = $shipment->salesOrder;
 
         foreach ($shipment->items as $shipmentItem) {
-            $productId = $shipmentItem->salesOrderItem->product_id ?? null;
-            if (!$productId) {
+            /** @var ShipmentItem $shipmentItem */
+            /** @var SalesOrderItem|null $orderItem */
+            $orderItem = $shipmentItem->salesOrderItem;
+            if (!$orderItem || !$orderItem->product_id || $shipmentItem->quantity <= 0) {
                 continue;
             }
 
-            try {
-                $stockQuery = Stock::where('product_id', $productId);
-                if ($warehouseId) {
-                    $stockQuery->where('warehouse_id', $warehouseId);
-                }
-                $stock = $stockQuery->lockForUpdate()->first();
-
-                if ($stock) {
-                    $qty = $shipmentItem->quantity;
-                    $stock->decrement('quantity', $qty);
-                    // Release reservation (guard against going below zero)
-                    $releaseQty = min($qty, $stock->reserved_quantity);
-                    if ($releaseQty > 0) {
-                        $stock->decrement('reserved_quantity', $releaseQty);
-                    }
-
-                    Log::info('Inventory deducted on shipment', [
-                        'shipment_id' => $shipment->id,
-                        'product_id' => $productId,
-                        'quantity' => $qty,
-                        'warehouse_id' => $warehouseId,
-                    ]);
-                }
-            } catch (\Exception $e) {
-                Log::error('Failed to deduct inventory on shipment', [
+            $warehouseId = $this->resolveWarehouseId($shipment, $order, $orderItem);
+            if (!$warehouseId) {
+                // Sin registro de stock: servicio o producto digital (mismo criterio
+                // que la entrega por status). Con stock insuficiente, createExit lanza.
+                Log::info('Envio sin registro de stock, se omite salida de inventario', [
                     'shipment_id' => $shipment->id,
-                    'product_id' => $productId,
-                    'error' => $e->getMessage(),
+                    'product_id' => $orderItem->product_id,
                 ]);
+                continue;
+            }
+
+            $service->createExit([
+                'product_id' => $orderItem->product_id,
+                'warehouse_id' => $warehouseId,
+                'quantity' => $shipmentItem->quantity,
+                'movement_date' => now(),
+                'reference_type' => 'shipment',
+                'reference_id' => $shipment->id,
+                'idempotency_key' => "shipment:{$shipment->id}:item:{$shipmentItem->id}",
+                'description' => "Salida por envío {$shipment->shipment_number}",
+                'user_id' => auth()->id() ?? \Modules\User\Models\User::first()->id ?? 1,
+                'unit_cost' => (float) (\Modules\Product\Models\Product::find($orderItem->product_id)->cost ?? 0),
+                'metadata' => ['shipment_item_id' => $shipmentItem->id, 'sales_order_item_id' => $orderItem->id],
+            ]);
+
+            $this->orderStatusService->releaseItemReservation($order, $orderItem->id, (float) $shipmentItem->quantity);
+        }
+    }
+
+    /**
+     * Almacen de salida: el del envio -> donde el pedido aparto la partida -> el
+     * de mas existencia libre (misma resolucion que la remision).
+     */
+    private function resolveWarehouseId(Shipment $shipment, SalesOrder $order, SalesOrderItem $orderItem): ?int
+    {
+        if ($shipment->warehouse_id) {
+            return (int) $shipment->warehouse_id;
+        }
+
+        $stockId = $this->orderStatusService->reservationStockId($order, $orderItem->id);
+        if ($stockId && ($reserved = Stock::find($stockId))) {
+            return (int) $reserved->warehouse_id;
+        }
+
+        $warehouseId = Stock::where('product_id', $orderItem->product_id)
+            ->orderByRaw('(quantity - reserved_quantity) desc')
+            ->value('warehouse_id');
+
+        return $warehouseId ? (int) $warehouseId : null;
+    }
+
+    /**
+     * Surtido F3: cancelar un envio embarcado repone con una entrada por cada
+     * salida (revierte tambien el COGS) y vuelve a apartar la mercancia para el
+     * pedido. La llave "sales_cancel:exit:{id}" es la misma que usa la
+     * cancelacion del pedido: si despues se cancela la venta, esa salida no se
+     * repone dos veces.
+     *
+     * Envios embarcados antes de F3 no tienen salida registrada (descontaron
+     * Stock.quantity directo): para ellos se conserva la reposicion directa.
+     */
+    protected function restoreInventoryOnCancel(Shipment $shipment): void
+    {
+        $exits = \Modules\Inventory\Models\InventoryMovement::where('movement_type', 'exit')
+            ->where('reference_type', 'shipment')
+            ->where('reference_id', $shipment->id)
+            ->get();
+
+        if ($exits->isEmpty()) {
+            $this->restoreLegacyShipment($shipment);
+            return;
+        }
+
+        $service = app(\Modules\Inventory\Services\InventoryMovementService::class);
+        /** @var SalesOrder $order */
+        $order = $shipment->salesOrder;
+
+        foreach ($exits as $exit) {
+            /** @var \Modules\Inventory\Models\InventoryMovement $exit */
+            $service->createEntry([
+                'product_id' => $exit->product_id,
+                'warehouse_id' => $exit->warehouse_id,
+                'quantity' => $exit->quantity,
+                'unit_cost' => $exit->unit_cost,
+                'reference_type' => 'sales_cancel',
+                'reference_id' => $exit->id,
+                'idempotency_key' => "sales_cancel:exit:{$exit->id}",
+                'movement_date' => now(),
+                'description' => "Reposicion por cancelacion del envío {$shipment->shipment_number}",
+                'user_id' => auth()->id() ?? \Modules\User\Models\User::first()->id ?? 1,
+                'metadata' => [
+                    'shipment_id' => $shipment->id,
+                    'reversed_exit_movement_id' => $exit->id,
+                    'reversal' => true,
+                ],
+            ]);
+
+            $orderItemId = (int) ($exit->metadata['sales_order_item_id'] ?? 0);
+            if ($orderItemId && !in_array($order->status, ['cancelled', 'returned', 'refunded'], true)) {
+                $this->orderStatusService->restoreItemReservation($order, $orderItemId, (float) $exit->quantity, (int) $exit->warehouse_id);
             }
         }
     }
 
     /**
-     * GAP-1: Restore inventory when a shipped shipment is cancelled.
-     * Increments Stock.quantity and Stock.reserved_quantity back.
+     * Reposicion directa para envios embarcados antes de F3 (sin movimiento).
      */
-    protected function restoreInventoryOnCancel(Shipment $shipment): void
+    private function restoreLegacyShipment(Shipment $shipment): void
     {
         $warehouseId = $shipment->warehouse_id;
 
@@ -342,31 +395,14 @@ class ShipmentService
                 continue;
             }
 
-            try {
-                $stockQuery = Stock::where('product_id', $productId);
-                if ($warehouseId) {
-                    $stockQuery->where('warehouse_id', $warehouseId);
-                }
-                $stock = $stockQuery->lockForUpdate()->first();
+            $stock = Stock::where('product_id', $productId)
+                ->when($warehouseId, fn ($q) => $q->where('warehouse_id', $warehouseId))
+                ->lockForUpdate()
+                ->first();
 
-                if ($stock) {
-                    $qty = $shipmentItem->quantity;
-                    $stock->increment('quantity', $qty);
-                    $stock->increment('reserved_quantity', $qty);
-
-                    Log::info('Inventory restored on shipment cancellation', [
-                        'shipment_id' => $shipment->id,
-                        'product_id' => $productId,
-                        'quantity' => $qty,
-                        'warehouse_id' => $warehouseId,
-                    ]);
-                }
-            } catch (\Exception $e) {
-                Log::error('Failed to restore inventory on shipment cancel', [
-                    'shipment_id' => $shipment->id,
-                    'product_id' => $productId,
-                    'error' => $e->getMessage(),
-                ]);
+            if ($stock) {
+                $stock->increment('quantity', $shipmentItem->quantity);
+                $stock->increment('reserved_quantity', $shipmentItem->quantity);
             }
         }
     }
@@ -377,22 +413,30 @@ class ShipmentService
     protected function updateOrderStatus(SalesOrder $order): void
     {
         $order->refresh();
-        $fulfillmentStatus = $order->fulfillment_status;
 
-        $targetStatus = match ($fulfillmentStatus) {
-            'delivered' => 'delivered',
-            'shipped' => 'shipped',
-            'partially_shipped' => 'processing',
+        // Surtido F3: el avance cuenta remisiones entregadas y envios embarcados
+        // (antes solo envios: un pedido surtido mitad y mitad nunca se entregaba).
+        $order->load('items');
+        $allOut = $order->items->every(fn ($i) => $i instanceof SalesOrderItem && $i->notYetOutQuantity() <= 0);
+        $anyOut = $order->items->contains(fn ($i) => $i instanceof SalesOrderItem && $i->notYetOutQuantity() < (float) $i->quantity);
+        $openDocs = $order->remissions()->whereIn('status', ['draft', 'printed'])->exists()
+            || $order->shipments()->whereIn('status', ['pending', 'processing', 'shipped'])->exists();
+
+        $targetStatus = match (true) {
+            $allOut && !$openDocs => 'delivered',
+            $allOut => 'shipped',
+            $anyOut => 'processing',
             default => null,
         };
 
-        if ($targetStatus && $targetStatus !== $order->status
-            && $this->orderStatusService->canTransitionTo($order, $targetStatus)) {
-            $this->orderStatusService->updateStatus(
-                $order,
-                $targetStatus,
-                "Auto-updated from shipment fulfillment ({$fulfillmentStatus})"
-            );
+        if (!$targetStatus || !in_array($order->status, ['confirmed', 'processing', 'shipped'], true)) {
+            return;
         }
+
+        $this->orderStatusService->advanceTo(
+            $order,
+            $targetStatus,
+            "Avance automatico por surtido ({$targetStatus})"
+        );
     }
 }

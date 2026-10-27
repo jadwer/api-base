@@ -164,9 +164,10 @@ class SalesOrderInventoryReservationTest extends TestCase
     }
 
     /**
-     * Test insufficient stock throws exception
+     * Surtido F4: sin existencia completa, confirmar aparta lo que hay y el
+     * faltante queda en backorder (antes se rechazaba la confirmacion).
      */
-    public function test_insufficient_stock_throws_exception(): void
+    public function test_insufficient_stock_reserves_available_and_backorders_the_rest(): void
     {
         // Arrange
         $product = Product::factory()->create();
@@ -192,18 +193,26 @@ class SalesOrderInventoryReservationTest extends TestCase
             'unit_price' => 10.00,
         ]);
 
-        // Expect exception
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Existencia insuficiente del producto');
-
-        // Act
         $this->service->updateStatus($order, 'confirmed');
+
+        $this->assertSame('confirmed', $order->fresh()->status);
+        $this->assertEquals(10.0, (float) $stock->fresh()->reserved_quantity);
+        $backorder = \Modules\Sales\Models\Backorder::where('sales_order_id', $order->id)->first();
+        $this->assertNotNull($backorder);
+        $this->assertEquals(15.0, (float) $backorder->backorder_quantity);
+        $this->assertSame('pending', $backorder->status);
+
+        // Cancelar el pedido libera lo apartado y cancela el backorder.
+        $this->service->updateStatus($order->fresh(), 'cancelled');
+        $this->assertEquals(0.0, (float) $stock->fresh()->reserved_quantity);
+        $this->assertSame('cancelled', $backorder->fresh()->status);
     }
 
     /**
-     * Test reservation is atomic - all or nothing
+     * Surtido F4: con varias partidas, cada una aparta lo suyo y solo la que no
+     * alcanza genera backorder.
      */
-    public function test_reservation_is_atomic(): void
+    public function test_partial_stock_backorders_only_the_short_item(): void
     {
         // Arrange: Two products, second has insufficient stock
         $product1 = Product::factory()->create();
@@ -245,27 +254,14 @@ class SalesOrderInventoryReservationTest extends TestCase
             'unit_price' => 15.00,
         ]);
 
-        // Act & Assert
-        try {
-            $this->service->updateStatus($order, 'confirmed');
-            $this->fail('Should have thrown exception');
-        } catch (\Exception $e) {
-            // Expected
-        }
+        $this->service->updateStatus($order, 'confirmed');
 
-        // Assert: Transaction rolled back - first product NOT reserved
-        $stock1->refresh();
-        $stock2->refresh();
-
-        $this->assertEquals(100.0, $stock1->quantity); // Unchanged
-        $this->assertEquals(0.0, $stock1->reserved_quantity); // Unchanged
-
-        $this->assertEquals(5.0, $stock2->quantity); // Unchanged
-        $this->assertEquals(0.0, $stock2->reserved_quantity); // Unchanged
-
-        // Order status should not have changed
-        $order->refresh();
-        $this->assertEquals('draft', $order->status);
+        $this->assertEquals(20.0, (float) $stock1->fresh()->reserved_quantity);
+        $this->assertEquals(5.0, (float) $stock2->fresh()->reserved_quantity);
+        $backorders = \Modules\Sales\Models\Backorder::where('sales_order_id', $order->id)->get();
+        $this->assertCount(1, $backorders);
+        $this->assertEquals($product2->id, $backorders->first()->product_id);
+        $this->assertEquals(5.0, (float) $backorders->first()->backorder_quantity);
     }
 
     /**
@@ -362,9 +358,12 @@ class SalesOrderInventoryReservationTest extends TestCase
             'unit_price' => 10.00,
         ]);
 
-        // Should fail - preventing overselling
-        $this->expectException(\Exception::class);
+        // Surtido F4: el segundo pedido no toma lo apartado por el primero; aparta
+        // las 20 libres y las 5 restantes quedan en backorder.
         $this->service->updateStatus($order2, 'confirmed');
+
+        $this->assertEquals(50.0, (float) $stock->fresh()->reserved_quantity);
+        $this->assertEquals(5.0, (float) \Modules\Sales\Models\Backorder::where('sales_order_id', $order2->id)->value('backorder_quantity'));
     }
 
     /**

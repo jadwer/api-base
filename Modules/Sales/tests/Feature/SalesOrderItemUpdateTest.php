@@ -16,7 +16,7 @@ class SalesOrderItemUpdateTest extends TestCase
     public function test_admin_can_update_sales_order_item_quantity(): void
     {
         $admin = $this->getAdminUser();
-        $item = SalesOrderItem::factory()->create();
+        $item = SalesOrderItem::factory()->create(['discount' => 0]);
 
         $data = [
             'type' => 'sales-order-items',
@@ -43,7 +43,8 @@ class SalesOrderItemUpdateTest extends TestCase
     public function test_admin_can_update_sales_order_item_unit_price(): void
     {
         $admin = $this->getAdminUser();
-        $item = SalesOrderItem::factory()->create();
+        // Sin descuento: el aleatorio de la fabrica puede exceder el importe con el precio nuevo.
+        $item = SalesOrderItem::factory()->create(['discount' => 0]);
 
         $data = [
             'type' => 'sales-order-items',
@@ -70,7 +71,7 @@ class SalesOrderItemUpdateTest extends TestCase
     public function test_admin_can_update_sales_order_item_discount(): void
     {
         $admin = $this->getAdminUser();
-        $item = SalesOrderItem::factory()->create();
+        $item = SalesOrderItem::factory()->create(['discount' => 0]);
 
         $data = [
             'type' => 'sales-order-items',
@@ -130,7 +131,7 @@ class SalesOrderItemUpdateTest extends TestCase
     public function test_admin_can_update_sales_order_item_product_id(): void
     {
         $admin = $this->getAdminUser();
-        $item = SalesOrderItem::factory()->create();
+        $item = SalesOrderItem::factory()->create(['discount' => 0]);
         $newProduct = Product::factory()->create();
         
         $data = [
@@ -158,7 +159,7 @@ class SalesOrderItemUpdateTest extends TestCase
     public function test_customer_user_cannot_update_sales_order_item(): void
     {
         $customer = $this->getCustomerUser();
-        $item = SalesOrderItem::factory()->create();
+        $item = SalesOrderItem::factory()->create(['discount' => 0]);
         
         $data = [
             'type' => 'sales-order-items',
@@ -179,7 +180,7 @@ class SalesOrderItemUpdateTest extends TestCase
 
     public function test_guest_cannot_update_sales_order_item(): void
     {
-        $item = SalesOrderItem::factory()->create();
+        $item = SalesOrderItem::factory()->create(['discount' => 0]);
         
         $data = [
             'type' => 'sales-order-items',
@@ -200,7 +201,7 @@ class SalesOrderItemUpdateTest extends TestCase
     public function test_cannot_update_sales_order_item_with_negative_quantity(): void
     {
         $admin = $this->getAdminUser();
-        $item = SalesOrderItem::factory()->create();
+        $item = SalesOrderItem::factory()->create(['discount' => 0]);
         
         $data = [
             'type' => 'sales-order-items',
@@ -226,7 +227,7 @@ class SalesOrderItemUpdateTest extends TestCase
     public function test_cannot_update_sales_order_item_with_negative_unit_price(): void
     {
         $admin = $this->getAdminUser();
-        $item = SalesOrderItem::factory()->create();
+        $item = SalesOrderItem::factory()->create(['discount' => 0]);
         
         $data = [
             'type' => 'sales-order-items',
@@ -252,7 +253,7 @@ class SalesOrderItemUpdateTest extends TestCase
     public function test_cannot_update_sales_order_item_with_negative_discount(): void
     {
         $admin = $this->getAdminUser();
-        $item = SalesOrderItem::factory()->create();
+        $item = SalesOrderItem::factory()->create(['discount' => 0]);
         
         $data = [
             'type' => 'sales-order-items',

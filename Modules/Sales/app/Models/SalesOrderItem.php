@@ -14,6 +14,7 @@ use Spatie\Activitylog\LogOptions;
  * @property int $sales_order_id
  * @property int $product_id
  * @property float $quantity
+ * @property float $shipped_quantity
  * @property float $unit_price
  * @property float $discount
  * @property float $total
@@ -114,6 +115,62 @@ class SalesOrderItem extends Model
     public function shipmentItems(): HasMany
     {
         return $this->hasMany(ShipmentItem::class);
+    }
+
+    /**
+     * Partidas de remision que surten esta partida.
+     */
+    public function remissionItems(): HasMany
+    {
+        return $this->hasMany(RemissionItem::class);
+    }
+
+    /**
+     * Surtido F2: cantidad remitida en remisiones vivas (no canceladas).
+     */
+    public function remittedQuantity(): float
+    {
+        return (float) $this->remissionItems()
+            ->whereHas('remission', fn ($q) => $q->where('status', '!=', 'cancelled'))
+            ->sum('quantity');
+    }
+
+    /**
+     * Surtido F3: cantidad apartada en envios abiertos (pending/processing), que
+     * todavia no salen pero ya no se pueden volver a asignar.
+     */
+    public function openShipmentQuantity(): float
+    {
+        return (float) $this->shipmentItems()
+            ->whereHas('shipment', fn ($q) => $q->whereIn('status', ['pending', 'processing']))
+            ->sum('quantity');
+    }
+
+    /**
+     * Surtido F2/F3: lo que falta por asignar a una salida. Regla de coordinacion:
+     * salido = remitido (remisiones vivas) + embarcado + envios abiertos; ninguna
+     * remision ni envio nuevo puede exceder cantidad - salido.
+     */
+    public function pendingOutboundQuantity(): float
+    {
+        return max(0.0, round(
+            (float) $this->quantity - $this->remittedQuantity() - (float) $this->shipped_quantity - $this->openShipmentQuantity(),
+            4
+        ));
+    }
+
+    /**
+     * Surtido F3: lo que aun no sale fisicamente (remisiones entregadas y envios
+     * embarcados cuentan; documentos abiertos no). En 0 el pedido puede pasar a
+     * entregado.
+     */
+    public function notYetOutQuantity(): float
+    {
+        $deliveredRemitted = (float) $this->remissionItems()
+            ->whereHas('remission', fn ($q) => $q->where('status', 'delivered'))
+            ->sum('quantity');
+
+        return max(0.0, round((float) $this->quantity - $deliveredRemitted - (float) $this->shipped_quantity, 4));
     }
 
     /**

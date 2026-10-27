@@ -133,7 +133,8 @@ class SalesOrderCancelledListener
     /**
      * Refactor ciclo (5b/F2): repone el stock descontado por las entregas de la orden.
      *
-     * La entrega deja exits por DOS caminos excluyentes (C1): si hubo remisiones,
+     * La entrega deja exits por remision, por envio (surtido F3) o, si se entrego
+     * por el endpoint de status, por la orden. Antes eran DOS caminos excluyentes (C1): si hubo remisiones,
      * reference_type='remission' (reference_id = la remision); si la orden se entrego
      * por el endpoint de status sin remisiones, reference_type='sales_order'
      * (reference_id = la orden). Hay que revertir ambos; la version anterior solo
@@ -160,6 +161,14 @@ class SalesOrderCancelledListener
                     $query->orWhere(function ($q) use ($remissionIds) {
                         $q->where('reference_type', 'remission')
                             ->whereIn('reference_id', $remissionIds);
+                    });
+                }
+                // Surtido F3: los envios embarcados tambien dan salida.
+                $shipmentIds = $salesOrder->shipments()->pluck('id');
+                if ($shipmentIds->isNotEmpty()) {
+                    $query->orWhere(function ($q) use ($shipmentIds) {
+                        $q->where('reference_type', 'shipment')
+                            ->whereIn('reference_id', $shipmentIds);
                     });
                 }
             })

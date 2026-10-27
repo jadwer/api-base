@@ -9,6 +9,7 @@ use Modules\Sales\Models\Backorder;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Models\SalesOrderItem;
 use InvalidArgumentException;
+use Modules\Sales\Exceptions\RemissionRuleException;
 
 /**
  * SA-M002: Service for managing backorders.
@@ -173,6 +174,12 @@ class BackorderService
 
                 $toFulfill = min($backorder->remaining_quantity, $remainingStock);
 
+                // Surtido F4: cada backorder surtido sale por su remision; si el
+                // pedido ya no admite remision, ese backorder se queda pendiente.
+                if ($toFulfill > 0 && !$this->createRemissionFor($backorder, $toFulfill, false)) {
+                    continue;
+                }
+
                 if ($toFulfill > 0) {
                     $backorder->fulfilled_quantity += $toFulfill;
                     $backorder->updateStatus();
@@ -200,6 +207,35 @@ class BackorderService
 
             return $fulfilled;
         });
+    }
+
+    /**
+     * Surtido F4: remision (borrador) por lo surtido de un backorder. Con
+     * $throw=false devuelve false si la regla de surtido lo impide.
+     */
+    private function createRemissionFor(Backorder $backorder, float $quantity, bool $throw): bool
+    {
+        $order = SalesOrder::with('items.product')->lockForUpdate()->find($backorder->sales_order_id);
+        /** @var SalesOrderItem|null $orderItem */
+        $orderItem = $order?->items->firstWhere('id', $backorder->sales_order_item_id);
+
+        try {
+            if (!$order || !$orderItem) {
+                throw new RemissionRuleException("El pedido del backorder {$backorder->backorder_number} ya no existe.");
+            }
+            app(RemissionService::class)->create($order, [[$orderItem, $quantity]], [
+                'warehouse_id' => $backorder->warehouse_id,
+                'shipping_address' => $order->getAttribute('shipping_address'),
+                'internal_notes' => "Surtido del backorder {$backorder->backorder_number}",
+            ], false);
+        } catch (RemissionRuleException $e) {
+            if ($throw) {
+                throw new InvalidArgumentException($e->getMessage());
+            }
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -231,15 +267,19 @@ class BackorderService
     /**
      * Manually fulfill a backorder with a specific quantity.
      *
+     * Surtido F4: surtir crea una remision por la cantidad (decision 26-10: los
+     * backorders se surten por remision). Si la remision no procede (pedido en
+     * otro estado, sin existencia), no se surte nada.
+     *
      * @param Backorder $backorder
      * @param float $quantity
-     * @param bool $createShipment Whether to create a shipment for fulfilled quantity
+     * @param bool $createRemission Crear la remision de lo surtido (por defecto si)
      * @return Backorder
      */
     public function fulfillBackorder(
         Backorder $backorder,
         float $quantity,
-        bool $createShipment = false
+        bool $createRemission = true
     ): Backorder {
         if (!$backorder->isPending()) {
             throw new InvalidArgumentException(
@@ -257,7 +297,11 @@ class BackorderService
             );
         }
 
-        return DB::transaction(function () use ($backorder, $quantity, $createShipment) {
+        return DB::transaction(function () use ($backorder, $quantity, $createRemission) {
+            if ($createRemission) {
+                $this->createRemissionFor($backorder, $quantity, true);
+            }
+
             $backorder->fulfilled_quantity += $quantity;
             $backorder->updateStatus();
 
@@ -273,17 +317,6 @@ class BackorderService
                     'fulfillment_history' => $history,
                 ]),
             ]);
-
-            // Optionally create shipment
-            if ($createShipment) {
-                $order = $backorder->salesOrder;
-                $this->shipmentService->createShipment($order, [
-                    $backorder->sales_order_item_id => $quantity,
-                ], [
-                    'warehouse_id' => $backorder->warehouse_id,
-                    'notes' => "Backorder fulfillment: {$backorder->backorder_number}",
-                ]);
-            }
 
             return $backorder->fresh();
         });

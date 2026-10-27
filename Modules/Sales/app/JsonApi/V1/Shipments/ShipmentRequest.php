@@ -27,10 +27,6 @@ class ShipmentRequest extends ResourceRequest
                 'max:50',
                 Rule::unique('shipments', 'shipment_number')->ignore($model),
             ],
-            'status' => [
-                'sometimes',
-                Rule::in(['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'returned']),
-            ],
             'carrier' => ['nullable', 'string', 'max:100'],
             'trackingNumber' => ['nullable', 'string', 'max:100'],
             'trackingUrl' => ['nullable', 'string', 'max:500', 'url'],
@@ -53,7 +49,6 @@ class ShipmentRequest extends ResourceRequest
             'warehouseId.exists' => 'El almacen seleccionado no existe.',
             'shipmentNumber.unique' => 'Este numero de envio ya existe.',
             'shipmentNumber.max' => 'El numero de envio no puede exceder :max caracteres.',
-            'status.in' => 'Estado de envio invalido.',
             'carrier.max' => 'El transportista no puede exceder :max caracteres.',
             'trackingNumber.max' => 'El numero de rastreo no puede exceder :max caracteres.',
             'trackingUrl.url' => 'La URL de rastreo debe ser una URL valida.',

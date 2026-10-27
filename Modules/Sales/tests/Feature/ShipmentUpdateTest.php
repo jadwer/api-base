@@ -42,7 +42,7 @@ class ShipmentUpdateTest extends TestCase
         $response->assertJsonPath('data.attributes.trackingNumber', 'TRACK12345');
     }
 
-    public function test_admin_can_update_shipment_status(): void
+    public function test_shipment_status_cannot_be_patched(): void
     {
         $admin = $this->getAdminUser();
 
@@ -66,8 +66,9 @@ class ShipmentUpdateTest extends TestCase
             ])
             ->patch("/api/v1/shipments/{$shipment->id}");
 
+        // Surtido F3 (punto 8): el status solo cambia por ship/deliver/cancel.
         $response->assertOk();
-        $response->assertJsonPath('data.attributes.status', 'processing');
+        $this->assertSame('pending', $shipment->fresh()->status);
     }
 
     public function test_tech_user_can_update_shipment(): void
@@ -148,7 +149,7 @@ class ShipmentUpdateTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_cannot_update_with_invalid_status(): void
+    public function test_invalid_status_is_ignored_on_patch(): void
     {
         $admin = $this->getAdminUser();
 
@@ -172,7 +173,8 @@ class ShipmentUpdateTest extends TestCase
             ])
             ->patch("/api/v1/shipments/{$shipment->id}");
 
-        $response->assertStatus(422);
+        $response->assertOk();
+        $this->assertSame('pending', $shipment->fresh()->status);
     }
 
     public function test_can_update_shipment_shipping_cost(): void

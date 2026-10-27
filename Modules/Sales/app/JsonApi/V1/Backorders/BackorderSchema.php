@@ -38,8 +38,9 @@ class BackorderSchema extends Schema
             Str::make('backorderNumber', 'backorder_number')->sortable(),
             Number::make('originalQuantity', 'original_quantity'),
             Number::make('backorderQuantity', 'backorder_quantity')->sortable(),
-            Number::make('fulfilledQuantity', 'fulfilled_quantity'),
-            Str::make('status')->sortable(),
+            Number::make('fulfilledQuantity', 'fulfilled_quantity')->readOnly(),
+            // Surtido F3 (punto 8): status y lo surtido cambian solo por fulfill/cancel.
+            Str::make('status')->sortable()->readOnly(),
             Str::make('priority')->sortable(),
 
             // Computed

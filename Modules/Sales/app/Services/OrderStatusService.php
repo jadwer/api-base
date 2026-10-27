@@ -49,8 +49,16 @@ class OrderStatusService
         SalesOrder $order,
         string $newStatus,
         ?string $notes = null,
-        array $metadata = []
+        array $metadata = [],
+        array $options = []
     ): SalesOrder {
+        // Opciones (surtido F2): notify=false calla los correos de pasos intermedios;
+        // dispatch_delivered=false deja el evento de facturacion al llamador (la
+        // entrega por remision lo dispara tras SU commit); skip_shipment_guard
+        // omite GAP-2 cuando la prueba de entrega es la remision.
+        $notify = $options['notify'] ?? true;
+        $dispatchDelivered = $options['dispatch_delivered'] ?? true;
+
         // Validate transition
         if (!$this->canTransitionTo($order, $newStatus)) {
             throw new \Exception(
@@ -61,7 +69,7 @@ class OrderStatusService
         // GAP-2: If transitioning to 'delivered' and order has shipments,
         // at least one must be in 'delivered' status.
         // Orders without shipments can still be marked delivered (digital/services).
-        if ($newStatus === 'delivered') {
+        if ($newStatus === 'delivered' && empty($options['skip_shipment_guard'])) {
             $totalShipped = $order->items->sum('shipped_quantity');
             if ($totalShipped > 0) {
                 $hasDeliveredShipment = $order->shipments()
@@ -75,7 +83,19 @@ class OrderStatusService
             }
         }
 
-        $updated = DB::transaction(function () use ($order, $newStatus, $notes, $metadata) {
+        // Surtido F3: marcar entregado a mano con remisiones o envios abiertos dejaria
+        // esos documentos colgados (y su mercancia sin salida coherente).
+        if ($newStatus === 'delivered' && empty($options['skip_shipment_guard'])) {
+            $openRemissions = $order->remissions()->whereIn('status', ['draft', 'printed'])->exists();
+            $openShipments = $order->shipments()->whereIn('status', ['pending', 'processing'])->exists();
+            if ($openRemissions || $openShipments) {
+                throw new \Exception(
+                    'El pedido tiene remisiones o envíos abiertos. Entrégalos o cancélalos antes de marcarlo como entregado.'
+                );
+            }
+        }
+
+        $updated = DB::transaction(function () use ($order, $newStatus, $notes, $metadata, $notify) {
             $oldStatus = $order->status;
 
             // Build status history entry
@@ -105,12 +125,12 @@ class OrderStatusService
             $this->handleStatusChange($order, $newStatus);
 
             // Send status update notification (async)
-            if ($order->order_source === 'ecommerce') {
+            if ($notify && $order->order_source === 'ecommerce') {
                 $this->notificationService->sendOrderStatusUpdate($order, $oldStatus, $newStatus, $notes);
             }
 
             // Send specific notifications for certain statuses
-            if ($newStatus === 'shipped' && $order->order_source === 'ecommerce') {
+            if ($notify && $newStatus === 'shipped' && $order->order_source === 'ecommerce') {
                 $this->notificationService->sendShippingNotification($order);
             }
 
@@ -123,7 +143,7 @@ class OrderStatusService
         // evento se dispara DESPUES del commit (mismo patron que RemissionController::
         // deliver): un fallo del listener no revierte la entrega, y el listener es
         // idempotente por ar_invoice_id, asi que no duplica si la orden ya se facturo.
-        if ($newStatus === 'delivered') {
+        if ($newStatus === 'delivered' && $dispatchDelivered) {
             event(new \Modules\Sales\Events\SalesOrderDelivered($updated));
         }
 
@@ -193,6 +213,35 @@ class OrderStatusService
         }
 
         return in_array($targetStatus, $this->validTransitions[$currentStatus]);
+    }
+
+    /**
+     * Surtido F2: avanza el pedido hasta $target recorriendo la maquina de estados
+     * (confirmed -> processing -> shipped -> delivered) en vez de escribir el status
+     * directo. Cada paso deja su historial y sus efectos; los correos solo salen en
+     * el ultimo paso. Si el pedido ya esta en $target o mas adelante, no hace nada.
+     */
+    public function advanceTo(SalesOrder $order, string $target, ?string $notes = null, array $options = []): SalesOrder
+    {
+        $path = ['draft', 'pending', 'confirmed', 'processing', 'shipped', 'delivered'];
+        $from = array_search($order->status, $path, true);
+        $to = array_search($target, $path, true);
+
+        if ($from === false || $to === false) {
+            throw new \Exception("No se puede llevar el pedido de '{$order->status}' a '{$target}'.");
+        }
+
+        for ($i = $from + 1; $i <= $to; $i++) {
+            $step = $path[$i];
+            if (!$this->canTransitionTo($order, $step)) {
+                continue; // draft -> confirmed salta pending
+            }
+            $order = $this->updateStatus($order, $step, $notes, [], array_merge($options, [
+                'notify' => ($options['notify'] ?? true) && $step === $target,
+            ]));
+        }
+
+        return $order;
     }
 
     /**
@@ -269,6 +318,11 @@ class OrderStatusService
                 // SA-004: Release inventory when order cancelled
                 $this->releaseInventory($order);
 
+                // Surtido F4: lo que esperaba en backorder ya no se surte.
+                \Modules\Sales\Models\Backorder::where('sales_order_id', $order->id)
+                    ->pending()
+                    ->update(['status' => 'cancelled']);
+
                 // Mark as cancelled
                 $order->update([
                     'metadata' => array_merge(
@@ -303,9 +357,9 @@ class OrderStatusService
      * InventoryMovementCreated.
      *
      * Reglas:
-     * - Si la orden tiene remisiones, la remision es duena del stock: no tocar.
-     * - Si la orden tiene shipments shipped/delivered, ya descontaron directo: no tocar
-     *   (la unificacion de ese camino es R9 del diseno).
+     * - Surtido F3: sale solo lo que no salio por remision entregada ni por envio
+     *   embarcado (notYetOutQuantity); con remisiones o envios abiertos la entrega
+     *   manual se rechaza antes (updateStatus).
      * - Idempotente por linea via idempotency_key "sales_order:{id}:item:{itemId}"
      *   con UNIQUE en BD (R1); la maquina ademas impide re-entrar a delivered.
      * - Producto sin registro de Stock: se omite con log (ordenes de servicios/digital
@@ -314,24 +368,22 @@ class OrderStatusService
      */
     private function createDeliveryExitMovements(SalesOrder $order): void
     {
-        if ($order->remissions()->exists()) {
-            return;
-        }
-        if ($order->shipments()->whereIn('status', ['shipped', 'delivered'])->exists()) {
-            return;
-        }
-
         $service = app(\Modules\Inventory\Services\InventoryMovementService::class);
         $order->loadMissing('items');
 
         foreach ($order->items as $item) {
-            if (!$item->product_id || $item->quantity <= 0) {
+            /** @var \Modules\Sales\Models\SalesOrderItem $item */
+            // Surtido F3: solo sale lo que no salio por remision ni por envio.
+            $quantity = $item->notYetOutQuantity();
+            if (!$item->product_id || $quantity <= 0) {
                 continue;
             }
 
-            $stock = \Modules\Inventory\Models\Stock::where('product_id', $item->product_id)
-                ->orderByDesc('quantity')
-                ->first();
+            $reservedStockId = $this->reservationStockId($order, $item->id);
+            $stock = ($reservedStockId ? Stock::find($reservedStockId) : null)
+                ?? Stock::where('product_id', $item->product_id)
+                    ->orderByDesc('quantity')
+                    ->first();
 
             if (!$stock) {
                 // Sin registro de stock: producto de servicio/digital. No bloquear la entrega.
@@ -345,7 +397,7 @@ class OrderStatusService
             $service->createExit([
                 'product_id' => $item->product_id,
                 'warehouse_id' => $stock->warehouse_id,
-                'quantity' => $item->quantity,
+                'quantity' => $quantity,
                 'movement_date' => now(),
                 'reference_type' => 'sales_order',
                 'reference_id' => $order->id,
@@ -432,8 +484,12 @@ class OrderStatusService
     /**
      * Reserve inventory for sales order (SA-004)
      *
-     * Increments Stock.reserved_quantity and decrements Stock.quantity
-     * when order is confirmed.
+     * Incrementa Stock.reserved_quantity por partida y registra lo apartado en
+     * metadata.reservations ({item_id: {stock_id, quantity}}). Surtido F2 (punto 3):
+     * con ese registro cada liberacion descuenta solo lo que ESTE pedido aparto;
+     * antes se liberaba min(cantidad, reservado del stock) y un pedido podia soltar
+     * la reserva de otro. Surtido F4: si no alcanza, aparta lo que hay y el
+     * faltante queda en backorder.
      *
      * @param SalesOrder $order
      * @return void
@@ -447,62 +503,137 @@ class OrderStatusService
 
         // Get warehouse ID from order metadata or use default
         $warehouseId = $order->metadata['warehouse_id'] ?? null;
+        $reservations = [];
 
         foreach ($order->items as $item) {
-            try {
-                // Find stock record
-                $stockQuery = Stock::where('product_id', $item->product_id);
+            /** @var \Modules\Sales\Models\SalesOrderItem $item */
+            // Find stock record
+            $stockQuery = Stock::where('product_id', $item->product_id);
 
-                if ($warehouseId) {
-                    $stockQuery->where('warehouse_id', $warehouseId);
-                }
+            if ($warehouseId) {
+                $stockQuery->where('warehouse_id', $warehouseId);
+            }
 
-                $stock = $stockQuery->lockForUpdate()->first();
+            $stock = $stockQuery->lockForUpdate()->first();
 
-                if (!$stock) {
-                    Log::warning('Stock not found for reservation', [
-                        'order_id' => $order->id,
-                        'product_id' => $item->product_id,
-                        'warehouse_id' => $warehouseId,
-                    ]);
-                    continue;
-                }
-
-                // Check if sufficient quantity available (quantity - reserved = available)
-                $availableQty = $stock->quantity - $stock->reserved_quantity;
-                if ($availableQty < $item->quantity) {
-                    Log::error('Insufficient stock for reservation', [
-                        'order_id' => $order->id,
-                        'product_id' => $item->product_id,
-                        'required' => $item->quantity,
-                        'available' => $availableQty,
-                    ]);
-                    throw new \Exception("Existencia insuficiente del producto #{$item->product_id}.");
-                }
-
-                // Reserve inventory: only increment reserved_quantity
-                // available_quantity is a generated column (quantity - reserved_quantity)
-                $stock->increment('reserved_quantity', $item->quantity);
-
-                Log::info('Inventory reserved for sales order', [
-                    'order_id' => $order->id,
-                    'order_number' => $order->order_number,
-                    'product_id' => $item->product_id,
-                    'quantity' => $item->quantity,
-                    'stock_id' => $stock->id,
-                ]);
-
-            } catch (\Exception $e) {
-                Log::error('Failed to reserve inventory for sales order', [
+            if (!$stock) {
+                Log::warning('Stock not found for reservation', [
                     'order_id' => $order->id,
                     'product_id' => $item->product_id,
-                    'error' => $e->getMessage(),
+                    'warehouse_id' => $warehouseId,
                 ]);
+                continue;
+            }
 
-                // Re-throw to rollback transaction
-                throw $e;
+            // Surtido F4: si no alcanza, se aparta lo que hay y el faltante queda en
+            // backorder (se surte por remision cuando llega la mercancia). Antes la
+            // confirmacion se rechazaba con "Existencia insuficiente".
+            $availableQty = max(0.0, (float) $stock->quantity - (float) $stock->reserved_quantity);
+            $reserveQty = min((float) $item->quantity, $availableQty);
+            $shortQty = round((float) $item->quantity - $reserveQty, 4);
+
+            // Reserve inventory: only increment reserved_quantity
+            // available_quantity is a generated column (quantity - reserved_quantity)
+            if ($reserveQty > 0) {
+                $stock->increment('reserved_quantity', $reserveQty);
+            }
+            $reservations[(string) $item->id] = [
+                'stock_id' => $stock->id,
+                'quantity' => $reserveQty,
+            ];
+
+            if ($shortQty > 0) {
+                app(BackorderService::class)->createBackorder($item, $shortQty, $stock->warehouse_id, [
+                    'notes' => "Faltante al confirmar el pedido {$order->order_number}",
+                ]);
             }
         }
+
+        $order->update([
+            'metadata' => array_merge($order->metadata ?? [], ['reservations' => $reservations]),
+        ]);
+    }
+
+    /**
+     * Stock donde quedo apartada la partida (null si no se aparto).
+     */
+    public function reservationStockId(SalesOrder $order, int $itemId): ?int
+    {
+        $entry = $order->metadata['reservations'][(string) $itemId] ?? null;
+
+        return $entry && ($entry['quantity'] ?? 0) > 0 ? (int) $entry['stock_id'] : null;
+    }
+
+    /**
+     * Libera hasta $quantity de la reserva de UNA partida (la parte que ya salio
+     * por remision o envio). Devuelve lo liberado. Pedidos confirmados antes del
+     * registro (sin metadata.reservations) no liberan aqui: los cubre
+     * releaseInventory al entregar o cancelar, con el criterio anterior.
+     */
+    public function releaseItemReservation(SalesOrder $order, int $itemId, float $quantity): float
+    {
+        $key = (string) $itemId;
+        $reservations = $order->metadata['reservations'] ?? null;
+        $entry = $reservations[$key] ?? null;
+
+        if (!$entry || ($entry['quantity'] ?? 0) <= 0 || $quantity <= 0) {
+            return 0.0;
+        }
+
+        $stock = Stock::whereKey($entry['stock_id'])->lockForUpdate()->first();
+        $release = min($quantity, (float) $entry['quantity']);
+        if ($stock) {
+            $release = min($release, (float) $stock->reserved_quantity);
+            if ($release > 0) {
+                $stock->decrement('reserved_quantity', $release);
+            }
+        }
+
+        $reservations[$key]['quantity'] = round((float) $entry['quantity'] - min($quantity, (float) $entry['quantity']), 4);
+        $order->update([
+            'metadata' => array_merge($order->metadata ?? [], ['reservations' => $reservations]),
+        ]);
+
+        return $release;
+    }
+
+    /**
+     * Surtido F3: vuelve a apartar mercancia que regreso al almacen (envio
+     * cancelado) para un pedido que sigue vivo. Solo aplica a pedidos con
+     * registro de reservas; aparta en el stock del almacen donde se repuso.
+     */
+    public function restoreItemReservation(SalesOrder $order, int $itemId, float $quantity, int $warehouseId): void
+    {
+        $reservations = $order->metadata['reservations'] ?? null;
+        $item = $order->items()->find($itemId);
+        if (!is_array($reservations) || !$item || $quantity <= 0) {
+            return;
+        }
+
+        $stock = Stock::where('product_id', $item->product_id)
+            ->where('warehouse_id', $warehouseId)
+            ->lockForUpdate()
+            ->first();
+        if (!$stock) {
+            return;
+        }
+
+        $key = (string) $itemId;
+        $current = (float) ($reservations[$key]['quantity'] ?? 0);
+        if ($current > 0 && (int) ($reservations[$key]['stock_id'] ?? 0) !== $stock->id) {
+            // La partida sigue apartada en otro almacen: un registro por partida no
+            // puede llevar dos stocks; la mercancia repuesta queda libre.
+            Log::warning('Reserva no restaurada: la partida esta apartada en otro almacen', [
+                'order_id' => $order->id, 'item_id' => $itemId, 'warehouse_id' => $warehouseId,
+            ]);
+            return;
+        }
+        $stock->increment('reserved_quantity', $quantity);
+        $reservations[$key] = ['stock_id' => $stock->id, 'quantity' => round($current + $quantity, 4)];
+
+        $order->update([
+            'metadata' => array_merge($order->metadata ?? [], ['reservations' => $reservations]),
+        ]);
     }
 
     /**
@@ -514,8 +645,9 @@ class OrderStatusService
      * exit fisico descuenta quantity con la reserva aun viva y available
      * (quantity - reserved) descuenta doble para siempre.
      *
-     * Publico porque el camino de entrega por remision (RemissionController)
-     * actualiza el status de la orden directo y tambien debe liberar.
+     * Con metadata.reservations libera solo lo pendiente de cada partida (lo ya
+     * liberado por remisiones o envios no se suelta dos veces). Sin registro
+     * (pedidos confirmados antes de F2) conserva el criterio anterior.
      *
      * @param SalesOrder $order
      * @return void
@@ -525,6 +657,14 @@ class OrderStatusService
         // Load items if not already loaded
         if (!$order->relationLoaded('items')) {
             $order->load('items');
+        }
+
+        if (is_array($order->metadata['reservations'] ?? null)) {
+            foreach (array_keys($order->metadata['reservations']) as $itemId) {
+                $pending = (float) ($order->metadata['reservations'][$itemId]['quantity'] ?? 0);
+                $this->releaseItemReservation($order, (int) $itemId, $pending);
+            }
+            return;
         }
 
         // Get warehouse ID from order metadata or use default
@@ -556,15 +696,6 @@ class OrderStatusService
                 if ($releaseQty > 0) {
                     $stock->decrement('reserved_quantity', $releaseQty);
                 }
-
-                Log::info('Inventory reservation released for sales order', [
-                    'order_id' => $order->id,
-                    'order_number' => $order->order_number,
-                    'product_id' => $item->product_id,
-                    'quantity' => $item->quantity,
-                    'stock_id' => $stock->id,
-                ]);
-
             } catch (\Exception $e) {
                 Log::error('Failed to release inventory for sales order', [
                     'order_id' => $order->id,

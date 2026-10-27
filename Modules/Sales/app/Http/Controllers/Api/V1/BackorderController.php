@@ -40,20 +40,20 @@ class BackorderController extends Controller
      */
     public function fulfill(Request $request, Backorder $backorder): JsonResponse
     {
-        if (Gate::denies('sales.backorders.update')) {
+        if (Gate::denies('backorders.update')) {
             abort(403, 'No tiene permisos para cumplir backorders');
         }
 
         $request->validate([
             'quantity' => 'required|numeric|min:0.01',
-            'create_shipment' => 'boolean',
+            'create_remission' => 'boolean',
         ]);
 
         try {
             $backorder = $this->backorderService->fulfillBackorder(
                 $backorder,
                 $request->quantity,
-                $request->boolean('create_shipment', false)
+                $request->boolean('create_remission', true)
             );
 
             return response()->json([
@@ -90,7 +90,7 @@ class BackorderController extends Controller
      */
     public function cancel(Request $request, Backorder $backorder): JsonResponse
     {
-        if (Gate::denies('sales.backorders.update')) {
+        if (Gate::denies('backorders.update')) {
             abort(403, 'No tiene permisos para cancelar backorders');
         }
 
@@ -133,7 +133,7 @@ class BackorderController extends Controller
      */
     public function orderSummary(SalesOrder $order): JsonResponse
     {
-        if (Gate::denies('sales.backorders.index')) {
+        if (Gate::denies('backorders.index')) {
             abort(403, 'No tiene permisos para ver resumen de backorders');
         }
 
@@ -154,7 +154,7 @@ class BackorderController extends Controller
      */
     public function fulfillForProduct(Request $request): JsonResponse
     {
-        if (Gate::denies('sales.backorders.update')) {
+        if (Gate::denies('backorders.update')) {
             abort(403, 'No tiene permisos para cumplir backorders');
         }
 
@@ -203,7 +203,7 @@ class BackorderController extends Controller
      */
     public function pendingForProduct(int $productId): JsonResponse
     {
-        if (Gate::denies('sales.backorders.index')) {
+        if (Gate::denies('backorders.index')) {
             abort(403, 'No tiene permisos para ver backorders pendientes');
         }
 

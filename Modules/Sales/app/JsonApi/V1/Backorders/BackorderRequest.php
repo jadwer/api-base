@@ -41,11 +41,6 @@ class BackorderRequest extends ResourceRequest
                 'numeric',
                 'min:0.01',
             ],
-            'fulfilledQuantity' => ['sometimes', 'numeric', 'min:0'],
-            'status' => [
-                'sometimes',
-                Rule::in(['pending', 'partially_fulfilled', 'fulfilled', 'cancelled']),
-            ],
             'priority' => [
                 'sometimes',
                 Rule::in(['low', 'normal', 'high', 'urgent']),
@@ -71,7 +66,6 @@ class BackorderRequest extends ResourceRequest
             'backorderNumber.unique' => 'Este numero de backorder ya existe.',
             'backorderQuantity.required' => 'La cantidad de backorder es requerida.',
             'backorderQuantity.min' => 'La cantidad debe ser mayor a 0.',
-            'status.in' => 'Estado de backorder invalido.',
             'priority.in' => 'Prioridad invalida.',
             'expectedDate.date' => 'La fecha esperada debe ser una fecha valida.',
             'promisedDate.date' => 'La fecha prometida debe ser una fecha valida.',

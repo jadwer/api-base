@@ -42,6 +42,15 @@ class BackorderServiceTest extends TestCase
             'quantity' => $quantity,
         ]);
 
+        // Surtido F4: surtir un backorder crea su remision, que exige existencia.
+        Stock::factory()->create([
+            'product_id' => $product->id,
+            'warehouse_id' => Warehouse::factory()->create()->id,
+            'warehouse_location_id' => null,
+            'quantity' => 100,
+            'reserved_quantity' => 0,
+        ]);
+
         return [$order, $orderItem, $product, $customer];
     }
 
