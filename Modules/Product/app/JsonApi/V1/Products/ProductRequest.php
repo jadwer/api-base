@@ -58,9 +58,11 @@ class ProductRequest extends ResourceRequest
             'saleBadge' => ['nullable', 'string', 'max:50'],
             'imgPath' => ['nullable', 'string', 'max:500', 'not_regex:/\.\./'],
             'datasheetPath' => ['nullable', 'string', 'max:500', 'not_regex:/\.\./'],
-            'unit' => JsonApiRule::toOne(),
-            'category' => JsonApiRule::toOne(),
-            'brand' => JsonApiRule::toOne(),
+            // Columnas NOT NULL: sin ellas el alta daba 500 (E2E 26-10). El
+            // formulario ya las exige; aqui se vuelve 422 con mensaje.
+            'unit' => [$product ? 'sometimes' : 'required', JsonApiRule::toOne()],
+            'category' => [$product ? 'sometimes' : 'required', JsonApiRule::toOne()],
+            'brand' => [$product ? 'sometimes' : 'required', JsonApiRule::toOne()],
             'currency' => ['nullable', JsonApiRule::toOne()],
         ];
     }
@@ -93,6 +95,9 @@ class ProductRequest extends ResourceRequest
     {
         return [
             'price.required' => 'El precio de venta es obligatorio cuando el tipo de precio es fijo.',
+            'unit.required' => 'La unidad de medida es obligatoria.',
+            'category.required' => 'La categoría es obligatoria.',
+            'brand.required' => 'La marca es obligatoria.',
             'price.min' => 'El precio de venta debe ser mayor a 0 cuando el tipo de precio es fijo. Si el producto no tiene precio, usa "Precio sujeto a cotización".',
             'pricingType.in' => 'El tipo de precio debe ser: ' . implode(', ', Product::PRICING_TYPES) . '.',
         ];

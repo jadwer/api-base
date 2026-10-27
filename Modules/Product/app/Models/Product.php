@@ -589,6 +589,14 @@ class Product extends Model
             if ($product->isDirty('iva') && !$product->isDirty('tax_rate')) {
                 $product->tax_rate = $product->iva ? 16 : 0;
             }
+
+            // La API acepta descripciones opcionales pero las columnas son NOT NULL
+            // en prod: sin esto, un alta sin descripcion daba 500 (E2E 26-10).
+            foreach (['description', 'full_description'] as $column) {
+                if ($product->getAttribute($column) === null) {
+                    $product->setAttribute($column, '');
+                }
+            }
         });
     }
 

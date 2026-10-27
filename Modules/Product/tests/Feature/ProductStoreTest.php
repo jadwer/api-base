@@ -74,6 +74,40 @@ class ProductStoreTest extends TestCase
         ]);
     }
 
+    public function test_product_can_be_created_without_descriptions(): void
+    {
+        // Las columnas son NOT NULL y la API las acepta opcionales: antes daba 500.
+        $this->actingAs(User::where('email', 'admin@example.com')->firstOrFail(), 'sanctum');
+
+        $response = $this->jsonApi()
+            ->expects('products')
+            ->withData(['type' => 'products', 'attributes' => [
+                'name' => 'Sin descripcion', 'sku' => 'NO-DESC-001', 'price' => 10, 'iva' => true,
+            ], 'relationships' => [
+                'unit' => ['data' => ['type' => 'units', 'id' => (string) Unit::factory()->create()->id]],
+                'category' => ['data' => ['type' => 'categories', 'id' => (string) Category::factory()->create()->id]],
+                'brand' => ['data' => ['type' => 'brands', 'id' => (string) Brand::factory()->create()->id]],
+            ]])
+            ->post('/api/v1/products');
+
+        $response->assertCreated();
+        $this->assertDatabaseHas('products', ['sku' => 'NO-DESC-001', 'description' => '']);
+    }
+
+    public function test_product_without_unit_category_or_brand_is_rejected_in_spanish(): void
+    {
+        $this->actingAs(User::where('email', 'admin@example.com')->firstOrFail(), 'sanctum');
+
+        $this->jsonApi()
+            ->expects('products')
+            ->withData(['type' => 'products', 'attributes' => [
+                'name' => 'Sin unidad', 'sku' => 'NO-UNIT-001', 'price' => 10, 'iva' => true,
+            ]])
+            ->post('/api/v1/products')
+            ->assertStatus(422)
+            ->assertSee('La unidad de medida es obligatoria.');
+    }
+
     public function test_admin_can_create_internal_product_with_is_public_false(): void
     {
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
