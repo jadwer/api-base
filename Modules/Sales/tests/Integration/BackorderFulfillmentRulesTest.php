@@ -64,7 +64,7 @@ class BackorderFulfillmentRulesTest extends TestCase
     private function shortOrder(): SalesOrder
     {
         $order = SalesOrder::factory()->draft()->create([
-            'contact_id' => Contact::factory()->customer()->create(['status' => 'active'])->id,
+            'contact_id' => Contact::factory()->customer()->create(['status' => 'active', 'credit_limit' => 1000000, 'current_credit' => 0])->id,
             'metadata' => ['warehouse_id' => $this->warehouse->id],
         ]);
         SalesOrderItem::factory()->create([
@@ -154,7 +154,7 @@ class BackorderFulfillmentRulesTest extends TestCase
 
     public function test_order_created_as_confirmed_goes_through_the_state_machine(): void
     {
-        $contact = Contact::factory()->customer()->create(['status' => 'active']);
+        $contact = Contact::factory()->customer()->create(['status' => 'active', 'credit_limit' => 1000000, 'current_credit' => 0]);
 
         $response = $this->actingAs($this->getAdminUser(), 'sanctum')
             ->postJson('/api/v1/sales-orders/with-items', [

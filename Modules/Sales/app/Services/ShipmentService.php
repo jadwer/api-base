@@ -163,7 +163,12 @@ class ShipmentService
                 ]),
             ]);
 
-            // Update order status
+            // Surtido F3: si la mercancia regreso, el pedido retrocede a lo que
+            // sigue fuera (en proceso o confirmado); si no, avanza como antes.
+            $this->orderStatusService->rewindAfterReturn(
+                $shipment->salesOrder->fresh(),
+                "Envio {$shipment->shipment_number} cancelado"
+            );
             $this->updateOrderStatus($shipment->salesOrder);
 
             return $shipment->fresh();

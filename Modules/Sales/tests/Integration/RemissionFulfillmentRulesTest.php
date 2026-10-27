@@ -66,7 +66,7 @@ class RemissionFulfillmentRulesTest extends TestCase
     private function order(float $quantity, string $status = 'confirmed', ?Warehouse $warehouse = null): SalesOrder
     {
         $order = SalesOrder::factory()->draft()->create([
-            'contact_id' => Contact::factory()->customer()->create(['status' => 'active'])->id,
+            'contact_id' => Contact::factory()->customer()->create(['status' => 'active', 'credit_limit' => 1000000, 'current_credit' => 0])->id,
             'metadata' => ['warehouse_id' => ($warehouse ?? $this->warehouse)->id],
         ]);
         SalesOrderItem::factory()->create([

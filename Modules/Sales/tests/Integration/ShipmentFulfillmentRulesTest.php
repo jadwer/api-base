@@ -65,7 +65,7 @@ class ShipmentFulfillmentRulesTest extends TestCase
     private function order(float $quantity = 10): SalesOrder
     {
         $order = SalesOrder::factory()->draft()->create([
-            'contact_id' => Contact::factory()->customer()->create(['status' => 'active'])->id,
+            'contact_id' => Contact::factory()->customer()->create(['status' => 'active', 'credit_limit' => 1000000, 'current_credit' => 0])->id,
             'metadata' => ['warehouse_id' => $this->warehouse->id],
         ]);
         SalesOrderItem::factory()->create([
@@ -139,6 +139,10 @@ class ShipmentFulfillmentRulesTest extends TestCase
         $this->assertEquals(100, (float) $this->stock->fresh()->quantity);
         $this->assertEquals(10, (float) $this->stock->fresh()->reserved_quantity);
 
+        // Con la mercancia de regreso el pedido vuelve a confirmado (no se queda
+        // en enviado, desde donde ya no se podria cancelar).
+        $this->assertSame('confirmed', $order->fresh()->status);
+
         // Cancelar la venta despues no repone esa salida otra vez.
         app(OrderStatusService::class)->updateStatus($order->fresh(), 'cancelled');
         $this->assertEquals(100, (float) $this->stock->fresh()->quantity);
@@ -167,5 +171,20 @@ class ShipmentFulfillmentRulesTest extends TestCase
         $this->assertEquals(0, (float) $this->stock->fresh()->reserved_quantity);
         $this->assertSame(0, InventoryMovement::where('reference_type', 'sales_order')->where('reference_id', $order->id)->count());
         $this->assertSame(1, ARInvoice::where('sales_order_id', $order->id)->count());
+    }
+
+    public function test_cancelling_the_only_shipped_shipment_lets_the_order_be_cancelled(): void
+    {
+        $order = $this->order(3);
+        $shipment = $this->service()->createShipment($order, [$this->itemId($order) => 3]);
+        $this->service()->markAsShipped($shipment->fresh('items'));
+        $this->assertSame('shipped', $order->fresh()->status);
+
+        $this->service()->cancelShipment($shipment->fresh('items'));
+        $this->assertSame('confirmed', $order->fresh()->status);
+
+        app(OrderStatusService::class)->updateStatus($order->fresh(), 'cancelled');
+        $this->assertEquals(100, (float) $this->stock->fresh()->quantity);
+        $this->assertEquals(0, (float) $this->stock->fresh()->reserved_quantity);
     }
 }

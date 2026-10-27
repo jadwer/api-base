@@ -245,6 +245,35 @@ class OrderStatusService
     }
 
     /**
+     * Surtido F3: cuando una salida se revierte (envio embarcado cancelado), el
+     * pedido regresa al estado que corresponde a lo que sigue fuera: en proceso
+     * si algo salio, confirmado si nada. La maquina no tiene transiciones hacia
+     * atras; esta es la unica via y deja historial. Antes el pedido quedaba en
+     * 'shipped' sin mercancia fuera y ya no se podia cancelar (E2E 26-10).
+     */
+    public function rewindAfterReturn(SalesOrder $order, string $notes): SalesOrder
+    {
+        if (!in_array($order->status, ['processing', 'shipped'], true)) {
+            return $order;
+        }
+
+        $order->load('items');
+        $anyOut = $order->items->contains(
+            fn ($i) => $i instanceof \Modules\Sales\Models\SalesOrderItem && $i->notYetOutQuantity() < (float) $i->quantity
+        );
+        $target = $anyOut ? 'processing' : 'confirmed';
+        if ($target === $order->status) {
+            return $order;
+        }
+
+        $old = $order->status;
+        $order->update(['status' => $target]);
+        $this->addStatusHistory($order, $old, $target, $notes);
+
+        return $order->fresh();
+    }
+
+    /**
      * Get available transitions for order
      *
      * @param SalesOrder $order
