@@ -177,6 +177,22 @@ class PurchaseOrderController extends Controller
             'notes' => 'nullable|string|max:500',
         ]);
 
+        // E2E 26-10: sin aprobacion pendiente respondia 403 "sin permisos", que
+        // despista; la orden no requiere (o ya tiene) decision de aprobacion.
+        if ($purchaseOrder->approval_status !== 'pending') {
+            return response()->json([
+                'errors' => [[
+                    'status' => '422',
+                    'title' => 'Aprobacion no aplicable',
+                    'detail' => match ($purchaseOrder->approval_status) {
+                        'approved' => 'La orden de compra ya está aprobada.',
+                        'rejected' => 'La orden de compra fue rechazada.',
+                        default => 'Esta orden de compra no requiere aprobación; puedes recibirla directamente.',
+                    },
+                ]],
+            ], 422);
+        }
+
         try {
             $userId = $request->user()->id;
             $notes = $request->input('notes', '');

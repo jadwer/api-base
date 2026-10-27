@@ -66,6 +66,14 @@ class PurchaseOrderReceiveRulesTest extends TestCase
         $this->assertEquals(0, (float) $item->fresh()->received_quantity);
     }
 
+    public function test_approving_an_order_that_needs_no_approval_says_so(): void
+    {
+        [$po] = $this->order(['status' => 'pending', 'approval_status' => 'not_required']);
+
+        $this->postJson("/api/v1/purchase-orders/{$po->id}/approve")->assertStatus(422)
+            ->assertJsonPath('errors.0.detail', 'Esta orden de compra no requiere aprobación; puedes recibirla directamente.');
+    }
+
     public function test_tolerance_comes_from_config(): void
     {
         config(['purchase.receiving_tolerance_percent' => 10]);
@@ -103,7 +111,7 @@ class PurchaseOrderReceiveRulesTest extends TestCase
             'spent_amount' => 0,
             'hard_limit' => true,
         ]);
-        [$po] = $this->order(['status' => 'pending', 'approval_status' => 'not_required']);
+        [$po] = $this->order(['status' => 'pending', 'approval_status' => 'pending']);
 
         $response = $this->postJson("/api/v1/purchase-orders/{$po->id}/approve")->assertStatus(200);
 
