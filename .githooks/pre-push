@@ -33,6 +33,8 @@ if [ -n "$other" ]; then
     php artisan test --parallel --processes=6
 elif [ -n "$modules" ]; then
     echo "pre-push: pruebas de" $modules
-    # shellcheck disable=SC2086
-    php artisan test --parallel --processes=6 $modules tests/Feature/Contracts
+    # artisan test --parallel acepta una sola ruta: una corrida por modulo
+    for path in $modules tests/Feature/Contracts; do
+        php artisan test --parallel --processes=6 "$path" || exit 1
+    done
 fi
