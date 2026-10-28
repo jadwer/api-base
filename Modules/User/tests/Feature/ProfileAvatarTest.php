@@ -48,6 +48,25 @@ class ProfileAvatarTest extends TestCase
         $this->actingAs($user, 'sanctum')->postJson('/api/v1/profile/avatar', ['preset' => 9])->assertStatus(422);
     }
 
+    public function test_choose_a_generator_recipe(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user, 'sanctum')
+            ->postJson('/api/v1/profile/avatar', ['recipe' => 'avatar:1:2.1.1.0.0.0.0'])
+            ->assertOk()
+            ->assertJsonPath('data.attributes.avatar', 'avatar:1:2.1.1.0.0.0.0');
+
+        $this->actingAs($user, 'sanctum')->getJson('/api/v1/profile')->assertJsonPath('data.attributes.avatar', 'avatar:1:2.1.1.0.0.0.0');
+
+        foreach (['avatar:1:2.1.1', 'avatar:1:2.1.1.0.0.0.0.0', 'javascript:alert(1)', '<svg/>'] as $bad) {
+            $this->actingAs($user, 'sanctum')
+                ->postJson('/api/v1/profile/avatar', ['recipe' => $bad])
+                ->assertStatus(422)
+                ->assertJsonPath('errors.recipe.0', 'El avatar armado no es valido.');
+        }
+    }
+
     public function test_upload_photo_replaces_previous_and_can_be_removed(): void
     {
         Storage::fake('public');

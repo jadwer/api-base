@@ -16,11 +16,16 @@ use Modules\User\Models\User;
  *   validar: cualquier usuario podia cambiarse su estado o poner cualquier
  *   correo (bug H3). Ahora solo el nombre, validado. El correo y el estado
  *   se administran desde Usuarios.
- * - avatar: "preset:N" (avatares ilustrados de diseno) o foto subida.
+ * - avatar: "preset:N" (avatares ilustrados de diseno), receta del
+ *   generador "avatar:1:<piel>.<peinado>.<pelo>.<fondo>.<ropa>.<color>.<accesorio>"
+ *   (mismo contrato que D.17 de AtomoPlatform; el SVG lo dibuja el frontend)
+ *   o foto subida.
  */
 class ProfileController extends Controller
 {
     public const PRESET_COUNT = 8;
+
+    public const RECIPE_PATTERN = '/^avatar:1:\d{1,2}(?:\.\d{1,2}){6}$/';
 
     public function update(Request $request): JsonResponse
     {
@@ -38,7 +43,7 @@ class ProfileController extends Controller
         return response()->json(['data' => $this->payload($user)]);
     }
 
-    /** POST profile/avatar (multipart "avatar") o JSON {"preset": 1..8}. */
+    /** POST profile/avatar (multipart "avatar"), JSON {"preset": 1..8} o {"recipe": "avatar:1:..."}. */
     public function updateAvatar(Request $request): JsonResponse
     {
         /** @var User $user */
@@ -60,6 +65,16 @@ class ProfileController extends Controller
             );
             $this->deleteUploaded($user);
             $user->forceFill(['avatar' => $path])->save();
+        } elseif ($request->has('recipe')) {
+            $data = $request->validate([
+                'recipe' => ['required', 'string', 'regex:' . self::RECIPE_PATTERN],
+            ], [
+                'recipe.required' => 'Arma tu avatar o sube una foto.',
+                'recipe.string' => 'El avatar armado no es valido.',
+                'recipe.regex' => 'El avatar armado no es valido.',
+            ]);
+            $this->deleteUploaded($user);
+            $user->forceFill(['avatar' => $data['recipe']])->save();
         } else {
             $data = $request->validate([
                 'preset' => ['required', 'integer', 'min:1', 'max:' . self::PRESET_COUNT],
@@ -85,13 +100,13 @@ class ProfileController extends Controller
         return response()->json(['data' => $this->payload($user)]);
     }
 
-    /** Valor publico del avatar: "preset:N", URL absoluta de la foto o null. */
+    /** Valor publico del avatar: "preset:N", receta, URL absoluta de la foto o null. */
     public static function avatarValue(?string $avatar): ?string
     {
         if (! $avatar) {
             return null;
         }
-        if (str_starts_with($avatar, 'preset:')) {
+        if (! self::isUploaded($avatar)) {
             return $avatar;
         }
 
@@ -100,9 +115,15 @@ class ProfileController extends Controller
 
     private function deleteUploaded(User $user): void
     {
-        if ($user->avatar && ! str_starts_with($user->avatar, 'preset:')) {
+        if ($user->avatar && self::isUploaded($user->avatar)) {
             Storage::disk('public')->delete($user->avatar);
         }
+    }
+
+    /** Los presets y las recetas no son archivos: no se borran ni se vuelven URL. */
+    private static function isUploaded(string $avatar): bool
+    {
+        return ! str_starts_with($avatar, 'preset:') && ! str_starts_with($avatar, 'avatar:');
     }
 
     private function payload(User $user): array
