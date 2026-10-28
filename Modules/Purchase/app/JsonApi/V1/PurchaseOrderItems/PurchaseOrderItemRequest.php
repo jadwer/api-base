@@ -21,7 +21,12 @@ class PurchaseOrderItemRequest extends ResourceRequest
             'purchaseOrderId' => [$creating ? 'required' : 'sometimes', 'exists:purchase_orders,id'],
             'productId' => [$creating ? 'required' : 'sometimes', 'exists:products,id'],
             'quantity' => [$creating ? 'required' : 'sometimes', 'numeric', 'min:0.01'],
-            'unitPrice' => [$creating ? 'required' : 'sometimes', 'numeric', 'min:0'],
+            'unitPrice' => [$creating ? 'required' : 'sometimes', 'numeric', 'min:0', function (string $attribute, mixed $value, \Closure $fail) {
+                $metadata = $this->validationData()['metadata'] ?? [];
+                if ((float) $value <= 0 && empty($metadata['no_charge'])) {
+                    $fail(\Modules\Purchase\Support\NoChargeItem::MESSAGE);
+                }
+            }],
             'discount' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'subtotal' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'total' => ['sometimes', 'nullable', 'numeric', 'min:0'],

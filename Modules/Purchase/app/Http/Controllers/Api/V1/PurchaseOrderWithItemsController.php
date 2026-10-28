@@ -36,7 +36,16 @@ class PurchaseOrderWithItemsController extends Controller
             'items' => ['required', 'array', 'min:1', 'max:500'],
             'items.*.product_id' => ['required', 'integer', 'exists:products,id'],
             'items.*.quantity' => ['required', 'numeric', 'gt:0'],
-            'items.*.unit_price' => ['required', 'numeric', 'min:0'],
+            // Costo 0 solo en partidas marcadas sin costo (muestra o bonificacion):
+            // un precio olvidado entraba al inventario a costo 0 y bajaba el
+            // costo promedio sin que nadie lo notara (VAM 2026-10-28).
+            'items.*.unit_price' => ['required', 'numeric', 'min:0', function (string $attribute, mixed $value, \Closure $fail) use ($request) {
+                $index = explode('.', $attribute)[1] ?? null;
+                if ((float) $value <= 0 && ! $request->boolean("items.{$index}.no_charge")) {
+                    $fail(\Modules\Purchase\Support\NoChargeItem::MESSAGE);
+                }
+            }],
+            'items.*.no_charge' => ['nullable', 'boolean'],
             'items.*.discount' => ['nullable', 'numeric', 'min:0'],
         ], [], [
             'contact_id' => 'proveedor',
@@ -67,6 +76,7 @@ class PurchaseOrderWithItemsController extends Controller
                     'quantity' => $item['quantity'],
                     'unit_price' => $item['unit_price'],
                     'discount' => $item['discount'] ?? 0,
+                    'metadata' => ! empty($item['no_charge']) ? ['no_charge' => true] : null,
                 ]);
             }
 

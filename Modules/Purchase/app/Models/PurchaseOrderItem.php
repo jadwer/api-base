@@ -65,7 +65,8 @@ class PurchaseOrderItem extends Model
 
         // Calcular subtotal y total automáticamente antes de guardar
         static::saving(function ($item) {
-            if ($item->quantity && $item->unit_price) {
+            // unit_price 0 es valido en partidas sin costo: se compara con null, no por verdad.
+            if ($item->quantity && $item->unit_price !== null) {
                 $item->subtotal = round($item->quantity * $item->unit_price, 2);
                 if ((float) ($item->discount ?? 0) > $item->subtotal) {
                     throw \Illuminate\Validation\ValidationException::withMessages([
