@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\DB;
 
 class SalesReportService
 {
+    /** Pedidos que ya son venta: de confirmado a completado (antes solo contaba confirmed y completed). */
+    private const SOLD_STATUSES = ['confirmed', 'processing', 'shipped', 'delivered', 'completed'];
+
     /**
      * Generate Sales by Customer Report
      *
@@ -22,16 +25,18 @@ class SalesReportService
             $startDate->toDateString(),
             $endDate->toDateString()
         ])
-            ->whereIn('status', ['confirmed', 'completed'])
-            ->with('customer')
+            ->whereIn('status', self::SOLD_STATUSES)
+            ->with('contact')
             ->get();
 
         $customerSales = [];
         $totalSales = 0;
 
         foreach ($salesOrders as $order) {
-            $customerId = $order->customer_id;
-            $customerName = $order->customer->name ?? 'Unknown Customer';
+            // El pedido guarda al cliente en contact_id; customer_id no existe y
+            // juntaba a todos los clientes en una sola fila.
+            $customerId = $order->contact_id;
+            $customerName = $order->contact->name ?? 'Cliente sin nombre';
 
             if (!isset($customerSales[$customerId])) {
                 $customerSales[$customerId] = [
@@ -80,7 +85,7 @@ class SalesReportService
                 $startDate->toDateString(),
                 $endDate->toDateString()
             ])
-                ->whereIn('status', ['confirmed', 'completed']);
+                ->whereIn('status', self::SOLD_STATUSES);
         })
             ->with('product')
             ->get();
@@ -91,8 +96,8 @@ class SalesReportService
 
         foreach ($orderItems as $item) {
             $productId = $item->product_id;
-            $productName = $item->product->name ?? 'Unknown Product';
-            $productCode = $item->product->code ?? '';
+            $productName = $item->product->name ?? 'Producto sin nombre';
+            $productCode = $item->product->sku ?? '';
 
             if (!isset($productSales[$productId])) {
                 $productSales[$productId] = [
@@ -105,9 +110,10 @@ class SalesReportService
             }
 
             $productSales[$productId]['quantity_sold'] += $item->quantity;
-            $productSales[$productId]['total_revenue'] += $item->subtotal;
+            // La partida de venta guarda su importe en total (no hay subtotal).
+            $productSales[$productId]['total_revenue'] += $item->total;
             $totalQuantity += $item->quantity;
-            $totalRevenue += $item->subtotal;
+            $totalRevenue += $item->total;
         }
 
         // Sort by total revenue descending

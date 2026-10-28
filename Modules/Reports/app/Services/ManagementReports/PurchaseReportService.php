@@ -22,15 +22,17 @@ class PurchaseReportService
             $endDate->toDateString()
         ])
             ->whereIn('status', ['approved', 'received'])
-            ->with('supplier')
+            ->with('contact')
             ->get();
 
         $supplierPurchases = [];
         $totalPurchases = 0;
 
         foreach ($purchaseOrders as $order) {
-            $supplierId = $order->supplier_id;
-            $supplierName = $order->supplier->name ?? 'Unknown Supplier';
+            // La orden guarda al proveedor en contact_id; supplier_id no existe y
+            // juntaba a todos los proveedores en una sola fila.
+            $supplierId = $order->contact_id;
+            $supplierName = $order->contact->name ?? 'Proveedor sin nombre';
 
             if (!isset($supplierPurchases[$supplierId])) {
                 $supplierPurchases[$supplierId] = [
@@ -90,8 +92,8 @@ class PurchaseReportService
 
         foreach ($orderItems as $item) {
             $productId = $item->product_id;
-            $productName = $item->product->name ?? 'Unknown Product';
-            $productCode = $item->product->code ?? '';
+            $productName = $item->product->name ?? 'Producto sin nombre';
+            $productCode = $item->product->sku ?? '';
 
             if (!isset($productPurchases[$productId])) {
                 $productPurchases[$productId] = [

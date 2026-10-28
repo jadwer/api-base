@@ -21,6 +21,7 @@ use Modules\Sales\Models\FolioSequence;
 
 /**
  * @property int $id
+ * @property int $contact_id
  * @property string $order_number
  * @property string $status
  * @property float|null $total_amount

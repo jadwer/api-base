@@ -8,6 +8,9 @@ use Carbon\Carbon;
 
 class AgingReportService
 {
+    /** Facturas que no son deuda viva: borrador, anuladas y canceladas. */
+    private const EXCLUDED_STATUSES = ['draft', 'void', 'voided', 'cancelled'];
+
     /**
      * Generate Accounts Receivable Aging Report
      *
@@ -16,10 +19,9 @@ class AgingReportService
      */
     public function generateAR(Carbon $asOfDate): array
     {
-        $invoices = ARInvoice::where('status', '!=', 'draft')
-            ->where('status', '!=', 'voided')
+        $invoices = ARInvoice::whereNotIn('status', self::EXCLUDED_STATUSES)
             ->whereDate('invoice_date', '<=', $asOfDate->toDateString())
-            ->with('customer')
+            ->with('contact')
             ->get();
 
         $customerAging = [];
@@ -42,8 +44,10 @@ class AgingReportService
             $daysOverdue = $asOfDate->diffInDays(Carbon::parse($invoice->due_date), false);
             $bucket = $this->getAgingBucket($daysOverdue);
 
-            $customerId = $invoice->customer_id;
-            $customerName = $invoice->customer->name ?? 'Unknown Customer';
+            // La factura guarda al cliente en contact_id; customer_id no existe y
+            // juntaba a todos los clientes en una sola fila.
+            $customerId = $invoice->contact_id;
+            $customerName = $invoice->contact->name ?? 'Cliente sin nombre';
 
             if (!isset($customerAging[$customerId])) {
                 $customerAging[$customerId] = [
@@ -81,10 +85,9 @@ class AgingReportService
      */
     public function generateAP(Carbon $asOfDate): array
     {
-        $invoices = APInvoice::where('status', '!=', 'draft')
-            ->where('status', '!=', 'voided')
+        $invoices = APInvoice::whereNotIn('status', self::EXCLUDED_STATUSES)
             ->whereDate('invoice_date', '<=', $asOfDate->toDateString())
-            ->with('supplier')
+            ->with('contact')
             ->get();
 
         $supplierAging = [];
@@ -107,8 +110,8 @@ class AgingReportService
             $daysOverdue = $asOfDate->diffInDays(Carbon::parse($invoice->due_date), false);
             $bucket = $this->getAgingBucket($daysOverdue);
 
-            $supplierId = $invoice->supplier_id;
-            $supplierName = $invoice->supplier->name ?? 'Unknown Supplier';
+            $supplierId = $invoice->contact_id;
+            $supplierName = $invoice->contact->name ?? 'Proveedor sin nombre';
 
             if (!isset($supplierAging[$supplierId])) {
                 $supplierAging[$supplierId] = [

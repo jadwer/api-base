@@ -11,6 +11,9 @@ use Modules\Accounting\Models\JournalEntry;
 use Modules\Contacts\Models\Contact;
 use Modules\Purchase\Models\PurchaseOrder;
 
+/**
+ * @property int $contact_id
+ */
 class APInvoice extends Model
 {
     use HasFactory, HasPermissions, LogsActivity;
