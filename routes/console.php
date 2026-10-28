@@ -20,6 +20,9 @@ Schedule::command('currency:update-rates')->dailyAt('13:00')->timezone('America/
 // Cancelaciones de CFDI en proceso: consulta al SAT cada dos horas (Gabino 2026-10-22)
 Schedule::command('cfdi:check-cancellations')->everyTwoHours()->withoutOverlapping();
 
+// Cotizaciones enviadas con la vigencia cumplida pasan a vencidas (2026-10-28)
+Schedule::command('quotes:expire')->dailyAt('00:30')->timezone('America/Mexico_City');
+
 // WS9: Refresh SAT catalogs monthly from phpcfdi/resources-sat-catalogs
 Schedule::command('sat:sync-catalogs')->monthlyOn(1, '02:30')->timezone('America/Mexico_City');
 

@@ -48,6 +48,7 @@ class SalesServiceProvider extends ServiceProvider
     {
         $this->commands([
             \Modules\Sales\Console\SyncFoliosCommand::class,
+            \Modules\Sales\Console\ExpireQuotesCommand::class,
         ]);
     }
 

@@ -272,6 +272,14 @@ class QuoteController extends Controller
         // El cliente del portal solo acepta cotizaciones enviadas.
         $acceptable = Gate::allows('quotes.update') ? ['draft', 'sent'] : ['sent'];
 
+        // Una cotizacion enviada y vencida ya no se acepta: los precios y la
+        // vigencia que promete el PDF caducaron. Se duplica para renovarla.
+        if ($quote->status === 'expired' || ($quote->status === 'sent' && $quote->isExpired)) {
+            return response()->json([
+                'error' => 'La cotización venció el ' . $quote->valid_until?->format('d/m/Y') . '. Duplícala para renovar la vigencia.'
+            ], 422);
+        }
+
         if (!in_array($quote->status, $acceptable, true)) {
             return response()->json([
                 'error' => 'Esta cotización no se puede aceptar en su estado actual.'
@@ -410,6 +418,15 @@ class QuoteController extends Controller
         }
 
         return DB::transaction(function () use ($request, $quote, $validated, $orderType, $paymentMethod, $creditDays, $insufficientItems) {
+            // Dos conversiones a la vez (doble clic, dos pestanas) creaban dos
+            // pedidos: se bloquea la fila y se revisa otra vez dentro.
+            $locked = Quote::query()->whereKey($quote->id)->lockForUpdate()->first();
+            if (! $locked || ! $locked->canBeConverted) {
+                return response()->json([
+                    'error' => 'La cotización ya se convirtió en pedido.'
+                ], 409);
+            }
+
             // Create sales order from quote
             $order = SalesOrder::create([
                 'contact_id' => $quote->contact_id,
@@ -456,9 +473,12 @@ class QuoteController extends Controller
                 ]);
             }
 
+            // El pedido nace con su primer paso en el historial.
+            $statusService = app(\Modules\Sales\Services\OrderStatusService::class);
+            $statusService->addStatusHistory($order, '', $order->status, "Creado desde la cotización {$quote->quote_number}");
+
             if ($orderType === 'direct_sale') {
-                $order = app(\Modules\Sales\Services\OrderStatusService::class)
-                    ->updateStatus($order, 'confirmed', "Venta directa desde la cotizacion {$quote->quote_number}");
+                $order = $statusService->updateStatus($order->fresh(), 'confirmed', "Venta directa desde la cotización {$quote->quote_number}");
             }
 
             // Update quote status
@@ -533,7 +553,8 @@ class QuoteController extends Controller
         }
 
         return DB::transaction(function () use ($quote) {
-            $newQuote = $quote->replicate(['quote_number', 'status', 'sent_at', 'accepted_at', 'rejected_at', 'converted_at', 'sales_order_id']);
+            // La copia no hereda vinculos (pedido, orden de compra, carrito) ni fechas de estado.
+            $newQuote = $quote->replicate(['quote_number', 'status', 'sent_at', 'accepted_at', 'rejected_at', 'converted_at', 'sales_order_id', 'purchase_order_id', 'shopping_cart_id']);
             $newQuote->quote_number = Quote::generateQuoteNumber();
             $newQuote->status = 'draft';
             $newQuote->quote_date = now();

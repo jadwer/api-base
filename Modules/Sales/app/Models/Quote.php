@@ -209,7 +209,7 @@ class Quote extends Model
     // Computed Attributes
     public function getIsExpiredAttribute(): bool
     {
-        return $this->valid_until && $this->valid_until->isPast();
+        return $this->valid_until && $this->valid_until->copy()->endOfDay()->isPast();
     }
 
     public function getCanBeSentAttribute(): bool
