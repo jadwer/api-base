@@ -11,6 +11,11 @@ use Spatie\Activitylog\LogOptions;
 /**
  * @property \Carbon\Carbon|string|null $date
  * @property \Carbon\Carbon|string|null $accounting_date
+ * @property string $status
+ * @property string|null $number
+ * @property \Carbon\Carbon|null $posted_at
+ * @property float $total_debit
+ * @property float $total_credit
  */
 class JournalEntry extends Model
 {

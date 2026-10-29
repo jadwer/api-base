@@ -8,6 +8,9 @@ use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
+/**
+ * @property bool $is_active
+ */
 class PaymentApplication extends Model
 {
     use HasFactory, HasPermissions, LogsActivity;

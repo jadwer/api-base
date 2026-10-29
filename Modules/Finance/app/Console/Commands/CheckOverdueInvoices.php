@@ -25,6 +25,13 @@ use Illuminate\Support\Facades\Log;
 class CheckOverdueInvoices extends Command
 {
     /**
+     * Estados que el cron nunca pasa a vencida: liquidadas, ya vencidas,
+     * anuladas (las tres grafias del codebase) y borradores sin poliza.
+     * Antes solo excluia paid/overdue/cancelled y revivia las anuladas.
+     */
+    private const SKIPPED_STATUSES = ['paid', 'overdue', 'cancelled', 'void', 'voided', 'draft'];
+
+    /**
      * The name and signature of the console command.
      *
      * @var string
@@ -96,9 +103,7 @@ class CheckOverdueInvoices extends Command
         $this->line('Processing AR Invoices (Accounts Receivable)...');
 
         // Find invoices that are overdue but not marked as such
-        $overdueInvoices = ARInvoice::where('status', '!=', 'paid')
-            ->where('status', '!=', 'overdue')
-            ->where('status', '!=', 'cancelled')
+        $overdueInvoices = ARInvoice::whereNotIn('status', self::SKIPPED_STATUSES)
             ->where('due_date', '<', now()->toDateString())
             ->where('is_active', true)
             ->get();
@@ -118,7 +123,7 @@ class CheckOverdueInvoices extends Command
                         $invoice->contact->name ?? 'N/A',
                         $invoice->due_date?->format('Y-m-d') ?? 'N/A',
                         '$' . number_format($invoice->total_amount, 2),
-                        now()->diffInDays($invoice->due_date) . ' days',
+                        (int) $invoice->due_date->diffInDays(now()) . ' days',
                     ];
                 })
             );
@@ -149,9 +154,7 @@ class CheckOverdueInvoices extends Command
         $this->line('Processing AP Invoices (Accounts Payable)...');
 
         // Find invoices that are overdue but not marked as such
-        $overdueInvoices = APInvoice::where('status', '!=', 'paid')
-            ->where('status', '!=', 'overdue')
-            ->where('status', '!=', 'cancelled')
+        $overdueInvoices = APInvoice::whereNotIn('status', self::SKIPPED_STATUSES)
             ->where('due_date', '<', now()->toDateString())
             ->where('is_active', true)
             ->get();
@@ -171,7 +174,7 @@ class CheckOverdueInvoices extends Command
                         $invoice->contact->name ?? 'N/A',
                         $invoice->due_date?->format('Y-m-d') ?? 'N/A',
                         '$' . number_format($invoice->total_amount, 2),
-                        now()->diffInDays($invoice->due_date) . ' days',
+                        (int) $invoice->due_date->diffInDays(now()) . ' days',
                     ];
                 })
             );
@@ -234,7 +237,7 @@ class CheckOverdueInvoices extends Command
                     return [
                         $customer->name,
                         '$' . number_format($overdueAmount, 2),
-                        $oldestInvoice ? now()->diffInDays($oldestInvoice->due_date) . ' days' : 'N/A',
+                        $oldestInvoice ? (int) $oldestInvoice->due_date->diffInDays(now()) . ' days' : 'N/A',
                         'Credit Hold',
                     ];
                 })

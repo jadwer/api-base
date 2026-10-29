@@ -7,6 +7,8 @@ use Modules\Finance\Models\APInvoice;
 
 class APAgingReportService
 {
+    private const EXCLUDED_STATUSES = ['paid', 'draft', 'void', 'voided', 'cancelled'];
+
     /**
      * Generate AP Aging Report
      *
@@ -16,13 +18,16 @@ class APAgingReportService
      */
     public function generate(Carbon $asOfDate, string $currency = 'MXN'): array
     {
-        $invoices = APInvoice::where('status', '!=', 'paid')
+        // Solo facturas vivas con saldo en la moneda pedida (antes contaba
+        // borradores, anuladas y canceladas y mezclaba monedas).
+        $invoices = APInvoice::whereNotIn('status', self::EXCLUDED_STATUSES)
             ->where('invoice_date', '<=', $asOfDate)
+            ->where(fn ($q) => $q->where('currency', $currency)->orWhereNull('currency'))
             ->with('supplier')
             ->get();
 
         $agingBuckets = [
-            'current' => [],      // 0-30 days
+            'current' => [],      // por vencer o hasta 30 dias de atraso
             'days_31_60' => [],   // 31-60 days
             'days_61_90' => [],   // 61-90 days
             'over_90' => [],      // 90+ days
@@ -36,7 +41,11 @@ class APAgingReportService
         ];
 
         foreach ($invoices as $invoice) {
-            $daysOutstanding = $asOfDate->diffInDays(Carbon::parse($invoice->invoice_date));
+            // Dias de atraso contra el vencimiento. Carbon 3 devuelve diffInDays
+            // con signo: el calculo anterior (fecha de corte contra fecha de
+            // factura) daba negativo y todo caia en "corriente".
+            $dueDate = Carbon::parse($invoice->due_date ?? $invoice->invoice_date);
+            $daysOutstanding = max(0, (int) floor($dueDate->diffInDays($asOfDate, false)));
             $remainingBalance = $invoice->total_amount - $invoice->paid_amount;
 
             if ($remainingBalance <= 0.01) {

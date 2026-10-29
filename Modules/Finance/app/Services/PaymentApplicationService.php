@@ -44,6 +44,11 @@ class PaymentApplicationService
     public function applyPayment(Payment $payment, ARInvoice $invoice, float $amount): PaymentApplication
     {
         return DB::transaction(function () use ($payment, $invoice, $amount) {
+            // Dos cobros simultaneos validaban contra el mismo saldo viejo y
+            // ambos pasaban (sobrepago). Se bloquean factura y pago y se
+            // releen dentro de la transaccion antes de validar.
+            $this->lockAndRefresh($invoice, $payment);
+
             // 1. Validaciones de negocio
             $this->validatePaymentApplication($payment, $invoice, $amount);
 
@@ -110,11 +115,19 @@ class PaymentApplicationService
     public function unapplyPayment(PaymentApplication $application): bool
     {
         return DB::transaction(function () use ($application) {
-            // Load relationships if not already loaded
+            PaymentApplication::whereKey($application->getKey())->lockForUpdate()->first();
+            $application->refresh();
+
+            // Revertir dos veces la misma aplicacion restaba el abono doble.
+            if (!$application->is_active) {
+                throw new \Exception('Esta aplicación de pago ya fue revertida.');
+            }
+
             $application->load(['payment', 'aRInvoice']);
 
             $payment = $application->payment;
             $invoice = $application->aRInvoice;
+            $this->lockAndRefresh($invoice, $payment);
             $amount = $application->amount;
 
             $wasPaid = $invoice->status === 'paid';
@@ -154,6 +167,18 @@ class PaymentApplicationService
 
             return true;
         });
+    }
+
+    /**
+     * Bloquea la factura y el pago (SELECT ... FOR UPDATE) y recarga los
+     * modelos que recibio el llamador para que vea los saldos vigentes.
+     */
+    private function lockAndRefresh(ARInvoice $invoice, Payment $payment): void
+    {
+        ARInvoice::whereKey($invoice->getKey())->lockForUpdate()->first();
+        Payment::whereKey($payment->getKey())->lockForUpdate()->first();
+        $invoice->refresh();
+        $payment->refresh();
     }
 
     /**

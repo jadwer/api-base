@@ -51,7 +51,7 @@ class APInvoiceAuthorizer implements Authorizer
         }
 
         // Paquete B: un documento con efectos contables o cobros no se borra.
-        $reason = \Modules\Finance\Support\FinancialDeletionGuard::reason($model, ['posted', 'partial', 'paid', 'void', 'voided', 'cancelled'], ['paid_amount']);
+        $reason = \Modules\Finance\Support\FinancialDeletionGuard::reason($model, ['posted', 'partial', 'paid', 'overdue', 'void', 'voided', 'cancelled'], ['paid_amount']);
 
         return $reason ? Response::deny($reason) : true;
     }

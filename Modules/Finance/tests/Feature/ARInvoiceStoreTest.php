@@ -41,7 +41,7 @@ class ARInvoiceStoreTest extends TestCase
                 'taxAmount' => 16.00,
                 'totalAmount' => 116.00,
                 'paidAmount' => 0.00,
-                'status' => 'pending',
+                'status' => 'draft',
                 'notes' => 'Test AR invoice',
                 'metadata' => ['test' => 'value'],
                 'isActive' => true
@@ -60,7 +60,7 @@ class ARInvoiceStoreTest extends TestCase
             'invoice_number' => 'INV-AR-001',
             'contact_id' => $customer->id,
             'currency' => 'USD',
-            'status' => 'pending',
+            'status' => 'draft',
             'is_active' => true
         ]);
     }

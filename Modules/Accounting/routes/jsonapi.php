@@ -36,6 +36,8 @@ JsonApiRoute::server('v1')
 
 // AC-M001: Period Close Checklist custom endpoints
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
+    Route::post('journal-entries/{journalEntry}/post', [JournalEntryController::class, 'post'])
+        ->name('journal-entries.post');
     Route::get('fiscal-periods/{fiscalPeriod}/close-checklist', [FiscalPeriodController::class, 'closeChecklist'])
         ->name('fiscal-periods.close-checklist');
     Route::post('fiscal-periods/{fiscalPeriod}/close', [FiscalPeriodController::class, 'close'])

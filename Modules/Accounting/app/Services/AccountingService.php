@@ -143,6 +143,10 @@ class AccountingService
         $totalDebit = $entry->journalLines()->sum('debit');
         $totalCredit = $entry->journalLines()->sum('credit');
 
+        if ($totalDebit <= 0) {
+            throw new Exception('La póliza no tiene importes: agrega al menos un cargo y un abono.');
+        }
+
         if (abs($totalDebit - $totalCredit) > 0.01) {
             throw new Exception(
                 "La póliza no cuadra. Cargos: {$totalDebit}, abonos: {$totalCredit}."
@@ -174,6 +178,14 @@ class AccountingService
                 "No se puede contabilizar en el periodo cerrado {$period->name}."
             );
         }
+
+        $date = $entry->date?->toDateString();
+        if ($date && $period->start_date && $period->end_date
+            && ($date < $period->start_date->toDateString() || $date > $period->end_date->toDateString())) {
+            throw new Exception(
+                "La fecha de la póliza ({$date}) está fuera del periodo {$period->name}."
+            );
+        }
     }
 
     /**
@@ -188,18 +200,18 @@ class AccountingService
 
         foreach ($lines as $line) {
             if (!$line->account) {
-                throw new Exception("Journal line {$line->id} has no account assigned");
+                throw new Exception("La línea {$line->id} de la póliza no tiene cuenta asignada.");
             }
 
             if (!$line->account->is_postable) {
                 throw new Exception(
-                    "Account {$line->account->code} - {$line->account->name} is not postable"
+                    "La cuenta {$line->account->code} - {$line->account->name} no es de detalle (no acepta movimientos)."
                 );
             }
 
             if ($line->account->status !== 'active') {
                 throw new Exception(
-                    "Account {$line->account->code} - {$line->account->name} is not active"
+                    "La cuenta {$line->account->code} - {$line->account->name} está inactiva."
                 );
             }
         }

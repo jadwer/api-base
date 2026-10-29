@@ -33,7 +33,7 @@ class FiscalPeriodRequest extends ResourceRequest
             'name.required' => 'El campo nombre es obligatorio.',
             'name.string' => 'El campo nombre debe ser texto.',
             'name.max' => 'El campo nombre no puede tener más de 255 caracteres.',
-            'name.unique' => 'Este Name ya está en uso.',
+            'name.unique' => 'Este nombre ya está en uso.',
             'year.required' => 'El campo año es obligatorio.',
             'year.integer' => 'El campo año debe ser un número entero.',
             'month.required' => 'El campo mes es obligatorio.',

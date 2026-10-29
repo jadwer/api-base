@@ -6,6 +6,7 @@ use Modules\Inventory\Models\ProductBatch;
 use Modules\Inventory\Models\InventoryMovement;
 use Modules\Product\Models\Product;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use App\Support\DatabaseCompatibilityHelper as DBHelper;
 
@@ -339,7 +340,7 @@ class LotTraceabilityService
             ->orderBy('expiration_date', 'asc')
             ->get()
             ->map(function ($batch) {
-                $daysExpired = now()->diffInDays($batch->expiration_date);
+                $daysExpired = (int) Carbon::parse($batch->expiration_date)->diffInDays(now());
                 return [
                     'batch_id' => $batch->id,
                     'batch_number' => $batch->batch_number,

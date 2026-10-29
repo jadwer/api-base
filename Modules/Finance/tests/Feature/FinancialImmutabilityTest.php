@@ -64,6 +64,25 @@ class FinancialImmutabilityTest extends TestCase
         $this->assertEquals(116.0, (float) $invoice->fresh()->total_amount);
     }
 
+    public function test_overdue_ar_invoice_rejects_amount_changes(): void
+    {
+        // Auditoria 2026-10 punto 3: "overdue" no estaba en los inmutables.
+        $invoice = $this->makeARInvoice(['status' => 'overdue']);
+
+        $response = $this->patchAR($invoice, [
+            'invoiceNumber' => $invoice->invoice_number,
+            'invoiceDate' => '2026-08-01',
+            'dueDate' => '2026-08-31',
+            'contactId' => $invoice->contact_id,
+            'subtotal' => 100,
+            'taxAmount' => 16,
+            'totalAmount' => 1,
+        ]);
+
+        $response->assertStatus(422);
+        $this->assertEquals(116.0, (float) $invoice->fresh()->total_amount);
+    }
+
     public function test_paid_ar_invoice_allows_notes_update(): void
     {
         $invoice = $this->makeARInvoice(['status' => 'paid', 'paid_amount' => 116]);
@@ -135,6 +154,37 @@ class FinancialImmutabilityTest extends TestCase
 
         $response->assertStatus(422);
         $this->assertEquals('draft', $invoice->fresh()->status);
+    }
+
+    public function test_invoices_are_created_only_as_draft(): void
+    {
+        // Auditoria 2026-10 punto 14: un alta "posted" por JSON:API no tenia
+        // poliza y la cartera la sumaba.
+        foreach (['ar-invoices' => 'is_customer', 'ap-invoices' => 'is_supplier'] as $type => $flag) {
+            $contact = Contact::factory()->create([$flag => true]);
+            $number = 'NOPOST-' . uniqid();
+
+            $response = $this->actingAs($this->getAdminUser(), 'sanctum')
+                ->jsonApi()
+                ->expects($type)
+                ->withData([
+                    'type' => $type,
+                    'attributes' => [
+                        'invoiceNumber' => $number,
+                        'invoiceDate' => '2026-08-01',
+                        'dueDate' => '2026-08-31',
+                        'contactId' => $contact->id,
+                        'subtotal' => 100,
+                        'taxAmount' => 16,
+                        'totalAmount' => 116,
+                        'status' => 'posted',
+                    ],
+                ])
+                ->post("/api/v1/{$type}");
+
+            $response->assertStatus(422);
+            $this->assertStringContainsString('borrador', json_encode($response->json(), JSON_UNESCAPED_UNICODE));
+        }
     }
 
     public function test_invalid_status_rejected_on_create(): void

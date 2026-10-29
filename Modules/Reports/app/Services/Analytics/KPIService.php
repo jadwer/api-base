@@ -113,7 +113,9 @@ class KPIService
 
         $startDate = Carbon::now()->startOfYear();
         $revenue = $this->getAccountTypeBalance('revenue', $startDate, Carbon::now());
-        $dailyRevenue = $revenue / Carbon::now()->diffInDays($startDate);
+        // Carbon 3: diffInDays con signo; now->diff(inicio) era negativo y el
+        // indicador salia siempre 0 (y el 1 de enero dividia entre cero).
+        $dailyRevenue = $revenue / max(1, $startDate->diffInDays(Carbon::now()));
 
         return $dailyRevenue > 0 ? round($averageAR / $dailyRevenue, 0) : 0;
     }
@@ -135,7 +137,7 @@ class KPIService
             ->get()
             ->sum(fn($account) => $this->getAccountBalanceForPeriod($account->id, $startDate, Carbon::now()));
 
-        $dailyExpenses = $expenses / Carbon::now()->diffInDays($startDate);
+        $dailyExpenses = $expenses / max(1, $startDate->diffInDays(Carbon::now()));
 
         return $dailyExpenses > 0 ? round($averageAP / $dailyExpenses, 0) : 0;
     }

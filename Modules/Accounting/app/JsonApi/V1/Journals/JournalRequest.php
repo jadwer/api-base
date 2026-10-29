@@ -31,7 +31,7 @@ class JournalRequest extends ResourceRequest
             'code.required' => 'El campo clave es obligatorio.',
             'code.string' => 'El campo clave debe ser texto.',
             'code.max' => 'El campo clave no puede tener más de 255 caracteres.',
-            'code.unique' => 'Este Code ya está en uso.',
+            'code.unique' => 'Este código ya está en uso.',
             'name.required' => 'El campo nombre es obligatorio.',
             'name.string' => 'El campo nombre debe ser texto.',
             'name.max' => 'El campo nombre no puede tener más de 255 caracteres.',

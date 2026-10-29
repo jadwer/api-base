@@ -47,6 +47,14 @@ class FinancialDeletionTest extends TestCase
         $this->assertNotNull(ARInvoice::find($invoice->id));
     }
 
+    public function test_overdue_ar_invoice_cannot_be_deleted(): void
+    {
+        $invoice = $this->arInvoice(['status' => 'overdue']);
+
+        $this->deleteDoc('ar-invoices', $invoice->id)->assertStatus(403);
+        $this->assertNotNull(ARInvoice::find($invoice->id));
+    }
+
     public function test_draft_with_payments_cannot_be_deleted(): void
     {
         $invoice = $this->arInvoice(['paid_amount' => 50]);

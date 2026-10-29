@@ -25,7 +25,9 @@ class JournalLineSchema extends Schema
         return [
             ID::make(),
             
-            Number::make('journalEntryId', 'journal_entry_id'),
+            // Una linea no se muda de poliza por PATCH: el Authorizer solo revisa
+            // la poliza de origen y asi se colaban lineas a una ya contabilizada.
+            Number::make('journalEntryId', 'journal_entry_id')->readOnlyOnUpdate(),
             Number::make('accountId', 'account_id'),
             Number::make('contactId'),
             Number::make('debit')->sortable(),
@@ -39,7 +41,7 @@ class JournalLineSchema extends Schema
             DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),
 
             // Relationships
-            BelongsTo::make('journalEntry'),
+            BelongsTo::make('journalEntry')->readOnlyOnUpdate(),
             // Relationships
             BelongsTo::make('account'),
         ];

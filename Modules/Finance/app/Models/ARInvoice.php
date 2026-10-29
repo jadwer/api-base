@@ -13,6 +13,7 @@ use Modules\Sales\Models\SalesOrder;
 
 /**
  * @property int $contact_id
+ * @property string $status
  */
 class ARInvoice extends Model
 {

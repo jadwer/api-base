@@ -41,7 +41,7 @@ class APInvoiceStoreTest extends TestCase
                 'taxAmount' => 16.00,
                 'totalAmount' => 116.00,
                 'paidAmount' => 0.00,
-                'status' => 'pending',
+                'status' => 'draft',
                 'notes' => 'Test AP invoice',
                 'metadata' => ['test' => 'value'],
                 'isActive' => true
@@ -60,7 +60,7 @@ class APInvoiceStoreTest extends TestCase
             'invoice_number' => 'INV-AP-001',
             'contact_id' => $supplier->id,
             'currency' => 'USD',
-            'status' => 'pending',
+            'status' => 'draft',
             'is_active' => true
         ]);
     }

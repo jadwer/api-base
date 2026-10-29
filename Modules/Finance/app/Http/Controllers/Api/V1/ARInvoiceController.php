@@ -101,8 +101,10 @@ class ARInvoiceController extends Controller
      * @param ARInvoice $arInvoice
      * @return JsonResponse
      */
-    public function latePenalty(ARInvoice $arInvoice): JsonResponse
+    public function latePenalty(Request $request, ARInvoice $arInvoice): JsonResponse
     {
+        $this->authorizeAbility($request, 'ar-invoices.show');
+
         $penalty = $this->latePenaltyService->calculatePenalty($arInvoice);
 
         return response()->json([
@@ -119,7 +121,18 @@ class ARInvoiceController extends Controller
      */
     public function applyPenalty(Request $request, ARInvoice $arInvoice): JsonResponse
     {
-        $penaltyAmount = $request->input('penalty_amount');
+        $this->authorizeAbility($request, 'ar-invoices.update');
+
+        $request->validate([
+            'penalty_amount' => ['nullable', 'numeric', 'gt:0'],
+            'notes' => ['nullable', 'string', 'max:2000'],
+        ], [
+            'penalty_amount.numeric' => 'El monto de penalidad debe ser numérico.',
+            'penalty_amount.gt' => 'El monto de penalidad debe ser mayor a cero.',
+            'notes.max' => 'Las notas no pueden exceder 2000 caracteres.',
+        ]);
+
+        $penaltyAmount = $request->filled('penalty_amount') ? (float) $request->input('penalty_amount') : null;
         $notes = $request->input('notes');
 
         $result = $this->latePenaltyService->applyPenalty($arInvoice, $penaltyAmount, $notes);
@@ -137,6 +150,8 @@ class ARInvoiceController extends Controller
      */
     public function overdueWithPenalties(Request $request): JsonResponse
     {
+        $this->authorizeAbility($request, 'ar-invoices.index');
+
         $asOfDate = $request->has('as_of_date')
             ? \Carbon\Carbon::parse($request->input('as_of_date'))
             : null;
@@ -165,6 +180,8 @@ class ARInvoiceController extends Controller
      */
     public function penaltySummary(Request $request): JsonResponse
     {
+        $this->authorizeAbility($request, 'ar-invoices.index');
+
         $asOfDate = $request->has('as_of_date')
             ? \Carbon\Carbon::parse($request->input('as_of_date'))
             : null;
@@ -187,6 +204,8 @@ class ARInvoiceController extends Controller
      */
     public function agingReport(Request $request): JsonResponse
     {
+        $this->authorizeAbility($request, 'ar-invoices.index');
+
         $asOfDate = $request->has('as_of_date')
             ? \Carbon\Carbon::parse($request->input('as_of_date'))
             : null;
@@ -196,5 +215,21 @@ class ARInvoiceController extends Controller
         return response()->json([
             'data' => $report,
         ]);
+    }
+
+    /**
+     * Las rutas de cartera viven fuera de JSON:API y no pasan por el
+     * Authorizer: sin esto cualquier token (incluido un cliente) leia la
+     * cartera de todos y podia aplicar recargos.
+     */
+    private function authorizeAbility(Request $request, string $ability): void
+    {
+        $user = $request->user('sanctum');
+        if (!$user) {
+            abort(401, 'No autenticado.');
+        }
+        if (!$user->can($ability) && !$user->hasAnyRole(['god', 'admin'])) {
+            abort(403, 'No tiene permisos para esta acción.');
+        }
     }
 }

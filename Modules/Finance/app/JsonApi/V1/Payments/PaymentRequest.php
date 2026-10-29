@@ -65,7 +65,7 @@ class PaymentRequest extends ResourceRequest
             'amount.required' => 'El monto es obligatorio.',
             'paymentNumber.string' => 'El campo número de pago debe ser texto.',
             'paymentNumber.max' => 'El campo número de pago no puede tener más de 255 caracteres.',
-            'paymentNumber.unique' => 'Este Payment number ya está en uso.',
+            'paymentNumber.unique' => 'Este número de pago ya está en uso.',
             'paymentDate.date' => 'El campo fecha de pago debe ser una fecha válida.',
             'contactId.integer' => 'El campo contacto debe ser un número entero.',
             'bankAccountId.integer' => 'El campo cuenta bancaria debe ser un número entero.',

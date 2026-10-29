@@ -15,6 +15,9 @@ use Modules\Contacts\Models\Contact;
  */
 class LatePenaltyService
 {
+    /** Estados con saldo vivo sobre los que procede un recargo. */
+    private const PENALIZABLE_STATUSES = ['posted', 'partial', 'overdue'];
+
     /**
      * Default annual interest rate for late payments (in percentage).
      */
@@ -181,18 +184,26 @@ class LatePenaltyService
      */
     public function applyPenalty(ARInvoice $invoice, ?float $penaltyAmount = null, ?string $notes = null): array
     {
-        // Calculate penalty if not provided
-        if ($penaltyAmount === null) {
-            $calculation = $this->calculatePenalty($invoice);
-            if (!$calculation['is_overdue']) {
-                return [
-                    'success' => false,
-                    'message' => 'La factura no está vencida, no se puede aplicar penalidad',
-                    'invoice' => $invoice,
-                ];
-            }
-            $penaltyAmount = $calculation['penalty_amount'];
+        // Solo sobre facturas vivas con saldo: un borrador, una pagada o una
+        // anulada no reciben recargo (antes se le sumaba a cualquiera).
+        if (!in_array($invoice->status, self::PENALIZABLE_STATUSES, true)) {
+            return [
+                'success' => false,
+                'message' => "No se puede aplicar penalidad a una factura en estado \"{$invoice->status}\"",
+                'invoice' => $invoice,
+            ];
         }
+
+        // El vencimiento se valida siempre, tambien con monto manual.
+        $calculation = $this->calculatePenalty($invoice);
+        if (!$calculation['is_overdue']) {
+            return [
+                'success' => false,
+                'message' => 'La factura no está vencida, no se puede aplicar penalidad',
+                'invoice' => $invoice,
+            ];
+        }
+        $penaltyAmount ??= $calculation['penalty_amount'];
 
         if ($penaltyAmount <= 0) {
             return [
@@ -209,7 +220,7 @@ class LatePenaltyService
                 'amount' => round($penaltyAmount, 2),
                 'applied_at' => now()->toIso8601String(),
                 'notes' => $notes,
-                'days_overdue' => Carbon::parse($invoice->due_date)->diffInDays(now()),
+                'days_overdue' => (int) Carbon::parse($invoice->due_date)->diffInDays(now()),
             ];
 
             // Update invoice total
@@ -267,7 +278,7 @@ class LatePenaltyService
             'current_overdue_invoices' => $currentOverdue->count(),
             'current_overdue_amount' => round($currentOverdue->sum(fn($inv) => $inv->total_amount - $inv->paid_amount), 2),
             'average_days_late' => $latePayments->count() > 0
-                ? round($latePayments->avg(fn($inv) => Carbon::parse($inv->paid_date)->diffInDays($inv->due_date)), 1)
+                ? round($latePayments->avg(fn($inv) => Carbon::parse($inv->due_date)->diffInDays(Carbon::parse($inv->paid_date))), 1)
                 : 0,
         ];
     }

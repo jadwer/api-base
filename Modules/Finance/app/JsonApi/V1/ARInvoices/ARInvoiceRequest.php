@@ -13,7 +13,7 @@ class ARInvoiceRequest extends ResourceRequest
 
     protected function immutableStatuses(): array
     {
-        return ['posted', 'partial', 'paid', 'void', 'voided', 'cancelled'];
+        return ['posted', 'partial', 'paid', 'overdue', 'void', 'voided', 'cancelled'];
     }
     public function rules(): array
     {
@@ -41,7 +41,13 @@ class ARInvoiceRequest extends ResourceRequest
             'totalAmount' => ['required', 'numeric'],
             'paidAmount' => ['nullable', 'numeric'],
             'paidDate' => ['nullable', 'date'],
-            'status' => ['nullable', 'string', \Illuminate\Validation\Rule::in(['draft', 'pending', 'posted', 'partial', 'paid', 'void', 'voided', 'cancelled'])],
+            // Alta directa solo en borrador: una factura "posted" creada por aqui
+            // no tiene poliza y la cartera la sumaba (auditoria 2026-10, punto 14).
+            // La contabilizada nace en el Service con su poliza. En update el
+            // estado no cambia por PATCH (ValidatesFinancialImmutability).
+            'status' => $arinvoice?->exists
+                ? ['nullable', 'string', Rule::in(['draft', 'pending', 'posted', 'partial', 'paid', 'overdue', 'void', 'voided', 'cancelled'])]
+                : ['nullable', 'string', Rule::in(['draft'])],
             'journalEntryId' => ['nullable', 'integer'],
             'notes' => ['nullable', 'string'],
             'metadata' => ['nullable', 'array'],
@@ -62,7 +68,7 @@ class ARInvoiceRequest extends ResourceRequest
         return [
             'invoiceNumber.string' => 'El campo número de factura debe ser texto.',
             'invoiceNumber.max' => 'El campo número de factura no puede tener más de 255 caracteres.',
-            'invoiceNumber.unique' => 'Este Invoice number ya está en uso.',
+            'invoiceNumber.unique' => 'Este número de factura ya está en uso.',
             'invoiceDate.date' => 'El campo fecha de factura debe ser una fecha válida.',
             'dueDate.date' => 'El campo fecha de vencimiento debe ser una fecha válida.',
             'contactId.integer' => 'El campo contacto debe ser un número entero.',
@@ -74,6 +80,7 @@ class ARInvoiceRequest extends ResourceRequest
             'totalAmount.numeric' => 'El campo total debe ser un número.',
             'paidAmount.numeric' => 'El campo importe pagado debe ser un número.',
             'status.string' => 'El campo estado debe ser texto.',
+            'status.in' => 'La factura se crea en borrador; la contabiliza el sistema con su póliza.',
             'status.max' => 'El campo estado no puede tener más de 255 caracteres.',
             'journalEntryId.integer' => 'El campo póliza debe ser un número entero.',
             'notes.string' => 'El campo notas debe ser texto.',

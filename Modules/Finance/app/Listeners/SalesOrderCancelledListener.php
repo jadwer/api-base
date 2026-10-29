@@ -61,7 +61,7 @@ class SalesOrderCancelledListener
                 Log::info('SalesOrderCancelledListener: AR Invoice voided (draft)', [
                     'ar_invoice_id' => $arInvoice->id
                 ]);
-            } elseif (in_array($arInvoice->status, ['posted', 'partial', 'paid'])) {
+            } elseif (in_array($arInvoice->status, ['posted', 'partial', 'paid', 'overdue'])) {
                 // Refactor ciclo (Patron 2, P1): antes 'paid' caia al else y no se anulaba
                 // ni se revertia -> ingresos/AR inflados al cancelar una venta ya cobrada.
                 // Ahora se anula la factura y se revierte su asiento tambien para 'paid'.

@@ -31,7 +31,7 @@ class LatePenaltyTest extends TestCase
             'due_date' => Carbon::now()->subDays($daysOverdue),
             'total_amount' => $amount,
             'paid_amount' => 0.00,
-            'status' => 'sent',
+            'status' => 'posted',
         ]);
     }
 
@@ -45,7 +45,7 @@ class LatePenaltyTest extends TestCase
             'due_date' => Carbon::now()->addDays(20),
             'total_amount' => $amount,
             'paid_amount' => 0.00,
-            'status' => 'sent',
+            'status' => 'posted',
         ]);
     }
 
@@ -288,6 +288,57 @@ class LatePenaltyTest extends TestCase
 
         $this->getJson('/api/v1/ar-invoices/aging-report')
             ->assertStatus(401);
+    }
+
+    public function test_customer_cannot_read_portfolio_or_apply_penalty(): void
+    {
+        $customer = $this->getCustomerUser();
+        $invoice = $this->createOverdueInvoice(30, 1000.00);
+
+        foreach (['overdue-with-penalties', 'penalty-summary', 'aging-report', $invoice->id . '/late-penalty'] as $path) {
+            $this->actingAs($customer, 'sanctum')
+                ->getJson('/api/v1/ar-invoices/' . $path)
+                ->assertStatus(403);
+        }
+
+        $this->actingAs($customer, 'sanctum')
+            ->postJson('/api/v1/ar-invoices/' . $invoice->id . '/apply-penalty', ['penalty_amount' => 50])
+            ->assertStatus(403);
+
+        $this->assertEquals(1000.00, $invoice->fresh()->total_amount);
+    }
+
+    public function test_service_rejects_penalty_on_closed_or_draft_invoices(): void
+    {
+        foreach (['draft', 'paid', 'void', 'voided', 'cancelled'] as $status) {
+            $invoice = $this->createOverdueInvoice(30, 1000.00);
+            $invoice->update(['status' => $status]);
+
+            $result = $this->service->applyPenalty($invoice, 50.00);
+
+            $this->assertFalse($result['success'], "aplico recargo en estado {$status}");
+            $this->assertEquals(1000.00, $invoice->fresh()->total_amount);
+        }
+    }
+
+    public function test_service_rejects_manual_penalty_on_current_invoice(): void
+    {
+        $invoice = $this->createCurrentInvoice(1000.00);
+
+        $result = $this->service->applyPenalty($invoice, 50.00);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals(1000.00, $invoice->fresh()->total_amount);
+    }
+
+    public function test_apply_penalty_validates_amount_in_spanish(): void
+    {
+        $invoice = $this->createOverdueInvoice(30, 1000.00);
+
+        $this->actingAs($this->getAdminUser(), 'sanctum')
+            ->postJson('/api/v1/ar-invoices/' . $invoice->id . '/apply-penalty', ['penalty_amount' => -5])
+            ->assertStatus(422)
+            ->assertJsonPath('errors.penalty_amount.0', 'El monto de penalidad debe ser mayor a cero.');
     }
 
     public function test_service_can_set_custom_rate(): void

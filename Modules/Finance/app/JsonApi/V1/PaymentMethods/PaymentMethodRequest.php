@@ -27,7 +27,7 @@ class PaymentMethodRequest extends ResourceRequest
         return [
             'code.string' => 'El campo clave debe ser texto.',
             'code.max' => 'El campo clave no puede tener más de 255 caracteres.',
-            'code.unique' => 'Este Code ya está en uso.',
+            'code.unique' => 'Este código ya está en uso.',
             'name.string' => 'El campo nombre debe ser texto.',
             'name.max' => 'El campo nombre no puede tener más de 255 caracteres.',
             'type.string' => 'El campo tipo debe ser texto.',

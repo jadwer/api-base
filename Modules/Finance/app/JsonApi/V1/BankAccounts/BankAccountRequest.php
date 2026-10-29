@@ -38,7 +38,7 @@ class BankAccountRequest extends ResourceRequest
             'glAccountId.exists' => 'La cuenta contable no existe.',
             'accountNumber.string' => 'El campo número de cuenta debe ser texto.',
             'accountNumber.max' => 'El campo número de cuenta no puede tener más de 255 caracteres.',
-            'accountNumber.unique' => 'Este Account number ya está en uso.',
+            'accountNumber.unique' => 'Este número de cuenta ya está en uso.',
             'accountName.string' => 'El campo nombre de la cuenta debe ser texto.',
             'accountName.max' => 'El campo nombre de la cuenta no puede tener más de 255 caracteres.',
             'bankName.string' => 'El campo banco debe ser texto.',

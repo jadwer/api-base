@@ -25,9 +25,12 @@ class JournalEntryRequest extends ResourceRequest
             'totalCredit' => ['nullable', 'numeric'],
             // En update el Schema ignora status (readOnlyOnUpdate); la regla queda
             // suave para no romper con 422 a clientes que aun lo envian.
+            // Al crear solo se acepta borrador: antes un POST con status=posted
+            // nacia contabilizada sin cuadre, periodo ni folio. Se contabiliza
+            // por POST journal-entries/{id}/post (AccountingService).
             'status' => $isUpdate
                 ? ['sometimes', 'string']
-                : ['required', 'string', Rule::in(JournalEntry::STATUSES)],
+                : ['sometimes', 'string', Rule::in([JournalEntry::STATUS_DRAFT])],
             'approvedAt' => ['nullable', 'string'],
             'approvedById' => ['nullable', 'integer'],
             'postedAt' => ['nullable', 'string'],
@@ -108,7 +111,7 @@ class JournalEntryRequest extends ResourceRequest
             'fiscalPeriodId.required' => 'El campo periodo fiscal es obligatorio.',
             'number.string' => 'El campo número debe ser texto.',
             'number.max' => 'El campo número no puede tener más de 255 caracteres.',
-            'number.unique' => 'Este Number ya está en uso.',
+            'number.unique' => 'Este folio ya está en uso.',
             'date.required' => 'El campo fecha es obligatorio.',
             'date.date' => 'El campo fecha debe ser una fecha válida.',
             'reference.string' => 'El campo referencia debe ser texto.',
@@ -116,7 +119,7 @@ class JournalEntryRequest extends ResourceRequest
             'description.string' => 'El campo descripción debe ser texto.',
             'status.required' => 'El campo estado es obligatorio.',
             'status.string' => 'El campo estado debe ser texto.',
-            'status.in' => 'El campo estado debe ser: draft, approved, posted o reversed.',
+            'status.in' => 'La póliza se crea en borrador; para contabilizarla usa la acción Contabilizar.',
             'reversal_reason.string' => 'El campo motivo de la reversa debe ser texto.',
             'metadata.array' => 'El campo metadatos debe ser un arreglo.',
         ];
