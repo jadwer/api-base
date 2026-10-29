@@ -11,6 +11,8 @@ use Spatie\Activitylog\LogOptions;
 /**
  * @property \Carbon\Carbon|string|null $date
  * @property \Carbon\Carbon|string|null $accounting_date
+ * @property int|null $journal_id
+ * @property int|null $fiscal_period_id
  * @property string $status
  * @property string|null $number
  * @property \Carbon\Carbon|null $posted_at
@@ -57,6 +59,17 @@ class JournalEntry extends Model
      */
     protected static function booted(): void
     {
+        // Poliza manual sin diario ni periodo: diario general (GL) y periodo
+        // abierto que contiene la fecha. Los Services siempre mandan ambos.
+        static::creating(function (JournalEntry $entry) {
+            if ($entry->journal_id === null) {
+                $entry->journal_id = Journal::where('code', 'GL')->where('status', 'active')->value('id');
+            }
+            if ($entry->fiscal_period_id === null && $entry->date !== null) {
+                $entry->fiscal_period_id = static::openPeriodFor($entry->date)?->id;
+            }
+        });
+
         static::saving(function (JournalEntry $entry) {
             if ($entry->accounting_date === null && $entry->date !== null) {
                 $entry->accounting_date = $entry->date;
@@ -64,7 +77,17 @@ class JournalEntry extends Model
         });
     }
 
-    protected $table = 'journal_entries';
+    public static function openPeriodFor(mixed $date): ?FiscalPeriod
+    {
+        $day = \Illuminate\Support\Carbon::parse($date)->toDateString();
+
+        return FiscalPeriod::whereDate('start_date', '<=', $day)
+            ->whereDate('end_date', '>=', $day)
+            ->where('status', 'open')
+            ->first();
+    }
+
+        protected $table = 'journal_entries';
     
     protected $fillable = [
         'journal_id', 'fiscal_period_id', 'number', 'date', 'accounting_date', 'reference', 'description', 'total_debit', 'total_credit', 'company_id', 'status', 'approved_at', 'approved_by_id', 'posted_at', 'posted_by_id',

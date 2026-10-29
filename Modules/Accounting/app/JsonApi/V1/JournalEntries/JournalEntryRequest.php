@@ -15,10 +15,23 @@ class JournalEntryRequest extends ResourceRequest
 
 
         return [
-            'journalId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
-            'fiscalPeriodId' => [$isUpdate ? 'sometimes' : 'required', 'integer'],
+            // Opcionales al crear: la poliza manual de la UI no los manda y el
+            // modelo resuelve diario GL y el periodo abierto de la fecha.
+            'journalId' => ['sometimes', 'integer', 'exists:journals,id'],
+            'fiscalPeriodId' => ['sometimes', 'integer', 'exists:fiscal_periods,id'],
             'number' => ['nullable', 'string', 'max:255', Rule::unique('journal_entries')->ignore($journalentry?->id)],
-            'date' => [$isUpdate ? 'sometimes' : 'required', 'date'],
+            'date' => [
+                $isUpdate ? 'sometimes' : 'required',
+                'date',
+                function ($attribute, $value, $fail) use ($isUpdate) {
+                    if ($isUpdate || $this->input('data.attributes.fiscalPeriodId')) {
+                        return;
+                    }
+                    if (!JournalEntry::openPeriodFor($value)) {
+                        $fail("No hay un periodo fiscal abierto para la fecha {$value}.");
+                    }
+                },
+            ],
             'reference' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'totalDebit' => ['nullable', 'numeric'],
@@ -107,8 +120,8 @@ class JournalEntryRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'journalId.required' => 'El campo diario es obligatorio.',
-            'fiscalPeriodId.required' => 'El campo periodo fiscal es obligatorio.',
+            'journalId.exists' => 'El diario seleccionado no existe.',
+            'fiscalPeriodId.exists' => 'El periodo fiscal seleccionado no existe.',
             'number.string' => 'El campo número debe ser texto.',
             'number.max' => 'El campo número no puede tener más de 255 caracteres.',
             'number.unique' => 'Este folio ya está en uso.',
