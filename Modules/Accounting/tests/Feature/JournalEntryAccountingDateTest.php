@@ -8,6 +8,7 @@ use Modules\Accounting\Models\Account;
 use Modules\Accounting\Models\JournalEntry;
 use Modules\Accounting\Models\JournalLine;
 use Modules\Reports\Services\FinancialStatements\BalanceSheetService;
+use Modules\Reports\Services\FinancialStatements\IncomeStatementService;
 use Tests\TestCase;
 
 /**
@@ -66,5 +67,28 @@ class JournalEntryAccountingDateTest extends TestCase
         $names = collect($report['equity'])->flatMap(fn ($g) => $g['accounts'])->pluck('name');
         $this->assertContains('Resultado del ejercicio', $names);
         $this->assertNotContains('Liability', collect($report['liabilities'])->pluck('category'));
+    }
+
+    public function test_income_statement_categories_follow_the_chart_of_accounts(): void
+    {
+        $bank = Account::factory()->create(['code' => '1193', 'account_type' => 'asset', 'nature' => 'debit', 'status' => 'active']);
+        $sales = Account::factory()->create(['code' => '4193', 'account_type' => 'revenue', 'nature' => 'credit', 'status' => 'active']);
+        $cost = Account::factory()->create(['code' => '5193', 'account_type' => 'expense', 'nature' => 'debit', 'status' => 'active']);
+        $wages = Account::factory()->create(['code' => '6193', 'account_type' => 'expense', 'nature' => 'debit', 'status' => 'active']);
+        $entry = JournalEntry::factory()->create(['date' => '2026-10-20', 'status' => 'posted', 'total_debit' => 1000, 'total_credit' => 1000]);
+        JournalLine::factory()->create(['journal_entry_id' => $entry->id, 'account_id' => $bank->id, 'debit' => 400, 'credit' => 0]);
+        JournalLine::factory()->create(['journal_entry_id' => $entry->id, 'account_id' => $cost->id, 'debit' => 400, 'credit' => 0]);
+        JournalLine::factory()->create(['journal_entry_id' => $entry->id, 'account_id' => $wages->id, 'debit' => 200, 'credit' => 0]);
+        JournalLine::factory()->create(['journal_entry_id' => $entry->id, 'account_id' => $sales->id, 'debit' => 0, 'credit' => 1000]);
+
+        $report = app(IncomeStatementService::class)->generate(Carbon::parse('2026-10-01'), Carbon::parse('2026-10-31'));
+
+        // Antes los prefijos eran de otro catalogo y salia "Revenue"/"Expense".
+        $this->assertContains('Ingresos', collect($report['revenues'])->pluck('category'));
+        $expenses = collect($report['expenses'])->pluck('category');
+        $this->assertContains('Costo de ventas', $expenses);
+        $this->assertContains('Gastos de operación', $expenses);
+        $this->assertNotContains('Revenue', collect($report['revenues'])->pluck('category'));
+        $this->assertNotContains('Expense', $expenses);
     }
 }

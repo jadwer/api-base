@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Modules\Finance\Models\ARInvoice;
+use Modules\Finance\Support\FinancialStatusLabel;
 use Modules\Contacts\Models\Contact;
 
 /**
@@ -189,7 +190,7 @@ class LatePenaltyService
         if (!in_array($invoice->status, self::PENALIZABLE_STATUSES, true)) {
             return [
                 'success' => false,
-                'message' => "No se puede aplicar penalidad a una factura en estado \"{$invoice->status}\"",
+                'message' => 'No se puede aplicar recargo a una factura en estado "' . FinancialStatusLabel::of($invoice->status) . '"; solo a facturas contabilizadas, con pago parcial o vencidas.',
                 'invoice' => $invoice,
             ];
         }

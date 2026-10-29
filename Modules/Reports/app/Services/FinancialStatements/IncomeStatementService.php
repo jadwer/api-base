@@ -157,17 +157,22 @@ class IncomeStatementService
      */
     protected function getCategoryName(string $prefix, string $type): string
     {
+        // Catalogo de cuentas: 4 ingresos, 5 costos, 6 gastos, 7 otros
+        // ingresos y gastos. Los prefijos 7/8/9/0 de antes eran de otro
+        // catalogo y todo caia al nombre interno en ingles ("Revenue").
         $categories = [
             'revenue' => [
-                '7' => 'Ingresos por Ventas',
-                '8' => 'Otros Ingresos',
+                '4' => 'Ingresos',
+                '7' => 'Otros ingresos',
             ],
             'expense' => [
-                '9' => 'Costos de Ventas',
-                '0' => 'Gastos Operativos',
+                '5' => 'Costo de ventas',
+                '6' => 'Gastos de operación',
+                '7' => 'Otros gastos',
             ],
         ];
+        $fallback = ['revenue' => 'Ingresos', 'expense' => 'Gastos'];
 
-        return $categories[$type][$prefix] ?? ucfirst($type);
+        return $categories[$type][$prefix] ?? $fallback[$type] ?? $type;
     }
 }

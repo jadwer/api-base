@@ -22,7 +22,7 @@ final class FinancialDeletionGuard
     {
         $status = (string) ($model->status ?? '');
         if (in_array($status, $lockedStatuses, true)) {
-            return "Un documento en estado \"{$status}\" no se puede eliminar. Anulalo con su accion para dejar rastro y revertir la contabilidad.";
+            return 'Un documento en estado "' . FinancialStatusLabel::of($status) . '" no se puede eliminar. Anúlalo con su acción para dejar rastro y revertir la contabilidad.';
         }
 
         if (! empty($model->journal_entry_id)) {

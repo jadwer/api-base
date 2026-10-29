@@ -4,6 +4,7 @@ namespace Modules\Finance\JsonApi\Concerns;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Modules\Finance\Support\FinancialStatusLabel;
 
 /**
  * Paquete B (integridad): un documento financiero con efectos contables o
@@ -40,8 +41,8 @@ trait ValidatesFinancialImmutability
             if (array_key_exists('status', $attributes)
                 && $this->immutabilityValueChanged($model->status, $attributes['status'])) {
                 $validator->errors()->add('status', sprintf(
-                    'El estado no puede cambiarse por edicion directa (actual: "%s"). Usa las acciones del documento (postear, anular, registrar pago).',
-                    $model->status
+                    'El estado no puede cambiarse por edicion directa (actual: "%s"). Usa las acciones del documento (contabilizar, anular, registrar pago).',
+                    FinancialStatusLabel::of($model->status)
                 ));
             }
 
@@ -59,9 +60,8 @@ trait ValidatesFinancialImmutability
 
                 if ($this->immutabilityValueChanged($current, $value, $model->getCasts()[$column] ?? null)) {
                     $validator->errors()->add($field, sprintf(
-                        'Un documento en estado "%s" es inmutable: "%s" ya no puede modificarse (solo notas y metadata). Los ajustes van por nota de credito o anulacion.',
-                        $model->status,
-                        $field
+                        'Un documento en estado "%s" ya no se puede modificar (solo notas). Los ajustes van por nota de crédito o anulación.',
+                        FinancialStatusLabel::of($model->status)
                     ));
                 }
             }
