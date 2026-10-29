@@ -561,10 +561,15 @@ class QuoteController extends Controller
             $newQuote->valid_until = now()->addDays(30);
             $newQuote->save();
 
-            // Duplicate items
+            // Duplicate items. La copia es una cotizacion nueva: toma el IVA
+            // vigente del producto, no el que tenia la original (junta 30-10:
+            // cotizaciones previas al IVA 16 % del catalogo salian sin IVA).
             foreach ($quote->items as $item) {
                 $newItem = $item->replicate();
                 $newItem->quote_id = $newQuote->id;
+                if ($item->product) {
+                    $newItem->tax_rate = $item->product->effective_tax_rate;
+                }
                 $newItem->save();
             }
 
@@ -573,6 +578,51 @@ class QuoteController extends Controller
                 'message' => 'Cotización duplicada.'
             ], 201);
         });
+    }
+
+    /**
+     * Recalcular impuestos de una cotizacion en borrador con el IVA vigente
+     * de cada producto (junta 30-10). Las partidas guardan la tasa del dia en
+     * que se capturaron; las cotizaciones previas al IVA 16 % del catalogo
+     * (23-10) quedaron en 0 %. Partidas sin producto conservan su tasa.
+     * POST /api/v1/quotes/{quote}/recalculate-taxes
+     */
+    public function recalculateTaxes(Quote $quote): JsonResponse
+    {
+        if (Gate::denies('quotes.update')) {
+            abort(403, 'No tiene permisos para modificar cotizaciones');
+        }
+
+        if ($quote->status !== 'draft') {
+            return response()->json([
+                'message' => 'Solo se pueden recalcular los impuestos de una cotización en borrador.',
+                'errors' => ['status' => ['Solo se pueden recalcular los impuestos de una cotización en borrador.']],
+            ], 422);
+        }
+
+        $updated = DB::transaction(function () use ($quote) {
+            $updated = 0;
+            foreach ($quote->items()->with('product')->get() as $item) {
+                if (! $item->product) {
+                    continue;
+                }
+                $rate = $item->product->effective_tax_rate;
+                if ((float) $item->tax_rate !== $rate) {
+                    $item->tax_rate = $rate;
+                    $item->save();
+                    $updated++;
+                }
+            }
+
+            return $updated;
+        });
+
+        return response()->json([
+            'data' => $this->transformQuote($quote->fresh(['items', 'contact'])),
+            'message' => $updated === 0
+                ? 'Los impuestos ya estaban al día.'
+                : "Impuestos recalculados en {$updated} " . ($updated === 1 ? 'partida.' : 'partidas.'),
+        ]);
     }
 
     /**

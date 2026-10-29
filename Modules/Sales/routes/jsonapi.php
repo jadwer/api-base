@@ -72,6 +72,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::post('quotes/{quote}/convert', [QuoteController::class, 'convert'])->name('quotes.convert');
     Route::post('quotes/{quote}/cancel', [QuoteController::class, 'cancel'])->name('quotes.cancel');
     Route::post('quotes/{quote}/duplicate', [QuoteController::class, 'duplicate'])->name('quotes.duplicate');
+    Route::post('quotes/{quote}/recalculate-taxes', [QuoteController::class, 'recalculateTaxes'])->name('quotes.recalculate-taxes');
 
     // SA-M012: Generate Purchase Order from Quote
     Route::post('quotes/{quote}/generate-purchase-order', [QuoteController::class, 'generatePurchaseOrder'])->name('quotes.generate-purchase-order');
