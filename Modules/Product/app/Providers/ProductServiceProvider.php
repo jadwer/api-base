@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Modules\Product\Console\Commands\BackfillProductSlugs;
 use Modules\Product\Console\Commands\PruneMissingDatasheets;
+use Modules\Product\Console\Commands\PruneMissingProductImages;
 use Modules\Product\Console\Commands\SyncProductImages;
 use Modules\Product\Models\Product;
 use Modules\Product\Models\ProductImage;
@@ -59,6 +60,7 @@ class ProductServiceProvider extends ServiceProvider
         $this->commands([
             BackfillProductSlugs::class,
             PruneMissingDatasheets::class,
+            PruneMissingProductImages::class,
             SyncProductImages::class,
         ]);
     }
