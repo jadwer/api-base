@@ -1,40 +1,22 @@
 #!/bin/sh
 # Validacion local antes de empujar (no hay CI: GitHub Actions apagadas por costo).
 # Estilo de los commits + Larastan + pruebas de los modulos tocados, en paralelo.
+# Las pruebas viven en scripts/verify.sh: correrlo a mano antes del push deja
+# una constancia y el hook solo revisa el estilo (push de segundos; si las
+# pruebas corren aqui, GitHub puede cerrar la conexion SSH a media prueba).
+# Sin constancia valida (otro HEAD, otra base o arbol sucio) corre verify.
 # SKIP_VERIFY=1 git push para docs con prisa (solo revisa el estilo).
 # Activar una vez por clon: git config core.hooksPath .githooks
-# Si toca la suite completa (~10 min) GitHub puede cerrar la conexion SSH que
-# git abrio antes del hook y el push no sube aunque todo pase: revisar
-# `git status -sb` y repetir con SKIP_VERIFY=1 (28-10).
 set -e
 root="$(git rev-parse --show-toplevel)"
 cd "$root"
 remote="$1"
-branch="$(git rev-parse --abbrev-ref HEAD)"
-base="$remote/$branch"
-git rev-parse --verify -q "$base" >/dev/null || base="$(git merge-base HEAD "$remote/HEAD" 2>/dev/null || git rev-list --max-parents=0 HEAD | tail -1)"
+base="$(sh scripts/push-base.sh "$remote")"
 
 msgs="$(git log --format=%B "$base..HEAD")"
 if printf '%s' "$msgs" | grep -q '—'; then echo "pre-push: guion largo en un mensaje de commit"; exit 1; fi
 if printf '%s' "$msgs" | grep -qi 'co-authored-by\|generated with claude'; then echo "pre-push: atribucion en un mensaje de commit"; exit 1; fi
 if printf '%s' "$msgs" | grep -qP '[\x{1F300}-\x{1FAFF}\x{2600}-\x{27BF}]'; then echo "pre-push: emoji en un mensaje de commit"; exit 1; fi
 [ "${SKIP_VERIFY:-}" = 1 ] && exit 0
-
-files="$(git diff --name-only "$base..HEAD")"
-printf '%s\n' "$files" | grep -q '\.php$' || { echo "pre-push: sin PHP, solo estilo"; exit 0; }
-
-echo "pre-push: Larastan"
-php -d memory_limit=2G vendor/bin/phpstan analyse --memory-limit=2G --no-progress
-
-modules="$(printf '%s\n' "$files" | sed -n 's#^Modules/\([^/]*\)/.*#Modules/\1#p' | sort -u | while read -r m; do [ -d "$m/tests" ] && echo "$m"; done)"
-other="$(printf '%s\n' "$files" | grep -E '^(app|config|routes|database|tests)/' || true)"
-if [ -n "$other" ]; then
-    echo "pre-push: cambios fuera de modulos, suite completa en paralelo"
-    php artisan test --parallel --processes=6
-elif [ -n "$modules" ]; then
-    echo "pre-push: pruebas de" $modules
-    # artisan test --parallel acepta una sola ruta: una corrida por modulo
-    for path in $modules tests/Feature/Contracts; do
-        php artisan test --parallel --processes=6 "$path" || exit 1
-    done
-fi
+bash scripts/verify-stamp.sh check "$base" && { echo "pre-push: constancia de verify vigente, sin repetir pruebas"; exit 0; }
+exec sh scripts/verify.sh "$remote"
