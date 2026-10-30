@@ -53,8 +53,8 @@ class InvoiceSeriesRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'code.required' => 'El codigo de serie es requerido',
-            'code.regex' => 'El codigo solo puede contener letras mayusculas, numeros y guiones',
+            'code.required' => 'El código de serie es requerido',
+            'code.regex' => 'El código solo puede contener letras mayusculas, números y guiones',
             'name.required' => 'El nombre de la serie es requerido',
             'cfdiType.required' => 'El tipo de CFDI es requerido',
             'cfdiType.in' => 'El tipo de CFDI debe ser I, E, P, N o T',

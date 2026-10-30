@@ -28,7 +28,7 @@ class CategorySeeder extends Seeder
             ['name' => 'Videojuegos', 'slug' => 'videojuegos', 'description' => 'Consolas y sistemas de entretenimiento interactivo', 'is_active' => true],
             ['name' => 'Audio', 'slug' => 'audio', 'description' => 'Equipos y sistemas de sonido profesional y doméstico', 'is_active' => true],
             ['name' => 'Drones', 'slug' => 'drones', 'description' => 'Vehículos aéreos no tripulados y accesorios', 'is_active' => true],
-            ['name' => 'Componentes', 'slug' => 'componentes', 'description' => 'Piezas y componentes para construccion de PC', 'is_active' => true],
+            ['name' => 'Componentes', 'slug' => 'componentes', 'description' => 'Piezas y componentes para construcción de PC', 'is_active' => true],
         ];
 
         foreach ($categories as $category) {

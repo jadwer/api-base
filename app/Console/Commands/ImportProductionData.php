@@ -36,7 +36,7 @@ class ImportProductionData extends Command
             $this->warn('MODO DRY-RUN: No se realizaran cambios');
         }
 
-        $this->info('Iniciando importacion de datos de produccion...');
+        $this->info('Iniciando importación de datos de producción...');
         $this->newLine();
 
         // If source file provided, we need to parse it
@@ -121,7 +121,7 @@ class ImportProductionData extends Command
 
     private function importCategories(string $content): void
     {
-        $this->info('Importando categorias...');
+        $this->info('Importando categorías...');
 
         $statements = $this->extractInsertStatements($content, 'categories');
         foreach ($statements as $matches0) {
@@ -153,7 +153,7 @@ class ImportProductionData extends Command
             }
         }
 
-        $this->info("  Total: {$this->stats['categories']} categorias");
+        $this->info("  Total: {$this->stats['categories']} categorías");
     }
 
     private function importUnits(string $content): void
@@ -512,7 +512,7 @@ class ImportProductionData extends Command
     {
         $this->newLine();
         $this->info('========================================');
-        $this->info('RESUMEN DE IMPORTACION');
+        $this->info('RESUMEN DE IMPORTACIÓN');
         $this->info('========================================');
         $this->newLine();
 
@@ -534,11 +534,11 @@ class ImportProductionData extends Command
                 $this->line("  - {$error}");
             }
             if (count($this->stats['errors']) > 10) {
-                $this->line("  ... y " . (count($this->stats['errors']) - 10) . " errores mas");
+                $this->line("  ... y " . (count($this->stats['errors']) - 10) . " errores más");
             }
         } else {
             $this->newLine();
-            $this->info('Sin errores durante la importacion');
+            $this->info('Sin errores durante la importación');
         }
 
         if ($this->dryRun) {

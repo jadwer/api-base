@@ -213,7 +213,7 @@ class SWPacService
             $settings = \Modules\Billing\Models\CompanySetting::where('is_active', true)->first();
 
             if (!$settings || empty($settings->certificate_file) || empty($settings->key_file)) {
-                throw new PacException('No se encontraron certificados configurados para la cancelacion CFDI');
+                throw new PacException('No se encontraron certificados configurados para la cancelación CFDI');
             }
 
             $cerPath = storage_path('app/' . $settings->certificate_file);

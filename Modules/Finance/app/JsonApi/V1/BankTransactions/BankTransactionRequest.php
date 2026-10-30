@@ -51,14 +51,14 @@ class BankTransactionRequest extends ResourceRequest
         return [
             'bankAccountId.required' => 'La cuenta bancaria es obligatoria.',
             'bankAccountId.exists' => 'La cuenta bancaria seleccionada no existe.',
-            'transactionDate.required' => 'La fecha de transaccion es obligatoria.',
-            'transactionDate.date' => 'La fecha de transaccion debe ser una fecha valida.',
+            'transactionDate.required' => 'La fecha de transacción es obligatoria.',
+            'transactionDate.date' => 'La fecha de transacción debe ser una fecha valida.',
             'amount.required' => 'El monto es obligatorio.',
-            'amount.numeric' => 'El monto debe ser un numero.',
-            'transactionType.required' => 'El tipo de transaccion es obligatorio.',
-            'transactionType.in' => 'El tipo de transaccion debe ser debit o credit.',
-            'reconciliationStatus.in' => 'El estado de conciliacion debe ser unreconciled, reconciled o pending.',
-            'reconciledById.exists' => 'El usuario de conciliacion no existe.',
+            'amount.numeric' => 'El monto debe ser un número.',
+            'transactionType.required' => 'El tipo de transacción es obligatorio.',
+            'transactionType.in' => 'El tipo de transacción debe ser debit o credit.',
+            'reconciliationStatus.in' => 'El estado de conciliación debe ser unreconciled, reconciled o pending.',
+            'reconciledById.exists' => 'El usuario de conciliación no existe.',
         ];
     }
 }

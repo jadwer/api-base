@@ -183,9 +183,9 @@ class RemissionService
         }
 
         if (!empty($insufficient)) {
-            throw new RemissionRuleException('Stock insuficiente para generar la remision', [
+            throw new RemissionRuleException('Stock insuficiente para generar la remisión', [
                 'insufficient_items' => $insufficient,
-                'suggestion' => 'Genere una Orden de Compra para reponer el inventario antes de crear la remision.',
+                'suggestion' => 'Genere una Orden de Compra para reponer el inventario antes de crear la remisión.',
             ]);
         }
     }

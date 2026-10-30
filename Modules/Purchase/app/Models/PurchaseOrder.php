@@ -377,7 +377,7 @@ class PurchaseOrder extends Model
                         'reference_type' => 'purchase',
                         'reference_id' => $this->id,
                         'movement_date' => now(),
-                        'description' => "Recepcion de OC #{$this->id} (item {$item->id})",
+                        'description' => "Recepción de OC #{$this->id} (item {$item->id})",
                         'user_id' => auth()->id() ?? \Modules\User\Models\User::first()?->id ?? 1,
                         'metadata' => [
                             'purchase_order_id' => $this->id,

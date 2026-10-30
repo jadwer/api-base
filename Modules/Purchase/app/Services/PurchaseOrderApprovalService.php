@@ -142,7 +142,7 @@ class PurchaseOrderApprovalService
             $user = \Modules\User\Models\User::find($userId);
             $mine = $pending->filter(fn ($permission) => $user && $user->can($permission))->values();
             if ($mine->isEmpty()) {
-                throw new \Exception('No tienes el nivel de aprobacion que falta en esta orden de compra.');
+                throw new \Exception('No tienes el nivel de aprobación que falta en esta orden de compra.');
             }
 
             $approvals[] = [

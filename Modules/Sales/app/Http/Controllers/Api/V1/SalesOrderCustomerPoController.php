@@ -43,7 +43,7 @@ class SalesOrderCustomerPoController extends Controller
             'file' => 'required|file|mimes:' . implode(',', \Modules\Sales\Support\CustomerAcceptance::EVIDENCE_MIMES) . '|max:10240',
         ], [
             'file.mimes' => 'La constancia debe ser PDF o imagen (JPG, PNG, WEBP).',
-            'file.max' => 'La constancia no puede pesar mas de 10 MB.',
+            'file.max' => 'La constancia no puede pesar más de 10 MB.',
         ]);
 
         $file = $request->file('file');
@@ -64,7 +64,7 @@ class SalesOrderCustomerPoController extends Controller
             'originalName' => $file->getClientOriginalName(),
             'mimeType' => $file->getMimeType(),
             'size' => $file->getSize(),
-            'message' => 'Constancia de autorizacion del cliente subida correctamente',
+            'message' => 'Constancia de autorización del cliente subida correctamente',
         ]);
     }
 
@@ -87,7 +87,7 @@ class SalesOrderCustomerPoController extends Controller
 
         if (!$salesOrder->customer_po_path) {
             return response()->json([
-                'error' => 'Esta orden no tiene constancia de autorizacion del cliente adjunta',
+                'error' => 'Esta orden no tiene constancia de autorización del cliente adjunta',
             ], 404);
         }
 

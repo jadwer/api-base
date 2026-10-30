@@ -37,10 +37,10 @@ class VariantAttributeRequest extends ResourceRequest
         return [
             'name.required' => 'El nombre del atributo es obligatorio.',
             'name.max' => 'El nombre no puede exceder :max caracteres.',
-            'code.required' => 'El codigo del atributo es obligatorio.',
-            'code.unique' => 'Este codigo de atributo ya existe.',
-            'code.max' => 'El codigo no puede exceder :max caracteres.',
-            'sortOrder.min' => 'El orden debe ser un numero positivo.',
+            'code.required' => 'El código del atributo es obligatorio.',
+            'code.unique' => 'Este código de atributo ya existe.',
+            'code.max' => 'El código no puede exceder :max caracteres.',
+            'sortOrder.min' => 'El orden debe ser un número positivo.',
         ];
     }
 }

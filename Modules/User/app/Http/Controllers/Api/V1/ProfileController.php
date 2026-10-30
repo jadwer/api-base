@@ -33,7 +33,7 @@ class ProfileController extends Controller
             'name' => ['required', 'string', 'max:255'],
         ], [
             'name.required' => 'El nombre es obligatorio.',
-            'name.max' => 'El nombre no puede tener mas de 255 caracteres.',
+            'name.max' => 'El nombre no puede tener más de 255 caracteres.',
         ]);
 
         /** @var User $user */
@@ -55,8 +55,8 @@ class ProfileController extends Controller
             ], [
                 'avatar.image' => 'El archivo debe ser una imagen.',
                 'avatar.mimes' => 'La foto debe ser JPG, PNG o WEBP.',
-                'avatar.max' => 'La foto no puede pesar mas de 2 MB.',
-                'avatar.dimensions' => 'La foto no puede medir mas de 4000 px por lado.',
+                'avatar.max' => 'La foto no puede pesar más de 2 MB.',
+                'avatar.dimensions' => 'La foto no puede medir más de 4000 px por lado.',
             ]);
             $path = $request->file('avatar')->storeAs(
                 'avatars',

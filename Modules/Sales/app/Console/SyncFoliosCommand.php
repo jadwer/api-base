@@ -70,7 +70,7 @@ class SyncFoliosCommand extends Command
         $seriesRows = $this->syncInvoiceSeries($apply);
 
         if ($seriesRows === null) {
-            $this->line('Tabla invoice_series no existe en esta base de datos, seccion omitida.');
+            $this->line('Tabla invoice_series no existe en esta base de datos, sección omitida.');
         } elseif (empty($seriesRows)) {
             $this->line('No hay filas en invoice_series.');
         } else {
@@ -80,7 +80,7 @@ class SyncFoliosCommand extends Command
         if (!$apply) {
             $this->warn('Dry-run: ningun cambio fue aplicado. Ejecuta con --force para aplicar.');
         } else {
-            $this->info('Sincronizacion aplicada.');
+            $this->info('Sincronización aplicada.');
         }
 
         return self::SUCCESS;

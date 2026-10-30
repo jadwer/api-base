@@ -40,12 +40,12 @@ class ResetPasswordController extends Controller
 
         if ($status === Password::PASSWORD_RESET) {
             return response()->json([
-                'message' => 'Tu contrasena ha sido restablecida exitosamente.',
+                'message' => 'Tu contraseña ha sido restablecida exitosamente.',
             ]);
         }
 
         return response()->json([
-            'message' => 'No se pudo restablecer la contrasena. El enlace puede haber expirado.',
+            'message' => 'No se pudo restablecer la contraseña. El enlace puede haber expirado.',
             'errors' => [
                 'email' => [__($status)],
             ],

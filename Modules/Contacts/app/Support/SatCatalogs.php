@@ -20,26 +20,26 @@ class SatCatalogs
         '603' => 'Personas Morales con Fines no Lucrativos',
         '605' => 'Sueldos y Salarios e Ingresos Asimilados a Salarios',
         '606' => 'Arrendamiento',
-        '607' => 'Regimen de Enajenacion o Adquisicion de Bienes',
+        '607' => 'Régimen de Enajenación o Adquisición de Bienes',
         '608' => 'Demas ingresos',
         '610' => 'Residentes en el Extranjero sin Establecimiento Permanente en Mexico',
         '611' => 'Ingresos por Dividendos (socios y accionistas)',
         '612' => 'Personas Fisicas con Actividades Empresariales y Profesionales',
         '614' => 'Ingresos por intereses',
-        '615' => 'Regimen de los ingresos por obtencion de premios',
+        '615' => 'Régimen de los ingresos por obtención de premios',
         '616' => 'Sin obligaciones fiscales',
-        '620' => 'Sociedades Cooperativas de Produccion que optan por diferir sus ingresos',
-        '621' => 'Incorporacion Fiscal',
+        '620' => 'Sociedades Cooperativas de Producción que optan por diferir sus ingresos',
+        '621' => 'Incorporación Fiscal',
         '622' => 'Actividades Agricolas, Ganaderas, Silvicolas y Pesqueras',
         '623' => 'Opcional para Grupos de Sociedades',
         '624' => 'Coordinados',
-        '625' => 'Regimen de las Actividades Empresariales con ingresos a traves de Plataformas Tecnologicas',
-        '626' => 'Regimen Simplificado de Confianza',
+        '625' => 'Régimen de las Actividades Empresariales con ingresos a traves de Plataformas Tecnologicas',
+        '626' => 'Régimen Simplificado de Confianza',
     ];
 
     /** c_UsoCFDI (SAT) - codigo => descripcion. */
     public const USOS_CFDI = [
-        'G01' => 'Adquisicion de mercancias',
+        'G01' => 'Adquisición de mercancias',
         'G02' => 'Devoluciones, descuentos o bonificaciones',
         'G03' => 'Gastos en general',
         'I01' => 'Construcciones',
@@ -54,22 +54,22 @@ class SatCatalogs
         'D02' => 'Gastos medicos por incapacidad o discapacidad',
         'D03' => 'Gastos funerales',
         'D04' => 'Donativos',
-        'D05' => 'Intereses reales efectivamente pagados por creditos hipotecarios',
+        'D05' => 'Intereses reales efectivamente pagados por créditos hipotecarios',
         'D06' => 'Aportaciones voluntarias al SAR',
         'D07' => 'Primas por seguros de gastos medicos',
-        'D08' => 'Gastos de transportacion escolar obligatoria',
-        'D09' => 'Depositos en cuentas para el ahorro, primas de pensiones',
+        'D08' => 'Gastos de transportación escolar obligatoria',
+        'D09' => 'Depósitos en cuentas para el ahorro, primas de pensiones',
         'D10' => 'Pagos por servicios educativos (colegiaturas)',
         'S01' => 'Sin efectos fiscales',
         'CP01' => 'Pagos',
-        'CN01' => 'Nomina',
+        'CN01' => 'Nómina',
     ];
 
     /** Clasificacion comercial interna del contacto - codigo => etiqueta. */
     public const CLASSIFICATIONS = [
         'premium' => 'Premium',
         'standard' => 'Estandar',
-        'basic' => 'Basico',
+        'basic' => 'Básico',
     ];
 
     /** @return string[] codigos validos de regimen fiscal */

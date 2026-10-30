@@ -299,8 +299,8 @@ class CleanCatalogsSeeder extends Seeder
             [
                 'company_setting_id' => $companySetting->id,
                 'code' => 'FAC',
-                'name' => 'Facturacion Normal',
-                'description' => 'Serie principal de facturacion',
+                'name' => 'Facturación Normal',
+                'description' => 'Serie principal de facturación',
                 'cfdi_type' => 'I',
                 'current_folio' => 0,
                 'initial_folio' => 1,
@@ -311,8 +311,8 @@ class CleanCatalogsSeeder extends Seeder
             [
                 'company_setting_id' => $companySetting->id,
                 'code' => 'FAC-W',
-                'name' => 'Facturacion Web',
-                'description' => 'Serie para ventas en linea',
+                'name' => 'Facturación Web',
+                'description' => 'Serie para ventas en línea',
                 'cfdi_type' => 'I',
                 'current_folio' => 0,
                 'initial_folio' => 1,
@@ -324,8 +324,8 @@ class CleanCatalogsSeeder extends Seeder
             [
                 'company_setting_id' => $companySetting->id,
                 'code' => 'N',
-                'name' => 'Notas de Credito',
-                'description' => 'Serie para notas de credito',
+                'name' => 'Notas de Crédito',
+                'description' => 'Serie para notas de crédito',
                 'cfdi_type' => 'E',
                 'current_folio' => 0,
                 'initial_folio' => 1,
@@ -429,7 +429,7 @@ class CleanCatalogsSeeder extends Seeder
             ['slug' => 'productos-prueba'],
             [
                 'name' => 'Productos de Prueba',
-                'description' => 'Categoria para productos de prueba. Puede eliminarse.',
+                'description' => 'Categoría para productos de prueba. Puede eliminarse.',
                 'slug' => 'productos-prueba',
             ]
         );
@@ -495,7 +495,7 @@ class CleanCatalogsSeeder extends Seeder
                 'name' => 'Producto de Prueba 4',
                 'sku' => 'TEST-004',
                 'description' => 'Cuarto producto de prueba con precio alto.',
-                'full_description' => 'Producto de prueba con precio mas alto para probar cotizaciones grandes.',
+                'full_description' => 'Producto de prueba con precio más alto para probar cotizaciones grandes.',
                 'price' => 1500.00,
                 'cost' => 800.00,
                 'iva' => true,

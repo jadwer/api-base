@@ -400,7 +400,7 @@
     <!-- Shipping Address (if different from billing) -->
     @if($shippingAddress)
     <div class="shipping-section">
-        <div class="shipping-title">DIRECCION DE ENTREGA</div>
+        <div class="shipping-title">DIRECCIÓN DE ENTREGA</div>
         <div class="shipping-info">
             @if(isset($shippingAddress['name']))
                 <strong>{{ $shippingAddress['name'] }}</strong><br>
@@ -477,7 +477,7 @@
     <div class="summary-section">
         <table class="summary-table">
             <tr>
-                <td class="label">Total de Articulos:</td>
+                <td class="label">Total de Artículos:</td>
                 <td class="value">{{ $items->count() }}</td>
             </tr>
             <tr>
@@ -535,7 +535,7 @@
 
     <!-- Footer -->
     <div class="footer">
-        <p>Este documento es una remision de mercancia, no tiene validez fiscal.</p>
+        <p>Este documento es una remisión de mercancia, no tiene validez fiscal.</p>
         <p>Conserve este documento como comprobante de entrega.</p>
         <p>Generado el {{ now()->format('d/m/Y H:i') }}</p>
     </div>

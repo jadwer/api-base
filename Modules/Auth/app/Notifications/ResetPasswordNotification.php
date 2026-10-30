@@ -28,12 +28,12 @@ class ResetPasswordNotification extends Notification
         ]);
 
         return (new MailMessage)
-            ->subject('Restablecer contrasena')
+            ->subject('Restablecer contraseña')
             ->greeting('Hola ' . ($notifiable->name ?? '') . ',')
-            ->line('Recibimos una solicitud para restablecer la contrasena de tu cuenta.')
-            ->action('Restablecer contrasena', $url)
+            ->line('Recibimos una solicitud para restablecer la contraseña de tu cuenta.')
+            ->action('Restablecer contraseña', $url)
             ->line('Este enlace expirara en 60 minutos.')
-            ->line('Si no solicitaste un cambio de contrasena, puedes ignorar este correo.')
+            ->line('Si no solicitaste un cambio de contraseña, puedes ignorar este correo.')
             ->salutation('Saludos, ' . config('app.name'));
     }
 }

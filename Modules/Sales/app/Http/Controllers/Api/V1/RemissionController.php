@@ -260,7 +260,7 @@ class RemissionController extends Controller
             });
         } catch (\Throwable $e) {
             return response()->json([
-                'error' => 'No se pudo completar la entrega de la remision: ' . $e->getMessage(),
+                'error' => 'No se pudo completar la entrega de la remisión: ' . $e->getMessage(),
             ], 422);
         }
 
@@ -323,7 +323,7 @@ class RemissionController extends Controller
             ) ?? \Modules\Inventory\Models\Warehouse::query()->value('id');
 
             if (!$warehouseId) {
-                throw new \RuntimeException("No hay almacen para descontar el producto {$item->product_id}");
+                throw new \RuntimeException("No hay almacén para descontar el producto {$item->product_id}");
             }
 
             $service->createExit([
@@ -334,7 +334,7 @@ class RemissionController extends Controller
                 'reference_type' => 'remission',
                 'reference_id' => $remission->id,
                 'idempotency_key' => "remission:{$remission->id}:item:{$item->id}",
-                'description' => "Salida por remision {$remission->remission_number}",
+                'description' => "Salida por remisión {$remission->remission_number}",
                 'user_id' => $userId,
                 // QA post-commit (A2): fallback de costo para el COGS cuando el stock
                 // no trae unit_cost real (createExit prioriza el costo del stock).

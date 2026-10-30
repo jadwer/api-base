@@ -755,7 +755,7 @@ class QuoteController extends Controller
     public function generatePurchaseOrder(Request $request, Quote $quote): JsonResponse
     {
         if (Gate::denies('quotes.update')) {
-            abort(403, 'No tiene permisos para generar ordenes de compra');
+            abort(403, 'No tiene permisos para generar órdenes de compra');
         }
 
         // Validate quote can generate PO

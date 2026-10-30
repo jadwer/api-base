@@ -410,7 +410,7 @@ class ShoppingCartController extends Controller
         }
         if (!empty($insufficient)) {
             return response()->json([
-                'error' => 'Stock insuficiente para uno o mas productos del carrito.',
+                'error' => 'Stock insuficiente para uno o más productos del carrito.',
                 'insufficient_items' => $insufficient,
                 // El FE ofrece cotizar en vez de comprar (registro ya requerido)
                 'quote_cta' => true,

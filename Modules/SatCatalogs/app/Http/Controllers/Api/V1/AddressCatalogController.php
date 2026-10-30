@@ -26,13 +26,13 @@ class AddressCatalogController extends Controller
     public function postalCode(string $codigoPostal): JsonResponse
     {
         if (!preg_match('/^\d{5}$/', $codigoPostal)) {
-            return response()->json(['error' => 'El codigo postal debe ser de 5 digitos'], 422);
+            return response()->json(['error' => 'El código postal debe ser de 5 digitos'], 422);
         }
 
         $cp = SatCodigoPostal::query()->with(['colonias' => fn ($q) => $q->orderBy('nombre')])->find($codigoPostal);
 
         if (!$cp) {
-            return response()->json(['error' => 'Codigo postal no encontrado en el catalogo'], 404);
+            return response()->json(['error' => 'Código postal no encontrado en el catálogo'], 404);
         }
 
         return response()->json([

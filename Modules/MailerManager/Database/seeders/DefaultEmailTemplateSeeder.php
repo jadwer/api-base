@@ -98,12 +98,12 @@ class DefaultEmailTemplateSeeder extends Seeder
     protected function quoteRequestedAdmin(): array
     {
         $html = '<div class="email-container">'
-            . '<div class="header"><h1>Nueva Solicitud de Cotizacion</h1></div>'
+            . '<div class="header"><h1>Nueva Solicitud de Cotización</h1></div>'
             . '<div class="content">'
-            . '<p>Se ha recibido una nueva solicitud de cotizacion que requiere revision.</p>'
+            . '<p>Se ha recibido una nueva solicitud de cotización que requiere revisión.</p>'
             . '<div class="info-box">'
             . '<p class="label">Datos de la solicitud</p>'
-            . '<p><strong>Numero:</strong> {{quote_number}}</p>'
+            . '<p><strong>Número:</strong> {{quote_number}}</p>'
             . '<p><strong>Fecha:</strong> {{quote_date}}</p>'
             . '<p><strong>Cliente:</strong> {{customer_name}}</p>'
             . '<p><strong>Email:</strong> {{customer_email}}</p>'
@@ -117,10 +117,10 @@ class DefaultEmailTemplateSeeder extends Seeder
             . '</div>';
 
         return [
-            'name' => 'Solicitud de Cotizacion (Admin)',
+            'name' => 'Solicitud de Cotización (Admin)',
             'slug' => 'quote-requested-admin',
-            'description' => 'Notificacion al admin cuando se recibe una solicitud de cotizacion',
-            'subject' => 'Nueva solicitud de cotizacion {{quote_number}}',
+            'description' => 'Notificación al admin cuando se recibe una solicitud de cotización',
+            'subject' => 'Nueva solicitud de cotización {{quote_number}}',
             'html' => $html,
             'css' => $this->baseStyles(),
             'status' => 'active',
@@ -134,8 +134,8 @@ class DefaultEmailTemplateSeeder extends Seeder
             . '<div class="header"><h1>Solicitud Recibida</h1></div>'
             . '<div class="content">'
             . '<p>Estimado/a {{customer_name}},</p>'
-            . '<p>Hemos recibido su solicitud de cotizacion <strong>{{quote_number}}</strong>.</p>'
-            . '<div class="info-box"><p>Nuestro equipo revisara su solicitud y le enviara la cotizacion formal con precios y tiempos de entrega a la brevedad.</p></div>'
+            . '<p>Hemos recibido su solicitud de cotización <strong>{{quote_number}}</strong>.</p>'
+            . '<div class="info-box"><p>Nuestro equipo revisara su solicitud y le enviara la cotización formal con precios y tiempos de entrega a la brevedad.</p></div>'
             . '<table class="items-table"><thead><tr><th>Producto</th><th>SKU</th><th>Cantidad</th></tr></thead>'
             . '<tbody>{{#each items}}<tr><td>{{name}}</td><td>{{sku}}</td><td>{{quantity}}</td></tr>{{/each}}</tbody></table>'
             . '{{#if price_pending_notice}}<div class="info-box"><p>{{price_pending_notice}}</p></div>{{/if}}'
@@ -145,10 +145,10 @@ class DefaultEmailTemplateSeeder extends Seeder
             . '</div>';
 
         return [
-            'name' => 'Solicitud de Cotizacion (Cliente)',
+            'name' => 'Solicitud de Cotización (Cliente)',
             'slug' => 'quote-requested-customer',
-            'description' => 'Confirmacion al cliente de que su solicitud fue recibida',
-            'subject' => 'Su solicitud de cotizacion {{quote_number}} ha sido recibida',
+            'description' => 'Confirmación al cliente de que su solicitud fue recibida',
+            'subject' => 'Su solicitud de cotización {{quote_number}} ha sido recibida',
             'html' => $html,
             'css' => $this->baseStyles(),
             'status' => 'active',
@@ -159,13 +159,13 @@ class DefaultEmailTemplateSeeder extends Seeder
     protected function quoteSent(): array
     {
         $html = '<div class="email-container">'
-            . '<div class="header"><h1>Cotizacion {{quote_number}}</h1></div>'
+            . '<div class="header"><h1>Cotización {{quote_number}}</h1></div>'
             . '<div class="content">'
             . '<p>Estimado/a {{customer_name}},</p>'
-            . '<p>Adjunto encontrara la cotizacion solicitada. A continuacion le presentamos un resumen:</p>'
+            . '<p>Adjunto encontrara la cotización solicitada. A continuación le presentamos un resumen:</p>'
             . '<div class="info-box">'
-            . '<p class="label">Datos de la cotizacion</p>'
-            . '<p><strong>Numero:</strong> {{quote_number}}</p>'
+            . '<p class="label">Datos de la cotización</p>'
+            . '<p><strong>Número:</strong> {{quote_number}}</p>'
             . '<p><strong>Fecha:</strong> {{quote_date}}</p>'
             . '<p><strong>Valida hasta:</strong> {{valid_until}}</p>'
             . '</div>'
@@ -176,18 +176,18 @@ class DefaultEmailTemplateSeeder extends Seeder
             . '<tr><td class="text-right">I.V.A.:</td><td class="text-right">{{tax|currency}}</td></tr>'
             . '<tr class="total-row"><td class="text-right">Total:</td><td class="text-right">{{total|currency}} {{currency}}</td></tr>'
             . '</table>'
-            . '<p>Por favor revise la cotizacion adjunta para mas detalles.</p>'
-            . '<div class="success-box"><p>Para aceptar esta cotizacion, responda a este correo o comuniquese con nuestro equipo de ventas.</p></div>'
+            . '<p>Por favor revise la cotización adjunta para más detalles.</p>'
+            . '<div class="success-box"><p>Para aceptar esta cotización, responda a este correo o comuniquese con nuestro equipo de ventas.</p></div>'
             . '{{#if notes}}<div class="info-box"><p class="label">Notas:</p><p>{{notes}}</p></div>{{/if}}'
             . '</div>'
             . '<div class="footer"><p><strong>{{company_name}}</strong></p></div>'
             . '</div>';
 
         return [
-            'name' => 'Cotizacion Enviada',
+            'name' => 'Cotización Enviada',
             'slug' => 'quote-sent',
-            'description' => 'Email enviado al cliente con la cotizacion formal y PDF adjunto',
-            'subject' => 'Cotizacion {{quote_number}}',
+            'description' => 'Email enviado al cliente con la cotización formal y PDF adjunto',
+            'subject' => 'Cotización {{quote_number}}',
             'html' => $html,
             'css' => $this->baseStyles(),
             'status' => 'active',
@@ -198,10 +198,10 @@ class DefaultEmailTemplateSeeder extends Seeder
     protected function quoteConverted(): array
     {
         $html = '<div class="email-container">'
-            . '<div class="header"><h1>Cotizacion Convertida a Orden</h1></div>'
+            . '<div class="header"><h1>Cotización Convertida a Orden</h1></div>'
             . '<div class="content">'
             . '<p>Estimado/a {{customer_name}},</p>'
-            . '<p>Su cotizacion <strong>{{quote_number}}</strong> ha sido convertida en la orden de venta <strong>{{order_number}}</strong>.</p>'
+            . '<p>Su cotización <strong>{{quote_number}}</strong> ha sido convertida en la orden de venta <strong>{{order_number}}</strong>.</p>'
             . '<div class="success-box"><p>Nuestro equipo procesara su pedido a la brevedad.</p></div>'
             . '<table class="totals-table"><tr class="total-row"><td class="text-right">Total:</td><td class="text-right">{{total|currency}} {{currency}}</td></tr></table>'
             . '</div>'
@@ -209,10 +209,10 @@ class DefaultEmailTemplateSeeder extends Seeder
             . '</div>';
 
         return [
-            'name' => 'Cotizacion Convertida a Orden',
+            'name' => 'Cotización Convertida a Orden',
             'slug' => 'quote-converted',
-            'description' => 'Notificacion cuando una cotizacion se convierte en orden de venta',
-            'subject' => 'Su cotizacion {{quote_number}} ha sido convertida en orden',
+            'description' => 'Notificación cuando una cotización se convierte en orden de venta',
+            'subject' => 'Su cotización {{quote_number}} ha sido convertida en orden',
             'html' => $html,
             'css' => $this->baseStyles(),
             'status' => 'active',
@@ -223,7 +223,7 @@ class DefaultEmailTemplateSeeder extends Seeder
     protected function orderConfirmationCustomer(): array
     {
         $html = '<div class="email-container">'
-            . '<div class="header"><h1>Confirmacion de Orden</h1></div>'
+            . '<div class="header"><h1>Confirmación de Orden</h1></div>'
             . '<div class="content">'
             . '<p>Estimado/a {{customer_name}},</p>'
             . '<p>Gracias por su orden. Su pedido <strong>{{order_number}}</strong> ha sido recibido.</p>'
@@ -235,16 +235,16 @@ class DefaultEmailTemplateSeeder extends Seeder
             . '<tr><td class="text-right">I.V.A.:</td><td class="text-right">{{tax|currency}}</td></tr>'
             . '<tr class="total-row"><td class="text-right">Total:</td><td class="text-right">{{total|currency}} {{currency}}</td></tr>'
             . '</table>'
-            . '{{#if shipping_address}}<div class="info-box"><p class="label">Direccion de envio:</p><p>{{shipping_address}}</p></div>{{/if}}'
+            . '{{#if shipping_address}}<div class="info-box"><p class="label">Dirección de envío:</p><p>{{shipping_address}}</p></div>{{/if}}'
             . '</div>'
             . '<div class="footer"><p><strong>{{company_name}}</strong></p></div>'
             . '</div>';
 
         return [
-            'name' => 'Confirmacion de Orden (Cliente)',
+            'name' => 'Confirmación de Orden (Cliente)',
             'slug' => 'order-confirmation-customer',
-            'description' => 'Confirmacion al cliente de que su orden fue recibida',
-            'subject' => 'Confirmacion de tu orden {{order_number}}',
+            'description' => 'Confirmación al cliente de que su orden fue recibida',
+            'subject' => 'Confirmación de tu orden {{order_number}}',
             'html' => $html,
             'css' => $this->baseStyles(),
             'status' => 'active',
@@ -257,7 +257,7 @@ class DefaultEmailTemplateSeeder extends Seeder
         $html = '<div class="email-container">'
             . '<div class="header"><h1>Nueva Orden Recibida</h1></div>'
             . '<div class="content">'
-            . '<p>Se ha recibido una nueva orden que requiere atencion.</p>'
+            . '<p>Se ha recibido una nueva orden que requiere atención.</p>'
             . '<div class="info-box">'
             . '<p><strong>Orden:</strong> {{order_number}}</p>'
             . '<p><strong>Cliente:</strong> {{customer_name}}</p>'
@@ -274,7 +274,7 @@ class DefaultEmailTemplateSeeder extends Seeder
         return [
             'name' => 'Nueva Orden (Admin)',
             'slug' => 'order-confirmation-admin',
-            'description' => 'Notificacion al admin de nueva orden recibida',
+            'description' => 'Notificación al admin de nueva orden recibida',
             'subject' => 'Nueva orden recibida: {{order_number}}',
             'html' => $html,
             'css' => $this->baseStyles(),
@@ -293,9 +293,9 @@ class DefaultEmailTemplateSeeder extends Seeder
             . '<div class="success-box">'
             . '<p><strong>Orden:</strong> {{order_number}}</p>'
             . '<p><strong>Monto:</strong> {{payment_amount|currency}} {{currency}}</p>'
-            . '<p><strong>Metodo:</strong> {{payment_method}}</p>'
+            . '<p><strong>Método:</strong> {{payment_method}}</p>'
             . '<p><strong>Fecha:</strong> {{payment_date}}</p>'
-            . '<p><strong>Transaccion:</strong> {{transaction_id}}</p>'
+            . '<p><strong>Transacción:</strong> {{transaction_id}}</p>'
             . '</div>'
             . '<p>Su pedido sera procesado a la brevedad.</p>'
             . '</div>'
@@ -303,9 +303,9 @@ class DefaultEmailTemplateSeeder extends Seeder
             . '</div>';
 
         return [
-            'name' => 'Confirmacion de Pago',
+            'name' => 'Confirmación de Pago',
             'slug' => 'payment-confirmation',
-            'description' => 'Confirmacion al cliente de pago procesado',
+            'description' => 'Confirmación al cliente de pago procesado',
             'subject' => 'Pago confirmado - Orden {{order_number}}',
             'html' => $html,
             'css' => $this->baseStyles(),
@@ -323,16 +323,16 @@ class DefaultEmailTemplateSeeder extends Seeder
             . '<p>Su pedido <strong>{{order_number}}</strong> ha sido enviado.</p>'
             . '<div class="success-box">'
             . '<p><strong>Paqueteria:</strong> {{carrier}}</p>'
-            . '<p><strong>Numero de rastreo:</strong> {{tracking_number}}</p>'
+            . '<p><strong>Número de rastreo:</strong> {{tracking_number}}</p>'
             . '<p><strong>Entrega estimada:</strong> {{estimated_delivery}}</p>'
             . '</div>'
-            . '{{#if shipping_address}}<div class="info-box"><p class="label">Direccion de entrega:</p><p>{{shipping_address}}</p></div>{{/if}}'
+            . '{{#if shipping_address}}<div class="info-box"><p class="label">Dirección de entrega:</p><p>{{shipping_address}}</p></div>{{/if}}'
             . '</div>'
             . '<div class="footer"><p><strong>{{company_name}}</strong></p></div>'
             . '</div>';
 
         return [
-            'name' => 'Notificacion de Envio',
+            'name' => 'Notificación de Envío',
             'slug' => 'shipping-notification',
             'description' => 'Se envia al cliente cuando su pedido ha sido enviado',
             'subject' => 'Tu pedido {{order_number}} ha sido enviado',
@@ -346,7 +346,7 @@ class DefaultEmailTemplateSeeder extends Seeder
     protected function orderStatusUpdate(): array
     {
         $html = '<div class="email-container">'
-            . '<div class="header"><h1>Actualizacion de tu Orden</h1></div>'
+            . '<div class="header"><h1>Actualización de tu Orden</h1></div>'
             . '<div class="content">'
             . '<p>Estimado/a {{customer_name}},</p>'
             . '<p>El estado de su orden <strong>{{order_number}}</strong> ha cambiado.</p>'
@@ -363,7 +363,7 @@ class DefaultEmailTemplateSeeder extends Seeder
             'name' => 'Cambio de Estado de Orden',
             'slug' => 'order-status-update',
             'description' => 'Se envia cuando el estado de una orden cambia',
-            'subject' => 'Actualizacion de tu orden {{order_number}}',
+            'subject' => 'Actualización de tu orden {{order_number}}',
             'html' => $html,
             'css' => $this->baseStyles(),
             'status' => 'active',
@@ -378,7 +378,7 @@ class DefaultEmailTemplateSeeder extends Seeder
             . '<div class="content">'
             . '<p>Estimado/a {{customer_name}},</p>'
             . '<p>Su orden <strong>{{order_number}}</strong> ha sido cancelada.</p>'
-            . '{{#if cancellation_reason}}<div class="warning-box"><p><strong>Razon:</strong> {{cancellation_reason}}</p></div>{{/if}}'
+            . '{{#if cancellation_reason}}<div class="warning-box"><p><strong>Razón:</strong> {{cancellation_reason}}</p></div>{{/if}}'
             . '<table class="totals-table"><tr class="total-row"><td class="text-right">Total cancelado:</td><td class="text-right">{{total|currency}} {{currency}}</td></tr></table>'
             . '<p>Si tiene alguna pregunta, no dude en contactarnos.</p>'
             . '</div>'
@@ -386,7 +386,7 @@ class DefaultEmailTemplateSeeder extends Seeder
             . '</div>';
 
         return [
-            'name' => 'Cancelacion de Orden',
+            'name' => 'Cancelación de Orden',
             'slug' => 'order-cancellation',
             'description' => 'Se envia al cliente cuando su orden es cancelada',
             'subject' => 'Orden {{order_number}} cancelada',
@@ -400,21 +400,21 @@ class DefaultEmailTemplateSeeder extends Seeder
     protected function orderReturnCustomer(): array
     {
         $html = '<div class="email-container">'
-            . '<div class="header"><h1>Solicitud de Devolucion Recibida</h1></div>'
+            . '<div class="header"><h1>Solicitud de Devolución Recibida</h1></div>'
             . '<div class="content">'
             . '<p>Estimado/a {{customer_name}},</p>'
-            . '<p>Hemos recibido su solicitud de devolucion para la orden <strong>{{order_number}}</strong>.</p>'
-            . '<div class="info-box"><p><strong>Razon:</strong> {{return_reason}}</p></div>'
+            . '<p>Hemos recibido su solicitud de devolución para la orden <strong>{{order_number}}</strong>.</p>'
+            . '<div class="info-box"><p><strong>Razón:</strong> {{return_reason}}</p></div>'
             . '<div class="success-box"><p>Nuestro equipo revisara su solicitud y le contactara a la brevedad con los pasos a seguir.</p></div>'
             . '</div>'
             . '<div class="footer"><p><strong>{{company_name}}</strong></p></div>'
             . '</div>';
 
         return [
-            'name' => 'Devolucion (Cliente)',
+            'name' => 'Devolución (Cliente)',
             'slug' => 'order-return-customer',
-            'description' => 'Confirmacion al cliente de solicitud de devolucion recibida',
-            'subject' => 'Solicitud de devolucion recibida - Orden {{order_number}}',
+            'description' => 'Confirmación al cliente de solicitud de devolución recibida',
+            'subject' => 'Solicitud de devolución recibida - Orden {{order_number}}',
             'html' => $html,
             'css' => $this->baseStyles(),
             'status' => 'active',
@@ -425,25 +425,25 @@ class DefaultEmailTemplateSeeder extends Seeder
     protected function orderReturnAdmin(): array
     {
         $html = '<div class="email-container">'
-            . '<div class="header"><h1>Nueva Solicitud de Devolucion</h1></div>'
+            . '<div class="header"><h1>Nueva Solicitud de Devolución</h1></div>'
             . '<div class="content">'
-            . '<p>Se ha recibido una nueva solicitud de devolucion.</p>'
+            . '<p>Se ha recibido una nueva solicitud de devolución.</p>'
             . '<div class="info-box">'
             . '<p><strong>Orden:</strong> {{order_number}}</p>'
             . '<p><strong>Cliente:</strong> {{customer_name}}</p>'
             . '<p><strong>Email:</strong> {{customer_email}}</p>'
-            . '<p><strong>Razon:</strong> {{return_reason}}</p>'
+            . '<p><strong>Razón:</strong> {{return_reason}}</p>'
             . '</div>'
-            . '<div class="warning-box"><p>Accion requerida: Revisar la solicitud y contactar al cliente.</p></div>'
+            . '<div class="warning-box"><p>Acción requerida: Revisar la solicitud y contactar al cliente.</p></div>'
             . '</div>'
             . '<div class="footer"><p><strong>{{company_name}}</strong></p></div>'
             . '</div>';
 
         return [
-            'name' => 'Devolucion (Admin)',
+            'name' => 'Devolución (Admin)',
             'slug' => 'order-return-admin',
-            'description' => 'Notificacion al admin de nueva solicitud de devolucion',
-            'subject' => 'Nueva solicitud de devolucion - Orden {{order_number}}',
+            'description' => 'Notificación al admin de nueva solicitud de devolución',
+            'subject' => 'Nueva solicitud de devolución - Orden {{order_number}}',
             'html' => $html,
             'css' => $this->baseStyles(),
             'status' => 'active',
@@ -458,7 +458,7 @@ class DefaultEmailTemplateSeeder extends Seeder
             . '<div class="content">'
             . '<p>Estimado/a {{user_name}},</p>'
             . '<p>Tu cuenta ha sido creada exitosamente.</p>'
-            . '<p>Ya puedes acceder al sistema para explorar nuestro catalogo de productos, solicitar cotizaciones y gestionar tus pedidos.</p>'
+            . '<p>Ya puedes acceder al sistema para explorar nuestro catálogo de productos, solicitar cotizaciones y gestionar tus pedidos.</p>'
             . '<div style="text-align: center; margin: 25px 0;">'
             . '<a href="{{login_url}}" class="button">Acceder al Sistema</a>'
             . '</div>'

@@ -44,7 +44,7 @@ class QuoteSentMail extends Mailable
             return $templateMail;
         }
 
-        $mail = $this->subject('Cotizacion ' . $this->quote->quote_number . ' - ' . app(\Modules\AppConfig\Services\AppSettingResolver::class)->get('company.name', config('app.name', 'Tu Empresa')))
+        $mail = $this->subject('Cotización ' . $this->quote->quote_number . ' - ' . app(\Modules\AppConfig\Services\AppSettingResolver::class)->get('company.name', config('app.name', 'Tu Empresa')))
             ->view('sales::emails.quote-sent')
             ->with([
                 'quote' => $this->quote,

@@ -26,7 +26,7 @@ class EmailVerificationController extends Controller
         $user->notify(new VerifyEmailNotification());
 
         return response()->json([
-            'message' => 'Se ha enviado un enlace de verificacion a tu correo.',
+            'message' => 'Se ha enviado un enlace de verificación a tu correo.',
         ]);
     }
 
@@ -39,7 +39,7 @@ class EmailVerificationController extends Controller
 
         if (! hash_equals(sha1($user->getEmailForVerification()), $hash)) {
             return response()->json([
-                'message' => 'Enlace de verificacion invalido.',
+                'message' => 'Enlace de verificación invalido.',
             ], 403);
         }
 

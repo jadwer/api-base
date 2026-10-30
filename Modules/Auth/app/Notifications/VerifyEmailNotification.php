@@ -26,10 +26,10 @@ class VerifyEmailNotification extends Notification
         ]);
 
         return (new MailMessage)
-            ->subject('Verifica tu correo electronico')
+            ->subject('Verifica tu correo electrónico')
             ->greeting('Hola ' . ($notifiable->name ?? '') . ',')
-            ->line('Gracias por registrarte. Por favor verifica tu correo electronico haciendo clic en el boton de abajo.')
-            ->action('Verificar correo electronico', $url)
+            ->line('Gracias por registrarte. Por favor verifica tu correo electrónico haciendo clic en el boton de abajo.')
+            ->action('Verificar correo electrónico', $url)
             ->line('Si no creaste una cuenta, puedes ignorar este correo.')
             ->salutation('Saludos, ' . config('app.name'));
     }

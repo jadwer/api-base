@@ -34,7 +34,7 @@ class InvoiceSeriesController
     public function available(Request $request): JsonResponse
     {
         if (Gate::denies('billing.invoice-series.index')) {
-            abort(403, 'No tiene permisos para ver series de facturacion');
+            abort(403, 'No tiene permisos para ver series de facturación');
         }
 
         $validated = $request->validate([
@@ -76,7 +76,7 @@ class InvoiceSeriesController
     public function previewNextFolio(InvoiceSeries $invoiceSeries): JsonResponse
     {
         if (Gate::denies('billing.invoice-series.show')) {
-            abort(403, 'No tiene permisos para ver series de facturacion');
+            abort(403, 'No tiene permisos para ver series de facturación');
         }
 
         return response()->json([
@@ -100,7 +100,7 @@ class InvoiceSeriesController
     public function setInitialFolio(InvoiceSeries $invoiceSeries, Request $request): JsonResponse
     {
         if (Gate::denies('billing.invoice-series.update')) {
-            abort(403, 'No tiene permisos para modificar series de facturacion');
+            abort(403, 'No tiene permisos para modificar series de facturación');
         }
 
         $validated = $request->validate([
@@ -131,7 +131,7 @@ class InvoiceSeriesController
     public function setAsDefault(InvoiceSeries $invoiceSeries): JsonResponse
     {
         if (Gate::denies('billing.invoice-series.update')) {
-            abort(403, 'No tiene permisos para modificar series de facturacion');
+            abort(403, 'No tiene permisos para modificar series de facturación');
         }
 
         // Remove default from other series of same type
@@ -164,7 +164,7 @@ class InvoiceSeriesController
     public function initializeDefaults(Request $request): JsonResponse
     {
         if (Gate::denies('billing.invoice-series.store')) {
-            abort(403, 'No tiene permisos para crear series de facturacion');
+            abort(403, 'No tiene permisos para crear series de facturación');
         }
 
         $validated = $request->validate([
@@ -181,7 +181,7 @@ class InvoiceSeriesController
 
         if (!$setting) {
             return response()->json([
-                'message' => 'No se encontro configuracion de empresa',
+                'message' => 'No se encontró configuración de empresa',
             ], 404);
         }
 
@@ -216,7 +216,7 @@ class InvoiceSeriesController
     public function summary(Request $request): JsonResponse
     {
         if (Gate::denies('billing.invoice-series.index')) {
-            abort(403, 'No tiene permisos para ver series de facturacion');
+            abort(403, 'No tiene permisos para ver series de facturación');
         }
 
         $companySettingId = $request->query('company_setting_id');

@@ -102,7 +102,7 @@ class PurchaseOrderReceivedListener
             'subtotal' => $subtotal,
             'taxAmount' => $taxAmount,
             'totalAmount' => $totalAmount,
-            'notes' => "Generada automaticamente desde la orden de compra #{$purchaseOrder->order_number}",
+            'notes' => "Generada automáticamente desde la orden de compra #{$purchaseOrder->order_number}",
             'metadata' => [
                 'source' => 'purchase_order',
                 'purchase_order_id' => $purchaseOrder->id,

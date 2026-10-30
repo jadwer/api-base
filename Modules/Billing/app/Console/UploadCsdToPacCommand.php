@@ -22,7 +22,7 @@ class UploadCsdToPacCommand extends Command
     public function handle(SWPacService $pacService): int
     {
         if (!$pacService->isEnabled()) {
-            $this->error('El servicio PAC no esta habilitado (SW_PAC_ENABLED).');
+            $this->error('El servicio PAC no está habilitado (SW_PAC_ENABLED).');
             return self::FAILURE;
         }
 
@@ -62,7 +62,7 @@ class UploadCsdToPacCommand extends Command
             return self::FAILURE;
         }
 
-        $this->info("CSD de {$settings->rfc} cargado en el PAC. Ya puede timbrar por Emision.");
+        $this->info("CSD de {$settings->rfc} cargado en el PAC. Ya puede timbrar por Emisión.");
         return self::SUCCESS;
     }
 }

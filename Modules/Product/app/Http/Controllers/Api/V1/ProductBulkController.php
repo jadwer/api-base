@@ -186,7 +186,7 @@ class ProductBulkController extends Controller
         $status = $isActive ? 'activada' : 'desactivada';
 
         return response()->json([
-            'message' => "Categoria {$status}" . ($productsAffected > 0 ? " con {$productsAffected} productos" : ''),
+            'message' => "Categoría {$status}" . ($productsAffected > 0 ? " con {$productsAffected} productos" : ''),
             'category_updated' => true,
             'products_affected' => $productsAffected,
         ]);
@@ -222,7 +222,7 @@ class ProductBulkController extends Controller
         });
 
         return response()->json([
-            'message' => "{$affected} productos reasignados a la categoria",
+            'message' => "{$affected} productos reasignados a la categoría",
             'affected_count' => $affected,
         ]);
     }

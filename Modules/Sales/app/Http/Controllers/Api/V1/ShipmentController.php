@@ -41,7 +41,7 @@ class ShipmentController extends Controller
     public function createFromOrder(Request $request): JsonResponse
     {
         if (Gate::denies('shipments.store')) {
-            abort(403, 'No tiene permisos para crear envios');
+            abort(403, 'No tiene permisos para crear envíos');
         }
 
         $request->validate([
@@ -83,7 +83,7 @@ class ShipmentController extends Controller
                     ],
                 ],
                 'meta' => [
-                    'message' => 'Envio creado exitosamente.',
+                    'message' => 'Envío creado exitosamente.',
                 ],
             ], 201);
         } catch (\InvalidArgumentException $e) {
@@ -106,7 +106,7 @@ class ShipmentController extends Controller
     public function ship(Request $request, Shipment $shipment): JsonResponse
     {
         if (Gate::denies('shipments.update')) {
-            abort(403, 'No tiene permisos para marcar envios');
+            abort(403, 'No tiene permisos para marcar envíos');
         }
 
         $request->validate([
@@ -134,7 +134,7 @@ class ShipmentController extends Controller
                     ],
                 ],
                 'meta' => [
-                    'message' => 'Envio marcado como enviado.',
+                    'message' => 'Envío marcado como enviado.',
                 ],
             ]);
         } catch (\InvalidArgumentException $e) {
@@ -157,7 +157,7 @@ class ShipmentController extends Controller
     public function deliver(Request $request, Shipment $shipment): JsonResponse
     {
         if (Gate::denies('shipments.update')) {
-            abort(403, 'No tiene permisos para marcar envios como entregados');
+            abort(403, 'No tiene permisos para marcar envíos como entregados');
         }
 
         $request->validate([
@@ -181,7 +181,7 @@ class ShipmentController extends Controller
                     ],
                 ],
                 'meta' => [
-                    'message' => 'Envio marcado como entregado.',
+                    'message' => 'Envío marcado como entregado.',
                 ],
             ]);
         } catch (\InvalidArgumentException $e) {
@@ -204,7 +204,7 @@ class ShipmentController extends Controller
     public function cancel(Request $request, Shipment $shipment): JsonResponse
     {
         if (Gate::denies('shipments.update')) {
-            abort(403, 'No tiene permisos para cancelar envios');
+            abort(403, 'No tiene permisos para cancelar envíos');
         }
 
         $request->validate([
@@ -224,7 +224,7 @@ class ShipmentController extends Controller
                     ],
                 ],
                 'meta' => [
-                    'message' => 'Envio cancelado.',
+                    'message' => 'Envío cancelado.',
                 ],
             ]);
         } catch (\InvalidArgumentException $e) {
@@ -247,7 +247,7 @@ class ShipmentController extends Controller
     public function orderSummary(SalesOrder $order): JsonResponse
     {
         if (Gate::denies('shipments.index')) {
-            abort(403, 'No tiene permisos para ver resumen de envios');
+            abort(403, 'No tiene permisos para ver resumen de envíos');
         }
 
         $summary = $this->shipmentService->getOrderShipmentSummary($order);

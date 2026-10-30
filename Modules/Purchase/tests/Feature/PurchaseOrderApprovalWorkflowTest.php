@@ -460,7 +460,7 @@ class PurchaseOrderApprovalWorkflowTest extends TestCase
         PurchaseOrder::factory()->create(['contact_id' => $contact->id, 'status' => 'received', 'total_amount' => 5000.00]);
         $order = PurchaseOrder::factory()->create(['contact_id' => $contact->id, 'status' => 'pending', 'total_amount' => 80000.00]);
 
-        $this->expectExceptionMessage('No tienes el nivel de aprobacion');
+        $this->expectExceptionMessage('No tienes el nivel de aprobación');
         $this->service->approve($order, User::factory()->create()->id);
     }
 

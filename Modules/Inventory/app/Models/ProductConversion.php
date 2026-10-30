@@ -146,7 +146,7 @@ class ProductConversion extends Model
     {
         $effective = $this->effectiveFactor();
         if ($effective <= 0) {
-            throw new \InvalidArgumentException('La conversion no produce nada: revisa el factor y la merma.');
+            throw new \InvalidArgumentException('La conversión no produce nada: revisa el factor y la merma.');
         }
 
         $consumed = $requestedQuantity;

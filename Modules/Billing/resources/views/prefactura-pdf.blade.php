@@ -264,7 +264,7 @@
                 <div class="company-name">{{ $settings->company_name }}</div>
                 <div class="company-info">
                     <div><strong>RFC:</strong> {{ $settings->rfc }}</div>
-                    <div><strong>Regimen Fiscal:</strong> {{ $settings->tax_regime }} - @if($settings->tax_regime == '612') Personas Fisicas con Actividades Empresariales @else Regimen General @endif</div>
+                    <div><strong>Régimen Fiscal:</strong> {{ $settings->tax_regime }} - @if($settings->tax_regime == '612') Personas Fisicas con Actividades Empresariales @else Régimen General @endif</div>
                     <div><strong>C.P.:</strong> {{ $settings->postal_code }}</div>
                 </div>
             </div>
@@ -291,7 +291,7 @@
             <div class="two-columns clearfix">
                 <div class="column-left">
                     <div class="info-row">
-                        <span class="label">Nombre / Razon Social:</span>
+                        <span class="label">Nombre / Razón Social:</span>
                         <span class="value">{{ $invoice->receptor_nombre }}</span>
                     </div>
                     <div class="info-row">
@@ -305,7 +305,7 @@
                 </div>
                 <div class="column-right">
                     <div class="info-row">
-                        <span class="label">Regimen Fiscal:</span>
+                        <span class="label">Régimen Fiscal:</span>
                         <span class="value">{{ $invoice->receptor_regimen_fiscal ?? 'N/A' }}</span>
                     </div>
                     <div class="info-row">
@@ -322,11 +322,11 @@
             <div class="two-columns clearfix">
                 <div class="column-left">
                     <div class="info-row">
-                        <span class="label">Fecha de Emision:</span>
+                        <span class="label">Fecha de Emisión:</span>
                         <span class="value">{{ $invoice->fecha_emision ? $invoice->fecha_emision->format('d/m/Y H:i:s') : now()->format('d/m/Y H:i:s') }}</span>
                     </div>
                     <div class="info-row">
-                        <span class="label">Lugar de Expedicion:</span>
+                        <span class="label">Lugar de Expedición:</span>
                         <span class="value">C.P. {{ $settings->postal_code }}</span>
                     </div>
                     <div class="info-row">
@@ -336,8 +336,8 @@
                 </div>
                 <div class="column-right">
                     <div class="info-row">
-                        <span class="label">Metodo de Pago:</span>
-                        <span class="value">{{ $invoice->metodo_pago }} - @if($invoice->metodo_pago == 'PUE') Pago en una sola exhibicion @else Pago en parcialidades @endif</span>
+                        <span class="label">Método de Pago:</span>
+                        <span class="value">{{ $invoice->metodo_pago }} - @if($invoice->metodo_pago == 'PUE') Pago en una sola exhibición @else Pago en parcialidades @endif</span>
                     </div>
                     <div class="info-row">
                         <span class="label">Forma de Pago:</span>
@@ -358,7 +358,7 @@
                 <thead>
                     <tr>
                         <th style="width: 10%;">Clave</th>
-                        <th style="width: 35%;">Descripcion</th>
+                        <th style="width: 35%;">Descripción</th>
                         <th style="width: 10%;" class="text-center">Cantidad</th>
                         <th style="width: 10%;" class="text-center">Unidad</th>
                         <th style="width: 15%;" class="text-right">P. Unitario</th>
@@ -429,9 +429,9 @@
             <h3>AVISO IMPORTANTE - DOCUMENTO DE VISTA PREVIA</h3>
             <ul>
                 <li>Este documento es una <strong>PREFACTURA</strong> y NO tiene validez fiscal</li>
-                <li>NO ha sido timbrado por el Servicio de Administracion Tributaria (SAT)</li>
+                <li>NO ha sido timbrado por el Servicio de Administración Tributaria (SAT)</li>
                 <li>NO cuenta con Folio Fiscal (UUID) ni sellos digitales</li>
-                <li>Utilice este documento unicamente para revision previa antes del timbrado</li>
+                <li>Utilice este documento únicamente para revisión previa antes del timbrado</li>
                 <li>Una vez verificados los datos, proceda a timbrar la factura para obtener el CFDI valido</li>
             </ul>
         </div>
@@ -439,7 +439,7 @@
         <!-- Placeholder for QR and Stamps -->
         <div class="section" style="text-align: center; padding: 20px; background-color: #f8f9fa; border: 2px dashed #dee2e6; margin-top: 15px;">
             <p style="color: #6c757d; font-size: 9pt; margin-bottom: 5px;">
-                <strong>Codigo QR y sellos digitales</strong>
+                <strong>Código QR y sellos digitales</strong>
             </p>
             <p style="color: #adb5bd; font-size: 8pt;">
                 Esta seccion se completara automaticamente al timbrar la factura

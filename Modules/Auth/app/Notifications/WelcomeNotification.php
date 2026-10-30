@@ -24,7 +24,7 @@ class WelcomeNotification extends Notification
             ->subject('Bienvenido a ' . $appName)
             ->greeting('Bienvenido, ' . ($notifiable->name ?? '') . '!')
             ->line('Tu cuenta ha sido creada exitosamente en ' . $appName . '.')
-            ->line('Ya puedes acceder al sistema para explorar nuestro catalogo de productos, solicitar cotizaciones y gestionar tus pedidos.')
+            ->line('Ya puedes acceder al sistema para explorar nuestro catálogo de productos, solicitar cotizaciones y gestionar tus pedidos.')
             ->action('Acceder al sistema', $frontendUrl . '/auth/login')
             ->line('Si tienes alguna duda, no dudes en contactarnos.')
             ->salutation('Saludos, el equipo de ' . $appName);

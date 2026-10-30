@@ -31,7 +31,7 @@ class PrefacturaPDFGenerator
         $settings = CompanySetting::where('is_active', true)->first();
 
         if (!$settings) {
-            throw new \Exception('No se encontro configuracion de facturacion activa');
+            throw new \Exception('No se encontró configuración de facturación activa');
         }
 
         // Prepare data for view
@@ -74,7 +74,7 @@ class PrefacturaPDFGenerator
         $settings = CompanySetting::where('is_active', true)->first();
 
         if (!$settings) {
-            throw new \Exception('No se encontro configuracion de facturacion activa');
+            throw new \Exception('No se encontró configuración de facturación activa');
         }
 
         // Build pseudo-invoice object from SalesOrder

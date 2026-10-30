@@ -78,7 +78,7 @@ class PurchaseOrderCancelledListener
                     'reference_id' => $purchaseOrder->id,
                     'idempotency_key' => "purchase_cancel:{$purchaseOrder->id}:item:{$item->id}",
                     'movement_date' => now(),
-                    'description' => "Reversa por cancelacion de OC #{$purchaseOrder->id}",
+                    'description' => "Reversa por cancelación de OC #{$purchaseOrder->id}",
                     'user_id' => auth()->id() ?? \Modules\User\Models\User::first()?->id ?? 1,
                     'metadata' => [
                         'purchase_order_id' => $purchaseOrder->id,

@@ -31,7 +31,7 @@ class BankAccountRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'accountNumber.required' => 'El numero de cuenta es obligatorio.',
+            'accountNumber.required' => 'El número de cuenta es obligatorio.',
             'accountName.required' => 'El nombre de la cuenta es obligatorio.',
             'bankName.required' => 'El banco es obligatorio.',
             'glAccountId.required' => 'La cuenta contable es obligatoria.',

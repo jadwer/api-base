@@ -200,7 +200,7 @@ class SalesOrderController extends Controller
         }
 
         if ($salesOrder->status === 'cancelled') {
-            return response()->json(['error' => 'La orden ya esta cancelada'], 400);
+            return response()->json(['error' => 'La orden ya está cancelada'], 400);
         }
 
         if ($salesOrder->status === 'completed') {

@@ -325,7 +325,7 @@ class PostInventoryMovementToGL
 
         $movement->update([
             'gl_posting_status' => 'posted',
-            'gl_posting_notes' => 'Fraccionamiento: transformacion de inventario a inventario, sin asiento',
+            'gl_posting_notes' => 'Fraccionamiento: transformación de inventario a inventario, sin asiento',
         ]);
     }
 

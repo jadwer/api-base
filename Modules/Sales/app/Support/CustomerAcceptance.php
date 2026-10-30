@@ -14,9 +14,9 @@ final class CustomerAcceptance
 
     public const CHANNELS = [
         self::PURCHASE_ORDER => 'Orden de compra del cliente',
-        'email' => 'Correo electronico',
+        'email' => 'Correo electrónico',
         'whatsapp' => 'WhatsApp',
-        'phone' => 'Telefono',
+        'phone' => 'Teléfono',
         'counter' => 'En mostrador',
     ];
 

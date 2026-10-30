@@ -47,11 +47,11 @@ class VariantAttributeValueRequest extends ResourceRequest
             'variantAttributeId.exists' => 'El atributo especificado no existe.',
             'value.required' => 'El valor es obligatorio.',
             'value.max' => 'El valor no puede exceder :max caracteres.',
-            'code.required' => 'El codigo es obligatorio.',
-            'code.unique' => 'Este codigo ya existe para este atributo.',
-            'code.max' => 'El codigo no puede exceder :max caracteres.',
-            'colorHex.regex' => 'El color debe ser un codigo hexadecimal valido (ej: #FF0000).',
-            'sortOrder.min' => 'El orden debe ser un numero positivo.',
+            'code.required' => 'El código es obligatorio.',
+            'code.unique' => 'Este código ya existe para este atributo.',
+            'code.max' => 'El código no puede exceder :max caracteres.',
+            'colorHex.regex' => 'El color debe ser un código hexadecimal valido (ej: #FF0000).',
+            'sortOrder.min' => 'El orden debe ser un número positivo.',
         ];
     }
 }

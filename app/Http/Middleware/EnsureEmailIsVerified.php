@@ -23,7 +23,7 @@ class EnsureEmailIsVerified
 
         if ($user && ! $user->hasVerifiedEmail()) {
             return response()->json([
-                'message' => 'Debes verificar tu correo electronico antes de continuar.',
+                'message' => 'Debes verificar tu correo electrónico antes de continuar.',
                 'error' => 'email_not_verified',
             ], 403);
         }

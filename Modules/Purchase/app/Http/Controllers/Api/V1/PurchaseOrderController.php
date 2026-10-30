@@ -183,7 +183,7 @@ class PurchaseOrderController extends Controller
             return response()->json([
                 'errors' => [[
                     'status' => '422',
-                    'title' => 'Aprobacion no aplicable',
+                    'title' => 'Aprobación no aplicable',
                     'detail' => match ($purchaseOrder->approval_status) {
                         'approved' => 'La orden de compra ya está aprobada.',
                         'rejected' => 'La orden de compra fue rechazada.',
@@ -340,7 +340,7 @@ class PurchaseOrderController extends Controller
                 'errors' => [[
                     'status' => '422',
                     'title' => 'Estado no válido',
-                    'detail' => 'Solo se pueden recibir ordenes pendientes o aprobadas.',
+                    'detail' => 'Solo se pueden recibir órdenes pendientes o aprobadas.',
                 ]]
             ], 422);
         }
@@ -350,7 +350,7 @@ class PurchaseOrderController extends Controller
             return response()->json([
                 'errors' => [[
                     'status' => '422',
-                    'title' => 'Aprobacion pendiente',
+                    'title' => 'Aprobación pendiente',
                     'detail' => $purchaseOrder->approval_status === 'rejected'
                         ? 'La orden de compra fue rechazada; no se puede recibir.'
                         : 'La orden de compra requiere aprobacion antes de recibirse.',
@@ -437,7 +437,7 @@ class PurchaseOrderController extends Controller
                 'errors' => [[
                     'status' => '422',
                     'title' => 'Estado no válido',
-                    'detail' => 'La orden ya esta cancelada.',
+                    'detail' => 'La orden ya está cancelada.',
                 ]]
             ], 422);
         }

@@ -181,9 +181,9 @@ class CFDIInvoiceRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'receptorUsoCfdi.in' => 'El uso de CFDI no esta en el catalogo SAT.',
-            'receptorRegimenFiscal.in' => 'El regimen fiscal no esta en el catalogo SAT.',
-            'formaPago.exists' => 'La forma de pago no esta en el catalogo SAT.',
+            'receptorUsoCfdi.in' => 'El uso de CFDI no está en el catálogo SAT.',
+            'receptorRegimenFiscal.in' => 'El régimen fiscal no está en el catálogo SAT.',
+            'formaPago.exists' => 'La forma de pago no está en el catálogo SAT.',
             'companySettingId.required' => 'La configuración de empresa es obligatoria.',
             'companySettingId.exists' => 'La configuración de empresa no existe.',
             'contactId.required' => 'El contacto es obligatorio.',

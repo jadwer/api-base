@@ -24,17 +24,17 @@ class AppSettingSeeder extends Seeder
         $settings = [
             // Company
             ['key' => 'company.name', 'value' => 'Tu Empresa', 'type' => 'string', 'group' => 'company', 'label' => 'Nombre de la empresa'],
-            ['key' => 'company.phone', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Telefono principal'],
-            ['key' => 'company.phone_secondary', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Telefono secundario'],
-            ['key' => 'company.phone_tertiary', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Telefono terciario'],
-            ['key' => 'company.whatsapp_number', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'WhatsApp (numero internacional)'],
+            ['key' => 'company.phone', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Teléfono principal'],
+            ['key' => 'company.phone_secondary', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Teléfono secundario'],
+            ['key' => 'company.phone_tertiary', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Teléfono terciario'],
+            ['key' => 'company.whatsapp_number', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'WhatsApp (número internacional)'],
             ['key' => 'company.whatsapp_display', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'WhatsApp (texto visible)'],
             ['key' => 'company.whatsapp_message', 'value' => 'Hola, me interesa recibir más información sobre sus productos', 'type' => 'string', 'group' => 'company', 'label' => 'WhatsApp (mensaje prellenado del widget)'],
             ['key' => 'company.email', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Email de contacto'],
-            ['key' => 'company.address', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Direccion'],
+            ['key' => 'company.address', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Dirección'],
             ['key' => 'company.city', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Ciudad'],
             ['key' => 'company.state', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Estado'],
-            ['key' => 'company.postal_code', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Codigo postal'],
+            ['key' => 'company.postal_code', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Código postal'],
             ['key' => 'company.website', 'value' => '', 'type' => 'string', 'group' => 'company', 'label' => 'Sitio web'],
             ['key' => 'company.logo_path', 'value' => '/images/brand/logo.png', 'type' => 'string', 'group' => 'company', 'label' => 'Logo principal'],
             ['key' => 'company.logo_path_alt', 'value' => '/images/brand/logo-alt.png', 'type' => 'string', 'group' => 'company', 'label' => 'Logo alternativo (header)'],
@@ -51,43 +51,43 @@ class AppSettingSeeder extends Seeder
             ['key' => 'branding.cdn_base_url', 'value' => '', 'type' => 'string', 'group' => 'branding', 'label' => 'CDN base URL', 'description' => 'Optional CDN host for branded assets (logos, hero images). Leave empty to serve from local public/.'],
 
             // Auth
-            ['key' => 'auth.require_email_verification', 'value' => 'false', 'type' => 'boolean', 'group' => 'auth', 'label' => 'Requiere verificacion de email', 'description' => 'Si esta activo, los usuarios deben verificar su correo antes de acceder a funciones protegidas'],
+            ['key' => 'auth.require_email_verification', 'value' => 'false', 'type' => 'boolean', 'group' => 'auth', 'label' => 'Requiere verificación de email', 'description' => 'Si está activo, los usuarios deben verificar su correo antes de acceder a funciones protegidas'],
 
             // Mail / Email del sistema
-            ['key' => 'mail.system_email', 'value' => 'info@example.com', 'type' => 'string', 'group' => 'mail', 'label' => 'Email del sistema (remitente)', 'description' => 'Direccion de correo que aparece como remitente en todos los emails del sistema'],
+            ['key' => 'mail.system_email', 'value' => 'info@example.com', 'type' => 'string', 'group' => 'mail', 'label' => 'Email del sistema (remitente)', 'description' => 'Dirección de correo que aparece como remitente en todos los emails del sistema'],
             ['key' => 'mail.system_name', 'value' => 'Tu Empresa', 'type' => 'string', 'group' => 'mail', 'label' => 'Nombre del remitente'],
-            ['key' => 'mail.admin_notification_email', 'value' => 'admin@example.com', 'type' => 'string', 'group' => 'mail', 'label' => 'Email para notificaciones administrativas', 'description' => 'Email donde llegan avisos de nuevas cotizaciones, ordenes, etc.'],
+            ['key' => 'mail.admin_notification_email', 'value' => 'admin@example.com', 'type' => 'string', 'group' => 'mail', 'label' => 'Email para notificaciones administrativas', 'description' => 'Email donde llegan avisos de nuevas cotizaciones, órdenes, etc.'],
             ['key' => 'mail.smtp_host', 'value' => '', 'type' => 'string', 'group' => 'mail', 'label' => 'SMTP Host'],
             ['key' => 'mail.smtp_port', 'value' => '465', 'type' => 'string', 'group' => 'mail', 'label' => 'SMTP Puerto'],
             ['key' => 'mail.smtp_username', 'value' => '', 'type' => 'string', 'group' => 'mail', 'label' => 'SMTP Usuario', 'description' => 'Email completo creado en cPanel'],
-            ['key' => 'mail.smtp_password', 'value' => '', 'type' => 'string', 'group' => 'mail', 'label' => 'SMTP Contrasena'],
-            ['key' => 'mail.smtp_encryption', 'value' => 'ssl', 'type' => 'string', 'group' => 'mail', 'label' => 'SMTP Encriptacion', 'description' => 'ssl (puerto 465) o tls (puerto 587)'],
+            ['key' => 'mail.smtp_password', 'value' => '', 'type' => 'string', 'group' => 'mail', 'label' => 'SMTP Contraseña'],
+            ['key' => 'mail.smtp_encryption', 'value' => 'ssl', 'type' => 'string', 'group' => 'mail', 'label' => 'SMTP Encriptación', 'description' => 'ssl (puerto 465) o tls (puerto 587)'],
 
             // Currency
-            ['key' => 'currency.base_currency', 'value' => 'MXN', 'type' => 'string', 'group' => 'currency', 'label' => 'Moneda base', 'description' => 'Codigo ISO 4217 de la moneda base del sistema'],
+            ['key' => 'currency.base_currency', 'value' => 'MXN', 'type' => 'string', 'group' => 'currency', 'label' => 'Moneda base', 'description' => 'Código ISO 4217 de la moneda base del sistema'],
             ['key' => 'currency.exchange_rate_margin', 'value' => '2.0', 'type' => 'string', 'group' => 'currency', 'label' => 'Margen sobre tipo de cambio (%)', 'description' => 'Porcentaje de margen aplicado sobre el tipo de cambio para ventas'],
             ['key' => 'currency.exchange_rate_source', 'value' => 'banxico', 'type' => 'string', 'group' => 'currency', 'label' => 'Fuente de tipo de cambio', 'description' => 'Proveedor de tipos de cambio: banxico o manual'],
-            ['key' => 'currency.auto_update_rates', 'value' => 'true', 'type' => 'boolean', 'group' => 'currency', 'label' => 'Actualizar tipos de cambio automaticamente', 'description' => 'Si esta activo, los tipos de cambio se actualizan diariamente via API de Banxico'],
+            ['key' => 'currency.auto_update_rates', 'value' => 'true', 'type' => 'boolean', 'group' => 'currency', 'label' => 'Actualizar tipos de cambio automáticamente', 'description' => 'Si está activo, los tipos de cambio se actualizan diariamente via API de Banxico'],
             ['key' => 'currency.banxico_api_token', 'value' => '', 'type' => 'string', 'group' => 'currency', 'label' => 'Token API Banxico', 'description' => 'Token de acceso para la API SIE de Banxico (obtener en banxico.org.mx)'],
 
             // Commissions (WS5)
             ['key' => 'commissions.enabled', 'value' => 'false', 'type' => 'boolean', 'group' => 'commissions', 'label' => 'Comisiones habilitadas', 'description' => 'Feature flag por tenant: si esta apagado, el sistema de comisiones no genera ni actualiza filas'],
-            ['key' => 'commissions.default_pct', 'value' => '5.0', 'type' => 'string', 'group' => 'commissions', 'label' => 'Porcentaje de comision default', 'description' => 'Porcentaje aplicado cuando ni el contacto ni el vendedor definen uno propio'],
-            ['key' => 'commissions.basis', 'value' => 'collected', 'type' => 'string', 'group' => 'commissions', 'label' => 'Base de calculo', 'description' => 'v1 solo soporta collected (comision sobre monto cobrado); invoiced queda reservado para v2'],
+            ['key' => 'commissions.default_pct', 'value' => '5.0', 'type' => 'string', 'group' => 'commissions', 'label' => 'Porcentaje de comisión default', 'description' => 'Porcentaje aplicado cuando ni el contacto ni el vendedor definen uno propio'],
+            ['key' => 'commissions.basis', 'value' => 'collected', 'type' => 'string', 'group' => 'commissions', 'label' => 'Base de calculo', 'description' => 'v1 solo soporta collected (comisión sobre monto cobrado); invoiced queda reservado para v2'],
             ['key' => 'commissions.payout_period', 'value' => 'monthly', 'type' => 'string', 'group' => 'commissions', 'label' => 'Periodo de corte', 'description' => 'Informativo para el reporte de corte de comisiones'],
 
             // Pricing (IVA configurable - etapa 2)
             ['key' => 'pricing.prices_include_tax', 'value' => 'false', 'type' => 'boolean', 'group' => 'pricing', 'label' => 'Precios con IVA incluido', 'description' => 'false (B2B): los precios capturados son netos y el IVA se suma. true (B2C): los precios capturados son finales y el IVA se desglosa hacia adentro'],
 
             // Billing / Complemento de Pagos (REP)
-            ['key' => 'billing.rep_auto_enabled', 'value' => 'true', 'type' => 'boolean', 'group' => 'billing', 'label' => 'Complemento de Pagos automatico', 'description' => 'Si esta activo y el PAC esta habilitado, cada abono a una factura PPD timbrada genera y timbra automaticamente un CFDI tipo P (REP). Si el PAC esta apagado, el REP queda en borrador sin timbrar.'],
+            ['key' => 'billing.rep_auto_enabled', 'value' => 'true', 'type' => 'boolean', 'group' => 'billing', 'label' => 'Complemento de Pagos automático', 'description' => 'Si está activo y el PAC esta habilitado, cada abono a una factura PPD timbrada genera y timbra automáticamente un CFDI tipo P (REP). Si el PAC esta apagado, el REP queda en borrador sin timbrar.'],
 
             // Landing (Fase 3): textos y cantidades del home publico. El grupo
             // se expone en publicSettings() y se edita desde app-config.
-            ['key' => 'landing.hero_title', 'value' => 'MEJORAMOS EL MUNDO DE TU LABORATORIO', 'type' => 'string', 'group' => 'landing', 'label' => 'Titulo del hero', 'description' => 'Encabezado principal del home'],
-            ['key' => 'landing.hero_subtitle', 'value' => 'Encuentra los mejores productos, marcas reconocidas y la mejor atencion para tu laboratorio', 'type' => 'string', 'group' => 'landing', 'label' => 'Subtitulo del hero', 'description' => 'Texto secundario bajo el titulo del home'],
+            ['key' => 'landing.hero_title', 'value' => 'MEJORAMOS EL MUNDO DE TU LABORATORIO', 'type' => 'string', 'group' => 'landing', 'label' => 'Título del hero', 'description' => 'Encabezado principal del home'],
+            ['key' => 'landing.hero_subtitle', 'value' => 'Encuentra los mejores productos, marcas reconocidas y la mejor atención para tu laboratorio', 'type' => 'string', 'group' => 'landing', 'label' => 'Subtitulo del hero', 'description' => 'Texto secundario bajo el título del home'],
             ['key' => 'landing.offers_count', 'value' => '3', 'type' => 'integer', 'group' => 'landing', 'label' => 'Ofertas en el home', 'description' => 'Cuantas ofertas del mes se muestran en el home'],
-            ['key' => 'landing.latest_products_count', 'value' => '6', 'type' => 'integer', 'group' => 'landing', 'label' => 'Ultimos productos en el home', 'description' => 'Cuantos productos recientes se muestran en el home'],
+            ['key' => 'landing.latest_products_count', 'value' => '6', 'type' => 'integer', 'group' => 'landing', 'label' => 'Últimos productos en el home', 'description' => 'Cuantos productos recientes se muestran en el home'],
             // Rediseno 2026-08: preguntas frecuentes del home. JSON con la forma
             // [{"question": "...", "answer": "..."}]. El frontend trae las 5 del
             // Figma como fallback si esta vacio o mal formado.
@@ -96,26 +96,26 @@ class AppSettingSeeder extends Seeder
             // sugerencias); el default del producto conserva el buscador
             // completo.
             ['key' => 'search.fuzzy_enabled', 'value' => 'true', 'type' => 'boolean', 'group' => 'search', 'label' => 'Buscador: tolerancia a errores de escritura (typos)'],
-            ['key' => 'search.results_limit', 'value' => '8', 'type' => 'integer', 'group' => 'search', 'label' => 'Buscador: numero de sugerencias del typeahead'],
+            ['key' => 'search.results_limit', 'value' => '8', 'type' => 'integer', 'group' => 'search', 'label' => 'Buscador: número de sugerencias del typeahead'],
             // Documentos: emisor de las cotizaciones, separado de la configuracion fiscal (2026-09-23)
-            ['key' => 'documents.issuer_source', 'value' => 'company', 'type' => 'string', 'group' => 'documents', 'label' => 'Origen de los datos del emisor en cotizaciones', 'description' => 'company = datos de la empresa (Configuracion > Empresa); manual = los campos de abajo; billing = configuracion fiscal de facturacion'],
-            ['key' => 'documents.issuer_name', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: razon social o nombre (manual)'],
-            ['key' => 'documents.issuer_rfc', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: RFC (vacio = no se imprime)'],
-            ['key' => 'documents.issuer_address', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: calle y numero (manual)'],
+            ['key' => 'documents.issuer_source', 'value' => 'company', 'type' => 'string', 'group' => 'documents', 'label' => 'Origen de los datos del emisor en cotizaciones', 'description' => 'company = datos de la empresa (Configuración > Empresa); manual = los campos de abajo; billing = configuración fiscal de facturación'],
+            ['key' => 'documents.issuer_name', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: razón social o nombre (manual)'],
+            ['key' => 'documents.issuer_rfc', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: RFC (vacío = no se imprime)'],
+            ['key' => 'documents.issuer_address', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: calle y número (manual)'],
             ['key' => 'documents.issuer_city', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: ciudad (manual)'],
             ['key' => 'documents.issuer_state', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: estado (manual)'],
-            ['key' => 'documents.issuer_postal_code', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: codigo postal (manual)'],
-            ['key' => 'documents.issuer_phone', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: telefono (manual)'],
+            ['key' => 'documents.issuer_postal_code', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: código postal (manual)'],
+            ['key' => 'documents.issuer_phone', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: teléfono (manual)'],
             ['key' => 'documents.issuer_email', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: correo (manual)'],
-            ['key' => 'documents.issuer_logo_path', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: ruta del logo (manual, vacio = logo de la empresa)'],
-            ['key' => 'documents.quote_bank_accounts', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Cuentas bancarias en cotizaciones', 'description' => 'Una por linea: Banco | Cuenta o CLABE | Moneda. Vacio = no se imprimen. En origen billing se usan las de facturacion.'],
+            ['key' => 'documents.issuer_logo_path', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: ruta del logo (manual, vacío = logo de la empresa)'],
+            ['key' => 'documents.quote_bank_accounts', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Cuentas bancarias en cotizaciones', 'description' => 'Una por línea: Banco | Cuenta o CLABE | Moneda. Vacío = no se imprimen. En origen billing se usan las de facturación.'],
             ['key' => 'landing.faq', 'value' => json_encode([
                 ['question' => '¿Qué productos ofrece la empresa?', 'answer' => 'Reactivos, material y equipo de laboratorio, consumibles, medios de cultivo, equipo de protección personal y soluciones para monitoreo y tratamiento de agua, de marcas líderes nacionales e internacionales.'],
                 ['question' => '¿Cómo puedo hacer una cotización?', 'answer' => 'Agrega los productos que necesitas al carrito y elige "Cotizar", o escríbenos con el botón "Cotiza con nosotros". Un asesor te responderá con precios, disponibilidad y tiempos de entrega.'],
                 ['question' => '¿Realizan envíos a toda la República Mexicana?', 'answer' => 'Sí. Enviamos a todo el país; el costo y el tiempo de entrega dependen del destino y del tipo de producto (algunos reactivos requieren transporte especializado).'],
                 ['question' => '¿Los productos cuentan con certificados de calidad?', 'answer' => 'Sí. Trabajamos con marcas certificadas y podemos entregar certificados de análisis (COA) y hojas de seguridad (SDS) de los productos que lo requieran.'],
                 ['question' => '¿Cómo puedo buscar un producto?', 'answer' => 'Usa el buscador de la parte superior (por nombre, marca o modelo) o navega por categorías en el menú Productos. Si no lo encuentras, contáctanos y lo localizamos por ti.'],
-            ], JSON_UNESCAPED_UNICODE), 'type' => 'json', 'group' => 'landing', 'label' => 'Preguntas frecuentes del home', 'description' => 'JSON: lista de {question, answer} que muestra la seccion Preguntas Frecuentes'],
+            ], JSON_UNESCAPED_UNICODE), 'type' => 'json', 'group' => 'landing', 'label' => 'Preguntas frecuentes del home', 'description' => 'JSON: lista de {question, answer} que muestra la sección Preguntas Frecuentes'],
         ];
 
         foreach ($settings as $setting) {

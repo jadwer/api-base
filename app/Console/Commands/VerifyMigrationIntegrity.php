@@ -163,10 +163,10 @@ class VerifyMigrationIntegrity extends Command
 
     private function verifyCategories(): void
     {
-        $this->info('Verificando categorias...');
+        $this->info('Verificando categorías...');
 
         $total = DB::table('categories')->count();
-        $this->line("  Total categorias: {$total}");
+        $this->line("  Total categorías: {$total}");
 
         // Check for orphan categories (parent doesn't exist)
         if (Schema::hasColumn('categories', 'parent_id')) {
@@ -235,10 +235,10 @@ class VerifyMigrationIntegrity extends Command
 
     private function verifySalesOrders(): void
     {
-        $this->info('Verificando ordenes de venta...');
+        $this->info('Verificando órdenes de venta...');
 
         $total = DB::table('sales_orders')->count();
-        $this->line("  Total ordenes: {$total}");
+        $this->line("  Total órdenes: {$total}");
 
         // Check for orders without contact
         $noContact = DB::table('sales_orders')->whereNull('contact_id')->count();
@@ -259,7 +259,7 @@ class VerifyMigrationIntegrity extends Command
 
     private function verifyPurchaseOrders(): void
     {
-        $this->info('Verificando ordenes de compra...');
+        $this->info('Verificando órdenes de compra...');
 
         if (!Schema::hasTable('purchase_orders')) {
             $this->line("  Tabla purchase_orders no existe");
@@ -267,7 +267,7 @@ class VerifyMigrationIntegrity extends Command
         }
 
         $total = DB::table('purchase_orders')->count();
-        $this->line("  Total ordenes: {$total}");
+        $this->line("  Total órdenes: {$total}");
 
         // Check for orders without warehouse (new field)
         if (Schema::hasColumn('purchase_orders', 'warehouse_id')) {
@@ -281,7 +281,7 @@ class VerifyMigrationIntegrity extends Command
                         DB::table('purchase_orders')
                             ->whereNull('warehouse_id')
                             ->update(['warehouse_id' => $defaultWarehouse->id]);
-                        $this->info("  -> Corregido: Asignado almacen default a ordenes sin almacen");
+                        $this->info("  -> Corregido: Asignado almacén default a órdenes sin almacén");
                     }
                 }
             }
@@ -362,7 +362,7 @@ class VerifyMigrationIntegrity extends Command
     {
         $this->newLine();
         $this->line('========================================');
-        $this->info('RESUMEN DE VERIFICACION');
+        $this->info('RESUMEN DE VERIFICACIÓN');
         $this->line('========================================');
 
         if (count($this->issues) === 0 && count($this->warnings) === 0) {
@@ -388,9 +388,9 @@ class VerifyMigrationIntegrity extends Command
 
         $this->newLine();
         if (count($this->issues) > 0) {
-            $this->error('La migracion tiene errores criticos que deben corregirse');
+            $this->error('La migración tiene errores criticos que deben corregirse');
         } else {
-            $this->info('La migracion tiene advertencias menores pero puede continuar');
+            $this->info('La migración tiene advertencias menores pero puede continuar');
         }
     }
 }

@@ -23,14 +23,14 @@ class DocumentLegendRenderer
      */
     public const PLACEHOLDERS = [
         'folio' => 'Folio del documento',
-        'fecha_emision' => 'Fecha de emision',
-        'fecha_vencimiento' => 'Vigencia o vencimiento (vacio si no aplica)',
+        'fecha_emision' => 'Fecha de emisión',
+        'fecha_vencimiento' => 'Vigencia o vencimiento (vacío si no aplica)',
         'total' => 'Total con moneda',
         'total_letra' => 'Total con importe en letra',
         'cliente' => 'Nombre del cliente',
         'rfc_cliente' => 'RFC del cliente',
-        'empresa' => 'Razon social emisora',
-        'dias_credito' => 'Dias de credito',
+        'empresa' => 'Razón social emisora',
+        'dias_credito' => 'Días de crédito',
     ];
 
     /**

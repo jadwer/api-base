@@ -186,7 +186,7 @@ class SalesOrderCancelledListener
                     'reference_id' => $exit->id,
                     'idempotency_key' => "sales_cancel:exit:{$exit->id}",
                     'movement_date' => now(),
-                    'description' => "Reposicion por cancelacion de venta {$salesOrder->order_number}",
+                    'description' => "Reposición por cancelación de venta {$salesOrder->order_number}",
                     'user_id' => auth()->id() ?? \Modules\User\Models\User::first()?->id ?? 1,
                     'metadata' => [
                         'sales_order_id' => $salesOrder->id,

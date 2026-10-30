@@ -35,12 +35,12 @@ class ShipmentItemRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'shipmentId.required' => 'El envio es requerido.',
-            'shipmentId.exists' => 'El envio seleccionado no existe.',
+            'shipmentId.required' => 'El envío es requerido.',
+            'shipmentId.exists' => 'El envío seleccionado no existe.',
             'salesOrderItemId.required' => 'El item de la orden es requerido.',
             'salesOrderItemId.exists' => 'El item de la orden seleccionado no existe.',
             'quantity.required' => 'La cantidad es requerida.',
-            'quantity.numeric' => 'La cantidad debe ser un numero.',
+            'quantity.numeric' => 'La cantidad debe ser un número.',
             'quantity.min' => 'La cantidad debe ser mayor a 0.',
             'notes.max' => 'Las notas no pueden exceder :max caracteres.',
         ];

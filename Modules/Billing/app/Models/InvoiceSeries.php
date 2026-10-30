@@ -77,7 +77,7 @@ class InvoiceSeries extends Model
         'I' => 'Ingreso',
         'E' => 'Egreso',
         'P' => 'Pago',
-        'N' => 'Nomina',
+        'N' => 'Nómina',
         'T' => 'Traslado',
     ];
 
@@ -88,27 +88,27 @@ class InvoiceSeries extends Model
         [
             'code' => 'FAC',
             'name' => 'Factura Normal',
-            'description' => 'Serie para facturacion general',
+            'description' => 'Serie para facturación general',
             'cfdi_type' => 'I',
             'is_default' => true,
         ],
         [
             'code' => 'FAC-W',
             'name' => 'Factura Web',
-            'description' => 'Serie para ventas en linea',
+            'description' => 'Serie para ventas en línea',
             'cfdi_type' => 'I',
             'source_type' => 'web',
         ],
         [
             'code' => 'REFAC',
-            'name' => 'Refacturacion',
-            'description' => 'Serie para facturas regeneradas por cancelacion',
+            'name' => 'Refacturación',
+            'description' => 'Serie para facturas regeneradas por cancelación',
             'cfdi_type' => 'I',
         ],
         [
             'code' => 'N',
-            'name' => 'Nota de Credito',
-            'description' => 'Serie para notas de credito',
+            'name' => 'Nota de Crédito',
+            'description' => 'Serie para notas de crédito',
             'cfdi_type' => 'E',
             'is_default' => true,
         ],

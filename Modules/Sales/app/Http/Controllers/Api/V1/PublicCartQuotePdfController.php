@@ -27,7 +27,7 @@ class PublicCartQuotePdfController extends Controller
 
         if (empty($priced['lines'])) {
             return response()->json([
-                'message' => 'Ninguno de los productos del carrito esta disponible en el catalogo.',
+                'message' => 'Ninguno de los productos del carrito está disponible en el catálogo.',
             ], 422);
         }
 
@@ -35,7 +35,7 @@ class PublicCartQuotePdfController extends Controller
 
         return response($pdf, 200, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="cotizacion-informativa.pdf"',
+            'Content-Disposition' => 'attachment; filename="cotización-informativa.pdf"',
         ]);
     }
 }

@@ -43,8 +43,8 @@ class CycleCountRequest extends ResourceRequest
     public function messages(): array
     {
         return [
-            'warehouseId.required' => 'El almacen es requerido.',
-            'warehouseId.exists' => 'El almacen seleccionado no existe.',
+            'warehouseId.required' => 'El almacén es requerido.',
+            'warehouseId.exists' => 'El almacén seleccionado no existe.',
             'productId.required' => 'El producto es requerido.',
             'productId.exists' => 'El producto seleccionado no existe.',
             'scheduledDate.required' => 'La fecha programada es requerida.',
@@ -52,8 +52,8 @@ class CycleCountRequest extends ResourceRequest
             'status.required' => 'El estado es requerido.',
             'status.in' => 'El estado debe ser: scheduled, in_progress, completed o cancelled.',
             'abcClass.in' => 'La clase ABC debe ser A, B o C.',
-            'systemQuantity.numeric' => 'La cantidad del sistema debe ser un numero.',
-            'countedQuantity.numeric' => 'La cantidad contada debe ser un numero.',
+            'systemQuantity.numeric' => 'La cantidad del sistema debe ser un número.',
+            'countedQuantity.numeric' => 'La cantidad contada debe ser un número.',
         ];
     }
 }

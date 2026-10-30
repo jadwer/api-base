@@ -371,7 +371,7 @@ class ShipmentService
                 'reference_id' => $exit->id,
                 'idempotency_key' => "sales_cancel:exit:{$exit->id}",
                 'movement_date' => now(),
-                'description' => "Reposicion por cancelacion del envío {$shipment->shipment_number}",
+                'description' => "Reposición por cancelación del envío {$shipment->shipment_number}",
                 'user_id' => auth()->id() ?? \Modules\User\Models\User::first()->id ?? 1,
                 'metadata' => [
                     'shipment_id' => $shipment->id,

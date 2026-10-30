@@ -107,7 +107,7 @@ class FractionationService
                 'quantity' => $produced,
                 'unit_cost' => (float) $fractionation->destination_unit_cost,
                 'idempotency_key' => "{$key}:exit",
-                'description' => "Cancelacion del fraccionamiento {$fractionation->folio_number}: salida del producto destino",
+                'description' => "Cancelación del fraccionamiento {$fractionation->folio_number}: salida del producto destino",
                 'quality_checked' => true,
                 'quality_checked_by' => $userId,
                 'metadata' => ['fractionation_folio' => $fractionation->folio_number, 'fractionation_type' => 'cancel_exit'],
@@ -121,7 +121,7 @@ class FractionationService
                 'unit_cost' => (float) $fractionation->source_unit_cost,
                 'stock_cost_policy' => 'weighted_average',
                 'idempotency_key' => "{$key}:entry",
-                'description' => "Cancelacion del fraccionamiento {$fractionation->folio_number}: regreso del producto origen",
+                'description' => "Cancelación del fraccionamiento {$fractionation->folio_number}: regreso del producto origen",
                 'metadata' => ['fractionation_folio' => $fractionation->folio_number, 'fractionation_type' => 'cancel_entry'],
             ]);
 

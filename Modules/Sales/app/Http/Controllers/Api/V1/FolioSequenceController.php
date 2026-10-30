@@ -50,7 +50,7 @@ class FolioSequenceController extends Controller
 
         if (!$sequence) {
             return response()->json([
-                'error' => 'Configuracion de folio no encontrada',
+                'error' => 'Configuración de folio no encontrada',
             ], 404);
         }
 
@@ -88,7 +88,7 @@ class FolioSequenceController extends Controller
 
         return response()->json([
             'data' => $this->transformSequence($sequence),
-            'message' => 'Configuracion de folio actualizada exitosamente',
+            'message' => 'Configuración de folio actualizada exitosamente',
         ]);
     }
 
@@ -115,7 +115,7 @@ class FolioSequenceController extends Controller
 
         if (!$sequence) {
             return response()->json([
-                'error' => 'Configuracion de folio no encontrada',
+                'error' => 'Configuración de folio no encontrada',
             ], 404);
         }
 
@@ -126,7 +126,7 @@ class FolioSequenceController extends Controller
 
         return response()->json([
             'data' => $this->transformSequence($sequence->fresh()),
-            'message' => 'Secuencia inicial configurada. El proximo folio sera: ' . $sequence->fresh()->previewNextFolio(),
+            'message' => 'Secuencia inicial configurada. El próximo folio sera: ' . $sequence->fresh()->previewNextFolio(),
         ]);
     }
 
@@ -148,7 +148,7 @@ class FolioSequenceController extends Controller
 
         if (!$sequence) {
             return response()->json([
-                'error' => 'Configuracion de folio no encontrada',
+                'error' => 'Configuración de folio no encontrada',
             ], 404);
         }
 

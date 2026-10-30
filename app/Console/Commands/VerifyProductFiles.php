@@ -101,13 +101,13 @@ class VerifyProductFiles extends Command
     private function showResults(): void
     {
         $this->info('========================================');
-        $this->info('RESUMEN DE VERIFICACION DE ARCHIVOS');
+        $this->info('RESUMEN DE VERIFICACIÓN DE ARCHIVOS');
         $this->info('========================================');
         $this->newLine();
 
         // Images
         $foundImages = $this->productsWithImages - count($this->missingImages);
-        $this->line("IMAGENES:");
+        $this->line("IMÁGENES:");
         $this->line("  Productos con imagen referenciada: {$this->productsWithImages}");
         $this->line("  Archivos encontrados: {$foundImages}");
 
@@ -135,12 +135,12 @@ class VerifyProductFiles extends Command
 
         // Show some missing files
         if (count($this->missingImages) > 0) {
-            $this->warn('Primeras 10 imagenes faltantes:');
+            $this->warn('Primeras 10 imágenes faltantes:');
             foreach (array_slice($this->missingImages, 0, 10) as $missing) {
                 $this->line("  [{$missing['sku']}] {$missing['file']}");
             }
             if (count($this->missingImages) > 10) {
-                $this->line("  ... y " . (count($this->missingImages) - 10) . " mas");
+                $this->line("  ... y " . (count($this->missingImages) - 10) . " más");
             }
             $this->newLine();
         }
@@ -151,14 +151,14 @@ class VerifyProductFiles extends Command
                 $this->line("  [{$missing['sku']}] {$missing['file']}");
             }
             if (count($this->missingDatasheets) > 10) {
-                $this->line("  ... y " . (count($this->missingDatasheets) - 10) . " mas");
+                $this->line("  ... y " . (count($this->missingDatasheets) - 10) . " más");
             }
             $this->newLine();
         }
 
         // Storage paths
         $this->info('Rutas de almacenamiento verificadas:');
-        $this->line("  Imagenes: " . storage_path('app/public/' . $this->option('images-path')));
+        $this->line("  Imágenes: " . storage_path('app/public/' . $this->option('images-path')));
         $this->line("  Fichas tecnicas: " . storage_path('app/public/' . $this->option('datasheets-path')));
     }
 
