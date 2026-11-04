@@ -17,12 +17,17 @@ class CFDIAutomationService
      * Auto-generate CFDI from AR Invoice
      *
      * @param ARInvoice $arInvoice
+     * @param string|null $formaPago Forma de pago SAT real para una venta de contado
+     *                               (PUE) que aun no se cobra
      * @return CFDIInvoice
      * @throws \Exception
      */
-    public function generateFromARInvoice(ARInvoice $arInvoice): CFDIInvoice
+    public function generateFromARInvoice(ARInvoice $arInvoice, ?string $formaPago = null): CFDIInvoice
     {
-        return DB::transaction(function () use ($arInvoice) {
+        // Antes de tomar folio: si falta la forma de pago de un PUE, no se gasta.
+        [$metodoPago, $formaPagoCfdi] = $this->resolvePaymentTerms($arInvoice, $formaPago);
+
+        return DB::transaction(function () use ($arInvoice, $metodoPago, $formaPagoCfdi) {
             // Get active company settings
             $settings = CompanySetting::where('is_active', true)->firstOrFail();
 
@@ -68,9 +73,9 @@ class CFDIAutomationService
                 'tipo_cambio' => 1.000000,
 
                 // Payment info
-                'forma_pago' => '99', // Por definir (will be updated when payment is linked)
-                'metodo_pago' => $arInvoice->status === 'paid' ? 'PUE' : 'PPD', // PUE=paid, PPD=to be paid
-                'condiciones_pago' => $arInvoice->status === 'paid' ? null : "Crédito a {$creditDays} días",
+                'forma_pago' => $formaPagoCfdi,
+                'metodo_pago' => $metodoPago,
+                'condiciones_pago' => $metodoPago === 'PPD' ? "Crédito a {$creditDays} días" : null,
 
                 // Type
                 'tipo_comprobante' => 'I', // Ingreso
@@ -192,8 +197,9 @@ class CFDIAutomationService
                 return $existingCFDI;
             }
 
-            // Generate CFDI from AR Invoice
-            $cfdi = $this->generateFromARInvoice($arInvoice);
+            // Generate CFDI from AR Invoice (Stripe: la forma sale de la transaccion)
+            $mapped = $this->mapPaymentMethodToFormaPago($transaction->payment_method);
+            $cfdi = $this->generateFromARInvoice($arInvoice, $mapped !== '99' ? $mapped : null);
 
             // Update CFDI with payment info
             $cfdi->update([
@@ -243,6 +249,64 @@ class CFDIAutomationService
         }
 
         return collect();
+    }
+
+    /**
+     * MetodoPago y FormaPago del CFDI de ingreso (decision de Gabino 31-10: credito
+     * = PPD + REP, contado = PUE):
+     * - Factura ya pagada: PUE con la forma del cobro mayor.
+     * - Si no, lo que dice el pedido (payment_method, que nace de los dias de
+     *   credito); sin pedido, credito del cliente > 0 = PPD.
+     * - PPD lleva 99. PUE exige la forma real (el SAT no admite 99 en PUE): la
+     *   recibida, la del cobro o un rechazo con mensaje claro.
+     *
+     * @return array{0: string, 1: string}
+     */
+    private function resolvePaymentTerms(ARInvoice $arInvoice, ?string $formaPago): array
+    {
+        $formaPago = $formaPago !== null && $formaPago !== '99' ? $formaPago : null;
+        $collected = $this->collectedFormaPago($arInvoice);
+
+        if ($arInvoice->status === 'paid') {
+            return ['PUE', $formaPago ?? $collected ?? throw new \DomainException(
+                'La factura ya está pagada (PUE) pero su cobro no tiene forma de pago del SAT; indícala para generar el CFDI.'
+            )];
+        }
+
+        // La factura puede no venir de un pedido: first() tipa el nulo que la propiedad oculta.
+        $order = $arInvoice->salesOrder()->first();
+        $contact = $arInvoice->contact()->first();
+        $metodo = $order !== null ? strtoupper((string) $order->payment_method) : '';
+        if (!in_array($metodo, ['PUE', 'PPD'], true)) {
+            $creditDays = $order !== null && $order->credit_days !== null
+                ? (int) $order->credit_days
+                : (int) ($contact !== null ? $contact->payment_terms : 0);
+            $metodo = $creditDays > 0 ? 'PPD' : 'PUE';
+        }
+
+        if ($metodo === 'PPD') {
+            return ['PPD', '99'];
+        }
+
+        return ['PUE', $formaPago ?? $collected ?? throw new \DomainException(
+            'Es una venta de contado (PUE) y aún no se cobra: indica la forma de pago real (efectivo, transferencia, tarjeta...) para generar el CFDI. "99 Por definir" solo aplica a crédito (PPD).'
+        )];
+    }
+
+    /** Forma SAT del cobro mayor aplicado a la factura, si la hay. */
+    private function collectedFormaPago(ARInvoice $arInvoice): ?string
+    {
+        $best = null;
+        $bestAmount = 0.0;
+        foreach ($arInvoice->paymentApplications()->where('is_active', true)->with('payment.paymentMethod')->get() as $app) {
+            $clave = $app->payment?->metadata['forma_pago'] ?? $app->payment?->paymentMethod?->code;
+            if ($clave && $clave !== '99' && (float) $app->amount > $bestAmount) {
+                $best = $clave;
+                $bestAmount = (float) $app->amount;
+            }
+        }
+
+        return $best;
     }
 
     /**

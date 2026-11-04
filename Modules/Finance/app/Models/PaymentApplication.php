@@ -10,6 +10,7 @@ use Spatie\Activitylog\LogOptions;
 
 /**
  * @property bool $is_active
+ * @property float $amount
  */
 class PaymentApplication extends Model
 {

@@ -19,6 +19,8 @@ use Modules\Sales\Models\SalesOrder;
  * @property float $tax_amount
  * @property float $total_amount
  * @property float $paid_amount
+ * @property-read SalesOrder|null $salesOrder
+ * @property-read Contact|null $contact
  */
 class ARInvoice extends Model
 {
@@ -148,7 +150,8 @@ class ARInvoice extends Model
     /** @return \Illuminate\Database\Eloquent\Relations\HasMany<PaymentApplication, $this> */
     public function paymentApplications(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(PaymentApplication::class);
+        // FK explicita: la inferida por el nombre de la clase es a_r_invoice_id (no existe).
+        return $this->hasMany(PaymentApplication::class, 'ar_invoice_id');
     }
 
     // Legacy alias for backward compatibility

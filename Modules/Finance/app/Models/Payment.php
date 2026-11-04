@@ -127,7 +127,8 @@ class Payment extends Model
         return $this->belongsTo(BankAccount::class);
     }
 
-    public function paymentMethod()
+    /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<PaymentMethod, $this> */
+    public function paymentMethod(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(PaymentMethod::class);
     }

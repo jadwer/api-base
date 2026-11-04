@@ -18,6 +18,7 @@ use Modules\Finance\Models\ARInvoice;
 use Modules\Billing\Exceptions\PacException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -729,6 +730,14 @@ class CFDIInvoiceController
             return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
+        // Forma de pago real para una venta de contado (PUE) aun sin cobrar.
+        $validated = $request->validate([
+            'forma_pago' => ['nullable', 'string', Rule::exists('sat_forma_pago', 'clave'), Rule::notIn(['99'])],
+        ], [
+            'forma_pago.not_in' => '"99 Por definir" solo aplica a crédito (PPD); indica la forma de pago real.',
+            'forma_pago.exists' => 'La forma de pago no existe en el catálogo del SAT.',
+        ], ['forma_pago' => 'forma de pago']);
+
         // Validate order status
         if (!in_array($salesOrder->status, ['delivered', 'completed'])) {
             return response()->json([
@@ -778,7 +787,7 @@ class CFDIInvoiceController
         // de stock vive ahora en la entrega misma (createExit lanza si no alcanza).
 
         try {
-            $cfdi = $automationService->generateFromARInvoice($arInvoice);
+            $cfdi = $automationService->generateFromARInvoice($arInvoice, $validated['forma_pago'] ?? null);
 
             return response()->json([
                 'message' => 'CFDI generado exitosamente',
@@ -792,6 +801,9 @@ class CFDIInvoiceController
                     'receptor_nombre' => $cfdi->receptor_nombre,
                 ],
             ], 201);
+        } catch (\DomainException $e) {
+            // Venta de contado sin forma de pago: el usuario la indica y reintenta.
+            return response()->json(['error' => $e->getMessage(), 'requires' => 'forma_pago'], 422);
         } catch (\Exception $e) {
             Log::error('Error al crear CFDI desde orden', [
                 'sales_order_id' => $salesOrder->id,

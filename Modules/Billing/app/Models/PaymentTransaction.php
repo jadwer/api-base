@@ -12,6 +12,9 @@ use Modules\Finance\Models\ARInvoice;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
+/**
+ * @property string|null $payment_method
+ */
 class PaymentTransaction extends Model
 {
     use HasFactory, LogsActivity;
