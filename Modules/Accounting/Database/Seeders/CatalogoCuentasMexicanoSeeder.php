@@ -155,6 +155,16 @@ class CatalogoCuentasMexicanoSeeder extends Seeder
                 'company_id' => 1,
                 'status' => 'active',
             ],
+            [
+                'code' => '1110',
+                'name' => 'IVA Acreditable Pendiente de Pago',
+                'account_type' => 'asset',
+                'level' => 3,
+                'is_postable' => true,
+                'parent_code' => '1100',
+                'company_id' => 1,
+                'status' => 'active',
+            ],
 
             // 1200 - ACTIVO NO CIRCULANTE (FIJO)
             [
@@ -378,6 +388,26 @@ class CatalogoCuentasMexicanoSeeder extends Seeder
             [
                 'code' => '2108',
                 'name' => 'Anticipo de Clientes',
+                'account_type' => 'liability',
+                'level' => 3,
+                'is_postable' => true,
+                'parent_code' => '2100',
+                'company_id' => 1,
+                'status' => 'active',
+            ],
+            [
+                'code' => '2109',
+                'name' => 'IVA Trasladado No Cobrado',
+                'account_type' => 'liability',
+                'level' => 3,
+                'is_postable' => true,
+                'parent_code' => '2100',
+                'company_id' => 1,
+                'status' => 'active',
+            ],
+            [
+                'code' => '2110',
+                'name' => 'Mercancía Recibida por Facturar',
                 'account_type' => 'liability',
                 'level' => 3,
                 'is_postable' => true,

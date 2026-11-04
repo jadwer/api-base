@@ -4,7 +4,7 @@ namespace Modules\Finance\Services;
 
 use Modules\Finance\Models\APInvoice;
 use Modules\Finance\Events\APInvoicePosted;
-use Modules\Accounting\Models\Account;
+use Modules\Accounting\Support\GlAccounts;
 use Modules\Accounting\Services\AccountingService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -37,19 +37,18 @@ class APInvoiceService
     public function createInvoice(array $data): APInvoice
     {
         return DB::transaction(function () use ($data) {
-            // 1. Validar que existan las cuentas GL requeridas
-            // 5101 = Costo de Ventas (cuenta postable bajo 5100 Costo de Ventas)
-            // 2101 = Proveedores (cuenta postable bajo 2100 Pasivo Circulante)
-            $expenseAccount = Account::where('code', '5101')->where('is_postable', true)->first();
-            $supplierAccount = Account::where('code', '2101')->where('is_postable', true)->first();
-
-            if (!$expenseAccount) {
-                throw new \Exception('No existe la cuenta contable de gastos (5101) o no es afectable. Configura el catálogo de cuentas.');
-            }
-
-            if (!$supplierAccount) {
-                throw new \Exception('No existe la cuenta contable de proveedores (2101) o no es afectable. Configura el catálogo de cuentas.');
-            }
+            // 1. Cuentas GL (auditoria finanzas 2026-10, puntos 1 y 2). La mercancia
+            // de una orden ya entro a Almacen contra "Mercancia recibida por
+            // facturar" al recibirla; la factura salda esa cuenta puente (antes
+            // cargaba Costo de Ventas y 2101 quedaba abonado dos veces). El IVA va
+            // a acreditable pendiente de pago, no al costo.
+            $debitAccount = !empty($data['purchaseOrderId'])
+                ? GlAccounts::get(GlAccounts::GOODS_RECEIVED)
+                : GlAccounts::get(GlAccounts::COST_OF_SALES);
+            $supplierAccount = GlAccounts::get(GlAccounts::SUPPLIERS);
+            $taxAmount = round((float) ($data['taxAmount'] ?? 0), 2);
+            $netAmount = round((float) $data['totalAmount'] - $taxAmount, 2);
+            $vatPendingAccount = $taxAmount > 0 ? GlAccounts::get(GlAccounts::VAT_INPUT_PENDING) : null;
 
             // 2. Generar invoice number secuencial
             $invoiceNumber = $this->generateInvoiceNumber();
@@ -81,11 +80,17 @@ class APInvoiceService
                     reference: $invoiceNumber,
                     lines: [
                         [
-                            'account_id' => $expenseAccount->id,
-                            'debit_amount' => $data['totalAmount'],
+                            'account_id' => $debitAccount->id,
+                            'debit_amount' => $netAmount,
                             'credit_amount' => 0,
                             'description' => "Expense - Invoice #{$invoiceNumber}",
                         ],
+                        ...($vatPendingAccount ? [[
+                            'account_id' => $vatPendingAccount->id,
+                            'debit_amount' => $taxAmount,
+                            'credit_amount' => 0,
+                            'description' => "IVA acreditable pendiente de pago - Invoice #{$invoiceNumber}",
+                        ]] : []),
                         [
                             'account_id' => $supplierAccount->id,
                             'debit_amount' => 0,

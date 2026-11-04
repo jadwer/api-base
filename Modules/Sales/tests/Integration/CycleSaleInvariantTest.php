@@ -208,10 +208,12 @@ class CycleSaleInvariantTest extends TestCase
         $entry = JournalEntry::findOrFail($invoice->journal_entry_id);
         $this->assertEntryBalances($entry, self::ORDER_TOTAL, 'Factura AR');
 
-        $arLine = $entry->journalLines->first(fn ($l) => (float) $l->debit > 0);
-        $revenueLine = $entry->journalLines->first(fn ($l) => (float) $l->credit > 0);
-        $this->assertEquals('1104', Account::find($arLine->account_id)?->code, 'El cargo de la factura va a 1104 (Clientes)');
-        $this->assertEquals('4101', Account::find($revenueLine->account_id)?->code, 'El abono de la factura va a 4101 (Ventas)');
+        // Por cuenta, no por posicion: la factura lleva una tercera linea de IVA
+        // trasladado no cobrado (2109) cuando hay impuesto (auditoria finanzas 2026-10).
+        $byCode = fn (string $code) => $entry->journalLines->first(fn ($l) => Account::find($l->account_id)?->code === $code);
+        $this->assertEqualsWithDelta(self::ORDER_TOTAL, (float) $byCode('1104')?->debit, 0.01, 'El cargo de la factura va a 1104 (Clientes) por el total');
+        $this->assertEqualsWithDelta((float) $invoice->total_amount - (float) $invoice->tax_amount, (float) $byCode('4101')?->credit, 0.01, 'El abono a 4101 (Ventas) es sin IVA');
+        $this->assertEqualsWithDelta((float) $invoice->tax_amount, (float) ($byCode('2109')?->credit ?? 0), 0.01, 'El IVA va a 2109 (no cobrado)');
 
         // Invariante 6: cobro por el flujo REAL de pagos AR
         // (POST /ar-invoices/{id}/register-payment -> ARInvoicePaymentRegistrationService

@@ -160,11 +160,12 @@ class SalesOrderCancelInvariantTest extends TestCase
         $this->assertEqualsWithDelta($debit, $credit, 0.01, 'El asiento de reversa debe cuadrar');
         $this->assertEqualsWithDelta(self::ORDER_TOTAL, $debit, 0.01, 'La reversa debe ir por el importe de la factura');
 
-        // Espejo del original: ahora el cargo es a 4101 (Ventas) y el abono a 1104 (Clientes).
-        $debitLine = $reversal->journalLines->first(fn ($l) => (float) $l->debit > 0);
-        $creditLine = $reversal->journalLines->first(fn ($l) => (float) $l->credit > 0);
-        $this->assertEquals('4101', Account::find($debitLine->account_id)?->code, 'La reversa carga 4101 (Ventas)');
-        $this->assertEquals('1104', Account::find($creditLine->account_id)?->code, 'La reversa abona 1104 (Clientes)');
+        // Espejo del original, por cuenta: carga 4101 (Ventas) y 2109 (IVA no
+        // cobrado, si hubo impuesto) y abona 1104 (Clientes) por el total.
+        $byCode = fn (string $code) => $reversal->journalLines->first(fn ($l) => Account::find($l->account_id)?->code === $code);
+        $this->assertEqualsWithDelta((float) $invoice->total_amount - (float) $invoice->tax_amount, (float) $byCode('4101')?->debit, 0.01, 'La reversa carga 4101 (Ventas) sin IVA');
+        $this->assertEqualsWithDelta((float) $invoice->tax_amount, (float) ($byCode('2109')?->debit ?? 0), 0.01, 'La reversa carga 2109 (IVA no cobrado)');
+        $this->assertEqualsWithDelta(self::ORDER_TOTAL, (float) $byCode('1104')?->credit, 0.01, 'La reversa abona 1104 (Clientes) por el total');
     }
 
     public function test_return_restores_delivered_stock_with_sales_cancel_movements(): void

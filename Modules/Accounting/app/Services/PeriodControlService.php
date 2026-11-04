@@ -83,8 +83,11 @@ class PeriodControlService
      */
     public function findPeriodByDate(Carbon $date): ?FiscalPeriod
     {
-        return FiscalPeriod::where('start_date', '<=', $date->toDateString())
-            ->where('end_date', '>=', $date->toDateString())
+        // whereDate: con start_date guardado con hora ('2026-11-01 00:00:00'), la
+        // comparacion de texto contra '2026-11-01' fallaba el dia 1 de cada mes
+        // (mismo bug que AccountingService::createJournalEntry, 2026-09-30).
+        return FiscalPeriod::whereDate('start_date', '<=', $date->toDateString())
+            ->whereDate('end_date', '>=', $date->toDateString())
             ->first();
     }
 

@@ -8,6 +8,17 @@ use Spatie\Permission\Traits\HasPermissions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
+/**
+ * @property int $id
+ * @property int|null $company_id
+ * @property string $code
+ * @property string $name
+ * @property string $account_type
+ * @property int $level
+ * @property int|null $parent_id
+ * @property bool $is_postable
+ * @property string $status
+ */
 class Account extends Model
 {
     use HasFactory, HasPermissions, LogsActivity;

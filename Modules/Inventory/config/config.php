@@ -35,7 +35,9 @@ return [
     // y se repunta aqui.
     'gl_accounts' => [
         'inventory_asset' => env('INVENTORY_GL_ASSET', '1108'),          // Almacen (activo)
-        'inventory_accrual' => env('INVENTORY_GL_ACCRUAL', '2101'),      // Proveedores (contrapartida entrada)
+        // Mercancia recibida por facturar: la factura del proveedor la salda y abona
+        // 2101 una sola vez (auditoria finanzas 2026-10, punto 2; antes era 2101).
+        'inventory_accrual' => env('INVENTORY_GL_ACCRUAL', '2110'),
         'cogs' => env('INVENTORY_GL_COGS', '5101'),                      // Costo de Ventas
         'inventory_variance' => env('INVENTORY_GL_VARIANCE', '5101'),    // Variacion -> Costo de Ventas
     ],

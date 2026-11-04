@@ -71,9 +71,19 @@ class SalesAdvancedReportsTest extends TestCase
 
     public function test_sales_by_employee_includes_profitability_metrics(): void
     {
+        // Venta y rango propios: antes dependia de ventas sembradas dentro del
+        // mes en curso y fallaba el dia 1 (rango por omision = solo hoy).
+        SalesOrder::factory()->create([
+            'contact_id' => $this->customer->id,
+            'assigned_to' => User::factory()->create(['name' => 'Metric Seller'])->id,
+            'status' => 'delivered',
+            'order_date' => now()->subDays(2),
+            'total_amount' => 1000,
+        ]);
+
         // Test that profitability metrics are included in employee sales data
         $response = $this->actingAs($this->admin, 'sanctum')
-            ->getJson('/api/v1/reports/sales-by-employee');
+            ->getJson('/api/v1/reports/sales-by-employee?start_date=' . now()->subMonth()->toDateString() . '&end_date=' . now()->addDay()->toDateString());
 
         $response->assertOk();
 

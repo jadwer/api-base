@@ -14,6 +14,11 @@ use Modules\Sales\Models\SalesOrder;
 /**
  * @property int $contact_id
  * @property string $status
+ * @property string $invoice_number
+ * @property float $subtotal
+ * @property float $tax_amount
+ * @property float $total_amount
+ * @property float $paid_amount
  */
 class ARInvoice extends Model
 {

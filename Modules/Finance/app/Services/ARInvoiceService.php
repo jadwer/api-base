@@ -7,7 +7,7 @@ use Modules\Finance\Events\ARInvoicePosted;
 use Modules\Finance\Services\CreditManagementService;
 use Modules\Accounting\Models\JournalEntry;
 use Modules\Accounting\Models\JournalLine;
-use Modules\Accounting\Models\Account;
+use Modules\Accounting\Support\GlAccounts;
 use Modules\Accounting\Services\AccountingService;
 use Modules\Contacts\Models\Contact;
 use Illuminate\Support\Facades\DB;
@@ -47,19 +47,13 @@ class ARInvoiceService
                 $this->creditManagementService->validateCustomerCredit($contact, $data['totalAmount']);
             }
 
-            // 1. Validar que existan las cuentas GL requeridas
-            // 1104 = Clientes (cuenta postable bajo 1100 Activo Circulante)
-            // 4101 = Ventas (cuenta postable bajo 4100 Ingresos por Ventas)
-            $customerAccount = Account::where('code', '1104')->where('is_postable', true)->first();
-            $revenueAccount = Account::where('code', '4101')->where('is_postable', true)->first();
-
-            if (!$customerAccount) {
-                throw new \Exception('No existe la cuenta contable de clientes (1104) o no es afectable. Configura el catálogo de cuentas.');
-            }
-
-            if (!$revenueAccount) {
-                throw new \Exception('No existe la cuenta contable de ventas (4101) o no es afectable. Configura el catálogo de cuentas.');
-            }
+            // 1. Cuentas GL: Clientes, Ventas e IVA trasladado no cobrado (auditoria
+            // finanzas 2026-10, punto 1: el IVA ya no se registra como ingreso).
+            $customerAccount = GlAccounts::get(GlAccounts::CUSTOMERS);
+            $revenueAccount = GlAccounts::get(GlAccounts::REVENUE);
+            $taxAmount = round((float) ($data['taxAmount'] ?? 0), 2);
+            $revenueAmount = round((float) $data['totalAmount'] - $taxAmount, 2);
+            $vatPendingAccount = $taxAmount > 0 ? GlAccounts::get(GlAccounts::VAT_OUTPUT_PENDING) : null;
 
             // 2. Generar invoice number secuencial
             $invoiceNumber = $this->generateInvoiceNumber();
@@ -104,9 +98,15 @@ class ARInvoiceService
                         [
                             'account_id' => $revenueAccount->id,
                             'debit_amount' => 0,
-                            'credit_amount' => $data['totalAmount'],
+                            'credit_amount' => $revenueAmount,
                             'description' => "Revenue - Invoice #{$invoiceNumber}",
                         ],
+                        ...($vatPendingAccount ? [[
+                            'account_id' => $vatPendingAccount->id,
+                            'debit_amount' => 0,
+                            'credit_amount' => $taxAmount,
+                            'description' => "IVA trasladado no cobrado - Invoice #{$invoiceNumber}",
+                        ]] : []),
                     ]
                 );
 

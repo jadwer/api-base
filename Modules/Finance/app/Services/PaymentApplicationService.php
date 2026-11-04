@@ -9,6 +9,7 @@ use Modules\Finance\Models\Payment;
 use Modules\Finance\Models\PaymentApplication;
 use Modules\Finance\Models\ARInvoice;
 use Modules\Accounting\Models\Account;
+use Modules\Accounting\Support\GlAccounts;
 use Modules\Accounting\Services\AccountingService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -62,6 +63,7 @@ class PaymentApplicationService
             ]);
 
             // 3. Actualizar invoice paid_amount
+            $paidBefore = (float) $invoice->paid_amount;
             $invoice->increment('paid_amount', $amount);
 
             // Actualizar status si está completamente pagada
@@ -86,6 +88,9 @@ class PaymentApplicationService
                 $this->createPaymentGLEntry($payment);
                 $payment->refresh(); // Reload payment with journal_entry_id
             }
+
+            // 6. IVA cobrado: la parte del abono pasa de "no cobrado" a "por pagar".
+            $this->reclassifyCollectedTax($invoice, $paidBefore, $paidBefore + $amount, $payment->payment_date->format('Y-m-d'), "Cobro {$payment->payment_number}");
 
             Log::info("Payment applied to AR Invoice", [
                 'payment_id' => $payment->id,
@@ -133,7 +138,11 @@ class PaymentApplicationService
             $wasPaid = $invoice->status === 'paid';
 
             // 1. Revertir invoice paid_amount
+            $paidBefore = (float) $invoice->paid_amount;
             $invoice->decrement('paid_amount', $amount);
+
+            // El IVA que ese abono habia pasado a "por pagar" regresa a "no cobrado".
+            $this->reclassifyCollectedTax($invoice, $paidBefore, max(0, $paidBefore - $amount), now()->format('Y-m-d'), "Reversa de cobro {$payment->payment_number}");
 
             // Actualizar status
             if ($invoice->paid_amount <= 0.01) {
@@ -294,6 +303,34 @@ class PaymentApplicationService
             ]);
             throw new \Exception("No se pudo crear la póliza contable: " . $e->getMessage());
         }
+    }
+
+    /**
+     * Poliza de reclasificacion del IVA trasladado segun lo cobrado (auditoria
+     * finanzas 2026-10, punto 1). Con $paidAfter < $paidBefore es la reversa.
+     */
+    private function reclassifyCollectedTax(ARInvoice $invoice, float $paidBefore, float $paidAfter, string $date, string $reference): void
+    {
+        $portion = GlAccounts::taxPortion((float) $invoice->tax_amount, (float) $invoice->total_amount, $paidBefore, $paidAfter);
+        if (abs($portion) < 0.005) {
+            return;
+        }
+
+        $pending = GlAccounts::get(GlAccounts::VAT_OUTPUT_PENDING);
+        $payable = GlAccounts::get(GlAccounts::VAT_OUTPUT);
+        [$debit, $credit] = $portion > 0 ? [$pending, $payable] : [$payable, $pending];
+        $amount = abs($portion);
+
+        $this->accountingService->createJournalEntry(
+            journalCode: 'AR',
+            entryDate: $date,
+            description: "Reclasificación de IVA cobrado - Factura {$invoice->invoice_number}",
+            reference: $reference,
+            lines: [
+                ['account_id' => $debit->id, 'debit_amount' => $amount, 'credit_amount' => 0, 'description' => "IVA - {$invoice->invoice_number}"],
+                ['account_id' => $credit->id, 'debit_amount' => 0, 'credit_amount' => $amount, 'description' => "IVA - {$invoice->invoice_number}"],
+            ]
+        );
     }
 
     /**

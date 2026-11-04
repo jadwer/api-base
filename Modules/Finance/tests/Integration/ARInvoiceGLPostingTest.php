@@ -86,8 +86,8 @@ class ARInvoiceGLPostingTest extends TestCase
 
         $journalEntry = $invoice->journalEntry;
 
-        // Assert: Verificar que tiene exactamente 2 líneas (DR y CR)
-        $this->assertCount(2, $journalEntry->journalLines);
+        // Assert: 3 lineas: Clientes (DR), Ventas e IVA trasladado no cobrado (CR)
+        $this->assertCount(3, $journalEntry->journalLines);
 
         // Assert: Verificar que balancea (total debit = total credit)
         $totalDebit = $journalEntry->journalLines->sum('debit');
@@ -124,11 +124,33 @@ class ARInvoiceGLPostingTest extends TestCase
         $this->assertEquals(1160.00, $debitLine->debit);
         $this->assertEquals(0, $debitLine->credit);
 
-        // Assert: Verificar que usa la cuenta correcta de Ingresos (CR)
-        $creditLine = $journalEntry->journalLines->where('credit', '>', 0)->first();
-        $this->assertEquals($revenueAccount->id, $creditLine->account_id);
+        // Assert: Ventas recibe solo el subtotal; el IVA no es ingreso (auditoria
+        // finanzas 2026-10, punto 1) y va a IVA trasladado no cobrado.
+        $creditLine = $journalEntry->journalLines->where('account_id', $revenueAccount->id)->first();
         $this->assertEquals(0, $creditLine->debit);
-        $this->assertEquals(1160.00, $creditLine->credit);
+        $this->assertEquals(1000.00, $creditLine->credit);
+
+        $vatPending = Account::where('code', '2109')->first();
+        $this->assertNotNull($vatPending, 'La cuenta de IVA trasladado no cobrado se crea si falta');
+        $vatLine = $journalEntry->journalLines->where('account_id', $vatPending->id)->first();
+        $this->assertEquals(160.00, $vatLine->credit);
+    }
+
+    public function test_invoice_without_tax_posts_two_lines(): void
+    {
+        $customer = Contact::factory()->customer()->create();
+
+        $invoice = $this->arInvoiceService->createInvoice([
+            'invoiceDate' => now()->format('Y-m-d'),
+            'dueDate' => now()->addDays(30)->format('Y-m-d'),
+            'contactId' => $customer->id,
+            'currency' => 'MXN',
+            'subtotal' => 500.00,
+            'taxAmount' => 0,
+            'totalAmount' => 500.00,
+        ]);
+
+        $this->assertCount(2, $invoice->journalEntry->journalLines);
     }
 
     public function test_journal_entry_has_correct_metadata(): void

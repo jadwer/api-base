@@ -9,6 +9,7 @@ use Modules\Inventory\Mail\GLPostingFailedMail;
 use Modules\MailerManager\Models\SystemEmail;
 use Modules\Accounting\Services\AccountingService;
 use Modules\Accounting\Models\Account;
+use Modules\Accounting\Support\GlAccounts;
 
 /**
  * IV-010: Post Inventory Movements to GL
@@ -142,7 +143,10 @@ class PostInventoryMovementToGL
 
         // Find accounts by code
         $inventoryAsset = Account::where('code', $inventoryAssetCode)->first();
-        $inventoryAccrual = Account::where('code', $inventoryAccrualCode)->first();
+        // La cuenta puente es del sistema: se crea si el catalogo no la trae.
+        $inventoryAccrual = isset(GlAccounts::SYSTEM[$inventoryAccrualCode])
+            ? GlAccounts::get($inventoryAccrualCode)
+            : Account::where('code', $inventoryAccrualCode)->first();
 
         if (!$inventoryAsset || !$inventoryAccrual) {
             throw new \Exception("Required GL accounts not found for entry movement (Asset: $inventoryAssetCode, Accrual: $inventoryAccrualCode)");
