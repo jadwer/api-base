@@ -135,12 +135,17 @@ class ComplementoPagosGenerator
         // Pago
         $pago = $xml->createElement('pago20:Pago');
         $pago->setAttribute('FechaPago', ($invoice->fecha_pago ?? now())->format('Y-m-d\TH:i:s'));
-        $pago->setAttribute('FormaDePagoP', $invoice->forma_pago_p ?? '99');
+        if (!$invoice->forma_pago_p || $invoice->forma_pago_p === '99') {
+            // Pagos 2.0 prohibe 99 en FormaDePagoP; REPService ya lo valida al crear.
+            throw new \DomainException('El complemento de pago no tiene una forma de pago válida del SAT (99 no se permite).');
+        }
+        $pago->setAttribute('FormaDePagoP', $invoice->forma_pago_p);
         $pago->setAttribute('MonedaP', 'MXN');
         $pago->setAttribute('TipoCambioP', '1'); // v1 misma moneda MXN
         $pago->setAttribute('Monto', $montoPago);
         $pagos->appendChild($pago);
 
+        $trasladosP = [];
         foreach ($docs as $doc) {
             $docto = $xml->createElement('pago20:DoctoRelacionado');
             $docto->setAttribute('IdDocumento', $doc->related_uuid);
@@ -158,7 +163,81 @@ class ComplementoPagosGenerator
             $docto->setAttribute('ImpSaldoInsoluto', $this->pesos($doc->imp_saldo_insoluto));
             $docto->setAttribute('ObjetoImpDR', $doc->objeto_imp_dr ?? '01');
             $pago->appendChild($docto);
+
+            $traslados = ($doc->objeto_imp_dr === '02') ? ($doc->impuestos_dr['traslados'] ?? []) : [];
+            if ($traslados !== []) {
+                $impDr = $xml->createElement('pago20:ImpuestosDR');
+                $trasladosDr = $xml->createElement('pago20:TrasladosDR');
+                foreach ($traslados as $t) {
+                    $node = $xml->createElement('pago20:TrasladoDR');
+                    $node->setAttribute('BaseDR', $t['base']);
+                    $node->setAttribute('ImpuestoDR', $t['impuesto']);
+                    $node->setAttribute('TipoFactorDR', $t['tipo_factor']);
+                    if (isset($t['tasa_o_cuota'])) {
+                        $node->setAttribute('TasaOCuotaDR', $t['tasa_o_cuota']);
+                        $node->setAttribute('ImporteDR', $t['importe']);
+                    }
+                    $trasladosDr->appendChild($node);
+
+                    // ImpuestosP agrupa por impuesto, factor y tasa (EquivalenciaDR 1 en v1).
+                    $key = $t['impuesto'] . '|' . $t['tipo_factor'] . '|' . ($t['tasa_o_cuota'] ?? '');
+                    $trasladosP[$key] ??= ['impuesto' => $t['impuesto'], 'tipo_factor' => $t['tipo_factor'],
+                        'tasa_o_cuota' => $t['tasa_o_cuota'] ?? null, 'base' => 0.0, 'importe' => 0.0];
+                    $trasladosP[$key]['base'] += (float) $t['base'];
+                    $trasladosP[$key]['importe'] += (float) ($t['importe'] ?? 0);
+                }
+                $impDr->appendChild($trasladosDr);
+                $docto->appendChild($impDr);
+            }
         }
+
+        if (!empty($trasladosP)) {
+            $impP = $xml->createElement('pago20:ImpuestosP');
+            $trasladosPNode = $xml->createElement('pago20:TrasladosP');
+            foreach ($trasladosP as $t) {
+                $node = $xml->createElement('pago20:TrasladoP');
+                $node->setAttribute('BaseP', $this->six($t['base']));
+                $node->setAttribute('ImpuestoP', $t['impuesto']);
+                $node->setAttribute('TipoFactorP', $t['tipo_factor']);
+                if ($t['tasa_o_cuota'] !== null) {
+                    $node->setAttribute('TasaOCuotaP', $t['tasa_o_cuota']);
+                    $node->setAttribute('ImporteP', $this->six($t['importe']));
+                }
+                $trasladosPNode->appendChild($node);
+                $this->addTotalesIva($totales, $t);
+            }
+            $impP->appendChild($trasladosPNode);
+            $pago->appendChild($impP);
+        }
+    }
+
+    /**
+     * Totales de IVA trasladado por tasa (TotalTrasladosBaseIVA16, ...), a 2 decimales.
+     */
+    protected function addTotalesIva(\DOMElement $totales, array $t): void
+    {
+        if ($t['impuesto'] !== '002') {
+            return;
+        }
+        $suffix = match (true) {
+            $t['tipo_factor'] === 'Exento' => 'Exento',
+            abs((float) $t['tasa_o_cuota'] - 0.16) < 1e-9 => '16',
+            abs((float) $t['tasa_o_cuota'] - 0.08) < 1e-9 => '8',
+            abs((float) $t['tasa_o_cuota']) < 1e-9 => '0',
+            default => null,
+        };
+        if ($suffix === null) {
+            return;
+        }
+        $totales->setAttribute('TotalTrasladosBaseIVA' . $suffix, number_format(round($t['base'], 2), 2, '.', ''));
+        if ($suffix !== 'Exento') {
+            $totales->setAttribute('TotalTrasladosImpuestoIVA' . $suffix, number_format(round($t['importe'], 2), 2, '.', ''));
+        }
+    }
+
+    protected function six(float $amount): string
+    {
+        return number_format(round($amount, 6), 6, '.', '');
     }
 
     /**

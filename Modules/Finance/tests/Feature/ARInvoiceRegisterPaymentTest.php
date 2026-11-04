@@ -209,6 +209,16 @@ class ARInvoiceRegisterPaymentTest extends TestCase
         $response->assertJsonValidationErrors(['forma_pago']);
     }
 
+    public function test_forma_pago_99_no_aplica_a_un_cobro(): void
+    {
+        $invoice = $this->makePostedInvoice(1000.00);
+
+        $response = $this->registerPayment($invoice, ['forma_pago' => '99']);
+
+        $response->assertStatus(422);
+        $this->assertStringContainsString('no aplica a un cobro', $response->json('errors.forma_pago.0'));
+    }
+
     public function test_amount_must_be_positive(): void
     {
         $invoice = $this->makePostedInvoice(1000.00);

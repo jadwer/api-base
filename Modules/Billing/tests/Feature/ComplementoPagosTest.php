@@ -122,12 +122,12 @@ class ComplementoPagosTest extends TestCase
      * Para tests que ejercen el REPService en aislamiento, se usa con el listener
      * de auto-generacion no interfiriendo porque el servicio es idempotente.
      */
-    private function applyAbono(ARInvoice $invoice, float $amount): Payment
+    private function applyAbono(ARInvoice $invoice, float $amount, ?string $formaPago = '03', string $methodCode = '03'): Payment
     {
         $bank = BankAccount::factory()->create(['is_active' => true, 'status' => 'active']);
         $method = PaymentMethod::firstOrCreate(
-            ['code' => '03'],
-            ['name' => 'Transferencia', 'type' => 'sat_forma_pago', 'requires_reference' => false, 'is_active' => true]
+            ['code' => $methodCode],
+            ['name' => 'Metodo ' . $methodCode, 'type' => 'sat_forma_pago', 'requires_reference' => false, 'is_active' => true]
         );
 
         $payment = Payment::create([
@@ -141,7 +141,7 @@ class ComplementoPagosTest extends TestCase
             'applied_amount' => 0,
             'unapplied_amount' => $amount,
             'status' => 'unapplied',
-            'metadata' => ['forma_pago' => '03'],
+            'metadata' => $formaPago ? ['forma_pago' => $formaPago] : [],
             'is_active' => true,
         ]);
 
@@ -384,6 +384,169 @@ class ComplementoPagosTest extends TestCase
         $response->assertSuccessful();
         $ids = collect($response->json('data'))->pluck('attributes.tipoComprobante')->unique();
         $this->assertEquals(['P'], $ids->values()->all());
+    }
+
+    // ── Pagos 2.0: FormaDePagoP real (nunca 99) ──────────────────────────────
+
+    public function test_forma_de_pago_sale_del_metodo_de_pago_si_no_hay_metadata(): void
+    {
+        $this->mockPacDisabled();
+        [$invoice] = $this->makePpdInvoiceWithCfdi(1000.00);
+
+        $payment = $this->applyAbono($invoice, 400.00, null, '01');
+        $rep = app(REPService::class)->generateFromPayment($payment);
+
+        $this->assertSame('01', $rep->forma_pago_p);
+        $this->assertStringContainsString('FormaDePagoP="01"', $rep->xml_original);
+    }
+
+    public function test_sin_forma_de_pago_sat_no_emite_rep_con_99(): void
+    {
+        $this->mockPacDisabled();
+        [$invoice] = $this->makePpdInvoiceWithCfdi(1000.00);
+
+        // El listener (sync) ya intenta generarlo y solo registra el error.
+        $payment = $this->applyAbono($invoice, 400.00, null, '99');
+        $this->assertDatabaseMissing('cfdi_invoices', ['ar_payment_id' => $payment->id, 'tipo_comprobante' => 'P']);
+
+        try {
+            app(REPService::class)->generateFromPayment($payment);
+            $this->fail('Debio rechazar el REP sin forma de pago del SAT');
+        } catch (\DomainException $e) {
+            $this->assertStringContainsString('forma de pago del SAT', $e->getMessage());
+        }
+        $this->assertDatabaseMissing('cfdi_invoices', ['ar_payment_id' => $payment->id, 'tipo_comprobante' => 'P']);
+    }
+
+    public function test_endpoint_manual_422_en_espanol_sin_forma_de_pago(): void
+    {
+        $this->mockPacDisabled();
+        [$invoice] = $this->makePpdInvoiceWithCfdi(1000.00);
+        $this->applyAbono($invoice, 400.00, null, '99');
+
+        $response = $this->actingAs($this->getAdminUser(), 'sanctum')
+            ->postJson("/api/v1/ar-invoices/{$invoice->id}/payment-complement");
+
+        $response->assertStatus(422);
+        $this->assertStringContainsString('forma de pago del SAT', $response->json('error'));
+    }
+
+    // ── Pagos 2.0: ImpuestosDR / ImpuestosP / Totales con IVA ─────────────────
+
+    private function addIvaItems(CFDIInvoice $cfdi, array $lines): void
+    {
+        foreach ($lines as $i => [$baseCents, $tasa]) {
+            $cfdi->items()->create([
+                'numero_linea' => $i + 1,
+                'clave_prod_serv' => '01010101',
+                'clave_unidad' => 'H87',
+                'unidad' => 'Pieza',
+                'cantidad' => 1,
+                'descripcion' => 'Producto ' . ($i + 1),
+                'valor_unitario' => $baseCents,
+                'importe' => $baseCents,
+                'descuento' => 0,
+                'objeto_imp' => '02',
+                'impuestos' => ['traslados' => [[
+                    'base' => $baseCents, 'impuesto' => '002', 'tipo_factor' => 'Tasa',
+                    'tasa_o_cuota' => $tasa, 'importe' => (int) round($baseCents * (float) $tasa),
+                ]], 'retenciones' => []],
+            ]);
+        }
+    }
+
+    public function test_abono_a_factura_con_iva_16_declara_impuestos_proporcionales(): void
+    {
+        $this->mockPacDisabled();
+        [$invoice, $cfdi] = $this->makePpdInvoiceWithCfdi(1160.00);
+        $this->addIvaItems($cfdi, [[100000, '0.160000']]);
+
+        $payment = $this->applyAbono($invoice, 580.00);
+        $rep = app(REPService::class)->generateFromPayment($payment);
+        $doc = $rep->paymentDocs()->first();
+        $xml = $rep->xml_original;
+
+        $this->assertSame('02', $doc->objeto_imp_dr);
+        $this->assertSame('500.000000', $doc->impuestos_dr['traslados'][0]['base']);
+        $this->assertSame('80.000000', $doc->impuestos_dr['traslados'][0]['importe']);
+        $this->assertStringContainsString('ObjetoImpDR="02"', $xml);
+        $this->assertStringContainsString('<pago20:TrasladoDR BaseDR="500.000000" ImpuestoDR="002" TipoFactorDR="Tasa" TasaOCuotaDR="0.160000" ImporteDR="80.000000"', $xml);
+        $this->assertStringContainsString('<pago20:TrasladoP BaseP="500.000000" ImpuestoP="002" TipoFactorP="Tasa" TasaOCuotaP="0.160000" ImporteP="80.000000"', $xml);
+        $this->assertStringContainsString('TotalTrasladosBaseIVA16="500.00"', $xml);
+        $this->assertStringContainsString('TotalTrasladosImpuestoIVA16="80.00"', $xml);
+
+        // Orden del XSD: ImpuestosP va despues de los DoctoRelacionado.
+        $this->assertLessThan(strpos($xml, 'pago20:ImpuestosP'), strpos($xml, 'pago20:DoctoRelacionado'));
+    }
+
+    public function test_abono_irregular_cae_dentro_de_los_limites_del_sat(): void
+    {
+        $this->mockPacDisabled();
+        [$invoice, $cfdi] = $this->makePpdInvoiceWithCfdi(1160.00);
+        $this->addIvaItems($cfdi, [[100000, '0.160000']]);
+
+        $payment = $this->applyAbono($invoice, 333.33);
+        $rep = app(REPService::class)->generateFromPayment($payment);
+        $t = $rep->paymentDocs()->first()->impuestos_dr['traslados'][0];
+
+        $base = (float) $t['base'];
+        $importe = (float) $t['importe'];
+        // Limites de ImporteDR con 6 decimales (guia Pagos 2.0): inferior
+        // truncado y superior redondeado hacia arriba a 6 decimales.
+        $inferior = floor(($base - 0.0000005) * 0.16 * 1e6) / 1e6;
+        $superior = ceil(($base + 0.0000005) * 0.16 * 1e6) / 1e6;
+        $this->assertGreaterThanOrEqual($inferior, $importe);
+        $this->assertLessThanOrEqual($superior, $importe);
+        // Base + IVA reconstruyen el abono a centavos.
+        $this->assertEqualsWithDelta(333.33, $base + $importe, 0.01);
+    }
+
+    public function test_factura_con_tasas_16_y_0_agrupa_por_tasa(): void
+    {
+        $this->mockPacDisabled();
+        // 1000 al 16% (160) + 500 al 0% = 1660
+        [$invoice, $cfdi] = $this->makePpdInvoiceWithCfdi(1660.00);
+        $this->addIvaItems($cfdi, [[100000, '0.160000'], [50000, '0.000000']]);
+
+        $payment = $this->applyAbono($invoice, 830.00); // mitad
+        $rep = app(REPService::class)->generateFromPayment($payment);
+        $xml = $rep->xml_original;
+
+        $this->assertStringContainsString('TotalTrasladosBaseIVA16="500.00"', $xml);
+        $this->assertStringContainsString('TotalTrasladosImpuestoIVA16="80.00"', $xml);
+        $this->assertStringContainsString('TotalTrasladosBaseIVA0="250.00"', $xml);
+        $this->assertStringContainsString('TotalTrasladosImpuestoIVA0="0.00"', $xml);
+        $this->assertSame(2, substr_count($xml, '<pago20:TrasladoDR '));
+    }
+
+    public function test_factura_con_retenciones_se_rechaza_con_mensaje_claro(): void
+    {
+        $this->mockPacDisabled();
+        [$invoice, $cfdi] = $this->makePpdInvoiceWithCfdi(1000.00);
+        $cfdi->items()->create([
+            'numero_linea' => 1, 'clave_prod_serv' => '80111600', 'clave_unidad' => 'E48', 'unidad' => 'Servicio',
+            'cantidad' => 1, 'descripcion' => 'Servicio', 'valor_unitario' => 100000, 'importe' => 100000, 'descuento' => 0,
+            'objeto_imp' => '02',
+            'impuestos' => ['traslados' => [], 'retenciones' => [['base' => 100000, 'impuesto' => '001', 'tipo_factor' => 'Tasa', 'tasa_o_cuota' => '0.100000', 'importe' => 10000]]],
+        ]);
+
+        $payment = $this->applyAbono($invoice, 400.00);
+
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessage('retenciones');
+        app(REPService::class)->generateFromPayment($payment);
+    }
+
+    public function test_factura_sin_impuestos_sigue_con_objeto_imp_01(): void
+    {
+        $this->mockPacDisabled();
+        [$invoice] = $this->makePpdInvoiceWithCfdi(1000.00);
+
+        $payment = $this->applyAbono($invoice, 400.00);
+        $rep = app(REPService::class)->generateFromPayment($payment);
+
+        $this->assertSame('01', $rep->paymentDocs()->first()->objeto_imp_dr);
+        $this->assertStringNotContainsString('pago20:ImpuestosP', $rep->xml_original);
     }
 
     protected function tearDown(): void

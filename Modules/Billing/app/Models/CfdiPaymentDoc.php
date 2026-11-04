@@ -27,6 +27,7 @@ class CfdiPaymentDoc extends Model
         'imp_pagado',
         'imp_saldo_insoluto',
         'objeto_imp_dr',
+        'impuestos_dr',
     ];
 
     protected $casts = [
@@ -34,6 +35,7 @@ class CfdiPaymentDoc extends Model
         'imp_saldo_ant' => 'integer',
         'imp_pagado' => 'integer',
         'imp_saldo_insoluto' => 'integer',
+        'impuestos_dr' => 'array',
     ];
 
     public function paymentCfdi(): BelongsTo

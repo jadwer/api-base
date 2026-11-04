@@ -92,9 +92,8 @@ class REPService
                 // configured one via metadata; otherwise fall back to the invoice serie.
                 [$serie, $folio] = $this->allocateSerieFolio($settings);
 
-                $formaPagoP = $payment->metadata['forma_pago']
-                    ?? $sourceCfdi->forma_pago
-                    ?? '99';
+                $formaPagoP = $this->resolveFormaPagoP($payment);
+                [$objetoImpDr, $impuestosDr] = $this->proportionalTaxes($sourceCfdi, $abonoCents);
 
                 $cfdiP = CFDIInvoice::create([
                     'company_setting_id' => $settings->id,
@@ -145,7 +144,8 @@ class REPService
                     'imp_saldo_ant' => $saldoAnt,
                     'imp_pagado' => $abonoCents,
                     'imp_saldo_insoluto' => $saldoInsoluto,
-                    'objeto_imp_dr' => '01', // No objeto de impuesto
+                    'objeto_imp_dr' => $objetoImpDr,
+                    'impuestos_dr' => $impuestosDr,
                 ]);
 
                 // Generate the XML (original, unstamped).
@@ -267,6 +267,93 @@ class REPService
     private function allocateSerieFolio(CompanySetting $settings): array
     {
         return app(CfdiFolioAllocator::class)->allocate($settings, 'P');
+    }
+
+    /**
+     * FormaDePagoP del abono: la del cobro (metadata o catalogo de metodos de
+     * pago, cuyo code es la clave SAT). La guia de Pagos 2.0 prohibe 99 en el
+     * REP, asi que la de la factura PPD (siempre 99) nunca sirve de respaldo.
+     */
+    private function resolveFormaPagoP(Payment $payment): string
+    {
+        $candidates = [
+            $payment->metadata['forma_pago'] ?? null,
+            $payment->paymentMethod?->code,
+        ];
+
+        foreach ($candidates as $clave) {
+            $clave = is_string($clave) ? trim($clave) : null;
+            if ($clave && $clave !== '99' && preg_match('/^\d{2}$/', $clave)) {
+                return $clave;
+            }
+        }
+
+        throw new \DomainException(
+            'El cobro no tiene una forma de pago del SAT (efectivo, transferencia, cheque, tarjeta...). '
+            . 'Indícala en el cobro para emitir el complemento de pago; "99 Por definir" no se permite en un REP.'
+        );
+    }
+
+    /**
+     * ObjetoImpDR e ImpuestosDR del abono (Pagos 2.0): la parte proporcional de
+     * cada traslado de la factura que cubre este pago (abono / total). Base e
+     * importe a 6 decimales: el importe se calcula desde la base redondeada para
+     * caer siempre dentro de los limites que valida el SAT (CRP20xxx).
+     *
+     * @return array{0: string, 1: array|null}
+     */
+    private function proportionalTaxes(CFDIInvoice $sourceCfdi, int $abonoCents): array
+    {
+        $groups = [];
+        /** @var \Modules\Billing\Models\CFDIItem $item */
+        foreach ($sourceCfdi->items()->get() as $item) {
+            $impuestos = $item->impuestos ?? [];
+
+            if (!empty(array_filter($impuestos['retenciones'] ?? [], fn ($r) => (int) ($r['importe'] ?? 0) > 0))) {
+                throw new \DomainException(
+                    'La factura tiene retenciones; el complemento de pago con retenciones todavía no está soportado. '
+                    . 'Emítelo desde el sistema de facturación anterior.'
+                );
+            }
+
+            foreach ($impuestos['traslados'] ?? [] as $t) {
+                $key = $t['impuesto'] . '|' . $t['tipo_factor'] . '|' . $t['tasa_o_cuota'];
+                $groups[$key] ??= [
+                    'impuesto' => $t['impuesto'],
+                    'tipo_factor' => $t['tipo_factor'],
+                    'tasa_o_cuota' => (float) $t['tasa_o_cuota'],
+                    'base' => 0,
+                ];
+                $groups[$key]['base'] += (int) $t['base'];
+            }
+        }
+
+        if ($groups === []) {
+            return ['01', null];
+        }
+
+        $totalCents = (int) $sourceCfdi->total;
+        if ($totalCents <= 0) {
+            throw new \DomainException('La factura relacionada no tiene total; no se puede calcular el IVA del complemento de pago.');
+        }
+        $factor = $abonoCents / $totalCents;
+
+        $traslados = [];
+        foreach ($groups as $g) {
+            $base = round($g['base'] / 100 * $factor, 6);
+            $row = [
+                'impuesto' => $g['impuesto'],
+                'tipo_factor' => $g['tipo_factor'],
+                'base' => number_format($base, 6, '.', ''),
+            ];
+            if ($g['tipo_factor'] !== 'Exento') {
+                $row['tasa_o_cuota'] = number_format($g['tasa_o_cuota'], 6, '.', '');
+                $row['importe'] = number_format(round($base * $g['tasa_o_cuota'], 6), 6, '.', '');
+            }
+            $traslados[] = $row;
+        }
+
+        return ['02', ['traslados' => $traslados]];
     }
 
     private function toCents($amount): int

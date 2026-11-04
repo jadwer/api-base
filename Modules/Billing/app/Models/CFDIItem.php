@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Billing\Database\Factories\CFDIItemFactory;
 use Modules\Product\Models\Product;
 
+/**
+ * @property string|null $objeto_imp
+ * @property array<string, mixed>|null $impuestos Traslados y retenciones en centavos
+ */
 class CFDIItem extends Model
 {
     use HasFactory;

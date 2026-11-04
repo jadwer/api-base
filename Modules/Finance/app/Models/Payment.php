@@ -27,6 +27,7 @@ use Modules\Contacts\Models\Contact;
  * @property string|null $notes
  * @property array<string, mixed>|null $metadata
  * @property bool|null $is_active
+ * @property-read PaymentMethod|null $paymentMethod
  */
 class Payment extends Model
 {

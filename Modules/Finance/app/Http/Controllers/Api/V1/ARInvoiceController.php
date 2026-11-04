@@ -61,10 +61,15 @@ class ARInvoiceController extends Controller
         $validated = $request->validate([
             'payment_date' => ['required', 'date'],
             'amount' => ['required', 'numeric', 'gt:0'],
-            'forma_pago' => ['required', 'string', Rule::exists('sat_forma_pago', 'clave')],
+            // 99 "Por definir" no describe un cobro real y el REP la prohibe (Pagos 2.0).
+            'forma_pago' => ['required', 'string', Rule::exists('sat_forma_pago', 'clave'), Rule::notIn(['99'])],
             'reference' => ['nullable', 'string', 'max:255'],
             'comments' => ['nullable', 'string', 'max:2000'],
             'bank_account_id' => ['nullable', 'integer', Rule::exists('bank_accounts', 'id')],
+        ], [
+            'forma_pago.not_in' => 'Indica cómo se cobró (efectivo, transferencia, cheque, tarjeta...); "99 Por definir" no aplica a un cobro.',
+        ], [
+            'forma_pago' => 'forma de pago',
         ]);
 
         try {

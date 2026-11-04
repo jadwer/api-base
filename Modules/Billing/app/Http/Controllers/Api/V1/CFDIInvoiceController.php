@@ -887,6 +887,9 @@ class CFDIInvoiceController
                 'message' => 'Error al timbrar el complemento de pago',
                 'error' => $e->getMessage(),
             ], $e->getStatusCode());
+        } catch (\DomainException $e) {
+            // Dato faltante o caso no soportado: el mensaje ya va en espanol para el usuario.
+            return response()->json(['error' => $e->getMessage()], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Error al generar complemento de pago: ' . $this->safeError($e, 'payment-complement'),

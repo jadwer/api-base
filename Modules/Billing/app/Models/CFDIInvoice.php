@@ -29,6 +29,7 @@ use Modules\Contacts\Models\Contact;
  * @property int $total
  * @property string|null $metodo_pago
  * @property string|null $forma_pago
+ * @property string|null $forma_pago_p
  * @property array<string, mixed>|null $metadata
  * @property string|null $moneda
  * @property \Illuminate\Support\Carbon|null $fecha_timbrado

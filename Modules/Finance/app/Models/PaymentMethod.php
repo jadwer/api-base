@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Permission\Traits\HasPermissions;
 
 
+/**
+ * @property int $id
+ * @property string $code Clave SAT de forma de pago (c_FormaPago)
+ * @property string $name
+ */
 class PaymentMethod extends Model
 {
     use HasFactory, HasPermissions;
