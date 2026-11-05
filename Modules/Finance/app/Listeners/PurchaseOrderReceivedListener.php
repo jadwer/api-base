@@ -87,9 +87,10 @@ class PurchaseOrderReceivedListener
             $qty = (float) ($item->received_quantity ?: $item->quantity);
             return $qty * $item->unit_price;
         });
-        // Compras sin columnas de IVA por partida (decision de la contadora): el
-        // impuesto de la factura del proveedor se captura en CxP.
-        $taxAmount = $purchaseOrder->purchaseOrderItems->sum('tax_amount');
+        // Compras sin IVA por partida (decision de la contadora): la CxP nace por
+        // el subtotal recibido y el IVA se agrega al capturar la factura del
+        // proveedor (POST ap-invoices/{id}/supplier-invoice).
+        $taxAmount = 0.0;
         $totalAmount = $subtotal + $taxAmount;
 
         // Create AP Invoice using service

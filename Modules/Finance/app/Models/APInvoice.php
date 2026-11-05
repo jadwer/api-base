@@ -13,6 +13,13 @@ use Modules\Purchase\Models\PurchaseOrder;
 
 /**
  * @property int $contact_id
+ * @property string $invoice_number
+ * @property string $status
+ * @property float $subtotal
+ * @property float $tax_amount
+ * @property float $total_amount
+ * @property float $paid_amount
+ * @property array<string, mixed>|null $metadata
  */
 class APInvoice extends Model
 {

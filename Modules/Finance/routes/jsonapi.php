@@ -52,4 +52,8 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     // Fase B CxC: registro de pago directo sobre factura AR
     Route::post('ar-invoices/{arInvoice}/register-payment', [ARInvoiceController::class, 'registerPayment'])
         ->name('ar-invoices.register-payment');
+
+    // IVA de compras (decision de la contadora): factura del proveedor sobre la CxP
+    Route::post('ap-invoices/{apInvoice}/supplier-invoice', [APInvoiceController::class, 'supplierInvoice'])
+        ->name('ap-invoices.supplier-invoice');
 });

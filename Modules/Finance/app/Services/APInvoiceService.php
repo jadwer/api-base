@@ -224,4 +224,79 @@ class APInvoiceService
 
         return now()->isAfter($invoice->due_date);
     }
+
+    /**
+     * Captura la factura del proveedor sobre una CxP nacida de la recepcion
+     * (decision de la contadora: la orden de compra no lleva IVA; el impuesto
+     * sale de la factura del proveedor). Agrega el IVA a la CxP y lo contabiliza
+     * como acreditable pendiente de pago: Dr 1110 / Cr 2101. El subtotal debe
+     * coincidir con lo recibido; una diferencia se corrige en la orden.
+     *
+     * @param array{supplier_invoice_number: string, supplier_uuid?: ?string, subtotal: float|string, tax_amount: float|string} $data
+     * @throws \DomainException Dato del usuario que no cuadra (mensaje para pantalla)
+     * @throws \Exception Periodo fiscal cerrado o diario contable faltante
+     */
+    public function registerSupplierInvoice(APInvoice $invoice, array $data, ?int $userId = null): APInvoice
+    {
+        return DB::transaction(function () use ($invoice, $data, $userId) {
+            /** @var APInvoice $invoice */
+            $invoice = APInvoice::whereKey($invoice->getKey())->lockForUpdate()->firstOrFail();
+
+            if (!empty(($invoice->metadata ?? [])['supplier_invoice'])) {
+                throw new \DomainException('La factura del proveedor ya se capturó en esta cuenta por pagar.');
+            }
+            if (!in_array($invoice->status, ['posted', 'overdue'], true) || (float) $invoice->paid_amount > 0) {
+                throw new \DomainException('Solo se captura la factura del proveedor en una cuenta por pagar contabilizada y sin pagos.');
+            }
+
+            $subtotal = round((float) $data['subtotal'], 2);
+            $tax = round((float) $data['tax_amount'], 2);
+            $expected = round((float) $invoice->subtotal, 2);
+            if (abs($subtotal - $expected) > 0.01) {
+                throw new \DomainException(sprintf(
+                    'El subtotal de la factura del proveedor ($%s) no coincide con lo recibido ($%s). Corrige los precios o cantidades de la orden de compra antes de capturarla.',
+                    number_format($subtotal, 2), number_format($expected, 2)
+                ));
+            }
+            if ($tax < 0 || $tax > round($subtotal * 0.16, 2) + 0.01) {
+                throw new \DomainException('El IVA debe estar entre $0 y el 16 % del subtotal.');
+            }
+
+            if ($tax > 0) {
+                $this->accountingService->createJournalEntry(
+                    journalCode: 'AP',
+                    entryDate: now()->format('Y-m-d'),
+                    description: "IVA de la factura del proveedor {$data['supplier_invoice_number']} - CxP {$invoice->invoice_number}",
+                    reference: $invoice->invoice_number,
+                    lines: [
+                        ['account_id' => GlAccounts::get(GlAccounts::VAT_INPUT_PENDING)->id, 'debit_amount' => $tax, 'credit_amount' => 0, 'description' => "IVA acreditable pendiente - {$invoice->invoice_number}"],
+                        ['account_id' => GlAccounts::get(GlAccounts::SUPPLIERS)->id, 'debit_amount' => 0, 'credit_amount' => $tax, 'description' => "IVA de la factura {$data['supplier_invoice_number']}"],
+                    ]
+                );
+            }
+
+            $metadata = $invoice->metadata ?? [];
+            $metadata['supplier_invoice'] = [
+                'number' => $data['supplier_invoice_number'],
+                'uuid' => $data['supplier_uuid'] ?? null,
+                'subtotal' => $subtotal,
+                'tax_amount' => $tax,
+                'captured_at' => now()->toIso8601String(),
+                'captured_by' => $userId,
+            ];
+            $invoice->forceFill([
+                'tax_amount' => $tax,
+                'total_amount' => round($expected + $tax, 2),
+                'metadata' => $metadata,
+            ])->save();
+
+            Log::info('Factura del proveedor capturada en CxP', [
+                'ap_invoice_id' => $invoice->id,
+                'supplier_invoice' => $data['supplier_invoice_number'],
+                'tax_amount' => $tax,
+            ]);
+
+            return $invoice->fresh();
+        });
+    }
 }

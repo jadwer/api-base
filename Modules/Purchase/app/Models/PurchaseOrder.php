@@ -196,7 +196,8 @@ class PurchaseOrder extends Model
     /**
      * Total calculado en el servidor como suma de partidas (hallazgo Atomo
      * 22-10: lo mandaba el navegador). La orden de compra no guarda IVA por
-     * separado (sin columnas); el IVA acreditable queda para la contadora.
+     * separado (decision de la contadora): el IVA entra a la CxP al capturar la
+     * factura del proveedor (APInvoiceService::registerSupplierInvoice).
      */
     public function recalculateTotals(): void
     {
