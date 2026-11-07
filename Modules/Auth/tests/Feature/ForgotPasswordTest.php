@@ -24,7 +24,7 @@ class ForgotPasswordTest extends TestCase
 
         $response->assertOk()
             ->assertJsonFragment([
-                'message' => 'Si el correo esta registrado, recibiras un enlace para restablecer tu contrasena.',
+                'message' => 'Si el correo está registrado, recibirás un enlace para restablecer tu contraseña.',
             ]);
 
         Notification::assertSentTo($user, ResetPasswordNotification::class);
@@ -59,7 +59,7 @@ class ForgotPasswordTest extends TestCase
         // Should still return 200 to prevent email enumeration
         $response->assertOk()
             ->assertJsonFragment([
-                'message' => 'Si el correo esta registrado, recibiras un enlace para restablecer tu contrasena.',
+                'message' => 'Si el correo está registrado, recibirás un enlace para restablecer tu contraseña.',
             ]);
 
         Notification::assertNothingSent();

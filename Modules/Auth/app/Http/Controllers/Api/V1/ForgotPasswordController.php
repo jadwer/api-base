@@ -25,7 +25,7 @@ class ForgotPasswordController extends Controller
 
         // Always return success to prevent email enumeration
         return response()->json([
-            'message' => 'Si el correo está registrado, recibiras un enlace para restablecer tu contraseña.',
+            'message' => 'Si el correo está registrado, recibirás un enlace para restablecer tu contraseña.',
         ]);
     }
 }

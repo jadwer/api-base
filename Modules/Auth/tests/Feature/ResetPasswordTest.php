@@ -32,7 +32,7 @@ class ResetPasswordTest extends TestCase
 
         $response->assertOk()
             ->assertJsonFragment([
-                'message' => 'Tu contrasena ha sido restablecida exitosamente.',
+                'message' => 'Tu contraseña ha sido restablecida exitosamente.',
             ]);
 
         // Verify password was changed

@@ -39,7 +39,7 @@ class EmailVerificationController extends Controller
 
         if (! hash_equals(sha1($user->getEmailForVerification()), $hash)) {
             return response()->json([
-                'message' => 'Enlace de verificación invalido.',
+                'message' => 'Enlace de verificación inválido.',
             ], 403);
         }
 

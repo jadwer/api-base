@@ -24,7 +24,7 @@ class EmailVerificationTest extends TestCase
 
         $response->assertOk()
             ->assertJsonFragment([
-                'message' => 'Se ha enviado un enlace de verificacion a tu correo.',
+                'message' => 'Se ha enviado un enlace de verificación a tu correo.',
             ]);
 
         Notification::assertSentTo($user, VerifyEmailNotification::class);
@@ -91,7 +91,7 @@ class EmailVerificationTest extends TestCase
 
         $response->assertForbidden()
             ->assertJsonFragment([
-                'message' => 'Enlace de verificacion invalido.',
+                'message' => 'Enlace de verificación inválido.',
             ]);
 
         $user->refresh();
