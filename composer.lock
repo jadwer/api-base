@@ -4,8 +4,184 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a58aae5d74092dc3ba70057d7001e9ad",
+    "content-hash": "3826cdcd4e3a63bc6bc17296a3da16cb",
     "packages": [
+        {
+            "name": "atomo/core",
+            "version": "0.10.2",
+            "source": {
+                "type": "",
+                "url": "",
+                "reference": ""
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://git.atomosoluciones.com/api/packages/atomo/composer/files/atomo%2Fcore/0.10.2/atomo-core.0.10.2.zip",
+                "shasum": "27985c35be0004c83abff7bf3ff05cf035c97566"
+            },
+            "require": {
+                "brick/math": "^0.14|^1.0",
+                "illuminate/cache": "^12.0|^13.0",
+                "illuminate/database": "^12.0|^13.0",
+                "illuminate/http": "^12.0|^13.0",
+                "illuminate/notifications": "^12.0|^13.0",
+                "illuminate/support": "^12.0|^13.0",
+                "php": "^8.4",
+                "spatie/laravel-permission": "^6.0"
+            },
+            "require-dev": {
+                "laravel/sanctum": "^4.0",
+                "orchestra/testbench": "^10.0|^11.0",
+                "phpunit/phpunit": "^11.0|^12.0"
+            },
+            "type": "library",
+            "extra": {
+                "atomo": {
+                    "module": {
+                        "group": "Sistema",
+                        "id": "core",
+                        "name": "Núcleo",
+                        "required": true
+                    }
+                },
+                "laravel": {
+                    "providers": [
+                        "Atomo\\Core\\Providers\\AtomoCoreServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Atomo\\Core\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Atomo\\Core\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "Core middleware, helpers and traits for Atomo Platform",
+            "time": "2026-11-05T19:56:59+00:00"
+        },
+        {
+            "name": "atomo/guide",
+            "version": "0.10.2",
+            "source": {
+                "type": "",
+                "url": "",
+                "reference": ""
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://git.atomosoluciones.com/api/packages/atomo/composer/files/atomo%2Fguide/0.10.2/atomo-guide.0.10.2.zip",
+                "shasum": "8a1ab0f2d122e2e8a2feaf0d7440a63b7a3aa408"
+            },
+            "require": {
+                "atomo/core": "^0.10",
+                "atomo/json-api-base": "^0.10",
+                "illuminate/database": "^12.0|^13.0",
+                "illuminate/http": "^12.0|^13.0",
+                "illuminate/support": "^12.0|^13.0",
+                "php": "^8.4"
+            },
+            "require-dev": {
+                "atomo/user": "^0.10",
+                "laravel/sanctum": "^4.0",
+                "orchestra/testbench": "^10.0|^11.0",
+                "phpunit/phpunit": "^11.0|^12.0"
+            },
+            "type": "library",
+            "extra": {
+                "atomo": {
+                    "module": {
+                        "group": "Sistema",
+                        "id": "guide",
+                        "name": "Flujo guiado",
+                        "resources": []
+                    }
+                },
+                "laravel": {
+                    "providers": [
+                        "Atomo\\Guide\\Providers\\AtomoGuideServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Atomo\\Guide\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Atomo\\Guide\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "Guided flow for Atomo Platform: next action per document, process trail by department and a versioned JSON contract, read only on top of each package's states",
+            "time": "2026-11-05T19:57:01+00:00"
+        },
+        {
+            "name": "atomo/json-api-base",
+            "version": "0.10.2",
+            "source": {
+                "type": "",
+                "url": "",
+                "reference": ""
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://git.atomosoluciones.com/api/packages/atomo/composer/files/atomo%2Fjson-api-base/0.10.2/atomo-json-api-base.0.10.2.zip",
+                "shasum": "24fbf2783facadac57e488df1ab4bc2611d45a2f"
+            },
+            "require": {
+                "atomo/core": "^0.10",
+                "illuminate/support": "^12.0|^13.0",
+                "laravel-json-api/laravel": "^5.1",
+                "php": "^8.4"
+            },
+            "require-dev": {
+                "laravel/sanctum": "^4.0",
+                "orchestra/testbench": "^10.0|^11.0",
+                "phpunit/phpunit": "^11.0|^12.0",
+                "spatie/laravel-permission": "^6.0"
+            },
+            "type": "library",
+            "extra": {
+                "atomo": {
+                    "module": {
+                        "group": "Sistema",
+                        "id": "json-api-base",
+                        "name": "API JSON:API",
+                        "required": true
+                    }
+                },
+                "laravel": {
+                    "providers": [
+                        "Atomo\\JsonApiBase\\Providers\\AtomoJsonApiBaseServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Atomo\\JsonApiBase\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Atomo\\JsonApiBase\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "JSON:API server base, abstract authorizer and auto-registration for Atomo Platform",
+            "time": "2026-11-05T19:57:02+00:00"
+        },
         {
             "name": "bacon/bacon-qr-code",
             "version": "2.0.8",
@@ -11899,7 +12075,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.2"
+        "php": "^8.4"
     },
     "platform-dev": {},
     "plugin-api-version": "2.6.0"

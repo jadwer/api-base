@@ -9,8 +9,11 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.4",
+        "atomo/core": "^0.10.2",
+        "atomo/guide": "^0.10",
         "barryvdh/laravel-dompdf": "^3.1",
+        "fakerphp/faker": "^1.24",
         "laravel-json-api/laravel": "^5.1",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
@@ -21,8 +24,7 @@
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-activitylog": "^4.10",
         "spatie/laravel-permission": "^6.20",
-        "stripe/stripe-php": "^18.1",
-        "fakerphp/faker": "^1.24"
+        "stripe/stripe-php": "^18.1"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.15",
@@ -79,7 +81,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "atomo/json-api-base"
+            ]
         },
         "merge-plugin": {
             "include": [
@@ -98,5 +102,14 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://git.atomosoluciones.com/api/packages/atomo/composer",
+            "only": [
+                "atomo/*"
+            ]
+        }
+    ]
 }
