@@ -130,7 +130,7 @@ class Branch extends Model
         static $memo = null;
         $memo ??= new \WeakMap();
         if (! isset($memo[$user])) {
-            $memo[$user] = ['ids' => $user->hasAnyRole(['god', 'admin', 'customer']) ? null : $user->accessibleBranchIds()];
+            $memo[$user] = ['ids' => $user->hasAnyRole(['god', 'admin']) || \Modules\User\Support\UserAccess::isCustomer($user) ? null : $user->accessibleBranchIds()];
         }
 
         return $memo[$user]['ids'];

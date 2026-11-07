@@ -24,7 +24,22 @@ use Spatie\Permission\PermissionRegistrar;
  */
 final class UserAccess
 {
-    public const SYSTEM_ROLES = ['god', 'admin', 'customer'];
+    /**
+     * Roles del portal del cliente. En produccion el rol se llama `cliente`
+     * (asi lo creo el cliente desde Usuarios); el seeder limpio lo llama
+     * `customer`. Hasta 2026-11 solo se reconocia `customer`, asi que un
+     * usuario con rol `cliente` y permiso quotes.index veia TODAS las
+     * cotizaciones (seesAll devolvia true). Cualquiera de los dos restringe.
+     */
+    public const CUSTOMER_ROLES = ['customer', 'cliente'];
+
+    public const SYSTEM_ROLES = ['god', 'admin', 'customer', 'cliente'];
+
+    /** Si el usuario es un cliente del portal (solo ve lo de su contacto). */
+    public static function isCustomer($user): bool
+    {
+        return $user ? $user->hasAnyRole(self::CUSTOMER_ROLES) : false;
+    }
 
     /**
      * Visibilidad de listados (indexQuery): si el usuario ve TODOS los
@@ -35,6 +50,24 @@ final class UserAccess
      * conserva mientras exista como rol). La restriccion por sucursal se
      * aplica aparte (Branch\Concerns\BranchScoped).
      */
+    /**
+     * Si el usuario puede ver UN documento de un cliente: ve todo (personal) o
+     * es el cliente dueno (su correo es el del contacto). Es la misma regla
+     * que `indexQuery` de los Schemas; el `show` la repite para que un cliente
+     * del portal no lea documentos ajenos cambiando el id (regla 8, 2026-11).
+     */
+    public static function seesDocument($user, string $indexPermission, ?int $contactId): bool
+    {
+        if (self::seesAll($user, $indexPermission)) {
+            return true;
+        }
+        if (! $user || $contactId === null) {
+            return false;
+        }
+
+        return \Modules\Contacts\Models\Contact::where('email', $user->email)->where('id', $contactId)->exists();
+    }
+
     public static function seesAll($user, string $indexPermission): bool
     {
         if (! $user) {
@@ -43,7 +76,7 @@ final class UserAccess
         if ($user->hasAnyRole(['god', 'admin', 'administrator'])) {
             return true;
         }
-        if ($user->hasRole('customer')) {
+        if (self::isCustomer($user)) {
             return false;
         }
 

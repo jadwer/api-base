@@ -24,11 +24,13 @@ class SalesOrderAuthorizer implements Authorizer
         if (!$user) {
             return false;
         }
-        if ($user->can('sales-orders.show')) {
+        // Personal con el permiso ve todo; el cliente del portal solo sus pedidos
+        // (misma regla que cotizaciones y que indexQuery).
+        if ($user->can('sales-orders.show') && \Modules\User\Support\UserAccess::seesAll($user, 'sales-orders.index')) {
             return true;
         }
-        // Customers can view their own orders (matched by contact email)
-        return $model->contact && $model->contact->email === $user->email;
+
+        return \Modules\User\Support\UserAccess::seesDocument($user, 'sales-orders.index', $model->contact_id);
     }
 
     public function update(Request $request, object $model): bool|Response

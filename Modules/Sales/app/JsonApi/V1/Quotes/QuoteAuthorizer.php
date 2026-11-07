@@ -31,8 +31,7 @@ class QuoteAuthorizer implements Authorizer
      */
     public function show(Request $request, object $model): bool|Response
     {
-        $user = $request->user();
-        return $user?->can('quotes.show') ?? false;
+        return $this->canSee($request, $model);
     }
 
     /**
@@ -58,7 +57,7 @@ class QuoteAuthorizer implements Authorizer
      */
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('quotes.show') ?? false;
+        return $this->canSee($request, $model);
     }
 
     /**
@@ -66,7 +65,21 @@ class QuoteAuthorizer implements Authorizer
      */
     public function showRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('quotes.show') ?? false;
+        return $this->canSee($request, $model);
+    }
+
+    /**
+     * Personal con el permiso ve cualquier cotizacion; el cliente del portal
+     * (tiene quotes.show) solo las suyas. Antes el show no validaba dueno.
+     */
+    private function canSee(Request $request, object $model): bool
+    {
+        $user = $request->user();
+        if (! $user || ! $user->can('quotes.show')) {
+            return false;
+        }
+
+        return \Modules\User\Support\UserAccess::seesDocument($user, 'quotes.index', $model->contact_id);
     }
 
     /**

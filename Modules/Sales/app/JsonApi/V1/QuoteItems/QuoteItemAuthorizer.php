@@ -33,8 +33,7 @@ class QuoteItemAuthorizer implements Authorizer
      */
     public function show(Request $request, object $model): bool|Response
     {
-        $user = $request->user();
-        return $user?->can('quote-items.show') ?? false;
+        return $this->canSee($request, $model);
     }
 
     /**
@@ -62,7 +61,7 @@ class QuoteItemAuthorizer implements Authorizer
      */
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('quote-items.show') ?? false;
+        return $this->canSee($request, $model);
     }
 
     /**
@@ -70,7 +69,18 @@ class QuoteItemAuthorizer implements Authorizer
      */
     public function showRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return $request->user()?->can('quote-items.show') ?? false;
+        return $this->canSee($request, $model);
+    }
+
+    /** El cliente del portal (tiene quote-items.show) solo ve partidas de sus cotizaciones. */
+    private function canSee(Request $request, object $model): bool
+    {
+        $user = $request->user();
+        if (! $user || ! $user->can('quote-items.show')) {
+            return false;
+        }
+
+        return \Modules\User\Support\UserAccess::seesDocument($user, 'quote-items.index', $model->quote?->contact_id);
     }
 
     /**

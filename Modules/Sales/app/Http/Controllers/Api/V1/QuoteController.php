@@ -688,7 +688,7 @@ class QuoteController extends Controller
      */
     public function generatePdf(Quote $quote): JsonResponse
     {
-        if (Gate::denies('quotes.show')) {
+        if (Gate::denies('quotes.show') || ! \Modules\User\Support\UserAccess::seesDocument(auth()->user(), 'quotes.index', $quote->contact_id)) {
             abort(403, 'No tiene permisos para generar PDF de cotizaciones');
         }
 
@@ -710,7 +710,7 @@ class QuoteController extends Controller
      */
     public function downloadPdf(Quote $quote)
     {
-        if (Gate::denies('quotes.show')) {
+        if (Gate::denies('quotes.show') || ! \Modules\User\Support\UserAccess::seesDocument(auth()->user(), 'quotes.index', $quote->contact_id)) {
             abort(403, 'No tiene permisos para descargar PDF de cotizaciones');
         }
 
@@ -724,7 +724,7 @@ class QuoteController extends Controller
      */
     public function previewPdf(Quote $quote)
     {
-        if (Gate::denies('quotes.show')) {
+        if (Gate::denies('quotes.show') || ! \Modules\User\Support\UserAccess::seesDocument(auth()->user(), 'quotes.index', $quote->contact_id)) {
             abort(403, 'No tiene permisos para previsualizar cotizaciones');
         }
 
@@ -738,7 +738,7 @@ class QuoteController extends Controller
      */
     public function streamPdf(Quote $quote)
     {
-        if (Gate::denies('quotes.show')) {
+        if (Gate::denies('quotes.show') || ! \Modules\User\Support\UserAccess::seesDocument(auth()->user(), 'quotes.index', $quote->contact_id)) {
             abort(403, 'No tiene permisos para ver cotizaciones');
         }
 
