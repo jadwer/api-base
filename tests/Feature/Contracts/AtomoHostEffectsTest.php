@@ -36,13 +36,14 @@ class AtomoHostEffectsTest extends TestCase
         $this->assertArrayNotHasKey('auth.public-read', $aliases, 'Alias de json-api-base presente: su provider esta encendido');
     }
 
-    public function test_el_grupo_api_tiene_exactamente_lo_de_lwm_mas_los_tres_de_core(): void
+    public function test_el_grupo_api_tiene_exactamente_lo_de_lwm_mas_los_tres_de_core_y_la_visibilidad_de_la_guia(): void
     {
         $expected = [
             SubstituteBindings::class,
             \Atomo\Core\Http\Middleware\SetLocale::class,
             \Atomo\Core\Modules\EnsureModuleEnabled::class,
             \Atomo\Core\Http\Middleware\CaptureChangeReason::class,
+            \App\Http\Middleware\GuideDocumentVisibility::class,
         ];
         $actual = app('router')->getMiddlewareGroups()['api'] ?? [];
 

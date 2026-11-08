@@ -31,6 +31,24 @@ class BillingServiceProvider extends ServiceProvider
 
         // Validate external service configurations on boot (Phase 9 - Technical Debt)
         $this->validateServiceConfigurations();
+        $this->registerGuide();
+    }
+
+    /**
+     * Flujo guiado (F3): el CFDI solo como expediente, colgado de la cuenta por
+     * cobrar o del cobro. La guia pregunta `cfdi-invoices.show` (el tipo
+     * JSON:API) y el permiso de Billing lleva prefijo de modulo, asi que se
+     * define la habilidad puente (no existe permiso con ese nombre: D3).
+     */
+    protected function registerGuide(): void
+    {
+        if (! class_exists(\Atomo\Guide\Guide::class)) {
+            return;
+        }
+        \Illuminate\Support\Facades\Gate::define('cfdi-invoices.show', fn ($user) => $user->can('billing.cfdi-invoices.show'));
+        \Atomo\Guide\Guide::steps(\Modules\Billing\Models\CFDIInvoice::class, 'cfdi-invoices', \Modules\Billing\Guide\CFDIInvoiceSteps::class);
+        \Atomo\Guide\Guide::links(\Modules\Finance\Models\ARInvoice::class, fn ($invoice) => \Modules\Billing\Models\CFDIInvoice::query()->where('ar_invoice_id', $invoice->getKey())->orderBy('id')->get());
+        \Atomo\Guide\Guide::links(\Modules\Finance\Models\Payment::class, fn ($payment) => \Modules\Billing\Models\CFDIInvoice::query()->where('ar_payment_id', $payment->getKey())->orderBy('id')->get());
     }
 
     /**

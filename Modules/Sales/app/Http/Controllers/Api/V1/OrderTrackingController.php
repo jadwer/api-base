@@ -93,9 +93,15 @@ class OrderTrackingController extends Controller
         // god y admin mueven a cualquier estado, como siempre. Confirmar (pending
         // o draft -> confirmed) ademas lo puede quien tenga el permiso
         // sales-orders.confirm (flujo guiado F2, D4: asignable por usuario).
+        // Marcar entregado tiene su habilidad (sales-orders.deliver, atada a god y
+        // admin) para que la guia y el endpoint lean la misma regla (F3).
         $user = auth()->user();
-        $confirming = $request->input('status') === 'confirmed';
-        if (!$user->hasRole(['god', 'admin']) && !($confirming && $user->can('sales-orders.confirm'))) {
+        $ability = match ($request->input('status')) {
+            'confirmed' => 'sales-orders.confirm',
+            'delivered' => 'sales-orders.deliver',
+            default => null,
+        };
+        if (!$user->hasRole(['god', 'admin']) && !($ability !== null && $user->can($ability))) {
             return response()->json([
                 'error' => 'No tiene permisos para esta acción.',
             ], 403);

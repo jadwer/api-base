@@ -17,6 +17,7 @@ use Modules\Contacts\Models\Contact;
  * @property int $company_setting_id
  * @property int|null $contact_id
  * @property int|null $ar_invoice_id
+ * @property int|null $ar_payment_id
  * @property string $series
  * @property int $folio
  * @property string|null $uuid

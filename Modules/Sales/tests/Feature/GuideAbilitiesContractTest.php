@@ -87,7 +87,7 @@ class GuideAbilitiesContractTest extends TestCase
     {
         $this->seed(\Modules\Sales\Database\Seeders\SalesPermissionSeeder::class);
 
-        $defined = array_keys(SalesAbilities::DERIVED);
+        $defined = [...array_keys(SalesAbilities::DERIVED), ...array_keys(SalesAbilities::ROLE_BOUND), 'cfdi-invoices.show'];
         $asPermission = Permission::whereIn('name', $defined)->pluck('name')->all();
 
         $this->assertSame([], $asPermission, 'Una habilidad con fila en permissions se concede antes del closure (D3)');

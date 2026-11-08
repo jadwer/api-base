@@ -28,6 +28,16 @@ class PurchaseServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'Database/migrations'));
         $this->registerObservers();
+        $this->registerGuide();
+    }
+
+    /** Flujo guiado (F3): la orden de compra solo como expediente, colgada de su cotizacion. */
+    protected function registerGuide(): void
+    {
+        if (! class_exists(\Atomo\Guide\Guide::class)) {
+            return;
+        }
+        \Atomo\Guide\Guide::steps(\Modules\Purchase\Models\PurchaseOrder::class, 'purchase-orders', \Modules\Purchase\Guide\PurchaseOrderSteps::class);
     }
 
     /**

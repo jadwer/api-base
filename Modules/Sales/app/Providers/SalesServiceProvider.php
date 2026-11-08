@@ -33,6 +33,20 @@ class SalesServiceProvider extends ServiceProvider
 
         // Flujo guiado (F2): habilidades con nombre de las acciones de ventas.
         \Modules\Sales\Support\SalesAbilities::register();
+        $this->registerGuide();
+    }
+
+    /** Flujo guiado (F3): que dice la guia de cada documento de ventas. */
+    protected function registerGuide(): void
+    {
+        if (! class_exists(\Atomo\Guide\Guide::class)) {
+            return;
+        }
+        \Atomo\Guide\Guide::steps(\Modules\Sales\Models\Quote::class, 'quotes', \Modules\Sales\Guide\QuoteSteps::class);
+        \Atomo\Guide\Guide::steps(\Modules\Sales\Models\SalesOrder::class, 'sales-orders', \Modules\Sales\Guide\SalesOrderSteps::class);
+        \Atomo\Guide\Guide::steps(\Modules\Sales\Models\Remission::class, 'remissions', \Modules\Sales\Guide\RemissionSteps::class);
+        \Atomo\Guide\Guide::steps(\Modules\Sales\Models\Shipment::class, 'shipments', \Modules\Sales\Guide\ShipmentSteps::class);
+        \Atomo\Guide\Guide::steps(\Modules\Sales\Models\Backorder::class, 'backorders', \Modules\Sales\Guide\BackorderSteps::class);
     }
 
     /**

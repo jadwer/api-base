@@ -27,6 +27,17 @@ class FinanceServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'Database/Migrations'));
+        $this->registerGuide();
+    }
+
+    /** Flujo guiado (F3): la cuenta por cobrar y el cobro solo como expediente. */
+    protected function registerGuide(): void
+    {
+        if (! class_exists(\Atomo\Guide\Guide::class)) {
+            return;
+        }
+        \Atomo\Guide\Guide::steps(\Modules\Finance\Models\ARInvoice::class, 'ar-invoices', \Modules\Finance\Guide\ARInvoiceSteps::class);
+        \Atomo\Guide\Guide::steps(\Modules\Finance\Models\Payment::class, 'payments', \Modules\Finance\Guide\PaymentSteps::class);
     }
 
     /**

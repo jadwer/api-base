@@ -21,6 +21,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // turn 401 responses into 500 RouteNotFoundException errors.
         $middleware->redirectGuestsTo(fn () => null);
 
+        // Flujo guiado (F3): el cliente del portal solo lee la guia de SUS
+        // documentos (ver GuideDocumentVisibility). Solo actua en esa ruta.
+        $middleware->api(append: [\App\Http\Middleware\GuideDocumentVisibility::class]);
+
         // Route middleware aliases
         $middleware->alias([
             'auth:sanctum' => \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,

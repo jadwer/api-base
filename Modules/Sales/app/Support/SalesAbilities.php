@@ -38,6 +38,12 @@ final class SalesAbilities
     /** Acciones que son permiso de Spatie (no closure). */
     public const PERMISSIONS = ['sales-orders.confirm'];
 
+    /**
+     * Habilidades atadas a rol, como el endpoint que protegen: marcar entregado a
+     * mano (POST orders/{id}/status) siempre fue solo de god y admin.
+     */
+    public const ROLE_BOUND = ['sales-orders.deliver' => ['god', 'admin']];
+
     public static function register(): void
     {
         foreach (self::DERIVED as $ability => $permission) {
@@ -53,6 +59,10 @@ final class SalesAbilities
 
         // Cancelar pedido: el permiso o los roles de acceso total, como hoy.
         Gate::define('sales-orders.cancel', fn ($user) => $user->can('sales-orders.update') || $user->hasAnyRole(['god', 'admin']));
+
+        foreach (self::ROLE_BOUND as $ability => $roles) {
+            Gate::define($ability, fn ($user) => $user->hasAnyRole($roles));
+        }
     }
 
     public static function isOwner($user, Quote $quote): bool

@@ -15,6 +15,7 @@ use Modules\Sales\Models\SalesOrder;
  * @property int $contact_id
  * @property string $status
  * @property string $invoice_number
+ * @property int|null $sales_order_id
  * @property float $subtotal
  * @property float $tax_amount
  * @property float $total_amount

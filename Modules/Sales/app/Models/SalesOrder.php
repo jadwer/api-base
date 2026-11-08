@@ -15,6 +15,7 @@ use Spatie\Activitylog\LogOptions;
  * @property int $id
  * @property int $contact_id
  * @property string $order_number
+ * @property int|null $quote_id
  * @property string $status
  * @property \Carbon\Carbon $order_date
  * @property \Carbon\Carbon|null $approved_at
@@ -27,6 +28,8 @@ use Spatie\Activitylog\LogOptions;
  * @property string|null $customer_po_number
  * @property string|null $customer_po_path
  * @property string|null $payment_method
+ * @property string|null $payment_status
+ * @property \Carbon\Carbon|null $paid_at
  * @property int|null $credit_days
  * @property string|null $notes
  * @property array|null $metadata
