@@ -271,6 +271,32 @@ class GuideStepsTest extends TestCase
         $this->assertSame([], array_diff($withBody, $seen), 'Las fixtures deben alcanzar todas las acciones con body');
     }
 
+    /** Auditoria 5a del plan: cada action.path y metodo que ofrece la guia existe en las rutas registradas. */
+    public function test_toda_accion_apunta_a_una_ruta_registrada(): void
+    {
+        $documents = [
+            $this->quote('draft'), $this->quote('sent'), $this->quote('accepted', price: 0), $this->quote('expired'),
+            $this->order('pending'), $this->order('confirmed'), $this->order('delivered'),
+            Remission::factory()->forOrder($this->order('confirmed'))->create(['status' => 'draft']),
+            Remission::factory()->forOrder($this->order('confirmed'))->printed()->create(),
+        ];
+        $routes = \Illuminate\Support\Facades\Route::getRoutes();
+        $checked = 0;
+        foreach ($documents as $document) {
+            $entry = Guide::forModel($document);
+            foreach (app($entry['provider'])->next($document, $this->getAdminUser()) as $action) {
+                $path = '/api/v1/'.str_replace(['{type}', '{id}'], [$entry['type'], (string) $document->getKey()], $action->path);
+                try {
+                    $routes->match(\Illuminate\Http\Request::create($path, $action->method));
+                } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+                    $this->fail("{$action->ability}: {$action->method} {$path} no corresponde a ninguna ruta ({$e->getMessage()})");
+                }
+                $checked++;
+            }
+        }
+        $this->assertGreaterThan(10, $checked);
+    }
+
     public function test_el_cliente_del_portal_solo_lee_la_guia_de_sus_documentos(): void
     {
         Role::firstOrCreate(['name' => 'cliente', 'guard_name' => 'api']);
