@@ -194,6 +194,10 @@ class GuideStepsTest extends TestCase
         $this->guide($this->getAdminUser(), 'remissions', $printed->id)->assertOk()
             ->assertJsonPath('data.next.0.key', 'sales::guide.remission.deliver')
             ->assertJsonPath('data.next.0.asks', ['received_by', 'delivery_notes']);
+        // Con remision, la entrega del pedido va por ella: el pedido ya no ofrece entregar a mano.
+        $keys = array_column($this->guide($this->getAdminUser(), 'sales-orders', $order->id)->json('data.next'), 'key');
+        $this->assertNotContains('sales::guide.order.deliver', $keys);
+        $this->assertSame(['sales::guide.order.remit', 'sales::guide.order.cancel'], $keys);
     }
 
     public function test_el_expediente_arranca_en_la_cotizacion_y_cuelga_pedido_remision_cxc_cfdi_y_oc(): void

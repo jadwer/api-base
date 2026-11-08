@@ -53,17 +53,22 @@ class SalesOrderSteps extends StepProvider
             case 'processing':
             case 'shipped':
                 $remit = $this->remissions->remitProblems($document);
-                // Sin partidas por surtir, el paso que sigue es cerrar la entrega.
+                // Sin partidas por surtir, el siguiente paso vive en la remision
+                // (imprimirla y entregarla cierra el pedido); aqui remisionar baja a secundaria.
                 $allRemitted = isset($remit['pending']);
-
-                return [
+                $actions = [
                     NextAction::call('sales-orders.remit', 'POST', 'remissions/from-order-full', 'sales::guide.order.remit', $folio, 'almacen', $allRemitted ? NextAction::SECONDARY : NextAction::PRIMARY, ['sales_order_id' => $document->getKey()])
                         ->asks(['items', 'warehouse_id', 'delivery_notes'])
                         ->blockedBy($remit),
-                    NextAction::call('sales-orders.deliver', 'POST', 'orders/{id}/status', 'sales::guide.order.deliver', $folio, 'almacen', $allRemitted ? NextAction::PRIMARY : NextAction::SECONDARY, ['status' => 'delivered'])
-                        ->blockedBy($this->status->deliverProblems($document)),
-                    $cancel,
                 ];
+                // Entregar a mano solo cuando no hay remisiones (mostrador): con remision, la entrega va por ella.
+                if ($document->remissions()->doesntExist()) {
+                    $actions[] = NextAction::call('sales-orders.deliver', 'POST', 'orders/{id}/status', 'sales::guide.order.deliver', $folio, 'almacen', NextAction::SECONDARY, ['status' => 'delivered'])
+                        ->blockedBy($this->status->deliverProblems($document));
+                }
+                $actions[] = $cancel;
+
+                return $actions;
             case 'delivered':
             case 'completed':
                 if ($this->hasCfdi($document)) {
@@ -122,7 +127,7 @@ class SalesOrderSteps extends StepProvider
                 continue;
             }
             $own[] = [
-                'from' => isset($step['from']) ? (string) $step['from'] : null,
+                'from' => isset($step['from']) && $step['from'] !== '' ? (string) $step['from'] : null,
                 'to' => (string) $step['to'],
                 'at' => isset($step['changed_at']) ? (string) $step['changed_at'] : null,
                 'by' => ActivityStatusHistory::userName($step['changed_by'] ?? null),
