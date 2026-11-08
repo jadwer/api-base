@@ -195,16 +195,14 @@ class SalesOrderController extends Controller
         if (!$user) {
             return response()->json(['error' => 'No autenticado.'], 401);
         }
-        if (!$user->can('sales-orders.update') && !$user->hasAnyRole(['god', 'admin'])) {
+        if (!$user->can('sales-orders.cancel')) {
             return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
-        if ($salesOrder->status === 'cancelled') {
-            return response()->json(['error' => 'La orden ya está cancelada'], 400);
-        }
-
-        if ($salesOrder->status === 'completed') {
-            return response()->json(['error' => 'No se puede cancelar una orden completada'], 400);
+        // Estado: mismos textos que la guia muestra como bloqueo (cancelProblems).
+        $problems = $orderStatusService->cancelProblems($salesOrder);
+        if (isset($problems['status']) && in_array($salesOrder->status, ['cancelled', 'completed'], true)) {
+            return response()->json(['error' => $problems['status']], 400);
         }
 
         // Refactor ciclo (5b/F1): antes hacia update(status=cancelled) DIRECTO, saltando

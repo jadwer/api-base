@@ -66,32 +66,10 @@ class OrderStatusService
             );
         }
 
-        // GAP-2: If transitioning to 'delivered' and order has shipments,
-        // at least one must be in 'delivered' status.
-        // Orders without shipments can still be marked delivered (digital/services).
+        // Entregar a mano: envios y remisiones abiertos (misma regla que deliverProblems).
         if ($newStatus === 'delivered' && empty($options['skip_shipment_guard'])) {
-            $totalShipped = $order->items->sum('shipped_quantity');
-            if ($totalShipped > 0) {
-                $hasDeliveredShipment = $order->shipments()
-                    ->where('status', 'delivered')
-                    ->exists();
-                if (!$hasDeliveredShipment) {
-                    throw new \Exception(
-                        "El pedido tiene envíos pero ninguno está entregado. Marca al menos un envío como entregado primero."
-                    );
-                }
-            }
-        }
-
-        // Surtido F3: marcar entregado a mano con remisiones o envios abiertos dejaria
-        // esos documentos colgados (y su mercancia sin salida coherente).
-        if ($newStatus === 'delivered' && empty($options['skip_shipment_guard'])) {
-            $openRemissions = $order->remissions()->whereIn('status', ['draft', 'printed'])->exists();
-            $openShipments = $order->shipments()->whereIn('status', ['pending', 'processing'])->exists();
-            if ($openRemissions || $openShipments) {
-                throw new \Exception(
-                    'El pedido tiene remisiones o envíos abiertos. Entrégalos o cancélalos antes de marcarlo como entregado.'
-                );
+            foreach ($this->deliverProblems($order) as $message) {
+                throw new \Exception($message);
             }
         }
 
@@ -204,6 +182,65 @@ class OrderStatusService
      * @param string $targetStatus
      * @return bool
      */
+    /**
+     * Lo que falta para confirmar el pedido (flujo guiado F2): solo el estado.
+     *
+     * @return array<string, string>
+     */
+    public function confirmProblems(SalesOrder $order): array
+    {
+        if (!$this->canTransitionTo($order, 'confirmed')) {
+            return ['status' => "No se puede cambiar el pedido de '{$order->status}' a 'confirmed'."];
+        }
+
+        return [];
+    }
+
+    /**
+     * Lo que falta para marcar entregado a mano. GAP-2: con envios, al menos
+     * uno entregado. Surtido F3: sin remisiones ni envios abiertos (quedarian
+     * colgados y su mercancia sin salida coherente).
+     *
+     * @return array<string, string>
+     */
+    public function deliverProblems(SalesOrder $order): array
+    {
+        if (!$this->canTransitionTo($order, 'delivered')) {
+            return ['status' => "No se puede cambiar el pedido de '{$order->status}' a 'delivered'."];
+        }
+        if ((float) $order->items->sum('shipped_quantity') > 0
+            && !$order->shipments()->where('status', 'delivered')->exists()) {
+            return ['shipments' => 'El pedido tiene envíos pero ninguno está entregado. Marca al menos un envío como entregado primero.'];
+        }
+        $openRemissions = $order->remissions()->whereIn('status', ['draft', 'printed'])->exists();
+        $openShipments = $order->shipments()->whereIn('status', ['pending', 'processing'])->exists();
+        if ($openRemissions || $openShipments) {
+            return ['open_documents' => 'El pedido tiene remisiones o envíos abiertos. Entrégalos o cancélalos antes de marcarlo como entregado.'];
+        }
+
+        return [];
+    }
+
+    /**
+     * Lo que falta para cancelar (mismos textos que SalesOrderController::cancel).
+     *
+     * @return array<string, string>
+     */
+    public function cancelProblems(SalesOrder $order): array
+    {
+        if ($order->status === 'cancelled') {
+            return ['status' => 'La orden ya está cancelada'];
+        }
+        if ($order->status === 'completed') {
+            return ['status' => 'No se puede cancelar una orden completada'];
+        }
+        if (!$this->canTransitionTo($order, 'cancelled')) {
+            return ['status' => 'No se puede cancelar la orden en su estado actual (' . $order->status . '). Si ya fue entregada, use una devolucion.'];
+        }
+
+        return [];
+    }
+
     public function canTransitionTo(SalesOrder $order, string $targetStatus): bool
     {
         $currentStatus = $order->status;

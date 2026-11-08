@@ -40,6 +40,11 @@ return [
             'label' => 'Borrar {singular}',
             'description' => 'Permiso que permite borrar {article} {singular}',
         ],
+        // Flujo guiado F2 (D4): confirmar un pedido pendiente (aparta existencias)
+        'confirm' => [
+            'label' => 'Confirmar {singular}',
+            'description' => 'Permiso que permite confirmar {article} {singular} pendiente',
+        ],
     ],
 
     // Modulos de negocio (agrupacion para la UI de roles).

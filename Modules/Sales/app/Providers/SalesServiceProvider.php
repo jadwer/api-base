@@ -30,6 +30,9 @@ class SalesServiceProvider extends ServiceProvider
 
         // SA-M001: Register SalesOrder observer for auto-invoicing
         \Modules\Sales\Models\SalesOrder::observe(\Modules\Sales\Observers\SalesOrderObserver::class);
+
+        // Flujo guiado (F2): habilidades con nombre de las acciones de ventas.
+        \Modules\Sales\Support\SalesAbilities::register();
     }
 
     /**

@@ -47,6 +47,7 @@ class SalesAssignPermissionsSeeder extends Seeder
                                             'customers.update', 'customers.destroy',
                                             'sales-orders.index', 'sales-orders.show',
                                             'sales-orders.store', 'sales-orders.update', 'sales-orders.destroy',
+                                            'sales-orders.confirm',
                                             'sales-order-items.index', 'sales-order-items.show',
                                             'sales-order-items.store', 'sales-order-items.update', 'sales-order-items.destroy',
                                             // SA-M001: Shipments

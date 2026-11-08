@@ -17,6 +17,7 @@ use Modules\Sales\Models\SalesOrderItem;
 use Modules\Sales\Models\FolioSequence;
 use Modules\Sales\Services\QuotePDFGenerator;
 use Modules\Sales\Services\StockAvailabilityService;
+use Modules\Sales\Services\QuoteWorkflowService;
 use Modules\Ecommerce\Models\ShoppingCart;
 use Modules\Product\Models\Product;
 use Modules\Purchase\Models\PurchaseOrder;
@@ -176,7 +177,7 @@ class QuoteController extends Controller
      */
     public function send(Request $request, Quote $quote): JsonResponse
     {
-        if (Gate::denies('quotes.update')) {
+        if (Gate::denies('quotes.send')) {
             abort(403, 'No tiene permisos para enviar cotizaciones');
         }
 
@@ -192,10 +193,8 @@ class QuoteController extends Controller
             'recipients.max' => 'Se permiten hasta 20 destinatarios.',
         ]);
 
-        if (!$quote->canBeSent) {
-            return response()->json([
-                'error' => 'La cotización no se puede enviar: debe estar en borrador y tener al menos una partida.'
-            ], 400);
+        if ($problems = $this->workflow()->sendProblems($quote)) {
+            return response()->json(['error' => reset($problems)], 400);
         }
 
         $contact = $quote->contact;
@@ -262,38 +261,20 @@ class QuoteController extends Controller
      */
     public function accept(Request $request, Quote $quote): JsonResponse
     {
-        if (!$this->canCustomerManageQuote($request, $quote) && Gate::denies('quotes.update')) {
+        if (Gate::denies('quotes.accept', $quote)) {
             abort(403, 'No tiene permisos para aceptar cotizaciones');
         }
 
-        // El vendedor (quotes.update) puede aceptar desde borrador: la
-        // aceptacion suele llegar por telefono/mostrador y el envio por
-        // correo NO es prerequisito del ciclo (decision 2026-09-10).
-        // El cliente del portal solo acepta cotizaciones enviadas.
-        $acceptable = Gate::allows('quotes.update') ? ['draft', 'sent'] : ['sent'];
-
-        // Una cotizacion enviada y vencida ya no se acepta: los precios y la
-        // vigencia que promete el PDF caducaron. Se duplica para renovarla.
-        if ($quote->status === 'expired' || ($quote->status === 'sent' && $quote->isExpired)) {
-            return response()->json([
-                'error' => 'La cotización venció el ' . $quote->valid_until?->format('d/m/Y') . '. Duplícala para renovar la vigencia.'
-            ], 422);
+        // Las reglas (vendedor desde borrador o enviada; portal solo enviada
+        // y sin precios por confirmar; vencida no) viven en QuoteWorkflowService.
+        $problems = $this->workflow()->acceptProblems($quote, Gate::allows('quotes.update'));
+        if (isset($problems['price_pending'])) {
+            return $this->pricePendingRejection($quote, 'aceptar');
         }
-
-        if (!in_array($quote->status, $acceptable, true)) {
-            return response()->json([
-                'error' => 'Esta cotización no se puede aceptar en su estado actual.'
-            ], 400);
-        }
-
-        // D9: el cliente del portal no acepta una cotizacion con precios por
-        // confirmar (aceptaria un total que no es el final). El vendedor si
-        // puede registrar la aceptacion (llega por telefono) y capturar los
-        // precios antes de convertir, que tiene su propio candado.
-        if (Gate::denies('quotes.update')) {
-            if ($rejection = $this->pricePendingRejection($quote, 'aceptar')) {
-                return $rejection;
-            }
+        if ($problems) {
+            $message = reset($problems);
+            $status = str_contains($message, 'venció') ? 422 : 400;
+            return response()->json(['error' => $message], $status);
         }
 
         $quote->markAsAccepted();
@@ -310,14 +291,12 @@ class QuoteController extends Controller
      */
     public function reject(Request $request, Quote $quote): JsonResponse
     {
-        if (!$this->canCustomerManageQuote($request, $quote) && Gate::denies('quotes.update')) {
+        if (Gate::denies('quotes.reject', $quote)) {
             abort(403, 'No tiene permisos para rechazar cotizaciones');
         }
 
-        if (!in_array($quote->status, ['sent', 'draft'])) {
-            return response()->json([
-                'error' => 'Esta cotización no se puede rechazar en su estado actual.'
-            ], 400);
+        if ($problems = $this->workflow()->rejectProblems($quote)) {
+            return response()->json(['error' => reset($problems)], 400);
         }
 
         $quote->markAsRejected();
@@ -353,14 +332,16 @@ class QuoteController extends Controller
      */
     public function convert(Request $request, Quote $quote): JsonResponse
     {
-        if (Gate::denies('quotes.update')) {
+        if (Gate::denies('quotes.convert')) {
             abort(403, 'No tiene permisos para convertir cotizaciones');
         }
 
-        if (!$quote->canBeConverted) {
-            return response()->json([
-                'error' => 'La cotización no se puede convertir: debe estar aceptada y no haberse convertido antes.'
-            ], 400);
+        if ($problems = $this->workflow()->convertProblems($quote)) {
+            // Sin intencion solo hay dos: estado y precio por confirmar (el stock se revisa abajo con el tipo).
+            if (isset($problems['price_pending'])) {
+                return $this->pricePendingRejection($quote, 'convertir');
+            }
+            return response()->json(['error' => reset($problems)], 400);
         }
 
         $validated = $request->validate([
@@ -399,16 +380,9 @@ class QuoteController extends Controller
 
         $quote->loadMissing('items.product');
 
-        // P2 granel / P2b (D8): ninguna linea pasa a pedido o venta con precio
-        // efectivo <= 0, sea cual sea el tipo actual del producto (la orden y
-        // el CFDI saldrian en $0).
-        if ($rejection = $this->pricePendingRejection($quote, 'convertir')) {
-            return $rejection;
-        }
-
-        // Validacion de stock diferenciada por tipo de orden
-        $stockService = app(StockAvailabilityService::class);
-        $insufficientItems = $stockService->insufficientItems($quote->items);
+        // Validacion de stock diferenciada por tipo de orden (misma regla que
+        // QuoteWorkflowService::convertProblems con la intencion ya conocida).
+        $insufficientItems = $this->workflow()->insufficientStock($quote);
 
         if ($orderType === 'direct_sale' && count($insufficientItems) > 0) {
             return response()->json([
@@ -526,11 +500,11 @@ class QuoteController extends Controller
      */
     public function cancel(Quote $quote): JsonResponse
     {
-        if (Gate::denies('quotes.update')) {
+        if (Gate::denies('quotes.cancel')) {
             abort(403, 'No tiene permisos para cancelar cotizaciones');
         }
 
-        if (!$quote->cancel()) {
+        if ($this->workflow()->cancelProblems($quote) || !$quote->cancel()) {
             return response()->json([
                 'error' => 'Esta cotización no se puede cancelar en su estado actual.'
             ], 400);
@@ -548,7 +522,7 @@ class QuoteController extends Controller
      */
     public function duplicate(Quote $quote): JsonResponse
     {
-        if (Gate::denies('quotes.store')) {
+        if (Gate::denies('quotes.duplicate')) {
             abort(403, 'No tiene permisos para duplicar cotizaciones');
         }
 
@@ -1047,18 +1021,14 @@ class QuoteController extends Controller
      */
     private function pricePendingRejection(Quote $quote, string $action): ?JsonResponse
     {
-        $quote->loadMissing('items.product');
-        $pendingItems = $quote->items->filter(fn (QuoteItem $item) => $item->price_pending)->values();
+        $workflow = $this->workflow();
+        $pendingItems = $workflow->pendingPriceItems($quote);
         if ($pendingItems->isEmpty()) {
             return null;
         }
 
-        $name = fn (QuoteItem $item) => $item->product_name ?? $item->product->name ?? ('#' . $item->product_id);
-        $names = $pendingItems->map($name);
-
-        $message = $action === 'aceptar'
-            ? 'Esta cotización tiene productos con precio por confirmar: ' . $names->implode(', ') . '. Podrás aceptarla cuando el vendedor capture el precio.'
-            : 'Captura el precio de venta (mayor a $0) de estos productos antes de convertir: ' . $names->implode(', ') . '.';
+        $name = fn (QuoteItem $item) => $workflow->itemName($item);
+        $message = $workflow->pricePendingMessage($quote, $action);
 
         return response()->json([
             'message' => $message,
@@ -1079,19 +1049,9 @@ class QuoteController extends Controller
         ], 422);
     }
 
-    /**
-     * Check if the authenticated user is the customer who owns this quote.
-     * Allows customers to accept/reject their own quotes without needing quotes.update permission.
-     */
-    private function canCustomerManageQuote(Request $request, Quote $quote): bool
+    private function workflow(): QuoteWorkflowService
     {
-        $user = $request->user('sanctum');
-        if (!$user) {
-            return false;
-        }
-
-        $quote->loadMissing('contact');
-        return $quote->contact && $quote->contact->email === $user->email;
+        return app(QuoteWorkflowService::class);
     }
 
     /**

@@ -90,8 +90,12 @@ class OrderTrackingController extends Controller
      */
     public function updateStatus(Request $request, SalesOrder $order): JsonResponse
     {
-        // Check if user has permission (admin/god)
-        if (!auth()->user()->hasRole(['god', 'admin'])) {
+        // god y admin mueven a cualquier estado, como siempre. Confirmar (pending
+        // o draft -> confirmed) ademas lo puede quien tenga el permiso
+        // sales-orders.confirm (flujo guiado F2, D4: asignable por usuario).
+        $user = auth()->user();
+        $confirming = $request->input('status') === 'confirmed';
+        if (!$user->hasRole(['god', 'admin']) && !($confirming && $user->can('sales-orders.confirm'))) {
             return response()->json([
                 'error' => 'No tiene permisos para esta acción.',
             ], 403);
