@@ -39,7 +39,7 @@ class RemissionController extends Controller
      */
     public function createFromOrder(Request $request): JsonResponse
     {
-        if (Gate::denies('remissions.store')) {
+        if (Gate::denies('sales-orders.remit')) {
             abort(403, 'No tiene permisos para crear remisiones');
         }
 
@@ -101,7 +101,7 @@ class RemissionController extends Controller
      */
     public function createFromOrderFull(Request $request): JsonResponse
     {
-        if (Gate::denies('remissions.store')) {
+        if (Gate::denies('sales-orders.remit')) {
             abort(403, 'No tiene permisos para crear remisiones');
         }
 
@@ -162,14 +162,12 @@ class RemissionController extends Controller
      */
     public function print(Remission $remission, RemissionPDFGenerator $generator): JsonResponse
     {
-        if (Gate::denies('remissions.update')) {
+        if (Gate::denies('remissions.print')) {
             abort(403, 'No tiene permisos para imprimir remisiones');
         }
 
-        if (!$remission->canBePrinted()) {
-            return response()->json([
-                'error' => 'La remisión no se puede imprimir: debe tener partidas y estar en borrador o impresa.'
-            ], 400);
+        if ($problems = $this->remissions()->printProblems($remission)) {
+            return response()->json(['error' => reset($problems)], 400);
         }
 
         $path = $generator->generate($remission);
@@ -190,7 +188,7 @@ class RemissionController extends Controller
      */
     public function deliver(Request $request, Remission $remission): JsonResponse
     {
-        if (Gate::denies('remissions.update')) {
+        if (Gate::denies('remissions.deliver')) {
             abort(403, 'No tiene permisos para marcar remisiones como entregadas');
         }
 
@@ -199,10 +197,8 @@ class RemissionController extends Controller
             'delivery_notes' => 'nullable|string|max:2000',
         ]);
 
-        if (!$remission->canBeDelivered()) {
-            return response()->json([
-                'error' => 'La remisión no se puede marcar como entregada: primero debe imprimirse.'
-            ], 400);
+        if ($problems = $this->remissions()->deliverProblems($remission)) {
+            return response()->json(['error' => reset($problems)], 400);
         }
 
         // Refactor ciclo (Patron 3, C1 + 5b/F3): la entrega DESCUENTA stock real y todo
@@ -352,11 +348,11 @@ class RemissionController extends Controller
      */
     public function cancel(Remission $remission): JsonResponse
     {
-        if (Gate::denies('remissions.update')) {
+        if (Gate::denies('remissions.cancel')) {
             abort(403, 'No tiene permisos para cancelar remisiones');
         }
 
-        if (!$remission->cancel()) {
+        if ($this->remissions()->cancelProblems($remission) || !$remission->cancel()) {
             return response()->json([
                 'error' => 'Esta remisión no se puede cancelar: ya fue entregada.'
             ], 400);

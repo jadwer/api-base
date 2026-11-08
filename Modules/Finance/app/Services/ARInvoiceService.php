@@ -160,6 +160,34 @@ class ARInvoiceService
     }
 
     /**
+     * Lo que falta para "Generar factura" desde el pedido (flujo guiado F2,
+     * D7): estado, cliente activo y credito (CreditManagementService). Si la
+     * cuenta por cobrar ya existe, el credito ya se valido al crearla. Textos
+     * iguales a los del endpoint POST sales-orders/{id}/facturar.
+     *
+     * @return array<string, string>
+     */
+    public function invoiceProblems($salesOrder): array
+    {
+        if (!in_array($salesOrder->status, ['delivered', 'completed'], true)) {
+            return ['status' => "La orden debe estar en estado 'delivered' o 'completed' para facturar. Estado actual: {$salesOrder->status}"];
+        }
+        if ($this->invoiceExistsForOrder($salesOrder->id)) {
+            return [];
+        }
+        if (!$salesOrder->contact || !$salesOrder->contact->isActive()) {
+            return ['contact' => 'El cliente debe estar activo para facturarle.'];
+        }
+        if (config('finance.credit_validation_enabled', true)) {
+            foreach ($this->creditManagementService->creditProblems($salesOrder->contact, (float) $salesOrder->total_amount) as $key => $message) {
+                return ['credit_' . $key => $message];
+            }
+        }
+
+        return [];
+    }
+
+    /**
      * Decision 2026-09-23: una orden pagada en la tienda se factura (AR) al capturar
      * el pago, sin esperar la entrega. Mismo constructor que el camino de entrega;
      * solo cambia la precondicion de estado (cualquiera menos cancelada).

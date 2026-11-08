@@ -726,7 +726,7 @@ class CFDIInvoiceController
         if (!$user) {
             return response()->json(['error' => 'No autenticado.'], 401);
         }
-        if (!$user->can('billing.cfdi-invoices.store')) {
+        if (!$user->can('sales-orders.invoice')) {
             return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
@@ -738,11 +738,10 @@ class CFDIInvoiceController
             'forma_pago.exists' => 'La forma de pago no existe en el catálogo del SAT.',
         ], ['forma_pago' => 'forma de pago']);
 
-        // Validate order status
-        if (!in_array($salesOrder->status, ['delivered', 'completed'])) {
-            return response()->json([
-                'error' => "La orden debe estar en estado 'delivered' o 'completed' para facturar. Estado actual: {$salesOrder->status}",
-            ], 422);
+        // Estado del pedido: misma regla que la guia muestra como bloqueo (invoiceProblems).
+        $problems = app(\Modules\Finance\Services\ARInvoiceService::class)->invoiceProblems($salesOrder);
+        if (isset($problems['status'])) {
+            return response()->json(['error' => $problems['status']], 422);
         }
 
         // R3 (diseno post-refactor): este es el camino de RECUPERACION, no el normal.

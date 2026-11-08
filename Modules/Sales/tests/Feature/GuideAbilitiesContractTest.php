@@ -164,6 +164,79 @@ class GuideAbilitiesContractTest extends TestCase
         );
     }
 
+    public function test_remisionar_imprimir_entregar_y_cancelar_tienen_habilidad_propia(): void
+    {
+        $order = SalesOrder::factory()->create(['status' => 'confirmed']);
+        $this->actingAs($this->userWith('remissions.update'), 'sanctum')
+            ->postJson('/api/v1/remissions/from-order-full', ['sales_order_id' => $order->id])
+            ->assertStatus(403);
+        $this->assertNotSame(403, $this->actingAs($this->userWith('remissions.store'), 'sanctum')
+            ->postJson('/api/v1/remissions/from-order-full', ['sales_order_id' => $order->id])->status());
+
+        $remission = \Modules\Sales\Models\Remission::factory()->create(['sales_order_id' => $order->id, 'status' => 'draft']);
+        foreach (['print', 'deliver', 'cancel'] as $path) {
+            $this->actingAs($this->userWith('remissions.store'), 'sanctum')
+                ->postJson("/api/v1/remissions/{$remission->id}/{$path}")
+                ->assertStatus(403);
+            $this->assertNotSame(403, $this->actingAs($this->userWith('remissions.update'), 'sanctum')
+                ->postJson("/api/v1/remissions/{$remission->id}/{$path}")->status(), $path);
+        }
+    }
+
+    public function test_facturar_desde_el_pedido_usa_su_habilidad_y_sus_problems(): void
+    {
+        $order = SalesOrder::factory()->create(['status' => 'confirmed']);
+        $this->actingAs($this->userWith('sales-orders.update'), 'sanctum')
+            ->postJson("/api/v1/sales-orders/{$order->id}/facturar")
+            ->assertStatus(403);
+
+        $service = app(\Modules\Finance\Services\ARInvoiceService::class);
+        $this->assertSame(
+            $service->invoiceProblems($order)['status'],
+            $this->actingAs($this->userWith('billing.cfdi-invoices.store'), 'sanctum')
+                ->postJson("/api/v1/sales-orders/{$order->id}/facturar")->assertStatus(422)->json('error')
+        );
+    }
+
+    public function test_los_textos_de_problems_de_remisiones_son_los_del_endpoint(): void
+    {
+        $service = app(\Modules\Sales\Services\RemissionService::class);
+        $admin = $this->getAdminUser();
+
+        $pending = SalesOrder::factory()->create(['status' => 'pending']);
+        $this->assertSame(
+            array_values($service->remitProblems($pending))[0],
+            $this->actingAs($admin, 'sanctum')->postJson('/api/v1/remissions/from-order-full', ['sales_order_id' => $pending->id])->json('error')
+        );
+
+        $delivered = \Modules\Sales\Models\Remission::factory()->create(['status' => 'delivered']);
+        $this->assertSame(
+            $service->cancelProblems($delivered)['status'],
+            $this->actingAs($admin, 'sanctum')->postJson("/api/v1/remissions/{$delivered->id}/cancel")->assertStatus(400)->json('error')
+        );
+        $draft = \Modules\Sales\Models\Remission::factory()->create(['status' => 'draft']);
+        $this->assertSame(
+            $service->deliverProblems($draft)['status'],
+            $this->actingAs($admin, 'sanctum')->postJson("/api/v1/remissions/{$draft->id}/deliver")->assertStatus(400)->json('error')
+        );
+    }
+
+    public function test_credit_problems_dice_lo_mismo_que_la_excepcion(): void
+    {
+        $credit = app(\Modules\Finance\Services\CreditManagementService::class);
+        $contact = Contact::factory()->customer()->create(['credit_status' => 'blocked']);
+
+        $problems = $credit->creditProblems($contact, 100);
+        $this->assertSame(['credit_status'], array_keys($problems));
+        try {
+            $credit->validateCustomerCredit($contact, 100);
+            $this->fail('Debio lanzar');
+        } catch (\Exception $e) {
+            $this->assertSame($problems['credit_status'], $e->getMessage());
+        }
+        $this->assertSame([], $credit->creditProblems(Contact::factory()->customer()->create(), 100));
+    }
+
     public function test_los_textos_de_problems_del_pedido_son_los_del_servicio(): void
     {
         $service = app(OrderStatusService::class);

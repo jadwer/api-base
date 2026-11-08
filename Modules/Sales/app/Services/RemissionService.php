@@ -103,11 +103,52 @@ class RemissionService
      */
     public function assertOrderCanBeRemitted(SalesOrder $order): void
     {
-        if (!in_array($order->status, ['confirmed', 'processing', 'shipped'], true)) {
-            throw new RemissionRuleException(
-                "El pedido debe estar confirmado, en proceso o enviado para remisionarse. Estado actual: {$order->status}."
-            );
+        foreach ($this->remitProblems($order, withPending: false) as $message) {
+            throw new RemissionRuleException($message);
         }
+    }
+
+    /**
+     * Lo que falta para remisionar el pedido (flujo guiado F2): estado y, si se
+     * pide, que queden partidas pendientes (sin lo que espera en backorder).
+     *
+     * @return array<string, string>
+     */
+    public function remitProblems(SalesOrder $order, bool $withPending = true): array
+    {
+        // Mismo orden que el endpoint from-order-full: partidas, estado, pendiente.
+        if ($withPending) {
+            $order->loadMissing('items.product');
+            if ($order->items->isEmpty()) {
+                return ['items' => 'No se puede crear una remisión de un pedido sin partidas.'];
+            }
+        }
+        if (!in_array($order->status, ['confirmed', 'processing', 'shipped'], true)) {
+            return ['status' => "El pedido debe estar confirmado, en proceso o enviado para remisionarse. Estado actual: {$order->status}."];
+        }
+        if ($withPending && empty($this->fullLines($order))) {
+            return ['pending' => 'El pedido ya no tiene partidas pendientes por surtir.'];
+        }
+
+        return [];
+    }
+
+    /** @return array<string, string> */
+    public function printProblems(Remission $remission): array
+    {
+        return $remission->canBePrinted() ? [] : ['status' => 'La remisión no se puede imprimir: debe tener partidas y estar en borrador o impresa.'];
+    }
+
+    /** @return array<string, string> */
+    public function deliverProblems(Remission $remission): array
+    {
+        return $remission->canBeDelivered() ? [] : ['status' => 'La remisión no se puede marcar como entregada: primero debe imprimirse.'];
+    }
+
+    /** @return array<string, string> */
+    public function cancelProblems(Remission $remission): array
+    {
+        return $remission->status === 'delivered' ? ['status' => 'Esta remisión no se puede cancelar: ya fue entregada.'] : [];
     }
 
     /**

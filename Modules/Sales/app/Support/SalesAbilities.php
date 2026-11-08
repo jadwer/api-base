@@ -28,6 +28,11 @@ final class SalesAbilities
         'quotes.cancel' => 'quotes.update',
         'quotes.duplicate' => 'quotes.store',
         'sales-orders.cancel' => 'sales-orders.update',
+        'sales-orders.remit' => 'remissions.store',
+        'remissions.print' => 'remissions.update',
+        'remissions.deliver' => 'remissions.update',
+        'remissions.cancel' => 'remissions.update',
+        'sales-orders.invoice' => 'billing.cfdi-invoices.store',
     ];
 
     /** Acciones que son permiso de Spatie (no closure). */

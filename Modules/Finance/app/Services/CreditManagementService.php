@@ -20,22 +20,33 @@ class CreditManagementService
      */
     public function validateCustomerCredit(Contact $contact, float $newAmount): bool
     {
+        foreach ($this->creditProblems($contact, $newAmount) as $message) {
+            throw new \Exception($message);
+        }
+
+        return true;
+    }
+
+    /**
+     * Lo que impide otorgar credito por $newAmount, sin lanzar (flujo guiado
+     * F2, D7): la guia lo muestra como bloqueo de "Generar factura";
+     * validateCustomerCredit lanza el primero. Mismos textos de siempre.
+     *
+     * @return array<string, string>
+     */
+    public function creditProblems(Contact $contact, float $newAmount): array
+    {
         // Only validate if contact is a customer
         if (!$contact->is_customer) {
-            throw new \Exception("El contacto #{$contact->id} no es cliente.");
+            return ['customer' => "El contacto #{$contact->id} no es cliente."];
         }
 
         // FI-M003: Validate credit status (hold/blocked)
         if ($contact->credit_status === 'hold') {
-            throw new \Exception(
-                "El cliente tiene el crédito suspendido. Motivo: {$contact->credit_hold_reason}"
-            );
+            return ['credit_status' => "El cliente tiene el crédito suspendido. Motivo: {$contact->credit_hold_reason}"];
         }
-
         if ($contact->credit_status === 'blocked') {
-            throw new \Exception(
-                "La cuenta del cliente está bloqueada. Contacta a finanzas para resolverlo."
-            );
+            return ['credit_status' => 'La cuenta del cliente está bloqueada. Contacta a finanzas para resolverlo.'];
         }
 
         $currentBalance = $this->getCurrentARBalance($contact);
@@ -43,33 +54,26 @@ class CreditManagementService
 
         // Rule 1: Credit limit validation
         if ($contact->credit_limit && $totalExposure > $contact->credit_limit) {
-            throw new \Exception(
-                "Se excede el límite de crédito. Saldo actual: {$currentBalance}, " .
-                "monto nuevo: {$newAmount}, límite: {$contact->credit_limit}."
-            );
+            return ['credit_limit' => "Se excede el límite de crédito. Saldo actual: {$currentBalance}, " .
+                "monto nuevo: {$newAmount}, límite: {$contact->credit_limit}."];
         }
 
         // Rule 2: Overdue validation - block if has overdue invoices
         $overdueAmount = $this->getOverdueAmount($contact);
         if ($overdueAmount > 0) {
-            throw new \Exception(
-                "El cliente tiene facturas vencidas por {$overdueAmount}. " .
-                "Se requiere un pago antes de otorgar más crédito."
-            );
+            return ['overdue' => "El cliente tiene facturas vencidas por {$overdueAmount}. " .
+                'Se requiere un pago antes de otorgar más crédito.'];
         }
 
         // Rule 3: Payment history validation
         $paymentScore = $this->calculatePaymentScore($contact);
         $minimumScore = 60; // 60% on-time payment rate required
-
         if ($paymentScore < $minimumScore) {
-            throw new \Exception(
-                "Historial de pagos insuficiente: {$paymentScore}% de pagos a tiempo, " .
-                "se requiere {$minimumScore}%."
-            );
+            return ['payment_score' => "Historial de pagos insuficiente: {$paymentScore}% de pagos a tiempo, " .
+                "se requiere {$minimumScore}%."];
         }
 
-        return true;
+        return [];
     }
 
     /**
