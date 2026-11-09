@@ -25,8 +25,11 @@ class CatalogoCuentasMexicanoSeeder extends Seeder
                 unset($accountData['parent_code']);
             }
 
+            // `code` es unico en la tabla: buscar solo por codigo. Buscar tambien por
+            // company_id duplicaba la 2110 cuando la migracion 2026_10_31_130000 ya la
+            // habia creado con otra empresa (migrate:fresh --seed fallaba en MySQL).
             Account::firstOrCreate(
-                ['code' => $accountData['code'], 'company_id' => 1],
+                ['code' => $accountData['code']],
                 $accountData
             );
         }
