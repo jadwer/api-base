@@ -2,8 +2,8 @@
 
 namespace Modules\Billing\JsonApi\V1\PaymentTransactions;
 
-use Illuminate\Http\Request;
 use Illuminate\Auth\Access\Response;
+use Illuminate\Http\Request;
 use LaravelJsonApi\Contracts\Auth\Authorizer;
 
 class PaymentTransactionAuthorizer implements Authorizer
@@ -15,30 +15,37 @@ class PaymentTransactionAuthorizer implements Authorizer
     public function index(Request $request, string $modelClass): bool|Response
     {
         $user = $request->user();
+
         return $user?->can('billing.payment-transactions.index') ?? false;
     }
 
     public function store(Request $request, string $modelClass): bool|Response
     {
         $user = $request->user();
+
         return $user?->can('billing.payment-transactions.store') ?? false;
     }
 
     public function show(Request $request, object $model): bool|Response
     {
         $user = $request->user();
-        return $user?->can('billing.payment-transactions.show') ?? false;
+
+        // El cliente del portal solo ve las transacciones de SUS compras (regla 8, 2026-11-09).
+        return ($user?->can('billing.payment-transactions.show') ?? false)
+            && \Modules\Billing\Support\PaymentTransactionOwnership::visible($user, $model);
     }
 
     public function update(Request $request, object $model): bool|Response
     {
         $user = $request->user();
+
         return $user?->can('billing.payment-transactions.update') ?? false;
     }
 
     public function destroy(Request $request, object $model): bool|Response
     {
         $user = $request->user();
+
         return $user?->can('billing.payment-transactions.destroy') ?? false;
     }
 
