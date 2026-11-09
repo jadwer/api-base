@@ -2,10 +2,10 @@
 
 namespace Modules\Billing\Tests\Feature;
 
-use Tests\TestCase;
 use Modules\Billing\Models\PaymentTransaction;
 use Modules\Ecommerce\Models\CheckoutSession;
 use Modules\Sales\Models\SalesOrder;
+use Tests\TestCase;
 
 class PaymentTransactionShowTest extends TestCase
 {
@@ -25,14 +25,14 @@ class PaymentTransactionShowTest extends TestCase
 
         $response = $this->jsonApi()
             ->expects('payment-transactions')
-            ->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
-            ->get('/api/v1/payment-transactions/' . $transaction->id);
+            ->withHeader('Authorization', 'Bearer '.$user->createToken('test')->plainTextToken)
+            ->get('/api/v1/payment-transactions/'.$transaction->id);
 
         $response->assertSuccessful()
             ->assertJson([
                 'data' => [
                     'type' => 'payment-transactions',
-                    'id' => (string)$transaction->id,
+                    'id' => (string) $transaction->id,
                     'attributes' => [
                         'gateway' => 'stripe',
                         'amount' => 1500.00,
@@ -54,8 +54,8 @@ class PaymentTransactionShowTest extends TestCase
 
         $response = $this->jsonApi()
             ->expects('payment-transactions')
-            ->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
-            ->get('/api/v1/payment-transactions/' . $transaction->id);
+            ->withHeader('Authorization', 'Bearer '.$user->createToken('test')->plainTextToken)
+            ->get('/api/v1/payment-transactions/'.$transaction->id);
 
         $response->assertSuccessful();
     }
@@ -66,14 +66,29 @@ class PaymentTransactionShowTest extends TestCase
     public function test_customer_can_view_payment_transaction(): void
     {
         $user = $this->getCustomerUser();
-        $transaction = PaymentTransaction::factory()->create();
+        // El cliente del portal solo ve las transacciones de SUS compras (2026-11-09).
+        $contact = \Modules\Contacts\Models\Contact::factory()->customer()->create(['email' => $user->email]);
+        $order = SalesOrder::factory()->create(['contact_id' => $contact->id]);
+        $transaction = PaymentTransaction::factory()->create(['sales_order_id' => $order->id, 'checkout_session_id' => null]);
 
         $response = $this->jsonApi()
             ->expects('payment-transactions')
-            ->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
-            ->get('/api/v1/payment-transactions/' . $transaction->id);
+            ->withHeader('Authorization', 'Bearer '.$user->createToken('test')->plainTextToken)
+            ->get('/api/v1/payment-transactions/'.$transaction->id);
 
         $response->assertSuccessful();
+    }
+
+    public function test_customer_cannot_view_another_customers_payment_transaction(): void
+    {
+        $user = $this->getCustomerUser();
+        $transaction = PaymentTransaction::factory()->create(['checkout_session_id' => null]);
+
+        $this->jsonApi()
+            ->expects('payment-transactions')
+            ->withHeader('Authorization', 'Bearer '.$user->createToken('test')->plainTextToken)
+            ->get('/api/v1/payment-transactions/'.$transaction->id)
+            ->assertStatus(403);
     }
 
     /**
@@ -85,7 +100,7 @@ class PaymentTransactionShowTest extends TestCase
 
         $response = $this->jsonApi()
             ->expects('payment-transactions')
-            ->get('/api/v1/payment-transactions/' . $transaction->id);
+            ->get('/api/v1/payment-transactions/'.$transaction->id);
 
         $response->assertStatus(401);
     }
@@ -111,8 +126,8 @@ class PaymentTransactionShowTest extends TestCase
 
         $response = $this->jsonApi()
             ->expects('payment-transactions')
-            ->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
-            ->get('/api/v1/payment-transactions/' . $transaction->id);
+            ->withHeader('Authorization', 'Bearer '.$user->createToken('test')->plainTextToken)
+            ->get('/api/v1/payment-transactions/'.$transaction->id);
 
         $response->assertSuccessful()
             ->assertJson([
@@ -148,9 +163,9 @@ class PaymentTransactionShowTest extends TestCase
 
         $response = $this->jsonApi()
             ->expects('payment-transactions')
-            ->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
+            ->withHeader('Authorization', 'Bearer '.$user->createToken('test')->plainTextToken)
             ->includePaths('checkoutSession')
-            ->get('/api/v1/payment-transactions/' . $transaction->id);
+            ->get('/api/v1/payment-transactions/'.$transaction->id);
 
         $response->assertSuccessful()
             ->assertJsonStructure(['included']);
@@ -158,7 +173,7 @@ class PaymentTransactionShowTest extends TestCase
         $included = $response->json('included');
         $checkoutSessionIncluded = collect($included)->firstWhere('type', 'checkout-sessions');
         $this->assertNotNull($checkoutSessionIncluded);
-        $this->assertEquals((string)$checkoutSession->id, $checkoutSessionIncluded['id']);
+        $this->assertEquals((string) $checkoutSession->id, $checkoutSessionIncluded['id']);
     }
 
     /**
@@ -174,9 +189,9 @@ class PaymentTransactionShowTest extends TestCase
 
         $response = $this->jsonApi()
             ->expects('payment-transactions')
-            ->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
+            ->withHeader('Authorization', 'Bearer '.$user->createToken('test')->plainTextToken)
             ->includePaths('salesOrder')
-            ->get('/api/v1/payment-transactions/' . $transaction->id);
+            ->get('/api/v1/payment-transactions/'.$transaction->id);
 
         $response->assertSuccessful()
             ->assertJsonStructure(['included']);
@@ -184,7 +199,7 @@ class PaymentTransactionShowTest extends TestCase
         $included = $response->json('included');
         $salesOrderIncluded = collect($included)->firstWhere('type', 'sales-orders');
         $this->assertNotNull($salesOrderIncluded);
-        $this->assertEquals((string)$salesOrder->id, $salesOrderIncluded['id']);
+        $this->assertEquals((string) $salesOrder->id, $salesOrderIncluded['id']);
     }
 
     /**
@@ -196,7 +211,7 @@ class PaymentTransactionShowTest extends TestCase
 
         $response = $this->jsonApi()
             ->expects('payment-transactions')
-            ->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
+            ->withHeader('Authorization', 'Bearer '.$user->createToken('test')->plainTextToken)
             ->get('/api/v1/payment-transactions/99999');
 
         $response->assertStatus(404);
@@ -215,8 +230,8 @@ class PaymentTransactionShowTest extends TestCase
 
         $response = $this->jsonApi()
             ->expects('payment-transactions')
-            ->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
-            ->get('/api/v1/payment-transactions/' . $transaction->id);
+            ->withHeader('Authorization', 'Bearer '.$user->createToken('test')->plainTextToken)
+            ->get('/api/v1/payment-transactions/'.$transaction->id);
 
         $response->assertSuccessful()
             ->assertJson([
@@ -239,8 +254,8 @@ class PaymentTransactionShowTest extends TestCase
 
         $response = $this->jsonApi()
             ->expects('payment-transactions')
-            ->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
-            ->get('/api/v1/payment-transactions/' . $transaction->id);
+            ->withHeader('Authorization', 'Bearer '.$user->createToken('test')->plainTextToken)
+            ->get('/api/v1/payment-transactions/'.$transaction->id);
 
         $response->assertSuccessful()
             ->assertJson([

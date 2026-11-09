@@ -41,10 +41,10 @@ final class PaymentTransactionOwnership
         if (UserAccess::seesAll($user, 'billing.payment-transactions.index')) {
             return true;
         }
-        if ($transaction->checkoutSession && (int) $transaction->checkoutSession->user_id === (int) $user->getAuthIdentifier()) {
+        if ($transaction->checkoutSession && (int) $transaction->checkoutSession->getAttribute('user_id') === (int) $user->getAuthIdentifier()) {
             return true;
         }
-        $contactId = $transaction->salesOrder?->contact_id;
+        $contactId = $transaction->salesOrder?->getAttribute('contact_id');
 
         return $contactId !== null && Contact::where('email', $user->email)->where('id', $contactId)->exists();
     }
