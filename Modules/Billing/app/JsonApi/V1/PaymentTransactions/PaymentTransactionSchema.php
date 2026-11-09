@@ -7,10 +7,10 @@ use LaravelJsonApi\Eloquent\Fields\ArrayHash;
 use LaravelJsonApi\Eloquent\Fields\DateTime;
 use LaravelJsonApi\Eloquent\Fields\ID;
 use LaravelJsonApi\Eloquent\Fields\Number;
-use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
-use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
+use LaravelJsonApi\Eloquent\Fields\Str;
 use LaravelJsonApi\Eloquent\Filters\Where;
+use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
 use Modules\Billing\Models\PaymentTransaction;
@@ -96,6 +96,12 @@ class PaymentTransactionSchema extends Schema
     /**
      * MANDATORY: Define pagination.
      */
+    /** Alcance del listado: el personal todo, el cliente del portal solo sus compras (PaymentTransactionOwnership). */
+    public function indexQuery(?\Illuminate\Http\Request $request, \Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
+    {
+        return \Modules\Billing\Support\PaymentTransactionOwnership::scope($request?->user('sanctum'), $query);
+    }
+
     public function pagination(): ?Paginator
     {
         return PagePagination::make();
