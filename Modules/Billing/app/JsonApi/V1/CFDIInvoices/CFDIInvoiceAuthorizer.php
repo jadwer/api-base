@@ -15,7 +15,7 @@ class CFDIInvoiceAuthorizer implements Authorizer
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return Response::deny('No autenticado.', 401);
         }
 
@@ -32,7 +32,7 @@ class CFDIInvoiceAuthorizer implements Authorizer
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return Response::deny('No autenticado.', 401);
         }
 
@@ -47,14 +47,15 @@ class CFDIInvoiceAuthorizer implements Authorizer
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return Response::deny('No autenticado.', 401);
         }
 
         // Admin, Tech, and Customers can view invoices
-        return $user->hasAnyPermission([
-            'billing.cfdi-invoices.show',
-        ]);
+        // El cliente del portal solo ve SUS CFDI (misma regla que indexQuery);
+        // sin esto, cambiar el id leia facturas ajenas (regla 8, 2026-11-09).
+        return $user->hasAnyPermission(['billing.cfdi-invoices.show'])
+            && \Modules\User\Support\UserAccess::seesDocument($user, 'billing.cfdi-invoices.index', $model->contact_id);
     }
 
     /**
@@ -64,7 +65,7 @@ class CFDIInvoiceAuthorizer implements Authorizer
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return Response::deny('No autenticado.', 401);
         }
 
@@ -79,7 +80,7 @@ class CFDIInvoiceAuthorizer implements Authorizer
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return Response::deny('No autenticado.', 401);
         }
 
@@ -94,13 +95,14 @@ class CFDIInvoiceAuthorizer implements Authorizer
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return Response::deny('No autenticado.', 401);
         }
 
-        return $user->hasAnyPermission([
-            'billing.cfdi-invoices.show',
-        ]);
+        // El cliente del portal solo ve SUS CFDI (misma regla que indexQuery);
+        // sin esto, cambiar el id leia facturas ajenas (regla 8, 2026-11-09).
+        return $user->hasAnyPermission(['billing.cfdi-invoices.show'])
+            && \Modules\User\Support\UserAccess::seesDocument($user, 'billing.cfdi-invoices.index', $model->contact_id);
     }
 
     /**
@@ -110,13 +112,14 @@ class CFDIInvoiceAuthorizer implements Authorizer
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return Response::deny('No autenticado.', 401);
         }
 
-        return $user->hasAnyPermission([
-            'billing.cfdi-invoices.show',
-        ]);
+        // El cliente del portal solo ve SUS CFDI (misma regla que indexQuery);
+        // sin esto, cambiar el id leia facturas ajenas (regla 8, 2026-11-09).
+        return $user->hasAnyPermission(['billing.cfdi-invoices.show'])
+            && \Modules\User\Support\UserAccess::seesDocument($user, 'billing.cfdi-invoices.index', $model->contact_id);
     }
 
     /**

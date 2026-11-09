@@ -2,48 +2,43 @@
 
 namespace Modules\Billing\Http\Controllers\Api\V1;
 
-use LaravelJsonApi\Laravel\Http\Controllers\Actions;
-use Modules\Billing\JsonApi\V1\CfdiInvoices\CFDIInvoiceSchema;
-use Modules\Billing\Models\CFDIInvoice;
-use Modules\Billing\Services\CFDI\CFDIXMLGenerator;
-use Modules\Billing\Services\CFDI\CFDIPDFGenerator;
-use Modules\Billing\Services\CFDI\CFDIStampingService;
-use Modules\Billing\Services\CFDI\PrefacturaPDFGenerator;
-use Modules\Billing\Services\CFDIAutomationService;
-use Modules\Billing\Services\CFDI\REPService;
-use Modules\Finance\Models\Payment;
-use Modules\Finance\Models\PaymentApplication;
-use Modules\Sales\Models\SalesOrder;
-use Modules\Finance\Models\ARInvoice;
-use Modules\Billing\Exceptions\PacException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\Http\Response;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
+use LaravelJsonApi\Laravel\Http\Controllers\Actions;
+use Modules\Billing\Exceptions\PacException;
+use Modules\Billing\Models\CFDIInvoice;
+use Modules\Billing\Services\CFDI\CFDIPDFGenerator;
+use Modules\Billing\Services\CFDI\CFDIStampingService;
+use Modules\Billing\Services\CFDI\CFDIXMLGenerator;
+use Modules\Billing\Services\CFDI\PrefacturaPDFGenerator;
+use Modules\Billing\Services\CFDI\REPService;
+use Modules\Billing\Services\CFDIAutomationService;
+use Modules\Finance\Models\ARInvoice;
+use Modules\Finance\Models\Payment;
+use Modules\Finance\Models\PaymentApplication;
 use Modules\MailerManager\Models\SystemEmail;
+use Modules\Sales\Models\SalesOrder;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CFDIInvoiceController
 {
+    use Actions\Destroy;
     use Actions\FetchMany;
     use Actions\FetchOne;
-    use Actions\Store;
-    use Actions\Update;
-    use Actions\Destroy;
     use Actions\FetchRelated;
     use Actions\FetchRelationship;
+    use Actions\Store;
+    use Actions\Update;
 
     /**
      * Generate CFDI XML for an invoice
-     *
-     * @param CFDIInvoice $cfdiInvoice
-     * @param CFDIXMLGenerator $xmlGenerator
-     * @return JsonResponse
      */
     public function generateXml(CFDIInvoice $cfdiInvoice, CFDIXMLGenerator $xmlGenerator): JsonResponse
     {
@@ -51,6 +46,7 @@ class CFDIInvoiceController
         if (Gate::denies('billing.cfdi-invoices.generate-xml')) {
             abort(403, 'No tiene permisos para generar XML CFDI');
         }
+        $this->assertSeesInvoice($cfdiInvoice);
 
         try {
             $xml = $xmlGenerator->generate($cfdiInvoice);
@@ -75,10 +71,6 @@ class CFDIInvoiceController
 
     /**
      * Generate CFDI PDF for an invoice
-     *
-     * @param CFDIInvoice $cfdiInvoice
-     * @param CFDIPDFGenerator $pdfGenerator
-     * @return JsonResponse
      */
     public function generatePdf(CFDIInvoice $cfdiInvoice, CFDIPDFGenerator $pdfGenerator): JsonResponse
     {
@@ -86,6 +78,7 @@ class CFDIInvoiceController
         if (Gate::denies('billing.cfdi-invoices.generate-pdf')) {
             abort(403, 'No tiene permisos para generar PDF CFDI');
         }
+        $this->assertSeesInvoice($cfdiInvoice);
 
         try {
             $pdfPath = $pdfGenerator->generate($cfdiInvoice);
@@ -93,7 +86,7 @@ class CFDIInvoiceController
             return response()->json([
                 'message' => 'PDF CFDI generado correctamente',
                 'pdf_path' => $cfdiInvoice->pdf_path,
-                'pdf_url' => asset('storage/' . $cfdiInvoice->pdf_path),
+                'pdf_url' => asset('storage/'.$cfdiInvoice->pdf_path),
                 'invoice_id' => $cfdiInvoice->id,
             ]);
         } catch (\Exception $e) {
@@ -106,10 +99,6 @@ class CFDIInvoiceController
 
     /**
      * Download CFDI PDF
-     *
-     * @param CFDIInvoice $cfdiInvoice
-     * @param CFDIPDFGenerator $pdfGenerator
-     * @return StreamedResponse
      */
     public function downloadPdf(CFDIInvoice $cfdiInvoice, CFDIPDFGenerator $pdfGenerator): StreamedResponse
     {
@@ -117,6 +106,7 @@ class CFDIInvoiceController
         if (Gate::denies('billing.cfdi-invoices.download-pdf')) {
             abort(403, 'No tiene permisos para descargar PDF CFDI');
         }
+        $this->assertSeesInvoice($cfdiInvoice);
 
         try {
             return $pdfGenerator->download($cfdiInvoice);
@@ -128,10 +118,6 @@ class CFDIInvoiceController
 
     /**
      * Preview CFDI PDF (stream inline)
-     *
-     * @param CFDIInvoice $cfdiInvoice
-     * @param CFDIPDFGenerator $pdfGenerator
-     * @return BinaryFileResponse
      */
     public function previewPdf(CFDIInvoice $cfdiInvoice, CFDIPDFGenerator $pdfGenerator): BinaryFileResponse
     {
@@ -139,6 +125,7 @@ class CFDIInvoiceController
         if (Gate::denies('billing.cfdi-invoices.preview-pdf')) {
             abort(403, 'No tiene permisos para previsualizar PDF CFDI');
         }
+        $this->assertSeesInvoice($cfdiInvoice);
 
         try {
             return $pdfGenerator->preview($cfdiInvoice);
@@ -150,9 +137,6 @@ class CFDIInvoiceController
 
     /**
      * Download CFDI XML
-     *
-     * @param CFDIInvoice $cfdiInvoice
-     * @return Response
      */
     public function downloadXml(CFDIInvoice $cfdiInvoice): Response
     {
@@ -160,8 +144,9 @@ class CFDIInvoiceController
         if (Gate::denies('billing.cfdi-invoices.download-xml')) {
             abort(403, 'No tiene permisos para descargar XML CFDI');
         }
+        $this->assertSeesInvoice($cfdiInvoice);
 
-        if (!$cfdiInvoice->xml_timbrado && !$cfdiInvoice->xml_original) {
+        if (! $cfdiInvoice->xml_timbrado && ! $cfdiInvoice->xml_original) {
             abort(404, 'No hay XML disponible para esta factura');
         }
 
@@ -171,15 +156,12 @@ class CFDIInvoiceController
 
         return response($xml, 200, [
             'Content-Type' => 'application/xml',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
         ]);
     }
 
     /**
      * Generate filename for XML download
-     *
-     * @param CFDIInvoice $invoice
-     * @return string
      */
     protected function generateXmlFilename(CFDIInvoice $invoice): string
     {
@@ -195,11 +177,6 @@ class CFDIInvoiceController
 
     /**
      * Stamp CFDI with PAC
-     *
-     * @param CFDIInvoice $cfdiInvoice
-     * @param Request $request
-     * @param CFDIStampingService $stampingService
-     * @return JsonResponse
      */
     public function stamp(
         CFDIInvoice $cfdiInvoice,
@@ -210,6 +187,7 @@ class CFDIInvoiceController
         if (Gate::denies('billing.cfdi-invoices.stamp')) {
             abort(403, 'No tiene permisos para timbrar CFDI');
         }
+        $this->assertSeesInvoice($cfdiInvoice);
 
         try {
             $regenerateXml = $request->boolean('regenerate_xml', false);
@@ -241,11 +219,6 @@ class CFDIInvoiceController
 
     /**
      * Cancel CFDI with PAC
-     *
-     * @param CFDIInvoice $cfdiInvoice
-     * @param Request $request
-     * @param CFDIStampingService $stampingService
-     * @return JsonResponse
      */
     public function cancel(
         CFDIInvoice $cfdiInvoice,
@@ -256,6 +229,7 @@ class CFDIInvoiceController
         if (Gate::denies('billing.cfdi-invoices.cancel')) {
             abort(403, 'No tiene permisos para cancelar CFDI');
         }
+        $this->assertSeesInvoice($cfdiInvoice);
 
         // Validate request
         $validated = $request->validate([
@@ -277,7 +251,7 @@ class CFDIInvoiceController
 
                 $invoiceSustitucion = CFDIInvoice::where('uuid', $validated['uuid_sustitucion'])->first();
 
-                if (!$invoiceSustitucion) {
+                if (! $invoiceSustitucion) {
                     return response()->json([
                         'message' => 'No se encontró el CFDI de sustitución',
                     ], 404);
@@ -318,10 +292,6 @@ class CFDIInvoiceController
 
     /**
      * Validate CFDI with SAT
-     *
-     * @param CFDIInvoice $cfdiInvoice
-     * @param CFDIStampingService $stampingService
-     * @return JsonResponse
      */
     public function validateSAT(
         CFDIInvoice $cfdiInvoice,
@@ -331,6 +301,7 @@ class CFDIInvoiceController
         if (Gate::denies('billing.cfdi-invoices.validate')) {
             abort(403, 'No tiene permisos para validar CFDI');
         }
+        $this->assertSeesInvoice($cfdiInvoice);
 
         try {
             $validationData = $stampingService->validateWithSAT($cfdiInvoice);
@@ -354,10 +325,6 @@ class CFDIInvoiceController
 
     /**
      * Get cancellation status from PAC
-     *
-     * @param CFDIInvoice $cfdiInvoice
-     * @param CFDIStampingService $stampingService
-     * @return JsonResponse
      */
     public function cancellationStatus(
         CFDIInvoice $cfdiInvoice,
@@ -367,6 +334,7 @@ class CFDIInvoiceController
         if (Gate::denies('billing.cfdi-invoices.cancellation-status')) {
             abort(403, 'No tiene permisos para consultar estatus de cancelación');
         }
+        $this->assertSeesInvoice($cfdiInvoice);
 
         try {
             // Con cancelacion en proceso, la consulta tambien la resuelve
@@ -407,11 +375,6 @@ class CFDIInvoiceController
 
     /**
      * Send CFDI by email
-     *
-     * @param CFDIInvoice $cfdiInvoice
-     * @param Request $request
-     * @param CFDIPDFGenerator $pdfGenerator
-     * @return JsonResponse
      */
     public function sendEmail(
         CFDIInvoice $cfdiInvoice,
@@ -422,6 +385,7 @@ class CFDIInvoiceController
         if (Gate::denies('billing.cfdi-invoices.send-email')) {
             abort(403, 'No tiene permisos para enviar CFDI por correo');
         }
+        $this->assertSeesInvoice($cfdiInvoice);
 
         // Validate request
         $validated = $request->validate([
@@ -431,7 +395,7 @@ class CFDIInvoiceController
             'include_xml' => ['nullable', 'boolean'],
         ]);
 
-        if (!SystemEmail::isEnabled('billing.cfdi_invoice_sent')) {
+        if (! SystemEmail::isEnabled('billing.cfdi_invoice_sent')) {
             return response()->json([
                 'message' => 'El envío de CFDI por correo está deshabilitado',
             ], 422);
@@ -439,13 +403,13 @@ class CFDIInvoiceController
 
         try {
             // Ensure PDF exists
-            if (!$cfdiInvoice->pdf_path || !Storage::disk('public')->exists($cfdiInvoice->pdf_path)) {
+            if (! $cfdiInvoice->pdf_path || ! Storage::disk('public')->exists($cfdiInvoice->pdf_path)) {
                 $pdfGenerator->generate($cfdiInvoice);
                 $cfdiInvoice->refresh();
             }
 
             $email = $validated['email'];
-            $subject = $validated['subject'] ?? 'CFDI ' . $cfdiInvoice->getFolioCompleto();
+            $subject = $validated['subject'] ?? 'CFDI '.$cfdiInvoice->getFolioCompleto();
             $body = $validated['message'] ?? $this->getDefaultEmailBody($cfdiInvoice);
             $includeXml = $validated['include_xml'] ?? true;
 
@@ -510,29 +474,22 @@ class CFDIInvoiceController
 
     /**
      * Generate default email body for CFDI
-     *
-     * @param CFDIInvoice $invoice
-     * @return string
      */
     protected function getDefaultEmailBody(CFDIInvoice $invoice): string
     {
         $folio = $invoice->getFolioCompleto();
         $total = number_format($invoice->total / 100, 2);
 
-        return "Estimado cliente,\n\n" .
-            "Adjunto encontrará su Comprobante Fiscal Digital por Internet (CFDI) con los siguientes datos:\n\n" .
-            "Folio: {$folio}\n" .
-            "UUID: " . ($invoice->uuid ?? 'Pendiente de timbrado') . "\n" .
-            "Total: \${$total} {$invoice->moneda}\n\n" .
-            "Gracias por su preferencia.";
+        return "Estimado cliente,\n\n".
+            "Adjunto encontrará su Comprobante Fiscal Digital por Internet (CFDI) con los siguientes datos:\n\n".
+            "Folio: {$folio}\n".
+            'UUID: '.($invoice->uuid ?? 'Pendiente de timbrado')."\n".
+            "Total: \${$total} {$invoice->moneda}\n\n".
+            'Gracias por su preferencia.';
     }
 
     /**
      * Wrap email body in HTML
-     *
-     * @param string $body
-     * @param CFDIInvoice $invoice
-     * @return string
      */
     protected function wrapEmailBody(string $body, CFDIInvoice $invoice): string
     {
@@ -566,9 +523,6 @@ class CFDIInvoiceController
 
     /**
      * Generate filename for PDF
-     *
-     * @param CFDIInvoice $invoice
-     * @return string
      */
     protected function generatePdfFilename(CFDIInvoice $invoice): string
     {
@@ -587,10 +541,6 @@ class CFDIInvoiceController
      *
      * Prefactura is a preview PDF with "SIN VALIDEZ FISCAL" watermark
      * that allows reviewing the invoice before stamping with PAC.
-     *
-     * @param CFDIInvoice $cfdiInvoice
-     * @param PrefacturaPDFGenerator $generator
-     * @return JsonResponse
      */
     public function prefactura(
         CFDIInvoice $cfdiInvoice,
@@ -599,6 +549,7 @@ class CFDIInvoiceController
         if (Gate::denies('billing.cfdi-invoices.prefactura')) {
             abort(403, 'No tiene permisos para generar prefactura');
         }
+        $this->assertSeesInvoice($cfdiInvoice);
 
         try {
             $path = $generator->generate($cfdiInvoice);
@@ -623,8 +574,6 @@ class CFDIInvoiceController
     /**
      * Download Prefactura PDF
      *
-     * @param CFDIInvoice $cfdiInvoice
-     * @param PrefacturaPDFGenerator $generator
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function downloadPrefactura(
@@ -634,6 +583,7 @@ class CFDIInvoiceController
         if (Gate::denies('billing.cfdi-invoices.prefactura')) {
             abort(403, 'No tiene permisos para descargar prefactura');
         }
+        $this->assertSeesInvoice($cfdiInvoice);
 
         try {
             return $generator->download($cfdiInvoice);
@@ -646,8 +596,6 @@ class CFDIInvoiceController
     /**
      * Preview Prefactura PDF inline
      *
-     * @param CFDIInvoice $cfdiInvoice
-     * @param PrefacturaPDFGenerator $generator
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function previewPrefactura(
@@ -657,6 +605,7 @@ class CFDIInvoiceController
         if (Gate::denies('billing.cfdi-invoices.prefactura')) {
             abort(403, 'No tiene permisos para previsualizar prefactura');
         }
+        $this->assertSeesInvoice($cfdiInvoice);
 
         try {
             return $generator->preview($cfdiInvoice);
@@ -672,9 +621,6 @@ class CFDIInvoiceController
      * This allows previewing how an invoice would look before creating
      * the actual CFDI record. Useful for customer review before billing.
      *
-     * @param SalesOrder $salesOrder
-     * @param Request $request
-     * @param PrefacturaPDFGenerator $generator
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function prefacturaFromOrder(
@@ -723,7 +669,7 @@ class CFDIInvoiceController
         CFDIAutomationService $automationService
     ): JsonResponse {
         $user = $request->user('sanctum');
-        if (!$user) {
+        if (! $user) {
             return response()->json(['error' => 'No autenticado.'], 401);
         }
         if (!$user->can('sales-orders.invoice')) {
@@ -751,13 +697,13 @@ class CFDIInvoiceController
         // (ARInvoiceService::createFromSalesOrder), sin duplicar logica. La orden ya
         // se valido delivered/completed.
         $arInvoice = ARInvoice::where('sales_order_id', $salesOrder->id)->first();
-        if (!$arInvoice) {
+        if (! $arInvoice) {
             try {
                 $arInvoice = app(\Modules\Finance\Services\ARInvoiceService::class)
                     ->createFromSalesOrder($salesOrder);
             } catch (\Throwable $e) {
                 return response()->json([
-                    'error' => 'No se pudo generar la factura de cuentas por cobrar (ARInvoice) de la orden: ' . $e->getMessage(),
+                    'error' => 'No se pudo generar la factura de cuentas por cobrar (ARInvoice) de la orden: '.$e->getMessage(),
                 ], 422);
             }
         }
@@ -809,8 +755,9 @@ class CFDIInvoiceController
                 'ar_invoice_id' => $arInvoice->id,
                 'error' => $e->getMessage(),
             ]);
+
             return response()->json([
-                'error' => 'Error al generar CFDI: ' . $e->getMessage(),
+                'error' => 'Error al generar CFDI: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -831,10 +778,10 @@ class CFDIInvoiceController
         REPService $repService
     ): JsonResponse {
         $user = $request->user('sanctum');
-        if (!$user) {
+        if (! $user) {
             return response()->json(['error' => 'No autenticado.'], 401);
         }
-        if (!$user->can('billing.cfdi-invoices.payment-complement')) {
+        if (! $user->can('billing.cfdi-invoices.payment-complement')) {
             return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
         }
 
@@ -849,7 +796,7 @@ class CFDIInvoiceController
                     ->where('ar_invoice_id', $invoice->id)
                     ->where('is_active', true)
                     ->exists();
-            if (!$belongs) {
+            if (! $belongs) {
                 return response()->json([
                     'error' => 'El pago indicado no está aplicado a esta factura.',
                 ], 422);
@@ -859,7 +806,7 @@ class CFDIInvoiceController
                 ->where('is_active', true)
                 ->orderByDesc('id')
                 ->first();
-            if (!$application) {
+            if (! $application) {
                 return response()->json([
                     'error' => 'La factura no tiene pagos aplicados para complementar.',
                 ], 422);
@@ -875,7 +822,7 @@ class CFDIInvoiceController
         try {
             $rep = $repService->generateFromPayment($payment);
 
-            if (!$rep) {
+            if (! $rep) {
                 return response()->json([
                     'error' => 'No aplica complemento de pago: la factura debe ser PPD y estar timbrada (con UUID).',
                 ], 422);
@@ -903,7 +850,7 @@ class CFDIInvoiceController
             return response()->json(['error' => $e->getMessage()], 422);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Error al generar complemento de pago: ' . $this->safeError($e, 'payment-complement'),
+                'error' => 'Error al generar complemento de pago: '.$this->safeError($e, 'payment-complement'),
             ], 500);
         }
     }
@@ -920,5 +867,17 @@ class CFDIInvoiceController
         ]);
 
         return 'Error interno del servidor';
+    }
+
+    /**
+     * El cliente del portal solo alcanza SUS CFDI (misma regla que el Authorizer y
+     * que indexQuery): descargas, vista previa, prefactura, estatus y envio
+     * respondian a cualquier id con solo tener el permiso (regla 8, 2026-11-09).
+     */
+    private function assertSeesInvoice(CFDIInvoice $cfdiInvoice): void
+    {
+        if (! \Modules\User\Support\UserAccess::seesDocument(auth()->user(), 'billing.cfdi-invoices.index', $cfdiInvoice->contact_id)) {
+            abort(403, 'No tiene acceso a este CFDI.');
+        }
     }
 }

@@ -149,17 +149,31 @@ class CFDIInvoiceGeneratePdfTest extends TestCase
         // Customer has billing.cfdi-invoices.generate-pdf permission per PermissionsSeeder
         $user = $this->getCustomerUser();
 
+        // El cliente del portal solo alcanza SUS CFDI: la factura es de su contacto.
+        $contact = \Modules\Contacts\Models\Contact::factory()->customer()->create(['email' => $user->email]);
         $settings = CompanySetting::factory()->create(['is_active' => true]);
         $invoice = CFDIInvoice::factory()
             ->has(CFDIItem::factory()->count(1), 'items')
             ->create([
                 'company_setting_id' => $settings->id,
+                'contact_id' => $contact->id,
             ]);
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
             ->postJson('/api/v1/cfdi-invoices/' . $invoice->id . '/generate-pdf');
 
         $response->assertSuccessful();
+    }
+
+    public function test_customer_cannot_generate_pdf_of_another_customer()
+    {
+        $user = $this->getCustomerUser();
+        $settings = CompanySetting::factory()->create(['is_active' => true]);
+        $invoice = CFDIInvoice::factory()->has(CFDIItem::factory()->count(1), 'items')->create(['company_setting_id' => $settings->id]);
+
+        $this->withHeader('Authorization', 'Bearer ' . $user->createToken('test')->plainTextToken)
+            ->postJson('/api/v1/cfdi-invoices/' . $invoice->id . '/generate-pdf')
+            ->assertStatus(403);
     }
 
     public function test_guest_cannot_generate_pdf()
