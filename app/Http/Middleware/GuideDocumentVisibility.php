@@ -17,8 +17,8 @@ use Symfony\Component\HttpFoundation\Response;
  * Aqui se aplica la regla de la casa, UserAccess::seesDocument, antes de que
  * la guia responda: lo ajeno contesta 404, igual que lo que no existe.
  *
- * Va en el grupo `api` y solo actua en la ruta de la guia. Cuando atomo/guide
- * exponga `atomo-guide.middleware` (0.11), se mueve a esa configuracion.
+ * Se registra en `config/atomo-guide.php` (atomo-guide.middleware, 0.11); el
+ * filtro por URI se conserva por si alguien lo monta en el grupo `api`.
  */
 class GuideDocumentVisibility
 {

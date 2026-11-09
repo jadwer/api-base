@@ -4,11 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3826cdcd4e3a63bc6bc17296a3da16cb",
+    "content-hash": "2f7dd2b0b3d23729633cb06a21512efb",
     "packages": [
         {
             "name": "atomo/core",
-            "version": "0.10.2",
+            "version": "0.11.0",
             "source": {
                 "type": "",
                 "url": "",
@@ -16,8 +16,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://git.atomosoluciones.com/api/packages/atomo/composer/files/atomo%2Fcore/0.10.2/atomo-core.0.10.2.zip",
-                "shasum": "27985c35be0004c83abff7bf3ff05cf035c97566"
+                "url": "https://git.atomosoluciones.com/api/packages/atomo/composer/files/atomo%2Fcore/0.11.0/atomo-core.0.11.0.zip",
+                "shasum": "7a193399a04876806dc0e6642726f8d65d25acef"
             },
             "require": {
                 "brick/math": "^0.14|^1.0",
@@ -64,11 +64,11 @@
                 "proprietary"
             ],
             "description": "Core middleware, helpers and traits for Atomo Platform",
-            "time": "2026-11-05T19:56:59+00:00"
+            "time": "2026-11-09T12:48:43+00:00"
         },
         {
             "name": "atomo/guide",
-            "version": "0.10.2",
+            "version": "0.11.0",
             "source": {
                 "type": "",
                 "url": "",
@@ -76,19 +76,19 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://git.atomosoluciones.com/api/packages/atomo/composer/files/atomo%2Fguide/0.10.2/atomo-guide.0.10.2.zip",
-                "shasum": "8a1ab0f2d122e2e8a2feaf0d7440a63b7a3aa408"
+                "url": "https://git.atomosoluciones.com/api/packages/atomo/composer/files/atomo%2Fguide/0.11.0/atomo-guide.0.11.0.zip",
+                "shasum": "280c1aa5ec0df8e0ee7ded803b52c789c46a94f1"
             },
             "require": {
-                "atomo/core": "^0.10",
-                "atomo/json-api-base": "^0.10",
+                "atomo/core": "^0.11",
+                "atomo/json-api-base": "^0.11",
                 "illuminate/database": "^12.0|^13.0",
                 "illuminate/http": "^12.0|^13.0",
                 "illuminate/support": "^12.0|^13.0",
                 "php": "^8.4"
             },
             "require-dev": {
-                "atomo/user": "^0.10",
+                "atomo/user": "^0.11",
                 "laravel/sanctum": "^4.0",
                 "orchestra/testbench": "^10.0|^11.0",
                 "phpunit/phpunit": "^11.0|^12.0"
@@ -123,11 +123,11 @@
                 "proprietary"
             ],
             "description": "Guided flow for Atomo Platform: next action per document, process trail by department and a versioned JSON contract, read only on top of each package's states",
-            "time": "2026-11-05T19:57:01+00:00"
+            "time": "2026-11-09T12:48:48+00:00"
         },
         {
             "name": "atomo/json-api-base",
-            "version": "0.10.2",
+            "version": "0.11.0",
             "source": {
                 "type": "",
                 "url": "",
@@ -135,11 +135,11 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://git.atomosoluciones.com/api/packages/atomo/composer/files/atomo%2Fjson-api-base/0.10.2/atomo-json-api-base.0.10.2.zip",
-                "shasum": "24fbf2783facadac57e488df1ab4bc2611d45a2f"
+                "url": "https://git.atomosoluciones.com/api/packages/atomo/composer/files/atomo%2Fjson-api-base/0.11.0/atomo-json-api-base.0.11.0.zip",
+                "shasum": "8b97ca6c3de305e8de789127e6808754e672b648"
             },
             "require": {
-                "atomo/core": "^0.10",
+                "atomo/core": "^0.11",
                 "illuminate/support": "^12.0|^13.0",
                 "laravel-json-api/laravel": "^5.1",
                 "php": "^8.4"
@@ -180,7 +180,7 @@
                 "proprietary"
             ],
             "description": "JSON:API server base, abstract authorizer and auto-registration for Atomo Platform",
-            "time": "2026-11-05T19:57:02+00:00"
+            "time": "2026-11-09T12:48:49+00:00"
         },
         {
             "name": "bacon/bacon-qr-code",
