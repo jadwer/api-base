@@ -26,7 +26,7 @@ class CouponController extends Controller
      */
     public function validate(string $code): JsonResponse
     {
-        $coupon = Coupon::where('code', $code)->first();
+        $coupon = Coupon::whereCode($code)->first();
 
         if (!$coupon) {
             return response()->json([

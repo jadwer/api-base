@@ -2,10 +2,9 @@
 
 namespace Modules\Ecommerce\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Traits\HasPermissions;
-
 
 class Coupon extends Model
 {
@@ -18,7 +17,7 @@ class Coupon extends Model
     ];
 
     protected $fillable = [
-        'code', 'name', 'description', 'type', 'value', 'min_amount', 'max_amount', 'max_uses', 'used_count', 'starts_at', 'expires_at', 'is_active', 'customer_ids', 'product_ids', 'category_ids', 'currency'
+        'code', 'name', 'description', 'type', 'value', 'min_amount', 'max_amount', 'max_uses', 'used_count', 'starts_at', 'expires_at', 'is_active', 'customer_ids', 'product_ids', 'category_ids', 'currency',
     ];
 
     protected $casts = [
@@ -30,20 +29,20 @@ class Coupon extends Model
         'is_active' => 'boolean',
         'customer_ids' => 'array',
         'product_ids' => 'array',
-        'category_ids' => 'array'
+        'category_ids' => 'array',
     ];
 
     protected $appends = [
         'isValid',
         'remainingUses',
-        'isExpired'
+        'isExpired',
     ];
 
     // Campos Calculados
     public function getIsValidAttribute(): bool
     {
-        return $this->is_active && 
-               !$this->getIsExpiredAttribute() && 
+        return $this->is_active &&
+               ! $this->getIsExpiredAttribute() &&
                ($this->max_uses === null || $this->used_count < $this->max_uses);
     }
 
@@ -60,7 +59,7 @@ class Coupon extends Model
     // Business Logic Methods
     public function canBeUsed(float $cartAmount = 0, ?string $cartCurrency = null): bool
     {
-        if (!$this->getIsValidAttribute()) {
+        if (! $this->getIsValidAttribute()) {
             return false;
         }
 
@@ -82,7 +81,7 @@ class Coupon extends Model
 
     public function calculateDiscount(float $cartAmount): float
     {
-        if (!$this->canBeUsed($cartAmount)) {
+        if (! $this->canBeUsed($cartAmount)) {
             return 0.00;
         }
 
@@ -95,6 +94,16 @@ class Coupon extends Model
     }
 
     // Scopes
+    /**
+     * Busqueda por codigo sin distinguir mayusculas. En MySQL la collation ya
+     * era insensible (prod) y en SQLite (pruebas) no: se hace explicito para que
+     * el comportamiento sea el mismo en todas las bases (2026-11-09).
+     */
+    public function scopeWhereCode($query, string $code)
+    {
+        return $query->whereRaw('LOWER(code) = ?', [mb_strtolower(trim($code))]);
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
@@ -103,17 +112,15 @@ class Coupon extends Model
     public function scopeValid($query)
     {
         return $query->where('is_active', true)
-                    ->where(function ($q) {
-                        $q->whereNull('expires_at')
-                          ->orWhere('expires_at', '>=', now());
-                    })
-                    ->where(function ($q) {
-                        $q->whereNull('max_uses')
-                          ->orWhereRaw('used_count < max_uses');
-                    });
+            ->where(function ($q) {
+                $q->whereNull('expires_at')
+                    ->orWhere('expires_at', '>=', now());
+            })
+            ->where(function ($q) {
+                $q->whereNull('max_uses')
+                    ->orWhereRaw('used_count < max_uses');
+            });
     }
-
-
 
     // Factory
     protected static function newFactory()

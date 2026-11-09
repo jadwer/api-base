@@ -2,8 +2,8 @@
 
 namespace Modules\Ecommerce\Tests\Feature;
 
-use Tests\TestCase;
 use Modules\Ecommerce\Models\Coupon;
+use Tests\TestCase;
 
 class CouponValidateTest extends TestCase
 {
@@ -38,8 +38,8 @@ class CouponValidateTest extends TestCase
                     'name',
                     'couponType',
                     'value',
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
@@ -183,8 +183,8 @@ class CouponValidateTest extends TestCase
                     'value' => 50,
                     'minAmount' => 100,
                     'maxAmount' => 200,
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
@@ -224,7 +224,7 @@ class CouponValidateTest extends TestCase
         $response->assertJson(['valid' => true]);
     }
 
-    public function test_validate_is_case_sensitive(): void
+    public function test_validate_is_case_insensitive(): void
     {
         $admin = $this->getAdminUser();
 
@@ -233,11 +233,12 @@ class CouponValidateTest extends TestCase
             'is_active' => true,
         ]);
 
-        // Lowercase should not find it
+        // El cliente teclea el cupon como quiera: en MySQL la collation ya lo
+        // encontraba y ahora el codigo lo garantiza en cualquier base.
         $response = $this->actingAs($admin, 'sanctum')
             ->getJson('/api/v1/coupons/validate/uppercase');
 
-        $response->assertStatus(404);
+        $response->assertOk()->assertJsonPath('valid', true);
     }
 
     public function test_customer_can_validate_coupon(): void

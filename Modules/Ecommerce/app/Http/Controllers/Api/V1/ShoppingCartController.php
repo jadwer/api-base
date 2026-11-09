@@ -209,7 +209,7 @@ class ShoppingCartController extends Controller
 
         return DB::transaction(function () use ($couponCode, $shoppingCart) {
             // Find and validate coupon with row lock to prevent race condition on used_count
-            $coupon = Coupon::where('code', $couponCode)
+            $coupon = Coupon::whereCode($couponCode)
                 ->where('is_active', true)
                 ->lockForUpdate()
                 ->first();
@@ -294,7 +294,7 @@ class ShoppingCartController extends Controller
 
         DB::transaction(function () use ($shoppingCart, $couponCode) {
             if ($couponCode) {
-                Coupon::where('code', $couponCode)
+                Coupon::whereCode($couponCode)
                     ->where('used_count', '>', 0)
                     ->decrement('used_count');
             }

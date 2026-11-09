@@ -10,6 +10,9 @@ use Tests\TestCase;
  */
 class ContactChannelsTest extends TestCase
 {
+    // Las listas JSON se comparan con assertEquals: MySQL guarda las llaves de cada
+    // objeto en otro orden que PHP y assertSame fallaba solo en MySQL (2026-11-09).
+
     private function store(array $attributes)
     {
         return $this->actingAs($this->getAdminUser(), 'sanctum')
@@ -63,7 +66,7 @@ class ContactChannelsTest extends TestCase
         ]);
 
         $response->assertCreated();
-        $this->assertSame([
+        $this->assertEquals([
             ['label' => 'Matriz', 'code' => '52', 'number' => '5516666344', 'ext' => '2213'],
             ['label' => 'Suc. Zapopan', 'code' => '52', 'number' => '3355344512', 'ext' => null],
         ], $response->json('data.attributes.phones'));
@@ -96,13 +99,13 @@ class ContactChannelsTest extends TestCase
     {
         $contact = Contact::factory()->create(['phone' => '+1-231-796-0300']);
 
-        $this->assertSame([['label' => 'Principal', 'code' => '1', 'number' => '2317960300', 'ext' => null]], $contact->fresh()->phones);
+        $this->assertEquals([['label' => 'Principal', 'code' => '1', 'number' => '2317960300', 'ext' => null]], $contact->fresh()->phones);
     }
 
     public function test_legacy_phone_write_builds_the_list(): void
     {
         $contact = Contact::factory()->create(['phone' => '+52 (55) 1234 5678', 'phone_extension' => '15']);
 
-        $this->assertSame([['label' => 'Principal', 'code' => '52', 'number' => '5512345678', 'ext' => '15']], $contact->fresh()->phones);
+        $this->assertEquals([['label' => 'Principal', 'code' => '52', 'number' => '5512345678', 'ext' => '15']], $contact->fresh()->phones);
     }
 }
