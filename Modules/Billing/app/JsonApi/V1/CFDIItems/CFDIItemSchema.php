@@ -19,15 +19,11 @@ class CFDIItemSchema extends Schema
 {
     /**
      * The model the schema corresponds to.
-     *
-     * @var string
      */
     public static string $model = CFDIItem::class;
 
     /**
      * Get the resource fields.
-     *
-     * @return array
      */
     public function fields(): array
     {
@@ -75,8 +71,6 @@ class CFDIItemSchema extends Schema
 
     /**
      * Get the resource filters.
-     *
-     * @return array
      */
     public function filters(): array
     {
@@ -91,9 +85,29 @@ class CFDIItemSchema extends Schema
     }
 
     /**
+     * Mismo alcance que CFDIInvoiceSchema::indexQuery: el personal con el permiso ve
+     * todo; el cliente del portal solo las partidas de SUS CFDI (antes el listado
+     * de partidas no filtraba y exponia las de todos los clientes, 2026-11-09).
+     */
+    public function indexQuery(?\Illuminate\Http\Request $request, \Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
+    {
+        $user = $request?->user('sanctum');
+        if (! $user) {
+            return $query->whereRaw('1 = 0');
+        }
+        if (\Modules\User\Support\UserAccess::seesAll($user, 'billing.cfdi-invoices.index')) {
+            return $query;
+        }
+        $contact = \Modules\Contacts\Models\Contact::where('email', $user->email)->first();
+        if ($contact) {
+            return $query->whereHas('cfdiInvoice', fn ($q) => $q->where('contact_id', $contact->id));
+        }
+
+        return $query->whereRaw('1 = 0');
+    }
+
+    /**
      * Get the resource paginator.
-     *
-     * @return Paginator|null
      */
     public function pagination(): ?Paginator
     {
@@ -102,8 +116,6 @@ class CFDIItemSchema extends Schema
 
     /**
      * Get the JSON:API resource type.
-     *
-     * @return string
      */
     public static function type(): string
     {

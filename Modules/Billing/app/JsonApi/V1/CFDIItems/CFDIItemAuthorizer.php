@@ -15,7 +15,7 @@ class CFDIItemAuthorizer implements Authorizer
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return Response::deny('No autenticado.', 401);
         }
 
@@ -32,7 +32,7 @@ class CFDIItemAuthorizer implements Authorizer
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return Response::deny('No autenticado.', 401);
         }
 
@@ -47,14 +47,14 @@ class CFDIItemAuthorizer implements Authorizer
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return Response::deny('No autenticado.', 401);
         }
 
         // Admin, Tech, and Customers can view items
-        return $user->hasAnyPermission([
-            'billing.cfdi-items.show',
-        ]);
+        // La partida se ve si se ve su CFDI (cliente del portal: solo los suyos).
+        return $user->hasAnyPermission(['billing.cfdi-items.show'])
+            && \Modules\User\Support\UserAccess::seesDocument($user, 'billing.cfdi-invoices.index', $model->cfdiInvoice?->contact_id);
     }
 
     /**
@@ -64,7 +64,7 @@ class CFDIItemAuthorizer implements Authorizer
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return Response::deny('No autenticado.', 401);
         }
 
@@ -79,7 +79,7 @@ class CFDIItemAuthorizer implements Authorizer
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return Response::deny('No autenticado.', 401);
         }
 
@@ -94,13 +94,13 @@ class CFDIItemAuthorizer implements Authorizer
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return Response::deny('No autenticado.', 401);
         }
 
-        return $user->hasAnyPermission([
-            'billing.cfdi-items.show',
-        ]);
+        // La partida se ve si se ve su CFDI (cliente del portal: solo los suyos).
+        return $user->hasAnyPermission(['billing.cfdi-items.show'])
+            && \Modules\User\Support\UserAccess::seesDocument($user, 'billing.cfdi-invoices.index', $model->cfdiInvoice?->contact_id);
     }
 
     /**
@@ -110,13 +110,13 @@ class CFDIItemAuthorizer implements Authorizer
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return Response::deny('No autenticado.', 401);
         }
 
-        return $user->hasAnyPermission([
-            'billing.cfdi-items.show',
-        ]);
+        // La partida se ve si se ve su CFDI (cliente del portal: solo los suyos).
+        return $user->hasAnyPermission(['billing.cfdi-items.show'])
+            && \Modules\User\Support\UserAccess::seesDocument($user, 'billing.cfdi-invoices.index', $model->cfdiInvoice?->contact_id);
     }
 
     /**
