@@ -18,21 +18,27 @@ trait BuildsCfdiLegendContext
         $total = $invoice->total !== null ? $invoice->total / 100 : null;
 
         $totalInWords = '';
-        if ($total !== null && class_exists(NumeroALetras::class)) {
-            try {
-                $totalInWords = (new NumeroALetras())->toInvoice($total, 2, $currency === 'MXN' ? 'PESOS' : $currency);
-            } catch (\Exception $e) {
-                $totalInWords = '';
+        if ($total !== null) {
+            if (class_exists(NumeroALetras::class)) {
+                try {
+                    $totalInWords = (new NumeroALetras)->toInvoice($total, 2, $currency === 'MXN' ? 'PESOS' : $currency);
+                } catch (\Exception $e) {
+                    $totalInWords = '';
+                }
+            } elseif (class_exists(\Atomo\Documents\Support\AmountInWords::class)) {
+                // luecano/numero-a-letras no esta instalado: sin este respaldo
+                // {total_letra} quedaba vacio en la leyenda (12-11-2026).
+                $totalInWords = \Atomo\Documents\Support\AmountInWords::format((float) $total, $currency);
             }
         }
 
-        $folio = trim(($invoice->series ? $invoice->series . '-' : '') . ($invoice->folio ?? ''));
+        $folio = trim(($invoice->series ? $invoice->series.'-' : '').($invoice->folio ?? ''));
 
         return [
             'folio' => $folio,
             'fecha_emision' => $invoice->fecha_emision?->format('d/m/Y'),
             'fecha_vencimiento' => '',
-            'total' => $total !== null ? '$' . number_format($total, 2) . ' ' . $currency : '',
+            'total' => $total !== null ? '$'.number_format($total, 2).' '.$currency : '',
             'total_letra' => $totalInWords,
             'cliente' => $invoice->receptor_nombre,
             'rfc_cliente' => $invoice->receptor_rfc,

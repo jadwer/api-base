@@ -101,6 +101,11 @@ class SalesOrderPDFGenerator
                 $totalInWords = null;
             }
         }
+        if ($totalInWords === null && class_exists(\Atomo\Documents\Support\AmountInWords::class)) {
+            // luecano/numero-a-letras no esta instalado: sin este respaldo el
+            // importe con letra no salia en el PDF del pedido (12-11-2026).
+            $totalInWords = \Atomo\Documents\Support\AmountInWords::format((float) $totals['total'], $currency);
+        }
 
         // Determine what sections to show
         $showBankAccounts = $options['show_bank_accounts']

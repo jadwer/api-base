@@ -50,6 +50,7 @@ class SalesOrderDocumentBuilderTest extends TestCase
         $this->assertEquals(20.0, $doc['lines'][0]['discount']);
         $this->assertEquals(180.0, $doc['lines'][0]['total']);
         $this->assertSame('Entregar en recepción', $doc['notes']);
+        $this->assertStringContainsString('PESOS', $doc['totals']['words']);
     }
 
     public function test_con_el_interruptor_sale_por_bloques_y_sin_el_por_la_plantilla(): void
