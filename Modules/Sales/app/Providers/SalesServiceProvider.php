@@ -44,6 +44,7 @@ class SalesServiceProvider extends ServiceProvider
             return;
         }
         \Atomo\Documents\Layout\Layouts::register('lwm-cotizacion', module_path($this->name, 'resources/layouts/lwm-cotizacion.json'));
+        \Atomo\Documents\Layout\Layouts::register('lwm-cotizacion-carrito', module_path($this->name, 'resources/layouts/lwm-cotizacion-carrito.json'));
     }
 
     /** Flujo guiado (F3): que dice la guia de cada documento de ventas. */

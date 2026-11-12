@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "name": "Cotización informativa del carrito (LWM)",
+  "theme": {
+    "mode": "color"
+  },
+  "rows": [
+    {
+      "cells": [
+        {
+          "block": "issuer",
+          "span": 7
+        },
+        {
+          "block": "title",
+          "span": 5
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "block": "lines",
+          "options": {
+            "columns": [
+              "sku",
+              {
+                "key": "description",
+                "width": 34
+              },
+              "quantity",
+              "unit",
+              "unitPrice",
+              "total"
+            ],
+            "secondary": true
+          }
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "block": "words",
+          "span": 7
+        },
+        {
+          "block": "totals",
+          "span": 5
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "block": "notice"
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "block": "bank"
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "block": "terms",
+          "options": {
+            "columns": 2
+          }
+        }
+      ]
+    }
+  ]
+}

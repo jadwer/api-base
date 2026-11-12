@@ -4,8 +4,8 @@ namespace Modules\Sales\Services;
 
 use App\Services\TaxCalculator;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Modules\Sales\Support\QuoteIssuer;
 use Modules\Product\Models\Product;
+use Modules\Sales\Support\QuoteIssuer;
 
 /**
  * Cotizacion INFORMATIVA del carrito publico (sin login, sin folio, no se
@@ -16,14 +16,12 @@ use Modules\Product\Models\Product;
  */
 class CartQuotePdfService
 {
-    public function __construct(private TaxCalculator $taxCalculator)
-    {
-    }
+    public function __construct(private TaxCalculator $taxCalculator) {}
 
     /**
      * Prices the requested items against the public catalog scope.
      *
-     * @param array<int, array{product_id: int|string, quantity: int|float|string}> $items
+     * @param  array<int, array{product_id: int|string, quantity: int|float|string}>  $items
      * @return array{lines: array<int, array<string, mixed>>, totals: array{net: float, tax: float, total: float}, pending_count: int}
      */
     public function buildLines(array $items): array
@@ -116,6 +114,17 @@ class CartQuotePdfService
         // Emisor separado de la configuracion fiscal (2026-09-23).
         $company = QuoteIssuer::resolve();
 
+        // Constructor de documentos de Atomo (12-11-2026), detras de su interruptor.
+        if (class_exists(\Atomo\Documents\Layout\LayoutRenderer::class)
+            && app(\Modules\AppConfig\Services\AppSettingResolver::class)->getBool('documents.builder.cart_quote', false)) {
+            return app(\Atomo\Documents\Layout\LayoutRenderer::class)->pdf(
+                \Atomo\Documents\Layout\Layouts::get('lwm-cotizacion-carrito'),
+                self::document($company, $lines, $totals, $pendingCount),
+                app(\Modules\AppConfig\Services\AppSettingResolver::class)->getString('documents.builder.quote_mode', 'color'),
+                'letter'
+            );
+        }
+
         $pdf = Pdf::loadView('sales::cart-quote-pdf', [
             'lines' => $lines,
             'totals' => $totals,
@@ -127,5 +136,49 @@ class CartQuotePdfService
             ->setOption('defaultFont', 'DejaVu Sans');
 
         return $pdf->output();
+    }
+
+    /**
+     * El `$doc` del constructor para la cotizacion informativa: sin receptor ni
+     * folio (no se persiste); las partidas a granel pintan "Por confirmar".
+     *
+     * @param  array<int, array<string, mixed>>  $lines
+     * @param  array{net: float, tax: float, total: float}  $totals
+     * @return array<string, mixed>
+     */
+    public static function document(QuoteIssuer $company, array $lines, array $totals, int $pendingCount = 0): array
+    {
+        $notices = ['Documento generado desde el carrito del sitio; no constituye una cotización formal ni un comprobante fiscal.'];
+        if ($pendingCount > 0) {
+            $notices[] = 'Precio por confirmar: '.($pendingCount === 1 ? 'el producto marcado no está incluido' : 'los productos marcados no están incluidos').' en el total.';
+        }
+
+        return [
+            'issuer' => \Modules\Sales\Support\Documents\QuoteDocumentData::issuer($company),
+            'title' => ['label' => 'Cotización informativa', 'number' => now()->format('d/m/Y'), 'chip' => 'Sin folio'],
+            'lines' => array_map(fn (array $l) => array_filter([
+                'sku' => $l['sku'] ?? null,
+                'description' => (string) ($l['name'] ?? 'Producto'),
+                'note' => $l['brand'] ?? null,
+                'quantity' => (float) $l['quantity'],
+                'unit' => $l['unit'] ?? null,
+                'priceNote' => ! empty($l['price_pending']) ? 'Por confirmar' : null,
+            ], fn ($v) => $v !== null && $v !== '') + [
+                'unitPrice' => ! empty($l['price_pending']) ? null : (float) $l['unit_price'],
+                'total' => ! empty($l['price_pending']) ? null : (float) $l['net'],
+            ], $lines),
+            'totals' => [
+                'rows' => [['label' => 'Subtotal', 'amount' => (float) $totals['net']], ['label' => 'IVA', 'amount' => (float) $totals['tax']]],
+                'total' => (float) $totals['total'],
+                'currency' => 'MXN',
+                'words' => \Atomo\Documents\Support\AmountInWords::format((float) $totals['total'], 'MXN'),
+            ],
+            'bank' => \Modules\Sales\Support\Documents\QuoteDocumentData::bank($company, $company->bank_accounts),
+            'notices' => $notices,
+            'terms' => [
+                'Precios vigentes a la fecha de emisión, sujetos a cambio sin previo aviso y a disponibilidad de inventario.',
+                'Para una cotización formal con folio, vigencia y condiciones comerciales, regístrese en el sitio y genere su cotización desde el carrito, o contáctenos.',
+            ],
+        ];
     }
 }

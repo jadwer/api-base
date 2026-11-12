@@ -89,4 +89,23 @@ class QuoteDocumentBuilderTest extends TestCase
         $this->assertStringStartsWith('%PDF', $bytes);
         $this->assertFalse(QuotePDFGenerator::builderEnabled());
     }
+
+    public function test_la_cotizacion_del_carrito_sale_por_bloques_con_su_interruptor(): void
+    {
+        $this->app->instance(PdfRenderer::class, $fake = new FakePdfRenderer);
+        AppSetting::set('documents.builder.cart_quote', true, 'documents', 'boolean');
+        $this->assertTrue(Layouts::has('lwm-cotizacion-carrito'));
+
+        $lines = [
+            ['sku' => 'SKU-1', 'name' => 'Reactivo A', 'brand' => 'Marca', 'unit' => 'Pieza', 'quantity' => 2, 'unit_price' => 50.0, 'net' => 100.0, 'tax' => 16.0, 'total' => 116.0, 'price_pending' => false],
+            ['sku' => 'SKU-2', 'name' => 'Granel B', 'brand' => null, 'unit' => 'Litro', 'quantity' => 1, 'unit_price' => null, 'net' => 0.0, 'tax' => 0.0, 'total' => 0.0, 'price_pending' => true],
+        ];
+        app(\Modules\Sales\Services\CartQuotePdfService::class)->render($lines, ['net' => 100.0, 'tax' => 16.0, 'total' => 116.0], 1);
+
+        $html = $fake->lastHtml();
+        $this->assertStringContainsString('Cotización informativa', $html);
+        $this->assertStringContainsString('Reactivo A', $html);
+        $this->assertStringContainsString('Por confirmar', $html);
+        $this->assertStringNotContainsString('Receptor', $html);
+    }
 }

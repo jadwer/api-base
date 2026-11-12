@@ -88,7 +88,7 @@ final class QuoteDocumentData
     }
 
     /** @return array<string, mixed> */
-    private static function issuer(QuoteIssuer $company): array
+    public static function issuer(QuoteIssuer $company): array
     {
         $address = $company->address
             ? trim(implode("\n", array_filter([
@@ -136,7 +136,7 @@ final class QuoteDocumentData
      * @param  array<int, array<string, mixed>>  $accounts
      * @return list<array<string, string>>
      */
-    private static function bank(QuoteIssuer $company, array $accounts): array
+    public static function bank(QuoteIssuer $company, array $accounts): array
     {
         $out = [];
         foreach ($accounts as $a) {
