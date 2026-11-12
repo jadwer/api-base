@@ -64,7 +64,7 @@ class SalesOrderPDFGenerator
         $settings = app(\Modules\AppConfig\Services\AppSettingResolver::class);
         if (class_exists(\Atomo\Documents\Layout\LayoutRenderer::class) && $settings->getBool('documents.builder.sales_order', false)) {
             return app(\Atomo\Documents\Layout\LayoutRenderer::class)->pdf(
-                \Atomo\Documents\Layout\Layouts::get('lwm-pedido'),
+                \Modules\Sales\Support\Documents\DocumentDesigns::layout('sales_order'),
                 \Modules\Sales\Support\Documents\SalesOrderDocumentData::from($order, $data),
                 $settings->getString('documents.builder.sales_order_mode', 'color'),
                 'letter'
@@ -75,6 +75,16 @@ class SalesOrderPDFGenerator
             ->setPaper('letter')
             ->setOption('defaultFont', 'DejaVu Sans')
             ->output();
+    }
+
+    /**
+     * El `$doc` del constructor para este pedido (vista previa del editor).
+     *
+     * @return array<string, mixed>
+     */
+    public function builderDocument(SalesOrder $order): array
+    {
+        return \Modules\Sales\Support\Documents\SalesOrderDocumentData::from($order, $this->prepareData($order, CompanySetting::getActive(), []));
     }
 
     /**

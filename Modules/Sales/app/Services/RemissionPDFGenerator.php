@@ -53,7 +53,7 @@ class RemissionPDFGenerator
         $settings = app(\Modules\AppConfig\Services\AppSettingResolver::class);
         if (class_exists(\Atomo\Documents\Layout\LayoutRenderer::class) && $settings->getBool('documents.builder.remission', false)) {
             return app(\Atomo\Documents\Layout\LayoutRenderer::class)->pdf(
-                \Atomo\Documents\Layout\Layouts::get('lwm-remision'),
+                \Modules\Sales\Support\Documents\DocumentDesigns::layout('remission'),
                 \Modules\Sales\Support\Documents\RemissionDocumentData::from($remission, $data),
                 $settings->getString('documents.builder.remission_mode', 'mono'),
                 'letter'
@@ -70,6 +70,16 @@ class RemissionPDFGenerator
     /**
      * Prepare data for PDF template
      */
+    /**
+     * El `$doc` del constructor para esta remision (vista previa del editor).
+     *
+     * @return array<string, mixed>
+     */
+    public function builderDocument(Remission $remission): array
+    {
+        return \Modules\Sales\Support\Documents\RemissionDocumentData::from($remission, $this->prepareData($remission));
+    }
+
     protected function prepareData(Remission $remission, array $options = []): array
     {
         $company = CompanySetting::getActive();

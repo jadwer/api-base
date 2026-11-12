@@ -63,7 +63,7 @@ class QuotePDFGenerator
     {
         if (self::builderEnabled()) {
             return app(\Atomo\Documents\Layout\LayoutRenderer::class)->pdf(
-                \Atomo\Documents\Layout\Layouts::get('lwm-cotizacion'),
+                \Modules\Sales\Support\Documents\DocumentDesigns::layout('quote'),
                 \Modules\Sales\Support\Documents\QuoteDocumentData::from($quote, $data),
                 app(\Modules\AppConfig\Services\AppSettingResolver::class)->getString('documents.builder.quote_mode', 'color'),
                 'letter'
@@ -76,6 +76,16 @@ class QuotePDFGenerator
             ->setOption('isRemoteEnabled', true)
             ->setOption('isPhpEnabled', true)
             ->output();
+    }
+
+    /**
+     * El `$doc` del constructor para esta cotizacion (vista previa del editor).
+     *
+     * @return array<string, mixed>
+     */
+    public function builderDocument(Quote $quote): array
+    {
+        return \Modules\Sales\Support\Documents\QuoteDocumentData::from($quote, $this->prepareData($quote));
     }
 
     public static function builderEnabled(): bool

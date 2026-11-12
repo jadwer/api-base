@@ -107,6 +107,27 @@ class CartQuotePdfService
     }
 
     /**
+     * `$doc` de ejemplo para la vista previa del editor: tres productos del
+     * catalogo publico, dos piezas de cada uno.
+     *
+     * @return array<string, mixed>|null
+     */
+    public function previewDocument(): ?array
+    {
+        $ids = Product::query()->latest('id')->limit(30)->pluck('id')->all();
+        $priced = $this->buildLines(array_map(fn ($id) => ['product_id' => $id, 'quantity' => 2], $ids));
+        $lines = array_slice($priced['lines'], 0, 3);
+        if ($lines === []) {
+            return null;
+        }
+        $net = array_sum(array_map(fn ($l) => (float) ($l['net'] ?? 0), $lines));
+        $tax = array_sum(array_map(fn ($l) => (float) ($l['tax'] ?? 0), $lines));
+        $pending = count(array_filter($lines, fn ($l) => ! empty($l['price_pending'])));
+
+        return self::document(QuoteIssuer::resolve(), $lines, ['net' => round($net, 2), 'tax' => round($tax, 2), 'total' => round($net + $tax, 2)], $pending);
+    }
+
+    /**
      * Renders the informative PDF for the given priced lines.
      */
     public function render(array $lines, array $totals, int $pendingCount = 0): string
@@ -118,7 +139,7 @@ class CartQuotePdfService
         if (class_exists(\Atomo\Documents\Layout\LayoutRenderer::class)
             && app(\Modules\AppConfig\Services\AppSettingResolver::class)->getBool('documents.builder.cart_quote', false)) {
             return app(\Atomo\Documents\Layout\LayoutRenderer::class)->pdf(
-                \Atomo\Documents\Layout\Layouts::get('lwm-cotizacion-carrito'),
+                \Modules\Sales\Support\Documents\DocumentDesigns::layout('cart_quote'),
                 self::document($company, $lines, $totals, $pendingCount),
                 app(\Modules\AppConfig\Services\AppSettingResolver::class)->getString('documents.builder.quote_mode', 'color'),
                 'letter'
