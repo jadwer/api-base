@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "name": "Remisión LWM (sin precios)",
+  "theme": {
+    "mode": "color"
+  },
+  "rows": [
+    {
+      "cells": [
+        {
+          "block": "issuer",
+          "span": 7
+        },
+        {
+          "block": "title",
+          "span": 5
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "block": "party"
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "block": "shipping"
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "block": "lines",
+          "options": {
+            "columns": [
+              "index",
+              "sku",
+              {
+                "key": "description",
+                "width": 46
+              },
+              "quantity",
+              "unit",
+              "check"
+            ],
+            "secondary": true
+          }
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "block": "summary"
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "block": "notes"
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "block": "signature"
+        }
+      ]
+    }
+  ]
+}

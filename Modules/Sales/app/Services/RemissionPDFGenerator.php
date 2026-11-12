@@ -2,12 +2,12 @@
 
 namespace Modules\Sales\Services;
 
-use Modules\Sales\Models\Remission;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
 use Modules\Billing\Models\CompanySetting;
 use Modules\Billing\Models\DocumentLegend;
 use Modules\Billing\Services\DocumentLegendRenderer;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Storage;
+use Modules\Sales\Models\Remission;
 
 /**
  * SA-M006: Generate PDF documents for Remissions
@@ -20,23 +20,17 @@ class RemissionPDFGenerator
     /**
      * Generate PDF for remission
      *
-     * @param Remission $remission
-     * @param array $options Custom options for PDF generation
+     * @param  array  $options  Custom options for PDF generation
      * @return string Path to generated PDF
      */
     public function generate(Remission $remission, array $options = []): string
     {
         $data = $this->prepareData($remission, $options);
 
-        $pdf = Pdf::loadView('sales::remission-pdf', $data)
-            ->setPaper('letter')
-            ->setOption('defaultFont', 'DejaVu Sans')
-            ->setOption('isRemoteEnabled', true);
-
         $filename = $this->generateFilename($remission);
         $path = "remissions/{$remission->id}/{$filename}";
 
-        Storage::disk('public')->put($path, $pdf->output());
+        Storage::disk('public')->put($path, $this->render($remission, $data));
 
         // Update remission with PDF path
         $remission->update([
@@ -48,11 +42,33 @@ class RemissionPDFGenerator
     }
 
     /**
-     * Prepare data for PDF template
+     * Bytes del PDF: con `documents.builder.remission` encendido, constructor de
+     * documentos de Atomo y preajuste `lwm-remision`; apagado, la plantilla
+     * Blade de siempre.
      *
-     * @param Remission $remission
-     * @param array $options
-     * @return array
+     * @param  array<string, mixed>  $data
+     */
+    public function render(Remission $remission, array $data): string
+    {
+        $settings = app(\Modules\AppConfig\Services\AppSettingResolver::class);
+        if (class_exists(\Atomo\Documents\Layout\LayoutRenderer::class) && $settings->getBool('documents.builder.remission', false)) {
+            return app(\Atomo\Documents\Layout\LayoutRenderer::class)->pdf(
+                \Atomo\Documents\Layout\Layouts::get('lwm-remision'),
+                \Modules\Sales\Support\Documents\RemissionDocumentData::from($remission, $data),
+                $settings->getString('documents.builder.remission_mode', 'mono'),
+                'letter'
+            );
+        }
+
+        return Pdf::loadView('sales::remission-pdf', $data)
+            ->setPaper('letter')
+            ->setOption('defaultFont', 'DejaVu Sans')
+            ->setOption('isRemoteEnabled', true)
+            ->output();
+    }
+
+    /**
+     * Prepare data for PDF template
      */
     protected function prepareData(Remission $remission, array $options = []): array
     {
@@ -92,7 +108,7 @@ class RemissionPDFGenerator
             'fecha_emision' => $remission->remission_date?->format('d/m/Y'),
             'fecha_vencimiento' => '',
             'total' => $order?->total_amount !== null
-                ? '$' . number_format((float) $order->total_amount, 2)
+                ? '$'.number_format((float) $order->total_amount, 2)
                 : '',
             'total_letra' => '',
             'cliente' => $contact?->name,
@@ -121,21 +137,17 @@ class RemissionPDFGenerator
 
     /**
      * Generate filename for PDF
-     *
-     * @param Remission $remission
-     * @return string
      */
     protected function generateFilename(Remission $remission): string
     {
         $safeNumber = preg_replace('/[^a-zA-Z0-9\-_]/', '_', $remission->remission_number);
+
         return "remision_{$safeNumber}.pdf";
     }
 
     /**
      * Download PDF as response
      *
-     * @param Remission $remission
-     * @param array $options
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function download(Remission $remission, array $options = [])
@@ -149,8 +161,6 @@ class RemissionPDFGenerator
     /**
      * Stream PDF inline (for preview)
      *
-     * @param Remission $remission
-     * @param array $options
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function preview(Remission $remission, array $options = [])
@@ -169,34 +179,27 @@ class RemissionPDFGenerator
     /**
      * Stream PDF directly without storing (for real-time generation)
      *
-     * @param Remission $remission
-     * @param array $options
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function stream(Remission $remission, array $options = [])
     {
         $data = $this->prepareData($remission, $options);
 
-        return Pdf::loadView('sales::remission-pdf', $data)
-            ->setPaper('letter')
-            ->setOption('defaultFont', 'DejaVu Sans')
-            ->setOption('isRemoteEnabled', true)
-            ->stream($this->generateFilename($remission));
+        return response($this->render($remission, $data), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="'.$this->generateFilename($remission).'"',
+        ]);
     }
 
     /**
      * Get existing PDF path or generate new one
-     *
-     * @param Remission $remission
-     * @param array $options
-     * @return string
      */
     protected function getOrGeneratePath(Remission $remission, array $options = []): string
     {
-        $expectedPath = "remissions/{$remission->id}/" . $this->generateFilename($remission);
+        $expectedPath = "remissions/{$remission->id}/".$this->generateFilename($remission);
 
         // Always regenerate if options are provided or remission was recently updated
-        if (!empty($options) || !Storage::disk('public')->exists($expectedPath)) {
+        if (! empty($options) || ! Storage::disk('public')->exists($expectedPath)) {
             return $this->generate($remission, $options);
         }
 
@@ -211,10 +214,6 @@ class RemissionPDFGenerator
 
     /**
      * Regenerate PDF (force new generation)
-     *
-     * @param Remission $remission
-     * @param array $options
-     * @return string
      */
     public function regenerate(Remission $remission, array $options = []): string
     {
@@ -223,13 +222,11 @@ class RemissionPDFGenerator
 
     /**
      * Delete generated PDF
-     *
-     * @param Remission $remission
-     * @return bool
      */
     public function delete(Remission $remission): bool
     {
-        $path = "remissions/{$remission->id}/" . $this->generateFilename($remission);
+        $path = "remissions/{$remission->id}/".$this->generateFilename($remission);
+
         return Storage::disk('public')->delete($path);
     }
 }
