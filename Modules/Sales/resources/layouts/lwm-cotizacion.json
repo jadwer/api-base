@@ -24,7 +24,9 @@
           "options": {
             "meta": [
               "date",
-              "branch"
+              "branch",
+              "author",
+              "credit"
             ]
           }
         }

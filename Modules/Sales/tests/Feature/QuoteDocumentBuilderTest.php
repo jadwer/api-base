@@ -79,6 +79,21 @@ class QuoteDocumentBuilderTest extends TestCase
         $this->assertStringContainsString('Caldo Eugon LT', $fake->lastHtml());
     }
 
+    public function test_el_receptor_imprime_vendedor_y_dias_de_credito(): void
+    {
+        $this->app->instance(PdfRenderer::class, $fake = new FakePdfRenderer);
+        AppSetting::set('documents.builder.quote', true, 'documents', 'boolean');
+        $seller = \App\Models\User::factory()->create(['name' => 'Ana Vendedora']);
+        $quote = $this->quote();
+        $quote->update(['assigned_to' => $seller->id, 'credit_days' => 15]);
+        $quote = $quote->fresh();
+
+        app(QuotePDFGenerator::class)->render($quote, (fn () => $this->prepareData($quote))->call(app(QuotePDFGenerator::class)));
+
+        $this->assertStringContainsString('Ana Vendedora', $fake->lastHtml());
+        $this->assertStringContainsString('15 días', $fake->lastHtml());
+    }
+
     public function test_apagado_sigue_la_plantilla_de_siempre(): void
     {
         $this->app->instance(PdfRenderer::class, $fake = new FakePdfRenderer);

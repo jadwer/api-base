@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "name": "Pedido LWM",
+  "theme": {
+    "mode": "color"
+  },
+  "rows": [
+    {
+      "cells": [
+        {
+          "block": "issuer",
+          "span": 7
+        },
+        {
+          "block": "title",
+          "span": 5
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "block": "party",
+          "options": {
+            "meta": [
+              "date",
+              "status",
+              "po",
+              "payment",
+              "credit",
+              "approved"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "block": "shipping"
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "block": "lines",
+          "options": {
+            "columns": [
+              "sku",
+              {
+                "key": "description",
+                "width": 40
+              },
+              "quantity",
+              "unit",
+              "unitPrice",
+              "discount",
+              "total"
+            ],
+            "secondary": true
+          }
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "block": "words",
+          "span": 7
+        },
+        {
+          "block": "totals",
+          "span": 5
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "block": "bank"
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "block": "notes"
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "block": "terms",
+          "options": {
+            "columns": 2
+          }
+        }
+      ]
+    }
+  ]
+}

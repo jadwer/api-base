@@ -2,13 +2,13 @@
 
 namespace Modules\Sales\Services;
 
-use Modules\Sales\Models\SalesOrder;
-use Modules\Billing\Models\CompanySetting;
-use Modules\Billing\Models\DocumentLegend;
-use Modules\Billing\Services\DocumentLegendRenderer;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Luecano\NumeroALetras\NumeroALetras;
+use Modules\Billing\Models\CompanySetting;
+use Modules\Billing\Models\DocumentLegend;
+use Modules\Billing\Services\DocumentLegendRenderer;
+use Modules\Sales\Models\SalesOrder;
 
 /**
  * SA-M011: Enhanced PDF Generator for Sales Orders
@@ -35,8 +35,7 @@ class SalesOrderPDFGenerator
     /**
      * Generate PDF for sales order
      *
-     * @param SalesOrder $order
-     * @param array $options Optional generation options
+     * @param  array  $options  Optional generation options
      * @return string Path to generated PDF
      */
     public function generate(SalesOrder $order, array $options = []): string
@@ -45,16 +44,37 @@ class SalesOrderPDFGenerator
 
         $data = $this->prepareData($order, $settings, $options);
 
-        $pdf = Pdf::loadView('sales::sales-order-pdf', $data)
-            ->setPaper('letter')
-            ->setOption('defaultFont', 'DejaVu Sans');
-
         $filename = $this->generateFilename($order);
         $path = "orders/{$order->id}/{$filename}";
 
-        Storage::disk('public')->put($path, $pdf->output());
+        Storage::disk('public')->put($path, $this->render($order, $data));
 
         return $path;
+    }
+
+    /**
+     * Bytes del PDF. Con `documents.builder.sales_order` encendido (app_settings)
+     * sale del constructor de documentos de Atomo con el preajuste `lwm-pedido`;
+     * apagado, de la plantilla Blade de siempre. Se prende o se regresa sin desplegar.
+     *
+     * @param  array<string, mixed>  $data
+     */
+    public function render(SalesOrder $order, array $data): string
+    {
+        $settings = app(\Modules\AppConfig\Services\AppSettingResolver::class);
+        if (class_exists(\Atomo\Documents\Layout\LayoutRenderer::class) && $settings->getBool('documents.builder.sales_order', false)) {
+            return app(\Atomo\Documents\Layout\LayoutRenderer::class)->pdf(
+                \Atomo\Documents\Layout\Layouts::get('lwm-pedido'),
+                \Modules\Sales\Support\Documents\SalesOrderDocumentData::from($order, $data),
+                $settings->getString('documents.builder.sales_order_mode', 'color'),
+                'letter'
+            );
+        }
+
+        return Pdf::loadView('sales::sales-order-pdf', $data)
+            ->setPaper('letter')
+            ->setOption('defaultFont', 'DejaVu Sans')
+            ->output();
     }
 
     /**
@@ -71,7 +91,7 @@ class SalesOrderPDFGenerator
         $totalInWords = null;
         if (class_exists(NumeroALetras::class)) {
             try {
-                $formatter = new NumeroALetras();
+                $formatter = new NumeroALetras;
                 $totalInWords = $formatter->toInvoice(
                     $totals['total'],
                     2,
@@ -95,7 +115,7 @@ class SalesOrderPDFGenerator
             'folio' => $order->order_number,
             'fecha_emision' => $order->order_date?->format('d/m/Y') ?? $order->created_at?->format('d/m/Y'),
             'fecha_vencimiento' => '',
-            'total' => '$' . number_format((float) $totals['total'], 2) . ' ' . $currency,
+            'total' => '$'.number_format((float) $totals['total'], 2).' '.$currency,
             'total_letra' => $totalInWords,
             'cliente' => $order->contact?->name,
             'rfc_cliente' => $order->contact?->tax_id,
@@ -170,7 +190,6 @@ class SalesOrderPDFGenerator
     /**
      * Download PDF as response
      *
-     * @param SalesOrder $order
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function download(SalesOrder $order)
@@ -184,7 +203,6 @@ class SalesOrderPDFGenerator
     /**
      * Stream PDF inline (for preview)
      *
-     * @param SalesOrder $order
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function preview(SalesOrder $order)
@@ -203,8 +221,6 @@ class SalesOrderPDFGenerator
     /**
      * Stream PDF without storing
      *
-     * @param SalesOrder $order
-     * @param array $options
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function stream(SalesOrder $order, array $options = [])
@@ -212,13 +228,9 @@ class SalesOrderPDFGenerator
         $settings = CompanySetting::getActive();
         $data = $this->prepareData($order, $settings, $options);
 
-        $pdf = Pdf::loadView('sales::sales-order-pdf', $data)
-            ->setPaper('letter')
-            ->setOption('defaultFont', 'DejaVu Sans');
-
-        return response($pdf->output(), 200, [
+        return response($this->render($order, $data), 200, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' . $this->generateFilename($order) . '"',
+            'Content-Disposition' => 'inline; filename="'.$this->generateFilename($order).'"',
         ]);
     }
 
@@ -227,9 +239,9 @@ class SalesOrderPDFGenerator
      */
     protected function getOrGeneratePath(SalesOrder $order): string
     {
-        $expectedPath = "orders/{$order->id}/" . $this->generateFilename($order);
+        $expectedPath = "orders/{$order->id}/".$this->generateFilename($order);
 
-        if (!Storage::disk('public')->exists($expectedPath)) {
+        if (! Storage::disk('public')->exists($expectedPath)) {
             return $this->generate($order);
         }
 
@@ -239,8 +251,6 @@ class SalesOrderPDFGenerator
     /**
      * Regenerate PDF (force new generation)
      *
-     * @param SalesOrder $order
-     * @param array $options
      * @return string Path to generated PDF
      */
     public function regenerate(SalesOrder $order, array $options = []): string
@@ -253,13 +263,10 @@ class SalesOrderPDFGenerator
 
     /**
      * Delete existing PDF
-     *
-     * @param SalesOrder $order
-     * @return bool
      */
     public function delete(SalesOrder $order): bool
     {
-        $path = "orders/{$order->id}/" . $this->generateFilename($order);
+        $path = "orders/{$order->id}/".$this->generateFilename($order);
 
         if (Storage::disk('public')->exists($path)) {
             return Storage::disk('public')->delete($path);
@@ -270,16 +277,13 @@ class SalesOrderPDFGenerator
 
     /**
      * Get PDF URL if exists
-     *
-     * @param SalesOrder $order
-     * @return string|null
      */
     public function getUrl(SalesOrder $order): ?string
     {
-        $path = "orders/{$order->id}/" . $this->generateFilename($order);
+        $path = "orders/{$order->id}/".$this->generateFilename($order);
 
         if (Storage::disk('public')->exists($path)) {
-            return asset('storage/' . $path);
+            return asset('storage/'.$path);
         }
 
         return null;
@@ -287,10 +291,6 @@ class SalesOrderPDFGenerator
 
     /**
      * Format amount for display
-     *
-     * @param float $amount
-     * @param string $currency
-     * @return string
      */
     public function formatAmount(float $amount, string $currency = 'MXN'): string
     {
@@ -298,9 +298,9 @@ class SalesOrderPDFGenerator
             'MXN' => '$',
             'USD' => 'USD $',
             'EUR' => 'EUR ',
-            default => $currency . ' ',
+            default => $currency.' ',
         };
 
-        return $symbol . number_format($amount, 2);
+        return $symbol.number_format($amount, 2);
     }
 }
