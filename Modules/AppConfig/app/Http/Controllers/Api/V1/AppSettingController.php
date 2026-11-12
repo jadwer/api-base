@@ -56,8 +56,11 @@ class AppSettingController extends Controller
             return response()->json(['error' => 'Configuración no encontrada.'], 404);
         }
 
+        $allowed = array_column((array) ($setting->options ?? []), 'value');
         $request->validate([
-            'value' => ['present'],
+            'value' => $allowed !== [] ? ['present', \Illuminate\Validation\Rule::in($allowed)] : ['present'],
+        ], [
+            'value.in' => 'El valor de "'.($setting->label ?: $setting->key).'" debe ser una de las opciones de la lista.',
         ]);
 
         AppSetting::set($key, $request->input('value'));
@@ -70,6 +73,7 @@ class AppSettingController extends Controller
                 'value' => AppSetting::get($key),
                 'type' => $setting->type,
                 'label' => $setting->label,
+                'options' => $setting->options,
             ],
             'message' => 'Configuración actualizada correctamente.',
         ]);

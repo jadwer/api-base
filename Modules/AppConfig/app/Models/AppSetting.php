@@ -5,6 +5,15 @@ namespace Modules\AppConfig\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * @property string $key
+ * @property string|null $value
+ * @property string $type
+ * @property string $group
+ * @property string|null $label
+ * @property string|null $description
+ * @property list<array{value: string, label: string}>|null $options
+ */
 class AppSetting extends Model
 {
     protected $table = 'app_settings';
@@ -16,6 +25,11 @@ class AppSetting extends Model
         'group',
         'label',
         'description',
+        'options',
+    ];
+
+    protected $casts = [
+        'options' => 'array',
     ];
 
     /**
@@ -94,6 +108,7 @@ class AppSetting extends Model
                 'type' => $s->type,
                 'label' => $s->label,
                 'description' => $s->description,
+                'options' => $s->options,
             ])
             ->keyBy('key')
             ->toArray();
@@ -113,6 +128,7 @@ class AppSetting extends Model
                     'type' => $s->type,
                     'label' => $s->label,
                     'description' => $s->description,
+                    'options' => $s->options,
                 ])->keyBy('key'))
                 ->toArray();
         });

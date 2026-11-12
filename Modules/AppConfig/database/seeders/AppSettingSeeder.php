@@ -98,7 +98,6 @@ class AppSettingSeeder extends Seeder
             ['key' => 'search.fuzzy_enabled', 'value' => 'true', 'type' => 'boolean', 'group' => 'search', 'label' => 'Buscador: tolerancia a errores de escritura (typos)'],
             ['key' => 'search.results_limit', 'value' => '8', 'type' => 'integer', 'group' => 'search', 'label' => 'Buscador: número de sugerencias del typeahead'],
             // Documentos: emisor de las cotizaciones, separado de la configuracion fiscal (2026-09-23)
-            ['key' => 'documents.issuer_source', 'value' => 'company', 'type' => 'string', 'group' => 'documents', 'label' => 'Origen de los datos del emisor en cotizaciones', 'description' => 'company = datos de la empresa (Configuración > Empresa); manual = los campos de abajo; billing = configuración fiscal de facturación'],
             ['key' => 'documents.issuer_name', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: razón social o nombre (manual)'],
             ['key' => 'documents.issuer_rfc', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: RFC (vacío = no se imprime)'],
             ['key' => 'documents.issuer_address', 'value' => '', 'type' => 'string', 'group' => 'documents', 'label' => 'Emisor: calle y número (manual)'],
@@ -117,6 +116,9 @@ class AppSettingSeeder extends Seeder
                 ['question' => '¿Cómo puedo buscar un producto?', 'answer' => 'Usa el buscador de la parte superior (por nombre, marca o modelo) o navega por categorías en el menú Productos. Si no lo encuentras, contáctanos y lo localizamos por ti.'],
             ], JSON_UNESCAPED_UNICODE), 'type' => 'json', 'group' => 'landing', 'label' => 'Preguntas frecuentes del home', 'description' => 'JSON: lista de {question, answer} que muestra la sección Preguntas Frecuentes'],
         ];
+
+        // Origen del emisor y constructor de documentos, con opciones (2026-11-12)
+        $settings = array_merge($settings, \Modules\AppConfig\Support\DocumentSettingDefinitions::all());
 
         foreach ($settings as $setting) {
             AppSetting::firstOrCreate(
