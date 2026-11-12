@@ -83,8 +83,13 @@ class DocumentDesignEditorTest extends TestCase
         $layout['rows'][0]['cells'][0]['span'] = 9;
 
         $this->actingAs($this->admin(), 'sanctum')->putJson('/api/v1/document-designs/quote', ['layout' => $layout])
-            ->assertStatus(422)->assertJsonPath('message', 'Fila 1, celdas: los span deben sumar 12.');
+            ->assertStatus(422)->assertJsonPath('message', 'Fila 1: los anchos de la fila deben sumar 12.');
         $this->assertSame(0, DocumentDesign::count());
+
+        $layout = DocumentDesigns::factory('quote');
+        $layout['rows'][2]['cells'][0]['options']['columns'] = [['key' => 'sku', 'width' => 80], ['key' => 'description', 'width' => 80]];
+        $this->putJson('/api/v1/document-designs/quote', ['layout' => $layout])
+            ->assertStatus(422)->assertJsonPath('message', 'Fila 3, columnas: los anchos suman más de 100.');
     }
 
     public function test_no_acepta_una_seccion_o_columna_que_el_documento_no_llena(): void

@@ -163,7 +163,7 @@ final class DocumentDesigns
         try {
             $normalized = DocumentLayout::normalize($layout);
         } catch (InvalidArgumentException $e) {
-            return self::readable($e->getMessage());
+            return self::readable($e->getMessage(), $layout);
         }
         $def = self::type($type);
         foreach ($normalized['rows'] as $r => $cells) {
@@ -191,15 +191,25 @@ final class DocumentDesigns
     }
 
     /** "rows.2.cells.0.options.columns.1.width: ..." a "Fila 3, celda 1, columnas, columna 2, ancho: ...". */
-    private static function readable(string $message): string
+    /** @param  array<string, mixed>  $layout */
+    private static function readable(string $message, array $layout): string
     {
-        $out = preg_replace_callback('/rows\.(\d+)/', fn ($m) => 'Fila '.((int) $m[1] + 1), $message) ?? $message;
-        $out = preg_replace_callback('/\.cells\.(\d+)/', fn ($m) => ', celda '.((int) $m[1] + 1), $out) ?? $out;
+        // La celda solo se nombra cuando la fila tiene dos.
+        $out = preg_replace_callback('/rows\.(\d+)\.cells\.(\d+)/', function ($m) use ($layout) {
+            $cells = (array) ($layout['rows'][(int) $m[1]]['cells'] ?? []);
+
+            return 'rows.'.$m[1].(count($cells) > 1 ? ', celda '.((int) $m[2] + 1) : '');
+        }, $message) ?? $message;
+        $out = preg_replace_callback('/rows\.(\d+)/', fn ($m) => 'Fila '.((int) $m[1] + 1), $out) ?? $out;
         $out = preg_replace_callback('/\.options\.columns\.(\d+)/', fn ($m) => ', columna '.((int) $m[1] + 1), $out) ?? $out;
 
         return strtr($out, [
-            '.options.columns' => ', columnas', '.options.' => ', opción ', '.block' => ', sección', '.width' => ', ancho',
-            '.cells' => ', celdas', 'theme.mode' => 'Colores', 'page.footer.' => 'Pie de página: ', 'page.' => 'Página: ',
+            '.options.columns' => ', columnas', '.options.' => ', opción ', '.block' => '', '.width' => ', ancho',
+            '.cells' => '', 'theme.mode' => 'Colores', 'page.footer.' => 'Pie de página: ', 'page.' => 'Página: ',
+            // Los mensajes de Atomo, con acentos y sin jerga.
+            'los span deben sumar 12' => 'los anchos de la fila deben sumar 12', 'el layout no tiene filas' => 'el diseño no tiene filas',
+            'bloque desconocido' => 'sección desconocida', 'mas de 100' => 'más de 100', 'version' => 'versión',
+            'paginas' => 'páginas', 'opcion desconocida' => 'opción desconocida', 'va true o false' => 'va sí o no',
         ]);
     }
 
