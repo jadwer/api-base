@@ -2,12 +2,12 @@
 
 namespace Modules\Sales\Services;
 
-use Modules\Sales\Models\Quote;
-use Modules\Sales\Support\QuoteIssuer;
-use Modules\Billing\Models\DocumentLegend;
-use Modules\Billing\Services\DocumentLegendRenderer;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
+use Modules\Billing\Models\DocumentLegend;
+use Modules\Billing\Services\DocumentLegendRenderer;
+use Modules\Sales\Models\Quote;
+use Modules\Sales\Support\QuoteIssuer;
 
 /**
  * Generate PDF documents for Quotes
@@ -36,34 +36,56 @@ class QuotePDFGenerator
     /**
      * Generate PDF for quote
      *
-     * @param Quote $quote
-     * @param array $options Custom options for PDF generation
+     * @param  array  $options  Custom options for PDF generation
      * @return string Path to generated PDF
      */
     public function generate(Quote $quote, array $options = []): string
     {
         $data = $this->prepareData($quote, $options);
 
-        $pdf = Pdf::loadView('sales::quote-pdf', $data)
-            ->setPaper('letter')
-            ->setOption('defaultFont', 'DejaVu Sans')
-            ->setOption('isRemoteEnabled', true)
-            ->setOption('isPhpEnabled', true);
-
         $filename = $this->generateFilename($quote);
         $path = "quotes/{$quote->id}/{$filename}";
 
-        Storage::disk('public')->put($path, $pdf->output());
+        Storage::disk('public')->put($path, $this->render($quote, $data));
 
         return $path;
     }
 
     /**
-     * Prepare data for PDF template
+     * Bytes del PDF. Con `documents.builder.quote` encendido (app_settings) se
+     * pinta con el constructor de documentos de Atomo y el preajuste
+     * `lwm-cotizacion` (diseno del Figma); apagado, con la plantilla Blade de
+     * siempre. Asi se prende o se regresa sin desplegar.
      *
-     * @param Quote $quote
-     * @param array $options
-     * @return array
+     * @param  array<string, mixed>  $data
+     */
+    public function render(Quote $quote, array $data): string
+    {
+        if (self::builderEnabled()) {
+            return app(\Atomo\Documents\Layout\LayoutRenderer::class)->pdf(
+                \Atomo\Documents\Layout\Layouts::get('lwm-cotizacion'),
+                \Modules\Sales\Support\Documents\QuoteDocumentData::from($quote, $data),
+                app(\Modules\AppConfig\Services\AppSettingResolver::class)->getString('documents.builder.quote_mode', 'color'),
+                'letter'
+            );
+        }
+
+        return Pdf::loadView('sales::quote-pdf', $data)
+            ->setPaper('letter')
+            ->setOption('defaultFont', 'DejaVu Sans')
+            ->setOption('isRemoteEnabled', true)
+            ->setOption('isPhpEnabled', true)
+            ->output();
+    }
+
+    public static function builderEnabled(): bool
+    {
+        return class_exists(\Atomo\Documents\Layout\LayoutRenderer::class)
+            && app(\Modules\AppConfig\Services\AppSettingResolver::class)->getBool('documents.builder.quote', false);
+    }
+
+    /**
+     * Prepare data for PDF template
      */
     protected function prepareData(Quote $quote, array $options = []): array
     {
@@ -93,7 +115,7 @@ class QuotePDFGenerator
             'folio' => $quote->quote_number,
             'fecha_emision' => $quote->created_at?->format('d/m/Y'),
             'fecha_vencimiento' => $quote->valid_until?->format('d/m/Y'),
-            'total' => '$' . number_format((float) $quote->total_amount, 2) . ' ' . ($quote->currency ?? 'MXN'),
+            'total' => '$'.number_format((float) $quote->total_amount, 2).' '.($quote->currency ?? 'MXN'),
             'total_letra' => $this->amountInWords((float) $quote->total_amount, $quote->currency ?? 'MXN'),
             'cliente' => $contact?->name,
             'rfc_cliente' => $contact?->tax_id,
@@ -126,9 +148,6 @@ class QuotePDFGenerator
 
     /**
      * Calculate quote totals
-     *
-     * @param Quote $quote
-     * @return array
      */
     protected function calculateTotals(Quote $quote): array
     {
@@ -142,21 +161,17 @@ class QuotePDFGenerator
 
     /**
      * Generate filename for PDF
-     *
-     * @param Quote $quote
-     * @return string
      */
     protected function generateFilename(Quote $quote): string
     {
         $safeNumber = preg_replace('/[^a-zA-Z0-9\-_]/', '_', $quote->quote_number);
+
         return "cotizacion_{$safeNumber}.pdf";
     }
 
     /**
      * Download PDF as response
      *
-     * @param Quote $quote
-     * @param array $options
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function download(Quote $quote, array $options = [])
@@ -170,8 +185,6 @@ class QuotePDFGenerator
     /**
      * Stream PDF inline (for preview)
      *
-     * @param Quote $quote
-     * @param array $options
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function preview(Quote $quote, array $options = [])
@@ -190,35 +203,27 @@ class QuotePDFGenerator
     /**
      * Stream PDF directly without storing (for real-time generation)
      *
-     * @param Quote $quote
-     * @param array $options
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function stream(Quote $quote, array $options = [])
     {
         $data = $this->prepareData($quote, $options);
 
-        return Pdf::loadView('sales::quote-pdf', $data)
-            ->setPaper('letter')
-            ->setOption('defaultFont', 'DejaVu Sans')
-            ->setOption('isRemoteEnabled', true)
-            ->setOption('isPhpEnabled', true)
-            ->stream($this->generateFilename($quote));
+        return response($this->render($quote, $data), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="'.$this->generateFilename($quote).'"',
+        ]);
     }
 
     /**
      * Get existing PDF path or generate new one
-     *
-     * @param Quote $quote
-     * @param array $options
-     * @return string
      */
     protected function getOrGeneratePath(Quote $quote, array $options = []): string
     {
-        $expectedPath = "quotes/{$quote->id}/" . $this->generateFilename($quote);
+        $expectedPath = "quotes/{$quote->id}/".$this->generateFilename($quote);
 
         // Always regenerate if options are provided or quote was recently updated
-        if (!empty($options) || !Storage::disk('public')->exists($expectedPath)) {
+        if (! empty($options) || ! Storage::disk('public')->exists($expectedPath)) {
             return $this->generate($quote, $options);
         }
 
@@ -233,10 +238,6 @@ class QuotePDFGenerator
 
     /**
      * Regenerate PDF (force new generation)
-     *
-     * @param Quote $quote
-     * @param array $options
-     * @return string
      */
     public function regenerate(Quote $quote, array $options = []): string
     {
@@ -245,22 +246,16 @@ class QuotePDFGenerator
 
     /**
      * Delete generated PDF
-     *
-     * @param Quote $quote
-     * @return bool
      */
     public function delete(Quote $quote): bool
     {
-        $path = "quotes/{$quote->id}/" . $this->generateFilename($quote);
+        $path = "quotes/{$quote->id}/".$this->generateFilename($quote);
+
         return Storage::disk('public')->delete($path);
     }
 
     /**
      * Convert amount to words in Spanish
-     *
-     * @param float $amount
-     * @param string $currency
-     * @return string
      */
     protected function amountInWords(float $amount, string $currency = 'MXN'): string
     {
@@ -278,22 +273,19 @@ class QuotePDFGenerator
         $intWords = $this->numberToWords($intPart);
         $currencyWord = $intPart === 1 ? $names[0] : $names[1];
 
-        $result = strtoupper($intWords) . ' ' . strtoupper($currencyWord);
+        $result = strtoupper($intWords).' '.strtoupper($currencyWord);
 
         if ($decPart > 0) {
-            $result .= ' ' . str_pad($decPart, 2, '0', STR_PAD_LEFT) . '/100';
+            $result .= ' '.str_pad($decPart, 2, '0', STR_PAD_LEFT).'/100';
         } else {
             $result .= ' 00/100';
         }
 
-        return $result . ' ' . strtoupper($currency);
+        return $result.' '.strtoupper($currency);
     }
 
     /**
      * Convert number to Spanish words
-     *
-     * @param int $number
-     * @return string
      */
     protected function numberToWords(int $number): string
     {
@@ -313,7 +305,7 @@ class QuotePDFGenerator
             if ($millions === 1) {
                 $result .= 'un millon ';
             } else {
-                $result .= $this->numberToWords($millions) . ' millones ';
+                $result .= $this->numberToWords($millions).' millones ';
             }
             $number %= 1000000;
         }
@@ -323,7 +315,7 @@ class QuotePDFGenerator
             if ($thousands === 1) {
                 $result .= 'mil ';
             } else {
-                $result .= $this->numberToWords($thousands) . ' mil ';
+                $result .= $this->numberToWords($thousands).' mil ';
             }
             $number %= 1000;
         }
@@ -333,7 +325,7 @@ class QuotePDFGenerator
                 $result .= 'cien ';
                 $number = 0;
             } else {
-                $result .= $hundreds[(int) floor($number / 100)] . ' ';
+                $result .= $hundreds[(int) floor($number / 100)].' ';
                 $number %= 100;
             }
         }
@@ -342,7 +334,7 @@ class QuotePDFGenerator
             $result .= $tens[(int) floor($number / 10)];
             $remainder = $number % 10;
             if ($remainder > 0) {
-                $result .= ' y ' . $units[$remainder];
+                $result .= ' y '.$units[$remainder];
             }
         } elseif ($number >= 10) {
             $result .= $teens[$number - 10];

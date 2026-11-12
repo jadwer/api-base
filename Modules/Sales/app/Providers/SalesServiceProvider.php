@@ -34,6 +34,16 @@ class SalesServiceProvider extends ServiceProvider
         // Flujo guiado (F2): habilidades con nombre de las acciones de ventas.
         \Modules\Sales\Support\SalesAbilities::register();
         $this->registerGuide();
+        $this->registerDocumentLayouts();
+    }
+
+    /** Preajustes del constructor de documentos de Atomo (formato v1) propios de LWM. */
+    protected function registerDocumentLayouts(): void
+    {
+        if (! class_exists(\Atomo\Documents\Layout\Layouts::class)) {
+            return;
+        }
+        \Atomo\Documents\Layout\Layouts::register('lwm-cotizacion', module_path($this->name, 'resources/layouts/lwm-cotizacion.json'));
     }
 
     /** Flujo guiado (F3): que dice la guia de cada documento de ventas. */
