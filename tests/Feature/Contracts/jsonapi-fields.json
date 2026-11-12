@@ -1534,6 +1534,8 @@
         "@salesOrder",
         "@shoppingCart",
         "acceptedAt",
+        "assignedTo",
+        "assignedUserName",
         "billingAddress",
         "branchId",
         "contactId",

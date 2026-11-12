@@ -405,6 +405,8 @@ class QuoteController extends Controller
             $order = SalesOrder::create([
                 'contact_id' => $quote->contact_id,
                 'quote_id' => $quote->id,
+                // El pedido hereda el vendedor de la cotizacion (comisiones).
+                'assigned_to' => $quote->assigned_to,
                 'order_number' => FolioSequence::getNextFolio('sales_order'),
                 // Surtido F4: la venta directa nace en borrador y se confirma por la
                 // maquina de estados (aparta existencia); antes nacia confirmada sin apartar.

@@ -20,6 +20,7 @@ class QuoteRequest extends ResourceRequest
                 ? ['required', 'exists:contacts,id']
                 : ['sometimes', 'exists:contacts,id'],
             'shoppingCartId' => ['nullable', 'exists:shopping_carts,id'],
+            'assignedTo' => ['nullable', 'integer', 'exists:users,id'],
             'branchId' => ['nullable', 'integer', 'exists:branches,id'],
             'branch' => ['nullable', \LaravelJsonApi\Validation\Rule::toOne()],
             'quoteNumber' => [
@@ -58,6 +59,7 @@ class QuoteRequest extends ResourceRequest
     {
         return [
             'contactId.required' => 'El contacto es obligatorio.',
+            'assignedTo.exists' => 'El vendedor no existe.',
             'contactId.exists' => 'El contacto seleccionado no existe.',
             'quoteNumber.unique' => 'Ese número de cotización ya existe.',
             'status.in' => 'El estado de la cotización no es válido.',

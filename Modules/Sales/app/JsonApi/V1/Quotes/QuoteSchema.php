@@ -42,6 +42,8 @@ class QuoteSchema extends Schema
 
             // Foreign keys
             Number::make('contactId', 'contact_id'),
+            Number::make('assignedTo', 'assigned_to'),
+            Str::make('assignedUserName')->readOnly(),
             Number::make('shoppingCartId', 'shopping_cart_id'),
             Number::make('salesOrderId', 'sales_order_id')->readOnly(),
             Number::make('purchaseOrderId', 'purchase_order_id')->readOnly(),
@@ -113,6 +115,7 @@ class QuoteSchema extends Schema
             Where::make('quote_number'),
             Where::make('status'),
             Where::make('contact', 'contact_id'),
+            Where::make('assignedTo', 'assigned_to'),
             Where::make('branch', 'branch_id'),
             Where::make('quote_date'),
             Where::make('valid_until'),

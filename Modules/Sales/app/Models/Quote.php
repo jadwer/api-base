@@ -2,19 +2,20 @@
 
 namespace Modules\Sales\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Contacts\Models\Contact;
 use Modules\Ecommerce\Models\ShoppingCart;
 use Modules\Purchase\Models\PurchaseOrder;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  * @property int $id
  * @property int $contact_id
+ * @property int|null $assigned_to
  * @property-read Contact|null $contact
  * @property int|null $shopping_cart_id
  * @property int|null $sales_order_id
@@ -64,7 +65,41 @@ class Quote extends Model
             if (empty($quote->branch_id)) {
                 $quote->branch_id = \Modules\Branch\Models\Branch::defaultId();
             }
+            // Vendedor (rediseno 12-11): el del contacto; si no tiene, quien la
+            // crea cuando es personal (un cliente del portal no es vendedor).
+            if (empty($quote->assigned_to)) {
+                $quote->assigned_to = static::defaultSellerId($quote);
+            }
         });
+    }
+
+    public static function defaultSellerId(Quote $quote): ?int
+    {
+        $fromContact = $quote->contact_id
+            ? Contact::query()->whereKey($quote->contact_id)->value('default_salesperson_id')
+            : null;
+        if ($fromContact) {
+            return (int) $fromContact;
+        }
+        $user = auth()->user();
+        if ($user && ! \Modules\User\Support\UserAccess::isCustomer($user)) {
+            return (int) $user->getAuthIdentifier();
+        }
+
+        return null;
+    }
+
+    /** Vendedor de la cotizacion; pasa al pedido al convertir. */
+    /** @return BelongsTo<\Modules\User\Models\User, $this> */
+    public function assignedUser(): BelongsTo
+    {
+        return $this->belongsTo(\Modules\User\Models\User::class, 'assigned_to');
+    }
+
+    /** Nombre del vendedor para listados, sin pedir permiso de usuarios. */
+    public function getAssignedUserNameAttribute(): ?string
+    {
+        return $this->assignedUser?->name;
     }
 
     /** Sucursal de origen (multi-sucursal 2026-09). */
@@ -81,7 +116,7 @@ class Quote extends Model
         'notes', 'internal_notes', 'terms_and_conditions',
         'shipping_address', 'billing_address', 'metadata',
         'sent_at', 'accepted_at', 'rejected_at', 'converted_at',
-        'branch_id',
+        'branch_id', 'assigned_to',
     ];
 
     protected $casts = [
@@ -117,7 +152,7 @@ class Quote extends Model
         return LogOptions::defaults()
             ->logOnly([
                 'quote_number', 'status', 'quote_date', 'contact_id',
-                'total_amount', 'discount_amount', 'estimated_eta'
+                'total_amount', 'discount_amount', 'estimated_eta', 'assigned_to',
             ])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
@@ -219,18 +254,18 @@ class Quote extends Model
 
     public function getCanBeConvertedAttribute(): bool
     {
-        return in_array($this->status, ['accepted']) && !$this->sales_order_id;
+        return in_array($this->status, ['accepted']) && ! $this->sales_order_id;
     }
 
     public function getCanGeneratePurchaseOrderAttribute(): bool
     {
         // Can generate PO when quote is accepted but not yet has a PO
-        return in_array($this->status, ['accepted', 'converted']) && !$this->purchase_order_id;
+        return in_array($this->status, ['accepted', 'converted']) && ! $this->purchase_order_id;
     }
 
     public function getHasPurchaseOrderAttribute(): bool
     {
-        return !is_null($this->purchase_order_id);
+        return ! is_null($this->purchase_order_id);
     }
 
     public function getItemsCountAttribute(): int
@@ -302,7 +337,7 @@ class Quote extends Model
 
     public function markAsRejected(): bool
     {
-        if (!in_array($this->status, ['sent', 'draft'])) {
+        if (! in_array($this->status, ['sent', 'draft'])) {
             return false;
         }
 
