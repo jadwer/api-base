@@ -121,6 +121,8 @@ class QuoteSchema extends Schema
             Where::make('valid_until'),
             // Customer Portal filter - filter by contact email
             Scope::make('contact_email', 'forContactEmail'),
+            Scope::make('search'),
+            Scope::make('expiringWithin'),
         ];
     }
 

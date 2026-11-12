@@ -204,6 +204,24 @@ class Quote extends Model
         });
     }
 
+    /** Busqueda del listado: folio, cliente (nombre o correo) o vendedor. */
+    public function scopeSearch($query, string $term)
+    {
+        $like = '%'.trim($term).'%';
+
+        return $query->where(function ($q) use ($like) {
+            $q->where('quote_number', 'like', $like)
+                ->orWhereHas('contact', fn ($c) => $c->where('name', 'like', $like)->orWhere('email', 'like', $like))
+                ->orWhereHas('assignedUser', fn ($u) => $u->where('name', 'like', $like));
+        });
+    }
+
+    /** Filtro del listado: enviadas que vencen en los proximos N dias (mismo criterio que la alerta). */
+    public function scopeExpiringWithin($query, $days)
+    {
+        return $this->scopeExpiringSoon($query, max(1, (int) $days));
+    }
+
     public function scopeExpiringSoon($query, int $days = 7)
     {
         return $query->where('status', 'sent')
