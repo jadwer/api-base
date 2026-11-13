@@ -30,7 +30,7 @@ class AppSettingOptionsTest extends TestCase
 
         $this->assertSame('Remisión con el diseño nuevo', $data['documents.builder.remission']['label']);
         $this->assertFalse($data['documents.builder.remission']['value']);
-        $this->assertSame(['color', 'mono', 'mixed'], array_column($data['documents.builder.quote_mode']['options'], 'value'));
+        $this->assertArrayNotHasKey('documents.builder.quote_mode', $data, 'el color vive en el diseño desde atomo/documents 0.11.3');
         $this->assertSame(['company', 'manual', 'billing'], array_column($data['documents.issuer_source']['options'], 'value'));
         $this->assertNull($data['documents.issuer_name']['options']);
     }
@@ -38,21 +38,21 @@ class AppSettingOptionsTest extends TestCase
     public function test_un_valor_fuera_de_las_opciones_se_rechaza_en_espanol(): void
     {
         $this->actingAs($this->admin(), 'sanctum')
-            ->patchJson('/api/v1/app-settings/documents.builder.quote_mode', ['value' => 'sepia'])
+            ->patchJson('/api/v1/app-settings/documents.issuer_source', ['value' => 'otro'])
             ->assertStatus(422)
-            ->assertJsonPath('errors.value.0', 'El valor de "Colores del PDF de cotización" debe ser una de las opciones de la lista.');
+            ->assertJsonPath('errors.value.0', 'El valor de "Origen de los datos del emisor en cotizaciones" debe ser una de las opciones de la lista.');
 
-        $this->assertSame('color', AppSetting::get('documents.builder.quote_mode'));
+        $this->assertSame('company', AppSetting::get('documents.issuer_source'));
     }
 
     public function test_un_valor_de_la_lista_se_guarda(): void
     {
         $this->actingAs($this->admin(), 'sanctum')
-            ->patchJson('/api/v1/app-settings/documents.builder.remission_mode', ['value' => 'mixed'])
+            ->patchJson('/api/v1/app-settings/documents.issuer_source', ['value' => 'billing'])
             ->assertOk()
-            ->assertJsonPath('data.options.2.value', 'mixed');
+            ->assertJsonPath('data.options.2.value', 'billing');
 
-        $this->assertSame('mixed', AppSetting::get('documents.builder.remission_mode'));
+        $this->assertSame('billing', AppSetting::get('documents.issuer_source'));
     }
 
     public function test_un_ajuste_sin_opciones_acepta_texto_libre(): void

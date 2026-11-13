@@ -8,7 +8,7 @@
     "packages": [
         {
             "name": "atomo/core",
-            "version": "0.11.2",
+            "version": "0.11.3",
             "source": {
                 "type": "",
                 "url": "",
@@ -16,8 +16,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://git.atomosoluciones.com/api/packages/atomo/composer/files/atomo%2Fcore/0.11.2/atomo-core.0.11.2.zip",
-                "shasum": "9518e39810b1ae223dfca38dca893e22abee2081"
+                "url": "https://git.atomosoluciones.com/api/packages/atomo/composer/files/atomo%2Fcore/0.11.3/atomo-core.0.11.3.zip",
+                "shasum": "998e4198bacce9c159937d3a07d6635ef823560f"
             },
             "require": {
                 "brick/math": "^0.14|^1.0",
@@ -64,11 +64,11 @@
                 "proprietary"
             ],
             "description": "Core middleware, helpers and traits for Atomo Platform",
-            "time": "2026-11-12T13:23:59+00:00"
+            "time": "2026-11-13T01:43:43+00:00"
         },
         {
             "name": "atomo/documents",
-            "version": "0.11.2",
+            "version": "0.11.3",
             "source": {
                 "type": "",
                 "url": "",
@@ -76,8 +76,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://git.atomosoluciones.com/api/packages/atomo/composer/files/atomo%2Fdocuments/0.11.2/atomo-documents.0.11.2.zip",
-                "shasum": "614f8449e305423c4e9673b96946ff8b7710a59f"
+                "url": "https://git.atomosoluciones.com/api/packages/atomo/composer/files/atomo%2Fdocuments/0.11.3/atomo-documents.0.11.3.zip",
+                "shasum": "00ab3c56220dbc341d0f8e75d910929f24bafd7d"
             },
             "require": {
                 "atomo/core": "^0.11",
@@ -128,7 +128,7 @@
                 "proprietary"
             ],
             "description": "PDF documents for Atomo Platform: a document type per package (quote, order), issuer data and logo from the panel, safe dompdf rendering, preview and download",
-            "time": "2026-11-12T13:23:59+00:00"
+            "time": "2026-11-13T01:43:43+00:00"
         },
         {
             "name": "atomo/guide",

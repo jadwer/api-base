@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int $id
  * @property string $document_type
+ * @property string|null $style
  * @property array<string, mixed> $layout
  * @property int|null $updated_by
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -18,7 +19,7 @@ class DocumentDesign extends Model
 {
     protected $table = 'document_layouts';
 
-    protected $fillable = ['document_type', 'layout', 'updated_by'];
+    protected $fillable = ['document_type', 'style', 'layout', 'updated_by'];
 
     protected $casts = [
         'layout' => 'array',

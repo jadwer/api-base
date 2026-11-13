@@ -66,7 +66,7 @@ class SalesOrderPDFGenerator
             return app(\Atomo\Documents\Layout\LayoutRenderer::class)->pdf(
                 \Modules\Sales\Support\Documents\DocumentDesigns::layout('sales_order'),
                 \Modules\Sales\Support\Documents\SalesOrderDocumentData::from($order, $data),
-                $settings->getString('documents.builder.sales_order_mode', 'color'),
+                null /* el color lo trae el diseno (theme.mode) */,
                 'letter'
             );
         }

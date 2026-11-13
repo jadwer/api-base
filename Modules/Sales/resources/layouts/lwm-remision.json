@@ -2,7 +2,7 @@
   "version": 1,
   "name": "Remisión LWM (sin precios)",
   "theme": {
-    "mode": "color"
+    "mode": "mono"
   },
   "rows": [
     {

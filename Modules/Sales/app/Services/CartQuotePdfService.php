@@ -141,7 +141,7 @@ class CartQuotePdfService
             return app(\Atomo\Documents\Layout\LayoutRenderer::class)->pdf(
                 \Modules\Sales\Support\Documents\DocumentDesigns::layout('cart_quote'),
                 self::document($company, $lines, $totals, $pendingCount),
-                app(\Modules\AppConfig\Services\AppSettingResolver::class)->getString('documents.builder.quote_mode', 'color'),
+                null, // el color lo trae el diseno (theme.mode)
                 'letter'
             );
         }

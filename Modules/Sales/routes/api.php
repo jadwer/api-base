@@ -28,6 +28,8 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     // Editor visual de documentos (2026-11-12)
     Route::get('document-designs', [DocumentDesignController::class, 'index']);
     Route::get('document-designs/{type}', [DocumentDesignController::class, 'show']);
+    Route::post('document-designs/{type}/style', [DocumentDesignController::class, 'style']);
+    Route::get('document-designs/{type}/styles/{style}/thumbnail', [DocumentDesignController::class, 'thumbnail']);
     Route::put('document-designs/{type}', [DocumentDesignController::class, 'update']);
     Route::delete('document-designs/{type}', [DocumentDesignController::class, 'destroy']);
     Route::post('document-designs/{type}/preview', [DocumentDesignController::class, 'preview'])->middleware('throttle:40,1');

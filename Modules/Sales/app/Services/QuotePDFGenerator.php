@@ -65,7 +65,7 @@ class QuotePDFGenerator
             return app(\Atomo\Documents\Layout\LayoutRenderer::class)->pdf(
                 \Modules\Sales\Support\Documents\DocumentDesigns::layout('quote'),
                 \Modules\Sales\Support\Documents\QuoteDocumentData::from($quote, $data),
-                app(\Modules\AppConfig\Services\AppSettingResolver::class)->getString('documents.builder.quote_mode', 'color'),
+                null, // el color lo trae el diseno (theme.mode)
                 'letter'
             );
         }

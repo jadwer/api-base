@@ -2,8 +2,8 @@
 
 namespace Modules\Sales\Http\Controllers\Api\V1;
 
-use Atomo\Documents\Layout\DocumentLayout;
 use Atomo\Documents\Layout\LayoutRenderer;
+use Atomo\Documents\Layout\LayoutStyles;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -13,9 +13,9 @@ use Modules\Sales\Support\Documents\DocumentDesigns;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Editor visual de documentos (2026-11-12): leer, guardar, restaurar y ver en
- * PDF el diseno de cada documento. Quien puede cambiar la configuracion del
- * sistema puede cambiar el diseno (mismo permiso que app-settings).
+ * Diseno de los PDF (2026-11-12): galeria de plantillas, estilo por fila,
+ * vista previa con el PDF real, guardar y restaurar. Quien puede cambiar la
+ * configuracion del sistema puede cambiar el diseno (mismo permiso que app-settings).
  */
 class DocumentDesignController extends Controller
 {
@@ -24,10 +24,10 @@ class DocumentDesignController extends Controller
         if ($denied = $this->deny($request)) {
             return $denied;
         }
-        $saved = DocumentDesign::query()->pluck('updated_at', 'document_type');
+        $saved = DocumentDesign::query()->pluck('style', 'document_type');
         $out = [];
         foreach (DocumentDesigns::types() as $type => $def) {
-            $out[] = $this->summary($type, $def) + ['customized' => $saved->has($type)];
+            $out[] = $this->summary($type, $def) + ['customized' => $saved->has($type), 'style' => $saved->get($type) ?: 'standard'];
         }
 
         return response()->json(['data' => $out]);
@@ -38,12 +38,38 @@ class DocumentDesignController extends Controller
         if ($denied = $this->deny($request) ?? $this->unknown($type)) {
             return $denied;
         }
-        $def = DocumentDesigns::type($type);
 
-        return response()->json(['data' => $this->summary($type, $def) + DocumentDesigns::editable($type) + [
+        return response()->json(['data' => $this->summary($type, DocumentDesigns::type($type)) + DocumentDesigns::editable($type) + [
+            'styles' => DocumentDesigns::styles($type),
             'catalog' => DocumentDesigns::catalog($type),
-            'modes' => AppSetting::query()->where('key', $def['mode'])->value('options') ?? [],
         ]]);
+    }
+
+    /** El documento con una plantilla de la galeria puesta, sin guardarlo. */
+    public function style(Request $request, string $type): JsonResponse
+    {
+        if ($denied = $this->deny($request) ?? $this->unknown($type)) {
+            return $denied;
+        }
+        $style = (string) $request->input('style', '');
+        if (! LayoutStyles::has($style)) {
+            return $this->invalid('Esa plantilla no existe.', 'style');
+        }
+
+        return response()->json(['data' => ['layout' => DocumentDesigns::withStyle($type, $style), 'style' => $style]]);
+    }
+
+    public function thumbnail(Request $request, string $type, string $style): Response
+    {
+        if ($denied = $this->deny($request) ?? $this->unknown($type)) {
+            return $denied;
+        }
+        $path = DocumentDesigns::thumbnailPath($type, $style);
+        if ($path === null) {
+            return response()->json(['message' => 'Esa plantilla no tiene miniatura.'], 404);
+        }
+
+        return response()->file($path, ['Content-Type' => 'image/png', 'Cache-Control' => 'private, max-age=86400']);
     }
 
     public function update(Request $request, string $type): JsonResponse
@@ -55,10 +81,14 @@ class DocumentDesignController extends Controller
         if (! is_array($layout)) {
             return $this->invalid('Falta el diseño del documento.');
         }
+        $style = (string) $request->input('style', 'standard');
+        if (! LayoutStyles::has($style)) {
+            return $this->invalid('Esa plantilla no existe.', 'style');
+        }
         if ($problem = DocumentDesigns::problem($type, $layout)) {
             return $this->invalid($problem);
         }
-        DocumentDesign::query()->updateOrCreate(['document_type' => $type], ['layout' => $layout, 'updated_by' => $request->user('sanctum')?->getKey()]);
+        DocumentDesign::query()->updateOrCreate(['document_type' => $type], ['layout' => $layout, 'style' => $style, 'updated_by' => $request->user('sanctum')?->getKey()]);
 
         return response()->json(['data' => DocumentDesigns::editable($type), 'message' => 'Diseño guardado. Los PDF nuevos ya salen así.']);
     }
@@ -86,24 +116,23 @@ class DocumentDesignController extends Controller
         if ($problem = DocumentDesigns::problem($type, $layout)) {
             return $this->invalid($problem);
         }
-        $def = DocumentDesigns::type($type);
-        $mode = (string) $request->input('mode', AppSetting::get($def['mode'], 'color'));
-        if (! in_array($mode, DocumentLayout::MODES, true)) {
-            return $this->invalid('Los colores deben ser una de las opciones de la lista.');
-        }
         $doc = DocumentDesigns::previewDocument($type, $request->integer('id') ?: null);
         if ($doc === null) {
-            return response()->json(['message' => "Todavía no hay ningún documento de tipo {$def['label']} para usar en la vista previa."], 404);
+            return response()->json(['message' => 'Todavía no hay ningún documento de tipo '.DocumentDesigns::type($type)['label'].' para usar en la vista previa.'], 404);
         }
 
-        return response(app(LayoutRenderer::class)->pdf($layout, $doc, $mode, 'letter'), 200, [
+        // Sin modo: el color lo trae el diseno (theme.mode), igual que al imprimir.
+        return response(app(LayoutRenderer::class)->pdf($layout, $doc, null, 'letter'), 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename="vista-previa.pdf"',
             'Cache-Control' => 'no-store',
         ]);
     }
 
-    /** @param  array<string, mixed>  $def */
+    /**
+     * @param  array<string, mixed>  $def
+     * @return array<string, mixed>
+     */
     private function summary(string $type, array $def): array
     {
         return [
@@ -111,8 +140,6 @@ class DocumentDesignController extends Controller
             'label' => $def['label'],
             'enabledKey' => $def['enabled'],
             'enabled' => (bool) AppSetting::get($def['enabled'], false),
-            'modeKey' => $def['mode'],
-            'mode' => (string) AppSetting::get($def['mode'], 'color'),
         ];
     }
 
@@ -133,8 +160,8 @@ class DocumentDesignController extends Controller
             : response()->json(['message' => 'Ese documento no tiene diseño editable.'], 404);
     }
 
-    private function invalid(string $message): JsonResponse
+    private function invalid(string $message, string $field = 'layout'): JsonResponse
     {
-        return response()->json(['message' => $message, 'errors' => ['layout' => [$message]]], 422);
+        return response()->json(['message' => $message, 'errors' => [$field => [$message]]], 422);
     }
 }

@@ -55,7 +55,7 @@ class RemissionPDFGenerator
             return app(\Atomo\Documents\Layout\LayoutRenderer::class)->pdf(
                 \Modules\Sales\Support\Documents\DocumentDesigns::layout('remission'),
                 \Modules\Sales\Support\Documents\RemissionDocumentData::from($remission, $data),
-                $settings->getString('documents.builder.remission_mode', 'mono'),
+                null /* el color lo trae el diseno (theme.mode) */,
                 'letter'
             );
         }
