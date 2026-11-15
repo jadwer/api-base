@@ -27,6 +27,7 @@ use Modules\Sales\Models\FolioSequence;
  * @property string $status
  * @property float|null $total_amount
  * @property string|null $approval_status
+ * @property \Illuminate\Support\Carbon|null $expected_arrival_date
  */
 class PurchaseOrder extends Model
 {
@@ -73,6 +74,7 @@ class PurchaseOrder extends Model
             'quote_id' => 'integer',
             'warehouse_id' => 'integer',
             'order_date' => 'date',
+            'expected_arrival_date' => 'date',
             'total_amount' => 'float',
             'ap_invoice_id' => 'integer',
             'invoicing_status' => 'string',

@@ -313,6 +313,7 @@ $attributes = [
     'sales_order_item_id' => 'partida del pedido',
     'order_number' => 'número de pedido',
     'order_date' => 'fecha del pedido',
+    'expected_arrival_date' => 'fecha estimada de llegada',
     'order_type' => 'tipo de pedido',
     'customer_po_number' => 'orden de compra del cliente',
     'acceptance_channel' => 'canal de autorización',

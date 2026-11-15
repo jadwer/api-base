@@ -29,6 +29,7 @@ class PurchaseOrderWithItemsController extends Controller
         $data = $request->validate([
             'contact_id' => ['required', 'integer', 'exists:contacts,id'],
             'order_date' => ['required', 'date'],
+            'expected_arrival_date' => ['nullable', 'date', 'after_or_equal:order_date'],
             'status' => ['required', 'in:pending'],
             'notes' => ['nullable', 'string', 'max:1000'],
             'branch_id' => ['nullable', 'integer', 'exists:branches,id'],
@@ -50,6 +51,7 @@ class PurchaseOrderWithItemsController extends Controller
         ], [], [
             'contact_id' => 'proveedor',
             'order_date' => 'fecha de la orden',
+            'expected_arrival_date' => 'fecha estimada de llegada',
             'status' => 'estado',
             'items' => 'partidas',
             'items.*.product_id' => 'producto de la partida :position',
@@ -62,6 +64,7 @@ class PurchaseOrderWithItemsController extends Controller
             $order = PurchaseOrder::create([
                 'contact_id' => $data['contact_id'],
                 'order_date' => $data['order_date'],
+                'expected_arrival_date' => $data['expected_arrival_date'] ?? null,
                 'status' => $data['status'],
                 'notes' => $data['notes'] ?? null,
                 'branch_id' => $data['branch_id'] ?? null,

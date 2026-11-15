@@ -19,6 +19,7 @@ class PurchaseOrderRequest extends ResourceRequest
         
         return [
             'orderDate' => [$creating ? 'required' : 'sometimes', 'date'],
+            'expectedArrivalDate' => ['nullable', 'date', ...($this->has('orderDate') || $creating ? ['after_or_equal:orderDate'] : [])],
             // Refactor ciclo (Patron 1): en creacion se valida el status inicial. En
             // update se acepta pero el Schema lo marca readOnlyOnUpdate, asi que el valor
             // se IGNORA (no lanza error para no romper el form de edicion del FE, que

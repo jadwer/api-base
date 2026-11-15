@@ -37,6 +37,9 @@ class PurchaseOrderSchema extends Schema
             // Columnas date: salen como Y-m-d (en UTC a medianoche el frontend las pintaba un dia antes)
             DateTime::make('orderDate', 'order_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))
                 ->sortable(),
+            // ETA que da el proveedor (junta 2026-11-12, J1)
+            DateTime::make('expectedArrivalDate', 'expected_arrival_date')->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))
+                ->sortable(),
             // Refactor ciclo (Patron 1): status NO editable por PATCH; transiciones por
             // los endpoints approve/reject/receive/cancel. Un PATCH a 'received' saltaba
             // la validacion de tolerancia y disparaba el Observer sin control.
