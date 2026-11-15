@@ -17,10 +17,10 @@ use Modules\Sales\Services\RemissionPDFGenerator;
 use Modules\Sales\Services\SalesOrderPDFGenerator;
 
 /**
- * Diseno de los PDF de LWM (2026-11-12, corregido con Gabino el mismo dia):
+ * Diseno de los PDF de la app (2026-11-12, corregido con Gabino el mismo dia):
  * el usuario elige COMO se ve cada documento (plantilla de la galeria y estilo
  * fila por fila, como las plantillas de Bind), no su contenido. El contenido
- * (secciones, columnas, datos) es el del preajuste de LWM y no se edita aqui.
+ * (secciones, columnas, datos) es el del preajuste de la app y no se edita aqui.
  *
  * La galeria, las opciones de estilo con sus valores y nombres en espanol y
  * las miniaturas salen de atomo/documents (LayoutStyles, LayoutCatalog); el
@@ -30,7 +30,7 @@ use Modules\Sales\Services\SalesOrderPDFGenerator;
 final class DocumentDesigns
 {
     /**
-     * Cada documento: su preajuste de LWM, el interruptor, el preajuste de
+     * Cada documento: su preajuste de la app, el interruptor, el preajuste de
      * fabrica cuyas miniaturas lo representan y lo que llena su adaptador
      * (para que un diseno nunca pida algo que el documento no trae).
      *
@@ -42,28 +42,28 @@ final class DocumentDesigns
 
         return [
             'quote' => [
-                'label' => 'Cotización', 'preset' => 'lwm-cotizacion', 'file' => $file('lwm-cotizacion'),
+                'label' => 'Cotización', 'preset' => 'cotizacion', 'file' => $file('cotizacion'),
                 'enabled' => 'documents.builder.quote', 'thumbnail' => 'quote',
                 'blocks' => ['issuer', 'title', 'party', 'meta', 'lines', 'words', 'totals', 'notice', 'bank', 'terms', 'notes'],
                 'columns' => ['index', 'sku', 'description', 'quantity', 'unit', 'unitPrice', 'total'],
                 'meta' => ['date', 'branch', 'author', 'credit'],
             ],
             'cart_quote' => [
-                'label' => 'Cotización de la tienda', 'preset' => 'lwm-cotizacion-carrito', 'file' => $file('lwm-cotizacion-carrito'),
+                'label' => 'Cotización de la tienda', 'preset' => 'cotizacion-tienda', 'file' => $file('cotizacion-tienda'),
                 'enabled' => 'documents.builder.cart_quote', 'thumbnail' => 'quote',
                 'blocks' => ['issuer', 'title', 'lines', 'words', 'totals', 'notice', 'bank', 'terms'],
                 'columns' => ['index', 'sku', 'description', 'quantity', 'unit', 'unitPrice', 'total'],
                 'meta' => [],
             ],
             'remission' => [
-                'label' => 'Remisión', 'preset' => 'lwm-remision', 'file' => $file('lwm-remision'),
+                'label' => 'Remisión', 'preset' => 'remision', 'file' => $file('remision'),
                 'enabled' => 'documents.builder.remission', 'thumbnail' => 'remission',
                 'blocks' => ['issuer', 'title', 'party', 'meta', 'shipping', 'lines', 'summary', 'notes', 'signature'],
                 'columns' => ['index', 'sku', 'description', 'quantity', 'unit', 'batch', 'expiry', 'check'],
                 'meta' => ['date', 'branch', 'author'],
             ],
             'sales_order' => [
-                'label' => 'Pedido', 'preset' => 'lwm-pedido', 'file' => $file('lwm-pedido'),
+                'label' => 'Pedido', 'preset' => 'pedido', 'file' => $file('pedido'),
                 'enabled' => 'documents.builder.sales_order', 'thumbnail' => 'sales-order',
                 'blocks' => ['issuer', 'title', 'party', 'meta', 'shipping', 'lines', 'words', 'totals', 'bank', 'terms', 'notes'],
                 'columns' => ['index', 'sku', 'description', 'quantity', 'unit', 'unitPrice', 'discount', 'total'],

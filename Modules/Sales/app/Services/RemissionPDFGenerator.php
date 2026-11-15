@@ -43,7 +43,7 @@ class RemissionPDFGenerator
 
     /**
      * Bytes del PDF: con `documents.builder.remission` encendido, constructor de
-     * documentos de Atomo y preajuste `lwm-remision`; apagado, la plantilla
+     * documentos de Atomo y preajuste `remision`; apagado, la plantilla
      * Blade de siempre.
      *
      * @param  array<string, mixed>  $data

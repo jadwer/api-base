@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "name": "Cotización informativa del carrito (LWM)",
+  "name": "Cotización (diseño de Figma, 12-11-2026)",
   "theme": {
     "mode": "color"
   },
@@ -14,6 +14,21 @@
         {
           "block": "title",
           "span": 5
+        }
+      ]
+    },
+    {
+      "cells": [
+        {
+          "block": "party",
+          "options": {
+            "meta": [
+              "date",
+              "branch",
+              "author",
+              "credit"
+            ]
+          }
         }
       ]
     },

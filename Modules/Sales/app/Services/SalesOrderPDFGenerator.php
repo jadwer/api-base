@@ -54,7 +54,7 @@ class SalesOrderPDFGenerator
 
     /**
      * Bytes del PDF. Con `documents.builder.sales_order` encendido (app_settings)
-     * sale del constructor de documentos de Atomo con el preajuste `lwm-pedido`;
+     * sale del constructor de documentos de Atomo con el preajuste `pedido`;
      * apagado, de la plantilla Blade de siempre. Se prende o se regresa sin desplegar.
      *
      * @param  array<string, mixed>  $data

@@ -58,7 +58,7 @@ class AppSettingOptionsTest extends TestCase
     public function test_un_ajuste_sin_opciones_acepta_texto_libre(): void
     {
         $this->actingAs($this->admin(), 'sanctum')
-            ->patchJson('/api/v1/app-settings/documents.issuer_name', ['value' => 'Labor Wasser'])
+            ->patchJson('/api/v1/app-settings/documents.issuer_name', ['value' => 'Mi Empresa SA'])
             ->assertOk();
     }
 }

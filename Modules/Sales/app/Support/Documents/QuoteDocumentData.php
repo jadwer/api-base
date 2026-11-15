@@ -10,7 +10,7 @@ use Modules\Sales\Support\QuoteIssuer;
 /**
  * Arma el `$doc` del constructor de documentos de Atomo (atomo/documents,
  * formato v1, contrato de la seccion 1b del plan de Atomo) para una cotizacion
- * de LWM. Recibe lo mismo que ya preparaba QuotePDFGenerator para el Blade, asi
+ * de la app. Recibe lo mismo que ya preparaba QuotePDFGenerator para el Blade, asi
  * que emisor, leyendas, cuentas e importe con letra salen de la misma fuente.
  */
 final class QuoteDocumentData

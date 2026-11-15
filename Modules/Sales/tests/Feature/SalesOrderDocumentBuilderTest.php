@@ -36,7 +36,7 @@ class SalesOrderDocumentBuilderTest extends TestCase
 
     public function test_el_doc_del_pedido_trae_estado_oc_pago_partidas_con_descuento_y_totales(): void
     {
-        $this->assertSame(1, Layouts::get('lwm-pedido')['version']);
+        $this->assertSame(1, Layouts::get('pedido')['version']);
         $o = $this->order();
         $doc = SalesOrderDocumentData::from($o, $this->prepared($o));
 

@@ -10,7 +10,7 @@ use Modules\Sales\Support\PdfImageHelper;
 
 /**
  * El `$doc` del constructor de documentos de Atomo (formato v1) para un pedido
- * (orden de venta) de LWM, desde lo que ya preparaba SalesOrderPDFGenerator
+ * (orden de venta) de la app, desde lo que ya preparaba SalesOrderPDFGenerator
  * para su Blade: emisor fiscal, cliente, estado, entrega, partidas con
  * descuento, totales con letra, cuentas bancarias y condiciones (cada una
  * segun su interruptor de CompanySetting), y notas. Sin diseno del Figma: parte

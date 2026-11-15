@@ -15,7 +15,7 @@ use Tests\TestCase;
 
 /**
  * Cotizacion con el constructor de documentos de Atomo (12-11-2026): el
- * preajuste de LWM es valido, el `$doc` cumple el contrato y, con el
+ * preajuste de la app es valido, el `$doc` cumple el contrato y, con el
  * interruptor documents.builder.quote encendido, el PDF sale por bloques;
  * apagado, por la plantilla Blade de siempre.
  */
@@ -30,11 +30,11 @@ class QuoteDocumentBuilderTest extends TestCase
         return $quote->fresh();
     }
 
-    public function test_el_preajuste_de_lwm_es_un_layout_v1_valido(): void
+    public function test_el_preajuste_de_la_app_es_un_layout_v1_valido(): void
     {
-        $this->assertTrue(Layouts::has('lwm-cotizacion'));
+        $this->assertTrue(Layouts::has('cotizacion'));
         // Layouts::get normaliza (truena con la ruta si el JSON trae una llave desconocida).
-        $layout = Layouts::get('lwm-cotizacion');
+        $layout = Layouts::get('cotizacion');
         $this->assertSame(1, $layout['version']);
         $this->assertSame('color', $layout['theme']['mode']);
     }
@@ -109,7 +109,7 @@ class QuoteDocumentBuilderTest extends TestCase
     {
         $this->app->instance(PdfRenderer::class, $fake = new FakePdfRenderer);
         AppSetting::set('documents.builder.cart_quote', true, 'documents', 'boolean');
-        $this->assertTrue(Layouts::has('lwm-cotizacion-carrito'));
+        $this->assertTrue(Layouts::has('cotizacion-tienda'));
 
         $lines = [
             ['sku' => 'SKU-1', 'name' => 'Reactivo A', 'brand' => 'Marca', 'unit' => 'Pieza', 'quantity' => 2, 'unit_price' => 50.0, 'net' => 100.0, 'tax' => 16.0, 'total' => 116.0, 'price_pending' => false],

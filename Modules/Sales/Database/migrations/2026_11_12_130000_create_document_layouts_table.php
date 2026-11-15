@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Diseno editado de cada documento (editor visual de LWM, 2026-11-12). Una fila
+ * Diseno editado de cada documento (editor visual de la app, 2026-11-12). Una fila
  * por tipo; sin fila, el documento usa su preajuste de fabrica. El layout va en
  * el formato v1 de atomo/documents (congelado), asi que al migrar a Atomo se
  * copia tal cual a su tabla de preajustes.

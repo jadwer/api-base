@@ -8,7 +8,7 @@ use Modules\Sales\Support\PdfImageHelper;
 
 /**
  * El `$doc` del constructor de documentos de Atomo (formato v1) para una
- * remision de LWM, desde lo que ya preparaba RemissionPDFGenerator para su
+ * remision de la app, desde lo que ya preparaba RemissionPDFGenerator para su
  * Blade: emisor fiscal (CompanySetting), cliente, entrega, partidas con lote y
  * caducidad, notas de entrega, leyenda y firmas. Sin precios, como hoy.
  */

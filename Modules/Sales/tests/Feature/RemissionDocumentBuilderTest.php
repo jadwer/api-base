@@ -34,7 +34,7 @@ class RemissionDocumentBuilderTest extends TestCase
 
     public function test_el_doc_de_la_remision_trae_pedido_cliente_partidas_sin_precio_y_firmas(): void
     {
-        $this->assertTrue(Layouts::has('lwm-remision'));
+        $this->assertTrue(Layouts::has('remision'));
         $r = $this->remission();
         $doc = RemissionDocumentData::from($r, $this->prepared($r));
 

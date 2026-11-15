@@ -54,7 +54,7 @@ class QuotePDFGenerator
     /**
      * Bytes del PDF. Con `documents.builder.quote` encendido (app_settings) se
      * pinta con el constructor de documentos de Atomo y el preajuste
-     * `lwm-cotizacion` (diseno del Figma); apagado, con la plantilla Blade de
+     * `cotizacion` (diseno del Figma); apagado, con la plantilla Blade de
      * siempre. Asi se prende o se regresa sin desplegar.
      *
      * @param  array<string, mixed>  $data

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "name": "Cotización LWM (Figma Rediseño Labor wasser, 12-11-2026)",
+  "name": "Cotización informativa de la tienda",
   "theme": {
     "mode": "color"
   },
@@ -14,21 +14,6 @@
         {
           "block": "title",
           "span": 5
-        }
-      ]
-    },
-    {
-      "cells": [
-        {
-          "block": "party",
-          "options": {
-            "meta": [
-              "date",
-              "branch",
-              "author",
-              "credit"
-            ]
-          }
         }
       ]
     },
