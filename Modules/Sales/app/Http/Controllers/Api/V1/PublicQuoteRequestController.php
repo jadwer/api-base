@@ -136,7 +136,6 @@ class PublicQuoteRequestController extends Controller
         $pdf = app(QuotePDFGenerator::class)->stream($quote);
         $pdf->headers->set('Content-Disposition', 'attachment; filename="cotizacion-'.$quote->quote_number.'.pdf"');
         $pdf->headers->set('X-Quote-Number', (string) $quote->quote_number);
-        $pdf->headers->set('Access-Control-Expose-Headers', 'X-Quote-Number');
 
         return $pdf;
     }

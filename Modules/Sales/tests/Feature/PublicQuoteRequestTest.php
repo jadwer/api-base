@@ -65,6 +65,18 @@ class PublicQuoteRequestTest extends TestCase
         $this->assertSame('company', $quote->contact->contact_type);
     }
 
+    public function test_el_navegador_puede_leer_el_folio_por_cors(): void
+    {
+        $product = $this->publicProduct();
+        $origin = collect(config('cors.allowed_origins'))->first(fn ($o) => $o !== '*') ?? 'http://localhost:3000';
+
+        $response = $this->withHeaders(['Origin' => $origin])
+            ->postJson('/api/v1/public/quote-requests', $this->payload([['product_id' => $product->id, 'quantity' => 1]]));
+
+        $response->assertOk();
+        $this->assertStringContainsStringIgnoringCase('X-Quote-Number', (string) $response->headers->get('Access-Control-Expose-Headers'));
+    }
+
     public function test_avisa_al_correo_de_ventas_y_si_no_hay_al_de_administracion(): void
     {
         $product = $this->publicProduct();

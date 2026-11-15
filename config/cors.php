@@ -42,6 +42,8 @@ return [
     ],
 
     'exposed_headers' => [
+        // Folio de la cotizacion que pide la tienda sin registro (descarga del PDF).
+        'X-Quote-Number',
         'X-RateLimit-Limit',
         'X-RateLimit-Remaining',
         'X-Cache',
