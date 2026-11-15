@@ -73,6 +73,8 @@ class GuideAbilitiesContractTest extends TestCase
     public function test_el_cliente_dueno_acepta_y_rechaza_sin_quotes_update(): void
     {
         $quote = $this->quote('sent');
+        // El correo del contacto de fabrica a veces sale vacio: el dueno se liga por correo.
+        $quote->contact->update(['email' => 'dueno-'.$quote->id.'@example.com']);
         $owner = User::factory()->create(['email' => $quote->contact->email]);
         $stranger = User::factory()->create();
 
