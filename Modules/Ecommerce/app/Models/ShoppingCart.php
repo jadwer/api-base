@@ -102,6 +102,34 @@ class ShoppingCart extends Model
     }
 
     // Scopes
+    /** Carritos con al menos un producto (los vacios no sirven para cotizar). */
+    public function scopeWithItems($query)
+    {
+        return $query->whereHas('cartItems');
+    }
+
+    /**
+     * Si el dueno del carrito es un cliente (rol customer). Al cotizar desde
+     * el panel, su carrito se enlaza solo a su cliente; el de un visitante o
+     * el de alguien del equipo pide elegir el cliente (junta 2026-11-12, J4).
+     */
+    public function getOwnerIsCustomerAttribute(): bool
+    {
+        $owner = $this->user;
+
+        return $owner instanceof User && \Modules\User\Support\UserAccess::isCustomer($owner);
+    }
+
+    public function getOwnerNameAttribute(): ?string
+    {
+        return $this->user?->name;
+    }
+
+    public function getOwnerEmailAttribute(): ?string
+    {
+        return $this->user?->email;
+    }
+
     public function scopeActive($query)
     {
         return $query->where('status', 'active');

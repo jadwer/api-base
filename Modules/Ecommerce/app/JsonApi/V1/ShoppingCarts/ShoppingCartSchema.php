@@ -15,6 +15,7 @@ use LaravelJsonApi\Eloquent\Fields\Relations\BelongsTo;
 use LaravelJsonApi\Eloquent\Fields\Relations\HasMany;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Filters\Where;
+use LaravelJsonApi\Eloquent\Filters\Scope;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
 use LaravelJsonApi\Eloquent\Schema;
 use Modules\Ecommerce\Models\ShoppingCart;
@@ -47,6 +48,10 @@ class ShoppingCartSchema extends Schema
             Number::make('finalTotal')->readOnly(),
             Boolean::make('isExpired')->readOnly(),
             Boolean::make('canApplyCoupon')->readOnly(),
+            // Dueno del carrito para cotizar desde el panel (junta 2026-11-12, J4)
+            Str::make('ownerName')->readOnly(),
+            Str::make('ownerEmail')->readOnly(),
+            Boolean::make('ownerIsCustomer')->readOnly(),
 
             // Relationships
             HasMany::make('cartItems'),
@@ -65,6 +70,7 @@ class ShoppingCartSchema extends Schema
             Where::make('user_id'),
             Where::make('currency'),
             Where::make('coupon_code'),
+            Scope::make('withItems'),
         ];
     }
 

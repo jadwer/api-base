@@ -2,49 +2,47 @@
 
 namespace Modules\Sales\Http\Controllers\Api\V1;
 
+use App\Services\CurrencyConversionService;
+use App\Services\MailConfigService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use LaravelJsonApi\Laravel\Http\Controllers\Actions;
+use Modules\Contacts\Models\Contact;
+use Modules\Ecommerce\Models\ShoppingCart;
+use Modules\Inventory\Models\Warehouse;
+use Modules\MailerManager\Models\SystemEmail;
+use Modules\Product\Models\Product;
+use Modules\Purchase\Models\PurchaseOrder;
+use Modules\Purchase\Models\PurchaseOrderItem;
+use Modules\Sales\Mail\QuoteConvertedMail;
+use Modules\Sales\Mail\QuoteRequestedMail;
+use Modules\Sales\Mail\QuoteSentMail;
+use Modules\Sales\Models\FolioSequence;
 use Modules\Sales\Models\Quote;
 use Modules\Sales\Models\QuoteItem;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Models\SalesOrderItem;
-use Modules\Sales\Models\FolioSequence;
 use Modules\Sales\Services\QuotePDFGenerator;
-use Modules\Sales\Services\StockAvailabilityService;
 use Modules\Sales\Services\QuoteWorkflowService;
-use Modules\Ecommerce\Models\ShoppingCart;
-use Modules\Product\Models\Product;
-use Modules\Purchase\Models\PurchaseOrder;
-use Modules\Purchase\Models\PurchaseOrderItem;
-use Modules\Inventory\Models\Warehouse;
-use Modules\Sales\Mail\QuoteConvertedMail;
-use Modules\Sales\Mail\QuoteRequestedMail;
-use Modules\Sales\Mail\QuoteSentMail;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Log;
-use App\Services\MailConfigService;
-use Modules\Contacts\Models\Contact;
-use App\Services\CurrencyConversionService;
-use Modules\MailerManager\Models\SystemEmail;
 
 class QuoteController extends Controller
 {
+    use Actions\AttachRelationship;
+    use Actions\Destroy;
+    use Actions\DetachRelationship;
     use Actions\FetchMany;
     use Actions\FetchOne;
-    use Actions\Store;
-    use Actions\Update;
-    use Actions\Destroy;
     use Actions\FetchRelated;
     use Actions\FetchRelationship;
+    use Actions\Store;
+    use Actions\Update;
     use Actions\UpdateRelationship;
-    use Actions\AttachRelationship;
-    use Actions\DetachRelationship;
 
     /**
      * Create a quote from a shopping cart
@@ -67,19 +65,34 @@ class QuoteController extends Controller
             'branch_id' => 'nullable|integer|exists:branches,id',
         ]);
 
-        // Customers quoting their own cart do not know (or have) a contact_id.
-        // Mirror the checkout behavior: resolve the contact by user email or
-        // create it on the fly.
-        if (!$request->input('contact_id')) {
-            $user = $request->user('sanctum');
-            if (!$user) {
-                abort(422, 'contact_id is required for unauthenticated requests.');
+        /** @var ShoppingCart $cart */
+        $cart = ShoppingCart::with(['cartItems.product.brand', 'user'])->findOrFail((int) $request->input('shopping_cart_id'));
+        $requester = $request->user('sanctum');
+        $requesterIsCustomer = $requester && \Modules\User\Support\UserAccess::isCustomer($requester);
+
+        // Un cliente solo cotiza su propio carrito (regla del portal: cada
+        // cliente alcanza solo lo suyo).
+        if ($requesterIsCustomer && (int) $cart->getAttribute('user_id') !== (int) $requester->getKey()) {
+            abort(403, 'Ese carrito no es tuyo.');
+        }
+
+        // Cliente de la cotizacion (junta 2026-11-12, J4): el que se indique;
+        // si no, el dueno del carrito cuando es un cliente registrado (antes se
+        // tomaba el correo de quien la creaba, que en el panel es el vendedor);
+        // un cliente que cotiza su carrito queda como su propio cliente.
+        if (! $request->input('contact_id')) {
+            $owner = $cart->owner_is_customer ? $cart->user : ($requesterIsCustomer ? $requester : null);
+            if (! $owner) {
+                return response()->json([
+                    'message' => 'Elige el cliente de la cotización: el carrito no es de un cliente registrado.',
+                    'errors' => ['contact_id' => ['Elige el cliente de la cotización: el carrito no es de un cliente registrado.']],
+                ], 422);
             }
             $contact = \Modules\Contacts\Models\Contact::firstOrCreate(
-                ['email' => $user->email],
+                ['email' => $owner->email],
                 [
                     'contact_type' => 'person',
-                    'name' => $user->name ?? $user->email,
+                    'name' => $owner->name ?? $owner->email,
                     'is_customer' => true,
                     'status' => 'active',
                 ]
@@ -87,11 +100,9 @@ class QuoteController extends Controller
             $request->merge(['contact_id' => $contact->id]);
         }
 
-        $cart = ShoppingCart::with('cartItems.product.brand')->findOrFail($request->input('shopping_cart_id'));
-
         if ($cart->cartItems->isEmpty()) {
             return response()->json([
-                'error' => 'No se puede crear una cotización con el carrito vacío.'
+                'error' => 'No se puede crear una cotización con el carrito vacío.',
             ], 400);
         }
 
@@ -119,7 +130,7 @@ class QuoteController extends Controller
                 // Auto-populate ETA from brand if it has a default lead time
                 $notes = null;
                 if ($product?->brand?->default_lead_time) {
-                    $notes = 'ETA: ' . $product->brand->default_lead_time;
+                    $notes = 'ETA: '.$product->brand->default_lead_time;
                 }
 
                 // P2 granel: sujeto a cotizacion = precio pendiente (0 + flag
@@ -159,7 +170,7 @@ class QuoteController extends Controller
 
             return response()->json([
                 'data' => $this->transformQuote($quote->fresh(['items', 'contact'])),
-                'message' => 'Cotización creada desde el carrito.'
+                'message' => 'Cotización creada desde el carrito.',
             ], 201);
         });
     }
@@ -225,17 +236,17 @@ class QuoteController extends Controller
         try {
             if ($recipients === []) {
                 $emailError = 'El cliente no tiene correo y no se eligio ningun destinatario.';
-            } elseif (!SystemEmail::isEnabled('sales.quote_sent')) {
+            } elseif (! SystemEmail::isEnabled('sales.quote_sent')) {
                 $emailError = 'El correo de cotización enviada está desactivado en Mailer Manager.';
             } else {
                 $pdfGenerator = app(QuotePDFGenerator::class);
                 $relativePath = $pdfGenerator->generate($quote);
-                $pdfPath = storage_path('app/public/' . $relativePath);
+                $pdfPath = storage_path('app/public/'.$relativePath);
                 Mail::to($recipients)->send(new QuoteSentMail($quote, $pdfPath));
                 $emailSent = true;
             }
         } catch (\Exception $e) {
-            $emailError = 'No se pudo enviar el correo: ' . $e->getMessage();
+            $emailError = 'No se pudo enviar el correo: '.$e->getMessage();
             Log::error('Failed to send quote email to customer', [
                 'quote_id' => $quote->id,
                 'quote_number' => $quote->quote_number,
@@ -274,6 +285,7 @@ class QuoteController extends Controller
         if ($problems) {
             $message = reset($problems);
             $status = str_contains($message, 'venció') ? 422 : 400;
+
             return response()->json(['error' => $message], $status);
         }
 
@@ -281,7 +293,7 @@ class QuoteController extends Controller
 
         return response()->json([
             'data' => $this->transformQuote($quote->fresh()),
-            'message' => 'Cotización aceptada.'
+            'message' => 'Cotización aceptada.',
         ]);
     }
 
@@ -303,13 +315,13 @@ class QuoteController extends Controller
 
         if ($request->has('reason')) {
             $quote->update([
-                'internal_notes' => $quote->internal_notes . "\nRejection reason: " . $request->input('reason')
+                'internal_notes' => $quote->internal_notes."\nRejection reason: ".$request->input('reason'),
             ]);
         }
 
         return response()->json([
             'data' => $this->transformQuote($quote->fresh()),
-            'message' => 'Cotización rechazada.'
+            'message' => 'Cotización rechazada.',
         ]);
     }
 
@@ -341,6 +353,7 @@ class QuoteController extends Controller
             if (isset($problems['price_pending'])) {
                 return $this->pricePendingRejection($quote, 'convertir');
             }
+
             return response()->json(['error' => reset($problems)], 400);
         }
 
@@ -356,7 +369,7 @@ class QuoteController extends Controller
                 'nullable',
                 Rule::in(array_keys(\Modules\Sales\Support\CustomerAcceptance::CHANNELS)),
             ],
-            'customer_po_number' => ['required_if:acceptance_channel,' . \Modules\Sales\Support\CustomerAcceptance::PURCHASE_ORDER, 'nullable', 'string', 'max:100'],
+            'customer_po_number' => ['required_if:acceptance_channel,'.\Modules\Sales\Support\CustomerAcceptance::PURCHASE_ORDER, 'nullable', 'string', 'max:100'],
             'payment_method' => ['nullable', Rule::in(['PPD', 'PUE'])],
             'credit_days' => ['nullable', 'integer', 'min:0', 'max:365'],
             'shipping_address' => 'nullable|array',
@@ -397,7 +410,7 @@ class QuoteController extends Controller
             $locked = Quote::query()->whereKey($quote->id)->lockForUpdate()->first();
             if (! $locked || ! $locked->canBeConverted) {
                 return response()->json([
-                    'error' => 'La cotización ya se convirtió en pedido.'
+                    'error' => 'La cotización ya se convirtió en pedido.',
                 ], 409);
             }
 
@@ -481,10 +494,10 @@ class QuoteController extends Controller
                             'paymentMethod' => $order->payment_method,
                             'creditDays' => $order->credit_days,
                             'totalAmount' => $order->total_amount,
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
-                'message' => 'Cotización convertida en pedido.'
+                'message' => 'Cotización convertida en pedido.',
             ];
 
             // Pedido: los faltantes no bloquean, pero se reportan para compras
@@ -506,15 +519,15 @@ class QuoteController extends Controller
             abort(403, 'No tiene permisos para cancelar cotizaciones');
         }
 
-        if ($this->workflow()->cancelProblems($quote) || !$quote->cancel()) {
+        if ($this->workflow()->cancelProblems($quote) || ! $quote->cancel()) {
             return response()->json([
-                'error' => 'Esta cotización no se puede cancelar en su estado actual.'
+                'error' => 'Esta cotización no se puede cancelar en su estado actual.',
             ], 400);
         }
 
         return response()->json([
             'data' => $this->transformQuote($quote->fresh()),
-            'message' => 'Cotización cancelada.'
+            'message' => 'Cotización cancelada.',
         ]);
     }
 
@@ -551,7 +564,7 @@ class QuoteController extends Controller
 
             return response()->json([
                 'data' => $this->transformQuote($newQuote->fresh(['items', 'contact'])),
-                'message' => 'Cotización duplicada.'
+                'message' => 'Cotización duplicada.',
             ], 201);
         });
     }
@@ -597,7 +610,7 @@ class QuoteController extends Controller
             'data' => $this->transformQuote($quote->fresh(['items', 'contact'])),
             'message' => $updated === 0
                 ? 'Los impuestos ya estaban al día.'
-                : "Impuestos recalculados en {$updated} " . ($updated === 1 ? 'partida.' : 'partidas.'),
+                : "Impuestos recalculados en {$updated} ".($updated === 1 ? 'partida.' : 'partidas.'),
         ]);
     }
 
@@ -619,11 +632,11 @@ class QuoteController extends Controller
             ->get();
 
         return response()->json([
-            'data' => $quotes->map(fn($q) => $this->transformQuote($q)),
+            'data' => $quotes->map(fn ($q) => $this->transformQuote($q)),
             'meta' => [
                 'count' => $quotes->count(),
-                'days' => $days
-            ]
+                'days' => $days,
+            ],
         ]);
     }
 
@@ -654,7 +667,7 @@ class QuoteController extends Controller
         ];
 
         return response()->json([
-            'data' => $stats
+            'data' => $stats,
         ]);
     }
 
@@ -668,15 +681,15 @@ class QuoteController extends Controller
             abort(403, 'No tiene permisos para generar PDF de cotizaciones');
         }
 
-        $generator = new QuotePDFGenerator();
+        $generator = new QuotePDFGenerator;
         $path = $generator->generate($quote);
 
         return response()->json([
             'data' => [
                 'path' => $path,
-                'url' => asset('storage/' . $path),
+                'url' => asset('storage/'.$path),
             ],
-            'message' => 'PDF generado correctamente'
+            'message' => 'PDF generado correctamente',
         ]);
     }
 
@@ -690,7 +703,8 @@ class QuoteController extends Controller
             abort(403, 'No tiene permisos para descargar PDF de cotizaciones');
         }
 
-        $generator = new QuotePDFGenerator();
+        $generator = new QuotePDFGenerator;
+
         return $generator->download($quote);
     }
 
@@ -704,7 +718,8 @@ class QuoteController extends Controller
             abort(403, 'No tiene permisos para previsualizar cotizaciones');
         }
 
-        $generator = new QuotePDFGenerator();
+        $generator = new QuotePDFGenerator;
+
         return $generator->preview($quote);
     }
 
@@ -718,7 +733,8 @@ class QuoteController extends Controller
             abort(403, 'No tiene permisos para ver cotizaciones');
         }
 
-        $generator = new QuotePDFGenerator();
+        $generator = new QuotePDFGenerator;
+
         return $generator->stream($quote);
     }
 
@@ -735,9 +751,9 @@ class QuoteController extends Controller
         }
 
         // Validate quote can generate PO
-        if (!$quote->canGeneratePurchaseOrder) {
+        if (! $quote->canGeneratePurchaseOrder) {
             return response()->json([
-                'error' => 'No se puede generar la orden de compra: la cotización debe estar aceptada o convertida y no tener ya una orden de compra.'
+                'error' => 'No se puede generar la orden de compra: la cotización debe estar aceptada o convertida y no tener ya una orden de compra.',
             ], 400);
         }
 
@@ -750,7 +766,7 @@ class QuoteController extends Controller
         return DB::transaction(function () use ($request, $quote) {
             // Get warehouse if not provided (use first active warehouse)
             $warehouseId = $request->input('warehouse_id');
-            if (!$warehouseId) {
+            if (! $warehouseId) {
                 $warehouse = Warehouse::where('is_active', true)->first()
                     ?? Warehouse::first();
                 $warehouseId = $warehouse?->id;
@@ -817,10 +833,10 @@ class QuoteController extends Controller
                             'totalAmount' => $purchaseOrder->total_amount,
                             'supplierId' => $purchaseOrder->contact_id,
                             'warehouseId' => $purchaseOrder->warehouse_id,
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
-                'message' => 'Orden de compra generada desde la cotización.'
+                'message' => 'Orden de compra generada desde la cotización.',
             ], 201);
         });
     }
@@ -875,9 +891,9 @@ class QuoteController extends Controller
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
-                'error' => 'Debes iniciar sesión.'
+                'error' => 'Debes iniciar sesión.',
             ], 401);
         }
 
@@ -892,7 +908,7 @@ class QuoteController extends Controller
         // Find or create contact for the user
         $contact = Contact::where('email', $user->email)->first();
 
-        if (!$contact) {
+        if (! $contact) {
             // Create a new contact for this user
             $contact = Contact::create([
                 'contact_type' => 'individual',
@@ -915,7 +931,7 @@ class QuoteController extends Controller
 
         if ($products->count() !== $productIds->count()) {
             return response()->json([
-                'error' => 'Uno o más productos no están disponibles.'
+                'error' => 'Uno o más productos no están disponibles.',
             ], 400);
         }
 
@@ -1010,7 +1026,7 @@ class QuoteController extends Controller
                     'total_amount' => $quote->total_amount,
                     'items_count' => $quote->items->count(),
                     'valid_until' => $quote->valid_until?->toDateString(),
-                ]
+                ],
             ], 201);
         });
     }
@@ -1039,8 +1055,8 @@ class QuoteController extends Controller
                 'code' => 'price_pending',
                 'title' => 'Precio por confirmar',
                 'detail' => $action === 'aceptar'
-                    ? 'El precio de ' . $name($item) . ' está por confirmar.'
-                    : 'Captura el precio de ' . $name($item) . ' antes de convertir.',
+                    ? 'El precio de '.$name($item).' está por confirmar.'
+                    : 'Captura el precio de '.$name($item).' antes de convertir.',
                 'meta' => [
                     'quote_item_id' => $item->id,
                     'product_id' => $item->product_id,
@@ -1105,15 +1121,15 @@ class QuoteController extends Controller
                     'data' => [
                         'type' => 'contacts',
                         'id' => (string) $quote->contact->id,
-                    ]
+                    ],
                 ] : null,
                 'items' => $quote->relationLoaded('items') ? [
-                    'data' => $quote->items->map(fn($item) => [
+                    'data' => $quote->items->map(fn ($item) => [
                         'type' => 'quote-items',
                         'id' => (string) $item->id,
-                    ])->toArray()
+                    ])->toArray(),
                 ] : null,
-            ]
+            ],
         ];
     }
 }

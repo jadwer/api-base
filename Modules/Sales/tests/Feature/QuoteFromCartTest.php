@@ -2,11 +2,11 @@
 
 namespace Modules\Sales\Tests\Feature;
 
-use Tests\TestCase;
 use Modules\Contacts\Models\Contact;
-use Modules\Ecommerce\Models\ShoppingCart;
 use Modules\Ecommerce\Models\CartItem;
+use Modules\Ecommerce\Models\ShoppingCart;
 use Modules\Product\Models\Product;
+use Tests\TestCase;
 
 class QuoteFromCartTest extends TestCase
 {
@@ -123,34 +123,88 @@ class QuoteFromCartTest extends TestCase
         $response->assertJsonValidationErrors(['shopping_cart_id']);
     }
 
-    public function test_missing_contact_id_resolves_or_creates_contact_from_user(): void
+    /** Carrito con una partida para el usuario indicado. */
+    private function cartFor(?int $userId): ShoppingCart
     {
-        // Customers quoting their own cart do not send contact_id: the
-        // controller resolves it by user email or creates the contact on the
-        // fly (same behavior as checkout).
-        $admin = $this->getAdminUser();
-        $cart = ShoppingCart::factory()->create(['user_id' => $admin->id]);
-        $product = Product::factory()->create(['price' => 100]);
-
+        $cart = ShoppingCart::factory()->create(['user_id' => $userId]);
         CartItem::factory()->create([
             'shopping_cart_id' => $cart->id,
-            'product_id' => $product->id,
+            'product_id' => Product::factory()->create(['price' => 100])->id,
             'quantity' => 1,
             'unit_price' => 100,
         ]);
 
-        $response = $this->actingAs($admin, 'sanctum')
-            ->postJson('/api/v1/quotes/from-cart', [
-                'shopping_cart_id' => $cart->id,
-            ]);
+        return $cart;
+    }
 
-        $response->assertStatus(201);
-        $this->assertDatabaseHas('contacts', ['email' => $admin->email]);
-        $contactId = Contact::where('email', $admin->email)->value('id');
-        $this->assertDatabaseHas('quotes', [
-            'shopping_cart_id' => $cart->id,
-            'contact_id' => $contactId,
-        ]);
+    public function test_a_customer_quoting_their_own_cart_becomes_the_contact(): void
+    {
+        $customer = $this->getCustomerUser();
+        $cart = $this->cartFor($customer->id);
+
+        $this->actingAs($customer, 'sanctum')
+            ->postJson('/api/v1/quotes/from-cart', ['shopping_cart_id' => $cart->id])
+            ->assertStatus(201);
+
+        $this->assertDatabaseHas('quotes', ['shopping_cart_id' => $cart->id, 'contact_id' => Contact::where('email', $customer->email)->value('id')]);
+    }
+
+    public function test_staff_converting_a_customer_cart_links_the_cart_owner_not_the_staff(): void
+    {
+        // Junta 2026-11-12 (J4): antes se tomaba el correo de quien la creaba.
+        $customer = $this->getCustomerUser();
+        $cart = $this->cartFor($customer->id);
+        $admin = $this->getAdminUser();
+
+        $this->actingAs($admin, 'sanctum')
+            ->postJson('/api/v1/quotes/from-cart', ['shopping_cart_id' => $cart->id])
+            ->assertStatus(201);
+
+        $this->assertDatabaseHas('quotes', ['shopping_cart_id' => $cart->id, 'contact_id' => Contact::where('email', $customer->email)->value('id')]);
+        $this->assertDatabaseMissing('contacts', ['email' => $admin->email, 'is_customer' => true]);
+    }
+
+    public function test_a_cart_without_a_registered_customer_asks_for_the_contact_in_spanish(): void
+    {
+        $admin = $this->getAdminUser();
+        $cart = $this->cartFor($admin->id);
+
+        $this->actingAs($admin, 'sanctum')
+            ->postJson('/api/v1/quotes/from-cart', ['shopping_cart_id' => $cart->id])
+            ->assertStatus(422)
+            ->assertJsonPath('message', 'Elige el cliente de la cotización: el carrito no es de un cliente registrado.');
+        $this->assertDatabaseMissing('quotes', ['shopping_cart_id' => $cart->id]);
+    }
+
+    public function test_a_customer_cannot_quote_someone_elses_cart(): void
+    {
+        $other = \Modules\User\Models\User::factory()->create();
+        $other->assignRole('customer');
+        $cart = $this->cartFor($other->id);
+
+        $this->actingAs($this->getCustomerUser(), 'sanctum')
+            ->postJson('/api/v1/quotes/from-cart', ['shopping_cart_id' => $cart->id])
+            ->assertStatus(403);
+        $this->assertDatabaseMissing('quotes', ['shopping_cart_id' => $cart->id]);
+    }
+
+    public function test_carts_list_only_with_items_and_says_who_owns_them(): void
+    {
+        $customer = $this->getCustomerUser();
+        $full = $this->cartFor($customer->id);
+        $empty = ShoppingCart::factory()->create(['user_id' => $customer->id]);
+
+        $data = $this->actingAs($this->getAdminUser(), 'sanctum')
+            ->jsonApi()->expects('shopping-carts')
+            ->get('/api/v1/shopping-carts?filter[withItems]=1&page[size]=100')
+            ->assertOk()->json('data');
+
+        $ids = array_column($data, 'id');
+        $this->assertContains((string) $full->id, $ids);
+        $this->assertNotContains((string) $empty->id, $ids);
+        $row = collect($data)->firstWhere('id', (string) $full->id);
+        $this->assertTrue($row['attributes']['ownerIsCustomer']);
+        $this->assertSame($customer->email, $row['attributes']['ownerEmail']);
     }
 
     public function test_returns_404_for_nonexistent_cart(): void
