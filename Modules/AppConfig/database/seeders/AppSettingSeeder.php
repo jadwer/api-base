@@ -57,6 +57,7 @@ class AppSettingSeeder extends Seeder
             ['key' => 'mail.system_email', 'value' => 'info@example.com', 'type' => 'string', 'group' => 'mail', 'label' => 'Email del sistema (remitente)', 'description' => 'Dirección de correo que aparece como remitente en todos los emails del sistema'],
             ['key' => 'mail.system_name', 'value' => 'Tu Empresa', 'type' => 'string', 'group' => 'mail', 'label' => 'Nombre del remitente'],
             ['key' => 'mail.admin_notification_email', 'value' => 'admin@example.com', 'type' => 'string', 'group' => 'mail', 'label' => 'Email para notificaciones administrativas', 'description' => 'Email donde llegan avisos de nuevas cotizaciones, órdenes, etc.'],
+            ['key' => 'mail.sales_quote_email', 'value' => '', 'type' => 'string', 'group' => 'mail', 'label' => 'Correo de ventas (avisos de cotizaciones)', 'description' => 'Recibe el aviso de cada cotización nueva de la tienda o del portal para asignar vendedor. Vacío: llega al correo de avisos de administración.'],
             ['key' => 'mail.smtp_host', 'value' => '', 'type' => 'string', 'group' => 'mail', 'label' => 'SMTP Host'],
             ['key' => 'mail.smtp_port', 'value' => '465', 'type' => 'string', 'group' => 'mail', 'label' => 'SMTP Puerto'],
             ['key' => 'mail.smtp_username', 'value' => '', 'type' => 'string', 'group' => 'mail', 'label' => 'SMTP Usuario', 'description' => 'Email completo creado en cPanel'],

@@ -67,6 +67,11 @@ class QuoteRequestedMail extends Mailable
             'total' => number_format($this->quoteSummary['total'] ?? 0, 2),
             'currency' => $this->quoteSummary['currency'] ?? 'MXN',
             'company_name' => app(\Modules\AppConfig\Services\AppSettingResolver::class)->get('company.name', config('app.name', 'Tu Empresa')),
+            'requester_name' => $this->quoteSummary['store_request']['name'] ?? '',
+            'requester_company' => $this->quoteSummary['store_request']['company'] ?? '',
+            'attention_to' => $this->quoteSummary['store_request']['attention_to'] ?? '',
+            'requester_phone' => $this->quoteSummary['store_request']['phone'] ?? '',
+            'source' => isset($this->quoteSummary['store_request']) ? 'Tienda en línea (sin registro)' : 'Cliente registrado',
         ];
     }
 
@@ -80,6 +85,8 @@ class QuoteRequestedMail extends Mailable
             'items' => $this->quoteItemsSummary($this->quote),
             'total' => $this->quote->total_amount,
             'currency' => $this->quote->currency ?? 'MXN',
+            // Solicitud de la tienda sin registro (junta 2026-11-12, J2)
+            'store_request' => is_array($this->quote->metadata['store_request'] ?? null) ? $this->quote->metadata['store_request'] : null,
         ];
     }
 }

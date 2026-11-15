@@ -15,6 +15,16 @@
             @if($quoteSummary['customer_email'])
                 <p><strong>Email:</strong> {{ $quoteSummary['customer_email'] }}</p>
             @endif
+            @if(!empty($quoteSummary['store_request']))
+                <p><strong>Origen:</strong> tienda en línea, sin registro</p>
+                <p><strong>Solicita:</strong> {{ $quoteSummary['store_request']['name'] }}</p>
+                <p><strong>Empresa:</strong> {{ $quoteSummary['store_request']['company'] }}</p>
+                <p><strong>Dirigida a:</strong> {{ $quoteSummary['store_request']['attention_to'] }}</p>
+                @if(!empty($quoteSummary['store_request']['phone']))
+                    <p><strong>Teléfono:</strong> {{ $quoteSummary['store_request']['phone'] }}</p>
+                @endif
+            @endif
+            <p><strong>Vendedor:</strong> {{ $quote->assigned_user_name ?: 'Por asignar' }}</p>
         </div>
     @else
         <h2>Su solicitud ha sido recibida</h2>

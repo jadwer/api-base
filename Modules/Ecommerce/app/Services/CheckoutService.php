@@ -412,7 +412,7 @@ class CheckoutService
         $billingAddress = $session->billing_address ?? [];
 
         return Contact::create([
-            'contact_type' => 'individual',
+            'contact_type' => 'person', // 'individual' no es valido (person|company): regla 7
             'name' => $user->name,
             'legal_name' => $user->name,
             'email' => $user->email,

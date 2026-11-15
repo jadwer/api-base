@@ -158,7 +158,7 @@ class QuoteController extends Controller
             // Send notification email to admin
             try {
                 if (SystemEmail::isEnabled('sales.quote_requested.admin')) {
-                    $adminEmail = MailConfigService::getAdminEmail();
+                    $adminEmail = \Modules\Sales\Support\SalesNotificationEmail::address();
                     Mail::to($adminEmail)->send(new QuoteRequestedMail($quote, true));
                 }
             } catch (\Exception $e) {
@@ -911,7 +911,8 @@ class QuoteController extends Controller
         if (! $contact) {
             // Create a new contact for this user
             $contact = Contact::create([
-                'contact_type' => 'individual',
+                // 'individual' no es un tipo valido (person|company): regla 7.
+                'contact_type' => 'person',
                 'name' => $user->name,
                 'email' => $user->email,
                 'phone' => $user->phone ?? null,
@@ -1008,7 +1009,7 @@ class QuoteController extends Controller
                     Mail::to($contact->email)->send(new QuoteRequestedMail($quote, false));
                 }
                 if (SystemEmail::isEnabled('sales.quote_requested.admin')) {
-                    $adminEmail = MailConfigService::getAdminEmail();
+                    $adminEmail = \Modules\Sales\Support\SalesNotificationEmail::address();
                     Mail::to($adminEmail)->send(new QuoteRequestedMail($quote, true));
                 }
             } catch (\Exception $e) {

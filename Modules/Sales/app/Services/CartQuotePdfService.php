@@ -24,6 +24,27 @@ class CartQuotePdfService
      * @param  array<int, array{product_id: int|string, quantity: int|float|string}>  $items
      * @return array{lines: array<int, array<string, mixed>>, totals: array{net: float, tax: float, total: float}, pending_count: int}
      */
+    /**
+     * Productos que la tienda muestra (mismo recorte que PublicProductSchema::indexQuery):
+     * nunca cotizar algo que la tienda no ensena. Lo usan el PDF informativo y la
+     * solicitud de cotizacion de la tienda.
+     *
+     * @param  array<int, int>  $ids
+     * @return \Illuminate\Database\Eloquent\Collection<int, Product>
+     */
+    public function publicProducts(array $ids): \Illuminate\Database\Eloquent\Collection
+    {
+        return Product::query()
+            ->whereIn('id', $ids)
+            ->where('is_active', true)
+            ->where('is_public', true)
+            ->whereHas('brand', fn ($q) => $q->where('is_active', true))
+            ->whereHas('category', fn ($q) => $q->where('is_active', true))
+            ->with(['brand', 'unit'])
+            ->orderBy('name')
+            ->get();
+    }
+
     public function buildLines(array $items): array
     {
         $quantities = [];
@@ -36,15 +57,7 @@ class CartQuotePdfService
 
         // Mismo recorte que el catalogo publico (PublicProductSchema::indexQuery):
         // nunca cotizar algo que la tienda no muestra.
-        $products = Product::query()
-            ->whereIn('id', array_keys($quantities))
-            ->where('is_active', true)
-            ->where('is_public', true)
-            ->whereHas('brand', fn ($q) => $q->where('is_active', true))
-            ->whereHas('category', fn ($q) => $q->where('is_active', true))
-            ->with(['brand', 'unit'])
-            ->orderBy('name')
-            ->get();
+        $products = $this->publicProducts(array_keys($quantities));
 
         $lines = [];
         $netTotal = 0.0;

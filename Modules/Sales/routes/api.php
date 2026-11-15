@@ -5,6 +5,7 @@ use Modules\Sales\Http\Controllers\Api\V1\FolioSequenceController;
 use Modules\Sales\Http\Controllers\Api\V1\OrderTrackingController;
 use Modules\Sales\Http\Controllers\Api\V1\CustomerOrderController;
 use Modules\Sales\Http\Controllers\Api\V1\PublicCartQuotePdfController;
+use Modules\Sales\Http\Controllers\Api\V1\PublicQuoteRequestController;
 use Modules\Sales\Http\Controllers\Api\V1\DocumentDesignController;
 
 /*
@@ -21,6 +22,12 @@ use Modules\Sales\Http\Controllers\Api\V1\DocumentDesignController;
 Route::prefix('v1')->middleware('throttle:10,1')->group(function () {
     Route::post('public/cart-quote-pdf', [PublicCartQuotePdfController::class, 'download'])
         ->name('public.cart-quote-pdf');
+});
+
+// Solicitud de cotizacion desde la tienda sin registro (junta 2026-11-12, J2):
+// crea contacto y cotizacion, asi que va mas limitada que el PDF informativo.
+Route::prefix('v1')->middleware('throttle:5,1')->group(function () {
+    Route::post('public/quote-requests', [PublicQuoteRequestController::class, 'store']);
 });
 
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
