@@ -54,12 +54,9 @@ class StockStoreTest extends TestCase
         $stockData = [
             'type' => 'stocks',
             'attributes' => [
-                'quantity' => 100.5000,
-                'reservedQuantity' => 15.2500,
                 'minimumStock' => 10.0000,
                 'maximumStock' => 500.0000,
                 'reorderPoint' => 20.0000,
-                'unitCost' => 25.7500,
                 'status' => 'active',
                 'productId' => $product->id,
                 'warehouseId' => $warehouse->id,
@@ -99,10 +96,9 @@ class StockStoreTest extends TestCase
             'product_id' => $product->id,
             'warehouse_id' => $warehouse->id,
             'warehouse_location_id' => $location->id,
-            'quantity' => 100.5000,
-            'reserved_quantity' => 15.2500,
+            // Nace en cero: la existencia la dan las entradas
+            'quantity' => 0,
             'minimum_stock' => 10.0000,
-            'unit_cost' => 25.7500,
             'status' => 'active'
         ]);
         
@@ -130,7 +126,7 @@ class StockStoreTest extends TestCase
         $stockData = [
             'type' => 'stocks',
             'attributes' => [
-                // Faltan campos requeridos: quantity, unitCost, status
+                // Falta el campo requerido status
                 'minimumStock' => 10.0000
             ]
             // Faltan relaciones requeridas: product, warehouse
@@ -146,8 +142,6 @@ class StockStoreTest extends TestCase
         
         // Verificar errores de validación
         $this->assertJsonApiValidationErrors([
-            '/data/attributes/quantity',
-            '/data/attributes/unitCost',
             '/data/attributes/status',
             '/data/relationships/product',
             '/data/relationships/warehouse'
@@ -164,10 +158,8 @@ class StockStoreTest extends TestCase
         $stockData = [
             'type' => 'stocks',
             'attributes' => [
-                'quantity' => -10.0000,
-                'reservedQuantity' => -5.0000,
+                'quantity' => 10.0000,
                 'minimumStock' => -1.0000,
-                'unitCost' => -25.7500,
                 'status' => 'active'
             ],
             'relationships' => [
@@ -188,12 +180,10 @@ class StockStoreTest extends TestCase
 
         $response->assertStatus(422);
         
-        // Verificar errores de validación para valores negativos
+        // Minimo negativo y existencia capturada a mano se rechazan
         $this->assertJsonApiValidationErrors([
             '/data/attributes/quantity',
-            '/data/attributes/reservedQuantity',
-            '/data/attributes/minimumStock',
-            '/data/attributes/unitCost'
+            '/data/attributes/minimumStock'
         ], $response);
     }
 
@@ -207,8 +197,6 @@ class StockStoreTest extends TestCase
         $stockData = [
             'type' => 'stocks',
             'attributes' => [
-                'quantity' => 100.0000,
-                'unitCost' => 25.7500,
                 'status' => 'invalid_status'
             ],
             'relationships' => [
@@ -253,8 +241,6 @@ class StockStoreTest extends TestCase
         $stockData = [
             'type' => 'stocks',
             'attributes' => [
-                'quantity' => 50.0000,
-                'unitCost' => 30.0000,
                 'status' => 'active',
                 'productId' => $product->id,
                 'warehouseId' => $warehouse->id,
@@ -303,8 +289,6 @@ class StockStoreTest extends TestCase
         $stockData = [
             'type' => 'stocks',
             'attributes' => [
-                'quantity' => 100.0000,
-                'unitCost' => 25.0000,
                 'status' => 'active'
             ],
             'relationships' => [
@@ -336,8 +320,6 @@ class StockStoreTest extends TestCase
         $stockData = [
             'type' => 'stocks',
             'attributes' => [
-                'quantity' => 100.0000,
-                'unitCost' => 25.0000,
                 'status' => 'active'
             ],
             'relationships' => [
@@ -367,8 +349,6 @@ class StockStoreTest extends TestCase
         $stockData = [
             'type' => 'stocks',
             'attributes' => [
-                'quantity' => 100.0000,
-                'unitCost' => 25.0000,
                 'status' => 'active'
             ],
             'relationships' => [

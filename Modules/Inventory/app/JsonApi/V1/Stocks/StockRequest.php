@@ -21,15 +21,17 @@ class StockRequest extends ResourceRequest
         $isUpdate = $this->isMethod('patch');
 
         return [
-            'quantity' => $isUpdate ? ['sometimes', 'numeric', 'min:0'] : ['required', 'numeric', 'min:0'],
-            'reservedQuantity' => ['sometimes', 'nullable', 'numeric', 'min:0'],
+            // Las existencias salen de los movimientos (decision 2026-11-15): cantidad, reservado,
+            // costo y ultimo movimiento no se capturan por la API.
+            'quantity' => [$this->notCaptured('La existencia no se captura a mano: registra una entrada o un ajuste en Movimientos.')],
+            'reservedQuantity' => [$this->notCaptured('Lo reservado lo calculan los pedidos; no se captura a mano.')],
             'minimumStock' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'maximumStock' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'reorderPoint' => ['sometimes', 'nullable', 'numeric', 'min:0'],
-            'unitCost' => $isUpdate ? ['sometimes', 'numeric', 'min:0'] : ['required', 'numeric', 'min:0'],
+            'unitCost' => [$this->notCaptured('El costo sale de las entradas registradas; no se captura a mano.')],
             'status' => $isUpdate ? ['sometimes', 'string', 'in:active,inactive,quarantine,damaged'] : ['required', 'string', 'in:active,inactive,quarantine,damaged'],
-            'lastMovementDate' => ['sometimes', 'nullable', 'date'],
-            'lastMovementType' => ['sometimes', 'nullable', 'string', 'in:in,out,adjustment,transfer'],
+            'lastMovementDate' => [$this->notCaptured('El último movimiento lo registra el sistema.')],
+            'lastMovementType' => [$this->notCaptured('El último movimiento lo registra el sistema.')],
             'batchInfo' => ['sometimes', 'nullable', 'array'],
             'metadata' => ['sometimes', 'nullable', 'array'],
             // Foreign keys como atributos con validación unique
@@ -64,4 +66,17 @@ class StockRequest extends ResourceRequest
         ];
     }
 
+
+    /**
+     * Rechaza el campo solo si el cliente lo mando. En PATCH, laravel-json-api mezcla los
+     * valores guardados antes de validar: 'prohibited' fallaria siempre.
+     */
+    private function notCaptured(string $message): \Closure
+    {
+        return function (string $attribute, mixed $value, \Closure $fail) use ($message): void {
+            if (array_key_exists($attribute, (array) $this->input('data.attributes', []))) {
+                $fail($message);
+            }
+        };
+    }
 }

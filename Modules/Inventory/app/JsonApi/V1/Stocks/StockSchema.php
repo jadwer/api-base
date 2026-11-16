@@ -38,10 +38,13 @@ class StockSchema extends Schema
             Number::make('locationId', 'warehouse_location_id')->acceptStrings(),
             
             // Cantidades
+            // Solo lectura: las mueven los movimientos y los pedidos (StockRequest las prohibe)
             Number::make('quantity')
-                ->sortable(),
+                ->sortable()
+                ->readOnly(),
             Number::make('reservedQuantity', 'reserved_quantity')
-                ->sortable(),
+                ->sortable()
+                ->readOnly(),
             Number::make('availableQuantity', 'available_quantity')
                 ->sortable()
                 ->readOnly(),
@@ -56,7 +59,8 @@ class StockSchema extends Schema
             
             // Costos y valores
             Number::make('unitCost', 'unit_cost')
-                ->sortable(),
+                ->sortable()
+                ->readOnly(),
             Number::make('totalValue', 'total_value')
                 ->sortable()
                 ->readOnly(),
@@ -67,8 +71,9 @@ class StockSchema extends Schema
             // Columna date: sale como Y-m-d; acepta fecha o fecha y hora al escribir
             DateTime::make('lastMovementDate', 'last_movement_date')
                 ->serializeUsing(static fn ($value) => $value?->format('Y-m-d'))
-                ->sortable(),
-            Str::make('lastMovementType', 'last_movement_type'),
+                ->sortable()
+                ->readOnly(),
+            Str::make('lastMovementType', 'last_movement_type')->readOnly(),
             
             // Información adicional
             ArrayHash::make('batchInfo', 'batch_info'),

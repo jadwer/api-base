@@ -46,12 +46,9 @@ class StockUpdateTest extends TestCase
             'type' => 'stocks',
             'id' => (string) $stock->id,
             'attributes' => [
-                'quantity' => 150.7500,
-                'reservedQuantity' => 25.5000,
                 'minimumStock' => 20.0000,
                 'maximumStock' => 800.0000,
                 'reorderPoint' => 30.0000,
-                'unitCost' => 30.2500,
                 'status' => 'quarantine',
                 'batchInfo' => [
                     'batch_number' => 'BATCH987654',
@@ -76,12 +73,12 @@ class StockUpdateTest extends TestCase
         // Verificar que el stock fue actualizado en la base de datos
         $this->assertDatabaseHas('stock', [
             'id' => $stock->id,
-            'quantity' => 150.7500,
-            'reserved_quantity' => 25.5000,
+            // Existencia y costo no cambian por la API: los mueven los movimientos
+            'quantity' => 100.0000,
             'minimum_stock' => 20.0000,
             'maximum_stock' => 800.0000,
             'reorder_point' => 30.0000,
-            'unit_cost' => 30.2500,
+            'unit_cost' => 25.0000,
             'status' => 'quarantine'
         ]);
 
@@ -106,7 +103,7 @@ class StockUpdateTest extends TestCase
                 'type' => 'stocks',
                 'id' => (string) $stock->id,
                 'attributes' => [
-                    'quantity' => 150.7500,
+                    'quantity' => 100.0,
                     'status' => 'quarantine'
                 ]
             ]
@@ -123,8 +120,6 @@ class StockUpdateTest extends TestCase
             'type' => 'stocks',
             'id' => (string) $stock->id,
             'attributes' => [
-                'quantity' => null,
-                'unitCost' => null,
                 'status' => null
             ]
         ];
@@ -139,8 +134,6 @@ class StockUpdateTest extends TestCase
         
         // Verificar errores de validación específicos
         $this->assertJsonApiValidationErrors([
-            '/data/attributes/quantity',
-            '/data/attributes/unitCost',
             '/data/attributes/status'
         ], $response);
     }
@@ -155,10 +148,8 @@ class StockUpdateTest extends TestCase
             'type' => 'stocks',
             'id' => (string) $stock->id,
             'attributes' => [
-                'quantity' => -10.0000,
-                'reservedQuantity' => -5.0000,
                 'minimumStock' => -1.0000,
-                'unitCost' => -25.7500,
+                'maximumStock' => -2.0000,
                 'status' => 'active'
             ]
         ];
@@ -173,11 +164,27 @@ class StockUpdateTest extends TestCase
         
         // Verificar errores de validación para valores negativos
         $this->assertJsonApiValidationErrors([
-            '/data/attributes/quantity',
-            '/data/attributes/reservedQuantity',
             '/data/attributes/minimumStock',
-            '/data/attributes/unitCost'
+            '/data/attributes/maximumStock'
         ], $response);
+    }
+
+    public function test_la_existencia_y_el_costo_no_se_editan_a_mano()
+    {
+        $admin = $this->createUserWithPermissions('admin', ['stocks.update']);
+        $stock = Stock::factory()->create(['quantity' => 40, 'unit_cost' => 12]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->jsonApi()
+            ->expects('stocks')
+            ->withData(['type' => 'stocks', 'id' => (string) $stock->id, 'attributes' => ['quantity' => 999, 'reservedQuantity' => 1, 'unitCost' => 1]])
+            ->patch("/api/v1/stocks/{$stock->id}");
+
+        $response->assertStatus(422)
+            ->assertJsonFragment(['detail' => 'La existencia no se captura a mano: registra una entrada o un ajuste en Movimientos.'])
+            ->assertJsonFragment(['detail' => 'Lo reservado lo calculan los pedidos; no se captura a mano.'])
+            ->assertJsonFragment(['detail' => 'El costo sale de las entradas registradas; no se captura a mano.']);
+        $this->assertDatabaseHas('stock', ['id' => $stock->id, 'quantity' => 40, 'unit_cost' => 12]);
     }
 
     public function test_stock_update_validates_status_enum()
@@ -190,8 +197,6 @@ class StockUpdateTest extends TestCase
             'type' => 'stocks',
             'id' => (string) $stock->id,
             'attributes' => [
-                'quantity' => 100.0000,
-                'unitCost' => 25.0000,
                 'status' => 'invalid_status'
             ]
         ];
@@ -218,8 +223,6 @@ class StockUpdateTest extends TestCase
             'type' => 'stocks',
             'id' => '99999',
             'attributes' => [
-                'quantity' => 100.0000,
-                'unitCost' => 25.0000,
                 'status' => 'active'
             ]
         ];
@@ -243,8 +246,6 @@ class StockUpdateTest extends TestCase
             'type' => 'stocks',
             'id' => (string) $stock->id,
             'attributes' => [
-                'quantity' => 200.0000,
-                'unitCost' => 30.0000,
                 'status' => 'inactive'
             ]
         ];
@@ -268,8 +269,6 @@ class StockUpdateTest extends TestCase
             'type' => 'stocks',
             'id' => (string) $stock->id,
             'attributes' => [
-                'quantity' => 200.0000,
-                'unitCost' => 30.0000,
                 'status' => 'inactive'
             ]
         ];
@@ -291,8 +290,6 @@ class StockUpdateTest extends TestCase
             'type' => 'stocks',
             'id' => (string) $stock->id,
             'attributes' => [
-                'quantity' => 200.0000,
-                'unitCost' => 30.0000,
                 'status' => 'inactive'
             ]
         ];
