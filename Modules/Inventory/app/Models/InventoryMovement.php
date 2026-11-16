@@ -203,6 +203,12 @@ class InventoryMovement extends Model
      * Paquete A (auditoria 10 pasos): buscador del listado. El FE ya mandaba
      * filter[search] pero el Schema no lo declaraba y el backend respondia 400.
      */
+    /** Movimientos de un lote: los que lo tocan y las transferencias que le entraron. */
+    public function scopeForBatch($query, $batchId)
+    {
+        return $query->where(fn ($q) => $q->where('product_batch_id', $batchId)->orWhere('destination_batch_id', $batchId));
+    }
+
     public function scopeSearch($query, string $term)
     {
         $term = trim($term);

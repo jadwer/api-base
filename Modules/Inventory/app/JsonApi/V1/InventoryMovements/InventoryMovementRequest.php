@@ -58,6 +58,7 @@ class InventoryMovementRequest extends ResourceRequest
             'destinationLocationId' => ['nullable', 'integer', 'exists:warehouse_locations,id'],
 
             // Quality check fields
+            'productBatchId' => ['nullable', 'integer', 'exists:product_batches,id'],
             'qualityChecked' => ['nullable', 'boolean'],
             'qualityCheckedBy' => ['nullable', 'integer', 'exists:users,id'],
             'qualityCheckNotes' => ['nullable', 'string', 'max:1000'],
@@ -71,6 +72,7 @@ class InventoryMovementRequest extends ResourceRequest
     {
         return [
             'movementType.required' => 'El tipo de movimiento es obligatorio.',
+            'productBatchId.exists' => 'El lote no existe.',
             'movementType.in' => 'El tipo de movimiento debe ser: entry, exit, transfer o adjustment.',
             'movementDate.required' => 'La fecha del movimiento es obligatoria.',
             'movementDate.date' => 'La fecha del movimiento debe ser una fecha válida.',

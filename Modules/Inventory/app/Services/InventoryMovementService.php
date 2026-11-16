@@ -2,7 +2,9 @@
 
 namespace Modules\Inventory\Services;
 
+use Modules\Inventory\Exceptions\InventoryRuleException;
 use Modules\Inventory\Models\InventoryMovement;
+use Modules\Inventory\Models\ProductBatch;
 use Modules\Inventory\Models\Stock;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -82,6 +84,12 @@ class InventoryMovementService
             $stock->refresh();
             $newStock = $stock->quantity;
 
+            // Cuenta del lote (decision 2026-11-16): la entrada suma al lote
+            $batch = $this->lockBatch($data);
+            if ($batch) {
+                $this->addToBatch($batch, (float) $data['quantity'], (float) ($data['unit_cost'] ?? 0));
+            }
+
             // Create movement record (total_value is auto-calculated by DB)
             $movement = InventoryMovement::create([
                 'movement_type' => InventoryMovement::MOVEMENT_TYPE_ENTRY,
@@ -146,12 +154,12 @@ class InventoryMovementService
                 ->first();
 
             if (!$stock) {
-                throw new \Exception("No hay existencia registrada del producto {$data['product_id']} en el almacén {$data['warehouse_id']}.");
+                throw new InventoryRuleException("No hay existencia registrada del producto {$data['product_id']} en el almacén {$data['warehouse_id']}.");
             }
 
             // Validate sufficient quantity
             if ($stock->quantity < $data['quantity']) {
-                throw new \Exception("Existencia insuficiente. Disponible: {$stock->quantity}, solicitado: {$data['quantity']}.");
+                throw new InventoryRuleException("Existencia insuficiente. Disponible: {$stock->quantity}, solicitado: {$data['quantity']}.");
             }
 
             // Capture previous stock for audit trail
@@ -166,6 +174,12 @@ class InventoryMovementService
 
             $stock->refresh();
             $newStock = $stock->quantity;
+
+            // Cuenta del lote: la salida resta del lote y no deja sacar mas de lo que tiene
+            $batch = $this->lockBatch($data);
+            if ($batch) {
+                $this->takeFromBatch($batch, (float) $data['quantity']);
+            }
 
             // Create movement record (total_value is auto-calculated by DB)
             $movement = InventoryMovement::create([
@@ -226,11 +240,11 @@ class InventoryMovementService
     {
         // Validate required fields for transfer
         if (!isset($data['destination_warehouse_id'])) {
-            throw new \Exception('El almacén destino es obligatorio en las transferencias.');
+            throw new InventoryRuleException('El almacén destino es obligatorio en las transferencias.');
         }
 
         if ($data['warehouse_id'] === $data['destination_warehouse_id']) {
-            throw new \Exception('El almacén origen y el destino deben ser diferentes.');
+            throw new InventoryRuleException('El almacén origen y el destino deben ser diferentes.');
         }
 
         return DB::transaction(function () use ($data) {
@@ -244,12 +258,12 @@ class InventoryMovementService
                 ->first();
 
             if (!$sourceStock) {
-                throw new \Exception("No hay existencia registrada del producto {$data['product_id']} en el almacén origen {$data['warehouse_id']}.");
+                throw new InventoryRuleException("No hay existencia registrada del producto {$data['product_id']} en el almacén origen {$data['warehouse_id']}.");
             }
 
             // Validate sufficient quantity in source
             if ($sourceStock->quantity < $data['quantity']) {
-                throw new \Exception("Existencia insuficiente en el almacén origen. Disponible: {$sourceStock->quantity}, solicitado: {$data['quantity']}.");
+                throw new InventoryRuleException("Existencia insuficiente en el almacén origen. Disponible: {$sourceStock->quantity}, solicitado: {$data['quantity']}.");
             }
 
             // Lock destination stock (or create if doesn't exist)
@@ -300,6 +314,15 @@ class InventoryMovementService
             $newSourceStock = $sourceStock->quantity;
             $newDestinationStock = $destinationStock->quantity;
 
+            // Cuenta del lote: sale del lote origen y entra al mismo lote en el almacen destino
+            $batch = $this->lockBatch($data);
+            $destinationBatch = null;
+            if ($batch) {
+                $this->takeFromBatch($batch, (float) $data['quantity']);
+                $destinationBatch = $this->destinationBatchFor($batch, (int) $data['destination_warehouse_id'], $data['destination_location_id'] ?? null);
+                $this->addToBatch($destinationBatch, (float) $data['quantity'], (float) $batch->unit_cost);
+            }
+
             // Create movement record (represents the transfer operation, total_value is auto-calculated by DB)
             $movement = InventoryMovement::create([
                 'movement_type' => InventoryMovement::MOVEMENT_TYPE_TRANSFER,
@@ -312,6 +335,8 @@ class InventoryMovementService
                 'warehouse_location_id' => $data['warehouse_location_id'] ?? null,
                 'destination_warehouse_id' => $data['destination_warehouse_id'],
                 'destination_location_id' => $data['destination_location_id'] ?? null,
+                'product_batch_id' => $data['product_batch_id'] ?? null,
+                'destination_batch_id' => $destinationBatch?->id ?? ($data['destination_batch_id'] ?? null),
                 'quantity' => $data['quantity'],
                 'unit_cost' => $sourceStock->unit_cost,
                 'status' => InventoryMovement::STATUS_COMPLETED,
@@ -364,7 +389,7 @@ class InventoryMovementService
                 ->first();
 
             if (!$stock) {
-                throw new \Exception("No hay existencia registrada del producto {$data['product_id']} en el almacén {$data['warehouse_id']}.");
+                throw new InventoryRuleException("No hay existencia registrada del producto {$data['product_id']} en el almacén {$data['warehouse_id']}.");
             }
 
             // Capture previous stock for audit trail
@@ -377,7 +402,7 @@ class InventoryMovementService
             $stock->quantity += $adjustmentQuantity;
 
             if ($stock->quantity < 0) {
-                throw new \Exception("El ajuste dejaría la existencia en negativo. Actual: {$previousStock}, ajuste: {$adjustmentQuantity}.");
+                throw new InventoryRuleException("El ajuste dejaría la existencia en negativo. Actual: {$previousStock}, ajuste: {$adjustmentQuantity}.");
             }
 
             $stock->update([
@@ -387,6 +412,14 @@ class InventoryMovementService
 
             $stock->refresh();
             $newStock = $stock->quantity;
+
+            // Cuenta del lote: el ajuste suma o resta en el lote (un ajuste si puede tocar uno en cuarentena)
+            $batch = $this->lockBatch($data);
+            if ($batch) {
+                $adjustmentQuantity < 0
+                    ? $this->takeFromBatch($batch, abs((float) $adjustmentQuantity), true)
+                    : $this->addToBatch($batch, (float) $adjustmentQuantity, (float) $batch->unit_cost);
+            }
 
             // Create movement record (total_value is auto-calculated by DB)
             $movement = InventoryMovement::create([
@@ -398,6 +431,7 @@ class InventoryMovementService
                 'product_id' => $data['product_id'],
                 'warehouse_id' => $data['warehouse_id'],
                 'warehouse_location_id' => $data['warehouse_location_id'] ?? null,
+                'product_batch_id' => $data['product_batch_id'] ?? null,
                 'quantity' => $adjustmentQuantity,
                 'unit_cost' => $stock->unit_cost,
                 'status' => InventoryMovement::STATUS_COMPLETED,
@@ -460,7 +494,126 @@ class InventoryMovementService
             InventoryMovement::MOVEMENT_TYPE_EXIT => $this->createExit($data),
             InventoryMovement::MOVEMENT_TYPE_TRANSFER => $this->createTransfer($data),
             InventoryMovement::MOVEMENT_TYPE_ADJUSTMENT => $this->createAdjustment($data),
-            default => throw new \Exception("Tipo de movimiento no válido: {$movementType}."),
+            default => throw new InventoryRuleException("Tipo de movimiento no válido: {$movementType}."),
         };
+    }
+
+    /** Estatus del lote que no dejan sacar producto (salvo un ajuste). */
+    private const BATCH_BLOCKED_FOR_EXIT = [
+        'quarantine' => 'en cuarentena',
+        'recalled' => 'retirado del mercado',
+        'expired' => 'vencido',
+    ];
+
+    private const BATCH_EPSILON = 0.00005;
+
+    /**
+     * Lote del movimiento, bloqueado para la transaccion. Null si el movimiento no trae lote
+     * o si el llamador lleva la cuenta del lote (fraccionamiento: batch_managed_by_caller).
+     */
+    private function lockBatch(array $data): ?ProductBatch
+    {
+        if (empty($data['product_batch_id']) || !empty($data['batch_managed_by_caller'])) {
+            return null;
+        }
+        $batch = ProductBatch::whereKey((int) $data['product_batch_id'])->lockForUpdate()->first();
+        if (!$batch) {
+            throw new InventoryRuleException('El lote del movimiento no existe.');
+        }
+        if ((int) $batch->product_id !== (int) $data['product_id']) {
+            throw new InventoryRuleException("El lote {$batch->batch_number} es de otro producto.");
+        }
+        if ((int) $batch->warehouse_id !== (int) $data['warehouse_id']) {
+            throw new InventoryRuleException("El lote {$batch->batch_number} está en otro almacén.");
+        }
+
+        return $batch;
+    }
+
+    /** Suma al lote; la cantidad inicial sigue a lo que ha entrado y un lote agotado se reactiva. */
+    private function addToBatch(ProductBatch $batch, float $quantity, float $unitCost): void
+    {
+        $batch->current_quantity = round((float) $batch->current_quantity + $quantity, 4);
+        if ((float) $batch->current_quantity > (float) $batch->initial_quantity) {
+            $batch->initial_quantity = $batch->current_quantity;
+        }
+        if ((float) $batch->unit_cost <= 0 && $unitCost > 0) {
+            $batch->unit_cost = round($unitCost, 4);
+        }
+        if ($batch->status === 'consumed' && (float) $batch->current_quantity > 0) {
+            $batch->status = 'active';
+        }
+        $batch->save();
+    }
+
+    /** Resta del lote: no deja sacar mas de lo disponible ni de un lote bloqueado. */
+    private function takeFromBatch(ProductBatch $batch, float $quantity, bool $isAdjustment = false): void
+    {
+        if (!$isAdjustment && isset(self::BATCH_BLOCKED_FOR_EXIT[$batch->status])) {
+            throw new InventoryRuleException("El lote {$batch->batch_number} está ".self::BATCH_BLOCKED_FOR_EXIT[$batch->status].'; no se puede sacar producto de él.');
+        }
+        $available = round((float) $batch->current_quantity - (float) $batch->reserved_quantity, 4);
+        $limit = $isAdjustment ? (float) $batch->current_quantity : $available;
+        if ($quantity > $limit + self::BATCH_EPSILON) {
+            throw new InventoryRuleException("El lote {$batch->batch_number} tiene {$limit} disponible; se pidieron {$quantity}.");
+        }
+        $remaining = round((float) $batch->current_quantity - $quantity, 4);
+        $batch->current_quantity = $remaining <= self::BATCH_EPSILON ? 0 : $remaining;
+        if ((float) $batch->current_quantity <= 0 && $batch->status === 'active') {
+            $batch->status = 'consumed';
+        }
+        $batch->save();
+    }
+
+    /**
+     * Lote espejo en el almacen destino de una transferencia: el mismo lote del fabricante,
+     * fechas y proveedor. batch_number es unico, asi que el espejo lleva sufijo y apunta a
+     * su origen en metadata.source_batch_id (la genealogia lo sigue por destination_batch_id).
+     */
+    private function destinationBatchFor(ProductBatch $source, int $warehouseId, mixed $locationId): ProductBatch
+    {
+        $existing = ProductBatch::where('product_id', $source->product_id)
+            ->where('warehouse_id', $warehouseId)
+            ->when($locationId, fn ($q) => $q->where('warehouse_location_id', $locationId), fn ($q) => $q->whereNull('warehouse_location_id'))
+            ->where('metadata->source_batch_id', $source->id)
+            ->lockForUpdate()
+            ->first();
+        if ($existing) {
+            return $existing;
+        }
+
+        $base = "{$source->batch_number}-T{$warehouseId}";
+        $number = $base;
+        $suffix = 1;
+        while (ProductBatch::where('batch_number', $number)->exists()) {
+            $suffix++;
+            $number = "{$base}-{$suffix}";
+        }
+
+        return ProductBatch::create([
+            'product_id' => $source->product_id,
+            'warehouse_id' => $warehouseId,
+            'warehouse_location_id' => $locationId ?: null,
+            'batch_number' => $number,
+            'lot_number' => $source->lot_number,
+            'manufacturing_date' => $source->manufacturing_date,
+            'expiration_date' => $source->expiration_date,
+            'best_before_date' => $source->best_before_date,
+            'initial_quantity' => 0,
+            'current_quantity' => 0,
+            'reserved_quantity' => 0,
+            'unit_cost' => $source->unit_cost,
+            'status' => 'active',
+            'quality_status' => $source->quality_status ?? 'pending',
+            'supplier_name' => $source->supplier_name,
+            'supplier_batch' => $source->supplier_batch,
+            'certifications' => $source->certifications,
+            'test_results' => $source->test_results,
+            'metadata' => [
+                'origin' => 'transfer',
+                'source_batch_id' => $source->id,
+                'source_batch_number' => $source->batch_number,
+            ],
+        ]);
     }
 }

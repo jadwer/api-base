@@ -7,6 +7,8 @@ use LaravelJsonApi\Laravel\Http\Controllers\Actions;
 use Modules\Inventory\Services\InventoryMovementService;
 use Modules\Inventory\JsonApi\V1\InventoryMovements\InventoryMovementRequest;
 use LaravelJsonApi\Core\Responses\DataResponse;
+use Illuminate\Validation\ValidationException;
+use Modules\Inventory\Exceptions\InventoryRuleException;
 
 class InventoryMovementController extends Controller
 {
@@ -57,6 +59,8 @@ class InventoryMovementController extends Controller
             'product_id' => $validated['productId'],
             'warehouse_id' => $validated['warehouseId'],
             'warehouse_location_id' => $validated['locationId'] ?? null,
+            // Lote: el servicio le suma o resta la cantidad (decision 2026-11-16)
+            'product_batch_id' => $validated['productBatchId'] ?? null,
             'destination_warehouse_id' => $validated['destinationWarehouseId'] ?? null,
             'destination_location_id' => $validated['destinationLocationId'] ?? null,
             'quantity' => $validated['quantity'],
@@ -71,7 +75,12 @@ class InventoryMovementController extends Controller
         ];
 
         // Use service to create movement with atomic transaction
-        $movement = $this->service->createMovement($data);
+        try {
+            $movement = $this->service->createMovement($data);
+        } catch (InventoryRuleException $e) {
+            // Regla de negocio que el usuario corrige: 422 con el motivo, no un 500 mudo
+            throw ValidationException::withMessages(['quantity' => $e->getMessage()]);
+        }
 
         // Return JSON:API response
         return DataResponse::make($movement)

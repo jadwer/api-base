@@ -47,19 +47,24 @@ class ProductBatchSchema extends Schema
                 ->sortable(),
             
             // Cantidades
-            Number::make('initialQuantity', 'initial_quantity')
-                ->sortable(),
+            // Las mueven los movimientos; al crear, initialQuantity es lo que entra (ProductBatchController::created)
+            Number::make('initialQuantity', 'initial_quantity')->acceptStrings()
+                ->sortable()
+                ->readOnlyOnUpdate(),
             Number::make('currentQuantity', 'current_quantity')
-                ->sortable(),
+                ->sortable()
+                ->readOnly(),
             Number::make('reservedQuantity', 'reserved_quantity')
-                ->sortable(),
+                ->sortable()
+                ->readOnly(),
             Number::make('availableQuantity', 'available_quantity')
                 ->sortable()
                 ->readOnly(),
             
             // Costos y valores
-            Number::make('unitCost', 'unit_cost')
-                ->sortable(),
+            Number::make('unitCost', 'unit_cost')->acceptStrings()
+                ->sortable()
+                ->readOnlyOnUpdate(),
             Number::make('totalValue', 'total_value')
                 ->sortable()
                 ->readOnly(),

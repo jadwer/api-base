@@ -205,6 +205,15 @@ class ProductBatch extends Model
     /**
      * Create a new factory instance for the model.
      */
+    protected static function booted(): void
+    {
+        // Un lote nace sin existencia; la cantidad le llega con su entrada (decision 2026-11-16)
+        static::creating(function (ProductBatch $batch): void {
+            $batch->current_quantity ??= 0;
+            $batch->initial_quantity ??= 0;
+        });
+    }
+
     protected static function newFactory()
     {
         return \Modules\Inventory\Database\Factories\ProductBatchFactory::new();

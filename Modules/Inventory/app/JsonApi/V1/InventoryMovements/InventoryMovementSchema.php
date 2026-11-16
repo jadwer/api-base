@@ -43,6 +43,8 @@ class InventoryMovementSchema extends Schema
             Number::make('locationId', 'warehouse_location_id')->acceptStrings(),
             Number::make('destinationWarehouseId', 'destination_warehouse_id')->acceptStrings(),
             Number::make('destinationLocationId', 'destination_location_id')->acceptStrings(),
+            Number::make('productBatchId', 'product_batch_id')->acceptStrings(),
+            Number::make('destinationBatchId', 'destination_batch_id')->readOnly(),
             Number::make('userId', 'user_id')->acceptStrings(),
             
             // Campos básicos del movimiento
@@ -129,6 +131,8 @@ class InventoryMovementSchema extends Schema
             // tipo de referencia, nombre/SKU del producto). El FE ya lo mandaba;
             // sin declararlo, 400 al teclear.
             Scope::make('search'),
+            // Trazabilidad del lote (2026-11-16): lo que salio de el y lo que le entro por transferencia
+            Scope::make('batch', 'forBatch'),
         ];
     }
 

@@ -98,6 +98,8 @@ class FractionationService
                 'user_id' => $userId,
                 'reference_type' => self::REFERENCE_TYPE,
                 'reference_id' => $fractionation->id,
+                // El fraccionamiento mueve las cantidades de sus lotes por su cuenta
+                'batch_managed_by_caller' => true,
             ];
 
             // Sale del destino lo que se produjo
@@ -386,6 +388,7 @@ class FractionationService
             'unit_cost' => $sourceUnitCost,
             'user_id' => $data['user_id'],
             'reference_type' => self::REFERENCE_TYPE,
+            'batch_managed_by_caller' => true,
             'idempotency_key' => $movementKey ? "{$movementKey}:exit" : null,
             'description' => "Fraccionamiento {$folioNumber}: salida de producto origen",
             'quality_checked' => true,
@@ -408,6 +411,7 @@ class FractionationService
             'stock_cost_policy' => 'weighted_average',
             'user_id' => $data['user_id'],
             'reference_type' => self::REFERENCE_TYPE,
+            'batch_managed_by_caller' => true,
             'idempotency_key' => $movementKey ? "{$movementKey}:entry" : null,
             'description' => "Fraccionamiento {$folioNumber}: entrada de producto destino",
             'metadata' => array_filter([

@@ -60,8 +60,6 @@ class ProductBatchStoreTest extends TestCase
                     'manufacturingDate' => '2025-01-01',
                     'expirationDate' => '2025-12-31',
                     'initialQuantity' => 100.0,
-                    'currentQuantity' => 100.0,
-                    'reservedQuantity' => 0.0,
                     'unitCost' => 25.5,
                     'status' => 'active',
                     'supplierName' => 'Test Supplier',
@@ -153,7 +151,6 @@ class ProductBatchStoreTest extends TestCase
                 'attributes' => [
                     'batchNumber' => 'MINIMAL001',
                     'initialQuantity' => 50.0,
-                    'currentQuantity' => 50.0,
                     'unitCost' => 10.0,
                     'status' => 'active'
                 ],
@@ -208,9 +205,8 @@ class ProductBatchStoreTest extends TestCase
         
         // Verificar errores de validación para campos requeridos
         $this->assertJsonApiValidationErrors([
-            '/data/attributes/batchNumber',
-            '/data/attributes/initialQuantity',
-            '/data/attributes/currentQuantity'
+            // La cantidad es opcional al crear (lo que entra se registra como entrada del lote)
+            '/data/attributes/batchNumber'
         ], $response);
     }
 
@@ -232,7 +228,6 @@ class ProductBatchStoreTest extends TestCase
                 'attributes' => [
                     'batchNumber' => 'DUPLICATE001', // Número duplicado
                     'initialQuantity' => 50.0000,
-                    'currentQuantity' => 50.0000,
                     'unitCost' => 10.0000,
                     'status' => 'active'
                 ],
@@ -280,7 +275,6 @@ class ProductBatchStoreTest extends TestCase
                     'manufacturingDate' => '2025-12-31',
                     'expirationDate' => '2025-01-01', // Antes de la fecha de fabricación
                     'initialQuantity' => 50.0000,
-                    'currentQuantity' => 50.0000,
                     'unitCost' => 10.0000,
                     'status' => 'active'
                 ],

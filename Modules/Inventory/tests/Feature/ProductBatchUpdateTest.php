@@ -68,8 +68,6 @@ class ProductBatchUpdateTest extends TestCase
                 'id' => (string) $productBatch->id,
                 'attributes' => [
                     'batchNumber' => 'UPDATED001',
-                    'currentQuantity' => 80.0,
-                    'reservedQuantity' => 15.0,
                     'status' => 'quarantine',
                     'qualityNotes' => 'Updated quality notes',
                     'testResults' => [
@@ -105,14 +103,15 @@ class ProductBatchUpdateTest extends TestCase
         
         $this->assertEquals('UPDATED001', $response->json('data.attributes.batchNumber'));
         $this->assertEquals('quarantine', $response->json('data.attributes.status'));
-        $this->assertEquals(65.0000, $response->json('data.attributes.availableQuantity')); // 80 - 15
+        $this->assertEquals(90.0000, $response->json('data.attributes.availableQuantity')); // 100 - 10: la cantidad no cambia por la API
         
         // Verificar que se actualizó en la base de datos
         $this->assertDatabaseHas('product_batches', [
             'id' => $productBatch->id,
             'batch_number' => 'UPDATED001',
-            'current_quantity' => 80.0000,
-            'reserved_quantity' => 15.0000,
+            // La cantidad no cambia por la API: la mueven los movimientos
+            'current_quantity' => 100.0000,
+            'reserved_quantity' => 10.0000,
             'status' => 'quarantine'
         ]);
     }
