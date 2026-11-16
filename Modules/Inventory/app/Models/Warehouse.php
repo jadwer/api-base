@@ -19,6 +19,12 @@ use Spatie\Activitylog\LogOptions;
  * @property string|null $description
  * @property string $code
  * @property string|null $address
+ * @property string|null $street
+ * @property string|null $exterior_number
+ * @property string|null $interior_number
+ * @property string|null $neighborhood
+ * @property string|null $municipality
+ * @property string|null $address_reference
  * @property string|null $city
  * @property string|null $state
  * @property string|null $country
@@ -115,5 +121,19 @@ class Warehouse extends Model
     protected static function newFactory()
     {
         return \Modules\Inventory\Database\Factories\WarehouseFactory::new();
+    }
+
+    /** Ubicaciones del almacen para el listado (usa withCount si viene cargado). */
+    public function getLocationsCountAttribute(): int
+    {
+        return (int) ($this->attributes['locations_count'] ?? $this->locations()->count());
+    }
+
+    /** Busqueda del listado: nombre, codigo o ciudad. */
+    public function scopeSearch($query, string $term)
+    {
+        $like = '%'.trim($term).'%';
+
+        return $query->where(fn ($q) => $q->where('name', 'like', $like)->orWhere('code', 'like', $like)->orWhere('city', 'like', $like));
     }
 }

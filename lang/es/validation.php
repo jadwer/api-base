@@ -172,6 +172,7 @@ $attributes = [
     'interior_number' => 'número interior',
     'neighborhood' => 'colonia',
     'municipality' => 'municipio',
+    'address_reference' => 'referencia',
     'city' => 'ciudad',
     'state' => 'estado',
     'country' => 'país',

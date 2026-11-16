@@ -32,6 +32,13 @@ class WarehouseRequest extends ResourceRequest
                 Rule::in(['main', 'secondary', 'distribution', 'returns']),
             ],
             'address' => ['nullable', 'string'],
+            // Direccion desglosada (rediseno 2026-11-15)
+            'street' => ['nullable', 'string', 'max:255'],
+            'exteriorNumber' => ['nullable', 'string', 'max:30'],
+            'interiorNumber' => ['nullable', 'string', 'max:30'],
+            'neighborhood' => ['nullable', 'string', 'max:255'],
+            'municipality' => ['nullable', 'string', 'max:255'],
+            'addressReference' => ['nullable', 'string', 'max:255'],
             'city' => ['nullable', 'string', 'max:255'],
             'state' => ['nullable', 'string', 'max:255'],
             'country' => ['nullable', 'string', 'max:255'],

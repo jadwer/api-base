@@ -13,6 +13,7 @@ use LaravelJsonApi\Eloquent\Fields\ArrayList;
 use LaravelJsonApi\Eloquent\Fields\Map;
 use LaravelJsonApi\Eloquent\Fields\Relations\HasMany;
 use LaravelJsonApi\Eloquent\Filters\Where;
+use LaravelJsonApi\Eloquent\Filters\Scope;
 use LaravelJsonApi\Eloquent\Filters\WhereIdIn;
 use LaravelJsonApi\Eloquent\Filters\WhereIn;
 use LaravelJsonApi\Eloquent\Pagination\PagePagination;
@@ -45,6 +46,14 @@ class WarehouseSchema extends Schema
             Str::make('code')->sortable(),
             Str::make('warehouseType', 'warehouse_type')->sortable(),
             Str::make('address'),
+            // Direccion desglosada (rediseno 2026-11-15)
+            Str::make('street'),
+            Str::make('exteriorNumber', 'exterior_number'),
+            Str::make('interiorNumber', 'interior_number'),
+            Str::make('neighborhood'),
+            Str::make('municipality'),
+            Str::make('addressReference', 'address_reference'),
+            Number::make('locationsCount')->readOnly(),
             Str::make('city')->sortable(),
             Str::make('state'),
             Str::make('country'),
@@ -78,6 +87,7 @@ class WarehouseSchema extends Schema
     {
         return [
             WhereIdIn::make($this),
+            Scope::make('search'),
             Where::make('name'),
             Where::make('search_name', 'name')->deserializeUsing(
                 static fn($value) => "%{$value}%"
