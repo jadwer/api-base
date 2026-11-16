@@ -336,7 +336,7 @@ class InventoryMovementService
                 'destination_warehouse_id' => $data['destination_warehouse_id'],
                 'destination_location_id' => $data['destination_location_id'] ?? null,
                 'product_batch_id' => $data['product_batch_id'] ?? null,
-                'destination_batch_id' => $destinationBatch?->id ?? ($data['destination_batch_id'] ?? null),
+                'destination_batch_id' => $destinationBatch->id ?? ($data['destination_batch_id'] ?? null),
                 'quantity' => $data['quantity'],
                 'unit_cost' => $sourceStock->unit_cost,
                 'status' => InventoryMovement::STATUS_COMPLETED,
