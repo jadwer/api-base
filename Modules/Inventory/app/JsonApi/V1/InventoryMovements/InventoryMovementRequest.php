@@ -93,12 +93,12 @@ class InventoryMovementRequest extends ResourceRequest
             'metadata.array' => 'Los metadatos deben ser un objeto.',
             'productId.required' => 'El producto es obligatorio.',
             'productId.exists' => 'El producto seleccionado no existe.',
-            'warehouseId.required' => 'El warehouse es obligatorio.',
-            'warehouseId.exists' => 'El warehouse seleccionado no existe.',
+            'warehouseId.required' => 'El almacén es obligatorio.',
+            'warehouseId.exists' => 'El almacén seleccionado no existe.',
             'userId.required' => 'El usuario es obligatorio.',
             'userId.exists' => 'El usuario seleccionado no existe.',
             'locationId.exists' => 'La ubicación seleccionada no existe.',
-            'destinationWarehouseId.exists' => 'El warehouse de destino seleccionado no existe.',
+            'destinationWarehouseId.exists' => 'El almacén destino seleccionado no existe.',
             'destinationLocationId.exists' => 'La ubicación de destino seleccionada no existe.',
         ];
     }
@@ -134,7 +134,7 @@ class InventoryMovementRequest extends ResourceRequest
                 if (!isset($data['destinationWarehouseId'])) {
                     $validator->errors()->add(
                         'destinationWarehouseId',
-                        'Las transferencias requieren un warehouse de destino.'
+                        'Las transferencias requieren un almacén destino.'
                     );
                 }
                 
@@ -143,7 +143,7 @@ class InventoryMovementRequest extends ResourceRequest
                     if ($data['warehouseId'] === $data['destinationWarehouseId']) {
                         $validator->errors()->add(
                             'destinationWarehouseId',
-                            'El warehouse de destino debe ser diferente al de origen.'
+                            'El almacén destino debe ser diferente al de origen.'
                         );
                     }
                 }
