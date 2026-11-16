@@ -144,6 +144,7 @@ class InventoryMovementSchema extends Schema
             'destinationWarehouse',
             'destinationLocation',
             'user',
+            'qualityChecker',
         ];
     }
 
