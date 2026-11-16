@@ -50,11 +50,11 @@ class StockSchema extends Schema
                 ->readOnly(),
             
             // Niveles de stock
-            Number::make('minimumStock', 'minimum_stock')
+            Number::make('minimumStock', 'minimum_stock')->acceptStrings()
                 ->sortable(),
-            Number::make('maximumStock', 'maximum_stock')
+            Number::make('maximumStock', 'maximum_stock')->acceptStrings()
                 ->sortable(),
-            Number::make('reorderPoint', 'reorder_point')
+            Number::make('reorderPoint', 'reorder_point')->acceptStrings()
                 ->sortable(),
             
             // Costos y valores
