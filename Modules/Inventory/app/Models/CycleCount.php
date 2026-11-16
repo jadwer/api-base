@@ -15,6 +15,28 @@ use Modules\User\Models\User;
  * IV-M001: Cycle Count Model
  *
  * Represents a scheduled or completed cycle count for inventory accuracy.
+ *
+ * @property int $id
+ * @property string $count_number
+ * @property int $warehouse_id
+ * @property int|null $warehouse_location_id
+ * @property int $product_id
+ * @property \Illuminate\Support\Carbon|null $scheduled_date
+ * @property \Illuminate\Support\Carbon|null $completed_date
+ * @property string $status
+ * @property float|null $system_quantity
+ * @property float|null $counted_quantity
+ * @property float|null $variance_quantity
+ * @property float|null $variance_value
+ * @property int|null $assigned_to
+ * @property int|null $counted_by
+ * @property string|null $abc_class
+ * @property int|null $adjustment_movement_id
+ * @property string|null $notes
+ * @property array|null $metadata
+ * @property-read bool $has_variance
+ * @property-read float|null $variance_percentage
+ * @property-read \Modules\Product\Models\Product|null $product
  */
 class CycleCount extends Model
 {
@@ -108,53 +130,7 @@ class CycleCount extends Model
         return $this->status === self::STATUS_CANCELLED;
     }
 
-    // Business logic
-    public function startCount(): void
-    {
-        if (!$this->isScheduled()) {
-            throw new \Exception('Solo se puede iniciar un conteo programado.');
-        }
-
-        $this->update([
-            'status' => self::STATUS_IN_PROGRESS,
-        ]);
-    }
-
-    public function recordCount(float $countedQuantity, ?int $countedById = null): void
-    {
-        if (!$this->isInProgress()) {
-            throw new \Exception('Solo se puede registrar el conteo de un conteo en proceso.');
-        }
-
-        // Get current system quantity
-        $stock = Stock::where('warehouse_id', $this->warehouse_id)
-            ->where('product_id', $this->product_id)
-            ->first();
-
-        $systemQty = $stock ? $stock->quantity : 0;
-        $variance = $countedQuantity - $systemQty;
-
-        $this->update([
-            'system_quantity' => $systemQty,
-            'counted_quantity' => $countedQuantity,
-            'variance_quantity' => $variance,
-            'counted_by' => $countedById,
-            'completed_date' => now(),
-            'status' => self::STATUS_COMPLETED,
-        ]);
-    }
-
-    public function cancel(?string $reason = null): void
-    {
-        if ($this->isCompleted()) {
-            throw new \Exception('No se puede cancelar un conteo completado.');
-        }
-
-        $this->update([
-            'status' => self::STATUS_CANCELLED,
-            'notes' => $reason ? ($this->notes . "\nCancelled: " . $reason) : $this->notes,
-        ]);
-    }
+    // Las transiciones (iniciar, registrar, cancelar) viven en CycleCountService (2026-11-16)
 
     // Scopes
     /**

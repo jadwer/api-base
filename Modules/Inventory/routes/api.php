@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Inventory\Http\Controllers\Api\V1\LotTraceabilityController;
 use Modules\Inventory\Http\Controllers\Api\V1\FractionationApiController;
+use Modules\Inventory\Http\Controllers\Api\V1\CycleCountApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,13 @@ Route::prefix('v1')->middleware(['auth:sanctum'])->group(function () {
             ->name('lot-traceability.expired');
         Route::get('search', [LotTraceabilityController::class, 'search'])
             ->name('lot-traceability.search');
+    });
+
+    // Acciones del conteo ciclico (2026-11-16): el estatus y lo contado cambian solo por aqui
+    Route::prefix('cycle-counts/{cycleCount}')->group(function () {
+        Route::post('start', [CycleCountApiController::class, 'start'])->name('cycle-counts.start');
+        Route::post('record', [CycleCountApiController::class, 'record'])->name('cycle-counts.record');
+        Route::post('cancel', [CycleCountApiController::class, 'cancel'])->name('cycle-counts.cancel');
     });
 
     // Fractionation custom endpoints

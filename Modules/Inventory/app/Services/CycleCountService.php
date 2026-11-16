@@ -2,6 +2,7 @@
 
 namespace Modules\Inventory\Services;
 
+use Modules\Inventory\Exceptions\InventoryRuleException;
 use Modules\Inventory\Models\CycleCount;
 use Modules\Inventory\Models\Stock;
 use Modules\Inventory\Models\Warehouse;
@@ -163,43 +164,85 @@ class CycleCountService
     }
 
     /**
-     * Complete a cycle count and optionally create adjustment
-     *
-     * @param CycleCount $count
-     * @param float $countedQuantity
-     * @param int|null $countedById
-     * @param bool $createAdjustment Whether to create inventory adjustment for variance
-     * @return CycleCount
+     * Inicia un conteo programado.
      */
-    public function completeCount(
-        CycleCount $count,
-        float $countedQuantity,
-        ?int $countedById = null,
-        bool $createAdjustment = false
-    ): CycleCount {
-        return DB::transaction(function () use ($count, $countedQuantity, $countedById, $createAdjustment) {
-            // Record the count
-            $count->recordCount($countedQuantity, $countedById);
+    public function start(CycleCount $count): CycleCount
+    {
+        return DB::transaction(function () use ($count) {
+            $count = CycleCount::whereKey($count->id)->lockForUpdate()->firstOrFail();
+            if (!$count->isScheduled()) {
+                throw new InventoryRuleException("Solo se inicia un conteo programado; {$count->count_number} está {$this->statusLabel($count)}.");
+            }
+            $count->update(['status' => CycleCount::STATUS_IN_PROGRESS]);
 
-            // Calculate variance value
-            if ($count->has_variance && $count->product) {
-                $unitCost = $count->product->cost ?? $count->product->price ?? 0;
-                $count->update([
-                    'variance_value' => $count->variance_quantity * $unitCost,
+            return $count->fresh();
+        });
+    }
+
+    /**
+     * Registra lo contado en un conteo en proceso. La existencia en sistema se toma en
+     * ese momento del registro de stock del producto en el almacen (y ubicacion, si el
+     * conteo la tiene); la diferencia es contado menos sistema y se valora al costo del
+     * stock. Con $adjust y diferencia distinta de cero se registra un ajuste en
+     * Movimientos, asi la existencia queda igual a lo contado.
+     */
+    public function record(CycleCount $count, float $countedQuantity, int $userId, bool $adjust, ?string $notes = null): CycleCount
+    {
+        if ($countedQuantity < 0) {
+            throw new InventoryRuleException('Lo contado no puede ser negativo.');
+        }
+
+        return DB::transaction(function () use ($count, $countedQuantity, $userId, $adjust, $notes) {
+            $count = CycleCount::whereKey($count->id)->lockForUpdate()->firstOrFail();
+            if (!$count->isInProgress()) {
+                throw new InventoryRuleException("Solo se registra un conteo en proceso; {$count->count_number} está {$this->statusLabel($count)}. Inícialo primero.");
+            }
+
+            $stock = $this->stockFor($count);
+            $systemQty = $stock ? (float) $stock->quantity : 0.0;
+            $variance = round($countedQuantity - $systemQty, 4);
+            $unitCost = (float) ($stock?->unit_cost ?: ($count->product->cost ?? 0));
+
+            $movementId = null;
+            if ($adjust && abs($variance) > 0.0001) {
+                if (!$stock) {
+                    throw new InventoryRuleException('Este producto no tiene registro de stock en el almacén: regístralo en Control de Stock con una entrada en lugar de ajustar.');
+                }
+                $movement = app(InventoryMovementService::class)->createAdjustment([
+                    'product_id' => $count->product_id,
+                    'warehouse_id' => $count->warehouse_id,
+                    'warehouse_location_id' => $stock->warehouse_location_id,
+                    'quantity' => $variance,
+                    'movement_date' => now(),
+                    'reference_type' => InventoryMovement::REFERENCE_TYPE_ADJUSTMENT,
+                    'reference_id' => $count->id,
+                    'description' => "Ajuste por conteo {$count->count_number}: sistema " . $this->qty($systemQty) . ', contado ' . $this->qty($countedQuantity),
+                    'user_id' => $userId,
+                    'metadata' => [
+                        'cycle_count_id' => $count->id,
+                        'system_quantity' => $systemQty,
+                        'counted_quantity' => $countedQuantity,
+                    ],
                 ]);
+                $movementId = $movement->id;
             }
 
-            // Create adjustment movement if requested and there's variance
-            if ($createAdjustment && $count->has_variance) {
-                $movement = $this->createAdjustmentMovement($count);
-                $count->update(['adjustment_movement_id' => $movement->id]);
-            }
+            $count->update([
+                'system_quantity' => $systemQty,
+                'counted_quantity' => $countedQuantity,
+                'variance_quantity' => $variance,
+                'variance_value' => round($variance * $unitCost, 2),
+                'counted_by' => $userId,
+                'completed_date' => today(),
+                'status' => CycleCount::STATUS_COMPLETED,
+                'adjustment_movement_id' => $movementId,
+                'notes' => $notes !== null && trim($notes) !== '' ? trim(($count->notes ? $count->notes . "\n" : '') . $notes) : $count->notes,
+            ]);
 
-            Log::info('Cycle count completed', [
+            Log::info('Cycle count recorded', [
                 'count_id' => $count->id,
-                'count_number' => $count->count_number,
-                'variance' => $count->variance_quantity,
-                'adjustment_created' => $createAdjustment && $count->has_variance,
+                'variance' => $variance,
+                'adjustment_movement_id' => $movementId,
             ]);
 
             return $count->fresh();
@@ -207,27 +250,51 @@ class CycleCountService
     }
 
     /**
-     * Create inventory adjustment movement for variance
+     * Cancela un conteo programado o en proceso.
      */
-    private function createAdjustmentMovement(CycleCount $count): InventoryMovement
+    public function cancel(CycleCount $count, ?string $reason = null): CycleCount
     {
-        $movementService = app(InventoryMovementService::class);
+        return DB::transaction(function () use ($count, $reason) {
+            $count = CycleCount::whereKey($count->id)->lockForUpdate()->firstOrFail();
+            if ($count->isCompleted() || $count->isCancelled()) {
+                throw new InventoryRuleException("No se cancela un conteo {$this->statusLabel($count)} ({$count->count_number}).");
+            }
+            $reason = $reason !== null ? trim($reason) : '';
+            $count->update([
+                'status' => CycleCount::STATUS_CANCELLED,
+                'notes' => $reason !== '' ? trim(($count->notes ? $count->notes . "\n" : '') . "Cancelado: {$reason}") : $count->notes,
+            ]);
 
-        return $movementService->createMovement([
-            'product_id' => $count->product_id,
-            'warehouse_id' => $count->warehouse_id,
-            'warehouse_location_id' => $count->warehouse_location_id,
-            'movement_type' => 'adjustment',
-            'quantity' => $count->variance_quantity,
-            'movement_date' => now(),
-            'reference' => $count->count_number,
-            'notes' => "Cycle count adjustment - {$count->count_number}",
-            'metadata' => [
-                'cycle_count_id' => $count->id,
-                'system_quantity' => $count->system_quantity,
-                'counted_quantity' => $count->counted_quantity,
-            ],
-        ]);
+            return $count->fresh();
+        });
+    }
+
+    /** Registro de stock del conteo: el de su ubicacion; sin ubicacion, el que no tiene, o el primero. */
+    private function stockFor(CycleCount $count): ?Stock
+    {
+        $base = Stock::where('warehouse_id', $count->warehouse_id)->where('product_id', $count->product_id);
+        if ($count->warehouse_location_id) {
+            return (clone $base)->where('warehouse_location_id', $count->warehouse_location_id)->lockForUpdate()->first();
+        }
+
+        return (clone $base)->whereNull('warehouse_location_id')->lockForUpdate()->first()
+            ?? (clone $base)->orderBy('id')->lockForUpdate()->first();
+    }
+
+    private function statusLabel(CycleCount $count): string
+    {
+        return match ($count->status) {
+            CycleCount::STATUS_SCHEDULED => 'programado',
+            CycleCount::STATUS_IN_PROGRESS => 'en proceso',
+            CycleCount::STATUS_COMPLETED => 'completado',
+            CycleCount::STATUS_CANCELLED => 'cancelado',
+            default => (string) $count->status,
+        };
+    }
+
+    private function qty(float $value): string
+    {
+        return rtrim(rtrim(number_format($value, 4, '.', ','), '0'), '.');
     }
 
     /**
