@@ -58,7 +58,7 @@ class QuoteItemRequest extends ResourceRequest
             if ($hasPercentage && $hasAmount) {
                 $validator->errors()->add(
                     'discountAmount',
-                    'Send either discountPercentage or discountAmount, not both.'
+                    'Captura el descuento en porcentaje o en monto, no los dos.'
                 );
             }
         });

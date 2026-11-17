@@ -39,8 +39,8 @@ class VariantAttributeValueController extends Controller
             if ($e->getCode() === '23000') {
                 $error = Error::make()
                     ->setStatus('409')
-                    ->setTitle('Cannot Delete Value')
-                    ->setDetail('This value cannot be deleted because it is used by product variants. Please remove the variants first.')
+                    ->setTitle('No se puede eliminar el valor')
+                    ->setDetail('El valor lo usan variantes de producto: elimina primero esas variantes.')
                     ->setCode('FOREIGN_KEY_CONSTRAINT');
 
                 return ErrorResponse::make($error);

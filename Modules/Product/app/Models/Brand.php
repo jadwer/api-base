@@ -54,4 +54,22 @@ class Brand extends Model
     {
         return \Modules\Product\Database\Factories\BrandFactory::new();
     }
+
+    /**
+     * Busqueda parcial del listado (rediseno de Productos, 17-11): antes el filtro era
+     * filter[name] exacto y escribir parte del nombre no encontraba nada.
+     */
+    public function scopeSearch($query, $term)
+    {
+        $term = trim((string) $term);
+        if ($term === '') {
+            return $query;
+        }
+        $like = '%' . str_replace(['%', '_'], ['\\%', '\\_'], $term) . '%';
+
+        return $query->where(function ($q) use ($like) {
+            $q->where('name', 'like', $like)
+                ->orWhere('slug', 'like', $like);
+        });
+    }
 }

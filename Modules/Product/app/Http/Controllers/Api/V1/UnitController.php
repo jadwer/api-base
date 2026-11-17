@@ -38,8 +38,8 @@ class UnitController extends Controller
             if ($e->getCode() === '23000') {
                 $error = Error::make()
                     ->setStatus('409')
-                    ->setTitle('Cannot Delete Unit')
-                    ->setDetail('This unit cannot be deleted because it has associated products. Please remove or reassign the products first.')
+                    ->setTitle('No se puede eliminar la unidad')
+                    ->setDetail('La unidad tiene productos asociados: cámbiales la unidad antes de eliminarla.')
                     ->setCode('FOREIGN_KEY_CONSTRAINT');
 
                 return ErrorResponse::make($error);

@@ -38,8 +38,8 @@ class CategoryController extends Controller
             if ($e->getCode() === '23000') {
                 $error = Error::make()
                     ->setStatus('409')
-                    ->setTitle('Cannot Delete Category')
-                    ->setDetail('This category cannot be deleted because it has associated products. Please remove or reassign the products first.')
+                    ->setTitle('No se puede eliminar la categoría')
+                    ->setDetail('La categoría tiene productos asociados: reasígnalos a otra categoría o desactívala en lugar de eliminarla.')
                     ->setCode('FOREIGN_KEY_CONSTRAINT');
 
                 return ErrorResponse::make($error);

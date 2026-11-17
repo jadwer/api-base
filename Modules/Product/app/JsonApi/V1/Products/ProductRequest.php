@@ -77,7 +77,9 @@ class ProductRequest extends ResourceRequest
     public function withValidator($validator): void
     {
         $validator->after(function ($validator) {
-            if (! $this->isQuoteOnlyPayload()) {
+            // En DELETE no hay documento: leerlo lanzaba LogicException y borrar
+            // cualquier producto respondia 500 (rediseno de Productos, 17-11).
+            if ($this->isDeleting() || ! $this->isQuoteOnlyPayload()) {
                 return;
             }
 

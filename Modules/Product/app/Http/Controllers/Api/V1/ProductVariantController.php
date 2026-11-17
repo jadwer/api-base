@@ -39,8 +39,8 @@ class ProductVariantController extends Controller
             if ($e->getCode() === '23000') {
                 $error = Error::make()
                     ->setStatus('409')
-                    ->setTitle('Cannot Delete Variant')
-                    ->setDetail('This variant cannot be deleted because it has associated records.')
+                    ->setTitle('No se puede eliminar la variante')
+                    ->setDetail('La variante tiene registros asociados.')
                     ->setCode('FOREIGN_KEY_CONSTRAINT');
 
                 return ErrorResponse::make($error);

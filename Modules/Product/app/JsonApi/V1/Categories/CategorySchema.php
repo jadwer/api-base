@@ -43,6 +43,7 @@ class CategorySchema extends Schema
         return [
             WhereIdIn::make($this),
             Where::make('name'),
+            \LaravelJsonApi\Eloquent\Filters\Scope::make('search'),
             Where::make('slug'),
             Where::make('is_active')->asBoolean(),
         ];

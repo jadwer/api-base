@@ -39,8 +39,8 @@ class VariantAttributeController extends Controller
             if ($e->getCode() === '23000') {
                 $error = Error::make()
                     ->setStatus('409')
-                    ->setTitle('Cannot Delete Attribute')
-                    ->setDetail('This attribute cannot be deleted because it has associated values. Please remove the values first.')
+                    ->setTitle('No se puede eliminar el atributo')
+                    ->setDetail('El atributo tiene valores asociados: elimina primero sus valores.')
                     ->setCode('FOREIGN_KEY_CONSTRAINT');
 
                 return ErrorResponse::make($error);

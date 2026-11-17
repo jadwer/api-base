@@ -41,6 +41,7 @@ class UnitSchema extends Schema
         return [
             WhereIdIn::make($this),
             Where::make('name'),
+            \LaravelJsonApi\Eloquent\Filters\Scope::make('search'),
             Where::make('code'),
             Where::make('unit_type'),
         ];

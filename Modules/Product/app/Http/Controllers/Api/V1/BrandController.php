@@ -38,8 +38,8 @@ class BrandController extends Controller
             if ($e->getCode() === '23000') {
                 $error = Error::make()
                     ->setStatus('409')
-                    ->setTitle('Cannot Delete Brand')
-                    ->setDetail('This brand cannot be deleted because it has associated products. Please remove or reassign the products first.')
+                    ->setTitle('No se puede eliminar la marca')
+                    ->setDetail('La marca tiene productos asociados: reasígnalos a otra marca o desactívala en lugar de eliminarla.')
                     ->setCode('FOREIGN_KEY_CONSTRAINT');
 
                 return ErrorResponse::make($error);
