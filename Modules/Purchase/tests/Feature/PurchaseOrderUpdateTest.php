@@ -38,7 +38,6 @@ class PurchaseOrderUpdateTest extends TestCase
             'id' => (string) $purchaseOrder->id,
             'attributes' => [
                 'orderDate' => '2025-01-20',
-                'status' => 'approved',
                 'totalAmount' => 2000.75,
                 'notes' => 'Updated purchase order notes',
             ],
@@ -103,7 +102,6 @@ class PurchaseOrderUpdateTest extends TestCase
             'type' => 'purchase-orders',
             'id' => (string) $purchaseOrder->id,
             'attributes' => [
-                'status' => 'approved',
                 'notes' => 'Status updated to approved',
             ],
         ];
@@ -140,11 +138,10 @@ class PurchaseOrderUpdateTest extends TestCase
         $this->assertEquals('2025-01-15', $updatedOrder->order_date->format('Y-m-d'));
     }
 
-    public function test_invalid_status_on_patch_is_ignored(): void
+    public function test_status_on_patch_is_rejected_in_spanish(): void
     {
-        // Refactor ciclo (Patron 1): antes se esperaba 422 por enum. Ahora el status es
-        // readOnlyOnUpdate: cualquier valor se IGNORA en el PATCH y la OC conserva su
-        // estado. La validacion de transiciones vive en approve/reject/receive/cancel.
+        // Rediseno de Compras (17-11): el estatus ya no se ignora en silencio; se
+        // rechaza con mensaje. Las transiciones van por approve/reject/receive/cancel.
         $admin = User::where('email', 'admin@example.com')->firstOrFail();
         $this->actingAs($admin, 'sanctum');
 
@@ -154,21 +151,34 @@ class PurchaseOrderUpdateTest extends TestCase
             'status' => 'pending',
         ]);
 
-        $data = [
+        foreach (['received', 'pending'] as $status) {
+            $response = $this->jsonApi()->withData([
+                'type' => 'purchase-orders',
+                'id' => (string) $purchaseOrder->id,
+                'attributes' => ['status' => $status],
+            ])->patch("/api/v1/purchase-orders/{$purchaseOrder->id}");
+
+            $response->assertStatus(422);
+            $this->assertSame('El estatus cambia con las acciones Aprobar, Recibir o Cancelar.', $response->json('errors.0.detail'));
+        }
+        $this->assertDatabaseHas('purchase_orders', ['id' => $purchaseOrder->id, 'status' => 'pending']);
+    }
+
+    public function test_order_number_on_patch_is_rejected(): void
+    {
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $this->actingAs($admin, 'sanctum');
+
+        $purchaseOrder = PurchaseOrder::factory()->create(['status' => 'pending']);
+
+        $response = $this->jsonApi()->withData([
             'type' => 'purchase-orders',
             'id' => (string) $purchaseOrder->id,
-            'attributes' => [
-                'status' => 'invalid_status', // Ignorado, no validado
-            ],
-        ];
+            'attributes' => ['orderNumber' => 'OC-MANUAL'],
+        ])->patch("/api/v1/purchase-orders/{$purchaseOrder->id}");
 
-        $response = $this->jsonApi()->withData($data)->patch("/api/v1/purchase-orders/{$purchaseOrder->id}");
-
-        $response->assertOk();
-        $this->assertDatabaseHas('purchase_orders', [
-            'id' => $purchaseOrder->id,
-            'status' => 'pending',
-        ]);
+        $response->assertStatus(422);
+        $this->assertSame('El número de orden lo asigna el sistema.', $response->json('errors.0.detail'));
     }
 
     public function test_update_validates_contact_exists(): void

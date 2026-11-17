@@ -28,7 +28,6 @@ class SalesOrderUpdateTest extends TestCase
             'id' => (string) $salesOrder->id,
             'attributes' => [
                 'orderNumber' => 'SO-UPDATED-001',
-                'status' => 'confirmed',
                 'totalAmount' => 1500.00,
                 'notes' => 'Updated order notes'
             ]
@@ -60,7 +59,7 @@ class SalesOrderUpdateTest extends TestCase
         $this->assertNotEquals(1500.00, $response->json('data.attributes.totalAmount'));
     }
 
-    public function test_patch_ignores_status_changes(): void
+    public function test_patch_rejects_status_changes(): void
     {
         // Refactor ciclo (Patron 1): antes este test verificaba que un PATCH cambiaba
         // el status (test_admin_can_update_sales_order_status). Ese contrato era el bug:
@@ -87,8 +86,9 @@ class SalesOrderUpdateTest extends TestCase
             ->withData($data)
             ->patch("/api/v1/sales-orders/{$salesOrder->id}");
 
-        $response->assertOk();
-        $this->assertEquals('draft', $response->json('data.attributes.status'));
+        // Rediseno de Compras (17-11, regla 8): se rechaza con mensaje en lugar de ignorarse
+        $response->assertStatus(422);
+        $this->assertSame('El estatus del pedido cambia con sus acciones (confirmar, enviar, entregar, cancelar).', $response->json('errors.0.detail'));
 
         $this->assertDatabaseHas('sales_orders', [
             'id' => $salesOrder->id,
@@ -230,7 +230,7 @@ class SalesOrderUpdateTest extends TestCase
         $response->assertStatus(404);
     }
 
-    public function test_invalid_status_on_patch_is_ignored(): void
+    public function test_invalid_status_on_patch_is_rejected(): void
     {
         // Refactor ciclo (Patron 1): antes se esperaba 422 por enum invalido. Ahora el
         // status es readOnlyOnUpdate: cualquier valor (valido o no) se IGNORA en el
@@ -257,7 +257,7 @@ class SalesOrderUpdateTest extends TestCase
             ->withData($data)
             ->patch("/api/v1/sales-orders/{$salesOrder->id}");
 
-        $response->assertOk();
+        $response->assertStatus(422);
         $this->assertDatabaseHas('sales_orders', [
             'id' => $salesOrder->id,
             'status' => 'draft'

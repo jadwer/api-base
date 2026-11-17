@@ -148,7 +148,6 @@ class PurchaseOrderStoreTest extends TestCase
         $response->assertStatus(422);
         $this->assertJsonApiValidationErrors([
             '/data/attributes/orderDate',
-            '/data/attributes/status',
             '/data/relationships/contact',
         ], $response);
     }
@@ -309,5 +308,33 @@ class PurchaseOrderStoreTest extends TestCase
         $response = $this->jsonApi()->withData($data)->post('/api/v1/purchase-orders');
 
         $response->assertStatus(403);
+    }
+
+    public function test_store_only_accepts_pending_status(): void
+    {
+        // Rediseno de Compras (17-11): antes una OC podia nacer recibida o cancelada y
+        // no daba entrada al stock ni creaba la CxP (el observer solo actua en updated).
+        $admin = User::where('email', 'admin@example.com')->firstOrFail();
+        $this->actingAs($admin, 'sanctum');
+        $contact = Contact::factory()->create(['is_supplier' => true]);
+
+        foreach (['received', 'approved', 'cancelled'] as $status) {
+            $response = $this->jsonApi()->withData([
+                'type' => 'purchase-orders',
+                'attributes' => ['orderDate' => '2026-11-17', 'status' => $status],
+                'relationships' => ['contact' => ['data' => ['type' => 'contacts', 'id' => (string) $contact->id]]],
+            ])->post('/api/v1/purchase-orders');
+
+            $response->assertStatus(422);
+            $this->assertSame('Una orden nueva siempre queda pendiente; se aprueba, recibe o cancela con sus acciones.', $response->json('errors.0.detail'));
+        }
+
+        $response = $this->jsonApi()->expects('purchase-orders')->withData([
+            'type' => 'purchase-orders',
+            'attributes' => ['orderDate' => '2026-11-17'],
+            'relationships' => ['contact' => ['data' => ['type' => 'contacts', 'id' => (string) $contact->id]]],
+        ])->post('/api/v1/purchase-orders');
+        $response->assertCreated();
+        $this->assertSame('pending', $response->json('data.attributes.status'));
     }
 }

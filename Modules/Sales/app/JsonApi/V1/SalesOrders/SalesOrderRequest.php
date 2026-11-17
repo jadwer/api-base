@@ -25,15 +25,14 @@ class SalesOrderRequest extends ResourceRequest
                 'max:50',
                 Rule::unique('sales_orders', 'order_number')->ignore($order?->id)
             ],
-            // Refactor ciclo (Patron 1): en creacion se valida el status inicial con el
-            // enum completo de la maquina de OrderStatusService (antes omitia pending/
-            // completed/returned/refunded, que convert() sí usa). En update se acepta pero
-            // el Schema lo marca readOnlyOnUpdate -> el valor se IGNORA (no falla para no
-            // romper el form de edicion del FE que envia status). Las transiciones reales
-            // van por OrderStatusService (endpoint POST /orders/{id}/status).
+            // Rediseno de Compras (17-11, regla 8): un pedido nace borrador o pendiente.
+            // Antes se podia crear ya confirmado, enviado o entregado: eso se saltaba
+            // OrderStatusService (sin descuento de stock, sin SalesOrderDelivered ni CxC
+            // y sin el permiso sales-orders.confirm). En edicion el estatus se rechaza
+            // con mensaje: cambia por POST /orders/{id}/status o por la accion confirmar.
             'status' => $isCreating
-                ? ['required', Rule::in(['draft', 'pending', 'confirmed', 'processing', 'shipped', 'delivered', 'completed', 'cancelled', 'returned', 'refunded'])]
-                : ['sometimes', 'string'],
+                ? ['required', Rule::in(['draft', 'pending'])]
+                : [$this->notCaptured('El estatus del pedido cambia con sus acciones (confirmar, enviar, entregar, cancelar).')],
             'orderDate' => [$isCreating ? 'required' : 'sometimes', 'date'],
             'branchId' => ['nullable', 'integer', 'exists:branches,id'],
             'shippingAddress' => ['nullable', 'array'],
@@ -63,7 +62,7 @@ class SalesOrderRequest extends ResourceRequest
             'orderNumber.required' => 'El número de pedido es obligatorio.',
             'orderNumber.unique' => 'Ese número de pedido ya existe.',
             'status.required' => 'El estado del pedido es obligatorio.',
-            'status.in' => 'El estado del pedido no es válido.',
+            'status.in' => 'Un pedido nuevo nace como borrador o pendiente; después cambia con sus acciones.',
             'orderDate.required' => 'La fecha del pedido es obligatoria.',
             'orderDate.date' => 'La fecha del pedido debe ser una fecha válida.',
             'totalAmount.required' => 'El total es obligatorio.',
@@ -90,5 +89,18 @@ class SalesOrderRequest extends ResourceRequest
     public function deleteRules(): array
     {
         return [];
+    }
+
+    /**
+     * Rechaza el campo solo si viene en la peticion: en PATCH laravel-json-api mezcla los
+     * valores guardados antes de validar, 'prohibited' fallaria siempre.
+     */
+    private function notCaptured(string $message): \Closure
+    {
+        return function (string $attribute, mixed $value, \Closure $fail) use ($message): void {
+            if (array_key_exists($attribute, (array) $this->input('data.attributes', []))) {
+                $fail($message);
+            }
+        };
     }
 }

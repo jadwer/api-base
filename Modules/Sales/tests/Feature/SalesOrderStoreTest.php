@@ -73,7 +73,7 @@ class SalesOrderStoreTest extends TestCase
         ]);
     }
 
-    public function test_admin_can_create_confirmed_sales_order(): void
+    public function test_cannot_create_sales_order_already_confirmed(): void
     {
         $admin = $this->getAdminUser();
         $customer = Contact::factory()->customer()->create();
@@ -96,9 +96,10 @@ class SalesOrderStoreTest extends TestCase
             ->withData($data)
             ->post('/api/v1/sales-orders');
 
-        $response->assertCreated();
-        $this->assertEquals('confirmed', $response->json('data.attributes.status'));
-        $this->assertEquals(0, $response->json('data.attributes.totalAmount'));
+        // Rediseno de Compras (17-11, regla 8): un pedido nace borrador o pendiente;
+        // confirmarlo va por su accion (permiso sales-orders.confirm y reservas).
+        $response->assertStatus(422);
+        $this->assertSame('Un pedido nuevo nace como borrador o pendiente; después cambia con sus acciones.', $response->json('errors.0.detail'));
     }
 
     public function test_tech_user_can_create_sales_order(): void
