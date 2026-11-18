@@ -66,10 +66,11 @@ class QuoteSchema extends Schema
             Str::make('estimatedEta', 'estimated_eta'),
 
             // Amount fields
-            Number::make('subtotalAmount', 'subtotal_amount')->sortable(),
-            Number::make('discountAmount', 'discount_amount'),
-            Number::make('taxAmount', 'tax_amount'),
-            Number::make('totalAmount', 'total_amount')->sortable(),
+            // Los totales los calcula Quote::recalculateTotals() desde las partidas (B1, 2026-11-18)
+            Number::make('subtotalAmount', 'subtotal_amount')->sortable()->readOnly(),
+            Number::make('discountAmount', 'discount_amount')->readOnly(),
+            Number::make('taxAmount', 'tax_amount')->readOnly(),
+            Number::make('totalAmount', 'total_amount')->sortable()->readOnly(),
             Str::make('currency'),
 
             // Fase A - Venta directa vs Pedido: condiciones de pago

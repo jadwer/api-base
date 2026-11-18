@@ -110,7 +110,8 @@ class QuoteUpdateTest extends TestCase
         $this->assertEquals('3-4 weeks for delivery', $quote->refresh()->estimated_eta);
     }
 
-    public function test_can_update_totals(): void
+    /** B1 (2026-11-18): los totales salen de las partidas; el PATCH no los cambia. */
+    public function test_totals_are_not_writable(): void
     {
         $admin = $this->getAdminUser();
         $contact = Contact::factory()->customer()->create();
@@ -122,7 +123,7 @@ class QuoteUpdateTest extends TestCase
             'total_amount' => 1160,
         ]);
 
-        $response = $this->actingAs($admin, 'sanctum')
+        $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('quotes')
             ->withData([
@@ -136,11 +137,9 @@ class QuoteUpdateTest extends TestCase
             ])
             ->patch("/api/v1/quotes/{$quote->id}");
 
-        $response->assertOk();
         $quote->refresh();
-        $this->assertEquals(2000, $quote->subtotal_amount);
-        $this->assertEquals(320, $quote->tax_amount);
-        $this->assertEquals(2320, $quote->total_amount);
+        $this->assertEquals(1000, $quote->subtotal_amount);
+        $this->assertEquals(1160, $quote->total_amount);
     }
 
     public function test_can_update_valid_until(): void
@@ -170,7 +169,8 @@ class QuoteUpdateTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_quote_number_uniqueness_ignores_current_record(): void
+    /** B1 (2026-11-18): el folio lo asigna el sistema y no se cambia por PATCH. */
+    public function test_quote_number_is_not_captured_on_update(): void
     {
         $admin = $this->getAdminUser();
         $contact = Contact::factory()->customer()->create();
@@ -180,8 +180,7 @@ class QuoteUpdateTest extends TestCase
             'quote_number' => 'QT-UNIQUE-001',
         ]);
 
-        // Updating with the same quote number should work
-        $response = $this->actingAs($admin, 'sanctum')
+        $this->actingAs($admin, 'sanctum')
             ->jsonApi()
             ->expects('quotes')
             ->withData([
@@ -192,9 +191,9 @@ class QuoteUpdateTest extends TestCase
                     'notes' => 'Updated notes',
                 ],
             ])
-            ->patch("/api/v1/quotes/{$quote->id}");
-
-        $response->assertOk();
+            ->patch("/api/v1/quotes/{$quote->id}")
+            ->assertStatus(422)
+            ->assertJsonPath('errors.0.detail', 'El folio de la cotización lo asigna el sistema.');
     }
 
     public function test_cannot_update_to_existing_quote_number(): void
