@@ -271,12 +271,29 @@ class PurchaseOrderController extends Controller
      */
     public function reject(Request $request, PurchaseOrder $purchaseOrder, PurchaseOrderApprovalService $approvalService): JsonResponse
     {
+        // Seguridad (inventario 19-11): rechazar cancela la orden; antes cualquier usuario con
+        // sesion (incluido un cliente del portal) podia hacerlo. Rechaza quien puede aprobar esta
+        // orden o quien puede cancelarla (purchase-orders.update, igual que cancel).
+        $user = $request->user();
+        $approverPermissions = $approvalService->getRequiredApprovers($purchaseOrder)->pluck('permission');
+        $canReject = $user->can('purchase-orders.update')
+            || $user->getAllPermissions()->pluck('name')->intersect($approverPermissions)->isNotEmpty();
+        if (! $canReject) {
+            return response()->json([
+                'errors' => [[
+                    'status' => '403',
+                    'title' => 'No tiene permisos para esta acción.',
+                    'detail' => 'No tiene permisos para rechazar esta orden de compra.',
+                ]],
+            ], 403);
+        }
+
         $request->validate([
             'reason' => 'required|string|max:500',
         ]);
 
         try {
-            $userId = $request->user()->id;
+            $userId = $user->id;
             $reason = $request->input('reason');
 
             // Reject the order

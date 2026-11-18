@@ -18,10 +18,6 @@ class ShoppingCartRequest extends ResourceRequest
             'expiresAt' => ['nullable', 'date'],
             'totalAmount' => ['required', 'numeric', 'min:0'],
             'currency' => ['required', 'string', 'max:3'],
-            'couponCode' => ['nullable', 'string', 'max:255'],
-            'discountAmount' => ['nullable', 'numeric', 'min:0'],
-            'taxAmount' => ['nullable', 'numeric', 'min:0'],
-            'shippingAmount' => ['nullable', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string'],
             'metadata' => ['nullable', 'array'],
         ];

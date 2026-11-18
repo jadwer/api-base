@@ -44,10 +44,10 @@ class ShoppingCartUpdateTest extends TestCase
             'status' => 'inactive',
             'total_amount' => 150.00,
             'currency' => 'EUR',
-            'coupon_code' => 'UPDATED123',
-            'discount_amount' => 15.00,
             'notes' => 'Updated shopping cart'
         ]);
+        // Cupon y descuento no se capturan por PATCH (seguridad 19-11).
+        $this->assertDatabaseMissing('shopping_carts', ['id' => $shoppingCart->id, 'coupon_code' => 'UPDATED123']);
     }
 
     public function test_admin_can_partially_update_ShoppingCart(): void

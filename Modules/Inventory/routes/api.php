@@ -16,7 +16,9 @@ use Modules\Inventory\Http\Controllers\Api\V1\CycleCountApiController;
 
 Route::prefix('v1')->middleware(['auth:sanctum'])->group(function () {
     // Lot Traceability endpoints
-    Route::prefix('lot-traceability')->group(function () {
+    // Seguridad (inventario 19-11): antes bastaba la sesion; un cliente del portal podia ver la
+    // genealogia de los lotes o ponerlos en cuarentena con initiate-recall.
+    Route::prefix('lot-traceability')->middleware('can:product-batches.index')->group(function () {
         // Batch-specific endpoints
         Route::get('{batch}/genealogy', [LotTraceabilityController::class, 'genealogy'])
             ->name('lot-traceability.genealogy');
@@ -27,6 +29,7 @@ Route::prefix('v1')->middleware(['auth:sanctum'])->group(function () {
         Route::get('{batch}/recall-impact', [LotTraceabilityController::class, 'recallImpact'])
             ->name('lot-traceability.recall-impact');
         Route::post('{batch}/initiate-recall', [LotTraceabilityController::class, 'initiateRecall'])
+            ->middleware('can:product-batches.update')
             ->name('lot-traceability.initiate-recall');
 
         // General endpoints
