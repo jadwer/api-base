@@ -433,7 +433,10 @@ class QuoteController extends Controller
                 'credit_days' => $creditDays,
                 'order_date' => now(),
                 'subtotal' => $quote->subtotal_amount,
-                'discount_total' => $quote->discount_amount,
+                // B2 (2026-11-18): el descuento de la cotizacion vive en sus partidas (cada una ya
+                // trae su total neto). Copiarlo tambien al encabezado lo restaba otra vez en
+                // SalesOrder::recalculateTotals() al editar cualquier partida del pedido.
+                'discount_total' => 0,
                 'tax_amount' => $quote->tax_amount,
                 'total_amount' => $quote->total_amount,
                 'notes' => $quote->notes,
