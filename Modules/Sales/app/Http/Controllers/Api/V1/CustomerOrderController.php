@@ -150,7 +150,7 @@ class CustomerOrderController extends Controller
         if (!$this->canCancelOrder($order)) {
             return response()->json([
                 'error' => 'El pedido no se puede cancelar.',
-                'message' => 'El pedido ya está en estado ' . $order->status,
+                'message' => 'Tu pedido ya está confirmado, pagado o facturado. Para cancelarlo comunícate con ventas.',
             ], 400);
         }
 
@@ -284,8 +284,18 @@ class CustomerOrderController extends Controller
      */
     private function canCancelOrder(SalesOrder $order): bool
     {
-        // Can cancel if status is pending, confirmed, or processing
-        return in_array($order->status, ['pending', 'confirmed', 'processing']);
+        // Seguridad (inventario 19-11): el cliente solo cancela por su cuenta un pedido que la empresa
+        // todavia no confirmo, que no esta pagado y que no tiene cuenta por cobrar (ni, por lo
+        // tanto, CFDI). Antes cancelaba confirmados y en proceso: un pedido de la tienda pagado con
+        // Stripe quedaba cancelado sin reembolso y con su CFDI vigente. Lo demas lo cancela ventas.
+        if (! in_array($order->status, ['draft', 'pending'], true)) {
+            return false;
+        }
+        if (in_array($order->payment_status, ['paid', 'partial', 'partially_paid'], true) || $order->financial_status === 'invoiced') {
+            return false;
+        }
+
+        return ! \Modules\Finance\Models\ARInvoice::where('sales_order_id', $order->id)->exists();
     }
 
     /**

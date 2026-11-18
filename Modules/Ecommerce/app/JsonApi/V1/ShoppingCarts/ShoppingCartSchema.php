@@ -34,10 +34,14 @@ class ShoppingCartSchema extends Schema
             DateTime::make('expiresAt')->sortable(),
             Number::make('totalAmount')->sortable(),
             Str::make('currency')->sortable(),
-            Str::make('couponCode'),
-            Number::make('discountAmount')->sortable(),
-            Number::make('taxAmount')->sortable(),
-            Number::make('shippingAmount')->sortable(),
+            // Seguridad (inventario 19-11): el cupon, el descuento, el IVA y el envio los fijan
+            // el servidor (apply-coupon, remove-coupon y el checkout), nunca el cliente; antes
+            // el dueno del carrito podia ponerse su propio descuento por PATCH y el checkout lo
+            // usaba en el total del pedido.
+            Str::make('couponCode')->readOnly(),
+            Number::make('discountAmount')->sortable()->readOnly(),
+            Number::make('taxAmount')->sortable()->readOnly(),
+            Number::make('shippingAmount')->sortable()->readOnly(),
             Str::make('notes'),
             ArrayHash::make('metadata'),
 
