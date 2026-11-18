@@ -45,6 +45,7 @@ class PurchaseOrderItem extends Model
             'id' => 'integer',
             'purchase_order_id' => 'integer',
             'product_id' => 'integer',
+            'quantity' => 'float',
             'unit_price' => 'float',
             'discount' => 'float',
             'subtotal' => 'float',
