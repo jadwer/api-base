@@ -346,10 +346,10 @@ class PurchaseOrderController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'No autenticado.'], 401);
+            return response()->json(['errors' => [['status' => '401', 'title' => 'No autenticado', 'detail' => 'Inicia sesión para continuar.']]], 401);
         }
         if (!$user->can('purchase-orders.update')) {
-            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
+            return response()->json(['errors' => [['status' => '403', 'title' => 'Sin permiso', 'detail' => 'No tiene permisos para recibir o cancelar órdenes de compra.']]], 403);
         }
 
         if (!in_array($purchaseOrder->status, ['pending', 'approved'])) {
@@ -443,10 +443,10 @@ class PurchaseOrderController extends Controller
     {
         $user = $request->user('sanctum');
         if (!$user) {
-            return response()->json(['error' => 'No autenticado.'], 401);
+            return response()->json(['errors' => [['status' => '401', 'title' => 'No autenticado', 'detail' => 'Inicia sesión para continuar.']]], 401);
         }
         if (!$user->can('purchase-orders.update')) {
-            return response()->json(['error' => 'No tiene permisos para esta acción.'], 403);
+            return response()->json(['errors' => [['status' => '403', 'title' => 'Sin permiso', 'detail' => 'No tiene permisos para recibir o cancelar órdenes de compra.']]], 403);
         }
 
         if ($purchaseOrder->status === 'cancelled') {
@@ -462,6 +462,19 @@ class PurchaseOrderController extends Controller
         $request->validate([
             'reason' => 'sometimes|nullable|string|max:500',
         ]);
+
+        // Una cancelacion que no se puede deshacer limpia descuadra inventario y
+        // cuentas por pagar: se frena antes, con el motivo, en lugar de cancelar y
+        // dejar una marca para arreglo manual (COM-12, 22-11).
+        if ($blocker = $this->cancellationBlocker($purchaseOrder)) {
+            return response()->json([
+                'errors' => [[
+                    'status' => '422',
+                    'title' => 'No se puede cancelar',
+                    'detail' => $blocker,
+                ]]
+            ], 422);
+        }
 
         try {
             $previousStatus = $purchaseOrder->status;
@@ -498,5 +511,46 @@ class PurchaseOrderController extends Controller
                 ]]
             ], 400);
         }
+    }
+
+    /**
+     * Motivo por el que la orden no se puede cancelar, o null si se puede.
+     */
+    private function cancellationBlocker(PurchaseOrder $purchaseOrder): ?string
+    {
+        $apInvoice = \Modules\Finance\Models\APInvoice::where('purchase_order_id', $purchaseOrder->id)
+            ->where('status', '!=', 'voided')
+            ->first();
+        if ($apInvoice && (float) ($apInvoice->getAttribute('paid_amount') ?? 0) > 0) {
+            return 'La orden tiene pagos registrados al proveedor. Cancela o reembolsa esos pagos antes de cancelar la orden.';
+        }
+
+        $warehouseId = $purchaseOrder->warehouse_id
+            ?? \Modules\Inventory\Models\Warehouse::where('is_active', true)->value('id');
+        if (! $warehouseId) {
+            return null;
+        }
+
+        $missing = [];
+        foreach ($purchaseOrder->purchaseOrderItems()->with('product')->get() as $item) {
+            $received = (float) ($item->getAttribute('received_quantity') ?? 0);
+            if ($received <= 0 || ! $item->getAttribute('product_id')) {
+                continue;
+            }
+            $onHand = (float) \Modules\Inventory\Models\Stock::where('product_id', $item->getAttribute('product_id'))
+                ->where('warehouse_id', $warehouseId)
+                ->sum('quantity');
+            if ($onHand + 1e-9 < $received) {
+                $name = $item->getRelation('product')?->getAttribute('name') ?? ('producto '.$item->getAttribute('product_id'));
+                $missing[] = sprintf('%s (recibido %s, en existencia %s)', $name, rtrim(rtrim(number_format($received, 4, '.', ''), '0'), '.'), rtrim(rtrim(number_format($onHand, 4, '.', ''), '0'), '.'));
+            }
+        }
+
+        if ($missing) {
+            return 'Parte de la mercancía recibida ya salió del almacén y no se puede devolver: '
+                .implode('; ', $missing).'. Registra la devolución al proveedor por lo que queda o ajusta el inventario antes de cancelar.';
+        }
+
+        return null;
     }
 }

@@ -392,4 +392,32 @@ class PurchaseOrderCancelInvariantTest extends TestCase
         ]);
         $this->assertDatabaseHas('ap_invoices', ['purchase_order_id' => $po->id]);
     }
+
+    /**
+     * COM-12 (22-11): si parte de lo recibido ya salio del almacen, cancelar dejaba
+     * la orden cancelada con una marca para arreglo manual. Ahora se frena antes y
+     * nada cambia: ni la orden, ni el stock, ni la cuenta por pagar.
+     */
+    public function test_cancelling_is_blocked_when_received_goods_already_left_the_warehouse(): void
+    {
+        Sanctum::actingAs($this->getAdminUser());
+
+        [$po, $warehouse, $lines] = $this->makeApprovedOrder([
+            ['quantity' => 10, 'unit_price' => 100],
+        ]);
+        $this->receiveInFull($po, $lines);
+        $product = $lines[0]['product'];
+
+        // Salen 4 piezas del almacen por otra operacion (venta, ajuste).
+        Stock::where('product_id', $product->id)->where('warehouse_id', $warehouse->id)->firstOrFail()->decrement('quantity', 4);
+        $this->assertEqualsWithDelta(6, $this->stockQty($product->id, $warehouse->id), 0.001);
+
+        $response = $this->postJson("/api/v1/purchase-orders/{$po->id}/cancel", ['reason' => 'Prueba']);
+
+        $response->assertStatus(422)->assertJsonPath('errors.0.title', 'No se puede cancelar');
+        $this->assertStringContainsString('recibido 10, en existencia 6', $response->json('errors.0.detail'));
+        $this->assertSame('received', $po->fresh()->status);
+        $this->assertEqualsWithDelta(6, $this->stockQty($product->id, $warehouse->id), 0.001);
+        $this->assertSame(0, APInvoice::where('purchase_order_id', $po->id)->where('status', 'voided')->count());
+    }
 }

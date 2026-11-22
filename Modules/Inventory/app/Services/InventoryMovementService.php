@@ -35,9 +35,13 @@ class InventoryMovementService
             // Lock stock record to prevent race conditions
             $stock = Stock::where('product_id', $data['product_id'])
                 ->where('warehouse_id', $data['warehouse_id'])
-                ->when(isset($data['warehouse_location_id']), function ($query) use ($data) {
-                    $query->where('warehouse_location_id', $data['warehouse_location_id']);
-                })
+                // Sin ubicacion la entrada va al registro sin ubicacion; antes caia en el
+                // primer registro del producto, aunque fuera de una ubicacion (INV-03).
+                ->when(
+                    isset($data['warehouse_location_id']),
+                    fn ($query) => $query->where('warehouse_location_id', $data['warehouse_location_id']),
+                    fn ($query) => $query->whereNull('warehouse_location_id')
+                )
                 ->lockForUpdate()
                 ->first();
 
@@ -147,9 +151,13 @@ class InventoryMovementService
             // Lock stock record to prevent race conditions
             $stock = Stock::where('product_id', $data['product_id'])
                 ->where('warehouse_id', $data['warehouse_id'])
-                ->when(isset($data['warehouse_location_id']), function ($query) use ($data) {
-                    $query->where('warehouse_location_id', $data['warehouse_location_id']);
-                })
+                // Sin ubicacion se toma el registro con mas existencia (el producto puede
+                // tener parte con ubicacion y parte sin ella).
+                ->when(
+                    isset($data['warehouse_location_id']),
+                    fn ($query) => $query->where('warehouse_location_id', $data['warehouse_location_id']),
+                    fn ($query) => $query->orderByDesc('quantity')
+                )
                 ->lockForUpdate()
                 ->first();
 
@@ -251,9 +259,13 @@ class InventoryMovementService
             // Lock BOTH source and destination stock records to prevent race conditions
             $sourceStock = Stock::where('product_id', $data['product_id'])
                 ->where('warehouse_id', $data['warehouse_id'])
-                ->when(isset($data['warehouse_location_id']), function ($query) use ($data) {
-                    $query->where('warehouse_location_id', $data['warehouse_location_id']);
-                })
+                // Sin ubicacion se toma el registro con mas existencia (el producto puede
+                // tener parte con ubicacion y parte sin ella).
+                ->when(
+                    isset($data['warehouse_location_id']),
+                    fn ($query) => $query->where('warehouse_location_id', $data['warehouse_location_id']),
+                    fn ($query) => $query->orderByDesc('quantity')
+                )
                 ->lockForUpdate()
                 ->first();
 
@@ -269,9 +281,11 @@ class InventoryMovementService
             // Lock destination stock (or create if doesn't exist)
             $destinationStock = Stock::where('product_id', $data['product_id'])
                 ->where('warehouse_id', $data['destination_warehouse_id'])
-                ->when(isset($data['destination_location_id']), function ($query) use ($data) {
-                    $query->where('warehouse_location_id', $data['destination_location_id']);
-                })
+                ->when(
+                    isset($data['destination_location_id']),
+                    fn ($query) => $query->where('warehouse_location_id', $data['destination_location_id']),
+                    fn ($query) => $query->whereNull('warehouse_location_id')
+                )
                 ->lockForUpdate()
                 ->first();
 
@@ -382,9 +396,13 @@ class InventoryMovementService
             // Lock stock record to prevent race conditions
             $stock = Stock::where('product_id', $data['product_id'])
                 ->where('warehouse_id', $data['warehouse_id'])
-                ->when(isset($data['warehouse_location_id']), function ($query) use ($data) {
-                    $query->where('warehouse_location_id', $data['warehouse_location_id']);
-                })
+                // Sin ubicacion se toma el registro con mas existencia (el producto puede
+                // tener parte con ubicacion y parte sin ella).
+                ->when(
+                    isset($data['warehouse_location_id']),
+                    fn ($query) => $query->where('warehouse_location_id', $data['warehouse_location_id']),
+                    fn ($query) => $query->orderByDesc('quantity')
+                )
                 ->lockForUpdate()
                 ->first();
 
