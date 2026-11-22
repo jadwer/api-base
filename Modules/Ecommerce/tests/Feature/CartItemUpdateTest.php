@@ -15,12 +15,14 @@ class CartItemUpdateTest extends TestCase
     {
         $admin = $this->getAdminUser();
         $cartItem = CartItem::factory()->create();
+        $priceBefore = (float) $cartItem->unit_price;
 
         $data = [
             'type' => 'cart-items',
             'id' => (string) $cartItem->id,
             'attributes' => [
                 'quantity' => 5.0,
+                // El precio es de solo lectura: se manda para probar que se ignora.
                 'unitPrice' => 25.99,
                 'status' => 'inactive'
             ]
@@ -37,7 +39,7 @@ class CartItemUpdateTest extends TestCase
         $this->assertDatabaseHas('cart_items', [
             'id' => $cartItem->id,
             'quantity' => 5.0,
-            'unit_price' => 25.99,
+            'unit_price' => $priceBefore,
             'status' => 'inactive'
         ]);
     }

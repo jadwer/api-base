@@ -54,7 +54,10 @@ class CartItemStoreTest extends TestCase
 
         $response->assertCreated();
         
-        $this->assertDatabaseHas('cart_items', ['quantity' => 99.99, 'unit_price' => 99.99, 'original_price' => 99.99, 'discount_percent' => 99.99, 'discount_amount' => 99.99, 'subtotal' => 99.99, 'tax_rate' => 99.99, 'tax_amount' => 99.99, 'total' => 99.99]);
+        // Precio, descuento e IVA los pone el servidor desde el catalogo; lo que
+        // mande el cliente se ignora (tests/Feature/Security/CarritoPrecioServidor20261122Test).
+        $this->assertDatabaseHas('cart_items', ['shopping_cart_id' => $shoppingCart->id, 'quantity' => 99.99, 'discount_percent' => 0, 'discount_amount' => 0]);
+        $this->assertDatabaseMissing('cart_items', ['shopping_cart_id' => $shoppingCart->id, 'unit_price' => 99.99, 'total' => 99.99]);
     }
 
     public function test_admin_can_create_CartItem_with_minimal_data(): void
