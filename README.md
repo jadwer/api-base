@@ -4,45 +4,10 @@ Este es un proyecto base en Laravel 12 con una arquitectura totalmente desacopla
 
 ## Estado del Proyecto
 
-**v1.0 RELEASE READY (2026-01-06)**
-
-### Modulos Completos (14/14)
-
-| Modulo | Entidades | Tests | Status |
-|--------|-----------|-------|--------|
-| **Product** | Products, Units, Categories, Brands, Variants | 26 | Completo |
-| **Inventory** | Warehouses, Locations, Stock, Batches, Movements, CycleCounts | 24 | Completo |
-| **Purchase** | Suppliers, Orders, Items, Approval, Budgets | 18 | Completo |
-| **Sales** | Orders, Items, Shipments, Backorders, DiscountRules | 24 | Completo |
-| **Ecommerce** | Carts, Checkout, Payments, Wishlists, Reviews, Recommendations | 64 | Completo |
-| **Finance** | AP/AR Invoices, Payments, Bank Accounts, EarlyPaymentDiscount | 39 | Completo |
-| **Accounting** | Accounts, Journal Entries, Fiscal Periods, Exchange Rates | 61 | Completo |
-| **Reports** | Financial Statements, Management Reports, KPIs | 50 | Completo |
-| **HR** | Employees, Attendance, Payroll, Leave, Performance | 45 | Completo |
-| **CRM** | Pipeline, Leads, Campaigns, Activities, Opportunities | 25 | Completo |
-| **Billing** | CFDI Invoices, PAC Integration (SW Sapien), Stripe | 25 | Completo |
-| **Contacts** | Contacts, Addresses, Documents, Duplicate Detection | 20 | Completo |
-| **Audit** | Activity Logs, Login History | 3 | Completo |
-| **SystemHealth** | Health Checks, Metrics, Monitoring | 1 | Completo |
-
-### Metricas
-
-| Metrica | Valor |
-|---------|-------|
-| Modelos/Entidades | 85+ |
-| Endpoints API | 736+ |
-| Tests (archivos) | 452 |
-| Reglas de negocio | 175/175 (100%) |
-| Documentacion API | Scribe (664 endpoints) |
-
-### Features v1.1 Implementados
-
-- **PU-M003** Budget Control - Control presupuestal para OC
-- **IV-M001** Cycle Count Scheduling - Conteos ciclicos de inventario
-- **CO-M001** Duplicate Detection - Deteccion de contactos duplicados
-- **SA-M003** Automatic Discount Rules - Reglas de descuento automaticas
-- **FI-M002** Early Payment Discount - Descuentos por pronto pago
-- **E2E Tests** - Tests de integracion Cart->Checkout->Order->Invoice
+Plantilla del ERP en produccion (LaborWasser y AlphaLab). 23 modulos, 1,002 rutas de API y
+603 archivos de prueba. Lo comercial (catalogo, tienda, cotizaciones, pedidos, compras,
+inventario) opera; facturacion, finanzas y contabilidad existen pero no se han usado con
+datos reales. Estado, rumbo y pendientes: `CLAUDE.md` y el `ROADMAP.md` del workspace.
 
 ## Autor
 
@@ -60,7 +25,7 @@ Repositorio: privado
 - Estructura escalable y limpia para nuevos módulos
 - **Documentación automática** de API con `php artisan api:generate-docs`
 
-## 📚 Documentación
+## Documentación
 
 Toda la documentación del proyecto está organizada en la carpeta [`docs/`](./docs/):
 

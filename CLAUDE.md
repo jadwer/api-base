@@ -16,72 +16,21 @@ This file provides guidance to Claude Code when working with this repository.
 
 ---
 
-## Project Status
+## Project Status (2026-11-22)
 
-**Version:** v1.0 (2026-01-06), auditado y refactorizado 2026-07
-**Estado real:** ver seccion "Auditoria 2026-07" abajo. NO asumir completitud.
-
-### ADVERTENCIA: Auditoria 2026-07 (leer antes de confiar en este doc)
-
-La auditoria modular del 2026-07-17 (docs en `../docs/audit-lwm-migration/`, carpeta
-`base/` del workspace, fuera de este repo) encontro que el ciclo transaccional
-estaba ROTO de raiz pese a que este documento afirmaba "Production Readiness 100%":
-
-- Las ventas reconocian ingreso y cobro pero NO descontaban stock ni generaban COGS.
-- Los eventos de dominio estaban definidos pero varios nunca se disparaban
-  (SalesOrderCancelled huerfano, PurchaseOrderCancelled inexistente).
-- Cancelar una venta o compra no revertia nada (ni stock ni asientos).
-- El posting GL de inventario salia con importe 0 y las cuentas nunca se sembraron.
-- Los tests E2E usaban Event::fake(), que finge el disparo y oculto todo lo anterior.
-
-El ciclo fue REFACTORIZADO y verificado end-to-end en dev el 2026-07-17 (entrega
-descuenta stock + COGS cuadra, factura AR posted, CFDI timbrado sandbox, cobro,
-cancelaciones revierten). Commits 90ae514, 9a2b95d, 2581995, c23c5d1. Leer
-`SINTESIS_AUDITORIA_MODULAR.md` y `PLAN_REFACTOR_CICLO.md` en la carpeta de auditoria.
-
-Por que este bloque existe: las afirmaciones de completitud de la version anterior
-de este doc generaban confianza falsa; se corrigieron con el estado real en la
-Fase 2.5 del roadmap post-cutover (2026-07-18).
-
-### Modulos (14 implementados; completitud auditada, no asumida)
-
-| Module | Entities | Tests |
-|--------|----------|-------|
-| Product | Products, Units, Categories, Brands, Variants | 26 |
-| Inventory | Warehouses, Locations, Stock, Batches, Movements, CycleCounts | 24 |
-| Purchase | Suppliers, Orders, Items, Approval, Budgets | 18 |
-| Sales | Orders, Items, Shipments, Backorders, DiscountRules | 24 |
-| Ecommerce | Carts, Checkout, Payments, Wishlists, Reviews, Recommendations | 64 |
-| Finance | AP/AR Invoices, Payments, Bank Accounts, EarlyPaymentDiscount | 39 |
-| Accounting | Accounts, Journal Entries, Fiscal Periods, Exchange Rates | 61 |
-| Reports | Financial Statements, Management Reports, KPIs | 50 |
-| HR | Employees, Attendance, Payroll, Leave, Performance | 45 |
-| CRM | Pipeline, Leads, Campaigns, Activities, Opportunities | 25 |
-| Billing | CFDI, PAC (SW Sapien), Stripe | 25 |
-| Contacts | Contacts, Addresses, Documents, Duplicate Detection | 20 |
-| Audit | Activity Logging | 3 |
-| SystemHealth | Health Checks | 1 |
-
-### Metrics
-- **Models/Entities:** 85+
-- **API Endpoints:** 736+
-- **Tests (files):** 452 (mayoria de fachada: verifican status HTTP, no invariantes
-  de negocio; rediseno pendiente en Fase 2.7, ver ANALISIS_CALIDAD_TESTS.md en la
-  carpeta de auditoria)
-- **Business Rules:** el conteo "175/175 (100%)" que decia aqui era FALSO; la
-  auditoria 2026-07 probo rotas varias reglas centrales marcadas como implementadas
-  (ver docs/architecture/BUSINESS_RULES_COMPLETE.md, corregido con la verdad)
-- **API Docs:** Scribe (664 endpoints)
-
-### v1.1 Features
-- PU-M003 Budget Control
-- IV-M001 Cycle Count Scheduling
-- CO-M001 Duplicate Detection
-- SA-M003 Automatic Discount Rules
-- FI-M002 Early Payment Discount
-- E2E Integration Tests (existian pero con Event::fake(): no probaban el ciclo real;
-  se reescriben por invariante en Fase 2.7)
-- Stripe Payment Gateway
+- Plantilla Laravel 12 del ERP (LaborWasser y AlphaLab corren sobre ella). 23 modulos,
+  1,002 rutas de API, 603 archivos de prueba (4,298 pruebas en verde el 18-11).
+- Rama de trabajo: `feat/rediseno-cotizaciones`. `refactor/wp-style`, `master` y `lwm` son
+  historicas: no se trabaja ni se despliega de ahi.
+- Rumbo, estado de prod y pendientes: `../ROADMAP.md`, `../PROMPT.md` y
+  `../roadmap/pendientes.yaml` (carpeta `base/` del workspace, fuera de este repo).
+  Lo comercial opera; facturacion, finanzas y contabilidad existen pero nunca se usaron con
+  datos reales y no se terminan aqui (pasan a AtomoPlatform).
+- Es plantilla: `tests/Feature/NoHardcodedBrandTest` prohibe nombres de marca en Modules,
+  app, database, resources y config, incluidos comentarios.
+- Leccion de la auditoria de 2026-07: las pruebas con `Event::fake()` escondieron que el
+  ciclo comercial estaba roto. Las pruebas de flujo se escriben por invariante de negocio,
+  sin fingir eventos.
 
 ---
 
@@ -89,12 +38,13 @@ Fase 2.5 del roadmap post-cutover (2026-07-18).
 
 | Document | Purpose |
 |----------|---------|
-| `docs/DATABASE_SCHEMA_REFERENCE.md` | **READ FIRST** - Database schema |
-| `docs/DEVELOPMENT_ROADMAP.md` | Current status and pending tasks |
-| `docs/FRONTEND_INTEGRATION_GUIDE.md` | API integration for frontend |
-| `docs/architecture/README.md` | System architecture |
-| `docs/development/MODULE_IMPLEMENTATION_METHODOLOGY.md` | How to create modules |
-| `docs/modules/*_FRONTEND_GUIDE.md` | Per-module integration guides |
+| `../docs/RUNBOOK_RELEASE.md` | Release, rollback y gotchas del servidor (PHP ea-php84) |
+| `docs/module-generator.md` | Generador de modulos (`module:generate`) |
+| `docs/architecture/BUSINESS_RULES_COMPLETE.md` | Reglas de negocio, corregidas con la auditoria |
+| `tests/Feature/Contracts/` | Contratos JSON:API (el Schema es la unica fuente de la salida) |
+
+El esquema de la base se lee de las migraciones y de `php artisan model:show`; no hay
+documento de esquema vigente.
 
 ---
 
@@ -114,8 +64,8 @@ Fase 2.5 del roadmap post-cutover (2026-07-18).
 ## Common Commands
 
 ```bash
-# Run all tests
-php artisan test
+# Run all tests (unos 10 min; revisar uptime y avisar a AtomoPlatform antes)
+php artisan test --parallel --processes=6
 
 # Run module tests
 php artisan test Modules/{Module}/
@@ -123,11 +73,11 @@ php artisan test Modules/{Module}/
 # Run specific test file
 php artisan test Modules/Ecommerce/tests/Integration/OnlineSalesE2ETest.php
 
-# Fresh database
-php artisan migrate:fresh --seed
+# Fresh database (solo local)
+php artisan migrate:fresh --seeder=CleanDatabaseSeeder
 
 # Create module
-php artisan module:advanced-blueprint {Name} --entities="Entity1,Entity2"
+php artisan module:generate {Name} --config=config/modules/{name}.json
 
 # Generate API docs
 php artisan scribe:generate
@@ -161,7 +111,7 @@ When a test fails, check in this order:
 | Models | Singular PascalCase | `SalesOrder` |
 | Tables | Plural snake_case | `sales_orders` |
 | Endpoints | Plural kebab-case | `/api/v1/sales-orders` |
-| Permissions | `module.entities.action` | `sales.sales-orders.store` |
+| Permissions | `entities.action` (plural, kebab-case) | `sales-orders.store` |
 | JSON:API fields | camelCase | `createdAt`, `salesOrderId` |
 | Database columns | snake_case | `created_at`, `sales_order_id` |
 
@@ -189,7 +139,7 @@ When a test fails, check in this order:
 ## External Integrations
 
 ### SW Sapien PAC (CFDI)
-- Config: `config/billing.php`
+- Config: `Modules/Billing/config/config.php`
 - Keys in `.env`: `SW_PAC_TOKEN`, `CFDI_*`
 - Docs: `Modules/Billing/docs/PAC_INTEGRATION.md`
 
@@ -287,7 +237,6 @@ return $request->user()?->can('quotes.index') ?? false;  // MAL
 **Permisos estándar por entidad:**
 ```php
 '{resource}.index',
-'{resource}.view',
 '{resource}.show',
 '{resource}.store',
 '{resource}.update',
@@ -593,59 +542,3 @@ $this->app->instance(SWPacService::class, $mockPac);
 | CRUD Update | 4-8 | admin, guest + validaciones |
 | CRUD Destroy | 3-4 | admin, guest + 404 |
 | Custom Action | 4-8 | según lógica de negocio |
-
-### Cobertura Actual por Módulo (2026-01-18)
-
-| Módulo | CRUD | Custom | Total | Estado |
-|--------|------|--------|-------|--------|
-| Ecommerce | 64 | 0/8 | 64 | **8 tests faltantes** |
-| Sales/Quotes | 0/10 | 0/9 | 0 | **19 tests faltantes** |
-| Billing/Stripe | 26 | 26/29 | 26 | **3 tests faltantes** |
-
-### Archivos de Test Faltantes (Prioridad)
-
-**CRÍTICO - Ecommerce Custom:**
-```
-ShoppingCartGetOrCreateTest.php
-ShoppingCartCurrentTest.php
-ShoppingCartMergeTest.php
-ShoppingCartClearTest.php
-ShoppingCartApplyCouponTest.php
-ShoppingCartRemoveCouponTest.php
-ShoppingCartCheckoutTest.php
-CouponValidateTest.php
-```
-
-**CRÍTICO - Quotes CRUD:**
-```
-QuoteIndexTest.php
-QuoteShowTest.php
-QuoteStoreTest.php
-QuoteUpdateTest.php
-QuoteDestroyTest.php
-QuoteItemIndexTest.php
-QuoteItemShowTest.php
-QuoteItemStoreTest.php
-QuoteItemUpdateTest.php
-QuoteItemDestroyTest.php
-```
-
-**CRÍTICO - Quotes Custom:**
-```
-QuoteFromCartTest.php
-QuoteSendTest.php
-QuoteAcceptTest.php
-QuoteRejectTest.php
-QuoteConvertTest.php
-QuoteCancelTest.php
-QuoteDuplicateTest.php
-QuoteExpiringSoonTest.php
-QuoteSummaryTest.php
-```
-
-**ALTA - Billing Custom:**
-```
-CompanySettingUploadCertificateTest.php
-CompanySettingUploadKeyTest.php
-CompanySettingTestPacTest.php
-```
