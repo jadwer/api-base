@@ -22,7 +22,7 @@ class VerifyEmailNotification extends Notification
         $frontendUrl = config('app.frontend_url', 'http://localhost:3000');
         $url = "{$frontendUrl}/auth/verify-email?" . http_build_query([
             'id' => $notifiable->getKey(),
-            'hash' => sha1($notifiable->getEmailForVerification()),
+            'hash' => \Modules\Auth\Support\EmailVerificationToken::make($notifiable),
         ]);
 
         return (new MailMessage)

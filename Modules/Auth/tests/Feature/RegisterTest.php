@@ -52,7 +52,7 @@ class RegisterTest extends TestCase
         $this->postJson('/api/auth/register', $this->registerPayload());
         $user = User::where('email', 'nuevo@example.com')->first();
 
-        $hash = sha1($user->getEmailForVerification());
+        $hash = \Modules\Auth\Support\EmailVerificationToken::make($user);
         $this->getJson("/api/auth/email/verify/{$user->id}/{$hash}")->assertOk();
 
         $user->refresh();
@@ -71,7 +71,7 @@ class RegisterTest extends TestCase
         $user = User::where('email', 'nuevo@example.com')->first();
         $user->forceFill(['status' => 'banned'])->save();
 
-        $hash = sha1($user->getEmailForVerification());
+        $hash = \Modules\Auth\Support\EmailVerificationToken::make($user);
         $this->getJson("/api/auth/email/verify/{$user->id}/{$hash}")->assertOk();
 
         $this->assertSame('banned', $user->fresh()->status);

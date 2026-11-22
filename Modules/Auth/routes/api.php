@@ -23,6 +23,7 @@ Route::prefix('auth')->group(function () {
     // Public (user clicks link from email)
     Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
         ->whereNumber('id')
+        ->middleware('throttle:6,1')
         ->name('auth.verification.verify');
 
     Route::post('/register', [AuthController::class, 'register'])

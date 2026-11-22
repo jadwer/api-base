@@ -66,7 +66,7 @@ class EmailVerificationTest extends TestCase
             'status' => 'active',
         ]);
 
-        $hash = sha1($user->email);
+        $hash = \Modules\Auth\Support\EmailVerificationToken::make($user);
 
         $response = $this->getJson("/api/auth/email/verify/{$user->id}/{$hash}");
 
@@ -106,7 +106,7 @@ class EmailVerificationTest extends TestCase
             'status' => 'active',
         ]);
 
-        $hash = sha1($user->email);
+        $hash = \Modules\Auth\Support\EmailVerificationToken::make($user);
 
         $response = $this->getJson("/api/auth/email/verify/{$user->id}/{$hash}");
 

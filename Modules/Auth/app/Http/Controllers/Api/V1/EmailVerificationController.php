@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modules\Auth\Notifications\VerifyEmailNotification;
+use Modules\Auth\Support\EmailVerificationToken;
 use Modules\User\Models\User;
 
 class EmailVerificationController extends Controller
@@ -37,7 +38,9 @@ class EmailVerificationController extends Controller
     {
         $user = User::findOrFail($id);
 
-        if (! hash_equals(sha1($user->getEmailForVerification()), $hash)) {
+        $result = EmailVerificationToken::check($user, $hash);
+
+        if ($result === EmailVerificationToken::INVALID) {
             return response()->json([
                 'message' => 'Enlace de verificación inválido.',
             ], 403);
@@ -47,6 +50,16 @@ class EmailVerificationController extends Controller
             return response()->json([
                 'message' => 'Tu correo ya ha sido verificado.',
             ]);
+        }
+
+        // Enlace vencido o con el formato anterior: no verifica; se manda uno
+        // nuevo al correo registrado (la ruta va con throttle).
+        if ($result !== EmailVerificationToken::VALID) {
+            $user->notify(new VerifyEmailNotification());
+
+            return response()->json([
+                'message' => 'El enlace de verificación venció. Te enviamos uno nuevo a tu correo.',
+            ], 403);
         }
 
         $user->markEmailAsVerified();

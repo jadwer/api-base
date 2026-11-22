@@ -31,9 +31,7 @@ class PurchaseOrderRequest extends ResourceRequest
             'orderNumber' => [$this->notCaptured('El número de orden lo asigna el sistema.')],
             'warehouseId' => ['nullable', 'integer', 'exists:warehouses,id'],
             'branchId' => ['nullable', 'integer', 'exists:branches,id'],
-            'invoicingStatus' => ['sometimes', 'nullable', 'string'],
             'invoicingNotes' => ['sometimes', 'nullable', 'string'],
-            'financialStatus' => ['sometimes', 'nullable', 'string'],
             'notes' => ['nullable', 'string'],
 
             // Validaciones para relaciones

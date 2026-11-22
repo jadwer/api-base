@@ -57,11 +57,13 @@ class PurchaseOrderSchema extends Schema
             Str::make('approvalStatus', 'approval_status')->sortable()->readOnly(),
             DateTime::make('approvedAt', 'approved_at')->sortable()->readOnly(),
             Number::make('approvedById', 'approved_by_id')->readOnly(),
-            Str::make('financialStatus', 'financial_status')->sortable(),
+            // Los estados financiero y de facturacion los mueven los listeners de
+            // Finanzas, no el cliente de la API (SEG-05, 22-11).
+            Str::make('financialStatus', 'financial_status')->sortable()->readOnly(),
 
             // Finance integration fields
             Number::make('apInvoiceId', 'ap_invoice_id')->sortable()->readOnly(),
-            Str::make('invoicingStatus', 'invoicing_status')->sortable(),
+            Str::make('invoicingStatus', 'invoicing_status')->sortable()->readOnly(),
             Str::make('invoicingNotes', 'invoicing_notes'),
 
             DateTime::make('createdAt')->sortable()->readOnly(),

@@ -28,11 +28,15 @@ class PublicProductAuthorizer implements Authorizer
 
     /**
      * Authorize the show controller action.
-     * Allow public access for viewing product details.
+     * Publico, pero con la misma regla del listado: un producto interno,
+     * inactivo o de marca o categoria desactivada no se consulta por id
+     * (SEG-04, 22-11; el filtro solo actuaba en el index).
      */
     public function show(Request $request, object $model): bool|Response
     {
-        return true;
+        return \Modules\Product\Models\Product::wherePubliclyVisible(\Modules\Product\Models\Product::query())
+            ->whereKey($model->getKey())
+            ->exists();
     }
 
     /**
@@ -59,7 +63,7 @@ class PublicProductAuthorizer implements Authorizer
      */
     public function showRelated(Request $request, object $model, string $fieldName): bool|Response
     {
-        return true;
+        return $this->show($request, $model);
     }
 
     /**
@@ -68,7 +72,7 @@ class PublicProductAuthorizer implements Authorizer
      */
     public function showRelationship(Request $request, object $model, string $fieldName): bool|Response
     {
-        return true;
+        return $this->show($request, $model);
     }
 
     /**

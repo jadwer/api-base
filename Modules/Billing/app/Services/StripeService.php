@@ -441,6 +441,21 @@ class StripeService
     }
 
     /**
+     * El evento del webhook llega como objeto de Stripe o como stdClass; en
+     * ambos casos se guarda sin el client_secret.
+     *
+     * @param object $paymentIntent
+     * @return array<string, mixed>
+     */
+    protected function withoutClientSecret($paymentIntent): array
+    {
+        $data = method_exists($paymentIntent, 'toArray') ? $paymentIntent->toArray() : (array) $paymentIntent;
+        unset($data['client_secret']);
+
+        return $data;
+    }
+
+    /**
      * Handle payment_intent.succeeded event.
      *
      * @param object $paymentIntent
@@ -455,7 +470,8 @@ class StripeService
                 'status' => 'captured',
                 'captured_at' => now(),
                 'transaction_id' => $paymentIntent->charges->data[0]->id ?? null,
-                'gateway_response' => (array) $paymentIntent,
+                // Sin client_secret: este campo sale por la API al dueno del pago (SEG-06).
+                'gateway_response' => $this->withoutClientSecret($paymentIntent),
             ]);
 
             Log::info('Payment Intent succeeded - transaction updated', [
@@ -483,7 +499,8 @@ class StripeService
                 'status' => 'failed',
                 'failed_at' => now(),
                 'error_message' => $paymentIntent->last_payment_error->message ?? 'Payment failed',
-                'gateway_response' => (array) $paymentIntent,
+                // Sin client_secret: este campo sale por la API al dueno del pago (SEG-06).
+                'gateway_response' => $this->withoutClientSecret($paymentIntent),
             ]);
 
             Log::info('Payment Intent failed - transaction updated', [
