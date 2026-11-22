@@ -63,6 +63,16 @@ class AppSettingController extends Controller
             'value.in' => 'El valor de "'.($setting->label ?: $setting->key).'" debe ser una de las opciones de la lista.',
         ]);
 
+        // BUG-05 (2026-11-22): el modo de precios con IVA incluido esta a medias
+        // (el pedido y el CFDI suman IVA sobre un precio que ya lo trae). No se
+        // puede prender desde la pantalla hasta que se termine.
+        if ($key === 'pricing.prices_include_tax' && filter_var($request->input('value'), FILTER_VALIDATE_BOOLEAN)) {
+            return response()->json([
+                'message' => 'El modo de precios con IVA incluido todavía no está disponible: los pedidos y las facturas sumarían el IVA sobre un precio que ya lo trae.',
+                'errors' => ['value' => ['El modo de precios con IVA incluido todavía no está disponible.']],
+            ], 422);
+        }
+
         AppSetting::set($key, $request->input('value'));
 
         $setting->refresh();

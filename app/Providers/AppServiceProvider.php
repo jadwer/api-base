@@ -118,7 +118,6 @@ class AppServiceProvider extends ServiceProvider
             \Modules\Contacts\Models\Contact::class,
 
             // Inventory
-            \Modules\Inventory\Models\Product::class,
             \Modules\Inventory\Models\Stock::class,
             \Modules\Inventory\Models\InventoryMovement::class,
         ];

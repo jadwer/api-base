@@ -61,4 +61,18 @@ class AppSettingOptionsTest extends TestCase
             ->patchJson('/api/v1/app-settings/documents.issuer_name', ['value' => 'Mi Empresa SA'])
             ->assertOk();
     }
+
+    /** BUG-05 (2026-11-22): el modo esta a medias y no se puede prender desde la pantalla. */
+    public function test_el_modo_de_precios_con_iva_incluido_no_se_puede_prender(): void
+    {
+        $this->actingAs($this->admin(), 'sanctum')
+            ->patchJson('/api/v1/app-settings/pricing.prices_include_tax', ['value' => true])
+            ->assertStatus(422)
+            ->assertJsonPath('errors.value.0', 'El modo de precios con IVA incluido todavía no está disponible.');
+        $this->assertFalse((bool) AppSetting::get('pricing.prices_include_tax'));
+
+        $this->actingAs($this->admin(), 'sanctum')
+            ->patchJson('/api/v1/app-settings/pricing.prices_include_tax', ['value' => false])
+            ->assertOk();
+    }
 }

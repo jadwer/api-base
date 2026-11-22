@@ -218,7 +218,7 @@ class OrderTrackingController extends Controller
         if ($order->status === 'shipped') {
             // Default: 3-5 business days from ship date
             $shippedDate = $order->metadata['shipped_at'] ?? now();
-            return \Carbon\Carbon::parse($shippedDate)->addBusinessDays(4)->toDateString();
+            return \Carbon\Carbon::parse($shippedDate)->addWeekdays(4)->toDateString();
         }
 
         return null;
@@ -233,15 +233,15 @@ class OrderTrackingController extends Controller
     private function getCurrentLocation(SalesOrder $order): ?string
     {
         if ($order->status === 'delivered') {
-            return 'Delivered to customer';
+            return 'Entregado al cliente';
         }
 
         if ($order->status === 'shipped') {
-            return 'In transit';
+            return 'En tránsito';
         }
 
         if ($order->status === 'processing') {
-            return 'Warehouse - Preparing for shipment';
+            return 'En almacén, preparando el envío';
         }
 
         return null;
@@ -260,7 +260,7 @@ class OrderTrackingController extends Controller
         // Order placed
         $timeline[] = [
             'status' => 'placed',
-            'label' => 'Order Placed',
+            'label' => 'Pedido recibido',
             'timestamp' => $order->order_date,
             'completed' => true,
         ];
@@ -268,7 +268,7 @@ class OrderTrackingController extends Controller
         // Confirmed
         $timeline[] = [
             'status' => 'confirmed',
-            'label' => 'Order Confirmed',
+            'label' => 'Pedido confirmado',
             'timestamp' => $order->created_at,
             'completed' => in_array($order->status, ['confirmed', 'processing', 'shipped', 'delivered', 'completed']),
         ];
@@ -276,7 +276,7 @@ class OrderTrackingController extends Controller
         // Processing
         $timeline[] = [
             'status' => 'processing',
-            'label' => 'Processing',
+            'label' => 'En preparación',
             'timestamp' => null,
             'completed' => in_array($order->status, ['processing', 'shipped', 'delivered', 'completed']),
         ];
@@ -285,7 +285,7 @@ class OrderTrackingController extends Controller
         $shippedAt = $order->metadata['shipped_at'] ?? null;
         $timeline[] = [
             'status' => 'shipped',
-            'label' => 'Shipped',
+            'label' => 'Enviado',
             'timestamp' => $shippedAt,
             'completed' => in_array($order->status, ['shipped', 'delivered', 'completed']),
         ];
@@ -294,7 +294,7 @@ class OrderTrackingController extends Controller
         $deliveredAt = $order->metadata['delivered_at'] ?? null;
         $timeline[] = [
             'status' => 'delivered',
-            'label' => 'Delivered',
+            'label' => 'Entregado',
             'timestamp' => $deliveredAt,
             'completed' => in_array($order->status, ['delivered', 'completed']),
         ];
