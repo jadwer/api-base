@@ -39,7 +39,7 @@ final class QuoteDocumentData
             $meta[] = ['key' => 'credit', 'label' => 'Días de crédito', 'value' => $quote->credit_days.' días'];
         }
 
-        $rows = [['label' => 'Subtotal', 'amount' => (float) ($quote->subtotal_amount ?? 0)]];
+        $rows = [['label' => 'Subtotal', 'amount' => $quote->grossSubtotal()]];
         if ((float) $quote->discount_amount > 0) {
             $rows[] = ['label' => 'Descuento', 'amount' => -1 * (float) $quote->discount_amount];
         }

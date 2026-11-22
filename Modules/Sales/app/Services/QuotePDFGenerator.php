@@ -162,7 +162,7 @@ class QuotePDFGenerator
     protected function calculateTotals(Quote $quote): array
     {
         return [
-            'subtotal' => $quote->subtotal_amount ?? 0,
+            'subtotal' => $quote->grossSubtotal(),
             'tax' => $quote->tax_amount ?? 0,
             'discount' => $quote->discount_amount ?? 0,
             'total' => $quote->total_amount ?? 0,

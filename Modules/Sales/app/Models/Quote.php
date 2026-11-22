@@ -299,6 +299,16 @@ class Quote extends Model
     /** Estados en los que la cotizacion ya no admite cambios en sus partidas. */
     public const LOCKED_ITEM_STATUSES = ['converted', 'cancelled'];
 
+    /**
+     * Subtotal antes de descuentos. `subtotal_amount` ya viene neto (ver
+     * recalculateTotals): todo documento que pinte un renglon "Descuento"
+     * debe partir de este importe, o el descuento se lee restado dos veces.
+     */
+    public function grossSubtotal(): float
+    {
+        return round((float) ($this->subtotal_amount ?? 0) + (float) ($this->discount_amount ?? 0), 2);
+    }
+
     // Business Logic Methods
     public function recalculateTotals(): void
     {

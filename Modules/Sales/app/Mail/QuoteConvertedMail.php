@@ -95,7 +95,7 @@ class QuoteConvertedMail extends Mailable
                     'notes' => $item->notes,
                 ];
             })->toArray(),
-            'subtotal' => $this->quote->subtotal_amount,
+            'subtotal' => $this->quote->grossSubtotal(),
             'discount' => $this->quote->discount_amount,
             'tax' => $this->quote->tax_amount,
             'total' => $this->quote->total_amount,

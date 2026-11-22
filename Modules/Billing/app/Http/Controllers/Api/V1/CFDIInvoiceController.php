@@ -643,6 +643,13 @@ class CFDIInvoiceController
             'series' => ['nullable', 'string', 'max:10'],
         ]);
 
+        // Causa conocida y corregible por el usuario: se dice en claro en vez de un 500.
+        if (! \Modules\Billing\Models\CompanySetting::where('is_active', true)->exists()) {
+            return response()->json([
+                'message' => 'Falta la configuración de facturación de la empresa. Captúrala en Facturación > Configuración.',
+            ], 422);
+        }
+
         try {
             $download = $request->boolean('download', false);
 
@@ -653,7 +660,7 @@ class CFDIInvoiceController
             return $generator->streamFromOrder($salesOrder, $cfdiData);
         } catch (\Exception $e) {
             Log::error('Error al generar prefactura desde orden', ['error' => $e->getMessage()]);
-            abort(500, 'Error al generar prefactura desde orden');
+            return response()->json(['message' => 'No se pudo generar la prefactura del pedido. Revisa los datos fiscales del cliente y de la empresa.'], 500);
         }
     }
 

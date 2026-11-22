@@ -94,7 +94,7 @@ class QuoteSentMail extends Mailable
             'customer_name' => $this->quote->contact?->name ?: 'Cliente',
             'customer_email' => $this->quote->contact?->email,
             'items' => $this->quoteItemsSummary($this->quote),
-            'subtotal' => $this->quote->subtotal_amount,
+            'subtotal' => $this->quote->grossSubtotal(),
             'discount' => $this->quote->discount_amount,
             'tax' => $this->quote->tax_amount,
             'total' => $this->quote->total_amount,

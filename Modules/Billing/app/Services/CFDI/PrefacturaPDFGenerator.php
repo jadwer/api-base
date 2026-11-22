@@ -86,13 +86,13 @@ class PrefacturaPDFGenerator
             'settings' => $settings,
             'items' => $items,
             'totals' => [
-                'subtotal' => (int)($order->subtotal * 100),
-                'descuento' => (int)(($order->discount_total ?? 0) * 100),
-                'iva' => (int)($order->tax_amount * 100),
+                'subtotal' => (int) round((float) ($order->subtotal) * 100),
+                'descuento' => (int) round((float) (($order->discount_total ?? 0)) * 100),
+                'iva' => (int) round((float) ($order->tax_amount) * 100),
                 'ieps' => 0,
                 'isr_retenido' => 0,
                 'iva_retenido' => 0,
-                'total' => (int)($order->total_amount * 100),
+                'total' => (int) round((float) ($order->total_amount) * 100),
             ],
         ];
 
@@ -126,7 +126,7 @@ class PrefacturaPDFGenerator
             'metodo_pago' => $cfdiData['metodo_pago'] ?? 'PUE',
             'forma_pago' => $cfdiData['forma_pago'] ?? '01',
             'moneda' => $order->metadata['currency'] ?? 'MXN',
-            'total' => (int)($order->total_amount * 100),
+            'total' => (int) round((float) ($order->total_amount) * 100),
             'uuid' => null,
         ];
     }
@@ -141,13 +141,16 @@ class PrefacturaPDFGenerator
         foreach ($order->items as $item) {
             $product = $item->product;
 
+            // Mismas columnas y mismo respaldo que el CFDI real (CFDIAutomationService):
+            // antes leia columnas que no existen y la clave siempre salia generica y el
+            // importe en 0 (la partida del pedido guarda `total`, neto de su descuento).
             $items[] = (object)[
-                'clave_prod_serv' => $product->sat_product_code ?? '01010101',
-                'descripcion' => $item->product_name ?? $product->name,
+                'clave_prod_serv' => $product?->sat_clave_prod_serv ?: '01010101',
+                'descripcion' => $item->product_name ?? $product?->name,
                 'cantidad' => $item->quantity,
-                'clave_unidad' => $product->sat_unit_code ?? 'H87',
-                'valor_unitario' => (int)($item->unit_price * 100),
-                'importe' => (int)($item->subtotal * 100),
+                'clave_unidad' => $product?->sat_clave_unidad ?: 'E48',
+                'valor_unitario' => (int) round((float) $item->getAttribute('unit_price') * 100),
+                'importe' => (int) round((float) $item->getAttribute('total') * 100),
             ];
         }
 
