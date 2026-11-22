@@ -248,6 +248,9 @@ class QuotePDFTest extends TestCase
         // Regenerate should create new PDF
         $path2 = $generator->regenerate($this->quote);
 
+        // PHP guarda en cache el stat del archivo: sin limpiarlo, bajo carga la segunda
+        // lectura devolvia la hora de la primera y la prueba fallaba a ratos (22-11).
+        clearstatcache();
         $newTime = Storage::disk('public')->lastModified($path2);
         $this->assertGreaterThan($initialTime, $newTime);
     }
