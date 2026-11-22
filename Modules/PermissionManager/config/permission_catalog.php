@@ -149,12 +149,12 @@ return [
         'exchange-rate-policies' => ['finanzas', 'política de tipo de cambio', 'políticas de tipo de cambio', 'una'],
 
         // Contabilidad
-        'accounts' => ['contabilidad', 'cuenta contable', 'cuentas contables', 'una'],
+        'accounts' => ['contabilidad', 'cuenta del catálogo', 'cuentas del catálogo', 'una'],
         'account-balances' => ['contabilidad', 'saldo contable', 'saldos contables', 'un'],
         'account-mappings' => ['contabilidad', 'mapeo contable', 'mapeos contables', 'un'],
         'journals' => ['contabilidad', 'diario contable', 'diarios contables', 'un'],
-        'journal-entries' => ['contabilidad', 'asiento contable', 'asientos contables', 'un'],
-        'journal-lines' => ['contabilidad', 'línea de asiento', 'líneas de asiento', 'una'],
+        'journal-entries' => ['contabilidad', 'póliza', 'pólizas', 'una'],
+        'journal-lines' => ['contabilidad', 'línea de póliza', 'líneas de póliza', 'una'],
         'journal-sequences' => ['contabilidad', 'consecutivo de diario', 'consecutivos de diario', 'un'],
         'fiscal-periods' => ['contabilidad', 'período fiscal', 'períodos fiscales', 'un'],
 
