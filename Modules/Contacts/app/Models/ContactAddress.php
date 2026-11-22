@@ -51,7 +51,7 @@ class ContactAddress extends Model
         if ($this->country === 'MX' && $this->postal_code) {
             if (!preg_match('/^[0-9]{5}$/', $this->postal_code)) {
                 throw ValidationException::withMessages([
-                    'postal_code' => 'Mexican postal code must be exactly 5 digits.'
+                    'postal_code' => 'El código postal debe tener exactamente 5 dígitos.'
                 ]);
             }
         }

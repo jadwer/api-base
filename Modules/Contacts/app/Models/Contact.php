@@ -92,14 +92,14 @@ class Contact extends Model
         // Credit limit only applies to customers
         if (!$this->is_customer && $this->credit_limit > 0) {
             throw ValidationException::withMessages([
-                'credit_limit' => 'Credit limit can only be set for customers.'
+                'credit_limit' => 'El límite de crédito solo aplica a clientes.'
             ]);
         }
 
         // Current credit cannot exceed credit limit
         if ($this->is_customer && $this->current_credit > $this->credit_limit) {
             throw ValidationException::withMessages([
-                'current_credit' => 'Current credit cannot exceed credit limit.'
+                'current_credit' => 'El crédito usado no puede superar el límite de crédito.'
             ]);
         }
 
@@ -111,7 +111,7 @@ class Contact extends Model
         // Validate Mexican RFC format if provided
         if ($this->tax_id && !$this->isValidMexicanRFC($this->tax_id)) {
             throw ValidationException::withMessages([
-                'tax_id' => 'Invalid Mexican RFC format.'
+                'tax_id' => 'El RFC no tiene un formato válido.'
             ]);
         }
     }
@@ -258,7 +258,7 @@ class Contact extends Model
     {
         if (!$this->isCustomer()) {
             throw ValidationException::withMessages([
-                'credit' => 'Credit operations only apply to customers.'
+                'credit' => 'Las operaciones de crédito solo aplican a clientes.'
             ]);
         }
 
@@ -268,13 +268,13 @@ class Contact extends Model
 
         if ($newCredit > $this->credit_limit) {
             throw ValidationException::withMessages([
-                'credit' => 'Operation would exceed credit limit.'
+                'credit' => 'La operación superaría el límite de crédito del cliente.'
             ]);
         }
 
         if ($newCredit < 0) {
             throw ValidationException::withMessages([
-                'credit' => 'Credit cannot be negative.'
+                'credit' => 'El crédito no puede quedar en negativo.'
             ]);
         }
 

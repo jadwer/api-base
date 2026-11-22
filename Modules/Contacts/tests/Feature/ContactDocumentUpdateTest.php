@@ -170,7 +170,7 @@ class ContactDocumentUpdateTest extends TestCase
         // Test model validation directly since JSON:API has mapping issues
         // This tests the same validation logic that would be triggered through JSON:API
         $this->expectException(\Illuminate\Validation\ValidationException::class);
-        $this->expectExceptionMessage('Invalid document type');
+        $this->expectExceptionMessage('El tipo de documento no es válido');
         
         $contactDocument->update([
             'document_type' => 'invalid_type' // This should trigger model validation

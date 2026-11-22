@@ -47,7 +47,7 @@ class ContactPerson extends Model
         // Validate email format if provided
         if ($this->email && !filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             throw ValidationException::withMessages([
-                'email' => 'Invalid email format.'
+                'email' => 'El correo no tiene un formato válido.'
             ]);
         }
 

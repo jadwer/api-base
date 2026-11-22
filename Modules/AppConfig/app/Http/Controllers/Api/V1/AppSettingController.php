@@ -129,8 +129,8 @@ class AppSettingController extends Controller
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Error al enviar correo de prueba',
-                'details' => $e->getMessage(),
+                'error' => 'No se pudo enviar el correo de prueba',
+                'details' => ucfirst(\App\Support\MailErrorExplainer::explain($e, 'prueba de configuracion')).'.',
             ], 500);
         }
     }

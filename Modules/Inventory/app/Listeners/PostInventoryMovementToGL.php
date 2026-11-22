@@ -155,20 +155,20 @@ class PostInventoryMovementToGL
         return $this->accountingService->createJournalEntry(
             'GL', // General Ledger journal
             $movement->movement_date->format('Y-m-d'),
-            "Inventory Entry - Movement #{$movement->id}",
+            "Entrada de inventario, movimiento {$movement->id}",
             "INV-{$movement->id}",
             [
                 [
                     'account_id' => $inventoryAsset->id,
                     'debit_amount' => $amount,
                     'credit_amount' => 0,
-                    'description' => "Stock increase - {$movement->quantity} units @ {$movement->unit_cost}",
+                    'description' => "Entrada de {$movement->quantity} a {$movement->unit_cost}",
                 ],
                 [
                     'account_id' => $inventoryAccrual->id,
                     'debit_amount' => 0,
                     'credit_amount' => $amount,
-                    'description' => "Inventory accrual",
+                    'description' => "Mercancía recibida por facturar",
                 ],
             ]
         );
@@ -204,7 +204,7 @@ class PostInventoryMovementToGL
         return $this->accountingService->createJournalEntry(
             'GL',
             $movement->movement_date->format('Y-m-d'),
-            "Inventory Exit - Movement #{$movement->id}",
+            "Salida de inventario, movimiento {$movement->id}",
             "INV-{$movement->id}",
             [
                 [
@@ -217,7 +217,7 @@ class PostInventoryMovementToGL
                     'account_id' => $inventoryAsset->id,
                     'debit_amount' => 0,
                     'credit_amount' => $amount,
-                    'description' => "Stock decrease",
+                    'description' => "Salida de mercancía",
                 ],
             ]
         );
@@ -254,20 +254,20 @@ class PostInventoryMovementToGL
             return $this->accountingService->createJournalEntry(
                 'GL',
                 $movement->movement_date->format('Y-m-d'),
-                "Inventory Adjustment (Increase) - Movement #{$movement->id}",
+                "Ajuste de inventario (aumento), movimiento {$movement->id}",
                 "INV-{$movement->id}",
                 [
                     [
                         'account_id' => $inventoryAsset->id,
                         'debit_amount' => $amount,
                         'credit_amount' => 0,
-                        'description' => "Inventory increase adjustment",
+                        'description' => "Aumento por ajuste de inventario",
                     ],
                     [
                         'account_id' => $inventoryVariance->id,
                         'debit_amount' => 0,
                         'credit_amount' => $amount,
-                        'description' => "Inventory variance (gain)",
+                        'description' => "Diferencia de inventario (sobrante)",
                     ],
                 ],
             );
@@ -277,20 +277,20 @@ class PostInventoryMovementToGL
         return $this->accountingService->createJournalEntry(
             'GL',
             $movement->movement_date->format('Y-m-d'),
-            "Inventory Adjustment (Decrease) - Movement #{$movement->id}",
+            "Ajuste de inventario (disminución), movimiento {$movement->id}",
             "INV-{$movement->id}",
             [
                 [
                     'account_id' => $inventoryVariance->id,
                     'debit_amount' => $amount,
                     'credit_amount' => 0,
-                    'description' => "Inventory variance (loss)",
+                    'description' => "Diferencia de inventario (faltante)",
                 ],
                 [
                     'account_id' => $inventoryAsset->id,
                     'debit_amount' => 0,
                     'credit_amount' => $amount,
-                    'description' => "Inventory decrease adjustment",
+                    'description' => "Disminución por ajuste de inventario",
                 ],
             ]
         );

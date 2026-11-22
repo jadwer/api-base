@@ -55,7 +55,7 @@ class ContactDocument extends Model
 
         if ($this->document_type && !in_array($this->document_type, $allowedTypes)) {
             throw ValidationException::withMessages([
-                'document_type' => 'Invalid document type.'
+                'document_type' => 'El tipo de documento no es válido.'
             ]);
         }
 

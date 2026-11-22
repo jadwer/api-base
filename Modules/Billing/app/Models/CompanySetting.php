@@ -188,11 +188,11 @@ class CompanySetting extends Model
     public function getDefaultCommercialConditions(): array
     {
         return [
-            'Precios expresados en moneda nacional (MXN) mas IVA.',
+            'Precios expresados en moneda nacional (MXN) más IVA.',
             'Tiempo de entrega sujeto a disponibilidad de inventario.',
-            'Cotizacion valida por 30 dias a partir de la fecha de emision.',
+            'Cotización válida por 30 días a partir de la fecha de emisión.',
             'Forma de pago: 50% anticipo, 50% contra entrega.',
-            'Los precios pueden variar sin previo aviso despues de la vigencia.',
+            'Los precios pueden variar sin previo aviso después de la vigencia.',
         ];
     }
 

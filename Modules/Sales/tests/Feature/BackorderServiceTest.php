@@ -137,7 +137,7 @@ class BackorderServiceTest extends TestCase
         $this->service->cancelBackorder($backorder);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('is not pending fulfillment');
+        $this->expectExceptionMessage('ya no está pendiente');
 
         $this->service->fulfillBackorder($backorder->fresh(), 3);
     }

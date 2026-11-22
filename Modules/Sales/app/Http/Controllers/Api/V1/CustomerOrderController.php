@@ -159,7 +159,7 @@ class CustomerOrderController extends Controller
         ]);
 
         try {
-            $reason = $request->reason ?? 'Cancelled by customer';
+            $reason = $request->reason ?? 'Cancelado por el cliente';
 
             $cancelledOrder = $this->orderStatusService->cancelOrder(
                 $order,

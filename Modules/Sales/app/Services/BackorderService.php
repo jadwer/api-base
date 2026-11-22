@@ -249,7 +249,7 @@ class BackorderService
     {
         if (!$backorder->canBeCancelled()) {
             throw new InvalidArgumentException(
-                "Backorder {$backorder->backorder_number} cannot be cancelled. Current status: {$backorder->status}"
+                "El pendiente por surtir {$backorder->backorder_number} ya no se puede cancelar."
             );
         }
 
@@ -283,7 +283,7 @@ class BackorderService
     ): Backorder {
         if (!$backorder->isPending()) {
             throw new InvalidArgumentException(
-                "Backorder {$backorder->backorder_number} is not pending fulfillment."
+                "El pendiente por surtir {$backorder->backorder_number} ya no está pendiente."
             );
         }
 

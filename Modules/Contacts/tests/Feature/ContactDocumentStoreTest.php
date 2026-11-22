@@ -129,7 +129,7 @@ class ContactDocumentStoreTest extends TestCase
         $contact = \Modules\Contacts\Models\Contact::factory()->create();
         
         $this->expectException(\Illuminate\Validation\ValidationException::class);
-        $this->expectExceptionMessage('Invalid document type');
+        $this->expectExceptionMessage('El tipo de documento no es válido');
         
         \Modules\Contacts\Models\ContactDocument::factory()
             ->for($contact)

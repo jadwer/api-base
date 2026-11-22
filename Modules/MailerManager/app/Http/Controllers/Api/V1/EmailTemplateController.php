@@ -74,7 +74,7 @@ class EmailTemplateController extends JsonApiController
             ]);
         } catch (\Throwable $e) {
             return response()->json([
-                'error' => 'Error al enviar email: ' . $e->getMessage(),
+                'error' => 'No se pudo enviar el correo de prueba: '.\App\Support\MailErrorExplainer::explain($e, 'prueba de plantilla').'.',
             ], 500);
         }
     }

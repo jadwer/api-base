@@ -205,7 +205,7 @@ class ARInvoiceService
     {
         // Check if invoice already exists for this order
         if ($this->invoiceExistsForOrder($salesOrder->id)) {
-            throw new \Exception("AR Invoice already exists for Sales Order #{$salesOrder->order_number}.");
+            throw new \Exception("El pedido {$salesOrder->order_number} ya tiene una cuenta por cobrar.");
         }
 
         // Validate customer is active

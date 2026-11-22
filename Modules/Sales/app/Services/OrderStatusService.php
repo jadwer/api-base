@@ -11,6 +11,18 @@ use Carbon\Carbon;
 
 class OrderStatusService
 {
+    /** Estatus del pedido como lo lee el usuario (los mensajes no muestran la clave interna). */
+    private const STATUS_LABELS = [
+        'draft' => 'borrador', 'pending' => 'pendiente', 'confirmed' => 'confirmado',
+        'processing' => 'en proceso', 'shipped' => 'enviado', 'delivered' => 'entregado',
+        'completed' => 'completado', 'cancelled' => 'cancelado', 'returned' => 'devuelto',
+    ];
+
+    public static function statusLabel(?string $status): string
+    {
+        return self::STATUS_LABELS[$status] ?? (string) $status;
+    }
+
     private OrderNotificationService $notificationService;
 
     public function __construct(OrderNotificationService $notificationService)
@@ -62,7 +74,7 @@ class OrderStatusService
         // Validate transition
         if (!$this->canTransitionTo($order, $newStatus)) {
             throw new \Exception(
-                "No se puede cambiar el pedido de '{$order->status}' a '{$newStatus}'."
+                'No se puede cambiar el pedido de '.self::statusLabel($order->status).' a '.self::statusLabel($newStatus).'.'
             );
         }
 
@@ -190,7 +202,7 @@ class OrderStatusService
     public function confirmProblems(SalesOrder $order): array
     {
         if (!$this->canTransitionTo($order, 'confirmed')) {
-            return ['status' => "No se puede cambiar el pedido de '{$order->status}' a 'confirmed'."];
+            return ['status' => 'No se puede cambiar el pedido de '.self::statusLabel($order->status).' a '.self::statusLabel('confirmed').'.'];
         }
 
         return [];
@@ -206,7 +218,7 @@ class OrderStatusService
     public function deliverProblems(SalesOrder $order): array
     {
         if (!$this->canTransitionTo($order, 'delivered')) {
-            return ['status' => "No se puede cambiar el pedido de '{$order->status}' a 'delivered'."];
+            return ['status' => 'No se puede cambiar el pedido de '.self::statusLabel($order->status).' a '.self::statusLabel('delivered').'.'];
         }
         if ((float) $order->items->sum('shipped_quantity') > 0
             && !$order->shipments()->where('status', 'delivered')->exists()) {
@@ -265,7 +277,7 @@ class OrderStatusService
         $to = array_search($target, $path, true);
 
         if ($from === false || $to === false) {
-            throw new \Exception("No se puede llevar el pedido de '{$order->status}' a '{$target}'.");
+            throw new \Exception('No se puede llevar el pedido de '.self::statusLabel($order->status).' a '.self::statusLabel($target).'.');
         }
 
         for ($i = $from + 1; $i <= $to; $i++) {
@@ -502,7 +514,7 @@ class OrderStatusService
             'tracking_url' => $trackingUrl,
         ]);
 
-        return $this->updateStatus($order, 'shipped', 'Order shipped', $metadata);
+        return $this->updateStatus($order, 'shipped', 'Pedido enviado', $metadata);
     }
 
     /**
@@ -514,7 +526,7 @@ class OrderStatusService
      */
     public function markAsDelivered(SalesOrder $order, ?string $notes = null): SalesOrder
     {
-        return $this->updateStatus($order, 'delivered', $notes ?? 'Order delivered successfully');
+        return $this->updateStatus($order, 'delivered', $notes ?? 'Pedido entregado');
     }
 
     /**
@@ -530,7 +542,7 @@ class OrderStatusService
             throw new \Exception('El pedido no se puede cancelar en su estado actual.');
         }
 
-        return $this->updateStatus($order, 'cancelled', $reason ?? 'Order cancelled by customer');
+        return $this->updateStatus($order, 'cancelled', $reason ?? 'Pedido cancelado por el cliente');
     }
 
     /**

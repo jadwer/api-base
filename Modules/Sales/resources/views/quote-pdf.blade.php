@@ -265,7 +265,7 @@
 <body>
     {{-- Title Banner --}}
     <div class="title-banner">
-        Cotizacion: {{ $quote->quote_number }}
+        Cotización: {{ $quote->quote_number }}
     </div>
 
     {{-- Company Header --}}
@@ -476,7 +476,7 @@
         if (isset($pdf)) {
             $x = 530;
             $y = 755;
-            $text = "Pagina {PAGE_NUM} de {PAGE_COUNT}";
+            $text = "Página {PAGE_NUM} de {PAGE_COUNT}";
             $font = $fontMetrics->get_font("DejaVu Sans", "normal");
             $size = 7;
             $color = array(0.53, 0.53, 0.53);

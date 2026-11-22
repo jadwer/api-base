@@ -246,7 +246,7 @@ class QuoteController extends Controller
                 $emailSent = true;
             }
         } catch (\Exception $e) {
-            $emailError = 'No se pudo enviar el correo: '.$e->getMessage();
+            $emailError = 'No se pudo enviar el correo: '.\App\Support\MailErrorExplainer::explain($e, 'cotizacion enviada').'.';
             Log::error('Failed to send quote email to customer', [
                 'quote_id' => $quote->id,
                 'quote_number' => $quote->quote_number,
