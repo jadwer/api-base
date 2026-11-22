@@ -307,15 +307,16 @@ class QuoteController extends Controller
             abort(403, 'No tiene permisos para rechazar cotizaciones');
         }
 
-        if ($problems = $this->workflow()->rejectProblems($quote)) {
+        if ($problems = $this->workflow()->rejectProblems($quote, Gate::allows('quotes.update'))) {
             return response()->json(['error' => reset($problems)], 400);
         }
 
         $quote->markAsRejected();
 
-        if ($request->has('reason')) {
+        $reason = trim((string) $request->input('reason', ''));
+        if ($reason !== '') {
             $quote->update([
-                'internal_notes' => $quote->internal_notes."\nRejection reason: ".$request->input('reason'),
+                'internal_notes' => trim($quote->internal_notes."\nMotivo del rechazo: ".mb_substr($reason, 0, 500)),
             ]);
         }
 
@@ -669,6 +670,7 @@ class QuoteController extends Controller
             'rejected' => Quote::byStatus('rejected')->count(),
             'expired' => Quote::byStatus('expired')->count(),
             'cancelled' => Quote::byStatus('cancelled')->count(),
+            'unassigned' => Quote::unassigned()->count(),
             'totalValue' => Quote::active()->sum('total_amount'),
             'averageValue' => Quote::active()->avg('total_amount'),
             'conversionRate' => Quote::count() > 0

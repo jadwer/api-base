@@ -124,6 +124,7 @@ class QuoteSchema extends Schema
             Scope::make('contact_email', 'forContactEmail'),
             Scope::make('search'),
             Scope::make('expiringWithin'),
+            Scope::make('unassigned'),
         ];
     }
 

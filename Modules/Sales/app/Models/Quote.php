@@ -217,6 +217,20 @@ class Quote extends Model
     }
 
     /** Filtro del listado: enviadas que vencen en los proximos N dias (mismo criterio que la alerta). */
+    /**
+     * Bandeja "por asignar": cotizaciones abiertas sin vendedor. Nacen asi las
+     * que pide un cliente desde la tienda o el portal cuando su contacto no
+     * tiene vendedor por omision.
+     */
+    public function scopeUnassigned($query, $only = true)
+    {
+        if (! filter_var($only, FILTER_VALIDATE_BOOLEAN)) {
+            return $query;
+        }
+
+        return $query->whereNull('assigned_to')->whereIn('status', ['draft', 'sent', 'accepted']);
+    }
+
     public function scopeExpiringWithin($query, $days)
     {
         return $this->scopeExpiringSoon($query, max(1, (int) $days));

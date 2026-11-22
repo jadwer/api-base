@@ -55,9 +55,11 @@ class QuoteWorkflowService
     }
 
     /** @return array<string, string> */
-    public function rejectProblems(Quote $quote): array
+    public function rejectProblems(Quote $quote, bool $asStaff = true): array
     {
-        if (!in_array($quote->status, ['sent', 'draft'], true)) {
+        // El cliente del portal solo rechaza lo que ya se le envio, como al aceptar.
+        $rejectable = $asStaff ? ['sent', 'draft'] : ['sent'];
+        if (!in_array($quote->status, $rejectable, true)) {
             return ['status' => 'Esta cotización no se puede rechazar en su estado actual.'];
         }
 
