@@ -33,6 +33,10 @@ class ContactDocumentUploadController extends Controller
             return response()->json(['error' => 'No autenticado.'], 401);
         }
 
+        if (!auth('sanctum')->user()->can('contact-documents.store')) {
+            return response()->json(['error' => 'No tiene permisos para subir documentos de contactos.'], 403);
+        }
+
         $request->validate([
             'contact_id' => 'required|exists:contacts,id',
             'document_type' => ['required', 'string', Rule::in(ContactDocumentTypes::ALL)],
@@ -103,6 +107,12 @@ class ContactDocumentUploadController extends Controller
             return response()->json(['error' => 'No autenticado.'], 401);
         }
 
+        // Solo pedia sesion: cualquier usuario, incluido un cliente del portal,
+        // bajaba los documentos de cualquier contacto (22-11).
+        if (!auth('sanctum')->user()->can('contact-documents.show')) {
+            return response()->json(['error' => 'No tiene permisos para consultar documentos de contactos.'], 403);
+        }
+
         if (!$document->file_path || !Storage::disk('private')->exists($document->file_path)) {
             abort(404, 'Documento no encontrado.');
         }
@@ -123,6 +133,12 @@ class ContactDocumentUploadController extends Controller
             return response()->json(['error' => 'No autenticado.'], 401);
         }
 
+        // Solo pedia sesion: cualquier usuario, incluido un cliente del portal,
+        // bajaba los documentos de cualquier contacto (22-11).
+        if (!auth('sanctum')->user()->can('contact-documents.show')) {
+            return response()->json(['error' => 'No tiene permisos para consultar documentos de contactos.'], 403);
+        }
+
         if (!$document->file_path || !Storage::disk('private')->exists($document->file_path)) {
             abort(404, 'Documento no encontrado.');
         }
@@ -131,9 +147,7 @@ class ContactDocumentUploadController extends Controller
         
         return response($file, 200)
             ->header('Content-Type', $document->mime_type)
-            ->header('Cache-Control', 'no-cache, private')
-            ->header('Access-Control-Allow-Origin', 'http://localhost:3000')
-            ->header('Access-Control-Allow-Credentials', 'true');
+            ->header('Cache-Control', 'no-cache, private');
     }
 
     /**

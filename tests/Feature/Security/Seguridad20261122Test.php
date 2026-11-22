@@ -119,4 +119,26 @@ class Seguridad20261122Test extends TestCase
         $this->assertSame('Nota de prueba', $order->notes);
         $this->assertSame($before, $order->only(['invoicing_status', 'financial_status']));
     }
+
+    public function test_customer_cannot_read_aging_reports(): void
+    {
+        $customer = $this->getCustomerUser();
+
+        $this->actingAs($customer, 'sanctum')->getJson('/api/v1/reports/aging-ar')->assertForbidden();
+        $this->actingAs($customer, 'sanctum')->getJson('/api/v1/reports/aging-ap')->assertForbidden();
+
+        $this->actingAs($this->getAdminUser(), 'sanctum')->getJson('/api/v1/reports/aging-ar')->assertOk();
+    }
+
+    public function test_customer_cannot_download_or_upload_contact_documents(): void
+    {
+        $document = \Modules\Contacts\Models\ContactDocument::factory()->create();
+        $customer = $this->getCustomerUser();
+
+        $this->actingAs($customer, 'sanctum')->getJson("/api/v1/contact-documents/{$document->id}/download")
+            ->assertForbidden()
+            ->assertJsonPath('error', 'No tiene permisos para consultar documentos de contactos.');
+        $this->actingAs($customer, 'sanctum')->getJson("/api/v1/contact-documents/{$document->id}/view")->assertForbidden();
+        $this->actingAs($customer, 'sanctum')->postJson('/api/v1/contact-documents/upload', [])->assertForbidden();
+    }
 }
