@@ -71,17 +71,37 @@ class PublicQuoteRequestController extends Controller
         ];
 
         $quote = DB::transaction(function () use ($requester, $products, $quantities): Quote {
-            $contact = Contact::query()->whereRaw('LOWER(email) = ?', [$requester['email']])->first()
+            // Solo se reusa un prospecto que nacio de la propia tienda. Antes se reusaba
+            // cualquier contacto con ese correo: un visitante anonimo que escribia el
+            // correo de un cliente real recibia el PDF con su razon social, RFC,
+            // direccion y telefono (VEN-07, 22-11).
+            $contact = Contact::query()
+                ->whereRaw('LOWER(email) = ?', [$requester['email']])
+                ->where('is_customer', false)
+                ->where('is_supplier', false)
+                ->where(fn ($q) => $q->where('metadata->source', 'tienda')->orWhere('notes', 'like', 'Alta desde la tienda en línea.%'))
+                ->first()
+                // Nace como prospecto (ni cliente ni proveedor): pasa a cliente cuando su
+                // cotizacion se convierte en pedido. Asi no infla el conteo de clientes.
                 ?? Contact::create([
                     'contact_type' => 'company',
                     'name' => $requester['company'],
                     'email' => $requester['email'],
                     'phone' => $requester['phone'],
                     'status' => 'active',
-                    'is_customer' => true,
+                    'is_customer' => false,
                     'is_supplier' => false,
                     'notes' => "Alta desde la tienda en línea. Contacto: {$requester['name']}.",
+                    'metadata' => ['source' => 'tienda'],
                 ]);
+
+            // Si el correo ya es de otro contacto (un cliente real), ventas lo ve en la
+            // cotizacion y decide si los une; sus datos no se usan ni se muestran.
+            $matching = Contact::query()
+                ->whereRaw('LOWER(email) = ?', [$requester['email']])
+                ->whereKeyNot($contact->getKey())
+                ->pluck('id')
+                ->all();
 
             $quote = Quote::create([
                 'contact_id' => $contact->id,
@@ -92,7 +112,7 @@ class PublicQuoteRequestController extends Controller
                 'currency' => 'MXN',
                 'notes' => "Solicitud desde la tienda en línea. Dirigida a: {$requester['attention_to']}. Contacto: {$requester['name']}"
                     .($requester['phone'] ? ", tel. {$requester['phone']}" : '').'.',
-                'metadata' => ['source' => 'tienda', 'store_request' => $requester],
+                'metadata' => array_filter(['source' => 'tienda', 'store_request' => $requester, 'matching_contact_ids' => $matching ?: null]),
             ]);
 
             foreach ($products as $product) {

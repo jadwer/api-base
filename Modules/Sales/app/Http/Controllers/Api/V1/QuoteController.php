@@ -415,6 +415,13 @@ class QuoteController extends Controller
             }
 
             // Create sales order from quote
+            // Un prospecto (por ejemplo, el que nacio de una cotizacion de la tienda) pasa a
+            // cliente al convertirse su cotizacion: la cuenta por cobrar exige cliente.
+            $quoteContact = $quote->contact;
+            if ($quoteContact && ! $quoteContact->is_customer) {
+                $quoteContact->update(['is_customer' => true]);
+            }
+
             $order = SalesOrder::create([
                 'contact_id' => $quote->contact_id,
                 'quote_id' => $quote->id,

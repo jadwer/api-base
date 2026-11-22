@@ -90,17 +90,6 @@ class PublicQuoteRequestTest extends TestCase
         $this->assertStringContainsString('Por asignar', $html);
     }
 
-    public function test_reusa_el_contacto_por_correo(): void
-    {
-        $product = $this->publicProduct();
-        $existing = Contact::factory()->create(['email' => 'ana@farmabiot.mx', 'name' => 'Farmabiot (ya registrado)']);
-
-        $this->postJson('/api/v1/public/quote-requests', $this->payload([['product_id' => $product->id, 'quantity' => 1]]))->assertOk();
-
-        $this->assertSame($existing->id, Quote::query()->latest('id')->value('contact_id'));
-        $this->assertSame(1, Contact::query()->whereRaw('LOWER(email) = ?', ['ana@farmabiot.mx'])->count());
-    }
-
     public function test_un_producto_que_la_tienda_no_muestra_no_se_cotiza(): void
     {
         $hidden = $this->publicProduct(['is_public' => false]);
@@ -127,5 +116,53 @@ class PublicQuoteRequestTest extends TestCase
         $this->postJson('/api/v1/public/quote-requests', $this->payload([['product_id' => $product->id, 'quantity' => 1]], ['website' => 'http://spam.example']))
             ->assertStatus(422);
         $this->assertSame(0, Quote::count());
+    }
+
+    public function test_el_contacto_nuevo_nace_como_prospecto_y_se_reusa_en_la_siguiente_solicitud(): void
+    {
+        $product = $this->publicProduct();
+        $payload = $this->payload([['product_id' => $product->id, 'quantity' => 1]]);
+
+        $this->postJson('/api/v1/public/quote-requests', $payload)->assertOk();
+        $first = Quote::query()->latest('id')->firstOrFail();
+        $this->assertTrue($first->contact->isProspect(), 'no infla el conteo de clientes');
+        $this->assertSame('tienda', $first->contact->metadata['source']);
+
+        $this->postJson('/api/v1/public/quote-requests', $payload)->assertOk();
+        $second = Quote::query()->latest('id')->firstOrFail();
+        $this->assertNotSame($first->id, $second->id);
+        $this->assertSame($first->contact_id, $second->contact_id);
+    }
+
+    public function test_el_correo_de_un_cliente_real_no_expone_sus_datos_ni_se_le_cuelga_la_cotizacion(): void
+    {
+        $product = $this->publicProduct();
+        $real = \Modules\Contacts\Models\Contact::factory()->customer()->create([
+            'name' => 'Cliente Real SA',
+            'email' => 'ana@farmabiot.mx',
+            'tax_id' => 'CRE010101AB1',
+            'phone' => '5550009999',
+        ]);
+
+        $this->postJson('/api/v1/public/quote-requests', $this->payload([['product_id' => $product->id, 'quantity' => 1]]))->assertOk();
+
+        $quote = Quote::query()->latest('id')->firstOrFail();
+        $this->assertNotSame($real->id, $quote->contact_id);
+        $this->assertSame('Farmabiot SA', $quote->contact->name);
+        $this->assertNull($quote->contact->tax_id);
+        $this->assertSame([$real->id], $quote->metadata['matching_contact_ids']);
+        $this->assertSame(0, Quote::where('contact_id', $real->id)->count());
+    }
+
+    public function test_el_prospecto_pasa_a_cliente_al_convertir_su_cotizacion(): void
+    {
+        $product = $this->publicProduct();
+        $this->postJson('/api/v1/public/quote-requests', $this->payload([['product_id' => $product->id, 'quantity' => 1]]))->assertOk();
+        $quote = Quote::query()->latest('id')->firstOrFail();
+        $quote->update(['status' => 'accepted', 'accepted_at' => now()]);
+
+        $this->actingAs($this->getAdminUser(), 'sanctum')->postJson("/api/v1/quotes/{$quote->id}/convert")->assertStatus(201);
+
+        $this->assertTrue($quote->contact->fresh()->is_customer);
     }
 }
