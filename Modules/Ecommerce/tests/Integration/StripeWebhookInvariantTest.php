@@ -444,4 +444,53 @@ class StripeWebhookInvariantTest extends TestCase
         $this->assertSame('pending', $orderA->status);
         $this->assertSame('unpaid', $orderA->payment_status);
     }
+
+    /** TIE-04 (2026-11-22): el aviso repetido no vuelve a disparar los efectos ni mueve la fecha. */
+    public function test_el_aviso_de_pago_repetido_no_redispara_el_evento_ni_reescribe_la_fecha(): void
+    {
+        $user = $this->getCustomerUser();
+        $order = $this->checkoutOrder($user, 'pi_inv_once');
+        $this->createPaymentIntentViaEndpoint($user, $order, 'pi_inv_once');
+
+        $captured = 0;
+        \Illuminate\Support\Facades\Event::listen(\Modules\Billing\Events\PaymentCaptured::class, function () use (&$captured) {
+            $captured++;
+        });
+
+        $this->postStripeWebhook($this->succeededEvent('evt_inv_once_1', 'pi_inv_once', 20000))->assertStatus(200);
+        $first = PaymentTransaction::where('payment_intent_id', 'pi_inv_once')->firstOrFail();
+
+        $this->travel(5)->minutes();
+        // Otro id de evento con el mismo pago: Stripe tambien lo hace.
+        $this->postStripeWebhook($this->succeededEvent('evt_inv_once_2', 'pi_inv_once', 20000))->assertStatus(200);
+
+        $this->assertSame(1, $captured, 'PaymentCaptured debe dispararse una sola vez por pago');
+        $this->assertEquals($first->captured_at, $first->fresh()->captured_at);
+    }
+
+    public function test_un_pagado_o_fallido_atrasado_no_revierte_un_reembolso(): void
+    {
+        $user = $this->getCustomerUser();
+        $order = $this->checkoutOrder($user, 'pi_inv_late');
+        $this->createPaymentIntentViaEndpoint($user, $order, 'pi_inv_late');
+
+        $this->postStripeWebhook($this->succeededEvent('evt_inv_late_1', 'pi_inv_late', 20000))->assertStatus(200);
+        $this->postStripeWebhook($this->chargeRefundedEvent('evt_inv_late_2', 'ch_inv_late', 20000))->assertStatus(200);
+
+        $refunded = 0;
+        \Illuminate\Support\Facades\Event::listen(\Modules\Billing\Events\PaymentRefunded::class, function () use (&$refunded) {
+            $refunded++;
+        });
+        $failed = $this->succeededEvent('evt_inv_late_4', 'pi_inv_late', 20000);
+        $failed['type'] = 'payment_intent.payment_failed';
+
+        $this->postStripeWebhook($this->succeededEvent('evt_inv_late_3', 'pi_inv_late', 20000))->assertStatus(200);
+        $this->postStripeWebhook($failed)->assertStatus(200);
+        $this->postStripeWebhook($this->chargeRefundedEvent('evt_inv_late_5', 'ch_inv_late', 20000))->assertStatus(200);
+
+        $transaction = PaymentTransaction::where('payment_intent_id', 'pi_inv_late')->firstOrFail();
+        $this->assertSame('refunded', $transaction->status);
+        $this->assertSame('refunded', $order->fresh()->payment_status);
+        $this->assertSame(0, $refunded, 'El reembolso repetido no vuelve a disparar PaymentRefunded');
+    }
 }

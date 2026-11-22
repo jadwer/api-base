@@ -7,6 +7,7 @@ use Stripe\PaymentIntent;
 use Stripe\Refund;
 use Stripe\Customer as StripeCustomer;
 use Modules\Billing\Models\PaymentTransaction;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Exception;
 
@@ -456,6 +457,40 @@ class StripeService
     }
 
     /**
+     * Aplica el cambio de estado de un aviso del webhook una sola vez. Vuelve a
+     * leer la transaccion con candado, y si ya esta en alguno de los estados de
+     * `$skipWhen` no la toca y regresa null (el llamador no dispara efectos).
+     *
+     * @param  list<string>  $skipWhen
+     * @param  callable(PaymentTransaction): array<string, mixed>  $changes
+     */
+    protected function claimTransaction(?PaymentTransaction $transaction, array $skipWhen, callable $changes, string $eventType): ?PaymentTransaction
+    {
+        if (! $transaction) {
+            return null;
+        }
+
+        return DB::transaction(function () use ($transaction, $skipWhen, $changes, $eventType) {
+            $locked = PaymentTransaction::whereKey($transaction->getKey())->lockForUpdate()->first();
+            if (! $locked) {
+                return null;
+            }
+            if (in_array($locked->getAttribute('status'), $skipWhen, true)) {
+                Log::info('Stripe webhook repetido o fuera de orden: sin cambios', [
+                    'event_type' => $eventType,
+                    'transaction_id' => $locked->getKey(),
+                    'status' => $locked->getAttribute('status'),
+                ]);
+
+                return null;
+            }
+            $locked->update($changes($locked));
+
+            return $locked;
+        });
+    }
+
+    /**
      * Handle payment_intent.succeeded event.
      *
      * @param object $paymentIntent
@@ -463,16 +498,24 @@ class StripeService
      */
     protected function handlePaymentIntentSucceeded($paymentIntent): void
     {
-        $transaction = PaymentTransaction::where('payment_intent_id', $paymentIntent->id)->first();
-
-        if ($transaction) {
-            $transaction->update([
+        // Stripe reintenta y puede entregar el mismo aviso mas de una vez, o
+        // fuera de orden. Solo el primer "pagado" cambia el estado y dispara
+        // los efectos (cuenta por cobrar, CFDI, pedido pagado); uno repetido o
+        // uno que llega despues del reembolso no hace nada.
+        $transaction = $this->claimTransaction(
+            PaymentTransaction::where('payment_intent_id', $paymentIntent->id)->first(),
+            ['captured', 'refunded'],
+            fn () => [
                 'status' => 'captured',
                 'captured_at' => now(),
                 'transaction_id' => $paymentIntent->charges->data[0]->id ?? null,
                 // Sin client_secret: este campo sale por la API al dueno del pago (SEG-06).
                 'gateway_response' => $this->withoutClientSecret($paymentIntent),
-            ]);
+            ],
+            'payment_intent.succeeded'
+        );
+
+        if ($transaction) {
 
             Log::info('Payment Intent succeeded - transaction updated', [
                 'transaction_id' => $transaction->id,
@@ -492,16 +535,21 @@ class StripeService
      */
     protected function handlePaymentIntentFailed($paymentIntent): void
     {
-        $transaction = PaymentTransaction::where('payment_intent_id', $paymentIntent->id)->first();
-
-        if ($transaction) {
-            $transaction->update([
+        // Un "fallido" atrasado no degrada un pago ya capturado o reembolsado.
+        $transaction = $this->claimTransaction(
+            PaymentTransaction::where('payment_intent_id', $paymentIntent->id)->first(),
+            ['captured', 'refunded', 'failed'],
+            fn () => [
                 'status' => 'failed',
                 'failed_at' => now(),
                 'error_message' => $paymentIntent->last_payment_error->message ?? 'Payment failed',
                 // Sin client_secret: este campo sale por la API al dueno del pago (SEG-06).
                 'gateway_response' => $this->withoutClientSecret($paymentIntent),
-            ]);
+            ],
+            'payment_intent.payment_failed'
+        );
+
+        if ($transaction) {
 
             Log::info('Payment Intent failed - transaction updated', [
                 'transaction_id' => $transaction->id,
@@ -518,18 +566,22 @@ class StripeService
      */
     protected function handleChargeRefunded($charge): void
     {
-        $transaction = PaymentTransaction::where('transaction_id', $charge->id)->first();
-
-        if ($transaction) {
-            $transaction->update([
+        $transaction = $this->claimTransaction(
+            PaymentTransaction::where('transaction_id', $charge->id)->first(),
+            ['refunded'],
+            fn (PaymentTransaction $locked) => [
                 'status' => 'refunded',
                 'refunded_at' => now(),
                 'gateway_response' => (array) $charge,
-                'metadata' => array_merge($transaction->metadata ?? [], [
+                'metadata' => array_merge($locked->metadata ?? [], [
                     'refund_id' => $charge->refunds->data[0]->id ?? null,
                     'refund_reason' => $charge->refunds->data[0]->reason ?? null,
                 ]),
-            ]);
+            ],
+            'charge.refunded'
+        );
+
+        if ($transaction) {
 
             Log::info('Charge refunded - transaction updated', [
                 'transaction_id' => $transaction->id,
