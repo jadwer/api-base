@@ -364,24 +364,30 @@
                 <tr>
                     <td class="header-left">
                         @php
-                            $logoData = $settings && $settings->logo_path
-                                ? \Modules\Sales\Support\PdfImageHelper::productImageDataUri($settings->logo_path)
+                            $logoData = $issuer->logo_path
+                                ? \Modules\Sales\Support\PdfImageHelper::productImageDataUri($issuer->logo_path)
                                 : null;
+                            $issuerAddress = $issuer->address
+                                ? trim(implode(', ', array_filter([
+                                    $issuer->address['street'] ?? null,
+                                    $issuer->address['city'] ?? null,
+                                    $issuer->address['state'] ?? null,
+                                    ! empty($issuer->address['postal_code']) ? 'CP '.$issuer->address['postal_code'] : null,
+                                ])))
+                                : '';
                         @endphp
                         @if($logoData)
                         <div class="logo-section">
                             <img src="{{ $logoData }}" alt="Logo">
                         </div>
                         @else
-                        <div class="company-name">{{ $settings->company_name ?? config('app.name') }}</div>
+                        <div class="company-name">{{ $issuer->company_name ?? config('app.name') }}</div>
                         @endif
                         <div class="company-info">
-                            @if($settings)
-                            <div><strong>RFC:</strong> {{ $settings->rfc }}</div>
-                            <div>{{ $settings->full_address }}</div>
-                            @if($settings->phone)<div><strong>Tel:</strong> {{ $settings->phone }}</div>@endif
-                            @if($settings->email)<div><strong>Email:</strong> {{ $settings->email }}</div>@endif
-                            @endif
+                            @if($issuer->rfc)<div><strong>RFC:</strong> {{ $issuer->rfc }}</div>@endif
+                            @if($issuerAddress !== '')<div>{{ $issuerAddress }}</div>@endif
+                            @if($issuer->phone)<div><strong>Tel:</strong> {{ $issuer->phone }}</div>@endif
+                            @if($issuer->email)<div><strong>Correo:</strong> {{ $issuer->email }}</div>@endif
                         </div>
                     </td>
                     <td class="header-right">
@@ -524,18 +530,18 @@
         </table>
 
         <!-- Bank Accounts -->
-        @if($settings && $showBankAccounts && !empty($settings->bank_accounts))
+        @if($showBankAccounts && !empty($bankAccounts))
         <div class="bank-section">
             <div class="section-title">Datos Bancarios</div>
             <div class="bank-accounts">
-                @foreach($settings->bank_accounts as $account)
+                @foreach($bankAccounts as $account)
                 <div class="bank-account">
                     <h5>{{ $account['currency'] ?? 'MXN' }}</h5>
-                    <p><strong>Banco:</strong> {{ $account['bank_name'] ?? '' }}</p>
-                    <p><strong>Cuenta:</strong> {{ $account['account_number'] ?? '' }}</p>
-                    <p><strong>CLABE:</strong> {{ $account['clabe'] ?? '' }}</p>
+                    <p><strong>Banco:</strong> {{ $account['bank'] ?? $account['bank_name'] ?? '' }}</p>
+                    @if(!empty($account['account_number']))<p><strong>Cuenta:</strong> {{ $account['account_number'] }}</p>@endif
+                    @if(!empty($account['clabe']))<p><strong>CLABE:</strong> {{ $account['clabe'] }}</p>@endif
                     @if(!empty($account['swift']))<p><strong>SWIFT:</strong> {{ $account['swift'] }}</p>@endif
-                    <p><strong>Beneficiario:</strong> {{ $account['beneficiary'] ?? $settings->company_name }}</p>
+                    <p><strong>Beneficiario:</strong> {{ $account['holder'] ?? $account['beneficiary'] ?? $issuer->company_name }}</p>
                 </div>
                 @endforeach
             </div>
@@ -543,7 +549,7 @@
         @endif
 
         <!-- Commercial Conditions -->
-        @if($settings && $showConditions && !empty($conditions))
+        @if($showConditions && !empty($conditions))
         <div class="conditions-section">
             <h4>Condiciones Comerciales</h4>
             <ul>

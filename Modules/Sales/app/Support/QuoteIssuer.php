@@ -6,8 +6,9 @@ use Modules\AppConfig\Services\AppSettingResolver;
 use Modules\Billing\Models\CompanySetting;
 
 /**
- * Datos del emisor que imprimen las cotizaciones (PDF de cotizacion y PDF
- * informativo del carrito).
+ * Datos del emisor que imprimen los documentos comerciales: cotizacion, PDF
+ * informativo del carrito, pedido y remision (estos dos desde 2026-11-22; antes
+ * leian la configuracion fiscal y salian con el RFC del emisor de pruebas).
  *
  * Peticion del cliente (revision 2026-09-23): los datos de cotizacion deben
  * ir SEPARADOS de los de facturacion. Antes ambos PDFs leian CompanySetting
@@ -139,9 +140,32 @@ final class QuoteIssuer
             phone: $company->phone ?? $extra['phone'] ?? null,
             email: $company->email ?? $extra['email'] ?? null,
             address: $address ?: null,
-            bank_accounts: array_values($company->getBankAccounts() ?? []),
+            bank_accounts: self::normalizeBankAccounts($company->getBankAccounts()),
             conditions: $company->getCommercialConditions() ?: null,
         );
+    }
+
+    /**
+     * Las cuentas de la configuracion fiscal usan `bank_name` y `beneficiary`;
+     * las plantillas y el constructor leen `bank` y `holder`. Se agregan los
+     * alias para que el origen `billing` imprima el banco igual que los otros.
+     *
+     * @param  array<int|string, mixed>  $accounts
+     * @return list<array<string, mixed>>
+     */
+    public static function normalizeBankAccounts(array $accounts): array
+    {
+        $out = [];
+        foreach ($accounts as $account) {
+            $account = (array) $account;
+            $account['bank'] ??= $account['bank_name'] ?? '';
+            if (! isset($account['holder']) && isset($account['beneficiary'])) {
+                $account['holder'] = $account['beneficiary'];
+            }
+            $out[] = $account;
+        }
+
+        return $out;
     }
 
     /**

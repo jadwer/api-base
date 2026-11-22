@@ -4,7 +4,7 @@ namespace Modules\Sales\Services;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
-use Modules\Billing\Models\CompanySetting;
+use Modules\Sales\Support\QuoteIssuer;
 use Modules\Billing\Models\DocumentLegend;
 use Modules\Billing\Services\DocumentLegendRenderer;
 use Modules\Sales\Models\Remission;
@@ -82,22 +82,10 @@ class RemissionPDFGenerator
 
     protected function prepareData(Remission $remission, array $options = []): array
     {
-        $company = CompanySetting::getActive();
-
-        // Build company address
-        $companyAddress = null;
-        if ($company) {
-            if ($company->address || $company->city || $company->state) {
-                $companyAddress = [
-                    'street' => $company->address,
-                    'city' => $company->city,
-                    'state' => $company->state,
-                    'postal_code' => $company->postal_code,
-                ];
-            } else {
-                $companyAddress = $company->additional_settings['address'] ?? null;
-            }
-        }
+        // Emisor de QuoteIssuer, igual que la cotizacion y el pedido: la
+        // configuracion fiscal puede seguir con el emisor de pruebas.
+        $company = QuoteIssuer::resolve();
+        $companyAddress = $company->address;
 
         // Load order with contact and addresses
         $order = $remission->salesOrder()->with('contact.contactAddresses')->first();
@@ -123,7 +111,7 @@ class RemissionPDFGenerator
             'total_letra' => '',
             'cliente' => $contact?->name,
             'rfc_cliente' => $contact?->tax_id,
-            'empresa' => $company?->company_name,
+            'empresa' => $company->company_name,
             'dias_credito' => $order?->credit_days ?? $contact?->payment_terms,
         ]);
 
@@ -137,8 +125,8 @@ class RemissionPDFGenerator
             'warehouse' => $remission->warehouse,
             'company' => $company,
             'companyAddress' => $companyAddress,
-            'companyPhone' => $company?->phone ?? $company?->additional_settings['phone'] ?? null,
-            'companyEmail' => $company?->email ?? $company?->additional_settings['email'] ?? null,
+            'companyPhone' => $company->phone,
+            'companyEmail' => $company->email,
             'showSignatureLines' => $options['show_signature_lines'] ?? true,
             'copies' => $options['copies'] ?? 2, // Default: original + copy
             'legendLines' => $legendLines,

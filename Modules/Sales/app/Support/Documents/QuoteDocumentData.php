@@ -144,7 +144,7 @@ final class QuoteDocumentData
                 'bank' => (string) ($a['bank'] ?? ''),
                 'holder' => (string) ($a['holder'] ?? $company->company_name ?? ''),
                 'branch' => isset($a['branch']) ? (string) $a['branch'] : null,
-                'account' => isset($a['account']) ? (string) $a['account'] : null,
+                'account' => isset($a['account']) ? (string) $a['account'] : (isset($a['account_number'], $a['clabe']) ? (string) $a['account_number'] : null),
                 'clabe' => (string) ($a['clabe'] ?? $a['account_number'] ?? ''),
                 'swift' => isset($a['swift']) ? (string) $a['swift'] : null,
                 'currency' => isset($a['currency']) ? (string) $a['currency'] : null,

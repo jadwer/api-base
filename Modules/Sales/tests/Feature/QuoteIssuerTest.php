@@ -118,4 +118,55 @@ class QuoteIssuerTest extends TestCase
 
         Storage::disk('public')->assertExists($path);
     }
+
+    /** DOC-04, DOC-05 (2026-11-22): pedido y remision usan el mismo emisor que la cotizacion. */
+    public function test_el_pedido_y_la_remision_no_imprimen_el_emisor_fiscal_de_pruebas(): void
+    {
+        AppSetting::set('documents.quote_bank_accounts', 'BBVA | 012345678901234567 | MXN');
+        $order = \Modules\Sales\Models\SalesOrder::factory()->create();
+        $remission = \Modules\Sales\Models\Remission::factory()->forOrder($order)->create();
+
+        $orderGenerator = app(\Modules\Sales\Services\SalesOrderPDFGenerator::class);
+        $orderData = (fn () => $this->prepareData($order, CompanySetting::getActive(), []))->call($orderGenerator);
+        $orderHtml = view('sales::sales-order-pdf', $orderData)->render();
+        $orderDoc = $orderGenerator->builderDocument($order);
+
+        $remissionGenerator = app(\Modules\Sales\Services\RemissionPDFGenerator::class);
+        $remissionData = (fn () => $this->prepareData($remission))->call($remissionGenerator);
+        $remissionHtml = view('sales::remission-pdf', $remissionData)->render();
+        $remissionDoc = $remissionGenerator->builderDocument($remission);
+
+        foreach ([$orderHtml, $remissionHtml, json_encode($orderDoc), json_encode($remissionDoc)] as $output) {
+            $this->assertStringNotContainsString('XIQB891116QE4', (string) $output);
+            $this->assertStringNotContainsString('EMISOR DE PRUEBA', (string) $output);
+            $this->assertStringNotContainsString('Calle Fiscal 9', (string) $output);
+        }
+        $this->assertStringContainsString('Calle Real 1', $orderHtml);
+        $this->assertStringContainsString('722 000 0000', $remissionHtml);
+        $this->assertStringContainsString('BBVA', $orderHtml);
+        $this->assertSame('Distribuidora Real SA de CV', $orderDoc['issuer']['name']);
+        $this->assertSame('Distribuidora Real SA de CV', $remissionDoc['issuer']['name']);
+        $this->assertArrayNotHasKey('taxId', $orderDoc['issuer']);
+        $this->assertSame('BBVA', $orderDoc['bank'][0]['bank']);
+    }
+
+    public function test_con_origen_billing_el_pedido_imprime_el_banco_de_la_configuracion_fiscal(): void
+    {
+        AppSetting::set('documents.issuer_source', 'billing');
+        CompanySetting::getActive()->update(['bank_accounts' => [
+            ['bank_name' => 'Santander', 'account_number' => '6550123456', 'clabe' => '014180655012345678', 'currency' => 'MXN', 'beneficiary' => 'Titular Fiscal'],
+        ]]);
+        $order = \Modules\Sales\Models\SalesOrder::factory()->create();
+        $generator = app(\Modules\Sales\Services\SalesOrderPDFGenerator::class);
+
+        $html = view('sales::sales-order-pdf', (fn () => $this->prepareData($order, CompanySetting::getActive(), []))->call($generator))->render();
+        $doc = $generator->builderDocument($order);
+
+        $this->assertStringContainsString('XIQB891116QE4', $html);
+        $this->assertStringContainsString('Santander', $html);
+        $this->assertStringContainsString('Titular Fiscal', $html);
+        $this->assertSame('Santander', $doc['bank'][0]['bank']);
+        $this->assertSame('Titular Fiscal', $doc['bank'][0]['holder']);
+        $this->assertSame('6550123456', $doc['bank'][0]['account']);
+    }
 }

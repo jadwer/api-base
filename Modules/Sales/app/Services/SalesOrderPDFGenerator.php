@@ -6,6 +6,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Luecano\NumeroALetras\NumeroALetras;
 use Modules\Billing\Models\CompanySetting;
+use Modules\Sales\Support\QuoteIssuer;
 use Modules\Billing\Models\DocumentLegend;
 use Modules\Billing\Services\DocumentLegendRenderer;
 use Modules\Sales\Models\SalesOrder;
@@ -94,6 +95,10 @@ class SalesOrderPDFGenerator
     {
         $order->load(['items.product.unit', 'contact']);
 
+        // El emisor y las cuentas salen de QuoteIssuer, igual que la cotizacion;
+        // $settings (configuracion fiscal) solo aporta los interruptores de secciones.
+        $issuer = QuoteIssuer::resolve();
+
         $totals = $this->calculateTotals($order);
         $currency = $order->metadata['currency'] ?? 'MXN';
 
@@ -134,7 +139,7 @@ class SalesOrderPDFGenerator
             'total_letra' => $totalInWords,
             'cliente' => $order->contact?->name,
             'rfc_cliente' => $order->contact?->tax_id,
-            'empresa' => $settings?->company_name,
+            'empresa' => $issuer->company_name,
             'dias_credito' => $order->credit_days ?? $order->contact?->payment_terms,
         ]);
 
@@ -144,6 +149,8 @@ class SalesOrderPDFGenerator
             'contact' => $order->contact,
             'totals' => $totals,
             'settings' => $settings,
+            'issuer' => $issuer,
+            'bankAccounts' => $issuer->bank_accounts,
             'shippingAddress' => $order->shipping_address,
             'billingAddress' => $order->billing_address,
             'currency' => $currency,
@@ -151,7 +158,7 @@ class SalesOrderPDFGenerator
             'statusLabels' => self::STATUS_LABELS,
             'showBankAccounts' => $showBankAccounts,
             'showConditions' => $showConditions,
-            'conditions' => $legendLines ?? $settings?->getCommercialConditions() ?? [],
+            'conditions' => $legendLines ?? $issuer->conditions ?? [],
         ];
     }
 

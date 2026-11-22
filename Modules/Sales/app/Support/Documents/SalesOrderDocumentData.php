@@ -3,10 +3,9 @@
 namespace Modules\Sales\Support\Documents;
 
 use Illuminate\Database\Eloquent\Model;
-use Modules\Billing\Models\CompanySetting;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Models\SalesOrderItem;
-use Modules\Sales\Support\PdfImageHelper;
+use Modules\Sales\Support\QuoteIssuer;
 
 /**
  * El `$doc` del constructor de documentos de Atomo (formato v1) para un pedido
@@ -26,7 +25,7 @@ final class SalesOrderDocumentData
      */
     public static function from(SalesOrder $order, array $prepared): array
     {
-        $settings = $prepared['settings'] ?? null;
+        $issuer = ($prepared['issuer'] ?? null) instanceof QuoteIssuer ? $prepared['issuer'] : QuoteIssuer::resolve();
         $contact = $prepared['contact'] ?? null;
         $totals = (array) ($prepared['totals'] ?? []);
         $currency = (string) ($prepared['currency'] ?? 'MXN');
@@ -61,7 +60,7 @@ final class SalesOrderDocumentData
         $rows[] = ['label' => 'IVA', 'amount' => (float) ($totals['tax'] ?? 0)];
 
         $doc = [
-            'issuer' => self::issuer($settings),
+            'issuer' => QuoteDocumentData::issuer($issuer),
             'title' => ['label' => 'Pedido', 'number' => (string) $order->order_number, 'chip' => $statusLabel],
             'party' => array_filter([
                 'label' => 'Cliente',
@@ -83,8 +82,8 @@ final class SalesOrderDocumentData
         if ($shipping) {
             $doc['shipping'] = $shipping;
         }
-        if (($prepared['showBankAccounts'] ?? true) && $settings) {
-            $doc['bank'] = self::bank($settings);
+        if ($prepared['showBankAccounts'] ?? true) {
+            $doc['bank'] = QuoteDocumentData::bank($issuer, (array) ($prepared['bankAccounts'] ?? $issuer->bank_accounts));
         }
         if ($prepared['showConditions'] ?? true) {
             $doc['terms'] = array_values(array_filter(array_map('strval', (array) ($prepared['conditions'] ?? []))));
@@ -94,43 +93,6 @@ final class SalesOrderDocumentData
         }
 
         return $doc;
-    }
-
-    /** @return array<string, mixed> */
-    private static function issuer(?CompanySetting $settings): array
-    {
-        $logoPath = $settings ? $settings->getAttribute('logo_path') : null;
-        $logo = $logoPath ? PdfImageHelper::productImageDataUri((string) $logoPath) : null;
-        $accent = config('branding.accent') ?: '#0094ff';
-
-        return array_filter([
-            'name' => (string) ($settings ? $settings->getAttribute('company_name') : config('app.name')),
-            'taxId' => $settings ? $settings->getAttribute('rfc') : null,
-            'address' => $settings ? $settings->getAttribute('full_address') : null,
-            'phone' => $settings ? $settings->getAttribute('phone') : null,
-            'email' => $settings ? $settings->getAttribute('email') : null,
-            'logo' => $logo && str_starts_with($logo, 'data:image/') ? $logo : null,
-            'accent' => preg_match('/^#[0-9a-fA-F]{6}$/', (string) $accent) ? strtolower((string) $accent) : null,
-        ], fn ($v) => $v !== null && $v !== '');
-    }
-
-    /** @return list<array<string, string>> */
-    private static function bank(CompanySetting $settings): array
-    {
-        $out = [];
-        foreach ((array) ($settings->getAttribute('bank_accounts') ?? []) as $a) {
-            $a = (array) $a;
-            $out[] = array_filter([
-                'bank' => (string) ($a['bank_name'] ?? $a['bank'] ?? ''),
-                'holder' => (string) ($a['beneficiary'] ?? $a['holder'] ?? $settings->getAttribute('company_name') ?? ''),
-                'account' => isset($a['account_number']) ? (string) $a['account_number'] : null,
-                'clabe' => (string) ($a['clabe'] ?? ''),
-                'swift' => isset($a['swift']) ? (string) $a['swift'] : null,
-                'currency' => isset($a['currency']) ? (string) $a['currency'] : null,
-            ], fn ($v) => $v !== null && $v !== '');
-        }
-
-        return array_values(array_filter($out, fn ($a) => ($a['bank'] ?? '') !== ''));
     }
 
     /** @return array<string, string>|null */
