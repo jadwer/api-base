@@ -33,7 +33,8 @@ class AuditSchema extends Schema
             Number::make('auditableId', 'subject_id')->sortable()->readOnly(),
             Str::make('oldValues', 'properties->old')->readOnly(),
             Str::make('newValues', 'properties->attributes')->readOnly(),
-            Str::make('ipAddress', 'properties->ip_address')->readOnly(),
+            // Los registros de sesion anteriores al 22-11-2026 guardaban la llave `ip`.
+            Str::make('ipAddress')->readOnly()->extractUsing(static fn ($model) => $model->properties['ip_address'] ?? $model->properties['ip'] ?? null),
             Str::make('userAgent', 'properties->user_agent')->readOnly(),
             DateTime::make('createdAt', 'created_at')->sortable()->readOnly(),
             DateTime::make('updatedAt', 'updated_at')->sortable()->readOnly(),

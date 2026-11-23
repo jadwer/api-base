@@ -28,6 +28,7 @@ JsonApiRoute::server('v1')
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::post('purchase-orders/with-items', [\Modules\Purchase\Http\Controllers\Api\V1\PurchaseOrderWithItemsController::class, 'store'])->name('purchase-orders.with-items');
     Route::get('purchase-orders/reports', [PurchaseOrderController::class, 'reports'])->name('purchase-orders.reports');
+    Route::get('purchase-orders/export', \Modules\Purchase\Http\Controllers\Api\V1\PurchaseOrderExportController::class)->name('purchase-orders.export');
     Route::get('purchase-orders/suppliers', [PurchaseOrderController::class, 'suppliers'])->name('purchase-orders.suppliers');
 
     // Approval workflow endpoints

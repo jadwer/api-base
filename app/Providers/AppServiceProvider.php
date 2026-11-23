@@ -50,43 +50,55 @@ class AppServiceProvider extends ServiceProvider
      */
     private function registerAuthenticationLogging(): void
     {
-        // Log successful logins
-        Event::listen(Login::class, function (Login $event) {
+        // La llave es `ip_address` (la que lee AuditSchema) y se fija `event` para
+        // que el filtro por evento encuentre las sesiones (PLA-17, PLA-18).
+        $context = fn (array $extra = []) => array_merge([
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+        ], $extra);
+
+        Event::listen(Login::class, function (Login $event) use ($context) {
             activity()
                 ->causedBy($event->user)
-                ->withProperties([
-                    'ip' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
-                    'guard' => $event->guard,
-                ])
+                ->event('login')
+                ->withProperties($context(['guard' => $event->guard]))
                 ->log('login');
         });
 
-        // Log logouts
-        Event::listen(Logout::class, function (Logout $event) {
+        Event::listen(Logout::class, function (Logout $event) use ($context) {
             if ($event->user) {
                 activity()
                     ->causedBy($event->user)
-                    ->withProperties([
-                        'ip' => request()->ip(),
-                        'guard' => $event->guard,
-                    ])
+                    ->event('logout')
+                    ->withProperties($context(['guard' => $event->guard]))
                     ->log('logout');
             }
         });
 
-        // Log failed login attempts
-        Event::listen(Failed::class, function (Failed $event) {
+        Event::listen(Failed::class, function (Failed $event) use ($context) {
             activity()
-                ->withProperties([
-                    'ip' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
-                    'credentials' => [
-                        'email' => $event->credentials['email'] ?? 'unknown',
-                    ],
+                ->event('login_failed')
+                ->withProperties($context([
+                    'credentials' => ['email' => $event->credentials['email'] ?? 'unknown'],
                     'guard' => $event->guard,
-                ])
+                ]))
                 ->log('login_failed');
+        });
+
+        // Los cambios de modelo (LogsActivity) no guardaban desde donde se hicieron.
+        // Se engancha al modelo configurado (los eventos de Eloquent van por clase).
+        $activityModel = config('activitylog.activity_model', \Spatie\Activitylog\Models\Activity::class);
+        $activityModel::creating(function ($activity) {
+            if (app()->runningInConsole() && ! app()->runningUnitTests()) {
+                return;
+            }
+            $properties = collect($activity->properties ?? []);
+            if (! $properties->has('ip_address') && request()->ip()) {
+                $activity->properties = $properties->merge([
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ]);
+            }
         });
     }
 

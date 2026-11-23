@@ -16,6 +16,8 @@ use Modules\Product\Http\Controllers\Api\V1\ProductBulkController;
 | Base path: /api (from RouteServiceProvider)
 */
 Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
+    Route::get('products/export', \Modules\Product\Http\Controllers\Api\V1\ProductExportController::class)
+        ->name('products.export');
     Route::post('products/upload-image', [ProductUploadController::class, 'uploadImage'])
         ->name('products.upload-image');
     Route::post('products/upload-datasheet', [ProductUploadController::class, 'uploadDatasheet'])

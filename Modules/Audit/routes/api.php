@@ -29,3 +29,8 @@ JsonApiRoute::server('v1')
         $server->resource('audits', \Modules\Audit\Http\Controllers\Api\V1\AuditController::class);
     });
     */
+
+// Tipos con registros en la bitacora, para el filtro de la pantalla (PLA-19).
+Route::middleware('auth:sanctum')
+    ->get('v1/audit-types', \Modules\Audit\Http\Controllers\Api\V1\AuditTypeController::class)
+    ->name('audit-types.index');
