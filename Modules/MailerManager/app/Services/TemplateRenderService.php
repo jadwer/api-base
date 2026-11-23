@@ -28,7 +28,7 @@ class TemplateRenderService
         }
 
         // Step 1: Replace variables
-        $html = $this->variableReplacer->replace($html, $variables);
+        $html = $this->variableReplacer->replace($html, $variables, escapeHtml: true);
 
         // Step 2: Also replace variables in any inline style attributes
         // (in case variables are used in style values)

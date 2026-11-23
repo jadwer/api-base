@@ -13,7 +13,25 @@ class VariableReplacer
      * - Conditionals: {{#if variable_name}}...{{/if}}
      * - Loops: {{#each items}}...{{/each}}
      */
-    public function replace(string $template, array $data): string
+    public function replace(string $template, array $data, bool $escapeHtml = false): string
+    {
+        // SEG-12 (2026-11-22): al armar el HTML de un correo los valores se escapan.
+        // Varios vienen de texto libre (nombre, empresa y "atencion a" de la
+        // cotizacion sin registro, que escribe un visitante anonimo) y antes se
+        // insertaban tal cual: permitia meter enlaces o imagenes en el correo que
+        // recibe ventas. El asunto no es HTML y se deja sin escapar.
+        $previous = $this->escapeHtml;
+        $this->escapeHtml = $escapeHtml;
+        try {
+            return $this->replaceAll($template, $data);
+        } finally {
+            $this->escapeHtml = $previous;
+        }
+    }
+
+    private bool $escapeHtml = false;
+
+    private function replaceAll(string $template, array $data): string
     {
         // 1. Process conditionals first (before loops, so conditional blocks can contain loops)
         $template = $this->processConditionals($template, $data);
@@ -137,7 +155,7 @@ class VariableReplacer
             if ($normalized === '') {
                 $value = 0;
             } elseif (! is_numeric($normalized)) {
-                return $value;
+                return $this->toString($value);
             } else {
                 $value = (float) $normalized;
             }
@@ -149,13 +167,19 @@ class VariableReplacer
             'integer' => number_format((int) $value, 0),
             'date' => $value ? date('d/m/Y', strtotime((string) $value)) : '',
             'datetime' => $value ? date('d/m/Y H:i', strtotime((string) $value)) : '',
-            'uppercase' => mb_strtoupper($this->toString($value)),
-            'lowercase' => mb_strtolower($this->toString($value)),
+            // Primero se cambia la caja y despues se escapa (al reves rompe las entidades).
+            'uppercase' => $this->escape(mb_strtoupper($this->plain($value))),
+            'lowercase' => $this->escape(mb_strtolower($this->plain($value))),
             default => $this->toString($value),
         };
     }
 
     protected function toString(mixed $value): string
+    {
+        return $this->escape($this->plain($value));
+    }
+
+    private function plain(mixed $value): string
     {
         if (is_null($value)) {
             return '';
@@ -168,6 +192,11 @@ class VariableReplacer
         }
 
         return (string) $value;
+    }
+
+    private function escape(string $value): string
+    {
+        return $this->escapeHtml ? htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : $value;
     }
 
     protected function isTruthy(mixed $value): bool
