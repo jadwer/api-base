@@ -1,8 +1,4 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Modules\HR\Http\Controllers\HRController;
-
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::resource('hrs', HRController::class)->names('hr');
-});
+// Sin rutas web: el modulo se sirve por la API. El controlador de andamio que
+// se registraba aqui respondia con vistas que no existen (PLA-27, 2026-11-22).

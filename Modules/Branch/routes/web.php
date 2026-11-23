@@ -1,8 +1,4 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Modules\Branch\Http\Controllers\BranchController;
-
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::resource('branches', BranchController::class)->names('branch');
-});
+// Sin rutas web: el modulo se sirve por la API. El controlador de andamio que
+// se registraba aqui respondia con vistas que no existen (PLA-27, 2026-11-22).
