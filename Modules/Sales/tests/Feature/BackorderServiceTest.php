@@ -162,7 +162,7 @@ class BackorderServiceTest extends TestCase
         $this->service->fulfillBackorder($backorder, 5);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('cannot be cancelled');
+        $this->expectExceptionMessage('ya no se puede cancelar');
 
         $this->service->cancelBackorder($backorder->fresh());
     }
