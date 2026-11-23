@@ -26,6 +26,15 @@ Schedule::command('quotes:expire')->dailyAt('00:30')->timezone('America/Mexico_C
 // WS9: Refresh SAT catalogs monthly from phpcfdi/resources-sat-catalogs
 Schedule::command('sat:sync-catalogs')->monthlyOn(1, '02:30')->timezone('America/Mexico_City');
 
+// Sesiones: los tokens caducan a los 30 dias (config/sanctum.php); se podan los
+// que llevan un dia vencidos (PLA-11, 2026-11-22).
+Schedule::command('sanctum:prune-expired --hours=24')->dailyAt('03:10')->timezone('America/Mexico_City');
+
+// Bitacora (PLA-22, 2026-11-22): las descargas de fichas tecnicas son una metrica
+// y se guardan 90 dias; el resto de la auditoria, 365.
+Schedule::command('activitylog:clean datasheet_download --days=90 --force')->dailyAt('03:20')->timezone('America/Mexico_City');
+Schedule::command('activitylog:clean --days=365 --force')->dailyAt('03:30')->timezone('America/Mexico_City');
+
 // Demo mode: weekly database reset every Monday 03:00 (server time).
 // Only registered when APP_DEMO_MODE=true; the command itself also refuses
 // to run without demo mode, as a second layer of protection.

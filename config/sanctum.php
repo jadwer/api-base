@@ -47,7 +47,9 @@ return [
     |
     */
 
-    'expiration' => null,
+    // Sesiones de 30 dias (decision de Gabino con Jasim, 2026-11-22). En minutos;
+    // SANCTUM_TOKEN_EXPIRATION vacio o 0 las deja sin caducidad.
+    'expiration' => ((int) env('SANCTUM_TOKEN_EXPIRATION', 43200)) ?: null,
 
     /*
     |--------------------------------------------------------------------------
