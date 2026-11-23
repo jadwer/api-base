@@ -68,7 +68,7 @@ class InventarioSeguridad20261119Test extends TestCase
 
     public function test_customer_cannot_use_lot_traceability_or_recall(): void
     {
-        $batch = ProductBatch::factory()->create();
+        $batch = ProductBatch::factory()->create(['status' => 'active']); // la fabrica elige el estatus al azar y a veces nacia retirado
         $customer = $this->getCustomerUser();
 
         $this->actingAs($customer, 'sanctum')->getJson("/api/v1/lot-traceability/{$batch->id}/genealogy")->assertForbidden();
