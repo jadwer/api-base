@@ -29,13 +29,13 @@ class PurchaseByProductReportService
 
             $totalQuantity = $productItems->sum('quantity');
             $totalAmount = $productItems->sum(function ($item) {
-                return $item->quantity * $item->unit_price;
+                return (float) $item->subtotal > 0 ? (float) $item->subtotal : $item->quantity * $item->unit_price - (float) $item->discount;
             });
 
             return [
                 'product_id' => $product->id ?? null,
-                'product_code' => $product->code ?? 'Unknown',
-                'product_name' => $product->name ?? 'Unknown',
+                'product_code' => $product->sku ?? '',
+                'product_name' => $product->name ?? 'Sin nombre',
                 'total_quantity' => $totalQuantity,
                 'total_amount' => round($totalAmount, 2),
                 'average_price' => $totalQuantity > 0 

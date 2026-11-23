@@ -23,12 +23,12 @@ class SalesByCustomerReportService
             ->with('customer')
             ->get();
 
-        $salesByCustomer = $sales->groupBy('customer_id')->map(function ($customerOrders) {
+        $salesByCustomer = $sales->groupBy('contact_id')->map(function ($customerOrders) {
             $customer = $customerOrders->first()->customer;
 
             return [
                 'customer_id' => $customer->id ?? null,
-                'customer_name' => $customer->name ?? 'Unknown',
+                'customer_name' => $customer->name ?? 'Sin nombre',
                 'total_orders' => $customerOrders->count(),
                 'total_amount' => round($customerOrders->sum('total_amount'), 2),
                 'orders' => $customerOrders->map(function ($order) {

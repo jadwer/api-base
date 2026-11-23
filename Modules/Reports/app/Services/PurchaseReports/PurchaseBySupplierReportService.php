@@ -22,12 +22,12 @@ class PurchaseBySupplierReportService
             ->with('supplier')
             ->get();
 
-        $purchasesBySupplier = $purchases->groupBy('supplier_id')->map(function ($supplierOrders) {
+        $purchasesBySupplier = $purchases->groupBy('contact_id')->map(function ($supplierOrders) {
             $supplier = $supplierOrders->first()->supplier;
 
             return [
                 'supplier_id' => $supplier->id ?? null,
-                'supplier_name' => $supplier->name ?? 'Unknown',
+                'supplier_name' => $supplier->name ?? 'Sin nombre',
                 'total_orders' => $supplierOrders->count(),
                 'total_amount' => round($supplierOrders->sum('total_amount'), 2),
                 'orders' => $supplierOrders->map(function ($order) {
