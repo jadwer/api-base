@@ -43,6 +43,9 @@ class AuthController extends Controller
 
         // Verificar si el usuario existe y si la contraseña es correcta
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
+            // La bitacora escucha estos eventos; el acceso por token no los dispara solo.
+            event(new \Illuminate\Auth\Events\Failed('sanctum', $user, ['email' => $credentials['email']]));
+
             return response()->json([
                 'message' => 'Credenciales inválidas.',
             ], 401);
@@ -50,6 +53,8 @@ class AuthController extends Controller
 
         // Verificar si el usuario está activo y no está soft-deleted
         if ($user->deleted_at !== null || $user->status !== 'active') {
+            event(new \Illuminate\Auth\Events\Failed('sanctum', $user, ['email' => $credentials['email']]));
+
             return response()->json([
                 'message' => 'Credenciales inválidas.',
             ], 401);
@@ -57,6 +62,7 @@ class AuthController extends Controller
 
         // Generar un token de acceso
         $token = $user->createToken('auth_token')->plainTextToken;
+        event(new \Illuminate\Auth\Events\Login('sanctum', $user, false));
 
         return response()->json([
             'access_token' => $token,
@@ -74,6 +80,7 @@ class AuthController extends Controller
 
         if ($user) {
             $user->currentAccessToken()->delete();
+            event(new \Illuminate\Auth\Events\Logout('sanctum', $user));
         }
 
         return response()->json([

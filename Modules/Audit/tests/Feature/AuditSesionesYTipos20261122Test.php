@@ -62,4 +62,23 @@ class AuditSesionesYTipos20261122Test extends TestCase
         $this->assertFalse($types->contains('value', 'Modules\\Sales\\Models\\SalesQuote'));
         $this->actingAs($this->getCustomerUser(), 'sanctum')->getJson('/api/v1/audit-types')->assertForbidden();
     }
+
+    /** El acceso real (token) no disparaba los eventos y las sesiones nunca se registraban. */
+    public function test_entrar_fallar_y_salir_por_la_api_quedan_en_la_bitacora(): void
+    {
+        $user = \Modules\User\Models\User::factory()->create(['password' => bcrypt('Secreta123!'), 'status' => 'active']);
+        $before = Activity::query()->max('id') ?? 0;
+
+        $this->postJson('/api/auth/login', ['email' => $user->email, 'password' => 'incorrecta'])->assertStatus(401);
+        $token = $this->postJson('/api/auth/login', ['email' => $user->email, 'password' => 'Secreta123!'])->assertOk()->json('access_token');
+        $this->app['auth']->forgetGuards();
+        $this->withHeader('Authorization', 'Bearer '.$token)->postJson('/api/auth/logout')->assertOk();
+
+        $events = Activity::query()->where('id', '>', $before)->whereIn('event', ['login', 'logout', 'login_failed'])->orderBy('id')->get();
+
+        $this->assertSame(['login_failed', 'login', 'logout'], $events->pluck('event')->all());
+        $this->assertSame($user->id, (int) $events[1]->causer_id);
+        $this->assertNotEmpty($events[1]->properties['ip_address']);
+        $this->assertSame($user->email, $events[0]->properties['credentials']['email']);
+    }
 }
